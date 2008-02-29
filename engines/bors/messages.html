@@ -1,0 +1,17 @@
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+{$text}
+<br />
+<br />
+<br />
+<center>
+<a href="{$link_url|htmlspecialchars}">{$link_text}</a>
+</center>
+
+{if $login_form}
+<form method="post" action="/do-login/">
+	<input type="hidden" name="redirect_url" value="{$login_referer}" />
+	<label class="conl"><strong>Имя</strong><br /><input type="text" name="req_username" size="16" maxlength="25" tabindex="1" /><br /></label>
+	<label class="conl"><strong>Пароль</strong><br /><input type="password" name="req_password" size="16" maxlength="16" tabindex="2" /><br /></label>
+	<p><input type="submit" name="login" value="Зайти" tabindex="3" /></p>
+</form>
+{/if}

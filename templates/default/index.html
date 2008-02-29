@@ -1,0 +1,18 @@
+<html>
+<head><title>{$title}</title></head>
+<body>
+<small>{module class="nav_top" id=$this}</small>
+<div align="right">{$description}</div>
+<h1>{$title}</h1>
+{$body}
+
+{if $access}
+<hr />
+<small><center> 
+	edit <a href="{$main_uri}?edit">page</a> | 
+	<a href="{$main_uri}?edit-data">data</a> |
+	<a href="{$main_uri}?nav_edit">navigation</a>
+</center></small>
+{/if}
+</body>
+</html>

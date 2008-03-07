@@ -21,7 +21,10 @@ if(file_exists(BORS_INCLUDE.'config/local.php'))
 if(file_exists(@BORS_INCLUDE_LOCAL.'config.php'))
 	include_once(@BORS_INCLUDE_LOCAL.'config.php');
 
-require_once("debug.php");
+require_once('classes/inc/MemCache.php');
+require_once('inc/debug.php');
+require_once('config/default.php');
+@include_once('config/local.php');
 
 function bors_init()
 {

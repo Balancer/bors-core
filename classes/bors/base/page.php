@@ -112,7 +112,7 @@ class base_page extends base_object
 		$data['this'] = $this;
 
 		$this->template_data_fill();
-		require_once('engines/smarty/assign.php');
+		require_once('funcs/templates/assign.php');
 		return template_assign_data($this->body_template(), $data);
 	}
 
@@ -124,5 +124,13 @@ class base_page extends base_object
 			return preg_replace("!^(.+)\.php$!", "xfile:$1.html", $cf);
 		else
 			return 'main.html';
+	}
+
+	function nav_name()
+	{
+		if($nav = parent::nav_name())
+			return $nav;
+		
+		return $this->class_title();
 	}
 }

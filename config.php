@@ -1,13 +1,27 @@
 <?php
+$GLOBALS['now'] = time();
 
-function config_set($key, $value) { $GLOBALS['cms']['config'][$key] = $value; }
-function config($key) { return @$GLOBALS['cms']['config'][$key]; }
+if(!defined("BORS_INCLUDE"))
+	define("BORS_INCLUDE", $_SERVER['DOCUMENT_ROOT']."/cms/");
 
-ini_set('include_path', ini_get('include_path') .':'. BORS_LOCAL .':'. BORS_HOST .':'. BORS_CORE);
+if(!defined("BORS_HOST"))
+	define("BORS_HOST", @BORS_INCLUDE_LOCAL);
 
-require_once('classes/inc/MemCache.php');
-require_once('inc/debug.php');
-require_once('config/default.php');
+if(!defined("BORS_LOCAL"))
+	define("BORS_LOCAL", BORS_INCLUDE);
+
+if(!defined("BORS_CORE"))
+	define("BORS_CORE", BORS_INCLUDE);
+
+include_once(BORS_INCLUDE.'config/default.php');
+
+if(file_exists(BORS_INCLUDE.'config/local.php'))
+	include_once(BORS_INCLUDE.'config/local.php');
+
+if(file_exists(@BORS_INCLUDE_LOCAL.'config.php'))
+	include_once(@BORS_INCLUDE_LOCAL.'config.php');
+
+require_once("debug.php");
 
 function bors_init()
 {
@@ -26,7 +40,7 @@ function bors_init()
 function bors_dirs()
 {
 	$vhost = '/vhosts/'.$_SERVER['HTTP_HOST'];
-	return array(BORS_HOST, BORS_LOCAL.$vhost, BORS_LOCAL, BORS_CORE.$vhost, BORS_CORE);
+	return array_unique(array(BORS_HOST, BORS_LOCAL.$vhost, BORS_LOCAL, BORS_CORE.$vhost, BORS_CORE));
 }
 
 function bors_include($file, $warn = false)

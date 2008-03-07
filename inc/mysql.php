@@ -102,3 +102,25 @@ function mysql_args_compile($args)
 	
 	return "{$join} {$where} {$group} {$order} {$limit}";
 }
+
+function make_id_field($table, $id_field, $oid = '%MySqlStorageOID%')
+{
+	if($table)
+		$table = "{$table}.";
+	
+	if(strpos($id_field, '=') === false)
+		return "{$table}{$id_field} = '".addslashes($oid)."'";
+
+	if(strpos($id_field, ' ') === false)
+	{
+		$out =  preg_replace("!([\w`\.]+)=([\w\`\.]+)!", "{$table}$1=$2", $id_field);
+		$out =  preg_replace("!(\w+)='(\w+)'!", "{$table}$1='$2'", $out);
+	}
+	else
+	{
+		$out =  str_replace('%TABLE%.', $table, $id_field);
+		$out =  str_replace('%ID%', addslashes($oid), $out);
+	}
+		
+	return $out;
+}

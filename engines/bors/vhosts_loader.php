@@ -2,8 +2,6 @@
 	global $bors_data;
 	$bors_data['vhost_handlers'] = array();
 
-	function bors_vhosts() { return array_keys($GLOBALS['bors_data']['vhosts']); }
-
 	function register_vhost($host, $documents_root=NULL, $bors_local=NULL)
 	{
 		global $bors_data;
@@ -16,7 +14,7 @@
 			
 		$map = array();
 
-		if(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
+		if(file_exists($file = BORS_INCLUDE.'/vhosts/'.$host.'/handlers/bors_map.php'))
 			include($file);
 
 		$map2 = $map;
@@ -32,7 +30,7 @@
 		);
 	}
 
-	include_once("config/vhosts.php");
+	@include_once("config/vhosts.php");
 
 	function borsmaps_load()
 	{
@@ -40,10 +38,10 @@
 		if(empty($bors_map))
 			$bors_map = array();
 		
-		foreach(bors_dirs() as $dir)
+		foreach(array(BORS_INCLUDE,	BORS_INCLUDE."vhosts/".$_SERVER['HTTP_HOST']."/", BORS_INCLUDE_LOCAL) as $dir)
 		{
 			$map = array();
-			if(file_exists($file = "{$dir}/handlers/bors_map.php"))
+			if(file_exists($file = "{$dir}handlers/bors_map.php"))
 				include($file);
 			
 			$bors_map = array_merge($bors_map, $map);

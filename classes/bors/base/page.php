@@ -125,4 +125,12 @@ class base_page extends base_object
 		else
 			return 'main.html';
 	}
+
+	function nav_name()
+	{
+		if($nav = parent::nav_name())
+			return $nav;
+		
+		return $this->class_title();
+	}
 }

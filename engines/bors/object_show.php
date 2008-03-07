@@ -72,7 +72,7 @@
 					$form->new_instance();
 
 				if(!$form->id())
-					debug_exit('Empty for '.$form->class_name());
+					debug_exit('Empty id for '.$form->class_name());
 
 				foreach($data as $key => $val)
 				{
@@ -81,7 +81,7 @@
 						
 					$method = "remove_{$m[1]}_file";
 //					if(method_exists($form, $method))
-						$form->$method(true);
+						$form->$method($data);
 				}
 
 				if(!empty($_FILES))
@@ -92,7 +92,7 @@
 						{
 							$method = "upload_{$file}_file";
 //							if(method_exists($form, $method))
-								$form->$method($params, true);
+								$form->$method($params, $data);
 						}
 					}
 				}

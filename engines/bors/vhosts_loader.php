@@ -32,7 +32,7 @@
 		);
 	}
 
-	include_once("config/vhosts.php");
+	@include_once("config/vhosts.php");
 
 	function borsmaps_load()
 	{

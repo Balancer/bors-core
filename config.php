@@ -8,6 +8,7 @@ ini_set('include_path', ini_get('include_path') .':'. BORS_LOCAL .':'. BORS_HOST
 require_once('classes/inc/MemCache.php');
 require_once('inc/debug.php');
 require_once('config/default.php');
+@include_once('config/local.php');
 
 function bors_init()
 {

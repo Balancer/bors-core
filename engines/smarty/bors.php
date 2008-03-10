@@ -4,7 +4,7 @@ require_once("bors_smarty_common.php");
 
 function template_assign_bors_object($obj, $template = NULL)
 {
-		require_once('smarty/Smarty.class.php');
+		require_once(config('smarty_path').'/Smarty.class.php');
 		$smarty = &new Smarty;
 		require('smarty-register.php');
 

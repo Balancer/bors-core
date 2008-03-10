@@ -134,7 +134,7 @@
 			
 			$my_user = bors()->user();
 			if($my_user && $my_user->id())
-				def_page::add_template_data('my_user', $my_user);
+				base_page::add_template_data('my_user', $my_user);
 	
 			if($render_engine = $obj->render_engine())
 			{

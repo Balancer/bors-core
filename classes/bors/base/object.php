@@ -523,7 +523,7 @@ class base_object extends base_empty
 
 	function cache_clean_self()
 	{
-		include_once('include/classes/cache/CacheStaticFile.php');
+		require_once('include/classes/cache/CacheStaticFile.php');
 		CacheStaticFile::clean($this->internal_uri());
 		CacheStaticFile::clean($this->url());
 		delete_cached_object($this);

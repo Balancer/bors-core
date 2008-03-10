@@ -2,6 +2,8 @@
 
 function class_include($class_name, $local_path = "")
 {
+//	print_d(bors_dirs());
+
 	if($file_name = @$GLOBALS['bors_data']['class_included'][$class_name])
 		return $file_name;
 	
@@ -58,7 +60,7 @@ function load_cached_object($class_name, $id, $args)
 				
 //		echo "got ".$class_name.'://'.$id.','.serialize($page)."<br />\n";
 
-		if($x = @$memcache->get('bors_v17_'.$class_name.'://'.$id))
+		if($x = @$memcache->get('bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id))
 		{
 //			echo "<b>got!</b><br />";
 			if($x->can_cached())
@@ -81,7 +83,7 @@ function save_cached_object(&$object, $delete = false)
 		$memcache = &new Memcache;
 		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
 				
-		$hash = 'bors_v17_'.get_class($object).'://'.$object->id();
+		$hash = 'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
 			
 		if($delete)
 			@$memcache->delete($hash);
@@ -393,6 +395,8 @@ function save_cached_object(&$object, $delete = false)
 
 function object_init($class_name, $object_id, $args = array())
 {
+	// В этом методе нельзя исползовать debug_test()!
+
 	if(!is_array($args))
 		$args = $args ? array('page' => $args) : array();
 

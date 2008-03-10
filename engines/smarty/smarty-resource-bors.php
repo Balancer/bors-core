@@ -1,4 +1,5 @@
-<?php
+<?
+	require_once("engines/bors.php");
 
     function smarty_bors_get_template ($tpl_name, &$tpl_source, &$smarty_obj)
     {
@@ -24,9 +25,8 @@
         $obj = class_load($tpl_name);
         $time = $obj->modify_time();
 	
-		global $bors;
-		if($bors->main_object())
-	        $time = max($time, $bors->main_object()->modify_time(), $bors->main_object()->compile_time());
+		if(bors()->main_object())
+	        $time = max($time, bors()->main_object()->modify_time(), bors()->main_object()->compile_time());
 
 //      $time = max($time, $obj->dbh->get_value('hts_ext_system_data', 'key', 'global_recompile', 'value'));
 

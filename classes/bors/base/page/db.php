@@ -82,4 +82,8 @@ class base_page_db extends base_page
 
 	function _global_queries() { return array(); }
 
+	public function __wakeup()
+	{
+		$this->db = &new DataBase($this->main_db_storage());
+	}
 }

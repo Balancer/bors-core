@@ -80,7 +80,7 @@ class DataBase extends base_object
 
 				$this->reconnect();
 			
-				mysql_select_db($base,$this->dbh)
+				mysql_select_db($base, $this->dbh)
 					or echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 
 				if(!empty($GLOBALS['cms']['mysql_set_character_set']))

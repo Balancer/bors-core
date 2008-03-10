@@ -41,3 +41,10 @@ function bors()
 
 	return $GLOBALS['bors_global'];
 }
+
+function bors_exit($message = 0)
+{
+	bors()->changed_save();
+	exit($message);
+	return true;
+}

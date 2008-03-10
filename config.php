@@ -1,5 +1,4 @@
 <?php
-$GLOBALS['now'] = time();
 
 if(!defined("BORS_INCLUDE"))
 	define("BORS_INCLUDE", $_SERVER['DOCUMENT_ROOT']."/cms/");
@@ -13,27 +12,26 @@ if(!defined("BORS_LOCAL"))
 if(!defined("BORS_CORE"))
 	define("BORS_CORE", BORS_INCLUDE);
 
-include_once(BORS_INCLUDE.'config/default.php');
+function config_set($key, $value) { $GLOBALS['cms']['config'][$key] = $value; }
+function config($key) { return @$GLOBALS['cms']['config'][$key]; }
 
-if(file_exists(BORS_INCLUDE.'config/local.php'))
-	include_once(BORS_INCLUDE.'config/local.php');
-
-if(file_exists(@BORS_INCLUDE_LOCAL.'config.php'))
-	include_once(@BORS_INCLUDE_LOCAL.'config.php');
+ini_set('include_path', ini_get('include_path') .':'. BORS_LOCAL .':'. BORS_HOST .':'. BORS_CORE);
 
 require_once('classes/inc/MemCache.php');
 require_once('inc/debug.php');
 require_once('config/default.php');
-@include_once('config/local.php');
+
+if(file_exists(BORS_CORE.'/config/local.php'))
+	include_once(BORS_CORE.'/config/local.php');
+
+if(file_exists(BORS_LOCAL.'/config/local.php'))
+	include_once(BORS_LOCAL.'/config/local.php');
+
+if(file_exists(BORS_HOST.'config.php'))
+	include_once(BORS_HOST.'config.php');
 
 function bors_init()
 {
-//	require_once('funcs/templates/global.php');
-//	require_once('funcs/users.php');
-//	require_once('funcs/navigation/go.php');
-//	require_once('funcs/lcml.php');
-//  require_once('include/classes/cache/CacheStaticFile.php');
-
 	require_once('engines/bors.php');
 	require_once('engines/bors/vhosts_loader.php');
 	require_once('inc/locales.php');

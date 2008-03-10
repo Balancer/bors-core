@@ -1,6 +1,6 @@
 <?php
 
-class page_fs_separate extends def_page
+class page_fs_separate extends base_page
 {
 	function storage_engine()	{ return 'storage_fs_separate'; }
 	function render_engine()	{ return 'render_page'; }

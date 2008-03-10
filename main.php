@@ -49,17 +49,16 @@
     ini_set('display_errors', 'On');
     ini_set('log_errors', 'On');
 
-    require_once("config.php");
+    require_once('config.php');
 	bors_init();
-    require_once("funcs/Cache.php");
 
 	if($client['is_bot'] && config('bot_lavg_limit'))
 	{
-		$cache = &new Cache();
-		if(!($load_avg = $cache->get('system', 'load-average-v2')))
+		$cache = &new MemCache();
+		if(!($load_avg = $cache->get('system-load-average')))
 		{
-			$uptime=explode(" ", exec("uptime"));
-			$cache->set($load_avg = floatval($uptime[10]), -120);
+			$uptime=explode(' ', exec('uptime'));
+			$cache->set($load_avg = floatval($uptime[10]), 30);
 		}
 
 		if($load_avg > config('bot_lavg_limit'))
@@ -74,12 +73,6 @@
 		}
 	}
 
-
-    @header("Content-Type: text/html; charset={$GLOBALS['cms']['charset']}");
-    @header('Content-Language: ru');
-    ini_set('default_charset',$GLOBALS['cms']['charset']);
-    setlocale(LC_ALL, $GLOBALS['cms']['locale']);
-
 	if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY_STRING']))
 	{
 		foreach(split("&", $_SERVER['QUERY_STRING']) as $pair)
@@ -91,20 +84,6 @@
 	}
 
 	$_GET = array_merge($_GET, $_POST);
-
-	global $hts;
-	include_once("funcs/DataBaseHTS.php");
-	$hts = &new DataBaseHTS();
-
-//	echo('<xmp>'); print_r($_SERVER); print_r($_GET); echo('</xmp>'); exit();
-
-//	print_r($_POST);
-	require_once("funcs/templates/global.php");
-	require_once("funcs/users.php");
-	require_once("funcs/navigation/go.php");
-	require_once("funcs/lcml.php");
-    require_once("include/classes/cache/CacheStaticFile.php");
-
 
 	require_once('engines/bors/object_show.php');
 	require_once('engines/bors/vhosts_loader.php');

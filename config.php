@@ -6,6 +6,9 @@ if(!defined("BORS_INCLUDE"))
 if(!defined("BORS_INCLUDE_LOCAL"))
 	define("BORS_INCLUDE_LOCAL", "{$_SERVER['DOCUMENT_ROOT']}/cms-local/");
 
+if(!defined("BORS_INCLUDE_LOCAL"))
+	define("BORS_INCLUDE_LOCAL", "{$_SERVER['DOCUMENT_ROOT']}/cms/");
+
 if(!defined("BORS_HOST"))
 	define("BORS_HOST", @BORS_INCLUDE_LOCAL);
 
@@ -13,7 +16,7 @@ if(!defined("BORS_LOCAL"))
 	define("BORS_LOCAL", BORS_INCLUDE);
 
 if(!defined("BORS_CORE"))
-	define("BORS_CORE", BORS_INCLUDE);
+	define("BORS_CORE", '/var/www/.bors/bors-core');
 
 function config_set($key, $value) { $GLOBALS['cms']['config'][$key] = $value; }
 function config($key) { return @$GLOBALS['cms']['config'][$key]; }
@@ -37,6 +40,10 @@ ini_set('include_path', ini_get('include_path') . $delim . join($delim, $include
 require_once('classes/inc/BorsMemCache.php');
 require_once('inc/debug.php');
 require_once('config/default.php');
+require_once('inc/global-data.php');
+require_once('obsolete/DataBase.php');
+require_once('obsolete/DataBaseHTS.php');
+require_once('obsolete/cache/CacheStaticFile.php');
 
 if(file_exists(BORS_CORE.'/config/local.php'))
 	include_once(BORS_CORE.'/config/local.php');
@@ -52,6 +59,7 @@ $GLOBALS['now'] = time();
 function bors_init()
 {
 	require_once('engines/bors.php');
+	require_once('funcs/lcml.php');
 	require_once('inc/navigation.php');
 	require_once('engines/bors/vhosts_loader.php');
 	require_once('inc/locales.php');
@@ -86,4 +94,3 @@ function bors_include($file, $warn = false)
 	echo $message;
 }
 
-require_once('obsolete/cache/CacheStaticFile.php');

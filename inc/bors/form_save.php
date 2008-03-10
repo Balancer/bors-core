@@ -29,9 +29,6 @@ function form_save()
 	else
 		$method = 'onAction_'.$_GET['subaction'];
 
-	global $bors;
-//	print_r($form); exit();
-				
 	if(method_exists($form, $method))
 	{
 		$result = $form->$method($_GET);
@@ -42,7 +39,7 @@ function form_save()
 	{
 		$form->set_fields($_GET, true);
 				
-		$bors->changed_save();
+		bors()->changed_save();
 
 		foreach($_GET as $key => $val)
 		{
@@ -65,7 +62,7 @@ function form_save()
 		}
 	}
 
-	$bors->changed_save();
+	bors()->changed_save();
 
 //	exit("Saved");
 

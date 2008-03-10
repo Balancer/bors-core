@@ -1,7 +1,4 @@
 <?
-    require_once("funcs/DataBase.php");
-    require_once("funcs/DataBaseHTS.php");
-
     class CacheStaticFile
     {
 		var $_file;

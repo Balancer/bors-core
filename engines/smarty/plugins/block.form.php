@@ -3,7 +3,7 @@
 	{
 		extract($params);
 	
-		$main_obj = $GLOBALS['bors']->main_object();
+		$main_obj = bors()->main_object();
 		
 		if(empty($name) && !$main_obj)
 		{

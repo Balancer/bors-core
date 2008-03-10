@@ -529,6 +529,24 @@ class base_object extends base_empty
 		delete_cached_object($this);
 	}
 
+	function cache_parents() { return array(); }
+
+	function cache_clean()
+	{
+		global $cleaned;
+
+		if(empty($cleaned))
+			$cleaned = array();
+				
+		$this->cache_clean_self();
+		foreach($this->cache_parents() as $parent_cache)
+		if($parent_cache && empty($cleaned[$parent_cache->internal_uri()]))
+		{
+			$cleaned[$parent_cache->internal_uri()] = 1;
+			$parent_cache->cache_clean();
+		}
+	}
+
 	function touch() { }
 
 	function visits_counting() { return false; }

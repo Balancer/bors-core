@@ -20,12 +20,9 @@
 			$this->uri  = $uri;
 			$this->page  = $page;
 			$this->original_uri  = $uri;
-			if(!empty($GLOBALS['bors']))
-			{
-				$cfg = $GLOBALS['bors']->config();
-				if($cfg->cache_uri())
-					$this->original_uri = $cfg->cache_uri();
-			}
+			
+			if(bors()->main_object())
+				$this->original_uri = bors()->main_object()->internal_uri();
 			
 			$this->_file = $_SERVER['DOCUMENT_ROOT'].preg_replace('!http://[^/]+!', '', $uri);
 			

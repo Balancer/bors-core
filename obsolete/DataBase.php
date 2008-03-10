@@ -32,7 +32,7 @@ class DataBase extends base_object
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
 	{
 			if(empty($base))
-				$base = $GLOBALS['cms']['mysql_database'];
+				$base = config('mysql_database');
 			
 			$this->db_name = $base;
 			if($base && is_global_key("DataBaseHandler:$server", $base))

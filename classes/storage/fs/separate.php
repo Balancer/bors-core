@@ -27,6 +27,20 @@ class storage_fs_separate extends base_null
 		}
 		$d->close();
 
+/*		foreach(get_object_vars($object) as $field => $value)
+		{
+			if(!preg_match('!^stb_(.+)$!', $field, $m))
+				continue;
+					
+			$name	= $m[1];
+			$set	= "set_{$name}";
+
+			if(file_exists($file = "{$dir}/.{$name}.txt"))
+				$object->$set(ec(file_get_contents($file)), false);
+			elseif(file_exists($file = "{$dir}/.[{$name}].txt"))//TODO: сейчас без конвертации!
+				$object->$set(file($file), false);
+		}
+*/
 		return true;
 	}
 	

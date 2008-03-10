@@ -246,12 +246,19 @@ function save_cached_object(&$object, $delete = false)
 					$id = $match[$class_match[2]+1];
 				}
 
+				$args = array('match'=>$match, 'called_url'=>$url);
+
 				if(preg_match("!^(.+)/([^/]+)$!", $class_path, $m))
 					$class = $m[2];
 				else
 					$class = $class_path;
 
-				if($obj = object_init($class_path, $id, array('page' => $page, 'match'=>$match, 'called_url'=>$url)))
+				if(is_array($page))
+					$args = array_merge($args, $page);
+				else
+					$args['page'] = $page;
+					
+				if($obj = object_init($class_path, $id, $args))
 				{
 					if($redirect)
 					{
@@ -353,14 +360,20 @@ function save_cached_object(&$object, $delete = false)
 					$class = $class_path;
 
 //				echo "$class_path($id) - $url";
-						
-				if($obj = object_init($class_path, $id, array(	
-						'page' => $page,
+				
+				$args = array(	
 						'use_cache' => true,
 						'local_path' => $host_data['bors_local'],
 						'match' => empty($match[2]) ? NULL : $match,
 						'called_url' => $url,
-					)))
+				);
+				
+				if(is_array($page))
+					$args = array_merge($args, $page);
+				else
+					$args['page'] = $page;
+
+				if($obj = object_init($class_path, $id, $args))
 				{
 					$bors_data['classes_by_uri'][$url] = $obj;
 					

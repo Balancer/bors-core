@@ -52,9 +52,6 @@
 			else
 				$method = 'onAction_'.$_GET['subaction'];
 
-			global $bors;
-//			print_d($_GET);
-				
 			if(method_exists($form, $method))
 			{
 				$result = $form->$method($_GET);
@@ -67,7 +64,7 @@
 			
 				if($form->check_data($data) === true)
 					return true;
-			
+
 				if(!$form->id())
 					$form->new_instance();
 
@@ -96,16 +93,16 @@
 						}
 					}
 				}
-			
+
 				if(!$form->set_fields($data, true))
 					return true;
-				
+
 				$form->set_modify_time(time(), true);
+				
+				$form->post_set();
 			}
 
-			$bors->changed_save();
-
-//			exit("Saved");
+			bors()->changed_save();
 
 			if(!empty($_GET['go']))
 			{
@@ -158,6 +155,7 @@
 		else
 			$content = $processed;
 
+
 		if($content === false)
 			return false;
 
@@ -173,14 +171,14 @@
 	   
 		if((!empty($GLOBALS['cms']['cache_static']) || $obj->cache_static()) && (empty($_SERVER['QUERY_STRING']) || $_SERVER['QUERY_STRING']=='del' || @$_GET['act'] == 'del'))
 		{
-//			echo "url_engine={$obj->url_engine()}<br />"; echo "url=".$obj->url($page)."<br />\n";
+//			echo "url={$obj->url_engine()}<br />";
 			$sf = &new CacheStaticFile($obj->url($page));
 			$sf->save($content, $obj->modify_time(), $obj->cache_static());
 
 			foreach(split(' ', $obj->cache_groups()) as $group)
 				if($group)
 				{
-					$group = object_load('cache_group', $group);
+					$group = class_load('cache_group', $group);
 					$group->register($obj);
 				}
 				

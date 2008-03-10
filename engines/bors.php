@@ -4,13 +4,14 @@ require_once('bors/names.php');
 require_once('bors/messages.php');
 require_once('bors/objects_array.php');
 require_once('bors/object_loader.php');
+require_once('inc/bors/cross.php');
 
 function object_load($class, $object_id=NULL, $args=array())
 {
 	if(is_numeric($class))
 		$class = class_id_to_name($class);
 	
-//	echo "Load {$class}({$object_id}, ".serialize($args).")<br />\n";
+//	echo "Load {$class}({$object_id} (".serialize($args).")<br />\n";
 	
 	if(!$class)
 		return;
@@ -19,6 +20,8 @@ function object_load($class, $object_id=NULL, $args=array())
 }
 
 function object_new($class) { return object_load($class); }
+
+function object_new_instance($class) { $obj = object_load($class); $obj->new_instance(); return $obj; }
 
 function defval($data, $name, $default=NULL)
 {

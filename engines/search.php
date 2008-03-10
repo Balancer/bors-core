@@ -412,7 +412,7 @@ function bors_search_in_bodies($query)
 	$result = array();
 	
 	foreach($cross as $x)
-		$result[] = object_load($x['class_name'], $x['class_id'], array('page' => $x['class_page']));
+		$result[] = object_load($x['class_name'], $x['class_id'], $x['class_page']);
 
 	return $result;
 }

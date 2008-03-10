@@ -197,7 +197,6 @@ class base_object extends base_empty
 	function set($field, $value, $db_update)
 	{
 //		echo "set ".get_class($this).".{$field} = $value<br/>\n";
-		global $bors;
 			
 		$field_name = "stba_$field";
 		if(!property_exists($this, $field_name))
@@ -206,11 +205,11 @@ class base_object extends base_empty
 //		if(!property_exists($this, $field_name))
 //			debug_exit("Try to set undefined properties ".get_class($this).".$field");
 
-		if($db_update && $this->$field_name != $value)
+		if($db_update && @$this->$field_name != $value)
 		{
 //			echo "<xmp>Set {$field_name} from {$this->$field_name} to {$value}</xmp>\n";
 			$this->changed_fields[$field] = $field_name;
-			$bors->add_changed_object($this);
+			bors()->add_changed_object($this);
 		}
 
 		return $this->$field_name = $value;
@@ -218,14 +217,12 @@ class base_object extends base_empty
 
 	function fset($field, $value, $db_update)
 	{
-		global $bors;
-			
 		$field_name = "stb_$field";
 
 		if($db_update && $this->$field_name != $value)
 		{
 			$this->changed_fields[$field] = $field_name;
-			$bors->add_changed_object($this);
+			bors()->add_changed_object($this);
 		}
 
 		$this->$field_name = $value;
@@ -372,8 +369,7 @@ class base_object extends base_empty
 		if(!$this->id())
 			$this->new_instance();
 		
-		global $bors;
-		$bors->changed_save();
+		bors()->changed_save();
 	}
 
 	function data_provider() { return NULL; }
@@ -565,4 +561,6 @@ class base_object extends base_empty
 	function set_class_file($file_name) { return $this->class_file = $file_name; }
 	function class_file() { return $this->class_file; }
 	function class_dir() { return dirname($this->class_file()); }
+
+	function post_set() { }
 }

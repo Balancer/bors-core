@@ -1,9 +1,11 @@
 <?php
 
+require_once('engines/lcml.php');
+
 class body_source extends base_null
 {
 	function body($obj)
 	{
-		return /*lcml*/($obj->source());
+		return lcml($obj->source());
 	}
 }

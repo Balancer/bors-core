@@ -75,7 +75,7 @@ class base_object extends base_empty
 	{
 		if($config = $this->config_class())
 		{
-			$config = object_load($config, &$this);
+			$config = object_load($config, $this);
 			if($config)
 				$config->template_init();
 			else

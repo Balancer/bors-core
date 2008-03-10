@@ -106,56 +106,13 @@
 
 	if(!$object || preg_match('!^[\w\-]+$!', $_SERVER['QUERY_STRING']) || ($ret = bors_object_show($object))!== true)
 	{
-	    @header("X-Bors-obsolete: $uri");
-//		@header("X-QS: ".str_replace("\n", ' ', print_r($_GET, true)));
-	    require_once("funcs/handlers.php");
-
-		if(empty($GLOBALS['cms']['only_load']))
+		if(config('obsolete_use_handlers_system'))
 		{
-			$_SERVER['HTTP_HOST'] = str_replace(':80', '', $_SERVER['HTTP_HOST']);
-
-    		$_SERVER['REQUEST_URI'] = preg_replace("!^(.+?)\?.*?$!", "$1", $_SERVER['REQUEST_URI']);
+			require_once('obsolete/handlers.php');
+			$ret = main_handlers_engine($uri);
 		}
-	
-		$parse = parse_url($uri);
-	
-		$cs = &new CacheStaticFile($uri);
-		if(!empty($GLOBALS['cms']['cache_static']) 
-			&& empty($_GET) 
-			&& empty($_POST) 
-			&& ($cs_uri = $cs->get_name($uri)) 
-			&& file_exists($cs->get_file($uri)))
-		{
-			go($cs_uri); 
-			exit();
-		}
-
-		$GLOBALS['cms']['page_number'] = 1;
-
-		if(empty($GLOBALS['main_uri']))
-			$GLOBALS['main_uri'] = $uri;
-
-		$GLOBALS['cms']['page_path'] = $GLOBALS['main_uri'];
-
-		$GLOBALS['ref'] = @$_SERVER['HTTP_REFERER'];
-
-		if(empty($GLOBALS['cms']['disable']['log_session']))
-		{
-			include_once("funcs/logs.php");
-			log_session_update();
-		}
-	
-		include_once("funcs/handlers.php");
-
-		$GLOBALS['cms_patterns'] = array();
-		$GLOBALS['cms_actions']  = array();
-
-		handlers_load();
-
-		if(!empty($GLOBALS['cms']['only_load']))
-			return;
-		
-		$ret = handlers_exec();
+		else
+			$ret = false;
 	}
 
 	bors()->changed_save();
@@ -186,6 +143,7 @@
 
 	if(config('404_page_url'))
 		return go(config('404_page_url'), true);
-		
-//	echo ec("Страница '$uri' не найдена. Попробуйте <a href=\"$uri?edit\">создать её</a>");
+
+	if(config('404_show'))
+		echo ec("Page '$uri' not found.");
 //	echo "</pre>";

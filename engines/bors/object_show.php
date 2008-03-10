@@ -88,7 +88,7 @@
 						if($params)
 						{
 							$method = "upload_{$file}_file";
-//							if(method_exists($form, $method))
+							if(method_exists($form, $method))
 								$form->$method($params, $data);
 						}
 					}

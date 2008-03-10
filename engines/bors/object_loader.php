@@ -207,8 +207,8 @@ function save_cached_object(&$object, $delete = false)
 			else
 				$check_url = $url;
 			
-//			echo "Check $url_pattern to $url for $class_path as !^http://({$url_data['host']}){$url_pattern}\$! to {$check_url}<br />\n";
-			if(preg_match("!^http://({$url_data['host']})$url_pattern$!", $check_url, $match))
+//			echo "Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}<br />\n";
+			if(preg_match("!^http://({$url_data['host']}[^/]*)$url_pattern$!", $check_url, $match))
 			{
 //				echo "<b>Ok - $class_path</b><br />"; exit();
 				

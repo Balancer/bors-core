@@ -3,7 +3,7 @@
 	{
 		unset($GLOBALS['module_data']);
 
-		require_once('smarty/Smarty.class.php');
+		require_once(config('smarty_path').'/Smarty.class.php');
 		$smarty = &new Smarty;
 //		require('mysql-smarty.php');
 		require('smarty-register.php');
@@ -39,10 +39,10 @@
 //		print_r($GLOBALS['cms']);
 
 //		$caller_local_tpln = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".$hts->get_data($GLOBALS['main_uri'], 'template', '', true)."/", $caller_path)."/";
-		$caller_local_main = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/", $caller_path)."/";
-		$caller_local_tpl = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".@$GLOBALS['page_data']['template']."/", $caller_path)."/";
-		$caller_cms_main   = "xfile:{$GLOBALS['cms']['base_dir']}".preg_replace("!^.+?/cms/!", "/", $caller_path)."/";
-		$caller_default_template = dirname($GLOBALS['cms']['default_template'])."/".$module_relative_path;
+//		$caller_local_main = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/", $caller_path)."/";
+//		$caller_local_tpl = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".@$GLOBALS['page_data']['template']."/", $caller_path)."/";
+//		$caller_cms_main   = "xfile:{$GLOBALS['cms']['base_dir']}".preg_replace("!^.+?/cms/!", "/", $caller_path)."/";
+		$caller_default_template = BORS_CORE.'/templates/'.$module_relative_path;
 		
 //		if($uri == NULL)
 //			$uri = "$caller_path/$assign_template";
@@ -61,21 +61,23 @@
 
 //		$template_uri = @$caller_local_tpln.$assign_template;
 //		if(!$smarty->template_exists($template_uri))
-			$template_uri = $caller_local_tpl.$assign_template;
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = $caller_local_main.$assign_template;
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = "xfile:{$GLOBALS['cms']['base_dir']}/templates/$module_relative_path/$assign_template";
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = $caller_cms_main.$assign_template;
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = "xfile:".$caller_default_template.$assign_template;
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = "xfile:$caller_path/".$assign_template;
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = "xfile:".$assign_template;
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = "xfile:{$GLOBALS['cms']['base_dir']}/templates/$assign_template";
+//				$template_uri = $caller_local_tpl.$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = $caller_local_main.$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = "xfile:{$GLOBALS['cms']['base_dir']}/templates/$module_relative_path/$assign_template";
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = $caller_cms_main.$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = "xfile:".$caller_default_template.$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = "xfile:$caller_path/".$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = "xfile:".$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = "xfile:{$GLOBALS['cms']['base_dir']}/templates/$assign_template";
+
+		$template_uri = smarty_template($assign_template, $caller_path);
 
 //		echo "==$template_uri==";
 			
@@ -130,8 +132,7 @@
 		foreach(split(' ', 'host_name main_host_uri') as $key)
 			$smarty->assign($key, @$GLOBALS['cms'][$key]);
 
-		global $bors;
-		if(!empty($bors) && ($obj = $bors->main_object()))
+		if($obj = bors()->main_object())
 		{
 			$smarty->assign('bors_main_object', $obj);
 			foreach(split(' ', $obj->template_local_vars()) as $var)

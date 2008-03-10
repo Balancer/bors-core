@@ -17,13 +17,19 @@ if(!defined("BORS_CORE"))
 
 function config_set($key, $value) { $GLOBALS['cms']['config'][$key] = $value; }
 function config($key) { return @$GLOBALS['cms']['config'][$key]; }
+function mysql_access($host, $db, $login, $password)
+{
+	$GLOBALS['cms']['mysql'][$db]['login'] = $login;
+	$GLOBALS['cms']['mysql'][$db]['password'] = $password;
+}
 
 $includes = array(
 	BORS_INCLUDE_LOCAL,
 	BORS_INCLUDE."vhosts/{$_SERVER['HTTP_HOST']}",
 	BORS_INCLUDE,
 	"{$_SERVER['DOCUMENT_ROOT']}/include",
-	BORS_INCLUDE.'PEAR'
+	BORS_INCLUDE.'PEAR',
+	BORS_CORE,
 );
 $delim = empty($_ENV['windir']) ? ":" : ";";
 ini_set('include_path', ini_get('include_path') . $delim . join($delim, $includes));
@@ -46,7 +52,7 @@ $GLOBALS['now'] = time();
 function bors_init()
 {
 	require_once('engines/bors.php');
-	require_once('funcs/navigation/go.php');
+	require_once('inc/navigation.php');
 	require_once('engines/bors/vhosts_loader.php');
 	require_once('inc/locales.php');
 	require_once('engines/bors/object_show.php');
@@ -80,5 +86,4 @@ function bors_include($file, $warn = false)
 	echo $message;
 }
 
-require_once('funcs/lcml.php');
-require_once('include/classes/cache/CacheStaticFile.php');
+require_once('obsolete/cache/CacheStaticFile.php');

@@ -11,7 +11,7 @@ require_once ('inc/urls.php');
 //$GLOBALS['cms']['sites_store_path'] = "{$GLOBALS['cms']['main_host_dir']}/sites";
 //$GLOBALS['cms']['sites_store_url'] = "{$GLOBALS['cms']['main_host_uri']}/sites";
 
-ext_load(dirname(__FILE__).'/tags');
+ext_load(dirname(__FILE__).'/lcml/tags');
 
 function lcml_out($txt)
 {
@@ -119,7 +119,7 @@ function lcml($txt, $params = array ())
 	//        require_once("tags/code.php");
 	//        $txt=preg_replace("!\[code([^\]]*)\](.+?)\[/code\]!ise","lp_code_(\"$2\",'$1')",$txt);
 
-	$txt = ext_load('lcml/pre', $txt);
+	$txt = ext_load(dirname(__FILE__).'/lcml/pre', $txt);
 
 	include_once ('lcml/sharp.php');
 
@@ -129,10 +129,10 @@ function lcml($txt, $params = array ())
 	include_once ("lcml/tags.php");
 	$txt = lcml_tags($txt, $mask);
 
-	$txt = ext_load('lcml/post', $txt, $mask);
+	$txt = ext_load(dirname(__FILE__).'/lcml/post', $txt, $mask);
 
 	if($GLOBALS['lcml']['level'] == 1)
-		$txt = ext_load('lcml/post-whole', $txt);
+		$txt = ext_load(dirname(__FILE__).'/lcml/post-whole', $txt);
 
 	if ($outfile)
 	{

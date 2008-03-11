@@ -1,6 +1,4 @@
 <?
-    require_once("funcs/DataBaseHTS.php");
-
     function lcml_forum_topics($txt)
     {
         //http://forums.airbase.ru/index.php?showtopic=3353

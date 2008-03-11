@@ -2,6 +2,8 @@
 
 function smarty_template($template_name, $callers_dir = NULL)
 {
+//	echo "tpl=".$template_name."<br />";
+
 	if(preg_match('!xfile:!', $template_name))
 		return $template_name;
 
@@ -20,6 +22,9 @@ function smarty_template($template_name, $callers_dir = NULL)
 	foreach(bors_dirs() as $dir)
 	{
 		if(file_exists($file = $dir.'/templates/'.$template_name))
+			return 'xfile:'.$file;
+
+		if(file_exists($file = $dir.'/'.$template_name))
 			return 'xfile:'.$file;
 
 		if(file_exists($file = $dir.'/templates/'.$template_name.'/index.html'))

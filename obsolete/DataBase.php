@@ -245,7 +245,6 @@ class DataBase extends base_object
 
 		function get($query, $ignore_error=false, $cached=false)
 		{
-			include_once("funcs/Cache.php");
 			$ch = NULL;
 			if($cached !== false)
 			{

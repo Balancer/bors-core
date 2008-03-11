@@ -60,12 +60,7 @@ function bors_init()
 {
 	require_once('engines/bors.php');
 
-	//TODO: унифицировать
-	if(file_exists(dirname(__FILE__).'/funcs/lcml.php'))
-		require_once('funcs/lcml.php');
-	else
-		require_once('engines/lcml.php');
-		
+	require_once('engines/lcml.php');
 	require_once('inc/navigation.php');
 	require_once('engines/bors/vhosts_loader.php');
 	require_once('inc/locales.php');

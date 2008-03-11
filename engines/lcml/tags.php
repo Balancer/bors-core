@@ -210,7 +210,7 @@
         $params['width']   = '';//"100%";
         $params['height']   = '';
         $params['_width']  = '';
-        $params['align']   = "left";
+//        $params['align']   = "left";
         $params['flow']    = ""; // noflow
         $params['_border'] = "";
         $params['border']  = 1;
@@ -247,7 +247,10 @@
 				$params[$m[1]] = $m[2];
 		}
 
-//	echo "nohref={$params['nohref']}<br />";
+		if(preg_match_all("!(\w+)='([^']+)'!", $in, $match, PREG_SET_ORDER))
+			foreach($match as $m)
+				$params[$m[1]] = $m[2];
+
 
         if(empty($params['uri']))
 			$params['uri'] = @$params['url'];

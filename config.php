@@ -94,4 +94,3 @@ function bors_include($file, $warn = false)
 	
 	echo $message;
 }
-

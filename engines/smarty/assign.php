@@ -77,6 +77,7 @@
 //		if(!$smarty->template_exists($template_uri))
 //			$template_uri = "xfile:{$GLOBALS['cms']['base_dir']}/templates/$assign_template";
 
+		require_once('bors_smarty_common.php');
 		$template_uri = smarty_template($assign_template, $caller_path);
 			
 		if(!$smarty->template_exists($template_uri))

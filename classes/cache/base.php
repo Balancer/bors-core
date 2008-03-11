@@ -2,13 +2,13 @@
 
 class cache_base
 {
-	private $last;
-	private $last_type;
-	private $last_key;
-	private $last_type_name;
-	private $last_uri;
-	private $last_hmd;
-	private $start_time;
+	protected $last;
+	protected $last_type;
+	protected $last_key;
+	protected $last_type_name;
+	protected $last_uri;
+	protected $last_hmd;
+	protected $start_time;
 
 	function init($type, $key, $uri = '')
 	{

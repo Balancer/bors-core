@@ -1,6 +1,4 @@
 <?
-    require_once("funcs/DataBaseHTS.php");
-
     function lcml_wiki($txt)
     {
         $txt = preg_replace("!\[\[([^\[]+?)\|([^\[]+)\]\]!e", "lcml_wiki_do('$1','$2')", $txt);

@@ -49,7 +49,7 @@
 			if(config('static_cache_disabled'))
 				return $content;
 		
-            $db = &new DataBase($GLOBALS['cms']['mysql_cache_database']);
+            $db = &new DataBase(config('cache_database'));
 			
 //			print_d($this->original_uri);
 //			@unlink($db->get("SELECT file FROM cached_files WHERE original_uri = '".addslashes($this->original_uri)."'"));
@@ -93,21 +93,21 @@
 		
 		function get_name($uri)
 		{
-            $db = &new DataBase($GLOBALS['cms']['mysql_cache_database']);
+            $db = &new DataBase(config('cache_database'));
 			
 			return $db->get("SELECT uri FROM cached_files WHERE original_uri = '".addslashes($uri)."' ORDER BY last_compile DESC LIMIT 1");
 		}
 
 		function get_file($uri)
 		{
-            $db = &new DataBase($GLOBALS['cms']['mysql_cache_database']);
+            $db = &new DataBase(config('cache_database'));
 			
 			return $db->get("SELECT file FROM cached_files WHERE original_uri = '".addslashes($uri)."' ORDER BY last_compile DESC LIMIT 1");
 		}
 		
 		function clean($original_uri)
 		{
-            $db = &new DataBase($GLOBALS['cms']['mysql_cache_database']);
+            $db = &new DataBase(config('cache_database'));
 			
 			$files = $db->get_array("SELECT file FROM cached_files WHERE original_uri = '".addslashes($original_uri)."'");
 			$db->query("DELETE FROM cached_files WHERE original_uri = '".addslashes($original_uri)."'");

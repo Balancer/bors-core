@@ -3,7 +3,7 @@
 
 	// $_SERVER['DOCUMENT_ROOT']."/cache/fs/";
 
-	include_once("funcs/filesystem_ext.php");
+	include_once("inc/filesystem_ext.php");
 
     class Cache
     {

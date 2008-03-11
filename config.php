@@ -19,7 +19,7 @@ if(!defined("BORS_CORE"))
 	define("BORS_CORE", '/var/www/.bors/bors-core');
 
 function config_set($key, $value) { $GLOBALS['cms']['config'][$key] = $value; }
-function config($key) { return @$GLOBALS['cms']['config'][$key]; }
+function config($key, $def = NULL) { return isset($GLOBALS['cms']['config'][$key]) ? $GLOBALS['cms']['config'][$key] : $def; }
 function mysql_access($host, $db, $login, $password)
 {
 	$GLOBALS['cms']['mysql'][$db]['login'] = $login;
@@ -59,7 +59,13 @@ $GLOBALS['now'] = time();
 function bors_init()
 {
 	require_once('engines/bors.php');
-	require_once('funcs/lcml.php');
+
+	//TODO: унифицировать
+	if(file_exists(dirname(__FILE__).'/funcs/lcml.php'))
+		require_once('funcs/lcml.php');
+	else
+		require_once('engines/lcml.php');
+		
 	require_once('inc/navigation.php');
 	require_once('engines/bors/vhosts_loader.php');
 	require_once('inc/locales.php');

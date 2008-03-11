@@ -515,6 +515,13 @@ class base_object extends base_empty
 			$this->{'set_'.$name}(empty($_GET[$name]) ? 0 : 1, $db_up);
 	}
 
+	function set_checkboxes_list($check_list, $db_up)
+	{
+		foreach(split(',', $check_list) as $name)
+			if(empty($_GET[$name]))
+				$this->{'set_'.$name}(array(), $db_up);
+	}
+
 	private $args = array();
 	function set_args($args) { $this->args = $args; }
 	function args($name=false) { return $name ? @$this->args[$name] : $this->args; }

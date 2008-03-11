@@ -20,17 +20,24 @@
 	else
 		$list = object_load($list)->named_list();
 
-		$current = $obj->$name();
+	$current = $obj->$name();
 		
-		if(!$current && !empty($list['default']))
-			$current = $list['default'];
+	if(!$current && !empty($list['default']))
+		$current = $list['default'];
 
-		if(empty($delim))
-			$delim = "<br />";
-		
-		foreach($list as $id => $iname)
-		{
-			$checked = in_array($id, $current);
-			echo "<input type=\"checkbox\" name=\"".addslashes($name)."\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$params />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."$delim\n";
-		}
+	if(empty($delim))
+		$delim = "<br />";
+	
+	$ids = array();
+	
+	foreach($list as $id => $iname)
+	{
+		$ids[] = $id;
+		$checked = in_array($id, $current);
+		echo "<input type=\"checkbox\" name=\"".addslashes($name)."[]\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$params />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."$delim\n";
 	}
+
+	$vcbs = base_object::template_data('form_checkboxes_list');
+	$vcbs[] = $name;
+	base_object::add_template_data('form_checkboxes_list', $vcbs);
+}

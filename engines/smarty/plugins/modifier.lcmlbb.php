@@ -1,7 +1,7 @@
 <?php
 function smarty_modifier_lcmlbb($string)
 {
-	require_once('funcs/lcml.php');
+	require_once('engines/lcml.php');
 
 	$ch = &new Cache();
 	if($ch->get('smarty-modifiers-lcmlbb-compiled', $string))

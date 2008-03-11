@@ -1,8 +1,6 @@
 <?php
-//	if($_SERVER['REMOTE_ADDR']!='83.237.205.36')
-//		exit("Temporary downed (~ to 14:30)");
-
 	require_once('inc/debug.php');
+	require_once('engines/bors.php');
 	require_once('inc/global-data.php');
 	require_once('inc/texts.php');
 
@@ -304,8 +302,7 @@ class DataBase extends base_object
 
 		function get_array($query, $ignore_error=false, $cached=false)
 		{
-//			echo "==<pre>$query</pre>==";
-			include_once("funcs/Cache.php");
+			include_once("classes/Cache.php");
 			$ch = NULL;
 			if($cached !== false)
 			{

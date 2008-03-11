@@ -78,14 +78,11 @@
 //			$template_uri = "xfile:{$GLOBALS['cms']['base_dir']}/templates/$assign_template";
 
 		$template_uri = smarty_template($assign_template, $caller_path);
-
-//		echo "==$template_uri==";
 			
 		if(!$smarty->template_exists($template_uri))
 			$template_uri = $assign_template;
 		if(!$smarty->template_exists($template_uri))
 			$template_uri = $GLOBALS['cms']['default_template'];
-
 
 		$modify_time = empty($data['modify_time']) ? time() : $data['modify_time'];
 		$modify_time = max(@$data['compile_time'], $modify_time);
@@ -155,8 +152,6 @@
 			$smarty->assign("this", $data['this']);
 		}
 		
-//		echo $template_uri;
-
 		if(preg_match('!^/!', $template_uri))
 			if(file_exists($template_uri))
 				$template_uri = "xfile:".$template_uri;
@@ -167,7 +162,7 @@
 			$smarty->clear_cache($template_uri);
 
 		$out = $smarty->fetch($template_uri);
-
+	
 		$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripslashes('$1'))", $out);
 
 		return $out;

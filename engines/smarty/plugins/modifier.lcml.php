@@ -1,6 +1,6 @@
 <?php
 function smarty_modifier_lcml($string)
 {
-	require_once('funcs/lcml.php');
+	require_once('engines/lcml.php');
     return lcml($string);
 }

@@ -29,9 +29,11 @@
 		if(!empty($_GET['class_name']))
 		{
 //			print_d($_GET); exit();
+//			set_loglevel(10);
 			$form = object_load($_GET['class_name'], @$_GET['id']);
-//			echo $_GET['class_name']; exit();
+//			echo $_GET['class_name'];
 //			print_d($form);
+//			bors_exit();
 
 			$processed = $form->pre_action($_GET);
 			if($processed === true)

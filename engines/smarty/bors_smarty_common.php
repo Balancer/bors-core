@@ -1,7 +1,10 @@
 <?php
 
-function smarty_template($template_name)
+function smarty_template($template_name, $callers_dir = NULL)
 {
+	if(preg_match('!xfile:!', $template_name))
+		return $template_name;
+
 	if(!$template_name)
 		$template_name = 'default';
 	
@@ -13,7 +16,6 @@ function smarty_template($template_name)
 		
 	if($template_name{0} == '/')
 		return "xfile:".$template_name;
-
 
 	foreach(bors_dirs() as $dir)
 	{

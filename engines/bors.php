@@ -5,7 +5,7 @@ require_once('bors/messages.php');
 require_once('bors/objects_array.php');
 require_once('bors/object_loader.php');
 require_once('inc/bors/cross.php');
-require_once('funcs/templates/global.php');
+require_once('engines/smarty/global.php');
 
 function object_load($class, $object_id=NULL, $args=array())
 {

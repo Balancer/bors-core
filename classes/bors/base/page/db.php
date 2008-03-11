@@ -21,6 +21,29 @@ class base_page_db extends base_page
 		$this->db->insert($tab, array());
 		$this->set_id($this->db->get_last_id());
 
+		foreach($this->fields() as $db => $tables)
+		{
+			foreach($tables as $table => $fields)
+			{
+				echo "db=$table<br />";
+				if(preg_match('!^inner\s+(.+?)$!', $table, $m))
+					$table = $m[1];
+			
+			
+				if($db == $this->main_db_storage() && $tab == $table)
+					continue;
+				
+				foreach($fields as $property => $db_field)
+				{
+					if(is_numeric($property))
+						$property = $db_field;
+					
+					if($property == 'id')
+						$this->db($db)->insert($table, array($db_field => $this->id()));
+				}
+			}
+		}
+
 		$this->set_create_time(time(), true);
 		$this->set_modify_time(time(), true);
 		

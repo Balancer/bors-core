@@ -2,7 +2,7 @@
 
 function smarty_function_input_date($params, &$smarty)
 {
-	include_once("funcs/datetime.php");
+	include_once('inc/datetime.php');
 	
 	extract($params);
 		

@@ -61,6 +61,14 @@ class storage_db_mysql_smart extends base_null
 				if(empty($main_id_name))
 					$main_id_name = $def_id;
 
+				if(preg_match('!^inner\s+(.+?)$!', $table_name, $m))
+				{
+					$table_name = $m[1];
+					$join = ' INNER JOIN `';
+				}
+				else
+					$join = ' LEFT JOIN `';
+					
 //				echo "<small>Do $table_name => ".print_r($fields, true)." with id = '{$def_id}'</small><br/>\n";
 
 				foreach($fields as $property => $field)
@@ -148,11 +156,12 @@ class storage_db_mysql_smart extends base_null
 						}
 						else
 						{
+						
 							if($common_where !== NULL)
 								$on = "$current_tab.$id_field = `tab0`.`".$ids['`tab0`']."`";
 						 	else
 								$on	= make_id_field($current_tab, $id_field);
-							$from .= ' LEFT JOIN `'.$table_name.'` AS '.$current_tab.' ON ('.$on.')';
+							$from .= $join.$table_name.'` AS '.$current_tab.' ON ('.$on.')';
 						}
 					}
 
@@ -169,7 +178,7 @@ class storage_db_mysql_smart extends base_null
 			
 			  if($common_where !== NULL)
 			  {
-				$sel = ($is_one_table ? '' : "`tab0`.").($ids['`tab0`'] && $ids['`tab0`'] != 'id' ? $ids['`tab0`']." AS id" : '');
+				$sel = ($is_one_table ? '' : "`tab0`.").(@$ids['`tab0`'] && $ids['`tab0`'] != 'id' ? $ids['`tab0`']." AS id" : '');
 				if($sel)
 					$select[] = $sel;
 			  }
@@ -290,6 +299,14 @@ class storage_db_mysql_smart extends base_null
 				else
 					$def_id		= 'id';
 
+				if(preg_match('!^inner\s+(.+?)$!', $table_name, $m))
+				{
+					$table_name = $m[1];
+					$join = ' INNER JOIN `';
+				}
+				else
+					$join = ' LEFT JOIN `';
+
 				foreach($fields as $property => $field)
 				{
 					if(is_numeric($property))
@@ -352,7 +369,7 @@ class storage_db_mysql_smart extends base_null
 							$where = 'WHERE '.make_id_field($current_tab, $id_field, $oid);
 						}
 						else
-							$update .= ' LEFT JOIN `'.$table_name.'` AS '.$current_tab.' ON ('.make_id_field($current_tab, $id_field, $oid).')';
+							$update .= $join.$table_name.'` AS '.$current_tab.' ON ('.make_id_field($current_tab, $id_field, $oid).')';
 					}
 				
 					if($sql_func)

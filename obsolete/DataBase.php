@@ -135,7 +135,7 @@ class DataBase extends base_object
 			if(@$_GET['log_level'] == 4 && $qtime > @$_GET['qtime'])
 				echolog("<small>query {$GLOBALS['global_db_queries']}($qtime)=|".htmlspecialchars($query)."|</small>", 4);
 
-			if(@$GLOBALS['log_level'] > 5)
+			if(config('log_level') > 5)
 			{
 				$fh = @fopen("{$_SERVER['DOCUMENT_ROOT']}/hts-queries.log", 'at');
 				@fputs($fh,"$query\n");
@@ -164,7 +164,7 @@ class DataBase extends base_object
 
 			if(!$ignore_error)
 			{
-				if(@$GLOBALS['log_level'] > 5)
+				if(config('log_level') > 5)
 				{
 					$fh = @fopen("{$_SERVER['DOCUMENT_ROOT']}/hts-queries.log",'at');
 					@fputs($fh,"Error: ".mysql_error($this->dbh)."\n");

@@ -36,14 +36,14 @@ function debug_test()
 
 	function set_loglevel($n, $file=false)
 	{
-		$GLOBALS['log_level'] = $_GET['log_level'] = $n;
+		set_config('log_level', $_GET['log_level'] = $n);
 		if($file === false)
 			return;
 		
 		$GLOBALS['echofile'] = $file;
 	}
 	
-	function loglevel($check) { return $check <= max(@$GLOBALS['log_level'], @$_GET['log_level']); }
+	function loglevel($check) { return $check <= max(config('log_level'), @$_GET['log_level']); }
 
 	function debug_only_one_time($mark, $trace=true, $times = 1)
 	{
@@ -58,7 +58,7 @@ function debug_test()
 
     function echolog($message, $level=3)
     {
-		$log_level = max(@$GLOBALS['log_level'], @$_GET['log_level']);
+		$log_level = max(config('log_level'), @$_GET['log_level']);
 	
         if(!$log_level)
             return;

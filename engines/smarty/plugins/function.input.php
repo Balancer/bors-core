@@ -3,10 +3,13 @@
 	{
 		extract($params);
 		
-		$obj = $smarty->get_template_vars('current_form_class');
-		
-		$value = $obj->$name();
-		if(empty($value) && !empty($def))
+		if(!isset($value))
+		{
+			$obj = $smarty->get_template_vars('current_form_class');
+			$value = $obj->$name();
+		}
+			
+		if(!isset($value) && isset($def))
 			$value = $def;
 		
 		if(empty($max_length))

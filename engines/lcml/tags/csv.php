@@ -1,5 +1,5 @@
 <?
-    include_once('funcs/lcml/bcsTable.php');
+    include_once('engines/lcml/bcsTable.php');
 
    // Explode CSV string
    function csv_explode($str, $delim = ',', $qual = "\"")

@@ -21,7 +21,7 @@ function lt_img($params)
 			$data = url_parse($uri);
 //			echo $GLOBALS['lcml']['level'];
 //			exit(print_r($GLOBALS['lcml']['uri'],true));
-//			exit(print_r($data,true));
+//			print_d($params); print_d($data); exit();
 
 		   	$fp = preg_replace("!^(.*?)/([^/]+)$!", "$1/img/$2", $data['local_path']);
 			if(file_exists($fp))
@@ -55,7 +55,7 @@ function lt_img($params)
 
 			if(!$data['local'])
 			{
-				$path = $GLOBALS['cms']['sites_store_path']."/{$data['host']}{$data['path']}";
+				$path = config('sites_store_path')."/{$data['host']}{$data['path']}";
 			
 				if(preg_match("!/$!",$path))
 					$path .= "index";
@@ -65,7 +65,7 @@ function lt_img($params)
 					$c1 = substr($data['host'],0,1);
 					$c2 = substr($data['host'],1,1);
 					require_once('funcs/modules/uri.php');
-					$path = $GLOBALS['cms']['sites_store_path']."/$c1/$c2/{$data['host']}".translite_path($data['path']);
+					$path = config('sites_store_path')."/$c1/$c2/{$data['host']}".translite_path($data['path']);
 
 					if(preg_match("!/$!",$path))
 						$path .= "index";
@@ -107,7 +107,7 @@ function lt_img($params)
 //						return lcml("Non-image content type ('$content_type') image ={$uri}= error.");
 
 					require_once('inc/filesystem_ext.php');
-					mkpath(dirname($path));
+					mkdir(dirname($path), 0777, true);
 					$fh = fopen($path,'wb');
 					fwrite($fh, $data);
 					fclose($fh);
@@ -119,7 +119,7 @@ function lt_img($params)
 				if(file_exists($path) && filesize($path)>0)
 				{
 					$remote = $uri;
-					$uri = str_replace($GLOBALS['cms']['sites_store_path'], $GLOBALS['cms']['sites_store_uri'], $path);
+					$uri = str_replace(config('sites_store_path'), config('sites_store_uri'), $path);
 					$data['local'] = true;
 					
 					$db = &new driver_mysql('BORS');
@@ -207,7 +207,7 @@ __EOT__;
 
 				$description = stripslashes(!empty($params['description']) ? "<div align=\"center\"><small>".lcml($params['description'])."</small></div>" : '');
 
-//				print_r($params); exit();
+//				print_d($params); exit();
 
 				$a_href_b = "";
 				$a_href_e = "";
@@ -221,7 +221,28 @@ __EOT__;
 //				$out = <<<__EOT__
 //{$params['_align_b']}<table class="box" style="width: {$width}px;" cellSpacing="0" cellPadding="2"><tr><td width="$width">$a_href_b<img src="$img_ico_uri" width="$width" height="$height" border="0" />$a_href_e</td></tr>$description</table>{$params['_align_e']}
 //__EOT__;
-				$out = "{$params['_align_b']}$a_href_b<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" border=\"0\">$a_href_e<div style=\"font-size: xx-small;\">".lcml($description, array('html'=>'safe'))."</div>{$params['_align_e']}";
+				$styles = array();
+				if(@$params['flow'] == 'flow' && @$params['align'] != 'center')
+				{
+					if(@$params['align'] == 'left')
+						$styles[] = 'float_left';
+					if(@$params['align'] == 'right')
+						$styles[] = 'float_right';
+				}
+				else
+				{
+					$styles[] = $params['align'];
+				}
+
+				if(@$params['border'])
+					$styles[] = 'box';
+
+//				$out = @$params['_align_b']."{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" border=\"0\">{$a_href_e}<div style=\"font-size: xx-small;\">".lcml($description, array('html'=>'safe'))."</div>".@$params['_align_e'];
+
+				$out = '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" border=\"0\">{$a_href_e}";
+				if($description)
+					$out .= "<div style=\"font-size: xx-small;\">".lcml($description, array('html'=>'safe'))."</div>";
+				$out .= '</div>';
 
 //		$out .= "<!-- params ".print_r($params,true)." -->";
 

@@ -300,8 +300,10 @@
                 }
                 else
                 {
-                    $params['_align_b']="<table cellPadding=\"0\" cellSpacing=\"0\"><tr><td{$params['_width']} align=\"{$params['align']}\">"; //{$params['_style']}
-                    $params['_align_e']="</td></tr></table>";
+                    $params['_align_b']="<div{$params['_border']} style=\"{$params['xwidth']} margin-left: 10px; margin-right: 10px;\">"; // {$params['_style']}
+                    $params['_align_e']="</div>";
+//                    $params['_align_b']="<table cellPadding=\"0\" cellSpacing=\"0\"><tr><td{$params['_width']} align=\"{$params['align']}\">"; //{$params['_style']}
+//                    $params['_align_e']="</td></tr></table>";
                 }
             }
         }

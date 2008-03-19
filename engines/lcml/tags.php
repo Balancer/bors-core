@@ -216,6 +216,7 @@
         $params['border']  = 1;
         $params['size'] = '';
         $params['nohref'] = false;
+        $params['noresize'] = false;
 //		$params['page'] = $GLOBALS['lcml'][''];
 
         foreach(preg_split("![\s\n\t]+!",$in) as $param)
@@ -230,6 +231,7 @@
             if(preg_match("!^border$!",$param))   { $params['border']=1; continue;}
             if(preg_match("!^noborder$!",$param)) { $params['border']=0; continue;}
             if(preg_match("!^nohref$!",$param)) { $params['nohref']=true; continue;}
+            if(preg_match("!^noresize$!",$param)) { $params['noresize']=true; continue;}
 //            if(preg_match("!^(\w+)=\"([^\"]+)\"$!s",$param,$m)) { $params[$m[1]]=$m[2]; continue;}
             if(empty($params['url']))
 			{

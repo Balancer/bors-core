@@ -5,7 +5,8 @@
     {
 		bors()->changed_save();
 	
-//		debug_exit("Go to $uri");
+		if(config('do_not_exit'))
+			debug_exit("Go to $uri");
 	
         if(!headers_sent($filename, $linenum) && $time==0) 
         {

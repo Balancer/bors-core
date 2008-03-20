@@ -73,13 +73,13 @@ function lt_img($params)
 
 //				exit($path);
 
-				if(!file_exists($path) || filesize($path)==0)
+				if(!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
 				{
 					require_once('HTTP/Request.php');
 					$req =& new HTTP_Request($params['url'], array(
 						'allowRedirects' => true,
-						'maxRedirects' => 2,
-						'timeout' => 5,
+						'maxRedirects' => 3,
+						'timeout' => 10,
 					));
 					
 //					exit("down {$params['url']}");
@@ -87,8 +87,11 @@ function lt_img($params)
 					$req->addHeader('Content-Encoding', 'gzip');
 					$req->addHeader('Referer', $params['url']);
 
-//					if(preg_match("!(lenta\.ru|pisem\.net|biorobot\.net|compulenta\.ru|ferra\.ru)!",$uri))
+//					if(preg_match("!(lenta\.ru|pisem\.net|biorobot\.net|compulenta\.ru|ferra\.ru|)!",$uri))
 //						$req->setProxy('home.balancer.ru', 3128);
+
+					if(preg_match("!(ljplus\.ru)!",$uri))
+						$req->setProxy('home.balancer.ru', 3128);
 
 //					return "=$path=<br />\n";
 
@@ -107,14 +110,19 @@ function lt_img($params)
 //						return lcml("Non-image content type ('$content_type') image ={$uri}= error.");
 
 					require_once('inc/filesystem_ext.php');
-					mkdir(dirname($path), 0777, true);
+					@mkdir(dirname($path), 0775, true);
+					@chmod(dirname($path), 0775);
 					$fh = fopen($path,'wb');
 					fwrite($fh, $data);
 					fclose($fh);
+					@chmod($path, 0664);
+					
 //					$cmd = "wget --header=\"Referer: $uri\" -O \"$path\" \"".html_entity_decode($uri, ENT_COMPAT, 'UTF-8')."\"";
 //					return "cmd:$cmd=<br />\n";
 //					system($cmd);
 				}
+
+//				exit($path);
 
 				if(file_exists($path) && filesize($path)>0)
 				{
@@ -147,7 +155,10 @@ function lt_img($params)
 					$need_upload = true;
 				}
 
-				$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", $uri);
+				if($params['noresize'])
+					$img_ico_uri  = $uri;
+				else
+					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", $uri);
 //				return "ico=$img_ico_uri; uri=$uri; params=".str_replace(" ","_",print_r($params,true))."<br/>\n";
 //				return "_$path, _$uri, _$img_ico_uri<br />\n";
 				if(preg_match('!\.[^/+]$!', $uri))

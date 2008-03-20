@@ -264,9 +264,14 @@ function save_cached_object(&$object, $delete = false)
 				{
 					if($redirect)
 					{
-						echo "Redirect by $url_pattern";
-						go($obj->url($page), true);
-						exit("Redirect");
+						if(!config('do_not_exit'))
+						{
+							echo "Redirect by $url_pattern";
+							go($obj->url($page), true);
+							exit("Redirect");
+						}
+						else
+							return object_load($obj->url($page));
 					}
 					
 					return $obj;
@@ -381,8 +386,14 @@ function save_cached_object(&$object, $delete = false)
 					
 					if($redirect)
 					{
-						go($obj->url($page), true);
-						exit("Redirect");
+						if(!config('do_not_exit'))
+						{
+							echo "Redirect by $url_pattern";
+							go($obj->url($page), true);
+							exit("Redirect");
+						}
+						else
+							return object_load($obj->url($page));
 					}
 					
 					return $obj;

@@ -3,7 +3,6 @@
 
 //	ini_set("xdebug.profiler_enable", "1");
 
-
 	if(preg_match('!^(.+?)\?(.+)$!', $_SERVER['REQUEST_URI'], $m))
 	{
 		$_SERVER['REQUEST_URI'] = $m[1];

@@ -41,6 +41,7 @@ require_once('classes/inc/BorsMemCache.php');
 require_once('inc/debug.php');
 require_once('config/default.php');
 require_once('inc/global-data.php');
+require_once('inc/locales.php');
 require_once('obsolete/DataBase.php');
 require_once('obsolete/DataBaseHTS.php');
 require_once('obsolete/cache/CacheStaticFile.php');

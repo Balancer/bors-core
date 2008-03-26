@@ -1,9 +1,13 @@
 <?
-	global $bors_data;
-	$bors_data['vhost_handlers'] = array();
 
-	function register_vhost($host, $documents_root=NULL, $bors_local=NULL)
-	{
+global $bors_data;
+$bors_data['vhost_handlers'] = array();
+
+function bors_vhosts() { return array_keys($GLOBALS['bors_data']['vhosts']); }
+
+
+function register_vhost($host, $documents_root=NULL, $bors_local=NULL)
+{
 		global $bors_data;
 		
 		if(empty($documents_root))
@@ -28,9 +32,9 @@
 			'bors_map' => array_merge($map2, $map),
 			'bors_local' => $bors_local,
 		);
-	}
+}
 
-	@include_once("config/vhosts.php");
+@include_once("config/vhosts.php");
 
 	function borsmaps_load()
 	{

@@ -171,7 +171,9 @@
 		$last_modify = gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		header('Last-Modified: '.$last_modify);
 	   
-		if((!empty($GLOBALS['cms']['cache_static']) || $obj->cache_static()) && (empty($_SERVER['QUERY_STRING']) || $_SERVER['QUERY_STRING']=='del' || @$_GET['act'] == 'del'))
+		if((!empty($GLOBALS['cms']['cache_static']) || $obj->cache_static())
+			&& (empty($_SERVER['QUERY_STRING']) || $_SERVER['QUERY_STRING']=='del' || @$_GET['act'] == 'del' || $obj->static_get_cache())
+		)
 		{
 //			echo "url={$obj->url_engine()}<br />";
 			$sf = &new CacheStaticFile($obj->url($page));

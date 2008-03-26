@@ -13,7 +13,7 @@ if(!defined("BORS_HOST"))
 	define("BORS_HOST", @BORS_INCLUDE_LOCAL);
 
 if(!defined("BORS_LOCAL"))
-	define("BORS_LOCAL", BORS_INCLUDE);
+	define("BORS_LOCAL", '/var/www/.bors/bors-airbase');
 
 if(!defined("BORS_CORE"))
 	define("BORS_CORE", '/var/www/.bors/bors-core');

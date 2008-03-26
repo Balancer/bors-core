@@ -68,19 +68,27 @@ class base_object extends base_empty
 				}
 			}
 		}		
+	}
 
+	private $config;
+	function config()
+	{
+		if($this->config === NULL)
+		{	
+			$config = $this->config_class();
+			if(!$config)
+				$config = 'base_config';
+			$this->config = object_load($config, &$this);
+			if(!$this->config)
+					debug_exit("Can't load config ".$this->config_class()." for ".$this->class_name());
+		}
+		
+		return $this->config;
 	}
 
 	function init()
 	{
-		if($config = $this->config_class())
-		{
-			$config = object_load($config, $this);
-			if($config)
-				$config->template_init();
-			else
-				debug_exit("Can't load config ".$this->config_class());
-		}
+		$this->config()->template_init();
 		
 		if($storage_engine = $this->storage_engine())
 		{
@@ -272,13 +280,13 @@ class base_object extends base_empty
 	function set_template($template, $db_update) { $this->set("template", $template, $db_update); }
 	function template() { return $this->stb_template ? $this->stb_template : @$GLOBALS['cms']['default_template']; }
 
+	private $template_data_fill_called = false; //TODO: в будущем снести вторые вызовы.
 	function template_data_fill()
 	{
-		static $called = false; //TODO: в будущем снести вторые вызовы.
-		if($called)
+		if($this->template_data_fill_called)
 			return;
 
-		$called = true;
+		$this->template_data_fill_called = true;
 		
 		foreach($this->data_providers() as $key => $value)
 			$this->add_template_data($key, $value);
@@ -286,9 +294,21 @@ class base_object extends base_empty
 
 	function cache_static() { return 0; }
 	
-	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
-	function titled_admin_url() { return '<a href="'.$this->admin_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
-	function titled_edit_url() { return '<a href="'.$this->edit_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
+	function title_or_noname($def=NULL, $title=NULL)
+	{
+		if($title === NULL)
+			$title = $this->title();
+		if(!$title)
+			$title = $def;
+		if(!$title)
+			$title = ec('[без имени]');
+
+		return $title;
+	}
+
+	function titled_url() { return '<a href="'.$this->url($this->page()).'">'.$this->title_or_noname().'</a>'; }
+	function titled_admin_url($title=NULL) { return '<a href="'.$this->admin_url($this->page()).'">'.$this->title_or_noname(NULL, $title).'</a>'; }
+	function titled_edit_url($title=NULL) { return '<a href="'.$this->edit_url($this->page()).'">'.$this->title_or_noname(NULL, $title).'</a>'; }
 
 	function check_data(&$data)
 	{
@@ -505,7 +525,7 @@ class base_object extends base_empty
 		return $this->_dbh;
 	}
 
-	function main_db_storage() { return $GLOBALS['cms']['mysql_database']; }
+	function main_db_storage() { return config('main_bors_db'); }
 	function main_table_storage(){ return $this->class_name(); }
 	function main_table_fields() { return array(); }
 
@@ -588,4 +608,47 @@ class base_object extends base_empty
 	function class_dir() { return dirname($this->class_file()); }
 
 	function post_set() { }
+
+	private $sort_order = 0;
+	function sort_order() { return $this->sort_order; }
+	function set_sort_order($value) { return $this->sort_order = $value; }
+
+	function change_time($exactly = false)
+	{
+		$changed = max($this->create_time(true), $this->modify_time(true));
+		return $changed || $exactly ? $changed : time();
+	}
+
+	function extends_class() { return $this->class_name(); }
+	function class_type() { return $this->class_name(); }
+
+	private $extends_class_id;
+	function extends_class_id()
+	{
+		if(empty($this->extends_class_id))
+			$this->extends_class_id = class_name_to_id($this->extends_class());
+
+		return $this->extends_class_id;
+	}
+
+	private $linked_children;
+	function linked_children()
+	{
+		if($this->linked_children === NULL)
+			$this->linked_children = bors_get_cross_objs($this); 
+			
+		return $this->linked_children;
+	}
+	
+	private $linked_parents;
+	function linked_parents()
+	{
+		if($this->linked_parents === NULL)
+			$this->linked_parents = bors_get_cross_to_objs($this);
+			
+		return $this->linked_parents;
+	}
+
+	var $stb_owner_id = NULL;
+	function owner() { return NULL; }
 }

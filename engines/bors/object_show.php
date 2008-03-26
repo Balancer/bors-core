@@ -7,7 +7,7 @@
 		if(!$obj)
 			return false;
 
-	    header("Status: 200 OK");
+		@header("Status: 200 OK");
 
 		$processed = $obj->preParseProcess($_GET);
 		if($processed === true)
@@ -90,7 +90,7 @@
 						if($params)
 						{
 							$method = "upload_{$file}_file";
-							if(method_exists($form, $method))
+//							if(method_exists($form, $method))
 								$form->$method($params, $data);
 						}
 					}

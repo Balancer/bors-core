@@ -59,6 +59,8 @@ function debug_test()
     function echolog($message, $level=3)
     {
 		$log_level = max(config('log_level'), @$_GET['log_level']);
+		if(!$log_level)
+			$log_level = 2;
 	
         if(!$log_level)
             return;

@@ -1,13 +1,13 @@
 <?php
 
 if(!defined("BORS_INCLUDE"))
-	define("BORS_INCLUDE", $_SERVER['DOCUMENT_ROOT']."/cms/");
+	define("BORS_INCLUDE", $_SERVER['DOCUMENT_ROOT']."/cms");
 
 if(!defined("BORS_INCLUDE_LOCAL"))
-	define("BORS_INCLUDE_LOCAL", "{$_SERVER['DOCUMENT_ROOT']}/cms-local/");
+	define("BORS_INCLUDE_LOCAL", "{$_SERVER['DOCUMENT_ROOT']}/cms-local");
 
 if(!defined("BORS_INCLUDE_LOCAL"))
-	define("BORS_INCLUDE_LOCAL", "{$_SERVER['DOCUMENT_ROOT']}/cms/");
+	define("BORS_INCLUDE_LOCAL", "{$_SERVER['DOCUMENT_ROOT']}/cms");
 
 if(!defined("BORS_HOST"))
 	define("BORS_HOST", @BORS_INCLUDE_LOCAL);
@@ -20,7 +20,7 @@ if(!defined("BORS_CORE"))
 
 function config_set($key, $value) { $GLOBALS['cms']['config'][$key] = $value; }
 function config($key, $def = NULL) { return isset($GLOBALS['cms']['config'][$key]) ? $GLOBALS['cms']['config'][$key] : $def; }
-function mysql_access($host, $db, $login, $password)
+function mysql_access($db = 'BORS', $login = NULL, $password = NULL, $host='localhost')
 {
 	$GLOBALS['cms']['mysql'][$db]['login'] = $login;
 	$GLOBALS['cms']['mysql'][$db]['password'] = $password;
@@ -28,10 +28,12 @@ function mysql_access($host, $db, $login, $password)
 
 $includes = array(
 	BORS_INCLUDE_LOCAL,
-	BORS_INCLUDE."vhosts/{$_SERVER['HTTP_HOST']}",
+	BORS_INCLUDE."/vhosts/{$_SERVER['HTTP_HOST']}",
 	BORS_INCLUDE,
 	"{$_SERVER['DOCUMENT_ROOT']}/include",
-	BORS_INCLUDE.'PEAR',
+	BORS_INCLUDE.'/PEAR',
+	BORS_HOST,
+	BORS_LOCAL,
 	BORS_CORE,
 );
 $delim = empty($_ENV['windir']) ? ":" : ";";

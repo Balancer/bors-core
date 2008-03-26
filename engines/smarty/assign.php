@@ -9,7 +9,11 @@
 		require('smarty-register.php');
 
 		$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
-		$smarty->plugins_dir = dirname(__FILE__).'/plugins/';
+
+		$smarty->plugins_dir = array(dirname(__FILE__).'/plugins');
+		foreach(bors_dirs() as $dir)
+			$smarty->plugins_dir[] = $dir.'/engines/smarty/plugins';
+
 		$smarty->cache_dir   = config('cache_dir').'/smarty-cache/';
 
 		if(!file_exists($smarty->compile_dir))

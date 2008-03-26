@@ -1,5 +1,7 @@
 <?php
 
+require_once('inc/bors/cross.php');
+
 class base_object_db extends base_object
 {
 	var $db;
@@ -23,7 +25,7 @@ class base_object_db extends base_object
 	{
 		$tab = $this->main_table_storage();
 		if(!$tab)
-			exit("Try to gent new instance with empty main table in class ".__FILE__.":".__LINE__);
+			debug_exit("Try to get new instance with empty main table in class ".__FILE__.":".__LINE__);
 			
 		$this->db->insert($tab, array());
 		$this->set_id($this->db->get_last_id());
@@ -40,5 +42,33 @@ class base_object_db extends base_object
 		return array(
 			$this->main_table_storage() => $this->main_table_fields(),
 		);
+	}
+
+	function main_id_field()
+	{
+		$f = $this->fields();
+		$f = $f[$this->main_db_storage()];
+		$f = $f[$this->main_table_storage()];
+		if($fid = @$f['id'])
+			return $fid;
+		if($f[0] == 'id')
+			return 'id';
+		
+		return NULL;
+	}
+
+	function delete()
+	{
+		$tab = $this->main_table_storage();
+		if(!$tab)
+			debug_exit("Try to delete empty main table in class ".__FILE__.":".__LINE__);
+		
+		
+		$id_field = $this->main_id_field();
+		if(!$id_field)
+			debug_exit("Try to delete empty id field in class ".__FILE__.":".__LINE__);
+		
+		bors_remove_cross_to($this->class_name(), $this->id(), $this->db());
+		$this->db()->delete($tab, array($id_field.'=' => $this->id()));
 	}
 }

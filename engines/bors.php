@@ -22,7 +22,7 @@ function object_load($class, $object_id=NULL, $args=array())
 
 function object_new($class) { return object_load($class); }
 
-function object_new_instance($class) { $obj = object_load($class); $obj->new_instance(); return $obj; }
+function object_new_instance($class) { $obj = object_load($class, NULL, array('no_load_cache' => true)); $obj->new_instance(); return $obj; }
 
 function defval($data, $name, $default=NULL)
 {

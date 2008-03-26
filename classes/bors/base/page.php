@@ -131,6 +131,8 @@ class base_page extends base_object
 		if($nav = parent::nav_name())
 			return $nav;
 		
-		return $this->class_title();
+		return $this->id() ? $this->class_title() : '';
 	}
+
+	var $stb_cr_type = '';
 }

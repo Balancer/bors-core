@@ -30,7 +30,7 @@ class DataBase extends base_object
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
 	{
 			if(empty($base))
-				$base = config('mysql_database');
+				$base = config('main_bors_db');
 			
 			$this->db_name = $base;
 			if($base && is_global_key("DataBaseHandler:$server", $base))

@@ -62,6 +62,7 @@ function url_parse($url)
 	if(preg_match("!^{$_SERVER['HTTP_HOST']}$!", $data['host']))
 		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
 
+	require_once('engines/bors/vhosts_loader.php');
 	$vhost_data = bors_vhosts($data['host']);
 	if($root = @$vhost_data['document_root'])
 		$data['root'] = $root;

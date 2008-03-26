@@ -30,13 +30,14 @@ class DataBaseHTS
 			if(preg_match("!^[\w]+://!", $data))
 			{
 				$this->uri = $data;
-				$this->dbh = &new DataBase();
+				$this->dbh = &new DataBase('HTS');
 			}
 			else
 			{
 				$this->uri = NULL;
 				if(!$data)
-					$data = $GLOBALS['cms']['mysql_database'];
+					$data = 'HTS';
+					
 				$this->dbh = &new DataBase($data);
 			}
 		}
@@ -375,7 +376,7 @@ class DataBaseHTS
 			
 //		echolog("Get keys array '$key' for '$uri' (fields=$fields, search=$search)");
 
-		$uri = $this->normalize_uri($uri);
+//		$uri = $this->normalize_uri($uri);
 
 		if (($res = $this->pre_data_check($uri, $key)) !== false)
 			return $res;

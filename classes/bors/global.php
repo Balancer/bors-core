@@ -11,6 +11,8 @@ class bors_global extends base_empty
 	{
 		if($this->user === NULL)
 		{
+			require_once('obsolete/users.php');
+		
 			if(!class_exists('User'))
 				return $this->user = false;
 		

@@ -58,13 +58,9 @@ class DataBase extends base_object
 				
 				$GLOBALS['global_db_new_connections']++;
 
-//				echo $base;
-//				print_r($GLOBALS['cms']['mysql'][$base]);
-
 				if(empty($login))	$login		= @$GLOBALS['cms']['mysql'][$base]['login'];
 				if(empty($password)) $password	= @$GLOBALS['cms']['mysql'][$base]['password'];
 				if(empty($server))   $server	= @$GLOBALS['cms']['mysql'][$base]['server'];
-//				echo "$login:$server<br/>";
 
 				if(empty($login))	$login		= @$GLOBALS['cms']['mysql_login'];
 				if(empty($password)) $password	= @$GLOBALS['cms']['mysql_pw'];

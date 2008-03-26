@@ -1,5 +1,6 @@
 <?php
 
+require_once('bors/vhosts_loader.php');
 require_once('bors/names.php');
 require_once('bors/messages.php');
 require_once('bors/objects_array.php');

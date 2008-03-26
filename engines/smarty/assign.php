@@ -83,9 +83,13 @@
 
 		require_once('bors_smarty_common.php');
 		$template_uri = smarty_template($assign_template, $caller_path);
-			
+		
+		if(!$template_uri)	
+			debug_exit('Not found template '.$assign_template);
+		
 		if(!$smarty->template_exists($template_uri))
 			$template_uri = $assign_template;
+
 		if(!$smarty->template_exists($template_uri))
 			$template_uri = $GLOBALS['cms']['default_template'];
 

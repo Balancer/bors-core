@@ -8,20 +8,20 @@
 				$params['url']="http://$url";
 
 		$hts = NULL;
-		if(class_exists('DataBaseHTS'))
+		if(class_exists('DataBaseHTS') && config('obsolete_use_handlers_system'))
 			$hts = &new DataBaseHTS();
 
 		if(!preg_match("!^\w+://!",$url) && !preg_match("!^/!",$url))
 			$url = @$GLOBALS['main_uri'].$url;
 
 		if($hts)
-			$parse = $hts->parse_uri($url);
+			$parse = url_parse($url);
 
-		$external = $parse['local'] ? '' : ' class="external"';
+		$external = @$parse['local'] ? '' : ' class="external"';
 
 //		debug("'External' for $url='$external'; parse=".print_r($parse,true));
 
-		if(!$hts->get_data($url, 'create_time') && !$hts->get_data($url, 'title'))
+		if($hts && !$hts->get_data($url, 'create_time') && !$hts->get_data($url, 'title'))
 		{
 			$hts->set_data($url, 'title', $params['description']);
 			$hts->set_data($url, 'modify_time', time());

@@ -1,13 +1,17 @@
 <?
+	global $bors_data;
+	$bors_data['vhost_handlers'] = array();
 
-global $bors_data;
-$bors_data['vhost_handlers'] = array();
+	function bors_vhosts()
+	{
+		if(empty($GLOBALS['bors_data']['vhosts']))
+			return array();
+			
+		return array_keys($GLOBALS['bors_data']['vhosts']);
+	}
 
-function bors_vhosts() { return array_keys($GLOBALS['bors_data']['vhosts']); }
-
-
-function register_vhost($host, $documents_root=NULL, $bors_local=NULL)
-{
+	function register_vhost($host, $documents_root=NULL, $bors_local=NULL)
+	{
 		global $bors_data;
 		
 		if(empty($documents_root))
@@ -32,9 +36,9 @@ function register_vhost($host, $documents_root=NULL, $bors_local=NULL)
 			'bors_map' => array_merge($map2, $map),
 			'bors_local' => $bors_local,
 		);
-}
+	}
 
-@include_once("config/vhosts.php");
+	@include_once("config/vhosts.php");
 
 	function borsmaps_load()
 	{

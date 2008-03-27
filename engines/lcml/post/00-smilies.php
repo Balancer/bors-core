@@ -9,6 +9,9 @@
 
     function lcml_smilies($txt)
     {
+		if(!config('smilies_dir'))
+			return $txt;
+	
         $smilies = file(config('smilies_dir')."/list.txt");
 		
         for($i=0;$i<sizeof($smilies);$i++)

@@ -24,7 +24,7 @@ function do_php($code)
 	eval($code);
 	$out = ob_get_contents();
 	ob_clean();
-	if(preg_match("!{$_SERVER['DOCUMENT_ROOT']}/cms/funcs/templates/!", $out))
+	if(preg_match("!/var/www/!", $out))
 		return "$out Error in code<xmp>$code</xmp>";
 
 	return $out;

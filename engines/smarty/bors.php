@@ -50,7 +50,6 @@ function template_assign_bors_object($obj, $template = NULL)
 		foreach(split(' ', $obj->template_local_vars()) as $var)
 			$smarty->assign($var, $obj->$var());
 		
-
 		$template = smarty_template($template ? $template : $obj->template());
 		$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 		$smarty->assign("page_template", $template);

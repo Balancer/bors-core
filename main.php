@@ -53,7 +53,7 @@
 
 	if($client['is_bot'] && config('bot_lavg_limit'))
 	{
-		$cache = &new MemCache();
+		$cache = &new BorsMemCache();
 		if(!($load_avg = $cache->get('system-load-average')))
 		{
 			$uptime=explode(' ', exec('uptime'));

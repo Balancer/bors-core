@@ -15,7 +15,7 @@ function lt_img($params)
 			@$uri = html_entity_decode($params['url'], ENT_COMPAT, 'UTF-8');
 
 			// Заменим ссылку в кеш на полную картинку
-			require_once('inc/filesystem_ext.php');
+			require_once('inc/filesystem.php');
 			$uri = secure_path(abs_path_from_relative(preg_replace("!^(.+?)/cache/(.+)/\d*x\d*/(.+?)$!", "$1/$2/$3", $uri), $GLOBALS['lcml']['uri']));
 
 			$data = url_parse($uri);
@@ -109,7 +109,7 @@ function lt_img($params)
 						return $params['url'];
 //						return lcml("Non-image content type ('$content_type') image ={$uri}= error.");
 
-					require_once('inc/filesystem_ext.php');
+					require_once('inc/filesystem.php');
 					@mkdir(dirname($path), 0775, true);
 					@chmod(dirname($path), 0775);
 					$fh = fopen($path,'wb');

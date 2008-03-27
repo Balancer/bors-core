@@ -64,7 +64,7 @@ function lt_img($params)
 				{
 					$c1 = substr($data['host'],0,1);
 					$c2 = substr($data['host'],1,1);
-					require_once('funcs/modules/uri.php');
+					require_once('inc/urls.php');
 					$path = config('sites_store_path')."/$c1/$c2/{$data['host']}".translite_path($data['path']);
 
 					if(preg_match("!/$!",$path))

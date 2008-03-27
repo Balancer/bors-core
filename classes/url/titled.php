@@ -19,7 +19,7 @@ class url_titled extends url_base
 		@list($prefix, $prefix_lp, $suffix) = @$bors_url_titled_cache[$obj->internal_uri()];
 		if(!$prefix)
 		{
-			require_once("funcs/modules/uri.php");
+			require_once("inc/urls.php");
 			$prefix    = $obj->base_url().strftime("%Y/%m/", $obj->create_time());
 			$prefix_lp = $obj->base_url().strftime("%Y/%m/", $obj->modify_time());
 			

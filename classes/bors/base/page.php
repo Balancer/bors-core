@@ -2,8 +2,6 @@
 
 class base_page extends base_object
 {
-	function class_file() { return __FILE__; }
-	
 	function render_engine() { return 'render_page'; }
 	function can_be_empty() { return true; }
 	
@@ -128,7 +126,12 @@ class base_page extends base_object
 	function body_template()
 	{
 		if($cf = $this->class_file())
-			return preg_replace("!^(.+)\.php$!", "xfile:$1.html", $cf);
+		{
+			$tf = preg_replace("!\.php$!", "$1.html", $cf);
+			if(!file_exists($tf))
+				$tf = preg_replace("!\.php$!", "$1.html", __FILE__);
+			return "xfile:{$tf}";
+		}
 		else
 			return 'main.html';
 	}

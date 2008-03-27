@@ -51,5 +51,5 @@ function main_handlers_engine($uri)
 	if(!empty($GLOBALS['cms']['only_load']))
 		return;
 		
-	$ret = handlers_exec();
+	return handlers_exec();
 }

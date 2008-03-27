@@ -262,7 +262,7 @@
         if(empty($params['uri']))
 			$params['uri'] = @$params['cms']['main_uri'];
 
-		require_once("funcs/security.php");
+		require_once("inc/filesystem.php");
 		$params['uri'] = secure_path($params['uri']);
 
         list($iws, $ihs) = split("x", $params['size']."x");

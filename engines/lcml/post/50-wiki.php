@@ -22,7 +22,7 @@
 	        return "<a href=\"$uri\" class=\"wiki_int$exists\">$text</a>";
 		}
 		
-		include_once("funcs/modules/uri.php");
+		include_once("inc/urls.php");
 		$new_uri = $GLOBALS['main_uri'].strtolower(translite_uri_simple($title)).'/';
 		
 		$hts->set_data($new_uri, 'title', $title);

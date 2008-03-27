@@ -2,6 +2,8 @@
 
 class base_page extends base_object
 {
+	function class_file() { return __FILE__; }
+	
 	function render_engine() { return 'render_page'; }
 	function can_be_empty() { return true; }
 	
@@ -114,6 +116,11 @@ class base_page extends base_object
 		$this->template_data_fill();
 		require_once('engines/smarty/assign.php');
 		return template_assign_data($this->body_template(), $data);
+	}
+
+	function compiled_source()
+	{
+		return lcml($this->source());
 	}
 
 	function _queries() { return array(); }

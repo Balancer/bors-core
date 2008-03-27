@@ -91,7 +91,10 @@
 			$template_uri = $assign_template;
 
 		if(!$smarty->template_exists($template_uri))
-			$template_uri = $GLOBALS['cms']['default_template'];
+			$template_uri = config('default_template');
+
+		if(!$smarty->template_exists($template_uri))
+			$template_uri = smarty_template($template_uri);
 
 		$modify_time = empty($data['modify_time']) ? time() : $data['modify_time'];
 		$modify_time = max(@$data['compile_time'], $modify_time);

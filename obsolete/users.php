@@ -20,6 +20,6 @@ function get_ip_nick()
         return join('|', $addrs);
 }
 
-require_once('obsolete/users/'.config('user_engine_old').'.php');
+require_once('obsolete/users/'.config('user_engine_old', 'flat').'.php');
 
 $GLOBALS['me'] = &new User();

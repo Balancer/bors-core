@@ -17,6 +17,8 @@ function mysql_access($db = 'BORS', $login = NULL, $password = NULL, $host='loca
 	$GLOBALS['cms']['mysql'][$db]['password'] = $password;
 }
 
+require_once('config/default.php');
+
 $includes = array(
 	BORS_HOST,
 	BORS_CORE."/vhosts/{$_SERVER['HTTP_HOST']}",

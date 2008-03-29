@@ -1,7 +1,6 @@
 <?
-    require_once('funcs/DataBase.php');
-    require_once('funcs/security.php');
-    require_once('funcs/global-data.php');
+    require_once('obsolete/DataBase.php');
+    require_once('inc/global-data.php');
 
     function user_data($key,$user=NULL,$def='')
 	{

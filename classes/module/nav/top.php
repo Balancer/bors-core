@@ -17,6 +17,9 @@ class module_nav_top extends base_page
     {
 		$links = array();
 	
+		if(!$obj)
+			return $links;
+	
 		$url = $obj->url();
 		
 		foreach($obj->parents() as $parent_url)

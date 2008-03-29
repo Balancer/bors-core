@@ -2,8 +2,6 @@
 
 function class_include($class_name, $local_path = "")
 {
-//	print_d(bors_dirs());
-
 	if($file_name = @$GLOBALS['bors_data']['class_included'][$class_name])
 		return $file_name;
 	
@@ -152,13 +150,13 @@ function save_cached_object(&$object, $delete = false)
 				if(preg_match('!^(.+)#(.+)$!', $class, $m))
 					$class = $m[1];
 	
-				if($obj = class_load_by_url($class))
+				if($obj = class_load_by_url($class, $args))
 					return $obj;
 
-				if($obj = class_internal_uri_load($class))
+				if($obj = class_internal_uri_load($class, $args))
 					return $obj;
 			}
-			elseif($obj = class_internal_uri_load($class))
+			elseif($obj = class_internal_uri_load($class, $args))
 				return $obj;
 		}
 
@@ -168,20 +166,21 @@ function save_cached_object(&$object, $delete = false)
 			return NULL;
 	}
 
-	function class_load_by_url($url)
+	function class_load_by_url($url, $args)
 	{
 //		echo "Load $url<br />\n";
 	
-		if($obj = class_load_by_vhosts_url($url))
+		if($obj = class_load_by_vhosts_url($url, $args))
 			return $obj;
 		
-		return class_load_by_local_url($url);
+		return class_load_by_local_url($url, $args);
 	}
 
-	function class_load_by_local_url($url)
+	function class_load_by_local_url($url, $args)
 	{
 		$obj = @$GLOBALS['bors_data']['classes_by_uri'][$url];
-		if(!empty($obj))
+
+		if(!empty($obj) && empty($args['no_load_cache']))
 			return $obj;
 
 		if(empty($GLOBALS['bors_map']))
@@ -273,10 +272,8 @@ function save_cached_object(&$object, $delete = false)
 						else
 							return object_load($obj->url($page));
 					}
-					
 					return $obj;
 				}
-				
 			}
 		}
 //		exit();
@@ -406,6 +403,9 @@ function save_cached_object(&$object, $delete = false)
 
 function object_init($class_name, $object_id, $args = array())
 {
+	if(config('debug_class_search_track'))
+		echo "<small>object_init($class_name, $object_id,...)</small><br/>\n";
+
 	// В этом методе нельзя исползовать debug_test()!
 
 	if(!is_array($args))
@@ -433,13 +433,16 @@ function object_init($class_name, $object_id, $args = array())
 	if($url = defval($args, 'called_url'))
 		$obj->set_called_url(preg_replace('!\?$!', '', $url));
 
+
 	if(!$obj->loaded())
 		$obj->init();
 //	else echo get_class($obj)." already inited<br />";
 
 	if($obj->is_only_tuner())
 		return NULL;
-
+	
+//	echo $obj->class_name()."; cf={$obj->class_file()}; object_id=$object_id; url=$url; cbe={$obj->can_be_empty()}; ld={$obj->loaded()}<br />\n";
+	
 	if(($object_id || $url)
 		&& method_exists($obj, 'can_be_empty')
 		&& !$obj->can_be_empty()

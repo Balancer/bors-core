@@ -1,0 +1,32 @@
+{form name="aviaport_search" method="get"}
+Ваш запрос: {input name="query"}
+{dropdown name="where" list="common_search->where_list"}
+{submit value="Найти"}
+{/form}
+
+{literal}
+<style>
+div.search-result-comment {
+	font-size: 8pt;
+	color: #888;
+	padding-bottom: 10px;
+}
+</style>
+{/literal}
+
+{if $result}
+
+<p>Всего результатов: {$this->total_results()}</p>
+
+{if $this->pages_links()}<div class="pages_select">Страницы: {$this->pages_links()}</div>{/if}
+
+<ol start="{$start}">
+{foreach from=$result item="obj"}
+<li><a href="{$obj->url()}">{$obj->title()}</a>
+	<div class="search-result-comment">{$obj->search_type_name()} | {$obj->create_time()|short_time}</div>
+</li>
+{/foreach}
+</ul>
+{/if}
+
+{if $this->pages_links()}<div class="pages_select">Страницы: {$this->pages_links()}</div>{/if}

@@ -11,6 +11,8 @@ class bors_global extends base_empty
 	{
 		if($this->user === NULL)
 		{
+			require_once('obsolete/users.php');
+		
 			if(!class_exists('User'))
 				return $this->user = false;
 		
@@ -54,10 +56,11 @@ class bors_global extends base_empty
 				
 			$obj->cache_clean();
 			
-			if($storage = $obj->storage_engine())
-				$storage = object_load($storage);
-			else
-				$storage = $this->config()->storage();
+			if(!($storage = $obj->storage_engine()))
+				$storage = 'storage_db_mysql_smart';
+//				debug_exit('Not defined storage engine for '.$obj->class_name());
+			
+			$storage = object_load($storage);
 				
 			$storage->save($obj);
 			save_cached_object($obj);

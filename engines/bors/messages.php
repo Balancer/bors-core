@@ -4,7 +4,6 @@ function bors_message($text, $params=array())
 {
 	header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-	include_once("funcs/templates/smarty.php");
 
 	$redir = defval($params, 'redirect', false);
 	$title = defval($params, 'title', ec('Ошибка!'));
@@ -29,13 +28,16 @@ function bors_message($text, $params=array())
 	foreach(explode(' ', 'login_form login_referer') as $key)
 		$data[$key] = @$params[$key];
 
-	require_once('funcs/templates/assign.php');
+	require_once('engines/smarty/assign.php');
 	$body = template_assign_data("xfile:messages.html", $data);
 
 	$GLOBALS['page_data']['title'] = $title;
 	$GLOBALS['page_data']['source'] = $body;
 
-	show_page(@$GLOBALS['main_uri']);
+//	show_page(@$GLOBALS['main_uri']);
+
+	//TODO: исправить!!
+	echo $body;
 
 	if($redir === true)
 	{
@@ -62,7 +64,7 @@ function bors_message_tpl($template, $obj, $params)
 	$params['this'] = &$obj;
 	$params['template_dir'] = $obj->_class_dir();
 	
-	require_once('funcs/templates/assign.php');
+	require_once('engines/smarty/assign.php');
 	$body = template_assign_data($template, $params);
 
 //	print_d($params); exit($body);

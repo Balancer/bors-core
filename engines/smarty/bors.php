@@ -9,7 +9,10 @@ function template_assign_bors_object($obj, $template = NULL)
 		require('smarty-register.php');
 
 		$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
-		$smarty->plugins_dir = dirname(__FILE__).'/plugins/';
+		$smarty->plugins_dir = array(dirname(__FILE__).'/plugins');
+		foreach(bors_dirs() as $dir)
+			$smarty->plugins_dir[] = $dir.'/engines/smarty/plugins';
+			
 		$smarty->cache_dir   = config('cache_dir').'/smarty-cache/';
 
 		if(!file_exists($smarty->compile_dir))
@@ -47,7 +50,6 @@ function template_assign_bors_object($obj, $template = NULL)
 		foreach(split(' ', $obj->template_local_vars()) as $var)
 			$smarty->assign($var, $obj->$var());
 		
-
 		$template = smarty_template($template ? $template : $obj->template());
 		$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 		$smarty->assign("page_template", $template);

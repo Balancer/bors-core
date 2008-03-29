@@ -86,7 +86,8 @@ class base_object extends base_empty
 		{
 			$storage_engine = object_load($storage_engine);
 			if(!$storage_engine)
-				echo "Can't load {$this->storage_engine()}";
+				debug_exit("Can't load storage engine '{$this->storage_engine()}' in ".join(",<br/>\n", bors_dirs()));
+				
 			elseif($storage_engine->load($this) !== false || $this->can_be_empty())
 				$this->_loaded = true;
 		}
@@ -270,7 +271,7 @@ class base_object extends base_empty
 
 	var $stb_template = NULL;
 	function set_template($template, $db_update) { $this->set("template", $template, $db_update); }
-	function template() { return $this->stb_template ? $this->stb_template : @$GLOBALS['cms']['default_template']; }
+	function template() { return $this->stb_template ? $this->stb_template : config('default_template'); }
 
 	function template_data_fill()
 	{
@@ -505,7 +506,7 @@ class base_object extends base_empty
 		return $this->_dbh;
 	}
 
-	function main_db_storage() { return $GLOBALS['cms']['mysql_database']; }
+	function main_db_storage() { return config('main_bors_db'); }
 	function main_table_storage(){ return $this->class_name(); }
 	function main_table_fields() { return array(); }
 
@@ -588,4 +589,6 @@ class base_object extends base_empty
 	function class_dir() { return dirname($this->class_file()); }
 
 	function post_set() { }
+	
+	function static_get_cache() { return false; }
 }

@@ -35,6 +35,8 @@
 
     function lp_csv($txt, $params)
     {
+		$lcml_parse_cells = strlen($txt) < 512;
+	
         $tab = &new bcsTable();
 
         if(!empty($params['width']))
@@ -81,7 +83,9 @@
 					
                     if($d == '')
                         $d = '&nbsp;';
-						
+					elseif($lcml_parse_cells)
+						$d = lcml($d);
+					
                     $tab->append($d);
                 }
                 $tab->new_row();

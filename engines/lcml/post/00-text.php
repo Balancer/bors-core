@@ -13,5 +13,7 @@
         $txt = preg_replace("!<<!", "&#171;", $txt);
         $txt = preg_replace("!>>!", "&#187;", $txt);
 
+        $txt = str_replace('[p]', '<p/>', $txt);
+
         return $txt;
     }

@@ -63,3 +63,10 @@
 	    if ($delete_self)
 	        @rmdir($dir);
 	}
+
+function secure_path($path)
+{
+    $path=preg_replace("!/([^/]+?)/\.\.!","",$path);
+    $path=preg_replace("!/\.\.!","",$path);
+    return $path;
+}

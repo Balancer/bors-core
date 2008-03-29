@@ -4,6 +4,8 @@ class base_page_db extends base_page
 {
 	var $db;
 
+	function can_be_empty() { return false; }
+
 	function parents()
 	{
 //		echo "match=".print_r($this->match, true)."<br />\n";
@@ -54,6 +56,9 @@ class base_page_db extends base_page
 	function __construct($id)
 	{
 		$driver = $this->db_driver();
+		if(!$this->main_db_storage())
+			debug_exit('Empty '.$this->class_name().'.main_db_storage()');
+			
 		$this->db = &new $driver($this->main_db_storage());
 		$id = $this->uri2id($id);
 			

@@ -1,6 +1,4 @@
 <?php
-	header('X-Bors: begin');
-
 //	ini_set("xdebug.profiler_enable", "1");
 
 	if(preg_match('!^(.+?)\?(.+)$!', $_SERVER['REQUEST_URI'], $m))
@@ -98,10 +96,10 @@
 	if($_SERVER['QUERY_STRING'] == 'fromlist')
 		$_SERVER['QUERY_STRING'] = '';
 
-	$object = NULL;
-	if(!preg_match('!^\w+($|&)!', $_SERVER['QUERY_STRING']))
-		if($object = object_load($uri))
-			@header("X-Bors-loaded: ".$object->class_name());
+	$object = object_load($uri);
+//	if(!preg_match('!^\w+($|&)!', $_SERVER['QUERY_STRING']))
+//		if($object = object_load($uri))
+//			@header("X-Bors-loaded: ".$object->class_name());
 
 	if(!$object || preg_match('!^[\w\-]+$!', $_SERVER['QUERY_STRING']) || ($ret = bors_object_show($object))!== true)
 	{

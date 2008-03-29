@@ -24,16 +24,20 @@ class DataBase extends base_object
 			$this->dbh = mysql_connect($this->x1, $this->x2, $this->x3);
 
 		if(!$this->dbh)
-			debug_exit("DB Connect failed ".mysql_errno().": ".mysql_error()."<BR />");
+			debug_exit("mysql_connect({$this->x1}, {$this->x2}) to '{$this->db_name}' failed ".mysql_errno().": ".mysql_error()."<BR />");
 	}
 
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
 	{
 			if(empty($base))
-				$base = config('mysql_database');
+				$base = config('main_bors_db');
 			
 			$this->db_name = $base;
-			if($base && is_global_key("DataBaseHandler:$server", $base))
+			
+			if(!$base)
+				debug_exit('Empty database construct');
+			
+			if(is_global_key("DataBaseHandler:$server", $base))
 			{
 				if(!isset($GLOBALS['global_db_resume_connections']))
 					$GLOBALS['global_db_resume_connections'] = 0;
@@ -58,13 +62,9 @@ class DataBase extends base_object
 				
 				$GLOBALS['global_db_new_connections']++;
 
-//				echo $base;
-//				print_r($GLOBALS['cms']['mysql'][$base]);
-
 				if(empty($login))	$login		= @$GLOBALS['cms']['mysql'][$base]['login'];
 				if(empty($password)) $password	= @$GLOBALS['cms']['mysql'][$base]['password'];
 				if(empty($server))   $server	= @$GLOBALS['cms']['mysql'][$base]['server'];
-//				echo "$login:$server<br/>";
 
 				if(empty($login))	$login		= @$GLOBALS['cms']['mysql_login'];
 				if(empty($password)) $password	= @$GLOBALS['cms']['mysql_pw'];

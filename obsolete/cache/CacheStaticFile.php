@@ -59,7 +59,7 @@
 			if($expire_time == 0)
 				return $content;
 
-			require_once("inc/filesystem_ext.php");
+			require_once("inc/filesystem.php");
 			mkpath(dirname($this->_file));
 			
 			if(!$fh = fopen($this->_file, 'a+'))

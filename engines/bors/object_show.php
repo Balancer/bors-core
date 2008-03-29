@@ -7,7 +7,7 @@
 		if(!$obj)
 			return false;
 
-	    header("Status: 200 OK");
+		@header("Status: 200 OK");
 
 		$processed = $obj->preParseProcess($_GET);
 		if($processed === true)
@@ -90,7 +90,7 @@
 						if($params)
 						{
 							$method = "upload_{$file}_file";
-							if(method_exists($form, $method))
+//							if(method_exists($form, $method))
 								$form->$method($params, $data);
 						}
 					}
@@ -171,7 +171,10 @@
 		$last_modify = gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		header('Last-Modified: '.$last_modify);
 	   
-		if((!empty($GLOBALS['cms']['cache_static']) || $obj->cache_static()) && (empty($_SERVER['QUERY_STRING']) || $_SERVER['QUERY_STRING']=='del' || @$_GET['act'] == 'del'))
+		if((config('cache_static') || $obj->cache_static())
+			&& (empty($_SERVER['QUERY_STRING']) || $_SERVER['QUERY_STRING']=='del' || @$_GET['act'] == 'del' || $obj->static_get_cache())
+			&& !config('cache_disabled')
+		)
 		{
 //			echo "url={$obj->url_engine()}<br />";
 			$sf = &new CacheStaticFile($obj->url($page));

@@ -17,18 +17,27 @@
 		$txt = preg_replace("!<a !","<html_a ", $txt);
 		$txt = preg_replace("!</a>!","</html_a>", $txt);
 
+		foreach(explode(' ', 'font') as $tag)
+		{
+			$txt = preg_replace("!<$tag>!i","[html_$tag]", $txt);
+			$txt = preg_replace("!<$tag\s*/>!i","[html_$tag]", $txt);
+			$txt = preg_replace("!<$tag\s+([^>]+)\s*/>!i","[html_$tag $1]", $txt);
+			$txt = preg_replace("!<$tag\s+([^>]+)>!i","[html_$tag $1]", $txt);
+			$txt = preg_replace("!</$tag>!i","[/html_$tag]", $txt);
+		}
+
 		foreach(split(' ','param') as $tag)
 		{
 			$txt = preg_replace("!<$tag\s+([^>]+)></$tag>!","[$tag $1]", $txt);
 		}
 	
-		foreach(split(' ','b big br center code div embed font hr i li object p param pre s small span strong u ul xmp tabtr table td html_img html_a') as $tag)
+		foreach(split(' ','b big br center code div embed font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr table td html_img html_a') as $tag)
 		{
-			$txt = preg_replace("!<$tag>!","[$tag]", $txt);
-			$txt = preg_replace("!<$tag\s*/>!","[$tag]", $txt);
-			$txt = preg_replace("!<$tag\s+([^>]+)\s*/>!","[$tag $1]", $txt);
-			$txt = preg_replace("!<$tag\s+([^>]+)>!","[$tag $1]", $txt);
-			$txt = preg_replace("!</$tag>!","[/$tag]", $txt);
+			$txt = preg_replace("!<$tag>!i","[$tag]", $txt);
+			$txt = preg_replace("!<$tag\s*/>!i","[$tag]", $txt);
+			$txt = preg_replace("!<$tag\s+([^>]+)\s*/>!i","[$tag $1]", $txt);
+			$txt = preg_replace("!<$tag\s+([^>]+)>!i","[$tag $1]", $txt);
+			$txt = preg_replace("!</$tag>!i","[/$tag]", $txt);
 		}
 
 		foreach(array("\"", "'", "") as $q)

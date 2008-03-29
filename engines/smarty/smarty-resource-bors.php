@@ -6,9 +6,8 @@
         // do database call here to fetch your template,
         // populating $tpl_source
         $obj = class_load($tpl_name);
-        $tpl = $obj->body();
 
-        if($tpl) 
+        if($tpl = $obj->source()) 
         {
             $tpl_source = $tpl;
             return true;

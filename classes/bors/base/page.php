@@ -116,12 +116,22 @@ class base_page extends base_object
 		return template_assign_data($this->body_template(), $data);
 	}
 
+	function compiled_source()
+	{
+		return lcml($this->source());
+	}
+
 	function _queries() { return array(); }
 
 	function body_template()
 	{
 		if($cf = $this->class_file())
-			return preg_replace("!^(.+)\.php$!", "xfile:$1.html", $cf);
+		{
+			$tf = preg_replace("!\.php$!", "$1.html", $cf);
+			if(!file_exists($tf))
+				$tf = preg_replace("!\.php$!", "$1.html", __FILE__);
+			return "xfile:{$tf}";
+		}
 		else
 			return 'main.html';
 	}
@@ -131,6 +141,8 @@ class base_page extends base_object
 		if($nav = parent::nav_name())
 			return $nav;
 		
-		return $this->class_title();
+		return $this->id() ? $this->class_title() : '';
 	}
+
+	var $stb_cr_type = '';
 }

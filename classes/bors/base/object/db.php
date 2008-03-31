@@ -6,7 +6,7 @@ class base_object_db extends base_object
 {
 	var $db;
 
-	function storage_engine() { return 'storage_db_mysql'; }
+	function storage_engine() { return 'storage_db_mysql_smart'; }
 	function db_driver() { return 'driver_mysql'; }
 	function can_be_empty() { return false; }
 

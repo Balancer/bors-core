@@ -50,7 +50,6 @@ function template_assign_bors_object($obj, $template = NULL)
 		foreach(split(' ', $obj->template_local_vars()) as $var)
 			$smarty->assign($var, $obj->$var());
 		
-
 		$template = smarty_template($template ? $template : $obj->template());
 		$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 		$smarty->assign("page_template", $template);
@@ -69,12 +68,11 @@ function template_assign_bors_object($obj, $template = NULL)
 		{
 		    list($usec, $sec) = explode(" ",microtime());
    	        $smarty->assign("make_time", sprintf("%.3f", ((float)$usec + (float)$sec) - $GLOBALS['stat']['start_microtime']));
-
 		}
 
 //		echo "*** queries_time = {$GLOBALS['stat']['queries_time']}<br />\n";
 		$smarty->assign("queries_time", sprintf("%.3f", @$GLOBALS['stat']['queries_time']));
-		$smarty->assign("queries", @$GLOBALS['global_db_queries']);
+		$smarty->assign("queries", intval(@$GLOBALS['global_db_queries']));
 
 //		echo "Template=$template, caching=$caching";
 //		echo "is cached=".$smarty->is_cached($template);

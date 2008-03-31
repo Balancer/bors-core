@@ -8,7 +8,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 	$source	= $object->search_source();
 	$title	= $object->title();
 
-	include_once("include/classes/text/Stem_ru-{$GLOBALS['cms']['charset_u']}.php");
+	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 			
 	if(!$db)
 		$db = &new DataBase(config('search_db'));
@@ -106,7 +106,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 function index_split($text)
 {
 //	return str_word_count($text, 1);
-	if($GLOBALS['cms']['charset'] == 'utf-8')
+	if(config('charset', 'utf-8') == 'utf-8')
 		return preg_split('![ -,\./:-@\[-`\{-~\s¡-¿]+!u', trim($text));
 
 	return preg_split(ec('![^\wа-яА-Я\-]+!'), trim($text));
@@ -134,7 +134,7 @@ function bors_search_in_titles($query, $params = array())
 	if(!$words)
 		return array();
 
-	include_once("include/classes/text/Stem_ru-{$GLOBALS['cms']['charset_u']}.php");
+	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 			
 	$db = &new DataBase(config('search_db'));
 
@@ -202,7 +202,7 @@ function bors_search_get_word_id($word, $db = NULL)
 	if(!empty($GLOBALS['bors_search_get_word_id_cache'][$word]))
 		return $GLOBALS['bors_search_get_word_id_cache'][$word];
 	
-	include_once("include/classes/text/Stem_ru-{$GLOBALS['cms']['charset_u']}.php");
+	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 		
 	$Stemmer = &new Lingua_Stem_Ru();
 	$original = $word;
@@ -266,7 +266,7 @@ function search_titles_like($title, $limit=20, $forum=0)
 	if(!$words)
 		return array();
 
-	include_once("include/classes/text/Stem_ru-{$GLOBALS['cms']['charset_u']}.php");
+	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 			
 	$db = &new DataBase(config('search_db'));
 
@@ -366,7 +366,7 @@ function bors_search_in_bodies($query)
 	if(!$words)
 		return array();
 
-	include_once("include/classes/text/Stem_ru-{$GLOBALS['cms']['charset_u']}.php");
+	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 			
 	$db = &new DataBase(config('search_db'));
 

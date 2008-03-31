@@ -1,5 +1,5 @@
 <?
-	function strip_text($text, $len=192)
+	function strip_text($text, $len=192, $more_text = '&#133;')
 	{
     	$text=to_one_string($text);
 
@@ -36,7 +36,7 @@
         	    if(!$in_tag && strlen($res)>=$len)
             	    $do_flag=0;
 	        }
-    	    $text=$res."&#133";
+    	    $text = $res . $more_text;
 	    }
 
 	    $close_tags=split(" ","a i b u s font div span td tr tt table blockquote pre xmp");

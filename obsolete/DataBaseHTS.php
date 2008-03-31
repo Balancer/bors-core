@@ -74,8 +74,7 @@ class DataBaseHTS
 			if (preg_match("!^.*/[^\\.\\\\]+?$!", $uri))
 				$uri .= '/';
 
-		$uri = preg_replace("!^{$GLOBALS['DOCUMENT_ROOT']}/+!", "/", $uri);
-
+		$uri = preg_replace("!^{$_SERVER['DOCUMENT_ROOT']}/+!", "/", $uri);
 
 		if(preg_match("!^/!", $uri))
 			$uri = 'http://'.$_SERVER['HTTP_HOST'].$uri;

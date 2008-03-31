@@ -24,7 +24,7 @@ class DataBase extends base_object
 			$this->dbh = mysql_connect($this->x1, $this->x2, $this->x3);
 
 		if(!$this->dbh)
-			debug_exit("DB Connect failed ".mysql_errno().": ".mysql_error()."<BR />");
+			debug_exit("mysql_connect({$this->x1}, {$this->x2}) to '{$this->db_name}' failed ".mysql_errno().": ".mysql_error()."<BR />");
 	}
 
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
@@ -33,7 +33,11 @@ class DataBase extends base_object
 				$base = config('main_bors_db');
 			
 			$this->db_name = $base;
-			if($base && is_global_key("DataBaseHandler:$server", $base))
+			
+			if(!$base)
+				debug_exit('Empty database construct');
+			
+			if(is_global_key("DataBaseHandler:$server", $base))
 			{
 				if(!isset($GLOBALS['global_db_resume_connections']))
 					$GLOBALS['global_db_resume_connections'] = 0;

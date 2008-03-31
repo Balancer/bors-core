@@ -2,8 +2,6 @@
 
 function class_include($class_name, $local_path = "")
 {
-//	print_d(bors_dirs());
-
 	if($file_name = @$GLOBALS['bors_data']['class_included'][$class_name])
 		return $file_name;
 	
@@ -274,10 +272,8 @@ function save_cached_object(&$object, $delete = false)
 						else
 							return object_load($obj->url($page));
 					}
-					
 					return $obj;
 				}
-				
 			}
 		}
 //		exit();
@@ -437,13 +433,16 @@ function object_init($class_name, $object_id, $args = array())
 	if($url = defval($args, 'called_url'))
 		$obj->set_called_url(preg_replace('!\?$!', '', $url));
 
+
 	if(!$obj->loaded())
 		$obj->init();
 //	else echo get_class($obj)." already inited<br />";
 
 	if($obj->is_only_tuner())
 		return NULL;
-
+	
+//	echo $obj->class_name()."; cf={$obj->class_file()}; object_id=$object_id; url=$url; cbe={$obj->can_be_empty()}; ld={$obj->loaded()}<br />\n";
+	
 	if(($object_id || $url)
 		&& method_exists($obj, 'can_be_empty')
 		&& !$obj->can_be_empty()

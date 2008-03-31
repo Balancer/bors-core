@@ -20,7 +20,7 @@
 
     function lcml_strip_url($url)
     {
-            return strlen($url)>77?substr($url,0,50).' [ ... ] '.substr($url,-20):$url;
+		return url_truncate($url, 70);
     }
 
     function lcml_urls_title($url)

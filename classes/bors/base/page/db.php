@@ -92,7 +92,7 @@ class base_page_db extends base_page
 	function db_driver() { return 'driver_mysql'; }
 	
 	function edit_link() { return $this->uri."?edit"; }
-	function storage_engine() { return 'storage_db_mysql'; }
+	function storage_engine() { return 'storage_db_mysql_smart'; }
 
 	function fields() { return array($this->main_db_storage() => $this->main_db_fields()); }
 

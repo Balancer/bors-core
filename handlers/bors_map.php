@@ -5,4 +5,7 @@
 		'.* => page_fs_separate',
 		'.* => base_page_hts',
 		'/do-login/? => common_do_login',
+		
+		'/admin/tools/delete/\?object=([^&]+).* => bors_tools_delete(1)',
+		'/admin/tools/delete/\?(.+) => bors_tools_delete(1)',
 	);

@@ -116,7 +116,7 @@ function bors_remove_cross($from_class, $from_id, $to_class, $to_id, $dbh = NULL
 function bors_remove_cross_to($to_class, $to_id, $dbh = NULL)
 {
 	if(!$dbh)
-		$dbh = &new driver_mysql('WWW');
+		$dbh = &new driver_mysql(config('main_bors_db'));
 
 	if(!is_numeric($to_class))
 		$to_class = class_name_to_id($to_class);

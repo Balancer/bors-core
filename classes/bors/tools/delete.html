@@ -1,3 +1,6 @@
 Вы уверены, что хотите удалить {$this->object()|get:class_title} &laquo;{$this->object()|get:titled_url}&raquo; ({$this->id()})?
 
-<big><center>[ <a href="{$smarty.server.HTTP_REFERER}">Нет</a> | <a href="/tools/delete/?object={$this->id()}&act=delete&ref={$smarty.server.HTTP_REFERER}">Да</a> ]</center></big>
+<big><center>[
+	<a href="{$smarty.server.HTTP_REFERER}">Нет</a> |
+	<a href="/admin/tools/delete/?object={$this->id()}&act=delete&ref={$smarty.server.HTTP_REFERER}">Да</a>
+]</center></big>

@@ -2,7 +2,7 @@
 
 class bors_tools_delete extends base_page
 {
-	function config_class() { return 'admin_config'; }
+	function config_class() { return config('admin_config_class'); }
 
 	function parents() { return array($this->id()); }
 	
@@ -10,11 +10,13 @@ class bors_tools_delete extends base_page
 
 	function object() { return object_load($this->id()); }
 
-	function acl_edit_sections() { return array('*' => 3); }
-	
 	function on_action_delete()
 	{
-		$this->object()->delete();
+		$obj = $this->object();
+		if(!$obj)
+			return bors_message(ec('Не найден объект ').$this->id());
+		
+		$obj->delete();
 		return go($_GET['ref']);
 	}
 }

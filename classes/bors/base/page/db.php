@@ -114,4 +114,32 @@ class base_page_db extends base_page
 	{
 		$this->db = &new DataBase($this->main_db_storage());
 	}
+
+	function main_id_field()
+	{
+		$f = $this->fields();
+		$f = $f[$this->main_db_storage()];
+		$f = $f[$this->main_table_storage()];
+		if($fid = @$f['id'])
+			return $fid;
+		if($f[0] == 'id')
+			return 'id';
+		
+		return NULL;
+	}
+
+	function delete()
+	{
+		$tab = $this->main_table_storage();
+		if(!$tab)
+			debug_exit("Try to delete empty main table in class ".__FILE__.":".__LINE__);
+		
+		
+		$id_field = $this->main_id_field();
+		if(!$id_field)
+			debug_exit("Try to delete empty id field in class ".__FILE__.":".__LINE__);
+		
+		bors_remove_cross_to($this->class_name(), $this->id());
+		$this->db()->delete($tab, array($id_field.'=' => $this->id()));
+	}
 }

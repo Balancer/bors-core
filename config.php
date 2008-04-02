@@ -19,9 +19,11 @@ function mysql_access($db = 'BORS', $login = NULL, $password = NULL, $host='loca
 
 require_once('config/default.php');
 
+$host = @$_SERVER['HTTP_HOST'];
+
 $includes = array(
 	BORS_HOST,
-	BORS_CORE."/vhosts/{$_SERVER['HTTP_HOST']}",
+	@BORS_CORE."/vhosts/{$host}",
 	BORS_LOCAL,
 	"{$_SERVER['DOCUMENT_ROOT']}/include",
 	BORS_CORE,
@@ -62,7 +64,7 @@ function bors_init()
 
 function bors_dirs()
 {
-	$vhost = '/vhosts/'.$_SERVER['HTTP_HOST'];
+	$vhost = '/vhosts/'.@$_SERVER['HTTP_HOST'];
 	return array_unique(array(BORS_HOST, BORS_LOCAL.$vhost, BORS_LOCAL, BORS_CORE.$vhost, BORS_CORE));
 }
 

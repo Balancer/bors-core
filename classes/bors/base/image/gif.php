@@ -8,8 +8,7 @@ class base_image_gif extends base_object
 
 	function render($object)
 	{
-		echo "---";
-//		header("Content-type: " . image_type_to_mime_type(IMAGETYPE_GIF));
+		header("Content-type: " . image_type_to_mime_type(IMAGETYPE_GIF));
 		return $object->image();
 	}
 
@@ -19,9 +18,6 @@ class base_image_gif extends base_object
 		$this->show_image();
 		$gif = ob_get_contents();
 		ob_end_clean();
-		
-		echo "*";
-		print_d($gif);
 		
 		return $gif;
 	}

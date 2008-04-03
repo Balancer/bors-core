@@ -29,7 +29,7 @@ function objects_first($class, $args = array())
 {
 	$args['limit'] = 1;
 	$objs = objects_array($class, $args);
-	return $objs[0];
+	return $objs ? $objs[0] : NULL;
 }
 
 function objects_count($class, $args = array())

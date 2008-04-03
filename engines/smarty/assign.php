@@ -128,6 +128,16 @@
 			foreach($GLOBALS['cms']['smarty'] as $key => $val)
 				$smarty->assign($key, $val);
 		
+
+		//TODO: убрать user_id и user_name в старых шаблонах.
+		$me = bors()->user();
+		$smarty->assign("me", $me);
+		if($me)
+		{
+			$smarty->assign("my_id", $me->id());
+			$smarty->assign("my_name", $me->title());
+		}
+
 //		if(!$caching || !$smarty->is_cached($template_uri, $uri))
 //		{
 			foreach($data as $key => $val)

@@ -223,12 +223,12 @@ function save_cached_object(&$object, $delete = false)
 					$redirect = false;
 				
 				// Формат вида aviaport_image_thumb(3,geometry=2)
-				if(preg_match("!^(.+)\((\d+|NULL),([^)]+=[^)]+)\)$!", $class_path, $m))	
+				if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $class_path, $m))	
 				{
 					$args = array();
 					foreach(split(',', $m[3]) as $pair)
 						if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
-							$args[$mm[1]] = $mm[2];
+							$args[$mm[1]] = $match[$mm[2]+1];
 
 					$class_path = $m[1];
 					$id = $match[$m[2]+1];
@@ -258,6 +258,7 @@ function save_cached_object(&$object, $delete = false)
 					$args = array_merge($args, $page);
 				else
 					$args['page'] = $page;
+
 					
 				if($obj = object_init($class_path, $id, $args))
 				{
@@ -376,6 +377,7 @@ function save_cached_object(&$object, $delete = false)
 					$args = array_merge($args, $page);
 				else
 					$args['page'] = $page;
+
 
 				if($obj = object_init($class_path, $id, $args))
 				{

@@ -22,6 +22,15 @@ class base_page extends base_object
 			return '';
 	}
 
+	function pages_links_nul($css='pages_select')
+	{
+		if($this->total_pages() < 2)
+			return "";
+
+		include_once('funcs/design/page_split.php');
+		return '<div class="'.$css.ec('">Страницы: ').join(' ', pages_show($this, $this->total_pages(), $this->items_around_page())).'</div>';
+	}
+
 	function getsort($t, $def = false)
 	{
 		$sort = @$_GET['s'];

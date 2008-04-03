@@ -55,16 +55,15 @@ function bors_message($text, $params=array())
 
 function bors_message_tpl($template, $obj, $params)
 {
-	include_once("funcs/templates/smarty.php");
+	require_once('engines/smarty/assign.php');
 
 	$redir = defval($params, 'redirect', false);
 	$title = defval($params, 'title', ec('Ошибка!'));
 	$timeout = defval($params, 'timeout', -1);
 	
 	$params['this'] = &$obj;
-	$params['template_dir'] = $obj->_class_dir();
+	$params['template_dir'] = $obj->class_dir();
 	
-	require_once('engines/smarty/assign.php');
 	$body = template_assign_data($template, $params);
 
 //	print_d($params); exit($body);
@@ -72,7 +71,8 @@ function bors_message_tpl($template, $obj, $params)
 	$GLOBALS['page_data']['title'] = $title;
 	$GLOBALS['page_data']['source'] = $body;
 
-	show_page(@$GLOBALS['main_uri']);
+//	show_page(@$GLOBALS['main_uri']);
+	echo $body;
 
 	if($redir === true)
 	{

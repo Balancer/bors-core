@@ -5,6 +5,7 @@ require_once('engines/smarty/bors_smarty_common.php');
 
 function show_page($uri, $data = true)
 {
+
 		if(is_array($data))
 		{
 			$do_print = empty($data['no_print']);
@@ -86,6 +87,7 @@ function show_page($uri, $data = true)
         $smarty->cache_lifetime = 86400*7;
 
 		$template = $hts->get_data($page, 'template', '', true);
+//			print_d($hts->get_data($page, 'template'));
 		if(!$template && !empty($GLOBALS['page_data']['template']))
 			$template = $GLOBALS['page_data']['template'];
         
@@ -102,43 +104,24 @@ function show_page($uri, $data = true)
 
 		if(empty($GLOBALS['cms']['template_override']))
 		{
-			$found = false;
-			foreach(array(
-				$template,
-				"{$page}template$tpl2/",
-			) as $tpl)
-			{
-//				echo "Check '$tpl'<br />";
-				if($tpl && $smarty->template_exists($tpl))
-				{
-					$found = true;
-					break;
-				}
-				if($tpl && $hts->get_data($tpl, 'source'))
-				{
-//					echo "HTS: for $tpl = <xmp>".$hts->get_data($tpl, 'source')."</xmp>";
-					$found = true;
-					break;
-				}
-				if(!empty($tpl) && $tpl{0}=='/' && file_exists($tpl))
-				{
-					$found = true;
-					break;
-				}
-			}
+	
+			$tpl = $template;
+			require_once('engines/smarty/bors_smarty_common.php');
+//			if(!$smarty->template_exists($tpl))
+				$tpl = smarty_template($template);
 
-			if(!$smarty->template_exists("hts:$tpl"))
-	  	        $tpl = config('default_template');
+//			if(!$smarty->template_exists("$tpl"))
+				$tpl = config('default_template');
 
-		if(!$smarty->template_exists($tpl))
-			$tpl = smarty_template($tpl);
+			if(!$smarty->template_exists($tpl))
+				$tpl = smarty_template($tpl);
 
-			if((!$smarty->template_exists($tpl) && !$smarty->template_exists("hts:$tpl"))
+/*			if((!$smarty->template_exists($tpl) && !$smarty->template_exists("hts:$tpl"))
 					// || ($action && $action!='virtual')
 					|| @$_GET['tpl']=='safe'
 					|| (preg_match("!^hts:!", $tpl) && !$hts->get_data($tpl, 'source'))
-				)
-	            $tpl = config('default_template');
+				)*/
+//	            $tpl = config('default_template');
 
 		}
 		else
@@ -234,6 +217,7 @@ function show_page($uri, $data = true)
 			$uri = @$GLOBALS['main_uri'];
 			if(!$uri)
 				$uri = $page;
+
 
 			if(!empty($GLOBALS['cms']['templates']['data']))
 	            foreach($GLOBALS['cms']['templates']['data'] as $key => $value)

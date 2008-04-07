@@ -30,6 +30,9 @@ function class_include($class_name, $local_path = "")
 			return $file_name;
 		}
 	}
+
+	if(class_exists($class_name))
+		return class_include(get_parent_class($class_name), $local_path);
 	
 	return false;
 }
@@ -131,7 +134,9 @@ function save_cached_object(&$object, $delete = false)
 		}
 
 		$obj = &new $class_name($id);
+
 		$obj->set_class_file($class_file);
+			
 		return $obj;
 	}
 

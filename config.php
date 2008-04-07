@@ -60,6 +60,8 @@ function bors_init()
 	require_once('engines/bors/vhosts_loader.php');
 	require_once('inc/locales.php');
 	require_once('engines/bors/object_show.php');
+
+	require_once('classes/Cache.php');
 }
 
 function bors_dirs()
@@ -89,3 +91,5 @@ function bors_include($file, $warn = false)
 	
 	echo $message;
 }
+
+bors_init();

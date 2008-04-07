@@ -3,6 +3,8 @@
 	{
 		unset($GLOBALS['module_data']);
 
+//		print_d($GLOBALS);
+
 		require_once(config('smarty_path').'/Smarty.class.php');
 		$smarty = &new Smarty;
 //		require('mysql-smarty.php');
@@ -192,7 +194,9 @@
 
 			$smarty->assign("this", $data['this']);
 		}
-		
+
+//		print_d($smarty);
+
 		if(preg_match('!^/!', $template_uri))
 			if(file_exists($template_uri))
 				$template_uri = "xfile:".$template_uri;

@@ -242,7 +242,7 @@ __EOT__;
 				}
 				else
 				{
-					$styles[] = $params['align'];
+					$styles[] = @$params['align'];
 				}
 
 				if(@$params['border'])

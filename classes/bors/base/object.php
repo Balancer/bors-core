@@ -525,7 +525,7 @@ class base_object extends base_empty
 
 	private $args = array();
 	function set_args($args) { $this->args = $args; }
-	function args($name=false) { return $name ? @$this->args[$name] : $this->args; }
+	function args($name=false, $def = NULL) { return $name ? (isset($this->args[$name]) ? $this->args[$name] : $def) : $this->args; }
 
 	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
 

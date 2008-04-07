@@ -1,7 +1,7 @@
 <?php
 
     include_once('extentions.php');
-    ext_load('sharp');
+    ext_load(dirname(__FILE__).'/sharp');
 
     function lcml_sharp($txt, &$mask)
     {

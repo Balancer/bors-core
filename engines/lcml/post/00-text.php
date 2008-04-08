@@ -8,7 +8,7 @@
         $txt=preg_replace("!^(//\s+.+)$!m","<small>$1 </small>",$txt);
 
 #        $txt=preg_replace("!^( +)!em","str_repeat('&nbsp;',strlen('$1'))",$txt);
-        $txt=preg_replace("!\^([\d\.]+)!","<sup>$1</sup>",$txt);
+        $txt=preg_replace("!\^(\-?[\d\.]+)!","<sup>$1</sup>",$txt);
 
         $txt = preg_replace("!<<!", "&#171;", $txt);
         $txt = preg_replace("!>>!", "&#187;", $txt);

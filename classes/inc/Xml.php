@@ -26,15 +26,7 @@ class Xml
 		$attributes['_parent'] = &$this->pointer;
 		$attributes['_tag'] = $tag;
 
-		if(isset($this->pointer[$tag]))
-		{
-			if(empty($this->pointer[$tag][0]))
-				$this->pointer[$tag] = array($this->pointer[$tag]);
-
-			$this->pointer[$tag][] = &$attributes;
-		}
-		else
-			$this->pointer[$tag] = &$attributes;
+		$this->pointer[$tag][] = &$attributes;
 
 		$this->pointer = &$attributes;
 	}
@@ -52,7 +44,6 @@ class Xml
 	function tag_close($parser, $tag)
 	{
 		$parent = &$this->pointer['_parent'];
-		$tags = &$this->pointer['_tag'];
 		unset($this->pointer['_parent']);
 		unset($this->pointer['_tag']);
 

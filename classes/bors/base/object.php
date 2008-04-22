@@ -87,7 +87,6 @@ class base_object extends base_empty
 			$storage_engine = object_load($storage_engine);
 			if(!$storage_engine)
 				debug_exit("Can't load storage engine '{$this->storage_engine()}' in ".join(",<br/>\n", bors_dirs()));
-				
 			elseif($storage_engine->load($this) !== false || $this->can_be_empty())
 				$this->_loaded = true;
 		}
@@ -286,6 +285,7 @@ class base_object extends base_empty
 	}
 
 	function cache_static() { return 0; }
+//	var $stb_cache_static = 0;
 	
 	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
 	function titled_admin_url() { return '<a href="'.$this->admin_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }

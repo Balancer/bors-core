@@ -147,7 +147,7 @@
 				if(!$re)
 					debug_exit("Can't load render engine {$render_engine} for class {$obj}");
 				$content = $re->render($obj);
-//				echo "Bors class content of ".get_class($obj)." with render engine ". $obj->render_engine() . " = " . $content; exit();
+//				echo "Bors class content of ".get_class($obj)." with render engine '". $obj->render_engine() . "' = " . $content; exit();
 			}
 			else
 			{

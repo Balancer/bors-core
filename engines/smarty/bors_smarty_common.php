@@ -2,6 +2,8 @@
 
 function smarty_template($template_name, $callers_dir = NULL)
 {
+	$template_name = trim($template_name);
+
 	if(preg_match('!xfile:!', $template_name))
 		return $template_name;
 

@@ -3,6 +3,7 @@
 class base_page extends base_object
 {
 	function render_engine() { return 'render_page'; }
+	function storage_engine() { return NULL; }
 	function can_be_empty() { return true; }
 	
 	var $stb_source = NULL;
@@ -75,7 +76,7 @@ class base_page extends base_object
 			
 		$drop_cache = $this->cache_life_time() || !empty($_GET['drop_cache']);
 			
-		if($ch->get('bors-cached-body-v17', $this->internal_uri()) && !$drop_cache)
+		if($ch->get('bors-cached-body-v18', $this->internal_uri()) && !$drop_cache)
 		{
 			$add = "\n<!-- cached; create=".strftime("%d.%m.%Y %H:%M", $ch->create_time)."; expire=".strftime("%d.%m.%Y %H:%M", $ch->expire_time)." -->";
 			return $ch->last().$add;
@@ -139,10 +140,13 @@ class base_page extends base_object
 			$tf = preg_replace("!\.php$!", "$1.html", $cf);
 			if(!file_exists($tf))
 				$tf = preg_replace("!\.php$!", "$1.html", __FILE__);
+			
 			return "xfile:{$tf}";
 		}
 		else
+		{
 			return 'main.html';
+		}
 	}
 
 	function nav_name()

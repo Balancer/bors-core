@@ -246,10 +246,18 @@ function save_cached_object(&$object, $delete = false)
 					$id = $match[$m[2]+1];
 					$page = @$match[$m[3]+1];
 				}
-				elseif(preg_match("!^(.+)\((\d+)\)$!", $class_path, $class_match))	
+				elseif(preg_match("!^(.+)\((\w+)\)$!", $class_path, $class_match))	
 				{
 					$class_path = $class_match[1];
-					$id = $match[$class_match[2]+1];
+					switch($class_match[2])
+					{
+						case 'url':
+							$id = $url;
+							break;
+						default:
+							$id = $match[$class_match[2]+1];
+							break;
+					}
 				}
 
 				$args = array('match'=>$match, 'called_url'=>$url);
@@ -439,7 +447,6 @@ function object_init($class_name, $object_id, $args = array())
 
 	if($url = defval($args, 'called_url'))
 		$obj->set_called_url(preg_replace('!\?$!', '', $url));
-
 
 	if(!$obj->loaded())
 		$obj->init();

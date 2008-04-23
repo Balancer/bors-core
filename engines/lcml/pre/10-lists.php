@@ -1,7 +1,8 @@
-<?
-    function lcml_lists($txt)
-    {
-        $txt = split("\n", $txt);
+<?php
+
+function lcml_lists($txt)
+{
+	$txt = split("\n", $txt);
 
         $sum = array();
         $ul_open = 0;
@@ -27,7 +28,7 @@
                     for($ul_open; $ul_open>$ident; $ul_open--)
                         $res .= "[/".array_pop($stack)."]";
 
-                $s = @preg_replace("!^ +(\*|#) (.+)$!", "[li]$2[/li]", $s);
+                $s = @preg_replace("!^ +(\*|#) (.*)$!", "[li]$2[/li]", $s);
                 $res .= $s;
             }
             else
@@ -54,4 +55,4 @@
 //		echo "res=".join("\n", $sum)."\n\n";
 
         return join("\n", $sum);
-    }
+}

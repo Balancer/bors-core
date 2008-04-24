@@ -27,7 +27,7 @@ class base_page_db extends base_page
 		{
 			foreach($tables as $table => $fields)
 			{
-				echo "db=$table<br />";
+//				echo "db=$table<br />";
 				if(preg_match('!^inner\s+(.+?)$!', $table, $m))
 					$table = $m[1];
 			

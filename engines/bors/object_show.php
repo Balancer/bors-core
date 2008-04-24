@@ -47,7 +47,7 @@
 			}
 
 			if(!$form->access())
-				return bors_message(ec("Не заданы режимы доступа класса ").get_class($form));
+				return bors_message(ec("Не заданы режимы доступа класса ").get_class($form)."; access_engine=".$form->access_engine());
 
 			if(!$form->access()->can_action())
 				return bors_message(ec("Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($form).", access=".get_class($form->access()).")"));

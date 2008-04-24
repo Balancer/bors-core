@@ -368,7 +368,8 @@ class base_object extends base_empty
 	function store()
 	{
 		if(!$this->id())
-			$this->new_instance();
+			return;
+//			$this->new_instance();
 		
 		bors()->changed_save();
 	}

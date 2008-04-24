@@ -10,24 +10,7 @@ class bors_global extends base_empty
 	function user()
 	{
 		if($this->user === NULL)
-		{
-			require_once('obsolete/users.php');
-		
-			if(!class_exists('User'))
-				return $this->user = false;
-		
-			global $me;
-			if(empty($me) || !is_object($me))
-				$me = &new User();
-
-			$id = $me->get('id');
-
-			if(!$id || $id == 1)
-				return $this->user = false;
-//			echo "Current user id = $id<br />";
-
-			$this->user = object_load(config('user_class'), $id);
-		}
+			$this->user = object_load(config('user_class'), -1);
 		
 		return $this->user;
 	}

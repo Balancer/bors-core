@@ -30,7 +30,7 @@
 		if(file_exists($file = $bors_local.'/handlers/bors_map.php'))
 			include($file);
 	
-//		echo "<xmp>"; print_r($map); echo "</xmp>";
+//		echo "$host: <xmp>"; print_r($map); echo "</xmp>";
 			
 		$bors_data['vhosts'][$host] = array(
 			'bors_map' => array_merge($map2, $map),
@@ -39,6 +39,7 @@
 	}
 
 	@include_once("config/vhosts.php");
+	require_once("inc/filesystem.php");
 
 	function borsmaps_load()
 	{
@@ -49,7 +50,7 @@
 		foreach(bors_dirs() as $dir)
 		{
 			$map = array();
-			if(file_exists($file = "{$dir}/handlers/bors_map.php"))
+			if(file_exists($file = secure_path("{$dir}/handlers/bors_map.php")))
 				include($file);
 			
 			$bors_map = array_merge($bors_map, $map);

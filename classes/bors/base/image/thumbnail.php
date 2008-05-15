@@ -13,7 +13,10 @@ class base_image_thumbnail extends base_image
 		$this->original = object_load('base_image', $id);
 		
 		if($this->width())
-			return $this->set_loaded(true);
+		{
+			$this->set_loaded(true);
+			return false;
+		}
 
 		$this->set_create_time(time(), true);
 		$this->set_modify_time(time(), true);
@@ -29,7 +32,7 @@ class base_image_thumbnail extends base_image
 
 //		echo "size of ".$this->original->file_name()." = ".filesize($this->original->file_name_with_path())."<br/>\n";
 		if(!$this->original->file_name() || !@filesize($this->original->file_name_with_path()))
-			return;
+			return false;
 
 		@mkdir($this->image_dir(), 0777, true);
 		@chmod($this->image_dir(), 0777);
@@ -46,6 +49,8 @@ class base_image_thumbnail extends base_image
 
 //		echo "{$this}: {$this->wxh()}<br />\n";
 		$this->set_loaded(true);
+		
+		return false;
 	}
 
 	function thumb_create($geometry)

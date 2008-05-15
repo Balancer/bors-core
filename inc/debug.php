@@ -36,7 +36,7 @@ function debug_test()
 
 	function set_loglevel($n, $file=false)
 	{
-		config_set('log_level', $_GET['log_level'] = $n);
+		config_set('log_level', /*$_GET['log_level'] = */ $n);
 		if($file === false)
 			return;
 		

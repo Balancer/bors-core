@@ -13,9 +13,14 @@ function smarty_function_module($params, &$smarty)
 		
 		$params['page'] = $page;
 		
+		if(!$id)
+			$id = bors()->main_object();
+			
 		$obj = object_load('module_'.$class, $id, $params);
+		
 		if(!$obj)
 			return "module error: can't load class 'module_{$class}'";
+
 		return $obj->body();
 	}
 

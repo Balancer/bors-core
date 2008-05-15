@@ -9,6 +9,10 @@
 
 		@header("Status: 200 OK");
 
+		$processed = $obj->pre_parse($_GET);
+		if($processed === true)
+			return true;
+			
 		$processed = $obj->preParseProcess($_GET);
 		if($processed === true)
 			return true;
@@ -16,7 +20,7 @@
 		if(!empty($_GET['act']))
 		{
 			if(!$obj->access()->can_action($_GET['act']))
-				return bors_message(ec("Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).")"));
+				return bors_message(ec("Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).", method=can_action)"));
 
 			if(method_exists($obj, $method = "on_action_{$_GET['act']}"))
 			{
@@ -50,7 +54,7 @@
 				return bors_message(ec("Не заданы режимы доступа класса ").get_class($form)."; access_engine=".$form->access_engine());
 
 			if(!$form->access()->can_action())
-				return bors_message(ec("Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($form).", access=".get_class($form->access()).")"));
+				return bors_message(ec("Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($form).", access=".get_class($form->access()).", method=can_action)"));
 
 			if(empty($_GET['subaction']))
 				$method = 'onAction';

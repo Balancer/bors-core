@@ -7,7 +7,7 @@ if(!defined("BORS_LOCAL"))
 	define("BORS_LOCAL", '/var/www/.bors/bors-local');
 
 if(!defined("BORS_HOST"))
-	define("BORS_HOST", $_SERVER['DOCUMENT_ROOT'].'../.bors-host');
+	define("BORS_HOST", $_SERVER['DOCUMENT_ROOT'].'/../.bors-host');
 
 function config_set($key, $value) { $GLOBALS['cms']['config'][$key] = $value; }
 function config($key, $def = NULL) { return isset($GLOBALS['cms']['config'][$key]) ? $GLOBALS['cms']['config'][$key] : $def; }

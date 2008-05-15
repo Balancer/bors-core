@@ -52,8 +52,14 @@ function template_assign_bors_object($obj, $template = NULL)
 		
 	foreach(split(' ', $obj->template_local_vars()) as $var)
 		$smarty->assign($var, $obj->$var());
+
+//	print_d($obj->local_template_data_array());
+	foreach($obj->local_template_data_array() as $var => $value)
+		$smarty->assign($var, $value);
 		
 	$template = smarty_template($template ? $template : $obj->template());
+	if(!$smarty->template_exists($template))
+		$template = smarty_template($template);
 	$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 	$smarty->assign("page_template", $template);
 		
@@ -77,7 +83,7 @@ function template_assign_bors_object($obj, $template = NULL)
 	$smarty->assign("queries_time", sprintf("%.3f", @$GLOBALS['stat']['queries_time']));
 	$smarty->assign("queries", intval(@$GLOBALS['global_db_queries']));
 
-//	echo "Template=$template, caching=$caching";
+//	echo "Template=$template";
 //	echo "is cached=".$smarty->is_cached($template);
 	$out = $smarty->fetch($template);
 //	$out = $smarty->fetch($template);

@@ -1,5 +1,5 @@
 <?
-    require_once('funcs/images/fill.php');
+//    require_once('funcs/images/fill.php');
 
     function lsp_gallery($txt, $title) 
     { 

@@ -194,6 +194,9 @@ class base_object extends base_empty
 	function preParseProcess() { return false; }
 	function preShowProcess() { return false; }
 
+	function pre_parse() { return $this->preParseProcess(); }
+	function pre_show() { return $this->preParseProcess(); }
+
 	function set($field, $value, $db_update)
 	{
 //		echo "set ".get_class($this).".{$field} = $value<br/>\n";

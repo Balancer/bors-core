@@ -150,14 +150,14 @@ function show_page($uri, $data = true)
 		$modify_time = max($hts->get_data($page, 'modify_time'), $hts->get_data($page, 'compile_time'));
 		$nocache = $nocache || ($modify_time > $GLOBALS['cms']['cache_copy']);
 
-		$access = access_allowed($page, $hts) ? 1 : 0;
-		$us = &new User();
-		$level = $us->data('level');
-		$user_id = $us->data('id');
-		$user_name = $us->data('name');
+//		$access = access_allowed($page, $hts) ? 1 : 0;
+		$me = bors()->user();
+//		$level = $us->data('level');
+		$user_id = $me ? $me->id() : NULL;
+		$user_name = $me ? $me->title() : NULL;
 		
-		include_once("funcs/actions/subscribe.php");
-		$subscribed = cms_funcs_action_is_subscribed($page);
+//		include_once("funcs/actions/subscribe.php");
+		$subscribed = false; //cms_funcs_action_is_subscribed($page);
 
         $last_modify = gmdate('D, d M Y H:i:s', $modify_time).' GMT';
    	    @header ('Last-Modified: '.$last_modify);
@@ -212,7 +212,7 @@ function show_page($uri, $data = true)
             }
 
             foreach(split(' ', "access level action body user_id user_name $page_vars") as $key)
-                $smarty->assign($key, $$key);
+                $smarty->assign($key, @$$key);
 
 			$uri = @$GLOBALS['main_uri'];
 			if(!$uri)
@@ -230,7 +230,7 @@ function show_page($uri, $data = true)
             $smarty->assign("main_uri", @$GLOBALS['main_uri']);
             $smarty->assign("time", time());
             $smarty->assign("ref", @$_SERVER['HTTP_REFERER']);
-            $smarty->assign("me", $us);
+            $smarty->assign("me", $me);
 
 			if(!empty($GLOBALS['stat']['start_microtime']))
 			{

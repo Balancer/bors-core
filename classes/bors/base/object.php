@@ -10,6 +10,7 @@ class base_object extends base_empty
 	function set_match($match) { return $this->match = $match;	}
 
 	function parents() { return array("http://{$this->match[1]}{$this->match[2]}"); }
+	var $stb_children = array();
 
 	function rss_body()
 	{
@@ -94,6 +95,8 @@ class base_object extends base_empty
 		if($data_provider = $this->data_provider())
 			object_load($data_provider, $this)->fill();
 
+
+		return false;
 	}
 
 	function lcml($text)
@@ -126,10 +129,16 @@ class base_object extends base_empty
 	}
 
 	function class_title() { return get_class($this); }
+	function class_title_rp() { return $this->class_title(); }
 
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 	
 	static function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
+
+	private $template_data = array();
+	function add_local_template_data($var_name, $value) { return $this->template_data[$var_name] = $value; }
+	function local_template_data_set() { return array(); }
+	function local_template_data_array() { return $this->template_data; }
 
 	static function add_template_data_array($var_name, $value)
 	{
@@ -193,6 +202,8 @@ class base_object extends base_empty
 
 	function preParseProcess() { return false; }
 	function preShowProcess() { return false; }
+	function pre_parse() { return false; }
+	function pre_show() { return false; }
 
 	function pre_parse() { return $this->preParseProcess(); }
 	function pre_show() { return $this->preParseProcess(); }
@@ -277,20 +288,27 @@ class base_object extends base_empty
 
 	function template_data_fill()
 	{
+		foreach($this->local_template_data_set() as $key => $value)
+			$this->add_local_template_data($key, $value);
+
 		static $called = false; //TODO: в будущем снести вторые вызовы.
 		if($called)
 			return;
 
 		$called = true;
 		
+//		echo ":::"; print_d($this->data_providers());
 		foreach($this->data_providers() as $key => $value)
+		{
 			$this->add_template_data($key, $value);
+		}
 	}
 
 	function cache_static() { return 0; }
 //	var $stb_cache_static = 0;
 	
 	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
+	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
 	function titled_admin_url() { return '<a href="'.$this->admin_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
 	function titled_edit_url() { return '<a href="'.$this->edit_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
 
@@ -379,6 +397,7 @@ class base_object extends base_empty
 
 	function data_provider() { return NULL; }
 	function data_providers() { return array(); }
+
 
 	var $_autofields;
 	function autofield($field)

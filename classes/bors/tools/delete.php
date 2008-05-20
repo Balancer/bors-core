@@ -19,4 +19,14 @@ class bors_tools_delete extends base_page
 		$obj->delete();
 		return go($_GET['ref']);
 	}
+
+	function ref()
+	{
+		if(!empty($_GET['ref']))
+			return $_GET['ref'];
+			
+		return @$_SERVER['HTTP_REFERER'];
+	}
+
+	function access_section() { return $this->object()->access_section(); }
 }

@@ -1,13 +1,15 @@
 <?php
 //	ini_set("xdebug.profiler_enable", "1");
 
-	if(preg_match('!^(.+?)\?(.+)$!', $_SERVER['REQUEST_URI'], $m))
+	if(preg_match('!^([^?]+)\?(.+)$!', $_SERVER['REQUEST_URI'], $m))
 	{
 		$_SERVER['REQUEST_URI'] = $m[1];
 		if(empty($_SERVER['QUERY_STRING']))
 			$_SERVER['QUERY_STRING'] = $m[2];
 	}
 
+	if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
+		$_SERVER['DOCUMENT_ROOT'] = $m[1];
 
 	if($_SERVER['REQUEST_URI'] == '/cms/main.php' || $_SERVER['REQUEST_URI'] == '/bors.php' || $_SERVER['REQUEST_URI'] == '/bors-loader.php')
 	{
@@ -84,6 +86,7 @@
 		}
 	}
 
+
 	$_GET = array_merge($_GET, $_POST);
 
 	require_once('engines/bors/object_show.php');
@@ -146,5 +149,5 @@
 		return go(config('404_page_url'), true);
 
 	if(config('404_show'))
-		echo ec("Page '$uri' not found.");
+		echo ec("Page '$uri' not found");
 //	echo "</pre>";

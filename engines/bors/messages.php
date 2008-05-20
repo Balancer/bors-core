@@ -8,7 +8,7 @@ function bors_message($text, $params=array())
 	$redir = defval($params, 'redirect', false);
 	$title = defval($params, 'title', ec('Ошибка!'));
 	$timeout = defval($params, 'timeout', -1);
-	$template = defval($params, 'template', NULL);
+	$template = defval($params, 'template', config('default_template'));
 
 	if(!$redir)
 	{
@@ -31,13 +31,19 @@ function bors_message($text, $params=array())
 	require_once('engines/smarty/assign.php');
 	$body = template_assign_data("xfile:messages.html", $data);
 
-	$GLOBALS['page_data']['title'] = $title;
-	$GLOBALS['page_data']['source'] = $body;
+	$data = array(
+		'title' => $title,
+		'source' => $body,
+		'body' => $body,
+	);
+
+	$message = template_assign_data($template, $data);
 
 //	show_page(@$GLOBALS['main_uri']);
 
 	//TODO: исправить!!
-	echo $body;
+	echo $message;
+
 
 	if($redir === true)
 	{

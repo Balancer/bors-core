@@ -213,7 +213,12 @@ class storage_db_mysql_smart extends base_null
 				return $cnt;
 			}
 			else
+			{
+				if(!$select)
+					return NULL;
+				
 				$dbh->query('SELECT '.join(',', $select).' '.$from.' '.$where, false);
+			}
 
 			$was_loaded = false;
 			while($row = $dbh->fetch_row())

@@ -9,7 +9,7 @@
 
 		@header("Status: 200 OK");
 
-		$processed = $obj->preParseProcess($_GET);
+		$processed = $obj->pre_parse($_GET);
 		if($processed === true)
 			return true;
 
@@ -121,7 +121,7 @@
 		}
 		
 		
-		$processed = $obj->preShowProcess();
+		$processed = $obj->pre_show();
 		if($processed === true)
 			return true;
 
@@ -159,8 +159,7 @@
 		}
 		else
 			$content = $processed;
-
-
+	
 		if($content === false)
 			return false;
 

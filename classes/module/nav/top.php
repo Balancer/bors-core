@@ -4,64 +4,63 @@ class module_nav_top extends base_page
 {
 	private $visited_pairs;
 
-	function data_providers()
+	function local_template_data_set()
 	{
 		$this->visited_pairs = array();
 
 		$obj = &$this->id();
 
-        return array('links' => $this->link_line($obj));
+        return array(
+			'links' => $this->link_line(),
+			'obj' => $obj,
+			'delim' => $this->args('delim', ' &#187; '),
+		);
     }
 
-    function link_line($obj)
+    function link_line($show_self = true, &$shown = array())
     {
-		$links = array();
+		$obj = $this->id();
+
+		$result = array(array());
 	
 		if(!$obj)
-			return $links;
+			return $result;
+			
+		if(@$shown["$obj"])
+			return $result;
 	
-		$url = $obj->url();
-		
-		foreach($obj->parents() as $parent_url)
-        {
-			$parent = object_load($parent_url);
+		$show["$obj"] = true;
 
-			if(!$parent || $parent_url == $url)
-				continue;
+		if(!$obj->parents())
+			return $result;
 
-            if(!$this->visited($parent_url, $url))
-            {
-				$parents_lines = $this->link_line($parent);
-				$added = false;
-				foreach($parents_lines as $p_line)
-				{
-					if(!$p_line)
-						continue;
-
-					$p_line[] = $obj;
-					$links[] = $p_line;
-					$added = true;
-				}
-
-				if(!$added)
-					$links[] = array($obj);
-            }
-        }
-
-		if(!$links)
-			$links[] = array($obj);
-
-        return $links;
-    }
-	
-	function visited($parent, $child)
-	{
-		if(empty($this->visited_pairs["{$parent}|#|{$child}"]))
+		$result = array();
+		foreach($obj->parents() as $parent)
 		{
-			$this->visited_pairs["{$parent}|#|{$child}"] = true;
-			return false;
+			$links = array();
+		
+			$parent_obj = object_load($parent);
+			if(!$parent_obj)
+				continue;
+			
+			$shown[] = $parent_obj;
+
+			$parent_nav = object_load($this->class_name(), $parent_obj);
+			$parent_link_line = $parent_nav->link_line(false, $shown);
+				
+			for($i = 0; $i < count($parent_link_line); $i++)
+				$parent_link_line[$i][] = $parent_obj;
+
+			$result = array_merge($result, $parent_link_line);
 		}
 		
-		return true;
+		if(empty($result))
+			$result = array(array());
+		
+		if($show_self)
+			for($i = 0; $i < count($result); $i++)
+				$result[$i][] = $obj;
+		
+		return $result;
 	}
 }

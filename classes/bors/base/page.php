@@ -167,4 +167,7 @@ class base_page extends base_object
 					
 		return parent::pre_show();
 	}
+
+	var $stb_visits = 0;
+	var $stb_num_replies = 0;
 }

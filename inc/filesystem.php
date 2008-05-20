@@ -66,7 +66,9 @@
 
 function secure_path($path)
 {
-    $path=preg_replace("!/([^/]+?)/\.\.!","",$path);
-    $path=preg_replace("!/\.\.!","",$path);
+    $path = preg_replace('!([^:])/{2,}!', "$1/", $path);
+    $path = preg_replace('!/([^/]+?)/\.\.!', '', $path);
+    $path = preg_replace('!/\.\.!', '', $path);
+
     return $path;
 }

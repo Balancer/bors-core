@@ -19,6 +19,7 @@ function lt_img($params)
 			$uri = secure_path(abs_path_from_relative(preg_replace("!^(.+?)/cache/(.+)/\d*x\d*/(.+?)$!", "$1/$2/$3", $uri), $GLOBALS['lcml']['uri']));
 
 			$data = url_parse($uri);
+//			echo $uri; print_d($data); exit();
 //			echo $GLOBALS['lcml']['level'];
 //			exit(print_r($GLOBALS['lcml']['uri'],true));
 //			print_d($params); print_d($data); exit();

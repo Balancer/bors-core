@@ -189,10 +189,14 @@
 
 		if(is_object(@$data['this']))
 		{
-			foreach(split(' ', $data['this']->template_local_vars()) as $var)
-				$smarty->assign($var, $data['this']->$var());
+			$obj = $data['this'];
+			foreach(split(' ', $obj->template_local_vars()) as $var)
+				$smarty->assign($var, $obj->$var());
 
-			$smarty->assign("this", $data['this']);
+			$smarty->assign("this", $obj);
+
+			foreach($obj->local_template_data_array() as $var => $value)
+				$smarty->assign($var, $value);
 		}
 
 //		print_d($smarty);

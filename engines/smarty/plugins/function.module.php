@@ -13,11 +13,19 @@ function smarty_function_module($params, &$smarty)
 			
 		$obj = object_load($class, $id, $params);
 
+		$params['page'] = $page;
+		
+		if(!$id)
+			$id = bors()->main_object();
+			
+		$obj = object_load('module_'.$class, $id, $params);
+		
+		//TODO: убрать?
 		if(!$obj)
 			$obj = object_load("module_{$class}", $id, $params);
 
 		if(!$obj)
-			return "Can't load module '$class'";
+			return "Can't load module '$class' nor 'module_{$class}'";
 
 		return $obj->body();
 	}

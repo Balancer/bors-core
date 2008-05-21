@@ -20,12 +20,8 @@ function smarty_function_module($params, &$smarty)
 			
 		$obj = object_load('module_'.$class, $id, $params);
 		
-		//TODO: убрать?
 		if(!$obj)
-			$obj = object_load("module_{$class}", $id, $params);
-
-		if(!$obj)
-			return "Can't load module '$class' nor 'module_{$class}'";
+			return "Can't load module 'module_{$class}'";
 
 		return $obj->body();
 	}

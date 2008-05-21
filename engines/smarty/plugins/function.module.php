@@ -10,7 +10,9 @@ function smarty_function_module($params, &$smarty)
 			$$name = @$params[$name];
 			unset($params[$name]);
 		}
-		
+			
+		$obj = object_load($class, $id, $params);
+
 		$params['page'] = $page;
 		
 		if(!$id)
@@ -19,7 +21,7 @@ function smarty_function_module($params, &$smarty)
 		$obj = object_load('module_'.$class, $id, $params);
 		
 		if(!$obj)
-			return "module error: can't load class 'module_{$class}'";
+			return "Can't load module 'module_{$class}'";
 
 		return $obj->body();
 	}

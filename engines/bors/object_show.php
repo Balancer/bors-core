@@ -13,10 +13,6 @@
 		if($processed === true)
 			return true;
 			
-		$processed = $obj->preParseProcess($_GET);
-		if($processed === true)
-			return true;
-
 		if(!empty($_GET['act']))
 		{
 			if(!$obj->access()->can_action($_GET['act']))
@@ -125,7 +121,7 @@
 		}
 		
 		
-		$processed = $obj->preShowProcess();
+		$processed = $obj->pre_show();
 		if($processed === true)
 			return true;
 
@@ -163,8 +159,7 @@
 		}
 		else
 			$content = $processed;
-
-
+	
 		if($content === false)
 			return false;
 

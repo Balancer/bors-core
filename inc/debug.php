@@ -16,12 +16,17 @@ function debug_test()
 		echo DBG_GetBacktrace();
 	}
 
-	function debug_xmp($text)
+	function debug_xmp($text, $string = false)
 	{
 		if(!empty($_SERVER['HTTP_HOST']))
-			echo "<xmp>{$text}</xmp>\n";
+			$out = "<xmp>{$text}</xmp>\n";
 		else
-			echo $text;
+			$out = $text;
+		
+		if(!$string)
+			echo $out;
+
+		return $out;
 	}
 
 	function debug_pre($text)
@@ -32,7 +37,7 @@ function debug_test()
 			echo $text;
 	}
 	
-	function print_d($data) { debug_xmp(print_r($data, true)); }
+	function print_d($data, $string=false) { return debug_xmp(print_r($data, true), $string); }
 
 	function set_loglevel($n, $file=false)
 	{

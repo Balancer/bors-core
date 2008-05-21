@@ -2,6 +2,7 @@
 
 class base_tree extends base_page_db
 {
+	function storage_engine() { return 'storage_db_mysql'; }
 
 	var $stb_parent_id;
 	function parent_id() { return $this->stb_parent_id; }

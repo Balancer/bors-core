@@ -21,6 +21,12 @@ function mysql_access($db = 'BORS', $login = NULL, $password = NULL, $host='loca
 	$GLOBALS['cms']['mysql'][$db]['password'] = $password;
 }
 
+if(file_exists(BORS_LOCAL.'/config-pre.php'))
+	include_once(BORS_LOCAL.'/config-pre.php');
+
+if(file_exists(BORS_HOST.'/config-pre.php'))
+	include_once(BORS_HOST.'/config-pre.php');
+
 require_once('config/default.php');
 
 $host = @$_SERVER['HTTP_HOST'];
@@ -33,6 +39,12 @@ $includes = array(
 	BORS_CORE,
 	BORS_CORE.'/PEAR',
 );
+
+if(defined('BORS_3RD_PARTY'))
+	$includes[] = BORS_3RD_PARTY;
+elseif(file_exists($dir_3rd = dirname(__FILE__).'/../bors-third-party'))
+	$includes[] = $dir_3rd;
+
 $delim = empty($_ENV['windir']) ? ":" : ";";
 ini_set('include_path', ini_get('include_path') . $delim . join($delim, $includes));
 

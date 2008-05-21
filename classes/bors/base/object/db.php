@@ -20,6 +20,8 @@ class base_object_db extends base_object
 			
 		parent::__construct($id);
 	}
+
+	function id_field() { return 'id'; }
 	
 	function new_instance()
 	{
@@ -27,8 +29,15 @@ class base_object_db extends base_object
 		if(!$tab)
 			debug_exit("Try to get new instance with empty main table in class ".__FILE__.":".__LINE__);
 			
-		$this->db->insert($tab, array());
-		$this->set_id($this->db->get_last_id());
+		$data = array();
+		if($this->id())
+			$data[$this->id_field()] = $this->id();
+
+		$this->db->insert($tab, $data);
+		
+		if(!$this->id())
+			$this->set_id($this->db->get_last_id());
+
 		$this->set_create_time(time(), true);
 		$this->set_modify_time(time(), true);
 	}

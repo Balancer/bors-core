@@ -48,12 +48,20 @@ class DataBase extends base_object
 				mysql_select_db($base, $this->dbh) or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
 
 				if(!empty($GLOBALS['cms']['mysql_set_character_set']))
+				{
+					debug_timing_start('mysql_set_character_set');
 					mysql_query("SET CHARACTER SET {$GLOBALS['cms']['mysql_set_character_set']};",$this->dbh)
 						 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-
+					debug_timing_stop('mysql_set_character_set');
+				}
+				
 				if(!empty($GLOBALS['cms']['mysql_set_names_charset']))
+				{
+					debug_timing_start('mysql_set_names');
 					mysql_query("SET NAMES {$GLOBALS['cms']['mysql_set_names_charset']};",$this->dbh)
 						 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
+					debug_timing_stop('mysql_set_names');
+				}
 			}
 			else
 			{
@@ -82,13 +90,21 @@ class DataBase extends base_object
 					or echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 
 				if(!empty($GLOBALS['cms']['mysql_set_character_set']))
+				{
+					debug_timing_start('mysql_set_character_set');
 					mysql_query("SET CHARACTER SET {$GLOBALS['cms']['mysql_set_character_set']};",$this->dbh)
 						 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-
+					debug_timing_stop('mysql_set_character_set');
+				}
+				
 				if(!empty($GLOBALS['cms']['mysql_set_names_charset']))
+				{
+					debug_timing_start('mysql_set_names');
 					mysql_query("SET NAMES {$GLOBALS['cms']['mysql_set_names_charset']};",$this->dbh)
 						 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-			
+					debug_timing_stop('mysql_set_names');
+				}
+				
 				set_global_key("DataBaseHandler:$server",$base,$this->dbh);
 //				echo "new\[{$base}]=".$this->dbh."<br>\n";
 			}
@@ -120,7 +136,9 @@ class DataBase extends base_object
 			list($usec, $sec) = explode(" ",microtime());
 			$qstart = ((float)$usec + (float)$sec);
 		   
+			debug_timing_start('mysql_query_main');
 			$this->result = !empty($query) ? @mysql_query($query,$this->dbh) : false;
+			debug_timing_stop('mysql_query_main');
 
 			list($usec, $sec) = explode(" ",microtime());
 			$qtime = ((float)$usec + (float)$sec) - $qstart;
@@ -135,6 +153,13 @@ class DataBase extends base_object
 			if(@$_GET['log_level'] == 4 && $qtime > @$_GET['qtime'])
 				echolog("<small>query {$GLOBALS['global_db_queries']}($qtime)=|".htmlspecialchars($query)."|</small>", 4);
 
+			if(config('debug_mysql_queries_log'))
+			{
+				$fh = @fopen(config('debug_mysql_queries_log'), 'at');
+				@fputs($fh, $GLOBALS['global_db_queries']." [{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: $query\n-----------------------------------\n");
+				@fclose($fh);
+			}
+			
 			if(config('log_level') > 5)
 			{
 				$fh = @fopen("{$_SERVER['DOCUMENT_ROOT']}/hts-queries.log", 'at');

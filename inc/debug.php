@@ -209,4 +209,46 @@ echo ((float)$usec + (float)$sec) - $GLOBALS['stat']['start_microtime'];
 </noindex>
 <?
     }
-?>
+
+
+$GLOBALS['bors_debug_timing'] = array();
+function debug_timing_start($category)
+{
+	global $bors_debug_timing;
+	if(empty($bors_debug_timing[$category]))
+		$bors_debug_timing[$category] = array('start' => NULL, 'calls'=>0, 'total'=>0);
+		
+	$current = &$bors_debug_timing[$category];
+	
+	if($current['start'])
+		debug_exit(ec("Вторичный вызов незавершённой функции {debug_timing_start('$category')}."));
+
+	list($usec, $sec) = explode(" ",microtime());
+	$current['start'] = ((float)$usec + (float)$sec);
+}
+
+function debug_timing_stop($category)
+{
+	global $bors_debug_timing;
+	$current = &$bors_debug_timing[$category];
+	
+	if(empty($current['start']))
+		debug_exit(ec("Вызов неактивированной функции {debug_timing_stop('$category')}."));
+
+	list($usec, $sec) = explode(" ",microtime());
+	$time = ((float)$usec + (float)$sec) - $current['start'];
+
+	$current['start'] = NULL;
+	$current['calls']++;
+	$current['total'] += $time;
+}
+
+function debug_timing_info_all()
+{
+	$result = "<!--\nDebug timing:\n";
+	global $bors_debug_timing;
+	foreach($bors_debug_timing as $section => $data)
+		$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls]\n";
+
+	return $result."-->\n";
+}

@@ -129,6 +129,9 @@
 		@file_put_contents($file = $_SERVER['DOCUMENT_ROOT']."/cms/logs/timing.log", $time . " [".$uri . "]: " . @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 		@chmod($file, 0666);
 	}
+
+	if(config('debug_timing'))
+		echo debug_timing_info_all();
 	
 	if($ret === true)
 		return;
@@ -151,3 +154,6 @@
 	if(config('404_show'))
 		echo ec("Page '$uri' not found");
 //	echo "</pre>";
+
+//	if(preg_match('!^(.+)(</html>.*)$!is', $out, $m))
+//		$out = $m[1].debug_timing_info_all().$m[2];

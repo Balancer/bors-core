@@ -22,5 +22,5 @@
 
 //		echo "smarty: class_load($class, $id)<br />";
 
-    	$smarty->assign($var, class_load($class, $id));
+    	$smarty->assign_by_ref($var, class_load($class, $id));
 	}

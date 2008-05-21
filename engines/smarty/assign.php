@@ -146,7 +146,7 @@
 //		{
 			foreach($data as $key => $val)
 			{
-//				echo "$key -> ".print_r($val,true)."<br />\n";
+//				echo "$key -> ".print_d($val, true)."<br />\n";
 				$$key = $val;
 				$smarty->assign($key, $val);
 			}
@@ -201,8 +201,6 @@
 				$smarty->assign($var, $value);
 		}
 
-//		print_d($smarty);
-
 		if(preg_match('!^/!', $template_uri))
 			if(file_exists($template_uri))
 				$template_uri = "xfile:".$template_uri;
@@ -213,6 +211,8 @@
 			$smarty->clear_cache($template_uri);
 
 //		echo "tpl=$template_uri<br/>\n";
+//		print_d($smarty->get_template_vars('aviafirms'));
+
 		$out = $smarty->fetch($template_uri);
 	
 		$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripslashes('$1'))", $out);

@@ -28,7 +28,7 @@ function smarty_function_bors_object_load($params, &$smarty)
 
 	if($var)
 	{
-    	$smarty->assign($var, &$obj);
+    	$smarty->assign_by_ref($var, &$obj);
 		return;
 	}
 	

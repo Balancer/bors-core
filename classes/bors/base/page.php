@@ -98,6 +98,7 @@ class base_page extends base_object
 	{
 		$data = array();
 		
+		//TODO: Вычистить все _queries.
 		if($qlist = $this->_queries())
 		{
 			if(empty($this->db) || empty($this->db->dbh))
@@ -158,6 +159,15 @@ class base_page extends base_object
 	}
 
 	var $stb_cr_type = '';
+
+	function pre_show()
+	{
+		@header('Content-Type: text/html; charset='.config('default_character_set', 'utf-8'));
+		@header('Content-Language: '.config('page_lang', 'ru'));
+					
+		return parent::pre_show();
+	}
+
 	var $stb_visits = 0;
 	var $stb_num_replies = 0;
 }

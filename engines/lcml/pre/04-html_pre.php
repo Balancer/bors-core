@@ -17,7 +17,7 @@
 		$txt = preg_replace("!<a !","<html_a ", $txt);
 		$txt = preg_replace("!</a>!","</html_a>", $txt);
 
-		foreach(explode(' ', 'font') as $tag)
+		foreach(explode(' ', 'font iframe') as $tag)
 		{
 			$txt = preg_replace("!<$tag>!i","[html_$tag]", $txt);
 			$txt = preg_replace("!<$tag\s*/>!i","[html_$tag]", $txt);

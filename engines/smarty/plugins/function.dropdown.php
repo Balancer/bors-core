@@ -16,12 +16,20 @@ function smarty_function_dropdown($params, &$smarty)
 
 //	echo "==={$list}===";
 
-	if(preg_match("!^(\w+)\->(\w+)!", $list, $m))
+	if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))
 	{
 		if($m[1] == 'this')
 			$list = $obj->$m[2]();
 		else
 			$list = object_load($m[1])->$m[2]();
+	}
+	elseif(preg_match("!^(\w+)\->(\w+)\('(.+)'\)!", $list, $m))
+	{
+//		print_d($m);
+		if($m[1] == 'this')
+			$list = $obj->$m[2]($m[3]);
+		else
+			$list = object_load($m[1])->$m[2]($m[3]);
 	}
 	else
 	{

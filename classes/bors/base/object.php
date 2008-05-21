@@ -452,7 +452,8 @@ class base_object extends base_empty
 	
 	function access()  { return object_load($this->access_engine(), $this); }
 
-	function edit_url() { return $this->admin_url().'edit/'; }
+	function edit_url()  { return '/admin/edit/?object='.$this->internal_uri(); }
+	function admin_url() { return '/admin/?object='.$this->internal_uri(); }
 
 	var $_called_url;
 	function set_called_url($url) { return $this->_called_url = $url; }
@@ -557,7 +558,7 @@ class base_object extends base_empty
 		delete_cached_object($this);
 	}
 
-	function cache_parents() { return array(); }
+	function cache_children() { return array(); }
 
 	function cache_clean()
 	{
@@ -567,12 +568,12 @@ class base_object extends base_empty
 			$cleaned = array();
 				
 		$this->cache_clean_self();
-		foreach($this->cache_parents() as $parent_cache)
-		if($parent_cache && empty($cleaned[$parent_cache->internal_uri()]))
-		{
-			$cleaned[$parent_cache->internal_uri()] = 1;
-			$parent_cache->cache_clean();
-		}
+		foreach($this->cache_children() as $child_cache)
+			if($child_cache && empty($cleaned[$child_cache->internal_uri()]))
+			{
+				$cleaned[$child_cache->internal_uri()] = 1;
+				$child_cache->cache_clean();
+			}
 	}
 
 	function touch() { }

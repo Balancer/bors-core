@@ -6,7 +6,7 @@
 
     function lp_li($text)
     {
-        return "<li>".lcml($text)."</li>\n";
+        return "<li>".lcml($text)."</li>---save_cr---";
     }
 
     function lp_ul($text, $param)
@@ -16,7 +16,7 @@
 		else
 			$type = "";
 
-        return "<ul$type>\n".lcml($text)."</ul>\n";
+        return "<ul$type>---save_cr---".lcml($text)."</ul>---save_cr---";
     }
 
     function lp_ol($text, $param)
@@ -26,5 +26,5 @@
 		else
 			$type = "";
 			
-        return "<ol$type>\n".lcml($text)."</ol>\n";
+        return "<ol$type>---save_cr---".lcml($text)."</ol>---save_cr---";
     }

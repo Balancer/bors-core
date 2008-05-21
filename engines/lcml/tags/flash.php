@@ -65,6 +65,8 @@
 	function lp_html_a($inner, $params)
 	{
 		$params['href'] = preg_replace("!javascript!", "жабаскрипт", $params['href']);
+		if(preg_match('!&amp;!', $params['href']))
+			$params['href'] = html_entity_decode($params['href']);
 		return "<a ".make_enabled_params($params, 'href style').">".lcml($inner)."</a>";
 	}
 

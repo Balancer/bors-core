@@ -152,6 +152,8 @@ function save_cached_object(&$object, $delete = false)
 		{
 			if(preg_match("!^http://!", $class))
 			{
+//				echo "Load $class<br/>\n";
+			
 				if(preg_match('!^(.+)#(.+)$!', $class, $m))
 					$class = $m[1];
 	
@@ -232,9 +234,16 @@ function save_cached_object(&$object, $delete = false)
 				{
 					$args = array();
 					foreach(split(',', $m[3]) as $pair)
+					{
 						if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
-							$args[$mm[1]] = $match[$mm[2]+1];
-
+						{
+							if(is_numeric($mm[2]))
+								$args[$mm[1]] = $match[$mm[2]+1];
+							else
+								$args[$mm[1]] = $mm[2];
+						}
+					}
+					
 					$class_path = $m[1];
 					$id = $match[$m[2]+1];
 					

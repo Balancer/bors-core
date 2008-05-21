@@ -11,7 +11,7 @@ class module_nav_top extends base_page
 		$obj = &$this->id();
 
         return array(
-			'links' => $this->link_line(),
+			'links' => $this->link_line($this->args('show_self', true)),
 			'obj' => $obj,
 			'delim' => $this->args('delim', ' &#187; '),
 		);

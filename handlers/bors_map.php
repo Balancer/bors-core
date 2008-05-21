@@ -8,4 +8,8 @@
 		
 		'/admin/tools/delete/\?object=([^&]+).* => bors_tools_delete(1)',
 		'/admin/tools/delete/\?(.+) => bors_tools_delete(1)',
+
+		'/admin/\?object=([^&]+).* => bors_admin_main(1)',
+		'/admin/edit/\?object=([^&]+).* => bors_admin_edit(1)',
+		'/admin/logout/ => bors_admin_logout',
 	);

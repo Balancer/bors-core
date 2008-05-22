@@ -9,6 +9,9 @@ if(!defined("BORS_LOCAL"))
 if(!defined("BORS_HOST"))
 	define("BORS_HOST", $_SERVER['DOCUMENT_ROOT'].'/../.bors-host');
 
+if(!defined('BORS_3RD_PARTY'))
+	define('BORS_3RD_PARTY', dirname(__FILE__).'/../bors-third-party');
+
 function config_set($key, $value) { $GLOBALS['cms']['config'][$key] = $value; }
 function config($key, $def = NULL) { return isset($GLOBALS['cms']['config'][$key]) ? $GLOBALS['cms']['config'][$key] : $def; }
 
@@ -40,10 +43,7 @@ $includes = array(
 	BORS_CORE.'/PEAR',
 );
 
-if(defined('BORS_3RD_PARTY'))
-	$includes[] = BORS_3RD_PARTY;
-elseif(file_exists($dir_3rd = dirname(__FILE__).'/../bors-third-party'))
-	$includes[] = $dir_3rd;
+$includes[] = BORS_3RD_PARTY;
 
 $delim = empty($_ENV['windir']) ? ":" : ";";
 ini_set('include_path', ini_get('include_path') . $delim . join($delim, $includes));

@@ -203,8 +203,8 @@ class base_object extends base_empty
 	function preParseProcess() { return false; }
 	function preShowProcess() { return false; }
 
-	function pre_parse() { return $this->preParseProcess(); }
-	function pre_show() { return $this->preShowProcess(); }
+	function pre_parse($get = array()) { return $this->preParseProcess($get); }
+	function pre_show($get = array()) { return $this->preShowProcess($get); }
 
 	function set($field, $value, $db_update)
 	{

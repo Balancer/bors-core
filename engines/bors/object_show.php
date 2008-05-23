@@ -104,7 +104,7 @@
 
 				$form->set_modify_time(time(), true);
 				
-				$form->post_set();
+				$form->post_set($data);
 			}
 
 			bors()->changed_save();

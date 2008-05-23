@@ -231,6 +231,28 @@ function bors_search_get_word_id($word, $db = NULL)
 	return $GLOBALS['bors_search_get_word_id_cache'][$word] = $GLOBALS['bors_search_get_word_id_cache'][$original] = intval($word_id);
 }
 
+function bors_search_stem($word)
+{
+	static $Stemmer = NULL;
+	if(!$Stemmer)
+	{
+//		echo "**** New Stemmer ****\n";
+		include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
+		$Stemmer = new Lingua_Stem_Ru();
+	}
+	
+	return $Stemmer->stem_word($word);
+}
+
+function bors_search_stem_array($words)
+{
+	$result = array();
+	foreach($words as $w)
+		$result[$w] = bors_search_stem($w);
+	
+	return $result;
+}
+
 function bors_search_get_word_id_array($words, $db = NULL)
 {
 	$buffer = array();
@@ -238,16 +260,21 @@ function bors_search_get_word_id_array($words, $db = NULL)
 	if(!$db)
 		$db = &new DataBase(config('search_db'));
 
-	$list = array_map('addslashes', array_unique($words));
+	$stemmed_map = bors_search_stem_array($words);
+	$list = array_map('addslashes', array_unique(array_values($stemmed_map)));
 	$list = array_map(create_function('$s', "return \"'\$s'\";"), $list);
 
 	$ids = array();
+	$stem_ids = array();
 	
 	foreach($db->get_array("SELECT id, word FROM bors_search_words WHERE word IN (".join(",", $list).")") as $x)
-		$ids[$x['word']] = $x['id'];
-
-	foreach($words as $word)
+		$stem_ids[$x['word']] = $x['id'];
+	
+	foreach($stemmed_map as $word => $stemmed)
 	{
+		if(empty($ids[$word]))
+			$ids[$word] = @$stem_ids[$stemmed];
+			
 		if(empty($ids[$word]))
 			$ids[$word] = bors_search_get_word_id($word, $db);
 

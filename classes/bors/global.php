@@ -47,9 +47,12 @@ class bors_global extends base_empty
 				
 			$storage->save($obj);
 			save_cached_object($obj);
-					
+
 			if(config('search_autoindex') && $obj->auto_search_index())
+			{
 				bors_search_object_index($obj, 'replace');
+				bors_tools_tasks::add_task($obj, 'bors_task_index', 0, -10);
+			}
 		}
 			
 		$this->changed_objects = false;

@@ -5,7 +5,7 @@ function class_name_to_id($object)
 	if(is_object($object))
 		$class_name = get_class($object);
 	else
-		$class_name = "$object";
+		$class_name = $object;
 
 	if(strlen($class_name) > 64)
 	{

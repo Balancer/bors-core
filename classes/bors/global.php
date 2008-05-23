@@ -50,8 +50,10 @@ class bors_global extends base_empty
 
 			if(config('search_autoindex') && $obj->auto_search_index())
 			{
-				bors_search_object_index($obj, 'replace');
-				bors_tools_tasks::add_task($obj, 'bors_task_index', 0, -10);
+				if(config('bors_tasks'))
+					bors_tools_tasks::add_task($obj, 'bors_task_index', 0, -10);
+				else
+					bors_search_object_index($obj, 'replace');
 			}
 		}
 			

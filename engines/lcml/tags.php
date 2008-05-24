@@ -242,18 +242,29 @@
 			}
         }
 
+//		print_d($in);
+
 		if(preg_match_all("!(\w+)=\"([^\"]+)\"!", $in, $match, PREG_SET_ORDER))
 		{
-//			$params['match'] = print_r($match, true);
+//			print_d($match);
 			foreach($match as $m)
 				$params[$m[1]] = $m[2];
 		}
-
+		
 		if(preg_match_all("!(\w+)='([^']+)'!", $in, $match, PREG_SET_ORDER))
+		{
+//			print_d($match);
 			foreach($match as $m)
 				$params[$m[1]] = $m[2];
-
-
+		}
+		
+		if(preg_match_all("!(\w+)=(\S+)!", $in, $match, PREG_SET_ORDER))
+		{
+//			print_d($match);
+			foreach($match as $m)
+				$params[$m[1]] = preg_replace('!^(/forum/smilies/)!', 'http://airbase.ru$1', $m[2]);
+		}
+		
         if(empty($params['uri']))
 			$params['uri'] = @$params['url'];
 

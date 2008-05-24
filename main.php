@@ -124,9 +124,9 @@
     list($usec, $sec) = explode(" ",microtime());
     $time = ((float)$usec + (float)$sec) - $GLOBALS['stat']['start_microtime'];
 
-	if($time > 1)
+	if($time > config('timing_limit'))
 	{
-		@file_put_contents($file = $_SERVER['DOCUMENT_ROOT']."/cms/logs/timing.log", $time . " [".$uri . "]: " . @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
+		@file_put_contents($file = config('timing_log'), $time . " [".$uri . "]: " . @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 		@chmod($file, 0666);
 	}
 

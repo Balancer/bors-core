@@ -46,18 +46,20 @@ function load_cached_object($class_name, $id, $args)
 			
 //	if($class_name == 'forum_user' && $GLOBALS['me']->id == 10000) debug_trace();
 		
-//	if($GLOBALS['me']->id == 10000)  {	echo "Check load for <b>$class_name</b>('$id',".serialize($args)."<br />"; }
 	if($obj = @$GLOBALS['bors_data']['cached_objects3'][$class_name][$id])
 	{
+//		echo "Found in memory <b>$class_name</b>('$id'); can_cached={$obj->can_cached()}<br />";
 //		if($GLOBALS['me']->id == 10000)  {	echo "Found <b>$class_name</b>('$id',".serialize($args)."<br />"; }
 		if($obj->can_cached())
 			return $obj;
 	}
+
+//	echo "Try load $class_name($id) from memcached<br />";
 		
-	if(config('memcached') && !is_object($id))
+	if(($memcache = config('memcached_instance')) && !is_object($id))
 	{
-		$memcache = &new Memcache;
-		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
+//		$memcache = &new Memcache;
+//		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
 				
 //		echo "got ".$class_name.'://'.$id.','.serialize($page)."<br />\n";
 
@@ -79,13 +81,16 @@ function save_cached_object(&$object, $delete = false)
 	if(!method_exists($object, 'id') || is_object($object->id()))
 		return;
 
-	if(config('memcached') && $object->can_cached())
+//	echo "Try store memcached {$object->internal_uri()} with can_cached={$object->can_cached()}; config('memcached')=".config('memcached')."<br />";
+	if(($memcache = config('memcached_instance')) && $object->can_cached())
 	{
-		$memcache = &new Memcache;
-		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
+//		$memcache = &new Memcache;
+//		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
 				
 		$hash = 'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
 			
+//		echo "Store $hash<br/>";
+		
 		if($delete)
 			@$memcache->delete($hash);
 		else

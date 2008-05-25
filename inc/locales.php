@@ -8,7 +8,11 @@ function tr($txt)
 
 function ec($txt)
 {
-	return iconv('utf-8', config('charset', 'utf-8').'//translit', $txt);
+	$charset = config('charset', 'utf-8');
+	if($charset == 'utf-8')
+		return $txt;
+		
+	return iconv('utf-8', $charset.'//translit', $txt);
 }
 
 function dc($txt)

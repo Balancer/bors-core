@@ -561,19 +561,22 @@ class base_object extends base_empty
 
 	function cache_children() { return array(); }
 
-	function cache_clean()
+	function cache_clean($clean_object = NULL)
 	{
 		global $cleaned;
+		
+		if(!$clean_object)
+			$clean_object = $this;
 
 		if(empty($cleaned))
 			$cleaned = array();
 				
-		$this->cache_clean_self();
+		$this->cache_clean_self($clean_object);
 		foreach($this->cache_children() as $child_cache)
 			if($child_cache && empty($cleaned[$child_cache->internal_uri()]))
 			{
 				$cleaned[$child_cache->internal_uri()] = 1;
-				$child_cache->cache_clean();
+				$child_cache->cache_clean($clean_object);
 			}
 	}
 

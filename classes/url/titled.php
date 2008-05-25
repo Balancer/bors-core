@@ -9,7 +9,10 @@ class url_titled extends url_base
 	{
 		global $bors_url_titled_cache;
 		$obj = $this->id();
-	
+
+		if(!is_object($obj))
+			return "/?msg=Unknown url_titled page '{$obj}'";
+
 		if(preg_match("!^http://!", $obj->id()))
 			return $obj->id();
 			

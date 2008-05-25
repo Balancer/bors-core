@@ -461,10 +461,10 @@ class base_object extends base_empty
 	function called_url() { return $this->_called_url; }
 	
 	var $stb_url_engine = 'url_calling';
-	private $_url_engine = NULL;
+	private $_url_engine = false;
 	function url($page=1)
 	{
-		if(!$this->_url_engine)
+		if(!$this->_url_engine || !$this->_url_engine->id())
 		{
 			$this->_url_engine = object_load($this->url_engine(), $this);
 			if(!$this->_url_engine)

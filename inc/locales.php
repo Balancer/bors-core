@@ -17,5 +17,5 @@ function ec($txt)
 
 function dc($txt)
 {
-	return iconv("{$GLOBALS['cms']['charset']}", 'utf-8', $txt);
+	return iconv(config('charset'), 'utf-8', $txt);
 }

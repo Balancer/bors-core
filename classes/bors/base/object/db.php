@@ -33,7 +33,7 @@ class base_object_db extends base_object
 		if($this->id())
 			$data[$this->id_field()] = $this->id();
 
-		$this->db->insert($tab, $data);
+		$this->db->insert_ignore($tab, $data);
 		
 		if(!$this->id())
 			$this->set_id($this->db->get_last_id());

@@ -71,6 +71,13 @@ $GLOBALS['now'] = time();
 
 function bors_init()
 {
+	if(config('memcached'))
+	{
+		$memcache = &new Memcache;
+		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
+		config_set('memcached_instance', &$memcache);
+	}
+
 	require_once('engines/bors.php');
 
 	require_once('engines/lcml.php');

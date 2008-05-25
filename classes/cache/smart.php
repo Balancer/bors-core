@@ -19,10 +19,10 @@ class cache_smart extends cache_base
 		if(config('cache_disabled'))
 			return $this->last = $default;
 
-		if(config('memcached'))
+		if($memcache = config('memcached_instance'))
 		{
-			$memcache = &new Memcache;
-			$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
+//			$memcache = &new Memcache;
+//			$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
 
 			@$GLOBALS['bors_stat_smart_cache_gets_total']++;
 			if($x = @$memcache->get('phpmv3'.$this->last_hmd))
@@ -72,10 +72,10 @@ class cache_smart extends cache_base
 
 		// Если время хранения отрицательное - используется только memcached, при его наличии.
 		
-		if(config('memcached'))
+		if($memcache = config('memcached_instance'))
 		{
-			$memcache = &new Memcache;
-			$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
+//			$memcache = &new Memcache;
+//			$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
 			@$memcache->set('phpmv3'.$this->last_hmd, $value, true, abs($time_to_expire));
 		}
 		else

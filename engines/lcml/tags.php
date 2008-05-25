@@ -258,7 +258,7 @@
 				$params[$m[1]] = $m[2];
 		}
 		
-		if(preg_match_all("!(\w+)=(\S+)!", $in, $match, PREG_SET_ORDER))
+		if(preg_match_all("!(\w+)=([^\"'\s]+)!", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)

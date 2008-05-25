@@ -1,5 +1,7 @@
 <?php
-//	ini_set("xdebug.profiler_enable", "1");
+//	if($_SERVER['REMOTE_ADDR'] == '89.178.142.225')
+//		$_GET['XDEBUG_PROFILE'] = 1;
+//		ini_set("xdebug.profiler_enable", "1");
 
 	if(preg_match('!^([^?]+)\?(.+)$!', $_SERVER['REQUEST_URI'], $m))
 	{

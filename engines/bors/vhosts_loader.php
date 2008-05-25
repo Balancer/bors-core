@@ -22,7 +22,11 @@
 			
 		$map = array();
 
-		if(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
+		if(file_exists($file = BORS_HOST.'/vhosts/'.$host.'/handlers/bors_map.php'))
+			include($file);
+		elseif(file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
+			include($file);
+		elseif(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
 			include($file);
 
 		$map2 = $map;

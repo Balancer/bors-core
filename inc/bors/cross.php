@@ -33,6 +33,13 @@ function bors_get_cross_ids($object, $to_class = '', $dbh = NULL)
 	return $result;
 }
 
+function bors_cross_object_init($row)
+{
+	$obj = object_load($row['class_id'], $row['object_id']);
+	$obj->set_sort_order($row['sort_order'], false);
+	return $obj;
+}
+
 function bors_get_cross_objs($object, $to_class = '', $dbh = NULL)
 {
 	if(!$dbh)
@@ -51,15 +58,15 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL)
 
 	$result = array();
 
-	$dbh->query("SELECT to_class, to_id FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} ORDER BY `order`, to_id");
+	$dbh->query("SELECT to_class as class_id, to_id as object_id, `order` as sort_order FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} ORDER BY `order`, to_id");
 				
 	while($row = $dbh->fetch_row())
-		$result[] = object_load($row['to_class'], $row['to_id']);
+		$result[] = bors_cross_object_init($row);
 
-	$dbh->query("SELECT from_class, from_id FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} ORDER BY `order`, from_id");
+	$dbh->query("SELECT from_class as class_id, from_id as object_id, `order` as sort_order FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} ORDER BY `order`, from_id");
 				
 	while($row = $dbh->fetch_row())
-		$result[] = object_load($row['from_class'], $row['from_id']);
+		$result[] = bors_cross_object_init($row);
 	
 	return $result;
 }

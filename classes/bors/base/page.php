@@ -14,7 +14,7 @@ class base_page extends base_object
 
 	function pages_links($css='pages_select')
 	{
-		include_once("funcs/design/page_split.php");
+		include_once("inc/design/page_split.php");
 		$pages = '<li>'.join('</li><li>', pages_show($this, $this->total_pages(), $this->items_around_page())).'</li>';
 
 		if($this->total_pages() > 1)

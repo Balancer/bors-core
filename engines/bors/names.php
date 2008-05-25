@@ -3,13 +3,13 @@
 function class_name_to_id($object)
 {
 	if(is_object($object))
-		$class_name = get_class($object);
+		$class_name = $object->extends_class();
 	else
 		$class_name = $object;
 
 	if(strlen($class_name) > 64)
 	{
-		echo 0/0;
+		debug_trace();
 		exit("Too long class name: '$class_name'");
 	}
 

@@ -119,7 +119,7 @@ class base_object extends base_empty
 	function sharp_not_comment() { return true; }
 	function html_disable() { return true; }
 
-	var $_class_id;
+	private $_class_id;
 	function class_id()
 	{
 		if(empty($this->_class_id))
@@ -615,5 +615,29 @@ class base_object extends base_empty
 
 	function post_set() { }
 	
+	private $sort_order = 0;
+	function sort_order() { return $this->sort_order; }
+	function set_sort_order($value) { return $this->sort_order = $value; }
+
 	function static_get_cache() { return false; }
+
+	function change_time($exactly = false)
+	{
+		$changed = max($this->create_time(true), $this->modify_time(true));
+		return $changed || $exactly ? $changed : time();
+	}
+
+	function extends_class() { return $this->class_name(); }
+
+	private $extends_class_id;
+	function extends_class_id()
+	{
+		if(empty($this->extends_class_id))
+			$this->extends_class_id = class_name_to_id($this->extends_class());
+
+		return $this->extends_class_id;
+	}
+
+	var $stb_owner_id = NULL;
+	function owner() { return NULL; }
 }

@@ -78,7 +78,7 @@ class base_object_db extends base_object
 			debug_exit("Try to delete empty id field in class ".__FILE__.":".__LINE__);
 		
 		require_once('inc/bors/cross.php');
-		bors_remove_cross_to($this->class_name(), $this->id(), $this->db());
+		bors_remove_cross_to($this->class_name(), $this->id());
 		$this->db()->delete($tab, array($id_field.'=' => $this->id()));
 	}
 }

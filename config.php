@@ -36,16 +36,17 @@ require_once('config/default.php');
 
 $host = @$_SERVER['HTTP_HOST'];
 
+$vhost = '/vhosts/'.@$_SERVER['HTTP_HOST'];
 $includes = array(
-	BORS_HOST,
-	@BORS_CORE."/vhosts/{$host}",
+	BORS_LOCAL.$vhost,
 	BORS_LOCAL,
+	BORS_HOST.$vhost,
+	BORS_HOST,
 	"{$_SERVER['DOCUMENT_ROOT']}/include",
 	BORS_CORE,
 	BORS_CORE.'/PEAR',
+	BORS_3RD_PARTY,
 );
-
-$includes[] = BORS_3RD_PARTY;
 
 $delim = empty($_ENV['windir']) ? ":" : ";";
 ini_set('include_path', ini_get('include_path') . $delim . join($delim, $includes));
@@ -92,7 +93,7 @@ function bors_init()
 function bors_dirs()
 {
 	$vhost = '/vhosts/'.@$_SERVER['HTTP_HOST'];
-	return array_unique(array(BORS_HOST, BORS_LOCAL.$vhost, BORS_LOCAL, BORS_CORE.$vhost, BORS_CORE));
+	return array_unique(array(BORS_LOCAL.$vhost, BORS_LOCAL, BORS_HOST.$vhost, BORS_HOST, BORS_CORE));
 }
 
 function bors_include($file, $warn = false)

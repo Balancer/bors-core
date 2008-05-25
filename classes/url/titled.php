@@ -11,7 +11,7 @@ class url_titled extends url_base
 		$obj = $this->id();
 
 		if(!is_object($obj))
-			return "/?msg=Unknown url_titled page '{$obj}'";
+			debug_exit("Unknown url_titled {$this->id()}");
 
 		if(preg_match("!^http://!", $obj->id()))
 			return $obj->id();

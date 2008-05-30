@@ -40,7 +40,7 @@ class module_nav_top extends base_page
 			$links = array();
 		
 			$parent_obj = object_load($parent);
-			if(!$parent_obj)
+			if(!$parent_obj || $parent_obj == $obj)
 				continue;
 			
 			$shown[] = $parent_obj;

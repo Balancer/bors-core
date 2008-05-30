@@ -156,5 +156,5 @@ function make_input_time($field_name, &$data)
 
 function full_hdate($date, $show_year = true)
 {
-	return strftime('%d ', $date).month_name_rp(strftime('%m', $date)).($show_year ? ec(strftime(' %Y года', $date)) : '');
+	return intval(strftime('%d', $date)).' '.strtolower(month_name_rp(strftime('%m', $date))).($show_year ? ec(strftime(' %Y года', $date)) : '');
 }

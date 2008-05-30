@@ -33,6 +33,9 @@
     
     function smarty_resource_file_get_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
     {
+//		echo "gts for $tpl_name / {$smarty->template_dir}<br/>\n";
+//		print_d($smarty);
+	
 		$found = false;
 	
 		if(file_exists($tpl_name))
@@ -41,27 +44,37 @@
 			$found = true;
 		}
 
-		if(file_exists($fn = $smarty->template_dir."/".$tpl_name))
+		if(!$found && file_exists($fn = $smarty->template_dir."/".$tpl_name))
 		{
 			$tpl_timestamp = filemtime($fn);
 			$found = true;
 		}
 
-		foreach(bors_dirs() as $dir)
+		if(!$found)
 		{
-			if(file_exists($fn = $dir.'/templates/'.$tpl_name))
+			foreach(bors_dirs() as $dir)
 			{
-				$tpl_timestamp = filemtime($fn);
-				$found = true;
-				break;
+				if(file_exists($fn = $dir.'/templates/'.$tpl_name))
+				{
+					$tpl_timestamp = filemtime($fn);
+					$found = true;
+					break;
+				}
+
+				if(file_exists($fn = $dir.'/templates/'.dirname(config('default_template')).'/'.$tpl_name))
+				{
+					$tpl_timestamp = filemtime($fn);
+					$found = true;
+					break;
+				}
 			}
 		}
-
+		
 		if(!$found)
 			return false;
 
-		if(!empty($GLOBALS['cms']['templates_cache_disabled']))
-			$tpl_timestamp = $GLOBALS['now'];
+		if(config('templates_cache_disabled'))
+			$tpl_timestamp = time();
 
         return true;
     }

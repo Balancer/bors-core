@@ -11,7 +11,7 @@ class base_rss extends base_object
 
 	function render($obj)
 	{
-		include("3part/feedcreator.class.php"); 
+		include("feedcreator.class.php"); 
 
 		$rss = &new UniversalFeedCreator(); 
 		$rss->useCached("RSS2.0", '/tmp/rss-'.md5($obj->url()).'.xml', config('rss_static_lifetime'));

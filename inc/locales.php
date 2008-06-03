@@ -17,5 +17,9 @@ function ec($txt)
 
 function dc($txt)
 {
-	return iconv(config('charset'), 'utf-8', $txt);
+	$charset = config('charset', 'utf-8');
+	if($charset == 'utf-8')
+		return $txt;
+
+	return iconv($charset, 'utf-8', $txt);
 }

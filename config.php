@@ -118,4 +118,21 @@ function bors_include($file, $warn = false)
 	echo $message;
 }
 
+function ungpc(&$array)
+{
+	$result = array();
+
+	foreach($array as $key => $val)
+	{
+		if(is_array($val))
+			$result[$key] = ungpc($val);
+		else
+			$result[$key] = stripslashes($val);
+	}
+	return $array = $result;
+}
+
+if(get_magic_quotes_gpc() && $_POST)
+	ungpc($_POST);
+
 bors_init();

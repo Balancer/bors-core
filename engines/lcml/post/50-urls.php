@@ -67,6 +67,9 @@
                 return "<a href=\"{$original_url}\">$title</a>";
         }
 
+		if(!function_exists('curl_init'))
+	        return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";
+
 		$header = array();
 		$header[] = "Accept-Charset: {$GLOBALS['lcml_request_charset_default']}";
 		$header[] = "Accept-Language: ru, en";

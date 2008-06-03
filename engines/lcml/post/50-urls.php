@@ -60,7 +60,7 @@
 		if(preg_match("!/[^/]+\.[^/]+$!", $pure_url) && !preg_match("!\.(html|htm|phtml|shtml|jsp|pl|php|php4|php5|cgi)$!i", $pure_url))
 	    	    return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";
 
-		if(!$query && class_exists('DataBaseHTS'))
+		if(!$query && class_exists('DataBaseHTS') && config('hts_db'))
         {
             $hts = &new DataBaseHTS($url);
             if($title = $hts->get('title'))

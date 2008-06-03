@@ -12,13 +12,13 @@ class base_page extends base_object
 
 	function items_around_page() { return 8; }
 
-	function pages_links($css='pages_select')
+	function pages_links($css='pages_select', $before='', $after='')
 	{
 		include_once("inc/design/page_split.php");
 		$pages = '<li>'.join('</li><li>', pages_show($this, $this->total_pages(), $this->items_around_page())).'</li>';
 
 		if($this->total_pages() > 1)
-			return '<div class="'.$css.ec('"><ul><li>Страницы:</li>').$pages.'</ul></div>';
+			return '<div class="'.$css.'">'.$before.ec('<ul><li>Страницы:</li>').$pages.'</ul>'.$after.'</div>';
 		else
 			return '';
 	}

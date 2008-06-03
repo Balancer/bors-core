@@ -2,12 +2,12 @@
 <ul class="menu-level1">
 <li{if $x.selected} class="selected"{/if}>{$x.obj|get:nav_named_url}</li>
 {if $x.children}
-<ul>
+<li><ul>
 {foreach from=$x.children item=sc}
 <li{if $sc.selected} class="selected"{/if}>{$sc.obj|get:nav_named_url}</li>
 {/foreach}
-</ul>
-<div style="height: 17px;"></div>
+</ul></li>
+<li><div style="height: 17px;"></div></li>
 {/if}
 </ul>
 {/foreach}

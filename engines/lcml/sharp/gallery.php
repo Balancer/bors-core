@@ -1,5 +1,5 @@
 <?
-//    require_once('funcs/images/fill.php');
+    require_once('funcs/images/fill.php');
 
     function lsp_gallery($txt, $title) 
     { 
@@ -18,7 +18,9 @@
 			@list($iimg, $description, $copyright, $author, $uri) = @split("\|", $s);
 			
 //			echo "($iimg, $description, $copyright, $author, uri=$uri)";
-			
+
+//			file_put_contents('/var/www/.bors/logs/gallery-22.log', print_r($_SERVER, true), FILE_APPEND);
+	
 			$img = fill_image_data($iimg, $page);
             
             if(!$img)

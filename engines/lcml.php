@@ -124,11 +124,14 @@ function lcml($txt, $params = array ())
 
 	$txt = ext_load(dirname(__FILE__).'/lcml/pre', $txt);
 
-	include_once ('lcml/sharp.php');
-
 	$mask = str_repeat('.', strlen($txt));
-	$txt = lcml_sharp($txt, $mask);
 
+	if(!config('lcml_sharp_markup_skip'))
+	{
+		include_once ('lcml/sharp.php');
+		$txt = lcml_sharp($txt, $mask);
+	}
+	
 	include_once ("lcml/tags.php");
 	$txt = lcml_tags($txt, $mask);
 

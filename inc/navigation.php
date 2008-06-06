@@ -6,7 +6,7 @@
 		bors()->changed_save();
 	
 		if(config('do_not_exit'))
-			debug_exit("Go to $uri");
+			debug_exit("Go to <a href=\"{$uri}\">{$uri}</a>");
 	
         if(!headers_sent($filename, $linenum) && $time==0) 
         {
@@ -20,7 +20,7 @@
 			header("Location: $uri");
 
 			if($exit)
-	            exit();
+				bors_exit();
         }
 
 //		if($text)
@@ -31,7 +31,7 @@
 //        debug("headers already out in $filename:$linenum");
 
 		if($exit)
-	        exit();
+			bors_exit();
 
 		return true;
     }

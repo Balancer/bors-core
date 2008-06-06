@@ -15,11 +15,16 @@ function ec($txt)
 	return iconv('utf-8', $charset.'//translit', $txt);
 }
 
-function dc($txt)
+function dc($txt, $charset_from = NULL, $charset_to = NULL)
 {
-	$charset = config('charset', 'utf-8');
-	if($charset == 'utf-8')
+	if(!$charset_to)
+		$charset_to = config('charset', 'utf-8');
+
+	if(!$charset_from)
+		$charset_from = config('charset', 'utf-8');
+
+	if($charset_from == $charset_to)
 		return $txt;
 
-	return iconv($charset, 'utf-8', $txt);
+	return iconv($charset_from, $charset_to, $txt);
 }

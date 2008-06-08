@@ -140,7 +140,7 @@ class storage_db_mysql_smart extends base_null
 						}
 						else
 						{
-							$current_tab = "`tab".($tab_count++)."`";
+							$current_tab = '`'.$table_name.'`'; // "`tab".($tab_count++)."`";
 							$ids[$current_tab] = $def_id;
 //							echo "{$ids}[{$current_tab}] = {$def_id};<br />";
 							$current_tab_prefix = "{$current_tab}.";
@@ -148,7 +148,7 @@ class storage_db_mysql_smart extends base_null
 						
 						if(empty($from))
 						{
-							$from = $is_one_table ? "FROM `{$table_name}`" : "FROM `{$table_name}` AS {$current_tab}";
+							$from = ($is_one_table || "`{$table_name}`" == $current_tab) ? "FROM `{$table_name}`" : "FROM `{$table_name}` AS {$current_tab}";
 							if(!$where && !$only_count)
 								$where = 'WHERE '.make_id_field($current_tab, $id_field);
 						}

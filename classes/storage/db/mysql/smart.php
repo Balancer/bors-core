@@ -142,7 +142,9 @@ class storage_db_mysql_smart extends base_null
 						{
 							$current_tab = '`'.$table_name.'`'; // "`tab".($tab_count++)."`";
 							$ids[$current_tab] = $def_id;
-//							echo "{$ids}[{$current_tab}] = {$def_id};<br />";
+							$tab_names[$tab_count++] = $current_tab;
+							if(empty($main_tab))
+								$main_tab = $current_tab;
 							$current_tab_prefix = "{$current_tab}.";
 						}
 						
@@ -154,9 +156,8 @@ class storage_db_mysql_smart extends base_null
 						}
 						else
 						{
-						
 							if($common_where !== NULL)
-								$on = "$current_tab.$id_field = `tab0`.`".$ids['`tab0`']."`";
+								$on = "$current_tab.$id_field = $main_tab.`".$ids[$main_tab]."`";
 						 	else
 								$on	= make_id_field($current_tab, $id_field);
 
@@ -178,12 +179,12 @@ class storage_db_mysql_smart extends base_null
 			  if($common_where !== NULL)
 			  {
 			  	$sel = NULL;
-			 	if(@$ids['`tab0`'] && $ids['`tab0`'] != 'id')
+			 	if(@$ids[$main_tab] && $ids[$main_tab] != 'id')
 				{
 					if($is_one_table)
-						$sel = $ids['`tab0`'];
+						$sel = $ids[$main_tab];
 					else
-						$sel = "`tab0`.{$ids['`tab0`']}";
+						$sel = "$main_tab.{$ids[$main_tab]}";
 				}
 				
 				if($sel)

@@ -19,7 +19,12 @@ function mysql_where_compile($conditions_array)
 //		echo "$field_cond  $value<br/>\n";
 
 		if(preg_match('! IN$!', $field_cond))
-			$where[] = $field_cond . '(' . $value . ')';
+		{
+			if(is_array($value))
+				$value = join(',', array_map('addslashes', $value));
+
+			$where[] = mysql_bors_join_parse($field_cond) . '(' . $value . ')';
+		}
 		elseif(is_numeric($field_cond))
 			$where[] = $value;
 		else
@@ -64,14 +69,42 @@ function mysql_limits_compile($args)
 	return 'LIMIT '.$start.','.$per_page;
 }
 
+function bors_class_field_to_db($class, $field = NULL)
+{
+	$def = $class.'.'.$field;
+	if(!class_exists($class))
+		return $def;
+
+	$table	 = call_user_func(array($class, 'main_table_storage'));
+	$fields	 = call_user_func(array($class, 'main_table_fields'));
+
+	return $field ? $table.'.'.$fields[$field] : $table;
+}
+
+function mysql_bors_join_parse($join)
+{
+	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
+	$join = preg_replace('!(\w+)\.(\w+)!e', 'bors_class_field_to_db("$1", "$2")', $join);
+//	echo "$join<br/>";
+	return $join;
+}
+
 function mysql_args_compile($args)
 {
-	$join = "";
+	$join = '';
 	if(!empty($args['inner_join']))
 	{
-		foreach($args['inner_join'] as $j)
-			$join .= "INNER JOIN {$j} ";
-
+		$join = array();
+		if(is_array($args['inner_join']))
+		{
+			foreach($args['inner_join'] as $j)
+				$join[] = "INNER JOIN {$j}";
+		}
+		else
+			$join[] = 'INNER JOIN '.mysql_bors_join_parse($args['inner_join']);
+		
+		$join = join(' ', $join);
+		
 		unset($args['inner_join']);
 	}
 

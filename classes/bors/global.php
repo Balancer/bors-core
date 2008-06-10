@@ -64,7 +64,7 @@ class bors_global extends base_empty
 	{
 		require_once('funcs/templates/bors.php');
 		$object->template_data_fill();
-		return template_assign_bors_object($object);
+		return template_assign_bors_object($object, NULL, true);
 	}
 		
 	function show($object)

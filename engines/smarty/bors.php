@@ -2,7 +2,7 @@
 
 require_once("bors_smarty_common.php");
 
-function template_assign_bors_object($obj, $template = NULL)
+function template_assign_bors_object($obj, $template = NULL, $global = false)
 {
 	require_once(config('smarty_path').'/Smarty.class.php');
 	$smarty = &new Smarty;
@@ -58,7 +58,7 @@ function template_assign_bors_object($obj, $template = NULL)
 //	print_d($obj->local_template_data_array());
 	foreach($obj->local_template_data_array() as $var => $value)
 		$smarty->assign($var, $value);
-		
+
 	$template = smarty_template($template ? $template : $obj->template());
 	if(!$smarty->template_exists($template))
 		$template = smarty_template($template);
@@ -74,6 +74,15 @@ function template_assign_bors_object($obj, $template = NULL)
 
 //	if(!$caching)
 //		$smarty->clear_cache($template, $obj->url());
+
+	if($global)
+	{
+		foreach($obj->global_template_data_array() as $var => $value)
+			$smarty->assign($var, $value);
+
+		foreach($obj->global_template_data_set() as $var => $value)
+			$smarty->assign($var, $value);
+	}
 
 	if(!empty($GLOBALS['stat']['start_microtime']))
 	{

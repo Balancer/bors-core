@@ -305,7 +305,7 @@ class base_object extends base_empty
 	function cache_static() { return 0; }
 //	var $stb_cache_static = 0;
 	
-	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
+	function titled_url($append=NULL) { return '<a href="'.$this->url($this->page()).'"'.($append?' '.$append:'').">{$this->title()}</a>"; }
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
 	function titled_admin_url() { return '<a href="'.$this->admin_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
 	function titled_edit_url() { return '<a href="'.$this->edit_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }

@@ -30,6 +30,7 @@
            }
        }
        $out[] = $word;
+	   
        return $out;
    }
 
@@ -80,10 +81,10 @@
                         $d = trim($m[2]);
                         $tab->setRowSpan($m[1]);
                     }
-					
+
                     if($d == '')
                         $d = '&nbsp;';
-					elseif($lcml_parse_cells)
+					elseif($lcml_parse_cells and !preg_match('!^[\w,\-\+\.]+$!', $d))
 						$d = lcml($d);
 					
                     $tab->append($d);

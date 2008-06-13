@@ -153,7 +153,7 @@
 			{
 			    require_once('engines/smarty/bors.php');
 				$obj->template_data_fill();
-				$content = template_assign_bors_object($obj);
+				$content = template_assign_bors_object($obj, NULL, true);
 			}
 
 		}

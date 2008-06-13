@@ -378,7 +378,7 @@ function save_cached_object(&$object, $delete = false)
 				{
 					$class_path = $m[1];
 					$id = $match[$m[2]+1];
-					$page = intval(@$match[$m[3]+1]);
+					$page = @$match[$m[3]+1];
 				}
 				elseif(preg_match("!^(.+)\((\d+)\)$!", $class_path, $class_match))	
 				{

@@ -9,6 +9,6 @@ class render_fullpage extends base_null
 		if(!$object->loaded() && !$object->can_be_empty())
 			return false;
 			
-		return template_assign_bors_object($object, 'empty.html');
+		return template_assign_bors_object($object, 'empty.html', true);
 	}
 }

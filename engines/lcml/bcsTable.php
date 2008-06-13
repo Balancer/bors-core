@@ -113,7 +113,10 @@
 					if(@$this->row_spans[$r][$c] < 0)
 						continue;
 						
-					$data = empty($this->data[$r][$c]) ? '&nbsp;' : $this->data[$r][$c];
+					$data = @$this->data[$r][$c];
+						if($data == '')
+							$data = '&nbsp;';
+							
                     $tx = !empty($this->heads[$r][$c]) ? 'th' : 'td';
 					$colspan = @$this->col_spans[$r][$c] > 1 ? " colSpan=\"".$this->col_spans[$r][$c]."\"" : "";
 					$rowspan = @$this->row_spans[$r][$c] > 1 ? " rowSpan=\"".$this->row_spans[$r][$c]."\"" : "";

@@ -71,9 +71,9 @@ function mysql_limits_compile($args)
 
 function bors_class_field_to_db($class, $field = NULL)
 {
-	$def = $class.'.'.$field;
 	if(!class_exists($class))
-		return $def;
+		return $field ? $class.'.'.$field : $class;
+
 
 	$table	 = call_user_func(array($class, 'main_table_storage'));
 	$fields	 = call_user_func(array($class, 'main_table_fields'));
@@ -98,7 +98,7 @@ function mysql_args_compile($args)
 		if(is_array($args['inner_join']))
 		{
 			foreach($args['inner_join'] as $j)
-				$join[] = "INNER JOIN {$j}";
+				$join[] = 'INNER JOIN '.mysql_bors_join_parse($j);
 		}
 		else
 			$join[] = 'INNER JOIN '.mysql_bors_join_parse($args['inner_join']);

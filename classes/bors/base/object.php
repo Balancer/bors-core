@@ -140,6 +140,11 @@ class base_object extends base_empty
 	function local_template_data_set() { return array(); }
 	function local_template_data_array() { return $this->template_data; }
 
+	private $global_template_data = array();
+	function add_global_template_data($var_name, $value) { return $this->global_template_data[$var_name] = $value; }
+	function global_template_data_set() { return array(); }
+	function global_template_data_array() { return $this->global_template_data; }
+
 	static function add_template_data_array($var_name, $value)
 	{
 		if(preg_match('!^(.+)\[(.+)\]$!', $var_name, $m))
@@ -305,7 +310,7 @@ class base_object extends base_empty
 	function cache_static() { return 0; }
 //	var $stb_cache_static = 0;
 	
-	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
+	function titled_url($append=NULL) { return '<a href="'.$this->url($this->page()).'"'.($append?' '.$append:'').">{$this->title()}</a>"; }
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
 	function titled_admin_url() { return '<a href="'.$this->admin_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
 	function titled_edit_url() { return '<a href="'.$this->edit_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }

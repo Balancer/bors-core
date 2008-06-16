@@ -59,5 +59,6 @@ class base_cross extends base_page_db
 		return in_array($to_id, $this->to_cross_ids());
 	}
 
-	function storage_engine() { return ''; }
+	function storage_engine() { return 'storage_db_mysql'; }
+	function can_be_empty() { return true; }
 }

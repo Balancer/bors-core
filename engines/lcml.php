@@ -65,6 +65,7 @@ function lcml($txt, $params = array ())
 
 	if($ch->get($ch_type, $ch_key, $params['uri'])
 				&& empty ($params['cache_disable'])
+				&& !config('cache_disabled')
 				&& $GLOBALS['lcml']['level'] < 2
 			)
 		return rest_return($ch->last(), $saved_params);

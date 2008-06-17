@@ -30,7 +30,7 @@ class cache_static extends base_object_db
 		foreach($caches as $cache)
 		{
 			@unlink($cache->id());
-			if(!file_exists($this->id()))
+			if(!file_exists($cache->id()))
 				$cache->delete();
 		}
 	}
@@ -38,6 +38,9 @@ class cache_static extends base_object_db
 	static function save($object, $content)
 	{
 		$file = $object->static_file();
+		if(!$file) // TODO: отловить
+			return;
+			
 		$cache = object_load('cache_static', $file);
 		if(!$cache)
 			$cache = object_new_instance('cache_static', $file);
@@ -53,6 +56,7 @@ class cache_static extends base_object_db
 
 		bors()->changed_save();
 
-		file_put_contents($file, $content);
+		@mkdir(dirname($file), true);
+		@file_put_contents($file, $content);
 	}
 }

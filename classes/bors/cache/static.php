@@ -37,13 +37,20 @@ class cache_static extends base_object_db
 	
 	static function save($object, $content)
 	{
+		$object_id = $object->id();
+		if(!$object_id && !is_numeric($object_id))
+			return;
+	
 		$file = $object->static_file();
 		if(!$file) // TODO: отловить
 			return;
-			
-		$cache = object_load('cache_static', $file);
-		if(!$cache)
-			$cache = object_new_instance('cache_static', $file);
+		
+		//TODO: отловить кеш-запись постов при добавлении нового сообщения. (class_id = 1)
+		
+		bors()->changed_save();
+		
+		$cache = new cache_static($file);
+		$cache->new_instance();
 		
 		$cache->set_object_uri($object->url($object->page()), true);
 		$cache->set_original_uri($object->called_url(), true);
@@ -54,7 +61,7 @@ class cache_static extends base_object_db
 		$cache->set_last_compile(time(), true);
 		$cache->set_expire_time($object->cache_static()+time(), true);
 
-		bors()->changed_save();
+		storage_db_mysql_smart::save($cache);
 
 		@mkdir(dirname($file), true);
 		@file_put_contents($file, $content);

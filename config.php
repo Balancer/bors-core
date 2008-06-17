@@ -58,7 +58,6 @@ require_once('inc/locales.php');
 require_once('inc/system.php');
 require_once('obsolete/DataBase.php');
 require_once('obsolete/DataBaseHTS.php');
-require_once('obsolete/cache/CacheStaticFile.php');
 
 if(file_exists(BORS_CORE.'/config/local.php'))
 	include_once(BORS_CORE.'/config/local.php');

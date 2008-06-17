@@ -159,30 +159,6 @@
 		$last_modify = gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		header('Last-Modified: '.$last_modify);
 	   
-		if((config('cache_static') || $obj->cache_static())
-			&& (empty($_SERVER['QUERY_STRING']) || $_SERVER['QUERY_STRING']=='del' || @$_GET['act'] == 'del' || $obj->static_get_cache())
-			&& !config('cache_disabled')
-		)
-		{
-//			echo "url={$obj->url_engine()}<br />";
-			$sf = &new CacheStaticFile($obj->url($page));
-			$sf->save($content, $obj->modify_time(), $obj->cache_static());
-
-			foreach(split(' ', $obj->cache_groups()) as $group)
-				if($group)
-				{
-					$group = class_load('cache_group', $group);
-					$group->register($obj);
-				}
-				
-		    header("X-Bors: static cache maden");
-
-			
-//			require_once('inc/navigation.php');
-//			return go($obj->url($page), true, 0, false);
-		}
-
-	
 		echo $content;
 		return true;
 	}

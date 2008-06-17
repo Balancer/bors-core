@@ -141,7 +141,7 @@
 			if($my_user && $my_user->id())
 				base_page::add_template_data('my_user', $my_user);
 	
-			$content = $obj->get_content();
+			$content = $obj->content();
 		}
 		else
 			$content = $processed;

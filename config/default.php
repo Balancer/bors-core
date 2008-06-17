@@ -13,3 +13,5 @@ config_set('bors_core_db', 'BORS');
 config_set('bors_version_show', '2');
 
 config_set('lcml_sharp_markup', false);
+
+config_set('temporary_file_contents', file_get_contents(dirname(__FILE__).'/../resources/temporary.html'));

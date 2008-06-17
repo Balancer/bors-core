@@ -12,10 +12,10 @@ if(!defined("BORS_HOST"))
 if(!defined('BORS_3RD_PARTY'))
 	define('BORS_3RD_PARTY', dirname(__FILE__).'/../bors-third-party');
 
-function config_set($key, $value) { $GLOBALS['cms']['config'][$key] = $value; }
+function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
 function config($key, $def = NULL) { return isset($GLOBALS['cms']['config'][$key]) ? $GLOBALS['cms']['config'][$key] : $def; }
 
-function config_seth($section, $hash, $key, $value) { $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
+function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
 function configh($section, $hash, $key, $def = NULL) { return isset($GLOBALS['cms']['config'][$section][$hash][$key]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
 
 function mysql_access($db = 'BORS', $login = NULL, $password = NULL, $host='localhost')

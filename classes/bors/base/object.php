@@ -646,12 +646,8 @@ class base_object extends base_empty
 	var $stb_owner_id = NULL;
 	function owner() { return NULL; }
 
-	function get_content($can_use_static = true)
+	function direct_content()
 	{
-		$use_static = $can_use_static && config('cache_static') && $this->cache_static() > 0;
-	
-//		if($use_static && $this->)
-	
 		if($render_engine = $this->render_engine())
 		{
 			$re = object_load($render_engine);
@@ -663,6 +659,40 @@ class base_object extends base_empty
 	    require_once('engines/smarty/bors.php');
 		$this->template_data_fill();
 		return template_assign_bors_object($this, NULL, true);
+	}
+
+	function index_file() { return 'index.html'; }
+
+	function static_file()
+	{
+		$path = $this->url($this->page());
+		$data = url_parse($path);
+
+		$file = $data['local_path'];
+		if(preg_match('!/$!', $file))
+			$file .= $this->index_file();
+
+		return $file;
+	}
+
+	function use_temporary_static_file() { return true; }
+
+	function content($can_use_static = true)
+	{
+		$use_static = true;//$can_use_static && config('cache_static') && $this->cache_static() > 0;
+
+
+		if($use_static && file_exists($this->static_file()))
+			return file_get_contents($this->static_file());
+
+		if($use_static && $this->use_temporary_static_file() && config('temporary_file_contents'))
+			cache_static::save($this, config('temporary_file_contents', ec('Пожалуйста, подождите, пока создаётся файл. Нажмите Reload в вашем браузере через несколько секунд.')));
+		
+		$content = $this->direct_content($this);
+		if($use_static)
+			cache_static::save($this, $content);
+
+		return $content;
 	}
 		
 	function show($object)

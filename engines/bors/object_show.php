@@ -141,21 +141,7 @@
 			if($my_user && $my_user->id())
 				base_page::add_template_data('my_user', $my_user);
 	
-			if($render_engine = $obj->render_engine())
-			{
-				$re = object_load($render_engine);
-				if(!$re)
-					debug_exit("Can't load render engine {$render_engine} for class {$obj}");
-				$content = $re->render($obj);
-//				echo "Bors class content of ".get_class($obj)." with render engine '". $obj->render_engine() . "' = " . $content; exit();
-			}
-			else
-			{
-			    require_once('engines/smarty/bors.php');
-				$obj->template_data_fill();
-				$content = template_assign_bors_object($obj, NULL, true);
-			}
-
+			$content = $obj->get_content();
 		}
 		else
 			$content = $processed;

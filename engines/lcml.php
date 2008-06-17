@@ -34,6 +34,9 @@ function lcml($txt, $params = array ())
 	if(!trim($txt))
 		return "";
 
+	if(preg_match('!^[\w\d\-\+\.\,]+$!', $txt))
+		return $txt;
+
 	$GLOBALS['lcml']['level'] = intval(@ $GLOBALS['lcml']['level']) + 1;
 
 	if($GLOBALS['lcml']['level'] > 20)
@@ -41,7 +44,7 @@ function lcml($txt, $params = array ())
 		echo "Maximum function nesting level for <xmp>".$txt."</xmp>\n";
 		return $txt;
 	}
-	
+
 	$saved_params = empty ($GLOBALS['lcml']['params']) ? array () : $GLOBALS['lcml']['params'];
 	foreach ($saved_params as $key => $val)
 		if (!isset ($params[$key]))
@@ -61,9 +64,9 @@ function lcml($txt, $params = array ())
 	$ch_type = "lcml-compiled";
 	$ch_key = md5($txt.$params['uri']);
 
-	$ch = &new Cache();
+	$ch = class_exists('Cache') ? new Cache() : NULL;
 
-	if($ch->get($ch_type, $ch_key, $params['uri'])
+	if($ch && $ch->get($ch_type, $ch_key, $params['uri'])
 				&& empty ($params['cache_disable'])
 				&& !config('cache_disabled')
 				&& $GLOBALS['lcml']['level'] < 2
@@ -71,8 +74,6 @@ function lcml($txt, $params = array ())
 		return rest_return($ch->last(), $saved_params);
 
 	$page = @ $GLOBALS['cms']['page_path'];
-
-//	$hts = &new DataBaseHTS();
 
 	$data = url_parse($page);
 
@@ -94,11 +95,7 @@ function lcml($txt, $params = array ())
 	if (is_array($params))
 	{
 		foreach ($params as $key => $value)
-		{
-			//				if(user_data('level')>100)
-			//					$txt .= "$key = {$value}<br/>";
 			$GLOBALS['lcml'][$key] = $value;
-		}
 	}
 	else
 	{
@@ -109,25 +106,25 @@ function lcml($txt, $params = array ())
 		$GLOBALS['lcml']['cr_type'] = 'empty_as_para';
 
 	if ($GLOBALS['lcml']['cr_type'] == 'plain_text')
-		return rest_return($ch->set("<xmp>$txt</xmp>", 86400*3), $saved_params);
+	{
+		$ret = "<xmp>$txt</xmp>";
+		if($ch)
+			$ch->set($ret, 86400*3);
+		return rest_return($ret, $saved_params);
+	}
 
 	if (empty ($page))
 		$page = '';
 
 	$page = empty ($GLOBALS['lcml']['page']) ? $page : $GLOBALS['lcml']['page'];
 
-	//        if($page) include("config.php");
-
-	$txt = str_replace("\r", "", $txt);
-
-	//        require_once("tags/code.php");
-	//        $txt=preg_replace("!\[code([^\]]*)\](.+?)\[/code\]!ise","lp_code_(\"$2\",'$1')",$txt);
+	$txt = str_replace("\r", '', $txt);
 
 	$txt = ext_load(dirname(__FILE__).'/lcml/pre', $txt);
 
 	$mask = str_repeat('.', strlen($txt));
 
-	if(!config('lcml_sharp_markup_skip'))
+	if(config('lcml_sharp_markup'))
 	{
 		include_once ('lcml/sharp.php');
 		$txt = lcml_sharp($txt, $mask);
@@ -159,8 +156,9 @@ function lcml($txt, $params = array ())
 
 	//		echo "<xmp>Out: '$txt'</xmp>";
 
-	return rest_return($ch->set($txt, 86400*14), $saved_params);
-
+	if($ch)
+		$ch->set($txt, 86400*14);
+	return rest_return($txt, $saved_params);
 }
 
 function lcmlbb($string)

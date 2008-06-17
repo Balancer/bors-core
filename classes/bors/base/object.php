@@ -686,8 +686,14 @@ class base_object extends base_empty
 			return file_get_contents($this->static_file());
 
 		if($use_static && $this->use_temporary_static_file() && config('temporary_file_contents'))
-			cache_static::save($this, config('temporary_file_contents', ec('Пожалуйста, подождите, пока создаётся файл. Нажмите Reload в вашем браузере через несколько секунд.')));
-		
+			cache_static::save($this, str_replace(array(
+				'$url',
+				'$title',
+			), array(
+				$this->url(),
+				$this->title(),
+			), config('temporary_file_contents')));
+	
 		$content = $this->direct_content($this);
 		if($use_static)
 			cache_static::save($this, $content);

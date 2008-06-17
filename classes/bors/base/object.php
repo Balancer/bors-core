@@ -625,7 +625,10 @@ class base_object extends base_empty
 			$re = object_load($render_engine);
 			if(!$re)
 				debug_exit("Can't load render engine {$render_engine} for class {$this}");
-			return $re->render($this);
+			$page = $this->page();
+			$content = $re->render($this);
+			$this->set_page($page);
+			return $content;
 		}
 
 	    require_once('engines/smarty/bors.php');
@@ -640,7 +643,7 @@ class base_object extends base_empty
 		$path = $this->url($this->page());
 		$data = url_parse($path);
 
-		$file = $data['local_path'];
+		$file = @$data['local_path'];
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
 
@@ -652,11 +655,14 @@ class base_object extends base_empty
 	function content($can_use_static = true)
 	{
 		$use_static = $can_use_static && config('cache_static') && $this->cache_static() > 0;
+		$file = $this->static_file();
+		$fe = file_exists($file);
+		$fs = $fe && filesize($file) > 2000;
 
-		if($use_static && file_exists($this->static_file()))
+		if($use_static && $file && $fe)
 			return file_get_contents($this->static_file());
 
-		if($use_static && $this->use_temporary_static_file() && config('temporary_file_contents'))
+		if($use_static && !$fs && $this->use_temporary_static_file() && config('temporary_file_contents'))
 			cache_static::save($this, str_replace(array(
 				'$url',
 				'$title',
@@ -666,6 +672,7 @@ class base_object extends base_empty
 			), ec(config('temporary_file_contents'))));
 	
 		$content = $this->direct_content($this);
+
 		if($use_static)
 			cache_static::save($this, $content);
 

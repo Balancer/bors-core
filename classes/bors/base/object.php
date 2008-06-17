@@ -679,7 +679,7 @@ class base_object extends base_empty
 
 	function content($can_use_static = true)
 	{
-		$use_static = true;//$can_use_static && config('cache_static') && $this->cache_static() > 0;
+		$use_static = $can_use_static && config('cache_static') && $this->cache_static() > 0;
 
 
 		if($use_static && file_exists($this->static_file()))

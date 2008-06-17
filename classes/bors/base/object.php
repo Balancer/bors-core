@@ -663,7 +663,7 @@ class base_object extends base_empty
 			), array(
 				$this->url($this->page()),
 				$this->title(),
-			), config('temporary_file_contents')));
+			), ec(config('temporary_file_contents'))));
 	
 		$content = $this->direct_content($this);
 		if($use_static)

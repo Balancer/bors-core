@@ -9,7 +9,7 @@ class base_object extends base_empty
 	var $match;
 	function set_match($match) { return $this->match = $match;	}
 
-	function parents() { return array("http://{$this->match[1]}{$this->match[2]}"); }
+	function parents() { return array(empty($this->match[2]) ? "http://{$this->match[1]}/" : "http://{$this->match[1]}{$this->match[2]}"); }
 	var $stb_children = array();
 
 	function rss_body()
@@ -645,4 +645,28 @@ class base_object extends base_empty
 
 	var $stb_owner_id = NULL;
 	function owner() { return NULL; }
+
+	function get_content($can_use_static = true)
+	{
+		$use_static = $can_use_static && config('cache_static') && $this->cache_static() > 0;
+	
+//		if($use_static && $this->)
+	
+		if($render_engine = $this->render_engine())
+		{
+			$re = object_load($render_engine);
+			if(!$re)
+				debug_exit("Can't load render engine {$render_engine} for class {$this}");
+			return $re->render($this);
+		}
+
+	    require_once('engines/smarty/bors.php');
+		$this->template_data_fill();
+		return template_assign_bors_object($this, NULL, true);
+	}
+		
+	function show($object)
+	{
+		echo $this->get_content($object);
+	}
 }

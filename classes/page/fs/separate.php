@@ -2,8 +2,6 @@
 
 class page_fs_separate extends base_page
 {
-	function class_file() { return __FILE__; }
-
 	function storage_engine()	{ return 'storage_fs_separate'; }
 	function render_engine()	{ return 'render_page'; }
 	function body_engine()		{ return 'body_source'; }

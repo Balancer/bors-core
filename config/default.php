@@ -11,3 +11,5 @@ config_set('main_bors_db', 'BORS');
 config_set('bors_core_db', 'BORS');
 
 config_set('bors_version_show', '2');
+
+config_set('lcml_sharp_markup', false);

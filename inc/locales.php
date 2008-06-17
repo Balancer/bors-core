@@ -18,7 +18,7 @@ function ec($txt)
 function dc($txt, $charset_from = NULL, $charset_to = NULL)
 {
 	if(!$charset_to)
-		$charset_to = config('charset', 'utf-8');
+		$charset_to = config('charset_internal', 'utf-8');
 
 	if(!$charset_from)
 		$charset_from = config('charset', 'utf-8');

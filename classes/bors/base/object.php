@@ -681,7 +681,6 @@ class base_object extends base_empty
 	{
 		$use_static = $can_use_static && config('cache_static') && $this->cache_static() > 0;
 
-
 		if($use_static && file_exists($this->static_file()))
 			return file_get_contents($this->static_file());
 
@@ -692,7 +691,7 @@ class base_object extends base_empty
 			), array(
 				$this->url(),
 				$this->title(),
-			), config('temporary_file_contents')));
+			), ec(config('temporary_file_contents'))));
 	
 		$content = $this->direct_content($this);
 		if($use_static)

@@ -493,32 +493,6 @@ class base_object extends base_empty
 	// Применимо только при cache_static === true
 	function permanent() { return false; }
 
-	function create_static()
-	{
-		if(!config('cache_static') || !$obj->cache_static())
-			return false;
-	
-		if(!empty($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']=='del')
-			return false;
-
-		$page = $obj->page();
-		$sf = &new CacheStaticFile($obj->url($page));
-		$sf->save($content, $obj->modify_time(), $obj->cache_static());
-
-		foreach(split(' ', $obj->cache_groups()) as $group)
-			if($group)
-			{
-				$group = class_load('cache_group', $group);
-				$group->register($obj);
-			}
-				
-	    header("X-Bors: static cache maden");
-
-		if($obj->url($page) != $obj->called_url())
-			return go($obj->url($page), true);
-		
-	}
-	
 	function cache_groups() { return ''; }
 
 	function uid() { return md5($this->class_id().'://'.$this->id().','.$this->page()); }
@@ -558,9 +532,7 @@ class base_object extends base_empty
 
 	function cache_clean_self()
 	{
-		require_once('obsolete/cache/CacheStaticFile.php');
-		CacheStaticFile::clean($this->internal_uri());
-		CacheStaticFile::clean($this->url());
+		cache_static::drop($this);
 		delete_cached_object($this);
 	}
 
@@ -681,7 +653,6 @@ class base_object extends base_empty
 	{
 		$use_static = $can_use_static && config('cache_static') && $this->cache_static() > 0;
 
-
 		if($use_static && file_exists($this->static_file()))
 			return file_get_contents($this->static_file());
 
@@ -690,7 +661,7 @@ class base_object extends base_empty
 				'$url',
 				'$title',
 			), array(
-				$this->url(),
+				$this->url($this->page()),
 				$this->title(),
 			), config('temporary_file_contents')));
 	

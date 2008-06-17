@@ -20,13 +20,19 @@ class cache_static extends base_object_db
 
 	function object() { return object_load($this->class_id(), $this->object_id()); }
 
-	function drop()
+	static function drop($object)
 	{
-		@unlink($this->id());
-		if(file_exists($this->id()))
-			return;
-		
-		$this->delete();
+		$caches = objects_array('cache_static', array('class_id=' => $object->class_id(), 'object_id=' => $object->id()));
+		$cache = object_load('cache_static', $object->static_file());
+		if($cache)
+			$caches[] = $cache;
+	
+		foreach($caches as $cache)
+		{
+			@unlink($cache->id());
+			if(!file_exists($this->id()))
+				$cache->delete();
+		}
 	}
 	
 	static function save($object, $content)
@@ -36,7 +42,7 @@ class cache_static extends base_object_db
 		if(!$cache)
 			$cache = object_new_instance('cache_static', $file);
 		
-		$cache->set_object_uri($object->url(), true);
+		$cache->set_object_uri($object->url($object->page()), true);
 		$cache->set_original_uri($object->called_url(), true);
 		$cache->set_class_id_db($object->class_id(), true);
 		$cache->set_class_name_db($object->class_name(), true);

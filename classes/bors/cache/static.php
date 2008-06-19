@@ -63,7 +63,7 @@ class cache_static extends base_object_db
 
 		storage_db_mysql_smart::save($cache);
 
-		@mkdir(dirname($file), true);
+		@mkdir(dirname($file), 0777, true);
 		@file_put_contents($file, $content);
 	}
 }

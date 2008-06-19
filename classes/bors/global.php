@@ -34,7 +34,7 @@ class bors_global extends base_empty
 				
 		foreach($this->changed_objects as $name => $obj)
 		{
-			if(!$obj->id())
+			if(!$obj->id() || empty($obj->changed_fields))
 				continue;
 				
 			$obj->cache_clean();

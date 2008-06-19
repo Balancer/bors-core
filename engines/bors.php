@@ -31,6 +31,7 @@ function object_new_instance($class, $id = NULL)
 	{
 //	    debug_exit("Can't make new instance for $class");
 	    $obj = new $class($id);
+		$obj->new_instance($id);
 	}
 	
 	if(!$obj->id())

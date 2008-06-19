@@ -20,23 +20,39 @@ class cache_static extends base_object_db
 
 	function object() { return object_load($this->class_id(), $this->object_id()); }
 
-	function drop()
+	static function drop($object)
 	{
-		@unlink($this->id());
-		if(file_exists($this->id()))
-			return;
-		
-		$this->delete();
+		$caches = objects_array('cache_static', array('class_id=' => $object->class_id(), 'object_id=' => $object->id()));
+		$cache = object_load('cache_static', $object->static_file());
+		if($cache)
+			$caches[] = $cache;
+	
+		foreach($caches as $cache)
+		{
+			@unlink($cache->id());
+			if(!file_exists($cache->id()))
+				$cache->delete();
+		}
 	}
 	
 	static function save($object, $content)
 	{
+		$object_id = $object->id();
+		if(!$object_id && !is_numeric($object_id))
+			return;
+	
 		$file = $object->static_file();
-		$cache = object_load('cache_static', $file);
-		if(!$cache)
-			$cache = object_new_instance('cache_static', $file);
+		if(!$file) // TODO: отловить
+			return;
 		
-		$cache->set_object_uri($object->url(), true);
+		//TODO: отловить кеш-запись постов при добавлении нового сообщения. (class_id = 1)
+		
+		bors()->changed_save();
+		
+		$cache = new cache_static($file);
+		$cache->new_instance();
+		
+		$cache->set_object_uri($object->url($object->page()), true);
 		$cache->set_original_uri($object->called_url(), true);
 		$cache->set_class_id_db($object->class_id(), true);
 		$cache->set_class_name_db($object->class_name(), true);
@@ -45,8 +61,9 @@ class cache_static extends base_object_db
 		$cache->set_last_compile(time(), true);
 		$cache->set_expire_time($object->cache_static()+time(), true);
 
-		bors()->changed_save();
+		storage_db_mysql_smart::save($cache);
 
-		file_put_contents($file, $content);
+		@mkdir(dirname($file), true);
+		@file_put_contents($file, $content);
 	}
 }

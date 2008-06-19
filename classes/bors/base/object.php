@@ -493,32 +493,6 @@ class base_object extends base_empty
 	// Применимо только при cache_static === true
 	function permanent() { return false; }
 
-	function create_static()
-	{
-		if(!config('cache_static') || !$obj->cache_static())
-			return false;
-	
-		if(!empty($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']=='del')
-			return false;
-
-		$page = $obj->page();
-		$sf = &new CacheStaticFile($obj->url($page));
-		$sf->save($content, $obj->modify_time(), $obj->cache_static());
-
-		foreach(split(' ', $obj->cache_groups()) as $group)
-			if($group)
-			{
-				$group = class_load('cache_group', $group);
-				$group->register($obj);
-			}
-				
-	    header("X-Bors: static cache maden");
-
-		if($obj->url($page) != $obj->called_url())
-			return go($obj->url($page), true);
-		
-	}
-	
 	function cache_groups() { return ''; }
 
 	function uid() { return md5($this->class_id().'://'.$this->id().','.$this->page()); }
@@ -558,9 +532,7 @@ class base_object extends base_empty
 
 	function cache_clean_self()
 	{
-		require_once('obsolete/cache/CacheStaticFile.php');
-		CacheStaticFile::clean($this->internal_uri());
-		CacheStaticFile::clean($this->url());
+		cache_static::drop($this);
 		delete_cached_object($this);
 	}
 
@@ -653,7 +625,10 @@ class base_object extends base_empty
 			$re = object_load($render_engine);
 			if(!$re)
 				debug_exit("Can't load render engine {$render_engine} for class {$this}");
-			return $re->render($this);
+			$page = $this->page();
+			$content = $re->render($this);
+			$this->set_page($page);
+			return $content;
 		}
 
 	    require_once('engines/smarty/bors.php');
@@ -668,7 +643,7 @@ class base_object extends base_empty
 		$path = $this->url($this->page());
 		$data = url_parse($path);
 
-		$file = $data['local_path'];
+		$file = @$data['local_path'];
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
 
@@ -680,20 +655,24 @@ class base_object extends base_empty
 	function content($can_use_static = true)
 	{
 		$use_static = $can_use_static && config('cache_static') && $this->cache_static() > 0;
+		$file = $this->static_file();
+		$fe = file_exists($file);
+		$fs = $fe && filesize($file) > 2000;
 
-		if($use_static && file_exists($this->static_file()))
+		if($use_static && $file && $fe)
 			return file_get_contents($this->static_file());
 
-		if($use_static && $this->use_temporary_static_file() && config('temporary_file_contents'))
+		if($use_static && !$fs && $this->use_temporary_static_file() && config('temporary_file_contents'))
 			cache_static::save($this, str_replace(array(
 				'$url',
 				'$title',
 			), array(
-				$this->url(),
+				$this->url($this->page()),
 				$this->title(),
 			), ec(config('temporary_file_contents'))));
 	
 		$content = $this->direct_content($this);
+
 		if($use_static)
 			cache_static::save($this, $content);
 

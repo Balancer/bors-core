@@ -21,7 +21,7 @@ class base_object_db extends base_object
 		parent::__construct($id);
 	}
 
-	function id_field() { return 'id'; }
+	function id_field() { $fields = $this->main_table_fields(); return empty($fields['id']) ? 'id' : $fields['id']; }
 	
 	function new_instance()
 	{
@@ -79,6 +79,11 @@ class base_object_db extends base_object
 		
 		require_once('inc/bors/cross.php');
 		bors_remove_cross_to($this->class_name(), $this->id());
+/*		if(preg_match('!/var/www/balancer.ru/htdocs/support/2008/06/t54897!', $this->id()))
+		{
+			echo "Delete $tab where $id_field = {$this->id()}";
+			debug_trace();
+		}*/
 		$this->db()->delete($tab, array($id_field.'=' => $this->id()));
 	}
 }

@@ -159,6 +159,7 @@ function lcml($txt, $params = array ())
 	if($ch)
 		$ch->set($txt, 86400*14);
 	return rest_return($txt, $saved_params);
+}
 
 function lcmlbb($string)
 {

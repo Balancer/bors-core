@@ -63,6 +63,7 @@ function bors()
 
 function bors_exit($message = 0)
 {
+	cache_static::drop(bors()->main_object());
 	bors()->changed_save();
 	exit($message);
 	return true;

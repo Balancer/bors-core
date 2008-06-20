@@ -20,7 +20,12 @@ class base_page_db extends base_page
 		if(!$tab)
 			exit("Try to gent new instance with empty main table in class ".__FILE__.":".__LINE__);
 		
-		$this->db->insert($tab, array());
+		$data = array();
+		if($this->id())
+			$data[$this->id_field()] = $this->id();
+
+		$this->db->insert_ignore($tab, $data);
+		
 		$this->set_id($this->db->get_last_id());
 
 		foreach($this->fields() as $db => $tables)

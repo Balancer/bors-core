@@ -22,7 +22,7 @@ class storage_fs_xml extends base_null
 		$content = file_get_contents($file);
 		$xml = &new BorsXml;
 		$xml->parse($content);                                                                     
-						                                                                                                   
+
 		$loaded = false;
 		foreach($xml->dom['bors'][0] as $key => $data)
 		{

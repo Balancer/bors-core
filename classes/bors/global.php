@@ -34,7 +34,7 @@ class bors_global extends base_empty
 				
 		foreach($this->changed_objects as $name => $obj)
 		{
-			if(!$obj->id())
+			if(!$obj->id() || empty($obj->changed_fields))
 				continue;
 				
 			$obj->cache_clean();
@@ -60,18 +60,6 @@ class bors_global extends base_empty
 		$this->changed_objects = false;
 	}
 		
-	function get_html($object)
-	{
-		require_once('funcs/templates/bors.php');
-		$object->template_data_fill();
-		return template_assign_bors_object($object);
-	}
-		
-	function show($object)
-	{
-		echo $this->get_html($object);
-	}
-
 	function real_uri($uri)
 	{
 		if(!preg_match("!^([\w/]+)://(.*[^/])(/?)$!", $uri, $m))

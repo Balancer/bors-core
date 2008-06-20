@@ -99,8 +99,6 @@ class storage_db_mysql_smart extends base_null
 					else
 						$php_func 	= '';
 
-//					echo "=== p: $field =|= $php_func ===</br>";
-
 					// Выделяем имя SQL-функции, передаваемом в виде
 					// 'UNIX_TIMESTAMP(WWW.News.Date(ID))
 					// -^^^^^^^^^^^^^^^-----------------^
@@ -129,6 +127,7 @@ class storage_db_mysql_smart extends base_null
 					else
 						$id_field = $def_id;
 
+
 					if(empty($added[$table_name.'-'.$id_field]))
 					{
 						$added[$table_name.'-'.$id_field] = true;
@@ -142,7 +141,9 @@ class storage_db_mysql_smart extends base_null
 						{
 							$current_tab = '`'.$table_name.'`'; // "`tab".($tab_count++)."`";
 							$ids[$current_tab] = $def_id;
-//							echo "{$ids}[{$current_tab}] = {$def_id};<br />";
+							$tab_names[$tab_count++] = $current_tab;
+							if(empty($main_tab))
+								$main_tab = $current_tab;
 							$current_tab_prefix = "{$current_tab}.";
 						}
 						
@@ -154,9 +155,8 @@ class storage_db_mysql_smart extends base_null
 						}
 						else
 						{
-						
 							if($common_where !== NULL)
-								$on = "$current_tab.$id_field = `tab0`.`".$ids['`tab0`']."`";
+								$on = "$current_tab.$id_field = $main_tab.`".$ids[$main_tab]."`";
 						 	else
 								$on	= make_id_field($current_tab, $id_field);
 
@@ -171,19 +171,19 @@ class storage_db_mysql_smart extends base_null
 					if($sql_func)
 						$select[] = "{$sql_func}({$current_tab_prefix}{$qfield}) AS `{$property}{$php_func}`";
 					else
-						$select[] = $current_tab_prefix.($field == $property ? $qfield : "{$field} AS `{$property}{$php_func}`");
+						$select[] = $current_tab_prefix.($field == $property && !$php_func? $qfield : "{$field} AS `{$property}{$php_func}`");
 				}
 			  }
-			
+
 			  if($common_where !== NULL)
 			  {
 			  	$sel = NULL;
-			 	if(@$ids['`tab0`'] && $ids['`tab0`'] != 'id')
+			 	if(@$ids[$main_tab] && $ids[$main_tab] != 'id')
 				{
 					if($is_one_table)
-						$sel = $ids['`tab0`'];
+						$sel = $ids[$main_tab];
 					else
-						$sel = "`tab0`.{$ids['`tab0`']}";
+						$sel = "$main_tab.{$ids[$main_tab]}";
 				}
 				
 				if($sel)
@@ -225,6 +225,7 @@ class storage_db_mysql_smart extends base_null
 			{
 				foreach($row as $name => $value)
 				{
+//					echo "name=<b>$name</b><br />";
 					if(preg_match('!^(.+)\|(.+)$!', $name, $m))
 					{
 						$name	= $m[1];
@@ -266,7 +267,6 @@ class storage_db_mysql_smart extends base_null
 
 	function do_func($func, $str)
 	{
-//		echo "Do $func('$str')";
 		if(!$func)
 			return $str;
 		

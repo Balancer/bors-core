@@ -13,19 +13,6 @@ function main_handlers_engine($uri)
    		$_SERVER['REQUEST_URI'] = preg_replace("!^(.+?)\?.*?$!", "$1", $_SERVER['REQUEST_URI']);
 	}
 	
-	$parse = parse_url($uri);
-	
-	$cs = &new CacheStaticFile($uri);
-	if(!empty($GLOBALS['cms']['cache_static']) 
-		&& empty($_GET) 
-		&& empty($_POST) 
-		&& ($cs_uri = $cs->get_name($uri)) 
-		&& file_exists($cs->get_file($uri)))
-	{
-		go($cs_uri); 
-		exit();
-	}
-
 	$GLOBALS['cms']['page_number'] = 1;
 
 	if(empty($GLOBALS['main_uri']))

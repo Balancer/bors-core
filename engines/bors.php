@@ -26,6 +26,14 @@ function object_new($class) { return object_load($class); }
 function object_new_instance($class, $id = NULL)
 {
 	$obj = object_load($class, $id, array('no_load_cache' => true));
+	
+	if(!$obj)
+	{
+//	    debug_exit("Can't make new instance for $class");
+	    $obj = new $class($id);
+		$obj->new_instance($id);
+	}
+	
 	if(!$obj->id())
 		$obj->new_instance($id);
 

@@ -1,4 +1,8 @@
 <?php
+
+	if(config('bors_version_show'))
+		header('X-Bors: v' .config('bors_version_show'));
+
 //	if($_SERVER['REMOTE_ADDR'] == '89.178.142.225')
 //		$_GET['XDEBUG_PROFILE'] = 1;
 //		ini_set("xdebug.profiler_enable", "1");

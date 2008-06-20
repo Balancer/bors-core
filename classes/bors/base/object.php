@@ -9,7 +9,7 @@ class base_object extends base_empty
 	var $match;
 	function set_match($match) { return $this->match = $match;	}
 
-	function parents() { return array("http://{$this->match[1]}{$this->match[2]}"); }
+	function parents() { return array(empty($this->match[2]) ? "http://{$this->match[1]}/" : "http://{$this->match[1]}{$this->match[2]}"); }
 	var $stb_children = array();
 
 	function rss_body()
@@ -139,6 +139,11 @@ class base_object extends base_empty
 	function add_local_template_data($var_name, $value) { return $this->template_data[$var_name] = $value; }
 	function local_template_data_set() { return array(); }
 	function local_template_data_array() { return $this->template_data; }
+
+	private $global_template_data = array();
+	function add_global_template_data($var_name, $value) { return $this->global_template_data[$var_name] = $value; }
+	function global_template_data_set() { return array(); }
+	function global_template_data_array() { return $this->global_template_data; }
 
 	static function add_template_data_array($var_name, $value)
 	{
@@ -305,7 +310,7 @@ class base_object extends base_empty
 	function cache_static() { return 0; }
 //	var $stb_cache_static = 0;
 	
-	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
+	function titled_url($append=NULL) { return '<a href="'.$this->url($this->page()).'"'.($append?' '.$append:'').">{$this->title()}</a>"; }
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
 	function titled_admin_url() { return '<a href="'.$this->admin_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
 	function titled_edit_url() { return '<a href="'.$this->edit_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
@@ -488,32 +493,6 @@ class base_object extends base_empty
 	// Применимо только при cache_static === true
 	function permanent() { return false; }
 
-	function create_static()
-	{
-		if(!config('cache_static') || !$obj->cache_static())
-			return false;
-	
-		if(!empty($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']=='del')
-			return false;
-
-		$page = $obj->page();
-		$sf = &new CacheStaticFile($obj->url($page));
-		$sf->save($content, $obj->modify_time(), $obj->cache_static());
-
-		foreach(split(' ', $obj->cache_groups()) as $group)
-			if($group)
-			{
-				$group = class_load('cache_group', $group);
-				$group->register($obj);
-			}
-				
-	    header("X-Bors: static cache maden");
-
-		if($obj->url($page) != $obj->called_url())
-			return go($obj->url($page), true);
-		
-	}
-	
 	function cache_groups() { return ''; }
 
 	function uid() { return md5($this->class_id().'://'.$this->id().','.$this->page()); }
@@ -553,9 +532,7 @@ class base_object extends base_empty
 
 	function cache_clean_self()
 	{
-		require_once('obsolete/cache/CacheStaticFile.php');
-		CacheStaticFile::clean($this->internal_uri());
-		CacheStaticFile::clean($this->url());
+		cache_static::drop($this);
 		delete_cached_object($this);
 	}
 
@@ -640,4 +617,70 @@ class base_object extends base_empty
 
 	var $stb_owner_id = NULL;
 	function owner() { return NULL; }
+
+	function direct_content()
+	{
+		if($render_engine = $this->render_engine())
+		{
+			$re = object_load($render_engine);
+			if(!$re)
+				debug_exit("Can't load render engine {$render_engine} for class {$this}");
+			$page = $this->page();
+			$content = $re->render($this);
+			$this->set_page($page);
+			return $content;
+		}
+
+	    require_once('engines/smarty/bors.php');
+		$this->template_data_fill();
+		return template_assign_bors_object($this, NULL, true);
+	}
+
+	function index_file() { return 'index.html'; }
+
+	function static_file()
+	{
+		$path = $this->url($this->page());
+		$data = url_parse($path);
+
+		$file = @$data['local_path'];
+		if(preg_match('!/$!', $file))
+			$file .= $this->index_file();
+
+		return $file;
+	}
+
+	function use_temporary_static_file() { return true; }
+
+	function content($can_use_static = true)
+	{
+		$use_static = $can_use_static && config('cache_static') && $this->cache_static() > 0;
+		$file = $this->static_file();
+		$fe = file_exists($file);
+		$fs = $fe && filesize($file) > 2000;
+
+		if($use_static && $file && $fe)
+			return file_get_contents($this->static_file());
+
+		if($use_static && !$fs && $this->use_temporary_static_file() && config('temporary_file_contents'))
+			cache_static::save($this, str_replace(array(
+				'$url',
+				'$title',
+			), array(
+				$this->url($this->page()),
+				$this->title(),
+			), ec(config('temporary_file_contents'))));
+	
+		$content = $this->direct_content($this);
+
+		if($use_static)
+			cache_static::save($this, $content);
+
+		return $content;
+	}
+		
+	function show($object)
+	{
+		echo $this->get_content($object);
+	}
 }

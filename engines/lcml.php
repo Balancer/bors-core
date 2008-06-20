@@ -61,9 +61,9 @@ function lcml($txt, $params = array ())
 	$ch_type = "lcml-compiled";
 	$ch_key = md5($txt.$params['uri']);
 
-	$ch = &new Cache();
+	$ch = class_exists('Cache') ? new Cache() : NULL;
 
-	if($ch->get($ch_type, $ch_key, $params['uri'])
+	if($ch && $ch->get($ch_type, $ch_key, $params['uri'])
 				&& empty ($params['cache_disable'])
 				&& $GLOBALS['lcml']['level'] < 2
 			)
@@ -158,5 +158,7 @@ function lcml($txt, $params = array ())
 
 	//		echo "<xmp>Out: '$txt'</xmp>";
 
-	return rest_return($ch->set($txt, 86400*14), $saved_params);
+	if($ch)
+		$ch->set($txt, 86400*14);
+	return rest_return($txt, $saved_params);
 }

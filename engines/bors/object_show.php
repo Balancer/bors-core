@@ -157,7 +157,7 @@
 			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас не доступа к этому ресурсу")) : true;
 		
 		$last_modify = gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
-		header('Last-Modified: '.$last_modify);
+		@header('Last-Modified: '.$last_modify);
 	   
 		echo $content;
 		return true;

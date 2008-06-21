@@ -27,6 +27,8 @@ function mysql_where_compile($conditions_array)
 		}
 		elseif(is_numeric($field_cond))
 			$where[] = $value;
+		elseif(preg_match('!^\w+$!', $field_cond))
+			$where[] = $field_cond . '=\'' . addslashes($value) . '\'';
 		else
 			$where[] = $field_cond . '\'' . addslashes($value) . '\'';
 	}

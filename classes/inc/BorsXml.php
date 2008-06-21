@@ -33,7 +33,10 @@ class BorsXml
 
 	function cdata($parser, $cdata)
 	{
-		$this->pointer['cdata'] = &$cdata;
+		if(empty($this->pointer['cdata']))
+			$this->pointer['cdata'] = html_entity_decode(&$cdata);
+		else
+			$this->pointer['cdata'] .= html_entity_decode(&$cdata);
 	}
 
 	function tag_close($parser, $tag)

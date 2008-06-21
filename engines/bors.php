@@ -13,7 +13,13 @@ function object_load($class, $object_id=NULL, $args=array())
 	if(is_numeric($class))
 		$class = class_id_to_name($class);
 	
-//	echo "Load {$class}({$object_id} (".serialize($args).")<br />\n";
+	if(config('debug_trace_object_load'))
+	{
+		static $load_counter = 0;
+		echo "Load {$class}({$object_id}, ".serialize($args).")<br />\n";
+		if($load_counter++ > config('debug_object_load_limit'))
+			debug_exit('Object load limit exceed.');
+	}
 	
 	if(!$class)
 		return;
@@ -63,6 +69,7 @@ function bors()
 
 function bors_exit($message = 0)
 {
+	cache_static::drop(bors()->main_object());
 	bors()->changed_save();
 	exit($message);
 	return true;

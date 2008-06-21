@@ -216,6 +216,6 @@
 		$out = $smarty->fetch($template_uri);
 	
 		$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripslashes('$1'))", $out);
-
+		
 		return $out;
 	}

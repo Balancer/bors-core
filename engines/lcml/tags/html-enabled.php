@@ -16,3 +16,15 @@
 		
 		return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling marginheight marginwidth src').">$inner</iframe>";
 	}
+
+/*
+function lp_style($inner, $params)
+{
+	return "<style ".make_enabled_params($params, 'type').">$inner</style>";
+}
+*/
+//TODO: сделать проверку на наличие активного кода в стилях.
+function lp_style($inner, $params)
+{
+		return "<style type=\"text/css\">{$inner}</style>";
+}

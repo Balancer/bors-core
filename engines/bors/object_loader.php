@@ -213,12 +213,12 @@ function save_cached_object(&$object, $delete = false)
 
 //			echo "Initial url=$url<br/>\n";
 
-			if(preg_match('!\\\?!', $url_pattern) && !preg_match('!\?!', $url) && !empty($_SERVER['QUERY_STRING']))
+			if(preg_match('!\?!', $url_pattern) && !preg_match('!\?!', $url) && !empty($_SERVER['QUERY_STRING']))
 				$check_url = $url."?".$_SERVER['QUERY_STRING'];
 			else
 				$check_url = $url;
 			
-//			echo "Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}<br />\n";
+//			echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
 			if(preg_match("!^http://({$url_data['host']}[^/]*)$url_pattern$!", $check_url, $match))
 			{
 //				echo "<b>Ok - $class_path</b><br />"; exit();

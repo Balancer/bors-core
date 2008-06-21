@@ -22,6 +22,9 @@ class cache_static extends base_object_db
 
 	static function drop($object)
 	{
+		if(!$object)
+			return;
+	
 		$caches = objects_array('cache_static', array('class_id=' => $object->class_id(), 'object_id=' => $object->id()));
 		$cache = object_load('cache_static', $object->static_file());
 		if($cache)

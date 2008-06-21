@@ -126,7 +126,7 @@
 			return true;
 
 		$page = $obj->page();
-//		exit($obj->url($page) .'!='. $obj->called_url());
+//		debug_exit($obj->url($page) .'!='. $obj->called_url());
 		if($obj->called_url() && !preg_match('!\Q'.$obj->url($page).'\E$!', $obj->called_url()))
 			return go($obj->url($page), true);
 

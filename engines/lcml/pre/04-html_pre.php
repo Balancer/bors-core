@@ -32,7 +32,7 @@
 		}
 
 		// Парные тэги, прямо транслирующиеся в BB-код:
-		foreach(split(' ','tt') as $tag)
+		foreach(split(' ','style tt') as $tag)
 		{
 			$txt = preg_replace("!<$tag>(.+?)</$tag>!is","[$tag]$1[/$tag]", $txt);
 			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!is","[$tag $1]$2[/$tag]", $txt);

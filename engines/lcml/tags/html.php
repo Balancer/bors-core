@@ -7,4 +7,3 @@
         $txt = save_format($txt);
         return $txt;
     }
-?>

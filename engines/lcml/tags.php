@@ -323,3 +323,13 @@
 
         return $params;
     }
+
+function make_enabled_params($params, $names_list)
+{
+	$res = array();
+	foreach(split(' ', $names_list) as $name)
+		if(isset($params[$name]))
+			$res[] = "$name=\"".$params[$name]."\"";
+	return join(' ', $res);
+}
+

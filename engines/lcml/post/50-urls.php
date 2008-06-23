@@ -125,6 +125,10 @@
 		if(!empty($GLOBALS['cms']['config']['disable']['post_urls']))
 			return $txt;
 
+		$taglist = config('lcml_tags_enabled');
+		if($taglist && empty($taglist['post_urls']))
+			return $txt;
+
         $txt=preg_replace("!\[(http://[^\s\|\]]+?)\]!ie","lcml_urls_title('$1')",$txt);
         $txt=preg_replace("!\[(www\.[^\s\|\]]+?)\]!ie","lcml_urls_title('http://$1')",$txt);
         $txt=preg_replace("!\[(ftp://[^\s\|\]]+?)\]!i","<a href=\"$1\" class=\"external\">$1</a>",$txt);

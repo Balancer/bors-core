@@ -64,7 +64,7 @@ function lcml($txt, $params = array ())
 	$ch_type = "lcml-compiled";
 	$ch_key = md5($txt.$params['uri']);
 
-	$ch = class_exists('Cache') ? new Cache() : NULL;
+	$ch = class_exists('Cache') && empty($params['nocache']) ? new Cache() : NULL;
 
 	if($ch && $ch->get($ch_type, $ch_key, $params['uri'])
 				&& empty ($params['cache_disable'])
@@ -163,8 +163,12 @@ function lcml($txt, $params = array ())
 
 function lcmlbb($string)
 {
-	$ch = &new Cache();
-	if($ch->get('smarty-modifiers-lcmlbb-compiled', $string))
+	$ch = &new bors_cache();
+
+	$ch_type = "lcml-compiled";
+	$ch_key = md5($txt.$params['uri']);
+
+	if($ch->get($ch_type, $ch_key))
 		return $ch->last();
 
 	return $ch->set(lcml($string, 
@@ -174,6 +178,7 @@ function lcmlbb($string)
 //			'forum_base_uri' => 'http://balancer.ru/forum',
 			'sharp_not_comment' => true,
 			'html_disable' => false,
+			'nocache' => true,
 //			'uri' => "post://{$cur_post['id']}/",
 	)), 7*86400);
 }

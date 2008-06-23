@@ -1,5 +1,4 @@
 <?php
-
 	if(config('bors_version_show'))
 		header('X-Bors: v' .config('bors_version_show'));
 

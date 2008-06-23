@@ -7,6 +7,7 @@ function url_truncate($url, $max_length)
 	if(strlen($url) <= $max_length)
 		return $url;
 
+
 	$limit = $max_length - 3; // Учитываем /.../ в середине.
 	$chunks = explode('/', $url);
 	$count = count($chunks);
@@ -17,6 +18,9 @@ function url_truncate($url, $max_length)
 	$right_length = 0;
 	$right_pos = $count;
 
+	$left_skipped = false;
+	$right_skipped = false;
+
 	for($i=0; $i<$right_pos; $i++)
 	{
 		if(empty($added[$i]))
@@ -25,11 +29,14 @@ function url_truncate($url, $max_length)
 			$sx = strlen($x);
 	
 			if($left_length + $sx + 1 + $right_length > $limit)
-				break;
-				
-			$left[] = $x;
-			$left_length += 1+$sx;
-			$added[$i] = true;
+				$left_skipped = true;
+			
+			if(!$left_skipped)
+			{
+				$left[] = $x;
+				$left_length += 1+$sx;
+				$added[$i] = true;
+			}
 		}
 		
 		if($i<2)
@@ -42,16 +49,19 @@ function url_truncate($url, $max_length)
 			$sx = strlen($x);
 	
 			if($right_length + $sx + 1 + $left_length > $limit)
-				break;
+				$right_skipped = true;
 				
-			array_unshift($right,  $x);
-			$right_length += 1+$sx;
-			$added[$j] = true;
+			if(!$right_skipped)
+			{
+				array_unshift($right,  $x);
+				$right_length += 1+$sx;
+				$added[$j] = true;
+			}
 		}
 
 	}
 	
-	return join('/', $left).'/.../'.join('/',$right);
+	return join('/', $left).($right ? '/.../'.join('/',$right) : '/...');
 }
 
 function url_parse($url)

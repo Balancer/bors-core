@@ -26,6 +26,7 @@ function mysql_access($db = 'BORS', $login = NULL, $password = NULL, $host='loca
 
 //config_set('debug_mysql_queries_log', '/var/www/balancer.ru/htdocs/logs/sql-timig.log');
 
+
 if(file_exists(BORS_LOCAL.'/config-pre.php'))
 	include_once(BORS_LOCAL.'/config-pre.php');
 

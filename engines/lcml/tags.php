@@ -1,6 +1,8 @@
-<?
+<?php
     function lcml_tags($txt, &$mask)
     {
+		$taglist = config('lcml_tags_enabled');
+        
         $end = 0;
 		$next_end = -1;
 		$start = time();
@@ -14,7 +16,9 @@
             if($pos !== false && $end && substr($txt, $pos+1, 1) != '/')
             {
                 if(empty($GLOBALS['cms']['config']['disable']["lp_$func"]) 
-					&& function_exists("lp_$func"))
+					&& function_exists("lp_$func")
+					&& (!$taglist || empty($taglist[$func]))
+				)
                 {
                     $opened   = 0; // число открытых тэгов данного типа
                     $cfunc    = "lp_$func";
@@ -60,11 +64,13 @@
                     continue;
                 }
 
-                if(empty($GLOBALS['cms']['config']['disable']["lt_$func"]) 
-					&& function_exists("lt_$func"))
+                if(empty($GLOBALS['cms']['config']['disable']["lt_$func"])
+					&& function_exists("lt_$func")
+					&& (!$taglist || !empty($taglist[$func]))
+					)
                 {
-                    $func = "lt_$func";
-
+					$func = "lt_$func";
+					
                     if(!empty($outfile))
                     {
                         $fh = fopen($GLOBALS['cms']['base_dir']."/funcs/lcml.log","at");

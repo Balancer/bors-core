@@ -134,13 +134,16 @@ class base_page extends base_object
 
 	function _queries() { return array(); }
 
+	function body_template_ext() { return 'html'; }
+
 	function body_template()
 	{
 		if($cf = $this->class_file())
 		{
-			$tf = preg_replace("!\.php$!", "$1.html", $cf);
+			$ext = $this->body_template_ext();
+			$tf = preg_replace("!\.php$!", "$1.$ext", $cf);
 			if(!file_exists($tf))
-				$tf = preg_replace("!\.php$!", "$1.html", __FILE__);
+				$tf = preg_replace("!\.php$!", "$1.$ext", __FILE__);
 			
 			return "xfile:{$tf}";
 		}

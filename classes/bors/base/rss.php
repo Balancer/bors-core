@@ -1,13 +1,13 @@
 <?php
 
-class base_rss extends base_object
+class base_rss extends base_page
 {
 	function render_engine() { return 'base_rss'; }
 	
-	function url() { return $this->rss_url(); }
-
 	function rss_strip() { return 1024;}
 	function rss_source_url() { return '/xxx/';}
+	function rss_title() { return $this->title(); }
+	function rss_description() { return $this->description(); }
 
 	function render($obj)
 	{
@@ -18,7 +18,7 @@ class base_rss extends base_object
 		$rss->encoding = 'utf-8'; 
 		$rss->title = dc($obj->rss_title());
 		$rss->description = dc($obj->rss_description());
-		$rss->link = $obj->url();
+		$rss->link = $obj->rss_url();
 		$rss->syndicationURL = $obj->url(); 
 
 /*		$image = new FeedImage(); 
@@ -34,7 +34,7 @@ class base_rss extends base_object
 		{	
 		    $item = &new FeedItem();
 	    	$item->title = dc($o->rss_title());
-		    $item->link = $o->url(); 
+		    $item->link = $o->url();
 			
 			$item->description = dc($obj->rss_body($o, $obj->rss_strip()));
 			$item->date = $o->create_time(); 
@@ -53,11 +53,17 @@ class base_rss extends base_object
 	
 	function rss_body($object, $strip = 0)
 	{
+		if($this->body_template())
+		{
+			require_once('engines/smarty/assign.php');
+			return template_assign_data($this->body_template(), array('this' => $object));
+		}
+
 		$html = $object->rss_body();
 		if(!$strip || strlen($html) <= $strip)
 			return $html;
 
-		include_once("funcs/texts.php");
+		include_once("inc/texts.php");
 		$html = strip_text($html, $strip);
 		$html .= "<br /><br /><a href=\"".$object->url(1).ec("\">Дальше »»»");
 

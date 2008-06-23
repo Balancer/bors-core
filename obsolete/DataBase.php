@@ -158,6 +158,8 @@ class DataBase extends base_object
 				$fh = @fopen(config('debug_mysql_queries_log'), 'at');
 				@fputs($fh, $GLOBALS['global_db_queries']." [{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: $query\n-----------------------------------\n");
 				@fclose($fh);
+				
+//				if(preg_match('!Signature!', $query)) debug_trace();
 			}
 			
 			if(config('log_level') > 5)

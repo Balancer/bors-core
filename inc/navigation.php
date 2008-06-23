@@ -41,6 +41,8 @@
 
     function go_ref($def = "/")
 	{
+		unset($_SERVER['QUERY_STRING']);
+		
 		if(!empty($GLOBALS['ref']))
 			go($GLOBALS['ref']);
 

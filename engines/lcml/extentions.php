@@ -1,12 +1,6 @@
 <?
     function ext_load($dir, $txt=NULL, $mask=false)
     {
-//        echo "ext load dir $dir<br>\n";
-//		return "Load dir: '$dir'; $txt";
-
-//		if($mask && strlen($txt) != strlen($mask))
-//			echo "mask size not match:\n".str_replace("\n","|",$txt)."\n".str_replace("\n","|",$mask)."\n";
-        
         if(!is_dir($dir))
 			return $txt;
         

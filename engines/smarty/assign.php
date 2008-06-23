@@ -1,4 +1,5 @@
-<?  
+<?php
+
 	function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 	{
 		unset($GLOBALS['module_data']);

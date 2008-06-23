@@ -84,6 +84,7 @@ function bors_init()
 	require_once('engines/lcml.php');
 	require_once('inc/navigation.php');
 	require_once('engines/bors/vhosts_loader.php');
+	require_once('engines/bors/users.php');
 	require_once('inc/locales.php');
 	require_once('engines/bors/object_show.php');
 

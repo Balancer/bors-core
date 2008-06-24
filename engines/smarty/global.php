@@ -8,6 +8,8 @@ class_include('base_object');
 
 function templates_nocache()
 {
+	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+	@header("Expires: Mon, 22 Oct 1973 06:45:00 GMT"); // Date in the past
 	base_object::add_template_data_array('meta[Pragma]', 'no-cache');
 	base_object::add_template_data_array('meta[Cache-Control]', 'no-cache');
 	base_object::add_template_data_array('meta[Expires]', 'Mon, 22 Oct 1973 06:45:00 GMT');

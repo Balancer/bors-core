@@ -6,7 +6,7 @@
 //		$_GET['XDEBUG_PROFILE'] = 1;
 //		ini_set("xdebug.profiler_enable", "1");
 
-	if(preg_match('!^([^?]+)\?(.+)$!', $_SERVER['REQUEST_URI'], $m))
+	if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 	{
 		$_SERVER['REQUEST_URI'] = $m[1];
 		if(empty($_SERVER['QUERY_STRING']))
@@ -105,7 +105,7 @@
 		$_GET['act'] = 'del';
 	}
 
-	if($_SERVER['QUERY_STRING'] == 'fromlist')
+	if($_SERVER['QUERY_STRING'] == 'fromlist') // АвиаПортовская заглушка
 		$_SERVER['QUERY_STRING'] = '';
 
 	$object = object_load($uri);

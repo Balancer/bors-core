@@ -1,12 +1,17 @@
 <?
 //    require_once('debug.php');
 
+    function goq($uri, $permanent = false, $time = 0, $exit = false)
+	{
+		if(strpos($uri, '?') === false && !empty($_SERVER['QUERY_STRING']))
+			$uri .= '?'.$_SERVER['QUERY_STRING'];
+			
+		return go($uri, $permanent, $time, $exit);
+	}
+
     function go($uri, $permanent = false, $time = 0, $exit = false)
     {
 		bors()->changed_save();
-
-		if(strpos($uri, '?') === false && !empty($_SERVER['QUERY_STRING']))
-			$uri .= '?'.$_SERVER['QUERY_STRING'];
 
 		if(config('do_not_exit'))
 			debug_exit("Go to <a href=\"{$uri}\">{$uri}</a>");

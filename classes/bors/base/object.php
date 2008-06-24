@@ -72,14 +72,14 @@ class base_object extends base_empty
 
 	}
 
+	private $config;
+
 	function init()
 	{
 		if($config = $this->config_class())
 		{
-			$config = object_load($config, $this);
-			if($config)
-				$config->template_init();
-			else
+			$this->config = object_load($config, $this);
+			if(!$this->config)
 				debug_exit("Can't load config ".$this->config_class());
 		}
 		
@@ -291,6 +291,9 @@ class base_object extends base_empty
 
 	function template_data_fill()
 	{
+		if($this->config)
+			$this->config->template_init();
+
 		foreach($this->local_template_data_set() as $key => $value)
 			$this->add_local_template_data($key, $value);
 

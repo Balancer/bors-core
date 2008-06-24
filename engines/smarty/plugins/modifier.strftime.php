@@ -2,7 +2,7 @@
     function smarty_modifier_strftime($time, $mask)
     {
 		if($time == 0)
-			$time = time();
+			$time = $GLOBALS['now'];
 	
         if(!preg_match("!^\d+$!", $time))
             return $time;

@@ -33,9 +33,10 @@ function full_time($time)
 
 function short_time($time)
 {
+	global $now;
 	$time = intval($time);
 
-	if(abs(time() - $time) < 86400 && strftime("%d",$time) == strftime("%d",time()))
+	if(abs($now - $time) < 86400 && strftime("%d", $time) == strftime("%d", $now))
 		return strftime("%H:%M", $time);
 	else
 		return strftime("%d.%m.%Y", $time);
@@ -43,7 +44,8 @@ function short_time($time)
 
 function is_today($time)
 {
-	if(time() - $time < 86400 && strftime("%d",$time) == strftime("%d",time()))
+	global $now;
+	if($now - $time < 86400 && strftime("%d", $time) == strftime("%d", $now))
 		return true;
 		
 //	echo "*{$GLOBALS['main_uri']}*";
@@ -55,10 +57,12 @@ function is_today($time)
 
 	function news_time($time)
 	{
+		global $now;
+		
 		if(is_today($time))
 			return strftime("%H:%M",$time);
 	
-		if(time() - $time < 2*86400 && strftime("%d",$time) == strftime("%d",time()-86400))
+		if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d", $now-86400))
 			return ec("Вчера, ").strftime("%H:%M",$time);
 		
 		return strftime("%d.%m.%Y %H:%M",$time);
@@ -67,10 +71,11 @@ function is_today($time)
 
 	function airbase_time($time)
 	{
+		global $now;
 		if(is_today($time))
 			return ec(strftime("сегодня, %H:%M",$time));
 	
-		if(time() - $time < 2*86400 && strftime("%d",$time) == strftime("%d",time()-86400))
+		if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d",$now-86400))
 			return ec("вчера, ").strftime("%H:%M",$time);
 		
 		return strftime("%Y-%m-%d",$time);
@@ -79,12 +84,12 @@ function is_today($time)
 	function news_short_time($time)
 	{
 		if(is_today($time))
-			return strftime("%H:%M",$time);
+			return strftime("%H:%M", $time);
 	
-		if(time() - $time < 2*86400 && strftime("%d",$time) == strftime("%d",time()-86400))
+		if($GLOBALS['now'] - $time < 2*86400 && strftime("%d",$time) == strftime("%d", $GLOBALS['now']-86400))
 			return ec("Вчера");
 		
-		return strftime("%d.%m.%Y",$time);
+		return strftime("%d.%m.%Y", $time);
 	}
 
 function month_name($m)
@@ -149,7 +154,7 @@ function make_input_time($field_name, &$data)
 		$month = 1;
 
 	if(!$year)
-		$year = strftime('%Y', time());
+		$year = strftime('%Y', $GLOBALS['now']);
 
 	return $data[$field_name] = strtotime("{$year}-{$month}-{$day} $hour:$min:$sec");
 }

@@ -9,11 +9,15 @@ class base_config extends base_empty
 		foreach($this->config_data() as $key => $value)
 			$object->set($key, $value, false);
 
+	}
+
+	function template_init()
+	{
+		$object = $this->id();
 		foreach($this->template_data() as $key => $value)
 			$object->add_template_data($key, $value);
 	}
 	
-	function template_init() { }
 	function config_data() { return array(); }
 	function template_data() { return array(); }
 }

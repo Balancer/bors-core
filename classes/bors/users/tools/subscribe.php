@@ -1,6 +1,6 @@
 <?php
 
-class bors_users_tools_favorites extends base_page
+class bors_users_tools_subscribe extends base_page
 {
 	function access() { return $this; }
 	function can_action($action) { return in_array($action, array('add', 'remove')); }
@@ -23,7 +23,7 @@ class bors_users_tools_favorites extends base_page
 		if(!$object)
 			return bors_message(ec('Не могу найти объект ').$data['object']);
 		
-		bors()->user()->favorite_add($object);
+		bors()->user()->subscribe_add($object);
 		return go_ref(@$data['ref']);
 	}
 
@@ -36,7 +36,7 @@ class bors_users_tools_favorites extends base_page
 		if(!$object)
 			return bors_message(ec('Не могу найти объект ').$data['object']);
 		
-		bors()->user()->favorite_remove($object);
+		bors()->user()->subscribe_remove($object);
 		return go_ref(@$data['ref']);
 	}
 }

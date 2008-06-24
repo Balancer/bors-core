@@ -71,23 +71,37 @@ function mysql_limits_compile($args)
 	return 'LIMIT '.$start.','.$per_page;
 }
 
+function array_smart_expand(&$array)
+{
+	$result = array();
+	if(!is_array($array))
+		return $result;
+		
+	foreach($array as $key => $value)
+		if(is_numeric($key))
+			$result[$value] = $value;
+		else
+			$result[$key] = $value;
+	
+	return $result;
+}
+
 function bors_class_field_to_db($class, $field = NULL)
 {
 	if(!class_exists($class))
 		return $field ? $class.'.'.$field : $class;
 
-
 	$table	 = call_user_func(array($class, 'main_table_storage'));
-	$fields	 = call_user_func(array($class, 'main_table_fields'));
+	$fields	 = array_smart_expand(call_user_func(array($class, 'main_table_fields')));
 
 	return $field ? $table.'.'.$fields[$field] : $table;
 }
 
 function mysql_bors_join_parse($join)
 {
+//	echo "$join<br/>";
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
 	$join = preg_replace('!(\w+)\.(\w+)!e', 'bors_class_field_to_db("$1", "$2")', $join);
-//	echo "$join<br/>";
 	return $join;
 }
 

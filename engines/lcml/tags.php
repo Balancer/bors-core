@@ -17,7 +17,7 @@
             {
                 if(empty($GLOBALS['cms']['config']['disable']["lp_$func"]) 
 					&& function_exists("lp_$func")
-					&& (!$taglist || empty($taglist[$func]))
+					&& (!$taglist || in_array($func, $taglist))
 				)
                 {
                     $opened   = 0; // число открытых тэгов данного типа
@@ -66,7 +66,7 @@
 
                 if(empty($GLOBALS['cms']['config']['disable']["lt_$func"])
 					&& function_exists("lt_$func")
-					&& (!$taglist || !empty($taglist[$func]))
+					&& (!$taglist || in_array($func, $taglist))
 					)
                 {
 					$func = "lt_$func";

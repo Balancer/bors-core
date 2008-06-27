@@ -163,3 +163,6 @@ function full_hdate($date, $show_year = true)
 {
 	return intval(strftime('%d', $date)).' '.strtolower(month_name_rp(strftime('%m', $date))).($show_year ? ec(strftime(' %Y года', $date)) : '');
 }
+
+function date_format_mysqltime($time) { return $time ? strftime('\'%Y-%m-%d %H:%M:%S\'', $time) : NULL; }
+function date_format_mysql($time) { return $time ? strftime('\'%Y-%m-%d\'', $time) : NULL; }

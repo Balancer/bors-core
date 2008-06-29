@@ -470,6 +470,7 @@ class base_object extends base_empty
 
 	function edit_url()  { return '/admin/edit/?object='.$this->internal_uri(); }
 	function admin_url() { return '/admin/?object='.$this->internal_uri(); }
+	function delete_url()  { return '/admin/delete/?object='.$this->internal_uri(); }
 
 	var $_called_url;
 	function set_called_url($url) { return $this->_called_url = $url; }

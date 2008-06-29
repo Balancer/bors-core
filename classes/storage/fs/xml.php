@@ -4,19 +4,26 @@ require_once('classes/inc/BorsXml.php');
 
 class storage_fs_xml extends base_null
 {
-	function load($object)
+	function file($object)
 	{
 		$url = $object->url();
 		if(!$url)
 			$url = $object->id();
-		if(preg_match('!.+/$!', $url))
+
+		if(preg_match('!.*/$!', $url))
 			$file = $url . 'index.xml';
 		elseif(preg_match('!^(.*/[^/]+\.)\w{1,4}$!', $url, $m))
 			$file = $m[1] . 'xml';
 		else
 			return $object->set_loaded(false);
 
-		$file = config('storage_xml_base_dir', secure_path($_SERVER['DOCUMENT_ROOT'].'/../.data')).preg_replace('!^http://[^/]+!', '', $file);
+		return config('storage_xml_base_dir', secure_path($_SERVER['DOCUMENT_ROOT'].'/../.data')).preg_replace('!^http://[^/]+!', '', $file);
+	}
+
+	function load($object)
+	{
+		$file = storage_fs_xml::file($object);
+//		echo "Load {$object->url()} [{$object->id()}] as $file<br/>\n";
 
 		if(!file_exists($file))
 			return $object->set_loaded(false);
@@ -54,7 +61,7 @@ class storage_fs_xml extends base_null
 					ksort($value);
 			}
 
-			if(!is_array($value) && preg_match('!time!', $key))
+			if(!is_array($value) && preg_match('!time!', $key) && !is_numeric($value))
 				$value = strtotime($value);
 
 			$object->{"set_$key"}($value, false);
@@ -65,18 +72,9 @@ class storage_fs_xml extends base_null
 
 	function save($object)
 	{
-		$url = $object->url() ? $object->url() : $object->id();
-		if(preg_match('!.+/$!', $url))
-			$file = $url . 'index.xml';
-		elseif(preg_match('!^(.*/[^/]+\.)\w{1,4}$!', $url, $m))
-			$file = $m[1] . 'xml';
-		else
-			return false;
+		$file = storage_fs_xml::file($object);
 
-		$file = config('storage_xml_base_dir', secure_path($_SERVER['DOCUMENT_ROOT'].'/../.data')).preg_replace('!^http://[^/]+!', '', $file);
-
-		if(!file_exists($file))
-			return false;
+		mkpath(dirname($file));
 
 		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<bors>\n";
 		foreach(get_object_vars($object) as $field => $value)
@@ -90,10 +88,15 @@ class storage_fs_xml extends base_null
 			if(is_array($value))
 			{
 				foreach($value as $k => $v)
-					$result .= "<i idx=\"$k\">".htmlspecialchars($v)."</i>";
+					$result .= "<i idx=\"$k\">".htmlspecialchars(str_replace("\r", '', $v))."</i>";
 			}
 			else
-				$result .= htmlspecialchars($value);
+			{
+				if(preg_match('!time!', $field) && is_numeric($value))
+					$value = gmdate('D, d M Y H:i:s', $value).' GMT';;
+
+				$result .= htmlspecialchars(str_replace("\r", '', $value));
+			}
 			
 			$result .= "</$field>\n";
 		}
@@ -107,6 +110,17 @@ class storage_fs_xml extends base_null
 		file_put_contents($file, $result);
 		@chmod($file, 0666);
 		
+		return true;
+	}
+	
+	function delete($object)
+	{
+		$file = storage_fs_xml::file($object);
+		if(!file_exists($file))
+			return false;
+			
+		@unlink($file);
+		@rmdir(dirname($file));
 		return true;
 	}
 }

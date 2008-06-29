@@ -19,7 +19,7 @@
 			
 		if(empty($id))
 			$id = NULL;
-			
+		
 		$smarty->assign('current_form_class', $form = object_load($name, $id));
 
 		if($main_obj)

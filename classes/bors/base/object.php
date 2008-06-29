@@ -456,10 +456,17 @@ class base_object extends base_empty
 	
 	function storage() { return object_load($this->storage_engine()); }
 
-	var $stb_access_engine = 'access_base';
+	var $stb_access_engine = NULL;
 	var $stb_config_class = NULL;
 	
-	function access()  { return object_load($this->access_engine(), $this); }
+	function access()
+	{
+		$access = $this->access_engine();
+		if(!$access)
+			$access = config('access_default', 'access_base');
+		
+		return object_load($access, $this);
+	}
 
 	function edit_url()  { return '/admin/edit/?object='.$this->internal_uri(); }
 	function admin_url() { return '/admin/?object='.$this->internal_uri(); }
@@ -535,7 +542,8 @@ class base_object extends base_empty
 
 	function cache_clean_self()
 	{
-		cache_static::drop($this);
+		if($this->cache_static() > 0)
+			cache_static::drop($this);
 		delete_cached_object($this);
 	}
 

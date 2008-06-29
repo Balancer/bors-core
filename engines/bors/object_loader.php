@@ -464,12 +464,14 @@ function object_init($class_name, $object_id, $args = array())
 
 	if(!$obj->loaded())
 		$obj->init();
+
+//	if(method_exists($obj, 'id')) echo "{$obj->class_name()}({$obj->id()}) loaded = {$obj->loaded()}<br />\n";
 //	else echo get_class($obj)." already inited<br />";
 
 	if($obj->is_only_tuner())
 		return NULL;
 	
-//	echo $obj->class_name()."; cf={$obj->class_file()}; object_id=$object_id; url=$url; cbe={$obj->can_be_empty()}; ld={$obj->loaded()}<br />\n";
+//	echo $obj->class_name()."; cf=obj->class_file(); object_id=$object_id; url=$url; cbe={$obj->can_be_empty()}; ld={$obj->loaded()}<br />\n";
 	
 	if(($object_id || $url)
 		&& method_exists($obj, 'can_be_empty')

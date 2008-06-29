@@ -8,19 +8,21 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	$smarty = &new Smarty;
 	require('smarty-register.php');
 
-	$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
+	$smarty->compile_dir = secure_path(config('cache_dir').'/smarty-templates_c/');
 	$smarty->plugins_dir = array();
 	foreach(bors_dirs() as $dir)
 		$smarty->plugins_dir[] = $dir.'/engines/smarty/plugins';
 	
 	$smarty->plugins_dir[] = 'plugins';
 	
-	$smarty->cache_dir   = config('cache_dir').'/smarty-cache/';
+	$smarty->cache_dir   = secure_path(config('cache_dir').'/smarty-cache/');
 
-	if(!file_exists($smarty->compile_dir))
-		mkdir($smarty->compile_dir, 0775, true);
-	if(!file_exists($smarty->cache_dir))
-		@mkdir($smarty->cache_dir, 0775, true);
+	if(!@file_exists($smarty->compile_dir))
+		@mkdir($smarty->compile_dir, 0777, true);
+	@chmod($smarty->compile_dir, 0777);
+	if(!@file_exists($smarty->cache_dir))
+		@mkdir($smarty->cache_dir, 0777, true);
+	@chmod($smarty->cache_dir, 0777);
 
 	$caching = !$obj->is_cache_disabled() && config('templates_cache_disabled') !== true;
 			

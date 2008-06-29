@@ -7,8 +7,7 @@
 		'.* => base_page_hts(url)',
 		'/do-login/? => common_do_login',
 		
-		'/admin/tools/delete/\?object=([^&]+).* => bors_tools_delete(1)',
-		'/admin/tools/delete/\?(.+) => bors_tools_delete(1)',
+		'/admin/delete/\?object=([^&]+).* => bors_tools_delete(1)',
 
 		'/admin/\?object=([^&]+).* => bors_admin_main(1)',
 		'/admin/edit/\?object=([^&]+).* => bors_admin_edit(1)',

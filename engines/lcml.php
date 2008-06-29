@@ -11,7 +11,9 @@ require_once ('inc/urls.php');
 //$GLOBALS['cms']['sites_store_path'] = "{$GLOBALS['cms']['main_host_dir']}/sites";
 //$GLOBALS['cms']['sites_store_url'] = "{$GLOBALS['cms']['main_host_uri']}/sites";
 
-ext_load(dirname(__FILE__).'/lcml/tags');
+foreach(bors_dirs() as $dir)
+	if(file_exists($dir = secure_path($dir.'/engines/lcml/tags')))
+		ext_load($dir);
 
 function lcml_out($txt)
 {

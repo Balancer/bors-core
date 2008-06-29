@@ -43,7 +43,7 @@
 
 	function rec_rmdir($dir, $delete_self = true, $mask = '.*')
 	{
-    	if(!$dh = @opendir($dir))
+    	if(!$dh = opendir($dir))
 			return;
 
 	    while(($obj = readdir($dh))) 
@@ -54,14 +54,14 @@
 			if(!preg_match("!^{$mask}$!", $obj))
 				continue;
 
-	        if(!@unlink($dir.'/'.$obj))
+	        if(!unlink($dir.'/'.$obj))
 				rec_rmdir($dir.'/'.$obj, true, $mask);
 	    }
 
-		@closedir($dh);
+		closedir($dh);
 		
 	    if ($delete_self)
-	        @rmdir($dir);
+	        rmdir($dir);
 	}
 
 function secure_path($path)

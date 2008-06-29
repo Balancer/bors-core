@@ -31,6 +31,8 @@
 //			print_d($_GET); exit();
 //			set_loglevel(10);
 			$form = object_load($_GET['class_name'], @$_GET['id']);
+			if(!$form)
+				$form = object_new_instance($_GET['class_name'], @$_GET['id']);
 //			echo $_GET['class_name'];
 //			print_d($form);
 //			bors_exit();
@@ -82,8 +84,7 @@
 						continue;
 						
 					$method = "remove_{$m[1]}_file";
-//					if(method_exists($form, $method))
-						$form->$method($data);
+					$form->$method($data);
 				}
 
 				if(!empty($_FILES))
@@ -93,8 +94,7 @@
 						if($params)
 						{
 							$method = "upload_{$file}_file";
-//							if(method_exists($form, $method))
-								$form->$method($params, $data);
+							$form->$method($params, $data);
 						}
 					}
 				}
@@ -115,6 +115,7 @@
 					return go($form->url(1));
 					
 				$_GET['go'] = str_replace('%OBJECT_ID%', $form->id(), $_GET['go']);
+				$_GET['go'] = str_replace('%OBJECT_URL%', $form->url(), $_GET['go']);
 				require_once('inc/navigation.php');
 				return go($_GET['go']);
 			}

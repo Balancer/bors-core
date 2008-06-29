@@ -17,7 +17,7 @@
   
         $pStrPath = dirname($strPath);
 
-        if(!mkpath($pStrPath, $mode)) 
+		if(!mkpath($pStrPath, $mode)) 
             return false;
 
   		$err = @mkdir($strPath, $mode);
@@ -71,4 +71,35 @@ function secure_path($path)
     $path = preg_replace('!/\.\.!', '', $path);
 
     return $path;
+}
+
+// From http://ru2.php.net/function.opendir, modified by Balancer.
+function search_dir($dir, $mask='.*', $level=5)
+{
+	$return_me = array();
+	if(is_dir($dir))
+	{
+		if($dh = opendir($dir))
+		{
+			while(($file = readdir($dh)) !== false)
+			{
+				if(is_dir($dir.'/'.$file) && $file != '.' && $file != '..')
+				{
+					$test_return = search_dir($dir.'/'.$file, $mask, $level+1);
+					if(is_array($test_return))
+					{
+						$temp = array_merge($test_return, $return_me);
+						$return_me = $temp;
+					}
+					if(is_string($test_return))
+						array_push($return_me,$test_return);
+				}
+				elseif(preg_match("!{$mask}!", $file))
+					array_push($return_me, $dir.'/'.$file);
+			}
+			closedir($dh);
+		}
+	}
+	sort($return_me);
+	return $return_me;
 }

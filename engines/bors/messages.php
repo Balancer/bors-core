@@ -2,8 +2,8 @@
 
 function bors_message($text, $params=array())
 {
-	header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 	$redir = defval($params, 'redirect', false);
 	$title = defval($params, 'title', ec('Ошибка!'));

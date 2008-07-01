@@ -22,6 +22,8 @@ function mysql_access($db = 'BORS', $login = NULL, $password = NULL, $host='loca
 {
 	$GLOBALS['cms']['mysql'][$db]['login'] = $login;
 	$GLOBALS['cms']['mysql'][$db]['password'] = $password;
+	if($host && $host != 'localhost')
+		$GLOBALS['cms']['mysql'][$db]['server'] = $host;
 }
 
 //config_set('debug_mysql_queries_log', '/var/www/balancer.ru/htdocs/logs/sql-timig.log');

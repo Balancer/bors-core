@@ -12,6 +12,7 @@ if(!defined("BORS_HOST"))
 if(!defined('BORS_3RD_PARTY'))
 	define('BORS_3RD_PARTY', dirname(__FILE__).'/../bors-third-party');
 
+function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }
 function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
 function config($key, $def = NULL) { return isset($GLOBALS['cms']['config'][$key]) ? $GLOBALS['cms']['config'][$key] : $def; }
 
@@ -84,7 +85,7 @@ function bors_init()
 	{
 		$memcache = &new Memcache;
 		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
-		config_set('memcached_instance', &$memcache);
+		config_set_ref('memcached_instance', $memcache);
 	}
 
 	require_once('engines/bors.php');

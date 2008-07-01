@@ -330,7 +330,7 @@ class DataBase extends base_object
 		{
 			include_once("classes/Cache.php");
 			$ch = NULL;
-			if($cached !== false)
+			if($cached !== false && class_exists('Cache'))
 			{
 //				echo 0/0;
 				$ch = &new Cache();

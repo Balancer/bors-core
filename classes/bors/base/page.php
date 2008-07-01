@@ -28,7 +28,7 @@ class base_page extends base_object
 		if($this->total_pages() < 2)
 			return "";
 
-		include_once('funcs/design/page_split.php');
+		include_once('inc/design/page_split.php');
 		return '<div class="'.$css.ec('">Страницы: ').join(' ', pages_show($this, $this->total_pages(), $this->items_around_page())).'</div>';
 	}
 

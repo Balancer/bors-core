@@ -26,7 +26,7 @@
 			}
 		}
 
-		if(!empty($_GET['class_name']))
+		if(!empty($_GET['class_name']) && $_GET['class_name'] != 'NULL')
 		{
 //			print_d($_GET); exit();
 //			set_loglevel(10);

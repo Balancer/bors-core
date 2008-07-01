@@ -19,10 +19,12 @@ class BorsXml
 	function parse($data)
 	{
 		xml_parse($this->parser, $data);
+//		echo '==================================<br/>';
 	}
 
 	function tag_open($parser, $tag, $attributes)
 	{
+//		echo "Open tag $tag, attr=".print_r($attributes, true)."<br />";
 		$attributes['_tag'] = $tag;
 		$attributes['_parent'] = &$this->pointer;
 
@@ -33,6 +35,7 @@ class BorsXml
 
 	function cdata($parser, $cdata)
 	{
+//		echo "Cdata '$cdata'<br />";
 		if(empty($this->pointer['cdata']))
 			$this->pointer['cdata'] = dc(html_entity_decode($cdata));
 		else
@@ -41,6 +44,7 @@ class BorsXml
 
 	function tag_close($parser, $tag)
 	{
+//		echo "Close tag $tag<br />";
 		$parent = &$this->pointer['_parent'];
 		unset($this->pointer['_parent']);
 		unset($this->pointer['_tag']);

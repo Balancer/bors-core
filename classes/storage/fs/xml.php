@@ -7,6 +7,7 @@ class storage_fs_xml extends base_null
 	function file($object)
 	{
 		$url = $object->url();
+//		echo "url='$url'<br />\n";
 		if(!$url)
 			$url = $object->id();
 
@@ -33,14 +34,17 @@ class storage_fs_xml extends base_null
 		$xml->parse($content);                                                                     
 
 		$loaded = false;
+//		print_d($xml->dom['bors'][0]);
 		foreach($xml->dom['bors'][0] as $key => $data)
 		{
 			if($key == 'cdata')
 				continue;
-				
+			
+//			echo "$key -> ".count($data[0])."<br />";
+			
 			$loaded = true;
 
-			if(count($data[0]) == 1)
+			if(empty($data[0]['i']))
 				$value = $data[0]['cdata'];
 			else
 			{
@@ -48,17 +52,22 @@ class storage_fs_xml extends base_null
 				$ordered = false;
 				foreach($data[0]['i'] as $x)
 				{
-					if(empty($x['idx']))
-						$value[] = $x['cdata'];
-					else
+					if(!empty($x['cdata']))
 					{
-						$value[$x['idx']] = $x['cdata'];
-						$ordered = true;
+						if(empty($x['idx']))
+							$value[] = $x['cdata'];
+						else
+						{
+							$value[$x['idx']] = $x['cdata'];
+							$ordered = true;
+						}
 					}
 				}
 				
 				if($ordered)
 					ksort($value);
+				
+//				print_d($value);
 			}
 
 			if(!is_array($value) && preg_match('!time!', $key) && !is_numeric($value))
@@ -77,18 +86,27 @@ class storage_fs_xml extends base_null
 		mkpath(dirname($file));
 
 		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<bors>\n";
-		foreach(get_object_vars($object) as $field => $value)
+		$fields = get_object_vars($object);
+		$fields['stb_children'] = $object->children();
+//		print_d($fields);
+//		exit();
+		foreach($fields as $field => $value)
 		{
 			if(!$value || !preg_match('!^stb_(\w+)$!', $field, $m))
 				continue;
 				
 			$field = $m[1];
+//			echo "Set $field to $value<br/>\n";
 				
 			$result .= "<$field>";
 			if(is_array($value))
 			{
-				foreach($value as $k => $v)
-					$result .= "<i idx=\"$k\">".htmlspecialchars(str_replace("\r", '', $v))."</i>";
+				if($value)
+				{
+					$result .= "\n";
+					foreach($value as $k => $v)
+						$result .= "<i idx=\"$k\">".htmlspecialchars(str_replace("\r", '', $v))."</i>\n";
+				}
 			}
 			else
 			{

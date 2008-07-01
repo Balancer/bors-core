@@ -1,0 +1,9 @@
+{form class=$this->object()|get:class_name id=$this->object()|get:id}
+<table class="btab">
+<tr><td>Заголовок:</td><td>{input name="title" class="w100p"}</td></tr>
+<tr><td>Текст страницы:</td><td>{textarea name="source" class="w100p" cols=50 rows=12}</td></tr>
+<tr><td>Дочерние страницы:<br/><small>Порядковый номер, ссылка</small></td><td>{textarea name="children_list" class="w100p" cols=50 rows=4}</td></tr>
+<tr><td colSpan="2">{submit value="Сохранить"}</td></tr>
+</table>
+{go value="%OBJECT_URL%"}
+{/form}

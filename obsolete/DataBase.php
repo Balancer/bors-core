@@ -46,22 +46,6 @@ class DataBase extends base_object
 				$this->dbh = global_key("DataBaseHandler:$server",$base);
 //				echo "cont\[{$base}]=".$this->dbh."<br>\n";
 				mysql_select_db($base, $this->dbh) or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-
-				if(!empty($GLOBALS['cms']['mysql_set_character_set']))
-				{
-					debug_timing_start('mysql_set_character_set');
-					mysql_query("SET CHARACTER SET {$GLOBALS['cms']['mysql_set_character_set']};",$this->dbh)
-						 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-					debug_timing_stop('mysql_set_character_set');
-				}
-				
-				if(!empty($GLOBALS['cms']['mysql_set_names_charset']))
-				{
-					debug_timing_start('mysql_set_names');
-					mysql_query("SET NAMES {$GLOBALS['cms']['mysql_set_names_charset']};",$this->dbh)
-						 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-					debug_timing_stop('mysql_set_names');
-				}
 			}
 			else
 			{
@@ -89,24 +73,25 @@ class DataBase extends base_object
 				mysql_select_db($base, $this->dbh)
 					or echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 
-				if(!empty($GLOBALS['cms']['mysql_set_character_set']))
-				{
-					debug_timing_start('mysql_set_character_set');
-					mysql_query("SET CHARACTER SET {$GLOBALS['cms']['mysql_set_character_set']};",$this->dbh)
-						 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-					debug_timing_stop('mysql_set_character_set');
-				}
-				
-				if(!empty($GLOBALS['cms']['mysql_set_names_charset']))
-				{
-					debug_timing_start('mysql_set_names');
-					mysql_query("SET NAMES {$GLOBALS['cms']['mysql_set_names_charset']};",$this->dbh)
-						 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-					debug_timing_stop('mysql_set_names');
-				}
 				
 				set_global_key("DataBaseHandler:$server",$base,$this->dbh);
 //				echo "new\[{$base}]=".$this->dbh."<br>\n";
+			}
+
+			if(config('mysql_set_character_set'))
+			{
+				debug_timing_start('mysql_set_character_set');
+				mysql_query('SET CHARACTER SET '.config('mysql_set_character_set'), $this->dbh)
+					 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
+				debug_timing_stop('mysql_set_character_set');
+			}
+				
+			if(config('mysql_set_names_charset'))
+			{
+				debug_timing_start('mysql_set_names');
+				mysql_query('SET NAMES '.config('mysql_set_names_charset'), $this->dbh)
+					 or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
+				debug_timing_stop('mysql_set_names');
 			}
 
 			if(!$this->dbh)

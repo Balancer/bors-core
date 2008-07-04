@@ -11,5 +11,6 @@
 
 		'/admin/\?object=([^&]+).* => bors_admin_main(1)',
 		'/admin/edit/\?object=([^&]+).* => bors_admin_edit(1)',
+		'/admin/clean/\?object=([^&]+).* => bors_admin_tools_clean(1)',
 		'/admin/logout/ => bors_admin_logout',
 	);

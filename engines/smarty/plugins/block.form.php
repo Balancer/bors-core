@@ -22,13 +22,16 @@
 		
 		$smarty->assign('current_form_class', $form = object_load($name, $id));
 
-		if($main_obj)
-			$uri = $main_obj->url();
-		else
-			$uri = NULL;
-			
-		if(!$uri)
-			$uri = $form->id();
+		if(!isset($uri))
+		{
+			if($main_obj)
+				$uri = $main_obj->url();
+			else
+				$uri = NULL;
+
+			if(!$uri)
+				$uri = $form->id();
+		}
 		
 		if($content == NULL) // Открытие формы
 		{
@@ -44,7 +47,7 @@
 			echo "<form enctype=\"multipart/form-data\"";
 			
 			foreach(split(' ', 'action method name class style enctype') as $p)
-				if(!empty($$p))
+				if(!empty($$p) && ($p != 'name' || $$p != 'NULL'))
 					echo " $p=\"{$$p}\"";
 			
 			echo ">\n";
@@ -55,7 +58,8 @@
 		}
 		
 		echo $content;
-		echo "<input type=\"hidden\" name=\"uri\" value=\"$uri\" />\n";
+		if(isset($uri) && $uri != 'NULL')
+			echo "<input type=\"hidden\" name=\"uri\" value=\"$uri\" />\n";
 		if(!empty($ref))
 			echo "<input type=\"hidden\" name=\"ref\" value=\"$ref\" />\n";
 
@@ -68,7 +72,8 @@
 		if(empty($class_name))
 			$class_name = $name;
 		
-		echo "<input type=\"hidden\" name=\"class_name\" value=\"$class_name\" />\n";
+		if(!empty($class_name) && $class_name != 'NULL')
+			echo "<input type=\"hidden\" name=\"class_name\" value=\"$class_name\" />\n";
 		if(!empty($id))
 			echo "<input type=\"hidden\" name=\"id\" value=\"$id\" />\n";
 

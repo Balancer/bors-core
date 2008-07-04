@@ -8,7 +8,7 @@ class bors_admin_tools_clean extends base_page
 	
 	function title() { return ec('очистка кеша'); }
 
-	function object() { return object_load($this->id()); }
+	function object() { return object_load(urldecode($this->id())); }
 
 	function pre_show()
 	{
@@ -17,6 +17,6 @@ class bors_admin_tools_clean extends base_page
 			return bors_message(ec('Не найден объект ').$this->id());
 		
 		$obj->cache_clean_self();
-		return go($object->url());
+		return go($this->object()->url());
 	}
 }

@@ -691,8 +691,8 @@ class base_object extends base_empty
 		return $content;
 	}
 		
-	function show($object)
-	{
-		echo $this->get_content($object);
-	}
+	function show($object) { echo $this->get_content($object); }
+	
+	function object_title() { return $this->class_title().ec(' «').$this->title().ec('»'); }
+	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }
 }

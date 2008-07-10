@@ -59,6 +59,7 @@ require_once('inc/debug.php');
 require_once('inc/global-data.php');
 require_once('inc/locales.php');
 require_once('inc/system.php');
+require_once('inc/datetime.php');
 require_once('obsolete/DataBase.php');
 require_once('obsolete/DataBaseHTS.php');
 
@@ -79,6 +80,8 @@ if(config('debug_can_change_now'))
 else
 	$GLOBALS['now'] = time();
 
+$GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
+
 function bors_init()
 {
 	if(config('memcached'))
@@ -90,11 +93,11 @@ function bors_init()
 
 	require_once('engines/bors.php');
 
-	require_once('engines/lcml.php');
 	require_once('inc/navigation.php');
 	require_once('engines/bors/vhosts_loader.php');
 	require_once('engines/bors/users.php');
 	require_once('inc/locales.php');
+	require_once('inc/urls.php');
 	require_once('engines/bors/object_show.php');
 
 	require_once('classes/Cache.php');

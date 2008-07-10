@@ -135,7 +135,10 @@ function lcml($txt, $params = array ())
 	include_once ("lcml/tags.php");
 	$txt = lcml_tags($txt, $mask);
 
-	$txt = ext_load(dirname(__FILE__).'/lcml/post', $txt, $mask);
+	foreach(bors_dirs() as $dir)
+		if(is_dir($x = $dir.'/engines/lcml/post'))
+			$txt = ext_load($x, $txt, $mask);
+//	$txt = ext_load(dirname(__FILE__).'/lcml/post', $txt, $mask);
 
 	if($GLOBALS['lcml']['level'] == 1)
 		$txt = ext_load(dirname(__FILE__).'/lcml/post-whole', $txt);

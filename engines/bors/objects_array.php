@@ -26,7 +26,8 @@ function objects_array($class, $args = array())
 
 function objects_first($class, $args = array())
 {
-	$args['limit'] = 1;
+	if(empty($args['limit']))
+		$args['limit'] = 1;
 	$objs = objects_array($class, $args);
 	return $objs ? $objs[0] : NULL;
 }

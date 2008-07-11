@@ -505,6 +505,7 @@ class base_object extends base_empty
 	function permanent() { return false; }
 
 	function cache_groups() { return ''; }
+	function cache_groups_parent() { return ''; }
 
 	function uid() { return md5($this->class_id().'://'.$this->id().','.$this->page()); }
 	function can_cached() { return true; }
@@ -545,7 +546,14 @@ class base_object extends base_empty
 	{
 		if($this->cache_static() > 0)
 			cache_static::drop($this);
+
 		delete_cached_object($this);
+
+		if(method_exists($this, 'cache_groups_parent'))
+			foreach(explode(' ', $this->cache_groups_parent()) as $group_name)
+				foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
+					if($group)
+						$group->clean();
 	}
 
 	function cache_children() { return array(); }
@@ -681,7 +689,7 @@ class base_object extends base_empty
 			), array(
 				$this->url($this->page()),
 				$this->title(),
-			), ec(config('temporary_file_contents'))));
+			), ec(config('temporary_file_contents'))), 120);
 	
 		$content = $this->direct_content($this);
 

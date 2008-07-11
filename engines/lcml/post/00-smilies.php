@@ -48,7 +48,7 @@
 
         foreach(lcml_smilies_list($dir) as $code)
 		{
-			$from[] = "![^\"]:$code:!";
+			$from[] = "!([^\"]):$code:!";
 			$to[]   = "$1<img src=\"".config('smilies_url')."/$code.gif\" alt=\":$code:\" title=\":$code:\" border=\"0\" />";
 		}
 

@@ -1,5 +1,7 @@
 <?php
 
+require_once('engines/lcml.php');
+
 class base_page extends base_object
 {
 	function render_engine() { return 'render_page'; }

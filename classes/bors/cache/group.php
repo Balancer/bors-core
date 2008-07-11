@@ -14,7 +14,7 @@ class cache_group extends base_empty
 	{
 		$this->db->replace('cache_groups', array(
 			'cache_group' => $this->id(),
-			'class_name' => get_class($obj),
+			'class_name' => $obj->class_id(),
 			'class_id' => $obj->id(),
 			'create_time' => time(),
 		));
@@ -22,12 +22,13 @@ class cache_group extends base_empty
 
 	function clean()
 	{
-		$list = $this->db->get_array('cache_groups', array('group='=>$this->id()));
+		$list = $this->db->get_array('cache_groups', array('cache_group'=>$this->id()));
 		$this->db->query("DELETE FROM cache_groups WHERE cache_group = '".addslashes($this->id())."'");
 		foreach($list as $x)
 		{
-			$obj = class_load($x['class_name'], $x['id']);
-			$obj->cache_clean();
+			$obj = class_load($x['class_name'], $x['class_id']);
+			if($obj)
+				$obj->cache_clean();
 		}
 	}
 }

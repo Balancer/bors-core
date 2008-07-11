@@ -26,19 +26,31 @@
 			$txt = preg_replace("!</$tag>!i","[/html_$tag]", $txt);
 		}
 
-		foreach(split(' ','param') as $tag)
+		foreach(explode(' ','param') as $tag)
 		{
 			$txt = preg_replace("!<$tag\s+([^>]+)>\s*</$tag>!i","[$tag $1]", $txt);
 		}
 
+		// Строго парные тэги
+		foreach(explode(' ','embed') as $tag)
+		{
+			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!i","[$tag $1]$2\[/$tag]", $txt);
+		}
+
+		// Ошибочные парные тэги, повторённые один раз. Остаток после предыдущего выправления.
+		foreach(explode(' ','embed') as $tag)
+		{
+			$txt = preg_replace("!<$tag\s+([^>]+)>!i","[$tag $1][/$tag]", $txt);
+		}
+
 		// Парные тэги, прямо транслирующиеся в BB-код:
-		foreach(split(' ','style tt') as $tag)
+		foreach(explode(' ','style tt') as $tag)
 		{
 			$txt = preg_replace("!<$tag>(.+?)</$tag>!is","[$tag]$1[/$tag]", $txt);
 			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!is","[$tag $1]$2[/$tag]", $txt);
 		}
 	
-		foreach(split(' ','b big br center code div embed font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr table td html_img html_a') as $tag)
+		foreach(explode(' ','b big br center code div font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr table td html_img html_a') as $tag)
 		{
 			$txt = preg_replace("!<$tag>!i","[$tag]", $txt);
 			$txt = preg_replace("!<$tag\s*/>!i","[$tag]", $txt);

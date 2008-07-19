@@ -38,7 +38,7 @@ class cache_static extends base_object_db
 		}
 	}
 	
-	static function save($object, $content)
+	static function save($object, $content, $expire_time = false)
 	{
 		$object_id = $object->id();
 		if($object_id && !is_numeric($object_id))
@@ -62,7 +62,7 @@ class cache_static extends base_object_db
 
 		$cache->set_object_id_db($object->id(), true);
 		$cache->set_last_compile(time(), true);
-		$cache->set_expire_time($object->cache_static()+time(), true);
+		$cache->set_expire_time(time() + ($expire_time === false ? $object->cache_static() : $expire_time), true);
 
 		storage_db_mysql_smart::save($cache);
 

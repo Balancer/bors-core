@@ -21,12 +21,13 @@
 				)
                 {
                     $opened   = 0; // число открытых тэгов данного типа
-                    $cfunc    = "lp_$func";
+					$cfunc    = "lp_$func";
                     $next_end = $end;
                     do
                     {
                         // Ищем следующий открывающийся тэг
-                        list($next_pos, $next_end, $next_tag, $next_func)=find_next_open_tag($txt, $next_end);
+                        list($next_pos, $next_end, $next_tag, $next_func) = find_next_open_tag($txt, $next_end);
+//						echo "$cfunc -> $next_tag:$next_func<br />\n";
 						if(!$next_tag)
 						{
 							$pos++;
@@ -34,11 +35,11 @@
 						}
 
                         // Если он такой же, как наш, то увеличиваем счётчик вложений
-                        if(strtolower($next_func)==strtolower($func))
+                        if(strtolower($next_func) == strtolower($func))
                             $opened++;
 
                         // Если он закрывающийся нашего типа, то...
-                        if(strtolower($next_func)==strtolower("/$func"))
+                        if(strtolower($next_func) == strtolower("/$func"))
                         {
                             // Если есть вложения - уменьшаем
                             if($opened)
@@ -60,10 +61,12 @@
                             }
                         }
                     } while($next_pos !== false);
+					
                     $end  = $pos; // В другой раз проверяем с этого же места
                     continue;
                 }
 
+//				echo "lt_$func<br/>\n";
                 if(empty($GLOBALS['cms']['config']['disable']["lt_$func"])
 					&& function_exists("lt_$func")
 					&& (!$taglist || in_array($func, $taglist))

@@ -3,7 +3,7 @@
 
     function lcml_save_tags_format($txt)
     {
-		foreach(split(' ', 'code music') as $tag)
+		foreach(explode(' ', 'code music') as $tag)
 		{
 			$txt = preg_replace("!(\[$tag\])(.+?)(\[/$tag\])!ise", "'$1'.save_format(stripslashes('$2')).'$3'", $txt);
 			$txt = preg_replace("!(\[$tag [^\]]+\])(.+?)(\[/$tag\])!ise", "'$1'.save_format(stripslashes('$2')).'$3'", $txt);

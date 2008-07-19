@@ -1,6 +1,10 @@
 <?
     function lcml_html_pre($txt)
     {
+	if(config('lcml_html_nonmutable'))
+	    return $txt;
+    
+    
 //		$txt = "html_disable = {$GLOBALS['lcml']['params']['html_disable']} - $txt";
 
 		$txt = preg_replace('/<!\-\-.*?\-\->/', '', $txt);
@@ -38,7 +42,7 @@
 			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!is","[$tag $1]$2[/$tag]", $txt);
 		}
 	
-		foreach(split(' ','b big br center code div embed font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr table td html_img html_a') as $tag)
+		foreach(split(' ','b big br center code div embed font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr table td th html_img html_a') as $tag)
 		{
 			$txt = preg_replace("!<$tag>!i","[$tag]", $txt);
 			$txt = preg_replace("!<$tag\s*/>!i","[$tag]", $txt);

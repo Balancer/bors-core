@@ -91,7 +91,10 @@ class base_page extends base_object
 			
 		foreach(split(' ', $this->cache_groups()) as $group)
 			if($group)
-				class_load('cache_group', $group)->register($this);
+				if($gr = object_load('cache_group', $group))
+					$gr->register($this);
+				else
+					echo "Can't load cache group '$group'<br />";
 
 		return $content;
 	}

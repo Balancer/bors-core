@@ -15,6 +15,9 @@
 
 		if(config('do_not_exit'))
 			debug_exit("Go to <a href=\"{$uri}\">{$uri}</a>");
+
+		if(config('bors_version_show'))
+			@header("X-bors-go: {$uri}");
 	
         if(!headers_sent($filename, $linenum) && $time==0) 
         {

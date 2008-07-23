@@ -8,6 +8,12 @@
 			return false;
 
 		@header("Status: 200 OK");
+		@header("HTTP/1.1 200 OK");
+		if(config('bors_version_show'))
+		{
+			@header("X-Bors-object-class: {$obj->class_name()}");
+			@header("X-Bors-object-id: {$obj->id()}");
+		}
 
 		$processed = $obj->pre_parse($_GET);
 		if($processed === true)
@@ -25,6 +31,7 @@
 					return true;
 			}
 		}
+
 
 		if(!empty($_GET['class_name']) && $_GET['class_name'] != 'NULL')
 		{

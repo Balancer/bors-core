@@ -44,7 +44,6 @@ function bors_message($text, $params=array())
 	//TODO: исправить!!
 	echo $message;
 
-
 	if($redir === true)
 	{
 		if(!empty($_POST['ref']))
@@ -54,7 +53,7 @@ function bors_message($text, $params=array())
 	}
 		
 	if($redir && $timeout >= 0)
-		go($redir, false, $timeout);
+		return go($redir, false, $timeout);
 		
 	return true;
 }

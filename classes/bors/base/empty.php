@@ -11,7 +11,7 @@ class base_empty extends base_null
 	function __construct($id)
 	{
 		$this->id = $this->initial_id = $id;
-		$this->page = $this->default_page();
+//		$this->page = $this->default_page();
 	}
 
 	var $page;

@@ -445,8 +445,13 @@ function object_init($class_name, $object_id, $args = array())
 	if(!$obj)
 		return NULL;
 
-	if(method_exists($obj, 'set_page') && isset($args['page']))
-		$obj->set_page($args['page']);
+	if(method_exists($obj, 'set_page'))
+	{
+		if(empty($args['page']))
+			$obj->set_page($obj->default_page());
+		else
+			$obj->set_page($args['page']);
+	}
 
 	$use_cache = defval($args, 'use_cache', true);
 	unset($args['local_path']);

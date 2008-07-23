@@ -6,10 +6,10 @@ class cache_group extends base_object_db
 	function main_table_storage() { return 'cache_groups'; }
 	function main_table_fields() { return array('id', 'cache_group', 'object_class_id' => 'class_name', 'object_id' => 'class_id', 'create_time'); }
 
-	function register($obj)
+	static function register($group, $obj)
 	{
 		$this->db()->replace('cache_groups', array(
-			'cache_group' => $this->id(),
+			'cache_group' => $group,
 			'class_name' => get_class($obj),
 			'class_id' => $obj->id(),
 			'create_time' => time(),

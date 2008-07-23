@@ -8,7 +8,8 @@ class cache_group extends base_object_db
 
 	static function register($group, $obj)
 	{
-		$this->db()->replace('cache_groups', array(
+		$db = new driver_mysql(config('cache_database'));
+		$db->replace('cache_groups', array(
 			'cache_group' => $group,
 			'class_name' => get_class($obj),
 			'class_id' => $obj->id(),

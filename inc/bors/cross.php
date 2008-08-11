@@ -1,5 +1,7 @@
 <?php
 
+//TODO: Сделать автоочистку привязок к несуществующим объектам. В первую очередь - aviaport_images
+
 function bors_get_cross_ids($object, $to_class = '', $dbh = NULL)
 {
 	if(!$dbh)
@@ -36,7 +38,8 @@ function bors_get_cross_ids($object, $to_class = '', $dbh = NULL)
 function bors_cross_object_init($row)
 {
 	$obj = object_load($row['class_id'], $row['object_id']);
-	$obj->set_sort_order($row['sort_order'], false);
+	if($obj)
+		$obj->set_sort_order($row['sort_order'], false);
 	return $obj;
 }
 

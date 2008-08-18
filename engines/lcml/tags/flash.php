@@ -47,11 +47,6 @@
 		return "<tr ".make_enabled_params($params, 'class style').">".lcml($inner)."</tr>";
 	}
 
-	function lp_table($inner, $params)
-	{
-		return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">".lcml($inner)."</table>";
-	}
-
 	function lp_html_a($inner, $params)
 	{
 		$params['href'] = preg_replace("!javascript!", "жабаскрипт", $params['href']);

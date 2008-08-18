@@ -28,3 +28,8 @@ function lp_style($inner, $params)
 {
 		return "<style type=\"text/css\">{$inner}</style>";
 }
+
+function lp_table($inner, $params)
+{
+	return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">".lcml($inner)."</table>";
+}

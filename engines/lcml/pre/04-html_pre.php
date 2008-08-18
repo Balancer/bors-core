@@ -32,19 +32,19 @@
 
 		foreach(explode(' ','param') as $tag)
 		{
-			$txt = preg_replace("!<$tag\s+([^>]+)>\s*</$tag>!i","[$tag $1]", $txt);
+			$txt = preg_replace("!<$tag\s+([^>]+)>\s*</$tag>!is","[$tag $1]", $txt);
 		}
 
 		// Строго парные тэги
 		foreach(explode(' ','embed') as $tag)
 		{
-			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!i","[$tag $1]$2\[/$tag]", $txt);
+			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!is","[$tag $1]$2\[/$tag]", $txt);
 		}
 
 		// Ошибочные парные тэги, повторённые один раз. Остаток после предыдущего выправления.
 		foreach(explode(' ','embed') as $tag)
 		{
-			$txt = preg_replace("!<$tag\s+([^>]+)>!i","[$tag $1][/$tag]", $txt);
+			$txt = preg_replace("!<$tag\s+([^>]+)>!is","[$tag $1][/$tag]", $txt);
 		}
 
 		// Парные тэги, прямо транслирующиеся в BB-код:

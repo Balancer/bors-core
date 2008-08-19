@@ -214,9 +214,8 @@
 //		echo "tpl=$template_uri<br/>\n";
 //		print_d($smarty->get_template_vars('aviafirms'));
 
-		$out = $smarty->fetch($template_uri);
+		return $smarty->fetch($template_uri);
 	
-		$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripslashes('$1'))", $out);
-		
-		return $out;
+//		$out = preg_replace("!<\?php(.+?)\?".">!es", "do_php(stripslashes('$1'))", $out);
+//		return $out;
 	}

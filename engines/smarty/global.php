@@ -20,7 +20,7 @@ function templates_noindex()
 	base_object::add_template_data_array('meta[robots]', 'noindex, follow');
 }
 
-function do_php($code)
+/*function do_php($code)
 {
 	ob_start();
 	eval($code);
@@ -31,3 +31,4 @@ function do_php($code)
 
 	return $out;
 }
+*/

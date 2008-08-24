@@ -1,0 +1,70 @@
+<html>
+<head><title>{$title}</title></head>
+<style>{literal}
+body {
+	font-size: 10pt;
+	font-family: Verdana;
+}
+
+table.btab { 
+	margin: 8px 0px 4px 0px; 
+	border-left: 1px solid #9bd;
+	border-top: 1px solid #9bd;
+	padding: 0;
+	border-collapse: collapse;
+}
+
+table.btab td { background: white; }
+
+.btab td, .btab th 
+{
+	border-right: 1px solid #9bd;
+	border-bottom: 1px solid #9bd;
+	padding: 2px;
+	margin: 0;
+}
+
+.btab caption {
+	color: #def;
+	background-color: #358;
+}
+
+.btab th {
+	color: #358;
+	background-color: #def;
+}
+
+.w100p { width: 98%; }
+{/literal}</style>
+<body>
+<small>{module class="nav_top" id=$this}</small>
+<div align="right">{$description}</div>
+<h1>{$title}</h1>
+
+{$body}
+
+{if $access}
+<hr />
+<small><center> 
+	edit <a href="{$main_uri}?edit">page</a> | 
+	<a href="{$main_uri}?edit-data">data</a> |
+	<a href="{$main_uri}?nav_edit">navigation</a>
+</center></small>
+{/if}
+</body>
+
+<!--
+=== debug-info ===
+{if $this}class = {$this->class_name()}{/if}
+template[3] = {$template}
+queries = {$queries} 
+queries_time = {$queries_time} 
+make_time = {$make_time} 
+template = {$page_template} 
+created = {$now|strftime:"%d.%m.%Y %H:%M"} 
+{if $this}{math assign=exp equation="x+y" x=$this->cache_static() y=$now}static expire = {$exp|strftime:"%d.%m.%Y %H:%M"} 
+{/if} 
+-->
+
+
+</html>

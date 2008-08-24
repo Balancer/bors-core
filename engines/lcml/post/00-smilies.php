@@ -61,7 +61,7 @@
 		config_set('cache_disabled', false);
         $cache = &new Cache();
 
-        if($cache->get('smilies-v6', $dir))
+        if($cache->get('smilies-v7', $dir))
 		{
 //			if(is_array($cache->last()))
 //			{

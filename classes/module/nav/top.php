@@ -12,7 +12,7 @@ class module_nav_top extends base_page
 
         return array(
 			'links' => $this->link_line($this->args('show_self', true)),
-			'obj' => $obj,
+			'nav_obj' => $obj,
 			'delim' => $this->args('delim', ' &#187; '),
 		);
     }
@@ -39,6 +39,12 @@ class module_nav_top extends base_page
 		{
 			$links = array();
 		
+			if($parent == 'http:///')
+			{
+				debug_hidden_log("Incorrect parent url for '{$obj}': $parent");
+				continue;
+			}
+				
 			$parent_obj = object_load($parent);
 			if(!$parent_obj || $parent_obj == $obj)
 				continue;

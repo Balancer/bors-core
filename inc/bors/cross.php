@@ -45,6 +45,12 @@ function bors_cross_object_init($row)
 
 function bors_get_cross_objs($object, $to_class = '', $dbh = NULL)
 {
+	if(!$object)
+	{
+		debug_hidden_log('Try to get cross for empty object. [' . ($to_class ? "to_class={$to_class}" : ''). ']');
+		return array();
+	}
+
 	if(!$dbh)
 		$dbh = &new driver_mysql(config('bors_core_db'));
 
@@ -64,12 +70,18 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL)
 	$dbh->query("SELECT to_class as class_id, to_id as object_id, `order` as sort_order FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} ORDER BY `order`, to_id");
 				
 	while($row = $dbh->fetch_row())
-		$result[] = bors_cross_object_init($row);
+		if($res = bors_cross_object_init($row))
+			$result[] = $res;
+		else
+			debug_hidden_log("Empty cross ".print_r($row, true)." with {$object} [class_id = {$object->class_id()}]");
 
 	$dbh->query("SELECT from_class as class_id, from_id as object_id, `order` as sort_order FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} ORDER BY `order`, from_id");
 				
 	while($row = $dbh->fetch_row())
-		$result[] = bors_cross_object_init($row);
+		if($res = bors_cross_object_init($row))
+			$result[] = $res;
+		else
+			debug_hidden_log("Empty cross ".print_r($row, true)." with {$object} [class_id = {$object->class_id()}]");
 	
 	return $result;
 }

@@ -43,6 +43,9 @@
 
 			if($action == 'this')
 				$action = $GLOBALS['main_uri'];
+
+			if($action == 'target')
+				$action = $form->url();
 				
 			echo "<form enctype=\"multipart/form-data\"";
 			

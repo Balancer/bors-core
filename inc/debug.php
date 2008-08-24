@@ -133,25 +133,31 @@ function debug_test()
         @fclose($fh);
     }
 
-    function DBG_GetBacktrace()
+    function DBG_GetBacktrace($skip = 0, $html = NULL)
     {
         $MAXSTRLEN = 64;
    
-		if(!empty($_SERVER['HTTP_HOST']))
+   		if(is_null($html))
+   			$html = !empty($_SERVER['HTTP_HOST']);
+   
+		if($html)
 			$s = '<pre align="left">';
 		else
 	        $s = '';
 		
         $traceArr = debug_backtrace();
-        array_shift($traceArr);
+
+        for($i = 0; $i <= $skip; $i++)
+	        array_shift($traceArr);
+
         $tabs = 0; //sizeof($traceArr)-1;
         for($pos=0; $pos<sizeof($traceArr); $pos++)
         {
 			$arr = $traceArr[sizeof($traceArr)-$pos-1];
             for ($i=0; $i < $tabs; $i++)
-				$s .= empty($_SERVER['HTTP_HOST']) ? ' ' : '&nbsp;';
+				$s .= $html ? '&nbsp;' : ' ';
             $tabs++;
-			if(!empty($_SERVER['HTTP_HOST']))
+			if($html)
 	            $s .= '<font face="Courier New,Courier">';
             if(isset($arr['class']))
 				$s .= $arr['class'].'.';
@@ -174,18 +180,18 @@ function debug_test()
         	    }
 			}
             $s .= $arr['function'].'('.implode(', ',$args).')';
-			if(!empty($_SERVER['HTTP_HOST']))
+			if($html)
 				$s .= '</font>';
-            $Line = (isset($arr['line'])? $arr['line'] : "unknown");
-            $File = (isset($arr['file'])? $arr['file'] : "unknown");
-			if(!empty($_SERVER['HTTP_HOST']))
-    	        $s .= sprintf("<span style=\"font-size: 8pt;\">[<a href=\"file:/%s\">%s</a>:%d]</span>", $File, $File, $Line);
+			$Line = (isset($arr['line'])? $arr['line'] : "unknown");
+			$File = (isset($arr['file'])? $arr['file'] : "unknown");
+			if($html)
+		        $s .= sprintf("<span style=\"font-size: 8pt;\">[<a href=\"file:/%s\">%s</a>:%d]</span>", $File, $File, $Line);
 			else
-    	        $s .= sprintf("[%s:%d]", $File, $Line);
+		        $s .= sprintf("[%s:%d]", $File, $Line);
             $s .= "\n";
         }    
 
-		if(!empty($_SERVER['HTTP_HOST']))
+		if($html)
 	        $s .= '</pre>';
 
         return $s;
@@ -256,4 +262,16 @@ function debug_timing_info_all()
 		$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls]\n";
 
 	return $result."-->\n";
+}
+
+function debug_hidden_log($message)
+{
+	if(!($out_file = config('debug_hidden_log')))
+		return;
+	
+	file_put_contents($out_file,
+		strftime('%Y-%m-%d %H:%M:%S: ') 
+			. $message . "\n" . DBG_GetBacktrace(0, false) 
+			. "\n---------------------------\n\n",
+		FILE_APPEND);
 }

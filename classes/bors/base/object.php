@@ -707,4 +707,7 @@ class base_object extends base_empty
 	
 	function object_title() { return $this->class_title().ec(' «').$this->title().ec('»'); }
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }
+	
+	function cross_objs($to_class = '') { return bors_get_cross_objs($this, $to_class); }
+	function add_cross($class, $id, $order) { return bors_add_cross($this->class_id(), $this->id(), $class, $id, $order); }
 }

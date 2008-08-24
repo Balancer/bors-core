@@ -311,11 +311,11 @@ function save_cached_object(&$object, $delete = false)
 
 	function class_load_by_vhosts_url($url)
 	{
-		$data = parse_url($url);
+		$data = @parse_url($url);
 		
-		if(empty($data['host']))
+		if(!$data || empty($data['host']))
 		{
-			debug(ec("Ошибка. Попытка загрузить класс из URL неверного формата: ").$url, 1);
+			debug_hidden_log(ec("Ошибка. Попытка загрузить класс из URL неверного формата: ").$url);
 			return NULL;
 		}
 		

@@ -36,6 +36,10 @@ if(file_exists(BORS_HOST.'/config-pre.php'))
 	include_once(BORS_HOST.'/config-pre.php');
 
 require_once('config/default.php');
+config_set('admin_config_class', 'bors_admin_config');
+config_set('debug_hidden_log', $_SERVER['DOCUMENT_ROOT'].'/logs/hidden.log');
+
+config_set('image_transform_engine', 'GD');
 
 $host = @$_SERVER['HTTP_HOST'];
 

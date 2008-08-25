@@ -256,12 +256,12 @@ function debug_timing_stop($category)
 
 function debug_timing_info_all()
 {
-	$result = "<!--\nDebug timing:\n";
 	global $bors_debug_timing;
+	$result = "";
 	foreach($bors_debug_timing as $section => $data)
 		$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls]\n";
 
-	return $result."-->\n";
+	return $result;
 }
 
 function debug_hidden_log($message)

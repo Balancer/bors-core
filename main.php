@@ -136,7 +136,12 @@
 	}
 
 	if(config('debug_timing'))
+	{
+		echo "<!--\nDebug timing:\n";
+		echo "Total time: $time sec.\n";
 		echo debug_timing_info_all();
+		echo "-->\n";
+	}
 	
 	if($ret === true)
 		return;

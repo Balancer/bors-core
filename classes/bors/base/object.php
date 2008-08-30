@@ -91,10 +91,16 @@ class base_object extends base_empty
 			elseif($storage_engine->load($this) !== false || $this->can_be_empty())
 				$this->_loaded = true;
 		}
-			
+
+		if(!$this->config && ($config = $this->config_class()))
+		{
+			$this->config = object_load($config, $this);
+			if(!$this->config)
+				debug_exit("Can't load config ".$this->config_class());
+		}
+
 		if($data_provider = $this->data_provider())
 			object_load($data_provider, $this)->fill();
-
 
 		return false;
 	}

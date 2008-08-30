@@ -120,6 +120,9 @@
 			{
 				if($_GET['go'] == "newpage")
 					return go($form->url(1));
+
+				if($_GET['go'] == "newpage_admin")
+					return go($form->admin_url(1));
 					
 				$_GET['go'] = str_replace('%OBJECT_ID%', $form->id(), $_GET['go']);
 				$_GET['go'] = str_replace('%OBJECT_URL%', $form->url(), $_GET['go']);

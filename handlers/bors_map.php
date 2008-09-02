@@ -8,6 +8,7 @@
 		'/do-login/? => common_do_login',
 		
 		'/admin/delete\?object=([^&]+).* => bors_tools_delete(1)',
+		'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
 		'/admin/\?object=([^&]+).* => bors_admin_main(1)',
 		'/admin/edit/\?object=([^&]+).* => bors_admin_edit(1)',

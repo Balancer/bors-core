@@ -323,10 +323,28 @@ class base_object extends base_empty
 	function cache_static() { return 0; }
 //	var $stb_cache_static = 0;
 	
-	function titled_url($append=NULL) { return '<a href="'.$this->url($this->page()).'"'.($append?' '.$append:'').">{$this->title()}</a>"; }
+	function titled_url($append=NULL, $title=NULL)
+	{
+		if($title===NULL)
+			$title = $this->title();
+		
+		return '<a href="'.$this->url($this->page()).'"'.($append?' '.$append:'').">{$title}</a>"; 
+	}
+	
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
-	function titled_admin_url() { return '<a href="'.$this->admin_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
-	function titled_edit_url() { return '<a href="'.$this->edit_url($this->page()).'">'.($this->title()?$this->title():'---').'</a>'; }
+	function titled_admin_url($title = NULL)
+	{
+		if($title === NULL)
+			$title = $this->title() ? $this->title() : '---';
+		return '<a href="'.$this->admin_url($this->page()).'">'.$title.'</a>';
+	}
+
+	function titled_edit_url($title = NULL)
+	{
+		if($title === NULL)
+			$title = $this->title() ? $this->title() : '---';
+		return '<a href="'.$this->edit_url($this->page()).'">'.$title.'</a>';
+	}
 
 	function check_data(&$data)
 	{
@@ -715,5 +733,16 @@ class base_object extends base_empty
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }
 	
 	function cross_objs($to_class = '') { return bors_get_cross_objs($this, $to_class); }
-	function add_cross($class, $id, $order) { return bors_add_cross($this->class_id(), $this->id(), $class, $id, $order); }
+	function cross_objects($to_class = '') { return bors_get_cross_objs($this, $to_class); }
+	function add_cross($class, $id, $order = 0) { return bors_add_cross($this->class_id(), $this->id(), $class, $id, $order); }
+
+	function on_action_link($data)
+	{
+		if(empty($data['link_object_from']))
+			$obj = $this;
+		else
+			$obj = object_load($data['link_object_from']);
+
+		$obj->add_cross($data['link_class_name'], $data['link_object_id']);
+	}
 }

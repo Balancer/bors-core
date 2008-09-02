@@ -31,10 +31,14 @@ function smarty_function_dropdown($params, &$smarty)
 		else
 			$list = object_load($m[1])->$m[2]($m[3]);
 	}
-	else
+	elseif(preg_match("!^\w+$!", $list))
 	{
 		$list = &new $list(NULL);
 		$list = $list->named_list();
+	}
+	else
+	{
+		eval('$list='.$list);
 	}
 	
 	if(empty($get))

@@ -21,6 +21,7 @@
 			$id = NULL;
 		
 		$smarty->assign('current_form_class', $form = object_load($name, $id));
+		$smarty->assign('form', $form = object_load($name, $id));
 
 		if(!isset($uri))
 		{

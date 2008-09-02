@@ -51,6 +51,14 @@ class bors_image extends base_object_db
 
 	function thumbnail($geometry) { return object_load('bors_image_thumb', $this->id().','.$geometry); }
 
+	function init()
+	{
+		if(!$this->width())
+			$this->recalculate(true);
+			
+		return parent::init();
+	}
+
 	function recalculate($db_update)
 	{
 		$x = @getimagesize($this->url());
@@ -74,10 +82,26 @@ class bors_image extends base_object_db
 		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), true);
 		$this->set_file_name($this->id().'.'.$this->extension(), true);
 
-		mkdir($this->image_dir(), 0777, true);
-		chmod($this->image_dir(), 0775);
+		@mkdir($this->image_dir(), 0777, true);
+		@chmod($this->image_dir(), 0775);
 		move_uploaded_file($data['tmp_name'], $this->file_name_with_path());
-		chmod($this->file_name_with_path(), 0664);
+		@chmod($this->file_name_with_path(), 0664);
+
+		$this->recalculate(true);
+		
+		return $this;
+	}
+
+	function register_file($path)
+	{
+		$this->set_original_filename(basename($path), true);
+
+		$this->set_relative_path(dirname($path), true);
+		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), true);
+		$this->set_file_name($this->original_filename(), true);
+
+		@chmod($this->image_dir(), 0775);
+		@chmod($this->file_name_with_path(), 0664);
 
 		$this->recalculate(true);
 		

@@ -13,6 +13,8 @@
 
         switch($cr_type)
         {
+            case 'none':
+                break;
             case 'empty_as_para':
                 $txt = preg_split("!\n\n+!", $txt);
 				

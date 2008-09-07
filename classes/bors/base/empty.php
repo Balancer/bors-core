@@ -28,7 +28,7 @@ class base_empty extends base_null
 
 	function default_page() { return 1; }
 	function storage_engine() { return ''; }
-	function body_engine() { return ''; }
+	var $stb_body_engine = '';
 	function loaded() { return true; }
 	function internal_uri() { return get_class($this).'://'.$this->id(); }
 	function cache_clean() { }

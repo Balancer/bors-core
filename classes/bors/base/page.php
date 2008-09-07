@@ -52,6 +52,7 @@ class base_page extends base_object
 	function total_pages() { return  intval(($this->total_items() - 1)/$this->items_per_page()) + 1; }
 
 	function items_per_page() { return 25; }
+	function items_offset() { return ($this->page()-1)*$this->items_per_page(); }
 
 	function body()
 	{

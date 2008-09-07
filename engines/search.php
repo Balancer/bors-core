@@ -4,6 +4,9 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 {
 	if(!$object)
 		return $object;
+
+	debug_hidden_log("Try to index $object");
+	bors_exit('Try to reindex');
 	
 	$source	= $object->search_source();
 	$title	= $object->title();

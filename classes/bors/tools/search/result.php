@@ -10,6 +10,8 @@ class bors_tools_search_result extends bors_tools_search
 {
 	function title() { return ec('Поиск по запросу «').$this->q().ec('»'); }
 	function nav_name() { return $this->q(); }
+
+	function parents() { return array('/tools/search/'); }
 	
 	function q() { return urldecode(@$_GET['q']); }
 	function s() { return empty($_GET['s']) ? 't' : $_GET['s']; }
@@ -77,7 +79,10 @@ class bors_tools_search_result extends bors_tools_search
 		if($f && $f[0])
 			$cl->SetFilter('forum_id', $f);
 
-		$cl->SetFilter('forum_id', array(19, 37), true);
+		if($disabled = airbase_forum_forum::disabled_ids_list())
+		{
+			$cl->SetFilter('forum_id', $disabled, true);
+		}
 
 		if($this->u())
 		{

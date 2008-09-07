@@ -40,7 +40,7 @@ class bors_admin_image_append extends base_object
 			$img->set_description(@$_GET['image_title'][$n], true);
 			$img->set_author_name(bors()->user()->title(), true);
 			$img->set_resolution_limit(@$_GET['image_limit'][$n], true);
-			$img->set_picture_type(@$_GET['image_type'][$n], true);
+			$img->set_image_type(@$_GET['image_type'][$n], true);
 			$img->set_original_filename($data['name'][$n], true);
 			
 			if(empty($_GET['sort_order'][$n]))

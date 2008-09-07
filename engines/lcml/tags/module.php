@@ -1,11 +1,23 @@
 <?
     function lt_module($params)
     {
-		$class_name = @$params['class'];
-		if($class_name)
+		if($class_name = @$params['class'])
 		{
 			$class_name = "module_{$class_name}";
-			$obj = object_load($class_name, @$params['id']);
+			
+			foreach(explode(' ', 'id page') as $name)
+			{
+				$$name = @$params[$name];
+				unset($params[$name]);
+			}
+
+			$params['page'] = $page;
+		
+			if(!$id)
+				$id = bors()->main_object();
+			
+			$obj = object_load($class_name, $id, $params);
+		
 			if($obj)
 				return $obj->body();
 			else

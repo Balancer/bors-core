@@ -2,7 +2,7 @@
 
 class bors_image extends base_object_db
 {
-	function main_table_storage() { return 'bors_pictures'; }
+	function main_table_storage() { return 'bors_images'; }
 	function main_db_storage() { return config('bors_core_db'); }
 
 	function main_table_fields()
@@ -13,7 +13,7 @@ class bors_image extends base_object_db
 			'alt',
 			'description',
 			'author_name',
-			'picture_type',
+			'image_type',
 			'create_time',
 			'modify_time',
 			'relative_path',
@@ -47,7 +47,7 @@ class bors_image extends base_object_db
 		return  "{$h} {$w} alt=\"[image]\" title=\"".htmlspecialchars($this->alt_or_description())."\"";
 	}
 
-	function html_code($append = "") { return "<img src=\"{$this->url()}\" {$this->wxh()} $append border=\"0\" />"; }
+	function html_code($append = "") { return "<img src=\"{$this->url()}\" {$this->wxh()} $append />"; }
 
 	function thumbnail($geometry) { return object_load('bors_image_thumb', $this->id().','.$geometry); }
 

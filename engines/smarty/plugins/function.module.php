@@ -2,7 +2,6 @@
 
 function smarty_function_module($params, &$smarty)
 {
-	
 	if(empty($params['name']))
 	{
 		foreach(explode(' ', 'class id page') as $name)
@@ -10,7 +9,7 @@ function smarty_function_module($params, &$smarty)
 			$$name = @$params[$name];
 			unset($params[$name]);
 		}
-			
+
 		$obj = object_load($class, $id, $params);
 
 		$params['page'] = $page;

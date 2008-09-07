@@ -27,6 +27,11 @@ class base_object extends base_empty
 
 	function has_smart_field($test_property)
 	{
+		$r_db = NULL;
+		$r_table = NULL;
+		$r_id_field = NULL;
+		$r_db_field = NULL;
+	
 		foreach($this->fields() as $db => $tables)
 		{
 			foreach($tables as $table => $fields)
@@ -36,15 +41,20 @@ class base_object extends base_empty
 					$table = $m[1];
 					$id_field = $m[2];
 				}
-				else
-					$id_field = 'id';
+
 				foreach($fields as $property => $db_field)
 				{
 					if(is_numeric($property))
 						$property = $db_field;
 					
 					if($property == $test_property)
-						return array($db, $table, $id_field, $db_field);
+						list($r_db, $r_table, $r_db_field) = array($db, $table, $db_field);
+
+					if($property == 'id')
+						$r_id_field = $db_field;
+						
+					if($r_id_field && $r_db_field)
+						return array($r_db, $r_table, $r_id_field, $r_db_field);
 				}
 			}
 		}

@@ -65,6 +65,7 @@
 			return $pages;
 
 		$q = "";
+//		print_d($_GET);
 		if(!empty($_GET))
 			foreach($_GET as $key => $value)
 				$q .= ($q=="") ? "?$key=$value" : "&$key=$value";
@@ -98,7 +99,7 @@
 	{
 		if(is_object($obj))
 		{
-			$p = $obj->url($page_num);
+			$p = $obj->url($page_num, true);
 			if(preg_match("!\?!", $p))
 				$q = "";
 		}

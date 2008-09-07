@@ -8,9 +8,14 @@ function smarty_function_dropdown($params, &$smarty)
 		
 	echo "<select";
 
-	foreach(split(' ', 'name size style') as $p)
+	foreach(split(' ', 'size style multiple') as $p)
 		if(!empty($$p))
 			echo " $p=\"{$$p}\"";
+
+	if(empty($multiple))
+		echo " name=\"{$name}\"";
+	else
+		echo " name=\"{$name}[]\"";
 
 	echo ">\n";
 
@@ -48,10 +53,15 @@ function smarty_function_dropdown($params, &$smarty)
 		
 	if(!$current && !empty($list['default']))
 		$current = $list['default'];
-		
+
+	if(!is_array($current))
+		$current = array($current);
+
+	print_d($current);
+
 	foreach($list as $id => $name)
 		if($id !== 'default')
-			echo "<option value=\"$id\"".($id == $current ? " selected=\"selected\"" : "").">$name</option>\n";
+			echo "<option value=\"$id\"".(in_array($id, $current) ? " selected=\"selected\"" : "").">$name</option>\n";
 	
 	echo "</select>";
 }

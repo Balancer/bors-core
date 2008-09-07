@@ -44,7 +44,8 @@ function load_cached_object($class_name, $id, $args)
 	if(is_object($id))
 		return NULL;
 			
-//	if($class_name == 'forum_user' && $GLOBALS['me']->id == 10000) debug_trace();
+//	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) debug_trace();
+//	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) echo "load_cached_object($class_name, $id, $args)<br />";
 		
 	if($obj = @$GLOBALS['bors_data']['cached_objects3'][$class_name][$id])
 	{
@@ -440,6 +441,7 @@ function object_init($class_name, $object_id, $args = array())
 	if(!is_array($args))
 		$args = $args ? array('page' => $args) : array();
 
+//	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) echo "object_init($class_name, $object_id)<br />";
 	$obj = pure_class_load($class_name, $object_id, $args, $local_path = defval($args, 'local_path'));
 
 	if(!$obj)

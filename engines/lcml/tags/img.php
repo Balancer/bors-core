@@ -91,8 +91,8 @@ function lt_img($params)
 //					if(preg_match("!(lenta\.ru|pisem\.net|biorobot\.net|compulenta\.ru|ferra\.ru|)!",$uri))
 //						$req->setProxy('home.balancer.ru', 3128);
 
-					if(preg_match("!(ljplus\.ru)!",$uri))
-						$req->setProxy('home.balancer.ru', 3128);
+#					if(preg_match("!(ljplus\.ru)!",$uri))
+#						$req->setProxy('home.balancer.ru', 3128);
 
 //					return "=$path=<br />\n";
 

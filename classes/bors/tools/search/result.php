@@ -15,6 +15,7 @@ class bors_tools_search_result extends bors_tools_search
 	
 	function q() { return urldecode(@$_GET['q']); }
 	function s() { return empty($_GET['s']) ? 't' : $_GET['s']; }
+	function t() { return @$_GET['t']; }
 	function u() { return @$_GET['u']; }
 	function x() { return !empty($_GET['x']); }
 	function f()
@@ -80,9 +81,7 @@ class bors_tools_search_result extends bors_tools_search
 			$cl->SetFilter('forum_id', $f);
 
 		if($disabled = airbase_forum_forum::disabled_ids_list())
-		{
 			$cl->SetFilter('forum_id', $disabled, true);
-		}
 
 		if($this->u())
 		{
@@ -90,11 +89,17 @@ class bors_tools_search_result extends bors_tools_search
 			if($user)
 			$cl->SetFilter('owner_id', array($user->id()));
 		}
+
+		if($this->t())
+			$cl->SetFilter('topic_id', array(intval($this->t())));
 		
 		switch($this->s())
 		{
 			case 'c':
 				$cl->SetSortMode (SPH_SORT_ATTR_DESC, 'create_time' );
+				break;
+			case 'co':
+				$cl->SetSortMode (SPH_SORT_ATTR_ASC, 'create_time' );
 				break;
 			case 'r':
 				$cl->SetSortMode(SPH_SORT_RELEVANCE);
@@ -197,6 +202,7 @@ class bors_tools_search_result extends bors_tools_search
 			'q' => $this->q(),
 			'f' => $this->f(),
 			's' => $this->s(),
+			't' => $this->t(),
 			'u' => $this->u(),
 			'x' => $this->x(),
 			'p' => $page > 1 ? $page : NULL

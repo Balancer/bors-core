@@ -271,7 +271,10 @@ function debug_hidden_log($message)
 	
 	file_put_contents($out_file,
 		strftime('%Y-%m-%d %H:%M:%S: ') 
-			. $message . "\n" . DBG_GetBacktrace(0, false) 
+			. $message . "\n" 
+			. "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}".(!empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '')."\n"
+			. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
+			. DBG_GetBacktrace(0, false)
 			. "\n---------------------------\n\n",
 		FILE_APPEND);
 }

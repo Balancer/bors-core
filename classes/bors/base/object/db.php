@@ -19,28 +19,12 @@ class base_object_db extends base_object
 		$id = $this->uri2id($id);
 			
 		parent::__construct($id);
+		bors_db_fields_init($this);
 	}
 
 	function id_field() { $fields = $this->main_table_fields(); return empty($fields['id']) ? 'id' : $fields['id']; }
 	
-	function new_instance()
-	{
-		$tab = $this->main_table_storage();
-		if(!$tab)
-			debug_exit("Try to get new instance with empty main table in class ".__FILE__.":".__LINE__);
-			
-		$data = array();
-		if($this->id())
-			$data[$this->id_field()] = $this->id();
-
-		$this->db->insert_ignore($tab, $data);
-		
-		if(!$this->id())
-			$this->set_id($this->db->get_last_id());
-
-		$this->set_create_time(time(), true);
-		$this->set_modify_time(time(), true);
-	}
+	function new_instance() { bors_object_new_instance_db($this); }
 
 	function select($field, $where_map) { return $this->db->select($this->main_table_storage(), $field, $where_map); }
 	function select_array($field, $where_map) { return $this->db->select_array($this->main_table_storage(), $field, $where_map); }

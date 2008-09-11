@@ -7,8 +7,13 @@
 		'.* => base_page_hts(url)',
 		'/do-login/? => common_do_login',
 		
-		'/admin/delete\?object=([^&]+).* => bors_tools_delete(1)',
+		'(/admin/)\?object=([^&]+).* => bors_admin_main(1)',
+		'/admin/delete/\?object=([^&]+).* => bors_tools_delete(1)',
+		'/admin/edit\-smart/\?object=([^&]+) => bors_admin_edit_smart(1)',
+		'/admin/edit\-smart/ => bors_admin_edit_smart',
 		'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
+
+		'/admin/tools/set\-sort\-order/ => bors_admin_tools_setsortorder',
 
 		'/admin/\?object=([^&]+).* => bors_admin_main(1)',
 		'/admin/edit/\?object=([^&]+).* => bors_admin_edit(1)',

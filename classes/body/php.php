@@ -1,8 +1,8 @@
 <?php
 
-class render_php extends base_null
+class body_php extends base_null
 {
-	function render($object)
+	function body($object)
 	{
 		if(!$object->loaded() && !$object->can_be_empty())
 			return false;

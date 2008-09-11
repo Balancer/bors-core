@@ -12,6 +12,9 @@ class bors_image extends base_object_db
 			'title',
 			'alt',
 			'description',
+			'parent_class_id',
+			'parent_object_id',
+			'sort_order',
 			'author_name',
 			'image_type',
 			'create_time',
@@ -47,7 +50,7 @@ class bors_image extends base_object_db
 		return  "{$h} {$w} alt=\"[image]\" title=\"".htmlspecialchars($this->alt_or_description())."\"";
 	}
 
-	function html_code($append = "") { return "<img src=\"{$this->url()}\" {$this->wxh()} $append />"; }
+	function html_code($append = "") { return "<img src=\"{$this->url()}\" {$this->wxh()} $append title=\"{$this->id()}\" />"; }
 
 	function thumbnail($geometry) { return object_load('bors_image_thumb', $this->id().','.$geometry); }
 
@@ -149,4 +152,8 @@ class bors_image extends base_object_db
 		echo file_get_contents($file);
 		return true;
 	}
+
+	function parent_object() { return object_load($this->parent_class_id(), $this->parent_object_id()); }
+
+	function can_cached() { return false; }
 }

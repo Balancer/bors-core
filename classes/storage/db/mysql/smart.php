@@ -396,11 +396,13 @@ class storage_db_mysql_smart extends base_null
 //		exit();
 	}
 
-	function create($object, $data = array(), $replace = false)
+	function create($object)
 	{
 		global $back_functions;
 
 		$oid = $object->id();
+		$data = array();
+		$replace = $object->replace_on_new_instance();
 		
 		foreach($object->fields() as $db => $tables)
 		{

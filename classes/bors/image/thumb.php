@@ -8,7 +8,7 @@ class bors_image_thumb extends bors_image
 	function main_db_storage() { return config('cache_database');; }
 	function can_be_empty() { return true; }
 	
-	private $geo_width, $geo_height, $geometry, $original;
+	private $geo_width, $geo_height, $geo_opts, $geometry, $original;
 
 	function fields()
 	{
@@ -32,9 +32,23 @@ class bors_image_thumb extends bors_image
 	
 		parent::init();
 		
-		@list($id, $this->geometry) = explode(',', $this->id());
-	
-		@list($this->geo_width, $this->geo_height) = @split('x', $this->geometry);
+		if(preg_match('!^(\d+),((\d*)x(\d*))$!', $this->id(), $m))
+		{
+			$id = $m[1];
+			$this->geometry   = $m[2];
+			$this->geo_width  = $m[3];
+			$this->geo_height = $m[4];
+		}
+		elseif(preg_match('!^(\d+),((\d*)x(\d*)\(([^)]+)\))$!', $this->id(), $m))
+		{
+			$id = $m[1];
+			$this->geometry   = $m[2];
+			$this->geo_width  = $m[3];
+			$this->geo_height = $m[4];
+			$this->geo_opts   = $m[5];
+		}
+		else
+			return $this->set_loaded(false);
 
 		$this->original = object_load('bors_image', $id);
 
@@ -64,7 +78,7 @@ class bors_image_thumb extends bors_image
 			return;
 
 		mkpath($this->image_dir(), 0777);
-		$this->thumb_create($this->geometry);
+		$this->thumb_create();
 
 //		echo "File {$this->file_name_with_path()}<br />\n"; exit();
 		$this->set_size(filesize($this->file_name_with_path()), true);
@@ -79,18 +93,12 @@ class bors_image_thumb extends bors_image
 		$this->set_loaded(true);
 	}
 
-	function thumb_create($geometry)
+	private function thumb_create()
 	{
 		if(file_exists($this->file_name_with_path()))
 			return;
-			
-		$this->thumb_file_create($geometry);
-	}
 
-	function thumb_file_create($geometry)
-	{
-		@list($w, $h) = explode('x', $geometry);
-		$err = image_file_scale($this->original->file_name_with_path(), $this->file_name_with_path(), $w, $h);
+		$err = image_file_scale($this->original->file_name_with_path(), $this->file_name_with_path(), $this->geo_width, $this->geo_height, $this->geo_opts);
 		return $err == NULL;
 	}
 
@@ -99,4 +107,6 @@ class bors_image_thumb extends bors_image
 	function alt() { return $this->original->alt(); }
 
 	function url() { return secure_path(config('pics_base_url').$this->relative_path().'/'.$this->file_name()); }
+	
+	function replace_on_new_instance() { return true; }
 }

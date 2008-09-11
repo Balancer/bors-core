@@ -14,47 +14,7 @@ class base_page_db extends base_page
 
 	function id_field() { return 'id'; }
 
-	function new_instance()
-	{
-		$tab = $this->main_table_storage();
-		if(!$tab)
-			exit("Try to gent new instance with empty main table in class ".__FILE__.":".__LINE__);
-		
-		$data = array();
-		if($this->id())
-			$data[$this->id_field()] = $this->id();
-
-		$this->db->insert_ignore($tab, $data);
-		
-		$this->set_id($this->db->get_last_id());
-
-		foreach($this->fields() as $db => $tables)
-		{
-			foreach($tables as $table => $fields)
-			{
-//				echo "db=$table<br />";
-				if(preg_match('!^inner\s+(.+?)$!', $table, $m))
-					$table = $m[1];
-			
-			
-				if($db == $this->main_db_storage() && $tab == $table)
-					continue;
-				
-				foreach($fields as $property => $db_field)
-				{
-					if(is_numeric($property))
-						$property = $db_field;
-					
-					if($property == 'id')
-						$this->db($db)->insert($table, array($db_field => $this->id()));
-				}
-			}
-		}
-
-		$this->set_create_time(time(), true);
-		$this->set_modify_time(time(), true);
-		
-	}
+	function new_instance() { bors_object_new_instance_db($this); }
 
 	function uri2id($id) { return $id; }
 	
@@ -68,7 +28,7 @@ class base_page_db extends base_page
 		$id = $this->uri2id($id);
 			
 		parent::__construct($id);
-
+		bors_db_fields_init($this);
 	}
 
 	function template_data_fill()
@@ -96,7 +56,6 @@ class base_page_db extends base_page
 
 	function db_driver() { return 'driver_mysql'; }
 	
-	function edit_link() { return $this->uri."?edit"; }
 	function storage_engine() { return 'storage_db_mysql_smart'; }
 
 	function fields() { return array($this->main_db_storage() => $this->main_db_fields()); }

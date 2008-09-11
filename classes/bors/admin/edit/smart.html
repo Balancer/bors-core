@@ -1,0 +1,14 @@
+{form action=$this->url() class=$object->class_name() id=$object->id()}
+<table class="btab w100p">
+{foreach from=$object->editor_fields_list() key="title" item="desc"}
+{explode vars="field_name,type" value=$desc}
+{explode vars="type,arg" value=$type delim="="}
+<tr><th align="right">{$title}</th><td>
+{if $type == '' or $type == 'input'}{input name=$field_name class="w100p"}{/if}
+{if $type == 'dropdown'}{dropdown name=$field_name list=$arg class="w100p"}{/if}
+</td></tr>
+{/foreach}
+<tr><th>&nbsp;</th><th>{submit value="Сохранить"}</th></tr>
+</table>
+{go value=$referer}
+{/form}

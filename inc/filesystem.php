@@ -3,7 +3,7 @@
     {
         if(preg_match("!^\w+://!", $uri))
             return $uri;
-        
+
         if(preg_match("!^/!", $uri))
             return 'http://'.$_SERVER['HTTP_HOST'].$uri;
 
@@ -66,7 +66,8 @@
 
 function secure_path($path)
 {
-    $path = preg_replace('!([^:])/{2,}!', "$1/", $path);
+    $path = preg_replace('!(?<=[^:])/{2,}!', '/', $path);
+    $path = preg_replace('!^/{2,}!', '/', $path);
     $path = preg_replace('!/([^/]+?)/\.\.!', '', $path);
     $path = preg_replace('!/\.\.!', '', $path);
 

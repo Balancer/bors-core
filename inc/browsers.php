@@ -2,7 +2,8 @@
 
 function get_browser_info($user_agent)
 {
-	$os = "";
+	$os = '';
+	$ov = '';
 	if(preg_match("!Linux!", $user_agent))
 		$os = "Linux";
 	elseif(preg_match("!Windows CE; PPC!", $user_agent))
@@ -22,10 +23,13 @@ function get_browser_info($user_agent)
 	elseif(preg_match("!Windows!i", $user_agent))
 		$os = "Windows";
 
-	$browser="";
-	if(preg_match("!Opera!", $user_agent))
+	$browser='';
+	$ov = '';
+	if(preg_match("!KHTML, like Gecko.*Chrome/(\S+)!", $user_agent, $bv))
+		$browser="Google Chrome";
+	elseif(preg_match("!Opera!", $user_agent))
 		$browser="Opera";
-	if(preg_match("!Konqueror!", $user_agent))
+	elseif(preg_match("!Konqueror!", $user_agent))
 		$browser="Konqueror";
 	elseif(preg_match("!SeaMonkey!", $user_agent))
 		$browser = "SeaMonkey";
@@ -96,5 +100,10 @@ function get_browser_info($user_agent)
 		$os = "YandexBot";
 	}
 
-	return array($os, $browser);
+	if($ov)
+		$ov = $ov[1];
+	if($bv)
+		$bv = $bv[1];
+
+	return array($os, $browser, $ov, $bv);
 }

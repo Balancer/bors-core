@@ -27,26 +27,57 @@ function object_load($class, $object_id=NULL, $args=array())
 	return class_load($class, $object_id, $args);
 }
 
-function object_new($class) { return object_load($class); }
-
-function object_new_instance($class, $id = NULL)
+function object_new($class, $id = NULL)
 {
-	$obj = object_load($class, $id, array('no_load_cache' => true));
+//	$obj = object_load($class, $id, array('no_load_cache' => true));
 	
-	if(!$obj)
-	{
+//	if(!$obj)
+//	{
 //	    debug_exit("Can't make new instance for $class");
 	    $obj = new $class($id);
-		$obj->new_instance($id);
-	}
+//		$obj->new_instance($id);
+//	}
 	
-	if(!$obj->id())
-		$obj->new_instance($id);
+//	if(!$obj->id())
+//		$obj->new_instance($id);
 
 	if($id !== NULL)
 		$obj->set_id($id);
-		
+
+	$obj->init(false);
+
 	return $obj;
+}
+
+function bors_object_new_instance_db(&$object)
+{
+	$tab = $object->main_table_storage();
+	if(!$tab)
+		debug_exit("Try to get new db instance with empty main table");
+
+//	debug_trace();
+
+	$object->set_create_time(time(), true);
+	$object->set_modify_time(time(), true);
+	
+	$object->storage()->create($object);
+}
+
+function bors_db_fields_init($obj)
+{
+	foreach($obj->fields() as $db => $tables)
+	{
+		foreach($tables as $tables => $fields)
+		{
+			foreach($fields as $property => $db_field)
+			{
+				if(is_numeric($property))
+					$property = $db_field;
+					
+				$obj->{'stb_'.$property} = NULL;
+			}
+		}
+	}		
 }
 
 function defval($data, $name, $default=NULL)

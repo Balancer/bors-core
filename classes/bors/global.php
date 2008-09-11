@@ -74,4 +74,6 @@ class bors_global extends base_empty
 		else
 			return $uri;
 	}
+	
+	function referer() { return empty($_GET['ref']) ? @$_SERVER['HTTP_REFERER'] : $_GET['ref']; }
 }

@@ -43,6 +43,9 @@ function load_cached_object($class_name, $id, $args)
 {
 	if(is_object($id))
 		return NULL;
+	
+	if(@$args['no_load_cache'])
+		return NULL;
 			
 //	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) debug_trace();
 //	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) echo "load_cached_object($class_name, $id, $args)<br />";

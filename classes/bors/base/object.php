@@ -62,29 +62,9 @@ class base_object extends base_empty
 		return false;
 	}
 
-	function __construct($id)
-	{
-		parent::__construct($id);
-
-		foreach($this->fields() as $db => $tables)
-		{
-			foreach($tables as $tables => $fields)
-			{
-				foreach($fields as $property => $db_field)
-				{
-					if(is_numeric($property))
-						$property = $db_field;
-					
-					$this->{'stb_'.$property} = "";
-				}
-			}
-		}		
-
-	}
-
 	private $config;
 
-	function init()
+	function init($data_load = true)
 	{
 		if($config = $this->config_class())
 		{
@@ -92,6 +72,9 @@ class base_object extends base_empty
 			if(!$this->config)
 				debug_exit("Can't load config ".$this->config_class());
 		}
+		
+		if(!$data_load)
+			return false;
 		
 		if($storage_engine = $this->storage_engine())
 		{
@@ -361,6 +344,20 @@ class base_object extends base_empty
 		return '<a href="'.$this->edit_url($this->page()).'">'.$title.'</a>';
 	}
 
+	function imaged_edit_url($title = NULL)
+	{
+		if($title === NULL)
+			$title = ec('Редактировать объект');
+		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"edit\" title=\"$title\"/></a>";
+	}
+
+	function imaged_delete_url($title = NULL)
+	{
+		if($title === NULL)
+			$title = ec('Удалить объект');
+		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"del\" title=\"$title\"/></a>";
+	}
+
 	function check_data(&$data)
 	{
 		foreach($data as $key => $val)
@@ -444,6 +441,8 @@ class base_object extends base_empty
 		bors()->changed_save();
 	}
 
+	function replace_on_new_instance() { return false; }
+
 	function data_provider() { return NULL; }
 	function data_providers() { return array(); }
 
@@ -511,7 +510,7 @@ class base_object extends base_empty
 		return object_load($access, $this);
 	}
 
-	function edit_url()  { return '/admin/edit/?object='.$this->internal_uri(); }
+	function edit_url()  { return '/admin/edit-smart/?object='.$this->internal_uri(); }
 	function admin_url() { return '/admin/?object='.$this->internal_uri(); }
 	function delete_url()  { return '/admin/delete/?object='.$this->internal_uri(); }
 
@@ -655,9 +654,10 @@ class base_object extends base_empty
 
 	function post_set() { }
 	
-	private $sort_order = 0;
-	function sort_order() { return $this->sort_order; }
-	function set_sort_order($value) { return $this->sort_order = $value; }
+	var $stb_sort_order;
+//	private $sort_order = 0;
+//	function sort_order() { return $this->sort_order; }
+//	function set_sort_order($value) { return $this->sort_order = $value; }
 
 	function static_get_cache() { return false; }
 
@@ -750,6 +750,7 @@ class base_object extends base_empty
 	function cross_objs($to_class = '') { return bors_get_cross_objs($this, $to_class); }
 	function cross_objects($to_class = '') { return bors_get_cross_objs($this, $to_class); }
 	function add_cross($class, $id, $order = 0) { return bors_add_cross($this->class_id(), $this->id(), $class, $id, $order); }
+	function cross_remove_object($obj) { bors_remove_cross_pair($this->class_id(), $this->id(), $obj->class_id(), $obj->id()); }
 
 	function on_action_link($data)
 	{

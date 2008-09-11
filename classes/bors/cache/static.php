@@ -53,7 +53,6 @@ class cache_static extends base_object_db
 		bors()->changed_save();
 		
 		$cache = new cache_static($file);
-		$cache->new_instance();
 		
 		$cache->set_object_uri($object->url($object->page()), true);
 		$cache->set_original_uri($object->called_url(), true);
@@ -64,6 +63,7 @@ class cache_static extends base_object_db
 		$cache->set_last_compile(time(), true);
 		$cache->set_expire_time(time() + ($expire_time === false ? $object->cache_static() : $expire_time), true);
 
+		$cache->new_instance();
 		storage_db_mysql_smart::save($cache);
 
 		@mkdir(dirname($file), 0777, true);
@@ -71,4 +71,6 @@ class cache_static extends base_object_db
 		@file_put_contents($file, $content);
 		@chmod($file, 0664);
 	}
+	
+	function replace_on_new_instance() { return true; }
 }

@@ -51,5 +51,4 @@ class page_fs_xml extends base_page
 	}
 	
 	function delete() { $this->storage()->delete($this); }
-	function new_instance($id) { $this->set_id($id); }
 }

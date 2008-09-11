@@ -436,7 +436,6 @@ class base_object extends base_empty
 	{
 		if(!$this->id())
 			return;
-//			$this->new_instance();
 		
 		bors()->changed_save();
 	}

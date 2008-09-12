@@ -230,8 +230,11 @@ class base_object extends base_empty
 //		if(!property_exists($this, $field_name))
 //			debug_exit("Try to set undefined properties ".get_class($this).".$field");
 
-		if($db_update && @$this->$field_name != $value)
+		if($db_update && @$this->$field_name !== $value)
 		{
+			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
+				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
+				
 //			echo "<xmp>Set {$field_name} from {$this->$field_name} to {$value}</xmp>\n";
 			$this->changed_fields[$field] = $field_name;
 			bors()->add_changed_object($this);
@@ -432,12 +435,39 @@ class base_object extends base_empty
 
 	function check_value_conditions() { return array(); }
 
-	function store()
+	function store($cache_clean = true)
 	{
 		if(!$this->id())
 			return;
 		
-		bors()->changed_save();
+		if(empty($this->changed_fields))
+			return;
+				
+		include_once('engines/search.php');
+				
+		if($cache_clean)
+			$this->cache_clean();
+			
+		if(!($storage = $this->storage_engine()))
+		{
+			$storage = 'storage_db_mysql_smart';
+//			debug_hidden_log('Not defined storage engine for '.$this->class_name());
+		}
+			
+		$storage = object_load($storage);
+				
+		$storage->save($this);
+		save_cached_object($this);
+
+		if(config('search_autoindex') && $this->auto_search_index())
+		{
+			if(config('bors_tasks'))
+				bors_tools_tasks::add_task($this, 'bors_task_index', 0, -10);
+			else
+				bors_search_object_index($this, 'replace');
+		}
+			
+		bors()->drop_changed_object($this->internal_uri());
 	}
 
 	function replace_on_new_instance() { return false; }
@@ -560,6 +590,16 @@ class base_object extends base_empty
 		return $this->_dbh;
 	}
 
+	function sleep()
+	{
+		if($this->_dbh)
+			$this->_dbh->close();
+
+		$this->_dbh = NULL;
+
+		return parent::sleep();
+	}
+
 	function main_db_storage() { return config('main_bors_db'); }
 	function main_table_storage(){ return $this->class_name(); }
 	function main_table_fields() { return array(); }
@@ -592,9 +632,10 @@ class base_object extends base_empty
 
 		if(method_exists($this, 'cache_groups_parent'))
 			foreach(explode(' ', $this->cache_groups_parent()) as $group_name)
-				foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
-					if($group)
-						$group->clean();
+				if($group_name)
+					foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
+						if($group)
+							$group->clean();
 	}
 
 	function cache_children() { return array(); }
@@ -613,7 +654,7 @@ class base_object extends base_empty
 		foreach($this->cache_children() as $child_cache)
 			if($child_cache && empty($cleaned[$child_cache->internal_uri()]))
 			{
-				$cleaned[$child_cache->internal_uri()] = 1;
+				$cleaned[$child_cache->internal_uri()] = true;
 				$child_cache->cache_clean($clean_object);
 			}
 	}
@@ -760,4 +801,6 @@ class base_object extends base_empty
 
 		$obj->add_cross($data['link_class_name'], $data['link_object_id']);
 	}
+
+	var $stb_was_cleaned = false;
 }

@@ -24,17 +24,23 @@ class cache_static extends base_object_db
 	{
 		if(!$object)
 			return;
+
+		if($object->was_cleaned())
+			return;
+
+		$object->set_was_cleaned(true, false);
 	
 		$caches = objects_array('cache_static', array('class_id=' => $object->class_id(), 'object_id=' => $object->id()));
-		$cache = object_load('cache_static', $object->static_file());
-		if($cache)
-			$caches[] = $cache;
+
+		if(file_exists($object->static_file()))
+			if($cache = object_load('cache_static', $object->static_file()))
+				$caches[] = $cache;
 	
 		foreach($caches as $cache)
 		{
 			@unlink($cache->id());
 			if(!file_exists($cache->id()))
-				$cache->delete();
+				$cache->delete(false);
 		}
 	}
 	
@@ -65,6 +71,8 @@ class cache_static extends base_object_db
 
 		$cache->new_instance();
 		storage_db_mysql_smart::save($cache);
+
+		$object->set_was_cleaned(false, false);
 
 		@mkdir(dirname($file), 0777, true);
 		@chmod(dirname($file), 0777);

@@ -32,9 +32,9 @@ class MemCache
 //		$memcache->connect(config('memcached')) or debug_exit('Could not connect memcache');
 				
 		if($value = NULL || $timeout == 0)
-			@$memcache->delete($this->last_key);
+			$memcache->delete($this->last_key);
 		else
-			@$memcache->set($this->last_key, $value, true, $timeout);
+			$memcache->set($this->last_key, $value, true, $timeout);
 
 	}
 	

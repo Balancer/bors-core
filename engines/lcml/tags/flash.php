@@ -16,7 +16,7 @@
 
 	function lp_embed($inner, $params)
 	{
-		return "<embed ".make_enabled_params($params, 'src type wmode width height scale salign allowFullScreen allowSriptAccess').">".lcml($inner)."</embed>";
+		return "<embed ".make_enabled_params($params, 'src type wmode width height scale salign allowfullscreen allowsriptaccess flashvars').">".lcml($inner)."</embed>";
 	}
 
 	function lp_object($inner, $params)

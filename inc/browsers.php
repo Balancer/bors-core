@@ -8,6 +8,10 @@ function get_browser_info($user_agent)
 		$os = "Linux";
 	elseif(preg_match("!Windows CE; PPC!", $user_agent))
 		$os = "PocketPC";
+	elseif(preg_match("!Symbian OS!", $user_agent))
+		$os = "Symbian";
+	elseif(preg_match("!Intel Mac OS X!", $user_agent))
+		$os = "MacOSX";
 	elseif(preg_match("!J2ME!", $user_agent))
 		$os = "J2ME";
 	elseif(preg_match("!Windows NT 6.0!", $user_agent))

@@ -41,7 +41,7 @@ class module_nav_top extends base_page
 		
 			if($parent == 'http:///')
 			{
-				debug_hidden_log("Incorrect parent url for '{$obj}': $parent");
+				debug_hidden_log('internal-errors', "Incorrect parent url for '{$obj}': $parent");
 				continue;
 			}
 				

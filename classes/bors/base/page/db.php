@@ -74,10 +74,8 @@ class base_page_db extends base_page
 
 	function _global_queries() { return array(); }
 
-	public function __wakeup()
-	{
-		$this->db = &new DataBase($this->main_db_storage());
-	}
+	function wakeup() { $this->db = &new DataBase($this->main_db_storage()); return parent::wakeup(); }
+	function sleep() { if($this->db) $this->db->close(); $this->db = NULL; return parent::sleep(); }
 
 	function main_id_field()
 	{
@@ -92,7 +90,7 @@ class base_page_db extends base_page
 		return NULL;
 	}
 
-	function delete()
+	function delete($remove_cross = true)
 	{
 		$tab = $this->main_table_storage();
 		if(!$tab)
@@ -103,7 +101,10 @@ class base_page_db extends base_page
 		if(!$id_field)
 			debug_exit("Try to delete empty id field in class ".__FILE__.":".__LINE__);
 		
-		bors_remove_cross_to($this->class_name(), $this->id());
-		$this->db()->delete($tab, array($id_field.'=' => $this->id()));
+		if($remove_cross)
+			bors_remove_cross_to($this->class_name(), $this->id());
+		
+		if($this->id())
+			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
 	}
 }

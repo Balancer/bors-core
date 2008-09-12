@@ -17,6 +17,6 @@ class bors_admin_tools_clean extends base_page
 			return bors_message(ec('Не найден объект ').$this->id());
 		
 		$obj->cache_clean_self();
-		return go($this->object()->url());
+		return go($this->object()->url($this->object()->page()));
 	}
 }

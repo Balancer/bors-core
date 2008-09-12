@@ -257,21 +257,21 @@
 		{
 //			print_d($match);
 			foreach($match as $m)
-				$params[$m[1]] = $m[2];
+				$params[strtolower($m[1])] = $m[2];
 		}
 		
 		if(preg_match_all("!(\w+)='([^']+)'!", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)
-				$params[$m[1]] = $m[2];
+				$params[strtolower($m[1])] = $m[2];
 		}
 		
 		if(preg_match_all("!(\w+)=([^\"'\s]+)!", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)
-				$params[$m[1]] = preg_replace('!^(/forum/smilies/)!', 'http://airbase.ru$1', $m[2]);
+				$params[strtolower($m[1])] = preg_replace('!^(/forum/smilies/)!', 'http://airbase.ru$1', $m[2]);
 		}
 		
         if(empty($params['uri']))
@@ -336,7 +336,7 @@
 function make_enabled_params($params, $names_list)
 {
 	$res = array();
-	foreach(split(' ', $names_list) as $name)
+	foreach(explode(' ', $names_list) as $name)
 		if(isset($params[$name]))
 			$res[] = "$name=\"".$params[$name]."\"";
 	return join(' ', $res);

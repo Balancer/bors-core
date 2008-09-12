@@ -4,8 +4,12 @@ class url_calling extends url_base
 {
 	function url($page = NULL)
 	{
+		$url = NULL;
 		$obj = $this->id();
-		$url = $obj->called_url();
+		if(!$obj)
+			debug_hidden_log('NPE', 'not object');
+		else
+			$url = $obj->called_url();
 		
 		if(preg_match('!^(.+/\w+),\w+/$!', $url, $m))
 			return (!$page || $page == $obj->default_page()) ? $m[1].'/' : $m[1].','.$page.'/';

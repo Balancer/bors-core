@@ -264,17 +264,24 @@ function debug_timing_info_all()
 	return $result;
 }
 
-function debug_hidden_log($message)
+function debug_hidden_log($type, $message=NULL, $trace = true)
 {
-	if(!($out_file = config('debug_hidden_log')))
+	if(!$message)
+	{
+		$message = $type;
+		$type = 'common';
+	}
+
+	if(!($out_dir = config('debug_hidden_log_dir')))
 		return;
 	
-	file_put_contents($out_file,
-		strftime('%Y-%m-%d %H:%M:%S: ') 
-			. $message . "\n" 
-			. "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}".(!empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '')."\n"
+	$out = strftime('%Y-%m-%d %H:%M:%S: ') . $message . "\n";
+	if($trace)
+		$out .= "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}".(!empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '')."\n"
 			. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
 			. DBG_GetBacktrace(0, false)
-			. "\n---------------------------\n\n",
-		FILE_APPEND);
+			. "\n---------------------------\n\n";
+
+	
+	file_put_contents("{$out_dir}/hidden-{$type}.log", $out, FILE_APPEND);
 }

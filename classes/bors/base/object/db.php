@@ -50,7 +50,7 @@ class base_object_db extends base_object
 		return NULL;
 	}
 
-	function delete()
+	function delete($remove_cross = true)
 	{
 		$tab = $this->main_table_storage();
 		if(!$tab)
@@ -61,13 +61,16 @@ class base_object_db extends base_object
 		if(!$id_field)
 			debug_exit("Try to delete empty id field in class ".__FILE__.":".__LINE__);
 		
-		require_once('inc/bors/cross.php');
-		bors_remove_cross_to($this->class_name(), $this->id());
-/*		if(preg_match('!/var/www/balancer.ru/htdocs/support/2008/06/t54897!', $this->id()))
+		if($remove_cross)
 		{
-			echo "Delete $tab where $id_field = {$this->id()}";
-			debug_trace();
-		}*/
-		$this->db()->delete($tab, array($id_field.'=' => $this->id()));
+			require_once('inc/bors/cross.php');
+			bors_remove_cross_to($this->class_name(), $this->id());
+		}
+		
+		if($this->id())
+			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
 	}
+
+	function wakeup() { $this->db = &new DataBase($this->main_db_storage()); return parent::wakeup(); }
+	function sleep() { if($this->db) $this->db->close(); $this->db = NULL; return parent::sleep(); }
 }

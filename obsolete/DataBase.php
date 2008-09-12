@@ -29,15 +29,18 @@ class DataBase extends base_object
 
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
 	{
-			if(empty($base))
-				$base = config('main_bors_db');
+//		if(@$_COOKIE['user_id'] == 10000)
+//			debug_hidden_log("DB Construct");
+
+		if(empty($base))
+			$base = config('main_bors_db');
 			
-			$this->db_name = $base;
+		$this->db_name = $base;
 			
 			if(!$base)
 				debug_exit('Empty database construct');
 			
-			if(is_global_key("DataBaseHandler:$server", $base))
+			if(0 && is_global_key("DataBaseHandler:$server", $base))
 			{
 				if(!isset($GLOBALS['global_db_resume_connections']))
 					$GLOBALS['global_db_resume_connections'] = 0;
@@ -100,10 +103,9 @@ class DataBase extends base_object
 
 		function query($query, $ignore_error=false)
 		{
-			if(!empty($GLOBALS['me']) && $GLOBALS['me']->id == 10000
-					&& preg_match("!\QFROM attach_2_files WHERE post_id = 1440498\E$!", $query))
-				debug_trace();
-
+			if(!$query)
+				return;
+		
 			if(!$this->dbh)
 				$this->reconnect();
 		
@@ -128,13 +130,17 @@ class DataBase extends base_object
 			list($usec, $sec) = explode(" ",microtime());
 			$qtime = ((float)$usec + (float)$sec) - $qstart;
 
+//			if(@$_COOKIE['user_id'] == 10000)
+//				debug_hidden_log('query', "time: {$qtime}\nquery: ".$query);
+
 			if(empty($GLOBALS['stat']['queries_time']))
 				$GLOBALS['stat']['queries_time'] = 0;
 				
 			$GLOBALS['stat']['queries_time'] += $qtime;
 
-//			echo "--- queries_time = {$GLOBALS['stat']['queries_time']}<br />\n";
-
+			if($qtime > config('debug_mysql_slow', 10))
+				debug_hidden_log('mysql-slow', "Slow query [{$qtime}s]: ".$query);
+			
 			if(@$_GET['log_level'] == 4 && $qtime > @$_GET['qtime'])
 				echolog("<small>query {$GLOBALS['global_db_queries']}($qtime)=|".htmlspecialchars($query)."|</small>", 4);
 
@@ -147,24 +153,9 @@ class DataBase extends base_object
 //				if(preg_match('!Signature!', $query)) debug_trace();
 			}
 			
-			if(config('log_level') > 5)
-			{
-				$fh = @fopen("{$_SERVER['DOCUMENT_ROOT']}/hts-queries.log", 'at');
-				@fputs($fh,"$query\n");
-				@fclose($fh);
-			}
-
 			if(loglevel(11))
 				debug_trace();
 
-/*			if(!empty($GLOBALS['log']['mysql_queries']))
-			{
-				$fh = fopen("{$GLOBALS['log']['mysql_queries']}.log", 'at');
-				$qn = str_replace("\n", '\n', $query);
-				fputs($fh,"$qtime: $qn\n");
-				fclose($fh);
-			}
-*/
 			echolog("<xmp>result=|".print_r($this->result, true)."|</xmp>", 6);
 
 			//   @mysql_num_rows(), ..	SELECT!
@@ -182,8 +173,12 @@ class DataBase extends base_object
 					@fputs($fh,"Error: ".mysql_error($this->dbh)."\n");
 					@fclose($fh);
 				}
-				echolog(mysql_error($this->dbh)." for DB='{$this->db_name}' in query '<tt>$query</tt>'", 1);
-				debug_exit('MySQL Error');
+
+				echolog('MySql Error '.mysql_error($this->dbh)." for DB='{$this->db_name}' in query '<tt>$query</tt>'", 1);
+				
+//				debug_hidden_log("DataBase query error:\nq=\"".$query."\"\ndump=".print_r($this, true));
+				
+				debug_exit('MySQL Error: '.mysql_error($this->dbh));
 			}
 
 			return false;
@@ -531,6 +526,24 @@ class DataBase extends base_object
 			return $this->get_array("SELECT * FROM `hts_keys`");
 		}
 
-	function instance($db = NULL) { return new DataBase($db); }
-	function close() { /* mysql_close($this->dbh); $this->dbh = NULL; */ }
+	static function instance($db = NULL) { return new DataBase($db); }
+	function close() {  /*@mysql_close($this->dbh);*/ $this->dbh = NULL; }
+	function sleep()
+	{
+		debug_hidden_log('sleep-errors', "Sleep of DataBase");
+		$this->close();
+		return parent::sleep();
+	}
+
+	public function __sleep() 
+	{
+		if(!$this->dbh)
+			return;
+			
+//		debug_hidden_log("Serialize of DataBase");
+	    return array_keys(get_object_vars(&$this));
+	}
+							  
+	function wakeup() { $this->reconnect(); return parent::wakeup(); }
+	function can_cached() { return false; }
 }

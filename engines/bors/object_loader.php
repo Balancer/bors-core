@@ -50,10 +50,9 @@ function load_cached_object($class_name, $id, $args)
 //	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) debug_trace();
 //	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) echo "load_cached_object($class_name, $id, $args)<br />";
 		
-	if($obj = @$GLOBALS['bors_data']['cached_objects3'][$class_name][$id])
+	if($obj = @$GLOBALS['bors_data']['cached_objects4'][$class_name][$id])
 	{
 //		echo "Found in memory <b>$class_name</b>('$id'); can_cached={$obj->can_cached()}<br />";
-//		if($GLOBALS['me']->id == 10000)  {	echo "Found <b>$class_name</b>('$id',".serialize($args)."<br />"; }
 		if($obj->can_cached())
 			return $obj;
 	}
@@ -64,14 +63,15 @@ function load_cached_object($class_name, $id, $args)
 	{
 //		$memcache = &new Memcache;
 //		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
-				
-//		echo "got ".$class_name.'://'.$id.','.serialize($page)."<br />\n";
 
 		if($x = @$memcache->get('bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id))
 		{
 //			echo "<b>got!</b><br />";
 			if($x->can_cached())
+			{
+				$x->wakeup();
 				return $x;
+			}
 		}
 	}
 
@@ -95,16 +95,19 @@ function save_cached_object(&$object, $delete = false)
 			
 //		echo "Store $hash<br/>";
 		
+		$object->sleep();
+
 		if($delete)
 			@$memcache->delete($hash);
 		else
 			@$memcache->set($hash, $object, true, 600);
+		
 	}
 
 	if($delete)
-		unset($GLOBALS['bors_data']['cached_objects3'][get_class($object)][$object->id()]);
+		unset($GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()]);
 	else
-		$GLOBALS['bors_data']['cached_objects3'][get_class($object)][$object->id()] = $object;
+		$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()] = $object;
 }
 
 	function class_internal_uri_load($uri)
@@ -319,7 +322,7 @@ function save_cached_object(&$object, $delete = false)
 		
 		if(!$data || empty($data['host']))
 		{
-			debug_hidden_log(ec("Ошибка. Попытка загрузить класс из URL неверного формата: ").$url);
+			debug_hidden_log('class-loader-errors', ec("Ошибка. Попытка загрузить класс из URL неверного формата: ").$url);
 			return NULL;
 		}
 		
@@ -455,7 +458,12 @@ function object_init($class_name, $object_id, $args = array())
 		if(empty($args['page']))
 			$obj->set_page($obj->default_page());
 		else
+		{
+			if(is_numeric($args['page']))
+				$args['page'] = intval($args['page']);
+
 			$obj->set_page($args['page']);
+		}
 	}
 
 	$use_cache = defval($args, 'use_cache', true);

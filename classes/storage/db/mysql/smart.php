@@ -232,6 +232,9 @@ class storage_db_mysql_smart extends base_null
 						$value = $this->do_func($m[2], $value);
 					}
 					
+					if(is_numeric($value))
+						$value = intval($value);
+					
 					$object->{"set_$name"}($value, false);
 
 					$was_loaded = true;
@@ -244,12 +247,12 @@ class storage_db_mysql_smart extends base_null
 					if($by_id)
 					{
 //						echo "set {$object->id()}<br />\n";
-						$result[$object->id()] = $object;
+						$result[$object->id()] = &$object;
 					}
 					else
-						$result[] = $object;
+						$result[] = &$object;
 
-					save_cached_object($object);
+//					save_cached_object($object);
 					$class = get_class($object);
 					$object = &new $class(NULL);
 				}
@@ -261,7 +264,8 @@ class storage_db_mysql_smart extends base_null
 			$dbh->close();
 		}
 
-		save_cached_object($object);
+
+//		save_cached_object($object);
 		return $common_where ? $result : $was_loaded;
 	}
 

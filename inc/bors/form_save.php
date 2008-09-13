@@ -110,7 +110,7 @@ function bors_form_save_object($class_name, $id, &$data)
 	if(!$object)
 		return bors_message(ec("Не могу сохранить объект ")."{$class_name}({$id})");
 
-//	echo "Initial id: {$object->id()}<br />";
+//	echo "Initial id: {$object->id()}<br />"; bors_exit();
 
 	$processed = $object->pre_action($data);
 	if($processed === true)
@@ -146,10 +146,10 @@ function bors_form_save_object($class_name, $id, &$data)
 	if(($file_data = @$data['uploaded_file']) && $file_data['tmp_name'])
 		$object->{'upload_'.$file_data['upload_name'].'_file'}($file_data, $data);
 
-//	echo "Set fields for $object: ".print_d($data, true)."<br/>";
+//	echo "Set fields for $object: ".print_d($data, true)."<br/>"; set_loglevel(10,0);
 	if(!$object->set_fields($data, true))
 		return true;
-
+		
 	$object->set_modify_time(time(), true);
 	$object->post_set($data);
 

@@ -606,8 +606,9 @@ class base_object extends base_empty
 
 	function set_checkboxes($check_list, $db_up)
 	{
-		foreach(split(',', $check_list) as $name)
-			$this->{'set_'.$name}(empty($_GET[$name]) ? 0 : 1, $db_up);
+		foreach(explode(',', $check_list) as $name)
+			if(method_exists($this, $method = 'set_'.$name))
+				$this->$method(empty($_GET[$name]) ? 0 : 1, $db_up);
 	}
 
 	function set_checkboxes_list($check_list, $db_up)

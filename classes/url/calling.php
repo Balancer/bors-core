@@ -6,8 +6,8 @@ class url_calling extends url_base
 	{
 		$url = NULL;
 		$obj = $this->id();
-		if(!$obj)
-			debug_hidden_log('NPE', 'not object');
+		if(!$obj || !is_object($obj))
+			debug_hidden_log('NPE', 'not object: '.$obj);
 		else
 			$url = $obj->called_url();
 		

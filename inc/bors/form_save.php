@@ -16,7 +16,6 @@ function bors_form_save(&$obj)
 		if(!$obj->access()->can_action($_GET['act']))
 			return bors_message(ec("[1] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).", method=can_action)"));
 
-		print_d($_GET); exit($obj);
 		if(method_exists($obj, $method = "on_action_{$_GET['act']}"))
 		{
 			$result = $obj->$method($_GET);
@@ -153,7 +152,7 @@ function bors_form_save_object($class_name, $id, &$data)
 	$object->set_modify_time(time(), true);
 	$object->post_set($data);
 
-	if(!$object->id())
+	if(!$object->id() && method_exists($object, 'new_instance'))
 		$object->new_instance();
 
 	if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))

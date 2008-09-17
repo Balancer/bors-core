@@ -9,7 +9,7 @@ class common_search extends base_page
 	
 	function title() { return ec("Поиск"); }
 
-	function preParseProcess()
+	function pre_parse()
 	{
 		unset($_GET['class_name']);
 		return false;

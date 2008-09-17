@@ -26,5 +26,6 @@ class bors_tools_search extends base_page
 	function access() { return $this; }
 	function can_action() { return true; }
 	function can_read() { return true; }
-}
 
+	function url() { return '/tools/search/'; }
+}

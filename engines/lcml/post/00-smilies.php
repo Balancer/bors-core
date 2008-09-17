@@ -1,67 +1,65 @@
-<?
-    // Smilies processing
-    // Global vars:
-    // $GLOBALS['cms_smilies_dir'] - full path to smilies dir
-    // $GLOBALS['cms_smilies_url'] - full or relative url of smilies dir
-    //
-    // (c) Balancer 2003-2004
+<?php
+// Smilies processing
+// Global vars:
+// $GLOBALS['cms_smilies_dir'] - full path to smilies dir
+// $GLOBALS['cms_smilies_url'] - full or relative url of smilies dir
+//
+// (c) Balancer 2003-2004
 
 
-    function lcml_smilies($txt)
-    {
-		if(!config('smilies_dir'))
-			return $txt;
+function lcml_smilies($txt)
+{
+	if(!config('smilies_dir'))
+		return $txt;
 	
-        $smilies = file(config('smilies_dir')."/list.txt");
-		
-        for($i=0;$i<sizeof($smilies);$i++)
-        {
-            $spl=split(" ",str_replace("\r","",chop($smilies[$i])));
-            $spl[]="";
-            list($code,$file)=$spl;
-            if(!$file)
-            {
-                $txt=preg_replace("!([^\"]):$code:([^\"])!","$1<img src=\"".config('smilies_url')."/$code.gif\" alt=\":$code:\" title=\":$code:\" border=\"0\" />$2",$txt);
-            }
-            else
-            {
-//                debug("Smile: =$code=$file=$txt=");
-                
-                $from=array("/\(/","/\)/","/\[/","/\]/","/\-/","/\*/","/\+/","/\./","/\?/","/\|/","/\!/");
-                $to=array("\\\(","\\\)","\\\[","\\\]","\\\-","\\\*","\\\+","\\\/","\\\?","\\\|","\\\!");
+	$txt = lcml_smilies_by_list(&$txt);
+	$txt = lcml_smilies_by_files(config('smilies_dir'), $txt);
 
-//                debug("txt=preg_replace(\"!(^|\s)\".preg_replace($code)\"(?=(\s|$|\)|\]|\.))!\",\"1<img src=\"{config('smilies_url')}/$file.gif\" alt=\"$code\" title=\"$code\" border=\"0\" />\",$txt);");
+	return $txt;
+}
 
-                $txt=preg_replace("!(^|\s)".preg_replace($from,$to,$code)."(?=(\s|$|\)|\]|\.))!us","$1<img src=\"".config('smilies_url')."/$file.gif\" alt=\"$code\" title=\"$code\" border=\"0\" />",$txt);
-            }
-        }
+function lcml_smilies_by_list(&$txt)
+{
+	global $smilies_list;
+	
+	if(empty($smilies_list))
+		$smilies_list = file(config('smilies_dir')."/list.txt");
+	
+	foreach($smilies_list as $x)
+	{
+		@list($code, $file) = explode(' ', chop($x));
+		if($file)
+			$txt = preg_replace('!(?<=^|\s)'.preg_quote($code).'(?=\s|$|\)|\]|\.)!us', "<img src=\"".config('smilies_url')."/{$file}.gif\" alt=\"$code\" title=\"$code\" border=\"0\" />",$txt);
+		else
+			$txt = preg_replace('/(?<!"):$code:(?!")/', "<img src=\"".config('smilies_url')."/$code.gif\" alt=\":$code:\" title=\":$code:\" border=\"0\" />", $txt);
+	}
+	
+	return $txt;
+}
 
-        $txt = lcml_smilies_by_files(config('smilies_dir'),$txt);
-
-        return $txt;
-    }
-
-    function lcml_smilies_by_files($dir,$txt)
-    {
+function lcml_smilies_by_files($dir, &$txt)
+{
 		$from = array();
 		$to   = array();
 
         foreach(lcml_smilies_list($dir) as $code)
 		{
-			$from[] = "!([^\"]):$code:!";
-			$to[]   = "$1<img src=\"".config('smilies_url')."/$code.gif\" alt=\":$code:\" title=\":$code:\" border=\"0\" />";
+			$from[] = '/(?<!"):'.preg_quote($code).':/';
+			$to[]   = "<img src=\"".config('smilies_url')."/{$code}.gif\" alt=\":{$code}:\" title=\":{$code}:\" border=\"0\" />";
 		}
 
-        return preg_replace($from, $to, $txt);
-    }
+//		print_d($from); print_d($to);
 
-    function lcml_smilies_list($dir)
-	{
+        return preg_replace($from, $to, $txt);
+}
+
+function lcml_smilies_list($dir)
+{
 		$save = config('cache_disabled');
 		config_set('cache_disabled', false);
         $cache = &new Cache();
 
-        if($cache->get('smilies-v7', $dir))
+        if($cache->get('smilies-v8', $dir))
 		{
 //			if(is_array($cache->last()))
 //			{
@@ -80,10 +78,10 @@
 		$cache->set($list, 30*86400);
 		config_set('cache_disabled', $save);
 		return $list;
-	}
+}
 	
-    function lcml_smilies_load($dir)
-    {
+function lcml_smilies_load($dir)
+{
         $list = array();
 
         if(is_dir($dir))
@@ -102,4 +100,4 @@
         }
 
         return $list;
-    }
+}

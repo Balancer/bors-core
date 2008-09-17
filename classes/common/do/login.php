@@ -9,7 +9,7 @@ class common_do_login extends base_page
 
 	var $error;
 
-	function preParseProcess()
+	function pre_parse()
 	{
 		if(empty($_GET))
 			return false;

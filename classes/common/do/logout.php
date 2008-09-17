@@ -5,7 +5,7 @@ class common_do_logout extends base_page
 	function title() { return ec('Авторизация.'); }
 	function template() { return 'forum/common.html'; }
 
-	function preParseProcess()
+	function pre_parse()
 	{
 		$referer = isset($_GET['redirect_url']) ? $_GET['redirect_url'] : @$_SERVER['HTTP_REFERER'];
 		if($me = bors()->user())

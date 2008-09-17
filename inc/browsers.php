@@ -39,6 +39,8 @@ function get_browser_info($user_agent)
 		$browser = "SeaMonkey";
 	elseif(preg_match("!Firefox!", $user_agent))
 		$browser = "Firefox";
+	elseif(preg_match("!GranParadiso!", $user_agent))
+		$browser = "Firefox";
 	elseif(preg_match("!Gecko!", $user_agent))
 		$browser = "Gecko";
 	elseif(preg_match("!MSIE!", $user_agent))

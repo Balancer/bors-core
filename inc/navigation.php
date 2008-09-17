@@ -31,7 +31,7 @@
 			header("Location: $uri");
 
 			if($exit)
-				bors_exit();
+				bors_exit('');
         }
 
 //		if($text)
@@ -42,7 +42,7 @@
 //        debug("headers already out in $filename:$linenum");
 
 		if($exit)
-			bors_exit();
+			bors_exit('');
 
 		return true;
     }

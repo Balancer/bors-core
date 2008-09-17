@@ -24,17 +24,21 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts)
 		$img_h = $img->getImageHeight();
 		$img_w = $img->getImageWidth();
 	
-		$xcrop = $img_h/$img_w > $width/$height;
-		
 		$up = in_array('up', $opts);
 		$crop = in_array('crop', $opts);
 		
 		if($up || ($img_h >= $height && $img_w >= $width)) // ресайз обязателен
 		{
-			$upw = ($xcrop xor $crop) ? $width : $img_w*$height/$img_h;
-			$uph = ($xcrop xor $crop) ? $img_h*$width/$img_w : $height;
+			$upw = $img_w*$height/$img_h;
+			if($upw > $width)
+				$uph = $height;
+			else
+			{
+				$upw = $width;
+				$uph = $img_h*$width/$img_w;
+			}
 			
-//			bors_exit("img={$img_w}x{$img_h}, need={$width}x{$height}, up=$up, crop=$crop, xcrop=$xcrop, upwh={$upw}x{$uph}");
+//			bors_exit("img={$img_w}x{$img_h}, need={$width}x{$height}, up=$up, crop=$crop, upwh={$upw}x{$uph}");
 			$img->resize($upw, $uph);
 			if($upw > $width || $uph > $height)
 				$img->crop($width, $height, ($upw-$width)/2, ($uph-$height)/2);

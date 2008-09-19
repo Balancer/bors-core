@@ -61,6 +61,13 @@ class storage_db_mysql_smart extends base_null
 				if(empty($main_id_name))
 					$main_id_name = $def_id;
 
+				$on = '';
+				if(preg_match('!^(.*?(\w+))\((\w+)\)`?$!', $table_name, $m))
+				{
+					$table_name = $m[1];
+					$on = "{$m[2]}.$def_id = $main_tab.{$m[3]}";
+				}
+				
 				if(preg_match('!^inner\s+(.+?)$!', $table_name, $m))
 				{
 					$table_name = $m[1];
@@ -156,11 +163,20 @@ class storage_db_mysql_smart extends base_null
 						else
 						{
 							if($common_where !== NULL)
-								$on = "$current_tab.$id_field = $main_tab.`".$ids[$main_tab]."`";
+							{
+//								echo "ct=$current_tab; idf=$id_field; mt=$main_tab; ids={$ids[$main_tab]}<br/>";
+								if(!$on)
+									$on = "$current_tab.$id_field = $main_tab.`".$ids[$main_tab]."`";
+							}
 						 	else
 								$on	= make_id_field($current_tab, $id_field);
 
-							$from .= $join.$table_name.'` AS '.$current_tab.' ON ('.$on.')';
+
+//							echo "ct='$current_tab'; tn='$table_name'<br/>";
+							if($table_name != $current_tab)
+								$from .= $join.$table_name.'` AS '.$current_tab.' ON ('.$on.')';
+							else
+								$from .= $join.$table_name.'` ON ('.$on.')';
 						}
 					}
 

@@ -7,6 +7,5 @@ class base_null
 	function init() { return false; }
 	function can_cached() { return false; }
 	function loaded() { return false; }
-	function is_only_tuner() { return false; }
 	function set_class_file() { }
 }

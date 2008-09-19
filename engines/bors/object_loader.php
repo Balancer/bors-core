@@ -39,19 +39,16 @@ function class_include($class_name, $local_path = "")
 
 function __autoload($class_name) { class_include($class_name); }
 
-function load_cached_object($class_name, $id, $args)
+function &load_cached_object($class_name, $id, $args)
 {
-	if(is_object($id))
-		return NULL;
+	$obj = NULL;
+
+	if(is_object($id) || @$args['no_load_cache'])
+		return $obj;
 	
-	if(@$args['no_load_cache'])
-		return NULL;
-			
-//	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) debug_trace();
-//	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) echo "load_cached_object($class_name, $id, $args)<br />";
-		
-	if($obj = @$GLOBALS['bors_data']['cached_objects4'][$class_name][$id])
+	if(!empty($GLOBALS['bors_data']['cached_objects4'][$class_name][$id]))
 	{
+		$obj = &$GLOBALS['bors_data']['cached_objects4'][$class_name][$id];
 		$updated = false;
 		if(config('object_loader_filemtime_check'))
 			$updated = !method_exists($obj, 'class_filemtime') || filemtime($obj->real_class_file()) > $obj->class_filemtime();
@@ -64,11 +61,8 @@ function load_cached_object($class_name, $id, $args)
 
 //	echo "Try load $class_name($id) from memcached<br />";
 		
-	if(($memcache = config('memcached_instance')) && !is_object($id))
+	if($memcache = config('memcached_instance'))
 	{
-//		$memcache = &new Memcache;
-//		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
-
 		if($x = @$memcache->get('bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id))
 		{
 			$updated = false;
@@ -79,13 +73,15 @@ function load_cached_object($class_name, $id, $args)
 
 			if($x->can_cached() && !$updated)
 			{
-				$x->wakeup();
+//				$x->wakeup();
+//				$GLOBALS['bors_data']['cached_objects4'][get_class($x)][$x->id()] = $x;
 				return $x;
 			}
 		}
 	}
 
-	return NULL;
+	$obj = NULL;
+	return $obj;
 }
 
 function delete_cached_object($object) { return save_cached_object($object, true); }
@@ -95,33 +91,27 @@ function save_cached_object(&$object, $delete = false)
 	if(!method_exists($object, 'id') || is_object($object->id()))
 		return;
 
-//	echo "Try store memcached {$object->internal_uri()} with can_cached={$object->can_cached()}; config('memcached')=".config('memcached')."<br />";
 	if(($memcache = config('memcached_instance')) && $object->can_cached())
 	{
-//		$memcache = &new Memcache;
-//		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
-				
 		$hash = 'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
-			
-//		echo "Store $hash<br/>";
-		
-		$object->sleep();
+
+//		$object->sleep();
 
 		if($delete)
 			@$memcache->delete($hash);
 		else
-			@$memcache->set($hash, $object, true, 600);
+			@$memcache->set($hash, $object, true, rand(600, 1200));
 		
 	}
 
 	if($delete)
 		unset($GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()]);
 	else
-		$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()] = $object;
+		$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()] = &$object;
 }
 
-	function class_internal_uri_load($uri)
-	{
+function class_internal_uri_load($uri)
+{
 		if(!preg_match("!^(\w+)://(.*)$!", $uri, $m))
 			return NULL;
 	
@@ -136,67 +126,41 @@ function save_cached_object(&$object, $delete = false)
 		}
 
 		return object_init($class_name, $id, array('page'=>$page));
-	}
+}
 
-	function pure_class_load($class_name, $id, $args, $local_path = NULL)
+function class_load($class, $id = NULL, $args=array())
+{
+	if(preg_match("!^\w+$!", $class))
+		return object_init($class, $id, $args);
+
+	if(preg_match("!^/!", $class))
+		$class = 'http://'.$_SERVER['HTTP_HOST'].$class;
+	
+	if(!is_object($id) && preg_match("!^(\d+)/$!", $id, $m))
+		$id = $m[1];
+	
+	if(preg_match("!^(\w+)://.+!", $class, $m))
 	{
-		if(is_string($id) && ($id == 'NULL'))
-			$id = NULL;
-
-		if(!($class_file = class_include($class_name, $local_path)))
-			return NULL;
-
-		if($obj = load_cached_object($class_name, $id, $args))
+		if(preg_match("!^http://!", $class))
 		{
-		 	if(empty($args['no_load_cache']))
+			if(preg_match('!^(.+)#(.+)$!', $class, $m))
+				$class = $m[1];
+	
+			if($obj = class_load_by_url($class, $args))
 				return $obj;
-			
-			$obj->store();
-//			$obj->cache_clean_self();
-		}
 
-		$obj = &new $class_name($id);
-
-		$obj->set_class_file($class_file);
-			
-		return $obj;
-	}
-
-	function class_load($class, $id = NULL, $args=array())
-	{
-		if(preg_match("!^/!", $class))
-			$class = 'http://'.$_SERVER['HTTP_HOST'].$class;
-	
-		if(!is_object($id) && preg_match("!^(\d+)/$!", $id, $m))
-			$id = $m[1];
-	
-		if(preg_match("!^(\w+)://.+!", $class, $m))
-		{
-			if(preg_match("!^http://!", $class))
-			{
-//				echo "Load $class<br/>\n";
-			
-				if(preg_match('!^(.+)#(.+)$!', $class, $m))
-					$class = $m[1];
-	
-				if($obj = class_load_by_url($class, $args))
-					return $obj;
-
-				if($obj = class_internal_uri_load($class, $args))
-					return $obj;
-			}
-			elseif($obj = class_internal_uri_load($class, $args))
+			if($obj = class_internal_uri_load($class, $args))
 				return $obj;
 		}
-
-		if(preg_match("!^\w+$!", $class))
-			return object_init($class, $id, $args);
-		else
-			return NULL;
+		elseif($obj = class_internal_uri_load($class, $args))
+			return $obj;
 	}
 
-	function class_load_by_url($url, $args)
-	{
+	return NULL;
+}
+
+function class_load_by_url($url, $args)
+{
 //		echo "Load $url<br />\n";
 	
 		if($obj = class_load_by_vhosts_url($url, $args))
@@ -326,10 +290,10 @@ function save_cached_object(&$object, $delete = false)
 //		exit();
 
 		return NULL;
-	}
+}
 
-	function class_load_by_vhosts_url($url)
-	{
+function class_load_by_vhosts_url($url)
+{
 		$data = @parse_url($url);
 		
 		if(!$data || empty($data['host']))
@@ -413,7 +377,6 @@ function save_cached_object(&$object, $delete = false)
 //				echo "$class_path($id) - $url";
 				
 				$args = array(	
-						'use_cache' => true,
 						'local_path' => $host_data['bors_local'],
 						'match' => empty($match[2]) ? NULL : $match,
 						'called_url' => $url,
@@ -447,40 +410,54 @@ function save_cached_object(&$object, $delete = false)
 		}
 
 		return NULL;
-	}
+}
 
-function object_init($class_name, $object_id, $args = array())
+function &object_init($class_name, $object_id, $args = array())
 {
 	if(config('debug_class_search_track'))
 		echo "<small>object_init($class_name, $object_id,...)</small><br/>\n";
 
-	// В этом методе нельзя исползовать debug_test()!
+	// В этом методе нельзя исползовать debug_test()!!!
 
-	if(!is_array($args))
-		$args = $args ? array('page' => $args) : array();
+	$obj = NULL;
 
-//	if($class_name == 'bors_tools_search' && bors()->user() && bors()->user()->id() == 10000) echo "object_init($class_name, $object_id)<br />";
-	$obj = pure_class_load($class_name, $object_id, $args, $local_path = defval($args, 'local_path'));
+	if($object_id === 'NULL')
+		$object_id = NULL;
 
-	if(!$obj)
-		return NULL;
+	if(!($class_file = class_include($class_name, defval($args, 'local_path'))))
+		return $obj;
 
-	if(method_exists($obj, 'set_page'))
+	$was_memcached = false;
+	if($obj = &load_cached_object($class_name, $object_id, $args))
 	{
-		if(empty($args['page']))
-			$obj->set_page($obj->default_page());
-		else
+		$was_memcached = true;
+		if(!empty($args['no_load_cache']))
 		{
-			if(is_numeric($args['page']))
-				$args['page'] = intval($args['page']);
-
-			$obj->set_page($args['page']);
+			$obj->store();
+			$obj = NULL;
 		}
 	}
+	
+	if(!$obj)
+	{
+		$obj = &new $class_name($object_id);
+		$obj->set_class_file($class_file);
+	}
+	
+	if(empty($args['page']))
+	{
+		if(method_exists($obj, 'set_page'))
+			$obj->set_page($obj->default_page());
+	}
+	else
+	{
+		if(is_numeric($args['page']))
+			$args['page'] = intval($args['page']);
 
-	$use_cache = defval($args, 'use_cache', true);
+		$obj->set_page($args['page']);
+	}
+
 	unset($args['local_path']);
-	unset($args['use_cache']);
 	unset($args['no_load_cache']);
 
 	if(method_exists($obj, 'set_args'))
@@ -495,25 +472,13 @@ function object_init($class_name, $object_id, $args = array())
 	if(!$obj->loaded())
 		$obj->init();
 
-//	if(method_exists($obj, 'id')) echo "{$obj->class_name()}({$obj->id()}) loaded = {$obj->loaded()}<br />\n";
-//	else echo get_class($obj)." already inited<br />";
-
-	if($obj->is_only_tuner())
-		return NULL;
+	if(($object_id || $url) && !$obj->can_be_empty() && !$obj->loaded())
+	{
+		$obj = NULL;
+		return $obj;
+	}
 	
-//	echo $obj->class_name()."; cf=obj->class_file(); object_id=$object_id; url=$url; cbe={$obj->can_be_empty()}; ld={$obj->loaded()}<br />\n";
-	
-	if(($object_id || $url)
-		&& method_exists($obj, 'can_be_empty')
-		&& !$obj->can_be_empty()
-		&& !$obj->loaded() 
-//		&& $obj->storage_engine() 
-	)
-		return NULL;
-
-//	echo "{$class_name}($object_id) was loaded seccessfully} as ".get_class($obj)."<br />\n"; // exit();
-
-	if($use_cache)
+	if(!$was_memcached && $obj->can_cached())
 		save_cached_object($obj);
 		
 	return $obj;

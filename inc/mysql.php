@@ -143,13 +143,20 @@ function mysql_args_compile($args)
 		$group = "GROUP BY {$args['group']}";
 		unset($args['group']);
 	}
+
+	$having = '';
+	if(!empty($args['having']))
+	{
+		$having= "HAVING {$args['having']}";
+		unset($args['having']);
+	}
 	
 	if(empty($args['where']))
 		$where = mysql_where_compile($args);
 	else
 		$where = mysql_where_compile($args['where']);
 	
-	return "{$join} {$where} {$group} {$order} {$limit}";
+	return "{$join} {$where} {$group} {$having} {$order} {$limit}";
 }
 
 function make_id_field($table, $id_field, $oid = '%MySqlStorageOID%')

@@ -75,14 +75,20 @@ function url_parse($url)
 		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
 
 	require_once('engines/bors/vhosts_loader.php');
-	$vhost_data = bors_vhosts($data['host']);
+	$vhost_data = bors_vhost_data($data['host']);
+//	print_d($vhost_data); exit();
 	if($root = @$vhost_data['document_root'])
 		$data['root'] = $root;
 
 	if($data['local'] = !empty ($data['root']))
 		$data['local_path'] = $data['root'].str_replace('http://'.$data['host'], '', $url);
+
+	//TODO: грязный хак
+	$data['local_path'] = preg_replace('!^(/var/www/files.balancer.ru/files/)[0-9a-f]{32}/(.*)$!', '$1$2', $data['local_path']);
 		
 	$data['uri'] = "http://".@ $data['host'].@ $data['path'];
+	//TODO: грязный хак
+	$data['uri'] = preg_replace('!^(http://files.balancer.ru/)[0-9a-f]{32}/(.*)$!', '$1$2', $data['uri']);
 	return $data;
 }
 

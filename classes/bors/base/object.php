@@ -689,8 +689,15 @@ class base_object extends base_empty
 	}
 
 	private $class_file;
-	function set_class_file($file_name) { return $this->class_file = $file_name; }
+	private $class_filemtime;
+	function set_class_file($file_name)
+	{
+		$this->class_filemtime = filemtime($file_name);
+		return $this->class_file = $file_name;
+	}
+	function class_filemtime() { return $this->class_filemtime; }
 	function class_file() { return $this->class_file; }
+	function real_class_file() { return $this->class_file; }
 	function class_dir() { return dirname($this->class_file()); }
 
 	function post_set() { }

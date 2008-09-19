@@ -10,6 +10,11 @@
 		return array_keys($GLOBALS['bors_data']['vhosts']);
 	}
 
+	function bors_vhost_data($host)
+	{
+		return @$GLOBALS['bors_data']['vhosts'][$host];
+	}
+
 	function register_vhost($host, $documents_root=NULL, $bors_local=NULL)
 	{
 		global $bors_data;
@@ -39,6 +44,7 @@
 		$bors_data['vhosts'][$host] = array(
 			'bors_map' => array_merge($map2, $map),
 			'bors_local' => $bors_local,
+			'document_root' => $documents_root,
 		);
 	}
 

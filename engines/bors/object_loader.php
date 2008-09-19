@@ -52,8 +52,13 @@ function load_cached_object($class_name, $id, $args)
 		
 	if($obj = @$GLOBALS['bors_data']['cached_objects4'][$class_name][$id])
 	{
-//		echo "Found in memory <b>$class_name</b>('$id'); can_cached={$obj->can_cached()}<br />";
-		if($obj->can_cached())
+		$updated = false;
+		if(config('object_loader_filemtime_check'))
+			$updated = !method_exists($obj, 'class_filemtime') || filemtime($obj->real_class_file()) > $obj->class_filemtime();
+
+//		echo "Found in memory <b>$class_name</b>('$id'); can_cached={$obj->can_cached()}; updated = $updated (me=".method_exists($obj, 'class_filemtime')."; ".filemtime($obj->real_class_file()).' > '.$obj->class_filemtime().")<br />";
+
+		if($obj->can_cached() && !$updated)
 			return $obj;
 	}
 
@@ -66,8 +71,13 @@ function load_cached_object($class_name, $id, $args)
 
 		if($x = @$memcache->get('bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id))
 		{
-//			echo "<b>got!</b><br />";
-			if($x->can_cached())
+			$updated = false;
+			if(config('object_loader_filemtime_check'))
+				$updated = !method_exists($x, 'class_filemtime') || filemtime($x->real_class_file()) > $x->class_filemtime();
+
+//			echo "Found in memcache <b>{$x->class_name()}</b>('{$x->id()}'); can_cached={$x->can_cached()}; updated = $updated (me=".method_exists($obj, 'class_filemtime')."; ".filemtime($x->real_class_file()).' > '.$x->class_filemtime().")<br />";
+
+			if($x->can_cached() && !$updated)
 			{
 				$x->wakeup();
 				return $x;
@@ -228,7 +238,7 @@ function save_cached_object(&$object, $delete = false)
 //			echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
 			if(preg_match("!^http://({$url_data['host']}[^/]*)$url_pattern$!", $check_url, $match))
 			{
-//				echo "<b>Ok - $class_path</b><br />"; exit();
+//				echo "<b>Ok - $class_path</b><br />";
 				
 				$id = NULL;
 				$page = NULL;
@@ -293,8 +303,10 @@ function save_cached_object(&$object, $delete = false)
 				else
 					$args['page'] = $page;
 
-					
-				if($obj = object_init($class_path, $id, $args))
+//				echo "object_init($class_path, $id)<br />";
+				if(($obj = object_init($class_path, $id, $args))
+					&& ($obj->can_be_empty() || $obj->loaded())
+				)
 				{
 					if($redirect)
 					{
@@ -302,7 +314,7 @@ function save_cached_object(&$object, $delete = false)
 						{
 							echo "Redirect by $url_pattern";
 							go($obj->url($page), true);
-							exit("Redirect");
+							bors_exit("Redirect");
 						}
 						else
 							return object_load($obj->url($page));

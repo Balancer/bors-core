@@ -260,9 +260,6 @@
 			SetCookie("user_id", $this->get('id'), $expired, "/", '.'.$_SERVER['HTTP_HOST']);
 			SetCookie("cookie_hash", $cookie_hash, $expired, "/", '.'.$_SERVER['HTTP_HOST']);
 			
-//			print_d(bors_vhosts());
-//			exit();
-			
 			$_COOKIE['user_id'] = $this->get('id');
 			$_COOKIE['cookie_hash'] = $cookie_hash;
 			return $this->cookie_hash();

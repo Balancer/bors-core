@@ -10,7 +10,11 @@ class common_do_logout extends base_page
 		$referer = isset($_GET['redirect_url']) ? $_GET['redirect_url'] : @$_SERVER['HTTP_REFERER'];
 		if($me = bors()->user())
 			$me->do_logout();
-		
+
+//		echo "me = $me<br />";
+//		debug_trace();
+//		bors_exit();
+
 		return go($referer && $referer != $this->url() ? $referer : '/');
 	}
 	

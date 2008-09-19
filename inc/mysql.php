@@ -167,6 +167,8 @@ function make_id_field($table, $id_field, $oid = '%MySqlStorageOID%')
 	if(strpos($id_field, '=') === false)
 		return "{$table}{$id_field} = '".addslashes($oid)."'";
 
+//	echo "make_id_field($table, $id_field, $oid)<br/>";
+
 	if(strpos($id_field, ' ') === false)
 	{
 		$out =  preg_replace("!([\w`\.]+)=([\w\`\.]+)!", "{$table}$1=$2", $id_field);

@@ -8,7 +8,7 @@
 </center>
 
 {if $login_form}
-<form method="post" action="/do-login/">
+<form method="post" action="/users/do-login">
 	<input type="hidden" name="redirect_url" value="{$login_referer}" />
 	<label class="conl"><strong>Имя</strong><br /><input type="text" name="req_username" size="16" maxlength="25" tabindex="1" /><br /></label>
 	<label class="conl"><strong>Пароль</strong><br /><input type="password" name="req_password" size="16" maxlength="16" tabindex="2" /><br /></label>

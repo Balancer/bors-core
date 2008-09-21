@@ -23,7 +23,10 @@ function mysql_where_compile($conditions_array)
 			if(is_array($value))
 				$value = join(',', array_map('addslashes', $value));
 
-			$where[] = mysql_bors_join_parse($field_cond) . '(' . $value . ')';
+			if($value)
+				$where[] = mysql_bors_join_parse($field_cond) . '(' . $value . ')';
+			else
+				$where[] = "0";
 		}
 		elseif(is_numeric($field_cond))
 			$where[] = $value;

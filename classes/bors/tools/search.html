@@ -37,9 +37,22 @@
 
 {$this->pages_links_nul()}
 
+{if $topics}
+<table class="btab w100p">
+<tr><th>Тема</th><th>Автор</th><th>Форум</th><th>Создано</th><th>Обновлено</th></tr>
+{foreach from=$topics item="t"}
+<tr><td>{$t->titled_url()}</td>
+	<td>{$t->author_name()}</td>
+	<td>{$t->forum()|get:titled_url}</td>
+	<td>{$t->create_time()|airbase_time}</td>
+	<td>{$t->modify_time()|airbase_time}</td>
+</tr>
+{/foreach}
+</table>
+{/if}
+
 {assign var="no_show_answers" value=1}
-{foreach from=$res.matches item="x"}
-{assign var="p" value=$x.post}
+{foreach from=$posts item="p"}
 {assign var="topic" value=$p->topic()}
 {assign var="forum" value=$topic->forum()}
 {assign var="show_title" value=$p->titled_url()}

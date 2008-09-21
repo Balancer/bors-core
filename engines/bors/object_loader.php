@@ -478,7 +478,7 @@ function &object_init($class_name, $object_id, $args = array())
 		return $obj;
 	}
 	
-	if(!$was_memcached && $obj->can_cached())
+	if(/*!$was_memcached && */$obj->can_cached())
 		save_cached_object($obj);
 		
 	return $obj;

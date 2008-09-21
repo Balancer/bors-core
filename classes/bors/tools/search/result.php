@@ -58,7 +58,8 @@ class bors_tools_search_result extends bors_tools_search
 		$cl = new SphinxClient ();
 		$cl->SetServer ( $host, $port );
 		$cl->SetConnectTimeout ( 1 );
-		$cl->SetWeights ( array ( 100, 1 ) );
+//		$cl->SetWeights ( array ( 100, 1 ) );
+		$cl->SetIndexWeights ( array ( 'topics' => 500, 'forum_2' => 100) );
 
 		if($this->x())
 			$cl->SetMatchMode (SPH_MATCH_PHRASE);
@@ -122,7 +123,9 @@ class bors_tools_search_result extends bors_tools_search
 
 			$data['q'] = $this->q();
 			$data['res'] = &$res;
-
+			
+//			print_d($res);
+			
 			$opts = array
 			(
 				'before_match'		=> '<b>',
@@ -138,32 +141,32 @@ class bors_tools_search_result extends bors_tools_search
 				return false;
 
 			$post_ids = array();
+			$topic_ids = array();
 			for($i=0; $i<count($res['matches']); $i++)
 			{
 				$x = &$res['matches'][$i];
-				$post_ids[] = $x['id'];
+				if(empty($x['attrs']['class_name']))
+					$topic_ids[] = $x['id'];
+				else
+					$post_ids[] = $x['id'];
 			}
 
-			$posts = objects_array('forum_post', array('id IN' => $post_ids, 'by_id' => true));
+			$this->data['posts'] = $posts = objects_array('forum_post', array('id IN' => $post_ids, 'by_id' => true));
+			$this->data['topics'] = objects_array('forum_topic', array('id IN' => $topic_ids, 'by_id' => true));
 			$docs = array();
 			
-			for($i=0; $i<count($res['matches']); $i++)
-			{
-				$pid = $res['matches'][$i]['id'];
-				$docs[$i] = strip_tags($posts[$pid]->source());
-			}
+			$loop = 0;
+			foreach($posts as $pid => $p)
+				$docs[$loop++] = strip_tags($p->source());
 
 			$exc = $cl->BuildExcerpts($docs, 'forum_2', $this->q(), $opts);
 			if (!$exc)
 				echo $data['error'] = $cl->GetLastError();
 			else
 			{
-				for($i=0; $i<count($res['matches']); $i++)
-				{
-					$pid = $res['matches'][$i]['id'];
-					$posts[$pid]->set_body($exc[$i], false);
-					$res['matches'][$i]['post'] = $posts[$pid];
-				}
+				$loop = 0;
+				foreach($posts as $pid => $p)
+					$posts[$pid]->set_body($exc[$loop++], false);
 			}
 		}
 		

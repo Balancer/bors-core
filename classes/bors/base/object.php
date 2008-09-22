@@ -324,7 +324,9 @@ class base_object extends base_empty
 	function cache_static() { return 0; }
 //	var $stb_cache_static = 0;
 	
-	function titled_url($append=NULL, $title=NULL)
+	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
+
+	function titled_url_ex($title=NULL, $append=NULL)
 	{
 		if($title===NULL)
 			$title = $this->title();
@@ -700,6 +702,7 @@ class base_object extends base_empty
 	function real_class_file() { return $this->class_file; }
 	function class_dir() { return dirname($this->class_file()); }
 
+	function pre_set() { }
 	function post_set() { }
 	
 	var $stb_sort_order;

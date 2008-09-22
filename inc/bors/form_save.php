@@ -28,7 +28,7 @@ function bors_form_save(&$obj)
 	{
 		$objects_common_data = array();
 		$objects_data = array();
-		
+
 		foreach($_FILES as $name => $params)
 		{
 			foreach($params as $key => $value)
@@ -63,15 +63,20 @@ function bors_form_save(&$obj)
 		$form = $obj;
 		if($objects_data)
 		{
+			$first = true;
+			$total = count($objects_data);
+			$count = 0;
 			foreach($objects_data as $idx => $data)
 			{
+				$last = (++$count == $total);
 				$data = array_merge($data, $objects_common_data);
-				if(true === ($form = ($result = bors_form_save_object($data['class_name'], @$data['id'], $data))))
+				if(true === ($form = ($result = bors_form_save_object($data['class_name'], @$data['id'], $data, $first, $last))))
 					break;
+				$first = false;
 			}
 		}
 		else
-			$form = bors_form_save_object($_GET['class_name'], @$_GET['id'], $objects_common_data);
+			$form = bors_form_save_object($_GET['class_name'], @$_GET['id'], $objects_common_data, true, true);
 		
 		if($form === true)
 			return true;
@@ -94,7 +99,7 @@ function bors_form_save(&$obj)
 	return false;
 }
 
-function bors_form_save_object($class_name, $id, &$data)
+function bors_form_save_object($class_name, $id, &$data, $first, $last)
 {
 	if($field = @$data['multiple_check_field'])
 		if(empty($data[$field]))
@@ -111,24 +116,27 @@ function bors_form_save_object($class_name, $id, &$data)
 
 //	echo "Initial id: {$object->id()}<br />"; bors_exit();
 
-	$processed = $object->pre_action($data);
-	if($processed === true)
-		return true;
-
-	if(!$object->access())
-		return bors_message(ec("Не заданы режимы доступа класса ").get_class($object)."; access_engine=".$object->access_engine());
-
-	if(!$object->access()->can_action())
-		return bors_message(ec("[2] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($object).", access=".($object->access_engine())."/".get_class($object->access()).", method=can_action)"));
-
-	if(empty($data['subaction']))
-		$method = '';
-	else
-		$method = '_'.addslashes($data['subaction']);
-
-	if(method_exists($object, $method = 'on_action'.$method))
-		if($object->$method($data))
+	if($first)
+	{
+		$processed = $object->pre_action($data);
+		if($processed === true)
 			return true;
+
+		if(!$object->access())
+			return bors_message(ec("Не заданы режимы доступа класса ").get_class($object)."; access_engine=".$object->access_engine());
+
+		if(!$object->access()->can_action())
+			return bors_message(ec("[2] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($object).", access=".($object->access_engine())."/".get_class($object->access()).", method=can_action)"));
+
+		if(empty($data['subaction']))
+			$method = '';
+		else
+			$method = '_'.addslashes($data['subaction']);
+
+		if(method_exists($object, $method = 'on_action'.$method))
+			if($object->$method($data))
+				return true;
+	}
 	
 	if($object->check_data($data) === true)
 		return true;
@@ -146,12 +154,18 @@ function bors_form_save_object($class_name, $id, &$data)
 		$object->{'upload_'.$file_data['upload_name'].'_file'}($file_data, $data);
 
 //	echo "Set fields for $object: ".print_d($data, true)."<br/>"; set_loglevel(10,0);
+	if($first)
+		$object->pre_set($data);
+
 	if(!$object->set_fields($data, true))
 		return true;
 		
-	$object->set_modify_time(time(), true);
-	$object->post_set($data);
-
+	if($last)
+	{
+		$object->set_modify_time(time(), true);
+		$object->post_set($data);
+	}
+	
 	if(!$object->id() && method_exists($object, 'new_instance'))
 		$object->new_instance();
 

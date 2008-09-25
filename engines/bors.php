@@ -27,25 +27,22 @@ function object_load($class, $object_id=NULL, $args=array())
 	return class_load($class, $object_id, $args);
 }
 
-function object_new($class, $id = NULL)
+function &object_new($class, $id = NULL)
 {
-//	$obj = object_load($class, $id, array('no_load_cache' => true));
-	
-//	if(!$obj)
-//	{
-//	    debug_exit("Can't make new instance for $class");
-	    $obj = new $class($id);
-//		$obj->new_instance($id);
-//	}
-	
-//	if(!$obj->id())
-//		$obj->new_instance($id);
+    $obj = &new $class($id);
 
 	if($id !== NULL)
 		$obj->set_id($id);
 
 	$obj->init(false);
 
+	return $obj;
+}
+
+function &object_new_instance($class, $id = NULL)
+{
+	$obj = &object_new($class, $id);
+	$obj->new_instance();
 	return $obj;
 }
 

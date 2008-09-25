@@ -488,7 +488,7 @@ class base_object extends base_empty
 		{
 			$_autofields = array();
 		
-			foreach(split(' ', $this->autofields()) as $f)
+			foreach(explode(' ', $this->autofields()) as $f)
 			{
 				$id	  = 'id';
 				if(preg_match('!^(\w+)\((\w+)\)(.*?)$!', $f, $match))
@@ -610,8 +610,12 @@ class base_object extends base_empty
 	function set_checkboxes($check_list, $db_up)
 	{
 		foreach(explode(',', $check_list) as $name)
+		{
 			if(method_exists($this, $method = 'set_'.$name))
 				$this->$method(empty($_GET[$name]) ? 0 : 1, $db_up);
+			else
+				$this->fset($name, empty($_GET[$name]) ? 0 : 1, $db_up);
+		}
 	}
 
 	function set_checkboxes_list($check_list, $db_up)

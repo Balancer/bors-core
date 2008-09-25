@@ -79,6 +79,15 @@ class bors_image extends base_object_db
 
 	function upload($data, $dir)
 	{
+		if(!$this->id())
+		{
+			debug_hidden_log('new-instance-errors', 'empty image id, try to create new by store');
+			$this->new_instance();
+		}
+
+		if(!$this->id())
+			bors_exit('Error: empty image id');
+
 		$this->set_original_filename($data['name'], true);
 
 		$this->set_relative_path(secure_path($dir.'/'.$this->id()%100), true);

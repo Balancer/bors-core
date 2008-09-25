@@ -605,6 +605,7 @@ class base_object extends base_empty
 	function main_db_storage() { return config('main_bors_db'); }
 	function main_table_storage(){ return $this->class_name(); }
 	function main_table_fields() { return array(); }
+	function field_title_storage() { $f=$this->main_table_fields(); return $f['title'].'(id)'; }
 
 	function set_checkboxes($check_list, $db_up)
 	{

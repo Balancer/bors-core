@@ -19,7 +19,7 @@ function objects_array($class, $args = array())
 
 	$where = mysql_args_compile($args);
 		
-	$init = new $class(NULL);
+	$init = &new $class(NULL);
 
 	return $init->storage()->load($init, $where, false, $cargs);
 }

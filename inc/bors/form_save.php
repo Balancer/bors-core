@@ -44,7 +44,7 @@ function bors_form_save(&$obj)
 				else
 				{
 					$objects_common_data['uploaded_file'][$key] = $value;
-					$objects_data[$idx]['uploaded_file']['upload_name'] = $name;
+					$objects_data['uploaded_file']['upload_name'] = $name;
 				}
 			}
 		}

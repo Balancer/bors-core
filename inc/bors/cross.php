@@ -43,7 +43,7 @@ function bors_cross_object_init($row)
 	return $obj;
 }
 
-function bors_get_cross_objs($object, $to_class = '', $dbh = NULL)
+function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array())
 {
 	if(!$object)
 	{
@@ -66,8 +66,10 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL)
 	}
 
 	$result = array();
+	$limit = empty($args['limit']) ? '' : 'LIMIT '.addslashes($args['limit']);
+	$order = empty($args['order']) ? 'ORDER BY `order`, to_id' : addslashes(mysql_order_compile($args['order']));
 
-	$dbh->query("SELECT to_class as class_id, to_id as object_id, `order` as sort_order FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} ORDER BY `order`, to_id");
+	$dbh->query("SELECT to_class as class_id, to_id as object_id, `order` as sort_order FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} $order $limit");
 				
 	while($row = $dbh->fetch_row())
 		if($res = bors_cross_object_init($row))
@@ -75,7 +77,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL)
 		else
 			debug_hidden_log('cross-errors', "Empty cross ".print_r($row, true)." with {$object} [class_id = {$object->class_id()}]");
 
-	$dbh->query("SELECT from_class as class_id, from_id as object_id, `order` as sort_order FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} ORDER BY `order`, from_id");
+	$dbh->query("SELECT from_class as class_id, from_id as object_id, `order` as sort_order FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} $order $limit");
 				
 	while($row = $dbh->fetch_row())
 		if($res = bors_cross_object_init($row))

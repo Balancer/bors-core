@@ -26,5 +26,8 @@ function dc($txt, $charset_from = NULL, $charset_to = NULL)
 	if($charset_from == $charset_to)
 		return $txt;
 
+	if($charset_to == 'koi8-r')
+		echo $txt = str_replace(array('«','»'), array('&laquo;','&raquo;'), $txt);
+
 	return iconv($charset_from, $charset_to, $txt);
 }

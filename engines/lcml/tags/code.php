@@ -27,21 +27,16 @@
         
 		$txt=join("\n",$txt);
 
-//		$txt = htmlspecialchars($txt);//save_format($txt);
 		$txt = str_replace("\n", "<br />---save_cr---", $txt);
 
-//        $txt = "<table border='0' align='center' width='95%' cellpadding='3' cellspacing='1'><tr><td class='code'><tt>$txt</tt>";
         $txt = "<div class=\"code\"><tt>$txt</tt>";
 
         if(isset($m[2]))
             $txt.="<div class=\"code_type\">code, type '<b>{$m[2]}</b>'</div>";
 
 		$txt .= "</div>";
-//		$txt .= "</td></tr></table>";
         
         $txt = preg_replace("!( {2,})!em","str_repeat('&nbsp;',strlen('$1'))",$txt);
-//        $txt=str_replace(" ", "&nbsp", $txt);
-//        $txt = str_replace("[","&#91;",$txt);
 		
 		return save_format($txt);
     }

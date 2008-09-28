@@ -25,13 +25,16 @@ class base_page extends base_object
 			return '';
 	}
 
-	function pages_links_nul($css='pages_select')
+	function pages_links_nul($css='pages_select', $text = NULL, $delim = '')
 	{
 		if($this->total_pages() < 2)
 			return "";
 
+		if($text === NULL)
+			$text = ec('Страницы:');
+
 		include_once('inc/design/page_split.php');
-		return '<div class="'.$css.ec('">Страницы: ').join(' ', pages_show($this, $this->total_pages(), $this->items_around_page())).'</div>';
+		return '<div class="'.$css.'">'.$text.join($delim, pages_show($this, $this->total_pages(), $this->items_around_page())).'</div>';
 	}
 
 	function getsort($t, $def = false)

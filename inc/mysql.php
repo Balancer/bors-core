@@ -18,7 +18,7 @@ function mysql_where_compile($conditions_array)
 		$value = str_replace('%ID%', '%MySqlStorageOID%', $value);
 //		echo "$field_cond  $value<br/>\n";
 
-		if(preg_match('! IN$!', $field_cond))
+		if(preg_match('! (NOT )?IN$!', $field_cond))
 		{
 			if(is_array($value))
 				$value = join(',', array_map('addslashes', $value));
@@ -28,10 +28,12 @@ function mysql_where_compile($conditions_array)
 			else
 				$where[] = "0";
 		}
-		elseif(is_numeric($field_cond))
+		elseif(is_numeric($field_cond)) // Готовое условие
 			$where[] = $value;
 		elseif(preg_match('!^\w+$!', $field_cond))
 			$where[] = $field_cond . '=\'' . addslashes($value) . '\'';
+		elseif(preg_match('!^int (\w+)$!', $field_cond, $m))
+			$where[] = $m[1] . '=' . $value;
 		else
 			$where[] = $field_cond . '\'' . addslashes($value) . '\'';
 	}

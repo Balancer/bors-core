@@ -29,9 +29,9 @@ function lcml_smilies_by_list(&$txt)
 	{
 		@list($code, $file) = explode(' ', chop($x));
 		if($file)
-			$txt = preg_replace('!(?<=^|\s)'.preg_quote($code).'(?=\s|$|\)|\]|\.)!us', "<img src=\"".config('smilies_url')."/{$file}.gif\" alt=\"$code\" title=\"$code\" border=\"0\" />",$txt);
+			$txt = preg_replace('!(?<=^|\s)'.preg_quote($code).'(?=\s|$|\)|\]|\.)!us', "<img src=\"".config('smilies_url')."/{$file}.gif\" alt=\"$code\" title=\"$code\" class=\"smile\" />",$txt);
 		else
-			$txt = preg_replace('/(?<!"):$code:(?!")/', "<img src=\"".config('smilies_url')."/$code.gif\" alt=\":$code:\" title=\":$code:\" border=\"0\" />", $txt);
+			$txt = preg_replace('/(?<!"):$code:(?!")/', "<img src=\"".config('smilies_url')."/$code.gif\" alt=\":$code:\" title=\":$code:\" class=\"smile\" />", $txt);
 	}
 	
 	return $txt;
@@ -45,7 +45,7 @@ function lcml_smilies_by_files($dir, &$txt)
         foreach(lcml_smilies_list($dir) as $code)
 		{
 			$from[] = '/(?<!"):'.preg_quote($code).':/';
-			$to[]   = "<img src=\"".config('smilies_url')."/{$code}.gif\" alt=\":{$code}:\" title=\":{$code}:\" border=\"0\" />";
+			$to[]   = "<img src=\"".config('smilies_url')."/{$code}.gif\" alt=\":{$code}:\" title=\":{$code}:\" class=\"smile\" />";
 		}
 
 //		print_d($from); print_d($to);

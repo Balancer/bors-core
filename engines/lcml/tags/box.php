@@ -7,12 +7,4 @@
 			return $params['_align_b'].lcml($txt).$params['_align_e'];
 		else
 			return "<div class=\"box\">".lcml($txt)."</div>";
-
-/*		return <<<__EOT__
-<table border="0" width="{$params['width']}" cellPadding="8" cellSpacing="0" align="{$params['align']}">
-<tr><td><div class="box">$txt</div></td></tr></table>
-__EOT__; */
-
     }
-
-?>

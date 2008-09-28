@@ -217,7 +217,7 @@ function lt_img($params)
 __EOT__;
 				}
 
-				$description = stripslashes(!empty($params['description']) ? "<div align=\"center\"><small>".lcml($params['description'])."</small></div>" : '');
+				$description = stripslashes(!empty($params['description']) ? "<div style=\"text-align: center\"><small>".lcml($params['description'])."</small></div>" : '');
 
 //				print_d($params); exit();
 
@@ -230,9 +230,6 @@ __EOT__;
 					$a_href_e = "</a>";
 				}
 
-//				$out = <<<__EOT__
-//{$params['_align_b']}<table class="box" style="width: {$width}px;" cellSpacing="0" cellPadding="2"><tr><td width="$width">$a_href_b<img src="$img_ico_uri" width="$width" height="$height" border="0" />$a_href_e</td></tr>$description</table>{$params['_align_e']}
-//__EOT__;
 				$styles = array();
 				if(@$params['flow'] == 'flow' && @$params['align'] != 'center')
 				{
@@ -249,14 +246,10 @@ __EOT__;
 				if(@$params['border'])
 					$styles[] = 'box';
 
-//				$out = @$params['_align_b']."{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" border=\"0\">{$a_href_e}<div style=\"font-size: xx-small;\">".lcml($description, array('html'=>'safe'))."</div>".@$params['_align_e'];
-
-				$out = '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" border=\"0\">{$a_href_e}";
+				$out = '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" alt=\"\" />{$a_href_e}";
 				if($description)
 					$out .= "<div style=\"font-size: xx-small;\">".lcml($description, array('html'=>'safe'))."</div>";
 				$out .= '</div>';
-
-//		$out .= "<!-- params ".print_r($params,true)." -->";
 
 				return $out;
 			}

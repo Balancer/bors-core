@@ -324,7 +324,9 @@ class base_object extends base_empty
 	function cache_static() { return 0; }
 //	var $stb_cache_static = 0;
 	
-	function titled_url($append=NULL, $title=NULL)
+	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
+
+	function titled_url_ex($title=NULL, $append=NULL)
 	{
 		if($title===NULL)
 			$title = $this->title();
@@ -486,7 +488,7 @@ class base_object extends base_empty
 		{
 			$_autofields = array();
 		
-			foreach(split(' ', $this->autofields()) as $f)
+			foreach(explode(' ', $this->autofields()) as $f)
 			{
 				$id	  = 'id';
 				if(preg_match('!^(\w+)\((\w+)\)(.*?)$!', $f, $match))
@@ -603,12 +605,17 @@ class base_object extends base_empty
 	function main_db_storage() { return config('main_bors_db'); }
 	function main_table_storage(){ return $this->class_name(); }
 	function main_table_fields() { return array(); }
+	function field_title_storage() { $f=$this->main_table_fields(); return $f['title'].'(id)'; }
 
 	function set_checkboxes($check_list, $db_up)
 	{
 		foreach(explode(',', $check_list) as $name)
+		{
 			if(method_exists($this, $method = 'set_'.$name))
 				$this->$method(empty($_GET[$name]) ? 0 : 1, $db_up);
+			else
+				$this->fset($name, empty($_GET[$name]) ? 0 : 1, $db_up);
+		}
 	}
 
 	function set_checkboxes_list($check_list, $db_up)
@@ -700,6 +707,7 @@ class base_object extends base_empty
 	function real_class_file() { return $this->class_file; }
 	function class_dir() { return dirname($this->class_file()); }
 
+	function pre_set() { }
 	function post_set() { }
 	
 	var $stb_sort_order;

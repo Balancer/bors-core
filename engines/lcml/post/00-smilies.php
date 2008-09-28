@@ -12,7 +12,7 @@ function lcml_smilies($txt)
 	if(!config('smilies_dir'))
 		return $txt;
 	
-	$txt = lcml_smilies_by_list(&$txt);
+	$txt = lcml_smilies_by_list($txt);
 	$txt = lcml_smilies_by_files(config('smilies_dir'), $txt);
 
 	return $txt;

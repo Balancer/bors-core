@@ -182,7 +182,7 @@ function class_load_by_url($url, $args)
 			return NULL;
 		}
 		
-		$url_data = parse_url($url);
+		$url_data = @parse_url($url);
 
 		foreach($GLOBALS['bors_map'] as $pair)
 		{

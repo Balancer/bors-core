@@ -108,12 +108,11 @@
 	if($_SERVER['QUERY_STRING'] == 'fromlist') // АвиаПортовская заглушка
 		$_SERVER['QUERY_STRING'] = '';
 
-	$object = object_load($uri);
-//	if(!preg_match('!^\w+($|&)!', $_SERVER['QUERY_STRING']))
-//		if($object = object_load($uri))
-//			@header("X-Bors-loaded: ".$object->class_name());
-
-	if(!$object || preg_match('!^[\w\-]+$!', $_SERVER['QUERY_STRING']) || ($ret = bors_object_show($object))!== true)
+	$ret = false;
+	if($object = object_load($uri))
+		$ret = bors_object_show($object);
+	
+	if(!$object || preg_match('!^[\w\-]+$!', $_SERVER['QUERY_STRING']) || $ret !== true)
 	{
 		if(config('obsolete_use_handlers_system'))
 		{
@@ -123,6 +122,7 @@
 		else
 			$ret = false;
 	}
+
 
 	bors()->changed_save();
 

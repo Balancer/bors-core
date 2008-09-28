@@ -78,7 +78,7 @@ class base_object extends base_empty
 		
 		if($storage_engine = $this->storage_engine())
 		{
-			$storage_engine = object_load($storage_engine);
+			$storage_engine = object_load($storage_engine, NULL, array('no_load_cache' => true));
 			if(!$storage_engine)
 				debug_exit("Can't load storage engine '{$this->storage_engine()}' in ".join(",<br/>\n", bors_dirs()));
 			elseif($storage_engine->load($this) !== false || $this->can_be_empty())
@@ -605,7 +605,7 @@ class base_object extends base_empty
 	function main_db_storage() { return config('main_bors_db'); }
 	function main_table_storage(){ return $this->class_name(); }
 	function main_table_fields() { return array(); }
-	function field_title_storage() { $f=$this->main_table_fields(); return $f['title'].'(id)'; }
+	function field_title_storage() { $f=$this->main_table_fields(); return @$f['title'].'(id)'; }
 
 	function set_checkboxes($check_list, $db_up)
 	{

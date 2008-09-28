@@ -3,7 +3,6 @@
 	function bors_object_show($obj)
 	{
 //		echo "Bors class=".get_class($obj); exit();
-
 		if(!$obj)
 			return false;
 

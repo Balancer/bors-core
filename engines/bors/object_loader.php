@@ -39,7 +39,7 @@ function class_include($class_name, $local_path = "")
 
 function __autoload($class_name) { class_include($class_name); }
 
-function &load_cached_object($class_name, $id, $args)
+function &load_cached_object($class_name, $id, $args, &$found = 0)
 {
 	$obj = NULL;
 
@@ -56,7 +56,10 @@ function &load_cached_object($class_name, $id, $args)
 //		echo "Found in memory <b>$class_name</b>('$id'); can_cached={$obj->can_cached()}; updated = $updated (me=".method_exists($obj, 'class_filemtime')."; ".filemtime($obj->real_class_file()).' > '.$obj->class_filemtime().")<br />";
 
 		if($obj->can_cached() && !$updated)
+		{
+			$found = 1;
 			return $obj;
+		}
 	}
 
 //	echo "Try load $class_name($id) from memcached<br />";
@@ -75,6 +78,7 @@ function &load_cached_object($class_name, $id, $args)
 			{
 //				$x->wakeup();
 //				$GLOBALS['bors_data']['cached_objects4'][get_class($x)][$x->id()] = $x;
+				$found = 2;
 				return $x;
 			}
 		}
@@ -88,6 +92,9 @@ function delete_cached_object($object) { return save_cached_object($object, true
 
 function save_cached_object(&$object, $delete = false)
 {
+//	if(debug_is_balancer())
+//		echo "Store $object<br/>\n";
+
 	if(!method_exists($object, 'id') || is_object($object->id()))
 		return;
 
@@ -427,16 +434,9 @@ function &object_init($class_name, $object_id, $args = array())
 	if(!($class_file = class_include($class_name, defval($args, 'local_path'))))
 		return $obj;
 
-	$was_memcached = false;
-	if($obj = &load_cached_object($class_name, $object_id, $args))
-	{
-		$was_memcached = true;
-		if(!empty($args['no_load_cache']))
-		{
-			$obj->store();
-			$obj = NULL;
-		}
-	}
+	$found = 0;
+	if(empty($args['no_load_cache']))
+		$obj = &load_cached_object($class_name, $object_id, $args, $found);
 	
 	if(!$obj)
 	{
@@ -478,7 +478,7 @@ function &object_init($class_name, $object_id, $args = array())
 		return $obj;
 	}
 	
-	if(/*!$was_memcached && */$obj->can_cached())
+	if($found != 1 && $obj->can_cached())
 		save_cached_object($obj);
 		
 	return $obj;

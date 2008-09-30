@@ -168,22 +168,12 @@ function lcml($txt, $params = array ())
 
 function lcmlbb($string)
 {
-	$ch = &new bors_cache();
-
-	$ch_type = "lcml-compiled";
-	$ch_key = md5($txt.$params['uri']);
-
-	if($ch->get($ch_type, $ch_key))
-		return $ch->last();
-
-	return $ch->set(lcml($string, 
+	return lcml($string, 
 		array(
 			'cr_type' => 'save_cr',
 			'forum_type' => 'punbb',
-//			'forum_base_uri' => 'http://balancer.ru/forum',
 			'sharp_not_comment' => true,
 			'html_disable' => false,
 			'nocache' => true,
-//			'uri' => "post://{$cur_post['id']}/",
-	)), 7*86400);
+	));
 }

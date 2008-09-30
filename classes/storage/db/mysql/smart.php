@@ -512,7 +512,6 @@ class storage_db_mysql_smart extends base_null
 					
 				if(empty($oid))
 					$object->set_id($oid = $dbh->last_id());
-
 			}
 		}				
 		$object->changed_fields = array();

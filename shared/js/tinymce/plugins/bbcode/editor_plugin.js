@@ -75,6 +75,20 @@
 			rep(/<\/s>/gi,"[/s]");
 			rep(/<s>/gi,"[s]");
 
+			rep(/<hr \/>/gi,"[hr]");
+
+			rep(/<table[^>]*>/gi,"[table]");
+			rep(/<\/table>/gi,"[/table]");
+
+			rep(/<tr>/gi,"[tabtr]");
+			rep(/<\/tr>/gi,"[/tabtr]");
+			rep(/<td>/gi,"[td]");
+			rep(/<td rowspan="(\d+)">/gi,"[td rowspan=\"$1\"]");
+			rep(/<td colspan="(\d+)">/gi,"[td colspan=\"$1\"]");
+			rep(/<\/td>/gi,"[/td]");
+			rep(/<tbody>/gi,"");
+			rep(/<\/tbody>/gi,"");
+
 /*
 			rep(/<font.*?color=\"(.*?)\".*?class=\"codeStyle\".*?>(.*?)<\/font>/gi,"[code][color=$1]$2[/color][/code]");
 			rep(/<font.*?color=\"(.*?)\".*?class=\"quoteStyle\".*?>(.*?)<\/font>/gi,"[quote][color=$1]$2[/color][/quote]");
@@ -125,6 +139,17 @@
 			rep(/\[s\]/gi,"<s>");
 			rep(/\[\/s\]/gi,"</s>");
 
+			rep(/\[hr\]/gi,"<hr />");
+
+			rep(/\[table\]/gi,"<table class=\"btab\">");
+			rep(/\[\/table\]/gi,"</table>");
+
+			rep(/\[tabtr\]/gi,"<tr>");
+			rep(/\[\/tabtr\]/gi,"</tr>");
+			rep(/\[td\]/gi,"<td>");
+			rep(/\[td rowspan=\"(\d+)\"\]/gi,"<td rowspan=\"$1\">");
+			rep(/\[td colspan=\"(\d+)\"\]/gi,"<td colspan=\"$1\">");
+			rep(/\[\/td\]/gi,"</td>");
 			return s; 
 		}
 	});

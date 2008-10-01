@@ -31,5 +31,10 @@ function lp_style($inner, $params)
 
 function lp_table($inner, $params)
 {
+	if(empty($params['class']) && !empty($params['border']))
+	{
+		unset($params['border']);
+		$params['class'] = 'btab';
+	}
 	return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">".lcml($inner)."</table>";
 }

@@ -36,11 +36,13 @@
 		// Private methods
 
 		// HTML -> BBCode in PunBB dialect
-		_punbb_html2bbcode : function(s) {
-			s = tinymce.trim(s);
+		_punbb_html2bbcode : function(_text) {
+			_text = tinymce.trim(_text);
+
+//			alert(_text)
 
 			function rep(re, str) {
-				s = s.replace(re, str);
+				_text = _text.replace(re, str);
 			};
 
 			// example: <strong> to [b]
@@ -48,22 +50,23 @@
 			rep(/<span style=\"color: ?(.*?);\">(.*?)<\/span>/gi,"[color=$1]$2[/color]");
 			rep(/<font.*?color=\"(.*?)\".*?>(.*?)<\/font>/gi,"[color=$1]$2[/color]");
 			rep(/<span style=\"font-size:(.*?);\">(.*?)<\/span>/gi,"[size=$1]$2[/size]");
-			rep(/<font>(.*?)<\/font>/gi,"$1");
-			rep(/<img.*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
+			rep(/<font[^>]*>/gi,"");
+			rep(/<\/font>/gi,"");
+			rep(/<img[^>]+src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
 			rep(/<\/(strong|b)>/gi,"[/b]");
 			rep(/<(strong|b)>/gi,"[b]");
 			rep(/<\/(em|i)>/gi,"[/i]");
 			rep(/<(em|i)>/gi,"[i]");
-			rep(/<\/u>/gi,"[/u]");
 			rep(/<span style=\"text-decoration: ?underline;\">(.*?)<\/span>/gi,"[u]$1[/u]");
 			rep(/<u>/gi,"[u]");
-			rep(/<br \/>/gi,"\n");
-			rep(/<br\/>/gi,"\n");
+			rep(/<\/u>/gi,"[/u]");
 			rep(/<br>/gi,"\n");
-			rep(/<p[^>]*>/gi,"");
+			rep(/<br [^>]*>/gi,"\n");
+			rep(/<p>/gi,"\n\n");
+			rep(/<p [^>]*>/gi,"\n\n");
 			rep(/<span[^>]*>/gi,"");
 			rep(/<\/span>/gi,"");
-			rep(/<\/p>/gi,"\n\n");
+			rep(/<\/p>/gi,"\n");
 			rep(/&nbsp;/gi," ");
 			rep(/&quot;/gi,"\"");
 			rep(/&lt;/gi,"<");
@@ -72,8 +75,8 @@
 
 			rep(/<\/h2>/gi,"[/h2]");
 			rep(/<h2>/gi,"[h2]");
-			rep(/<\/s>/gi,"[/s]");
-			rep(/<s>/gi,"[s]");
+//			rep(/<\/s>/gi,"[/s]");
+//			rep(/<s>/gi,"[s]");
 
 			rep(/<hr \/>/gi,"[hr]");
 
@@ -107,16 +110,16 @@
 			rep(/<code[^>]*>/gi,"[code]");
 			rep(/<\/code>/gi,"[/code]");
 */
-			return s; 
+			return _text; 
 		},
 
 
 		// BBCode -> HTML from PunBB dialect
-		_punbb_bbcode2html : function(s) {
-			s = tinymce.trim(s);
+		_punbb_bbcode2html : function(_text) {
+			_text = tinymce.trim(_text);
 
 			function rep(re, str) {
-				s = s.replace(re, str);
+				_text = _text.replace(re, str);
 			};
 
 			// example: [b] to <strong>
@@ -136,8 +139,8 @@
 
 			rep(/\[h2\]/gi,"<h2>");
 			rep(/\[\/h2\]/gi,"</h2>");
-			rep(/\[s\]/gi,"<s>");
-			rep(/\[\/s\]/gi,"</s>");
+//			rep(/\[s\]/gi,"<s>");
+//			rep(/\[\/s\]/gi,"</s>");
 
 			rep(/\[hr\]/gi,"<hr />");
 
@@ -150,7 +153,7 @@
 			rep(/\[td rowspan=\"(\d+)\"\]/gi,"<td rowspan=\"$1\">");
 			rep(/\[td colspan=\"(\d+)\"\]/gi,"<td colspan=\"$1\">");
 			rep(/\[\/td\]/gi,"</td>");
-			return s; 
+			return _text; 
 		}
 	});
 

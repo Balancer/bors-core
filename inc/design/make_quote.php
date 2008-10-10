@@ -1,4 +1,5 @@
-<?
+<?php
+
 	function make_quote($author, $message)
 	{
 		$InsertPostMess = "";
@@ -53,6 +54,5 @@
 			$InsertPostMess .= "$author&gt; $s\n";
 		}
 	
-		return trim($InsertPostMess);
+		return trim($InsertPostMess)."\n";
 	}
-?>

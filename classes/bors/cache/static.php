@@ -74,10 +74,13 @@ class cache_static extends base_object_db
 
 		$object->set_was_cleaned(false, false);
 
+//		echo "$file<br />";
 		@mkdir(dirname($file), 0777, true);
 		@chmod(dirname($file), 0777);
 		@file_put_contents($file, $content);
 		@chmod($file, 0664);
+		if(!file_exists($file))
+			debug_hidden_log('filesystem', "Can't create static file for {$object}: {$file}");
 	}
 	
 	function replace_on_new_instance() { return true; }

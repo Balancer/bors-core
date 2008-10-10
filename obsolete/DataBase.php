@@ -145,13 +145,7 @@ class DataBase extends base_object
 				echolog("<small>query {$GLOBALS['global_db_queries']}($qtime)=|".htmlspecialchars($query)."|</small>", 4);
 
 			if(config('debug_mysql_queries_log'))
-			{
-				$fh = @fopen(config('debug_mysql_queries_log'), 'at');
-				@fputs($fh, $GLOBALS['global_db_queries']." [{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: $query\n-----------------------------------\n");
-				@fclose($fh);
-				
-//				if(preg_match('!Signature!', $query)) debug_trace();
-			}
+				debug_hidden_log('mysql-queries', "[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query);
 			
 			if(loglevel(11))
 				debug_trace();

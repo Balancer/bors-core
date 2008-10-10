@@ -12,7 +12,7 @@ class base_page extends base_object
 	function set_source($source, $db_update) { $this->set("source", $source, $db_update); }
 	function source() { return $this->stb_source; }
 
-	function items_around_page() { return 8; }
+	function items_around_page() { return 5; }
 
 	function pages_links($css='pages_select', $before='', $after='')
 	{
@@ -25,13 +25,16 @@ class base_page extends base_object
 			return '';
 	}
 
-	function pages_links_nul($css='pages_select')
+	function pages_links_nul($css='pages_select', $text = NULL, $delim = '')
 	{
 		if($this->total_pages() < 2)
-			return "";
+			return '';
+
+		if($text === NULL)
+			$text = ec('Страницы:');
 
 		include_once('inc/design/page_split.php');
-		return '<div class="'.$css.ec('">Страницы: ').join(' ', pages_show($this, $this->total_pages(), $this->items_around_page())).'</div>';
+		return '<div class="'.$css.'">'.$text.join($delim, pages_show($this, $this->total_pages(), $this->items_around_page(), false)).'</div>';
 	}
 
 	function getsort($t, $def = false)
@@ -61,6 +64,7 @@ class base_page extends base_object
 			$be = class_load($body_engine);
 			if(!$be)
 				debug_exit("Can't load body engine {$body_engine} for class {$this}");
+
 			return $be->body($this);
 		}
 			

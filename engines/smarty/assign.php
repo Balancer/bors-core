@@ -4,11 +4,8 @@
 	{
 		unset($GLOBALS['module_data']);
 
-//		print_d($GLOBALS);
-
 		require_once(config('smarty_path').'/Smarty.class.php');
 		$smarty = &new Smarty;
-//		require('mysql-smarty.php');
 		require('smarty-register.php');
 
 		$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
@@ -70,7 +67,7 @@
 					if($smarty->template_exists($tpl = 'xfile:'.$dir.$module_relative_path.'/'.$assign_template))
 						$template_uri = $tpl;
 		}
-		
+
 //		$caller_local_tpln = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".$hts->get_data($GLOBALS['main_uri'], 'template', '', true)."/", $caller_path)."/";
 //		echo $caller_local_main = 'xfile:'.BORS_HOST.'/templates/', $caller_path."/";
 //		$caller_local_tpl = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".@$GLOBALS['page_data']['template']."/", $caller_path)."/";
@@ -132,7 +129,6 @@
 		if(is_array(@$GLOBALS['cms']['smarty']))
 			foreach($GLOBALS['cms']['smarty'] as $key => $val)
 				$smarty->assign($key, $val);
-		
 
 		//TODO: убрать user_id и user_name в старых шаблонах.
 		$me = bors()->user();
@@ -211,11 +207,7 @@
 		if(!$caching)
 			$smarty->clear_cache($template_uri);
 
-//		echo "tpl=$template_uri<br/>\n";
-//		print_d($smarty->get_template_vars('aviafirms'));
+		$result = $smarty->fetch($template_uri);
 
-		return $smarty->fetch($template_uri);
-	
-//		$out = preg_replace("!<\?php(.+?)\?".">!es", "do_php(stripslashes('$1'))", $out);
-//		return $out;
+		return $result;
 	}

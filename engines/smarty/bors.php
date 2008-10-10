@@ -48,16 +48,12 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 		$smarty->assign("my_name", $me->title());
 	}
 
-	foreach(split(' ', $obj->template_vars()) as $var)
-	{
-//		echo "$var => {$obj->$var()}<Br />\n";
-		$smarty->assign($var, $obj->$var());
-	}
-		
-	foreach(split(' ', $obj->template_local_vars()) as $var)
+	foreach(explode(' ', $obj->template_vars()) as $var)
 		$smarty->assign($var, $obj->$var());
 
-//	print_d($obj->local_template_data_array());
+	foreach(explode(' ', $obj->template_local_vars()) as $var)
+		$smarty->assign($var, $obj->$var());
+
 	foreach($obj->local_template_data_array() as $var => $value)
 		$smarty->assign($var, $value);
 

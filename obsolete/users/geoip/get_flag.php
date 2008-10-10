@@ -36,7 +36,7 @@
 			$file = strtolower($cc).".gif";
 			if(!file_exists("/var/www/balancer.ru/htdocs/img/flags/$file"))
 				$file = "-.gif";
-			$res = '<img src="http://balancer.ru/img/flags/'.$file.'" width="20" height="12" border="0" align="absmiddle" title="'.addslashes($alt).'" alt="'.$cc.'"/>';
+			$res = '<img src="http://balancer.ru/img/flags/'.$file.'" class="flag" title="'.addslashes($alt).'" alt="'.$cc.'"/>';
 		}
 		else
 			$res = "";

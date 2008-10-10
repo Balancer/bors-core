@@ -34,7 +34,10 @@ class url_titled extends url_base
 			$prefix .= $infix;
 			$prefix_lp .= $infix;
 
-			$suffix = "--".substr(translite_uri_simple($obj->title()), 0, 40);
+			if(!($suffix = substr(translite_uri_simple($obj->title()), 0, 40)))
+				$suffix = '~';
+				
+			$suffix = '--'.$suffix;
 			
 			$bors_url_titled_cache[$obj->internal_uri()] = array($prefix, $prefix_lp, $suffix);
 		}

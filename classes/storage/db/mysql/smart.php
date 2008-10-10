@@ -22,7 +22,7 @@ class storage_db_mysql_smart extends base_null
 
 		global $stdbms_cache;
 		
-		$hash = md5(join('!', array($object->class_name(), $common_where, $only_count)));
+		$hash = md5(join('!', array($object->class_name(), print_r($object->fields(), true), $common_where, $only_count)));
 //		echo "hash for ".$object->class_name()."/$common_where =$hash<Br/>\n";
 
 		foreach($object->fields() as $db => $tables)
@@ -512,7 +512,6 @@ class storage_db_mysql_smart extends base_null
 					
 				if(empty($oid))
 					$object->set_id($oid = $dbh->last_id());
-
 			}
 		}				
 		$object->changed_fields = array();

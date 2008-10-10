@@ -44,7 +44,7 @@ class base_empty extends base_null
 
 		$this->_is_sleeping = true;
 
-		foreach(get_object_vars(&$this) as $k => $v)
+		foreach(get_object_vars($this) as $k => $v)
 			if(is_object($v) && method_exists($v, 'sleep'))
 				$v->sleep();
 	}
@@ -56,7 +56,7 @@ class base_empty extends base_null
 
 		$this->_is_sleeping = false;
 
-		foreach(get_object_vars(&$this) as $k => $v)
+		foreach(get_object_vars($this) as $k => $v)
 			if(is_object($v) && method_exists($v, 'wakeup'))
 				$v->wakeup();
 	}

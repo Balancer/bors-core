@@ -144,10 +144,9 @@ class base_object extends base_empty
 	function local_template_data_set() { return array(); }
 	function local_template_data_array() { return $this->template_data; }
 
-	private $global_template_data = array();
-	function add_global_template_data($var_name, $value) { return $this->global_template_data[$var_name] = $value; }
+	function add_global_template_data($var_name, $value) { return set_global_template_var($var_name, $value); }
 	function global_template_data_set() { return array(); }
-	function global_template_data_array() { return $this->global_template_data; }
+	function global_template_data_array() { return global_template_vars(); }
 
 	static function add_template_data_array($var_name, $value)
 	{
@@ -307,6 +306,9 @@ class base_object extends base_empty
 
 		foreach($this->local_template_data_set() as $key => $value)
 			$this->add_local_template_data($key, $value);
+
+		foreach($this->global_template_data_set() as $key => $value)
+			$this->add_global_template_data($key, $value);
 
 		static $called = false; //TODO: в будущем снести вторые вызовы.
 		if($called)

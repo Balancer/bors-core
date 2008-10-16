@@ -42,6 +42,8 @@ class cache_static extends base_object_db
 			if(!file_exists($cache->id()))
 				$cache->delete(false);
 		}
+		
+		@unlink($object->static_file());
 	}
 	
 	static function save($object, $content, $expire_time = false)

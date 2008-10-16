@@ -1,8 +1,6 @@
 <?php
-function set_global_template_var($name, $value)
-{
-	$GLOBALS['cms']['templates']['data'][$name] = $value;
-}
+function set_global_template_var($name, $value) { return $GLOBALS['cms']['templates']['data'][$name] = $value; }
+function global_template_vars() { return is_array($x = @$GLOBALS['cms']['templates']['data']) ? $x : array(); }
 
 class_include('base_object');
 

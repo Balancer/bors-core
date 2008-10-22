@@ -121,7 +121,7 @@ function find_files_loop($path, $pattern = '.*', $callback)
 	{
 		$fullname = $path . $entry;
 		if ($entry != '.' && $entry != '..' && is_dir($fullname))
-			find_files($fullname, $pattern, $callback);
+			find_files_loop($fullname, $pattern, $callback);
 		elseif(is_file($fullname) && preg_match('!'.$pattern.'!', $entry))
 			call_user_func($callback, $fullname);
 	}

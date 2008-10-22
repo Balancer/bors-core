@@ -183,4 +183,51 @@ class base_page extends base_object
 	
 	function children_list() { return join("\n", $this->children())."\n"; }
 	function set_children_list($value, $dbup) { return $this->set_children($value ? explode("\n", trim($value)) : array(), $dbup); }
+
+	function lcml($text)
+	{
+		if(!$text)
+			return;
+	
+		$ch = class_exists('Cache') ? new Cache() : NULL;
+		if($ch && $ch->get('base_object-lcml', $text) && 0)
+			return $ch->last();
+
+		$save_lcml_tags_enabled = config('lcml_tags_enabled');
+		config_set('lcml_tags_enabled', $this->lcml_tags_enabled());
+		$text = lcml($text,
+			array(
+				'cr_type' => $this->cr_type(),
+				'sharp_not_comment' => $this->sharp_not_comment(),
+				'html_disable' => $this->html_disable(),
+		));
+		config_set('lcml_tags_enabled', $save_lcml_tags_enabled);
+
+		if($ch)
+			$ch->set($text, 7*86400);
+			
+		return $text;
+	}
+
+	function sharp_not_comment() { return true; }
+
+	private $_html_disable = NULL;
+	function set_html_disable($value) { return $this->_html_disable = $value; }
+	function html_disable()
+	{
+		if($this->_html_disable === NULL)
+			$this->_html_disable = !config('lcml_source_html_enabled');
+		
+		return $this->_html_disable;
+	}
+
+	private $_lcml_tags_enabled = -1;
+	function set_lcml_tags_enabled($value) { return $this->_lcml_tags_enabled = $value; }
+	function lcml_tags_enabled()
+	{
+		if($this->_lcml_tags_enabled === -1)
+			$this->_lcml_tags_enabled = config('lcml_tags_enabled');
+		
+		return $this->_lcml_tags_enabled;
+	}
 }

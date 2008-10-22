@@ -61,26 +61,19 @@ class bors_image_thumb extends bors_image
 		$this->delete();
 		$this->new_instance();
 
-//		$this->set_create_time(time(), true);
-//		$this->set_modify_time(time(), true);
-
-//		$this->set_relative_path('cache/'.$this->original->relative_path().'/'.($this->id()%100).'/'.$this->geometry, true);
 		$this->set_relative_path(secure_path('/cache/'.$this->original->relative_path().'/'.$this->geometry), true);
 			
-		foreach(split(' ', 'extension title alt description author_name image_type') as $key)
+		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
 			$this->set($key, $this->original->$key(), true);
 
-//		$this->set_file_name($this->id().'.'.$this->extension(), true);
 		$this->set_file_name($this->original->file_name(), true);
 
-//		echo "size of ".$this->original->file_name()." = ".filesize($this->original->file_name_with_path())."<br/>\n";
 		if(!$this->original->file_name() || !@filesize($this->original->file_name_with_path()))
 			return;
 
 		mkpath($this->image_dir(), 0777);
 		$this->thumb_create();
 
-//		echo "File {$this->file_name_with_path()}<br />\n"; exit();
 		$this->set_size(filesize($this->file_name_with_path()), true);
 
 		$img_data = getimagesize($this->file_name_with_path());

@@ -62,7 +62,7 @@
 			$map = array();
 			if(file_exists($file = secure_path("{$dir}/handlers/bors_map.php")))
 				include($file);
-			
+//			echo $file.'->'.file_exists($file)."<br/>\n";
 			$bors_map = array_merge($bors_map, $map);
 		}
 	}

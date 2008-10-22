@@ -53,6 +53,7 @@ $includes = array(
 	BORS_CORE,
 	BORS_CORE.'/PEAR',
 	BORS_3RD_PARTY,
+	BORS_3RD_PARTY.'/PEAR',
 );
 
 $delim = empty($_ENV['windir']) ? ":" : ";";

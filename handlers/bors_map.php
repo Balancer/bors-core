@@ -21,6 +21,9 @@ $map = array(
 		
 		'/admin/image/append => bors_admin_image_append',
 
+	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
+	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
+
 	'/do\-login/ => common_do_login',
 	'/users/do\-login => common_do_login',
 	'/users/do\-logout => common_do_logout',

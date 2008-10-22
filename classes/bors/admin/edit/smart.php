@@ -8,8 +8,22 @@ class bors_admin_edit_smart extends base_page
 	
 	function title() { return ec('редактор'); }
 
-	function object() { return object_load(urldecode($this->id())); }
+	function object()
+	{
+		$id = urldecode($this->id());
+		if(preg_match('!^/!', $id))
+			$id = 'http://'.$_SERVER['HTTP_HOST'].$id;
+
+		return object_load($id); 
+	}
+	
 	function fields() { return explode(',', $this->args('fields')); }
+
+	function pre_parse()
+	{
+		if(!($me = bors()->user()))
+			return bors_message(ec('Вы не авторизованы'));
+	}
 
 	function local_template_data_set()
 	{

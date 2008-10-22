@@ -105,14 +105,19 @@
 		$_GET['act'] = 'del';
 	}
 
-	if($_SERVER['QUERY_STRING'] == 'fromlist') // АвиаПортовская заглушка
+	if($_SERVER['QUERY_STRING'] == 'fromlist') //TODO: АвиаПортовская заглушка
 		$_SERVER['QUERY_STRING'] = '';
+
+	if($_SERVER['QUERY_STRING'])
+		$uri .= '?'.$_SERVER['QUERY_STRING'];
 
 	$ret = false;
 	if($object = object_load($uri))
 		$ret = bors_object_show($object);
-	
-	if(!$object || preg_match('!^[\w\-]+$!', $_SERVER['QUERY_STRING']) || $ret !== true)
+
+	//TODO: снести совсем старый код.
+	/*
+	if(!$object || $ret !== true)
 	{
 		if(config('obsolete_use_handlers_system'))
 		{
@@ -122,7 +127,7 @@
 		else
 			$ret = false;
 	}
-
+	*/
 
 	bors()->changed_save();
 

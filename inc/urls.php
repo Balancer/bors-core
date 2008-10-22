@@ -66,6 +66,9 @@ function url_truncate($url, $max_length)
 
 function url_parse($url)
 {
+	if(preg_match('!^/!', $url))
+		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
+
 	$data = parse_url($url);
 
 	if(empty ($data['host']))

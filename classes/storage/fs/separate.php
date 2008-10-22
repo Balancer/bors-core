@@ -9,6 +9,10 @@ class storage_fs_separate extends base_null
 		if(!file_exists("{$dir}/.title.txt"))
 			return $object->set_loaded(false);
 
+		// По дефолту в separate разрешён HTML и все BB-тэги.
+		$object->set_html_disable(false, false);
+		$object->set_lcml_tags_enabled(NULL, false);
+
 		$d = dir($dir);
 		while (false !== ($entry = $d->read()))
 		{

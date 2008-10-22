@@ -136,6 +136,6 @@ function bors_include($file, $warn = false)
 }
 
 if(get_magic_quotes_gpc() && $_POST)
-	ungpc($_POST);
+	ungpc_array($_POST);
 
 bors_init();

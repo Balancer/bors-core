@@ -27,8 +27,9 @@ class bors_image_autothumb extends base_object
 	{
 		$rel  = dirname($this->origin_path);
 		$file = basename($this->origin_path);
+		
 		$img = objects_first('bors_image', array('relative_path' => $rel, 'file_name' => $file));
-		if(!$img)
+		if(!$img || !file_exists($img->file_name_with_path()))
 		{
 			$img = object_new('bors_image');
 			$img->register_file($this->origin_path);

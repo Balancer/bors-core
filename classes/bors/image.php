@@ -156,6 +156,12 @@ class bors_image extends base_object_db
 	function pre_show()
 	{
 		$file = $this->file_name_with_path();
+		if(!file_exists($file))
+			$file = $_SERVER['DOCUMENT_ROOT'] . $file;
+
+		if(!file_exists($file))
+			return false;
+		
 		@header('Content-type: ' . $this->mime_type());
 		@header('Content-Length: ' . filesize($file));
 		echo file_get_contents($file);

@@ -26,14 +26,14 @@ class bors_tools_tasks extends base_object_db
 		return true;
 	}
 
-	static function add_task($target, $work_class_name, $execute_time = 0, $priority = 0)
+	static function add_task($target_object, $worker_class_name, $execute_time = 0, $priority = 0)
 	{
 		$db = &new driver_mysql(bors_tools_tasks::main_db_storage());
 		$db->insert_ignore(bors_tools_tasks::main_table_storage(), array(
-			'target_class_id' => $target->class_id(),
-			'target_object_id' => $target->id(),
-			'target_object_page' => $target->page(),
-			'working_class_id' => class_name_to_id($work_class_name),
+			'target_class_id' => $target_object->class_id(),
+			'target_object_id' => $target_object->id(),
+			'target_object_page' => $target_object->page(),
+			'working_class_id' => class_name_to_id($worker_class_name),
 			'execute_time' => $execute_time,
 			'priority' => $priority,
 		));

@@ -505,10 +505,14 @@ class storage_db_mysql_smart extends base_null
 				if($oid)
 					$data[$table_name][$def_id] = $oid;
 
+				$tab_data = @$data[$table_name];
+				if(!$tab_data)
+					$tab_data = array();
+
 				if($replace)
-					$dbh->replace($table_name, $data[$table_name]);
+					$dbh->replace($table_name, $tab_data);
 				else
-					$dbh->insert($table_name, $data[$table_name]);
+					$dbh->insert($table_name, $tab_data);
 					
 				if(empty($oid))
 					$object->set_id($oid = $dbh->last_id());

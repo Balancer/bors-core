@@ -59,31 +59,48 @@ class bors_image_thumb extends bors_image
 			return $this->set_loaded(true);
 
 		$this->delete();
+		
+		$new_path = secure_path('/cache/'.$this->original->relative_path().'/'.$this->geometry);
+		
 		$this->new_instance();
 
-//		$this->set_create_time(time(), true);
-//		$this->set_modify_time(time(), true);
-
-//		$this->set_relative_path('cache/'.$this->original->relative_path().'/'.($this->id()%100).'/'.$this->geometry, true);
+<<<<<<< local
+		$this->set_relative_path($new_path, true);
+=======
 		$this->set_relative_path(secure_path('/cache/'.$this->original->relative_path().'/'.$this->geometry), true);
+>>>>>>> other
 			
-		foreach(split(' ', 'extension title alt description author_name image_type') as $key)
+		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
 			$this->set($key, $this->original->$key(), true);
 
-//		$this->set_file_name($this->id().'.'.$this->extension(), true);
 		$this->set_file_name($this->original->file_name(), true);
 
-//		echo "size of ".$this->original->file_name()." = ".filesize($this->original->file_name_with_path())."<br/>\n";
+<<<<<<< local
+		$file = $this->original->file_name_with_path();
+		$abs = false;
+		if(!file_exists($file))
+		{
+			$file = $_SERVER['DOCUMENT_ROOT'] . $file;
+			$abs = true;
+		}
+//		echo "size of ".$this->original->file_name()." = ".filesize($file)."<br/>\n";
+		if(!$this->original->file_name() || !@filesize($file))
+=======
 		if(!$this->original->file_name() || !@filesize($this->original->file_name_with_path()))
+>>>>>>> other
 			return;
 
 		mkpath($this->image_dir(), 0777);
-		$this->thumb_create();
+		$this->thumb_create($abs);
 
+<<<<<<< local
 //		echo "File {$this->file_name_with_path()}<br />\n"; exit();
+		$this->set_size(filesize($file), true);
+=======
 		$this->set_size(filesize($this->file_name_with_path()), true);
+>>>>>>> other
 
-		$img_data = getimagesize($this->file_name_with_path());
+		$img_data = getimagesize($file);
 
 		$this->set_width($img_data[0], true);
 		$this->set_height($img_data[1], true);
@@ -93,12 +110,19 @@ class bors_image_thumb extends bors_image
 		$this->set_loaded(true);
 	}
 
-	private function thumb_create()
+	private function thumb_create($abs = false)
 	{
 		if(file_exists($this->file_name_with_path()))
 			return;
 
-		$err = image_file_scale($this->original->file_name_with_path(), $this->file_name_with_path(), $this->geo_width, $this->geo_height, $this->geo_opts);
+		if($abs)
+		{
+			$at = $_SERVER['DOCUMENT_ROOT'].$this->file_name_with_path();
+			$as = $_SERVER['DOCUMENT_ROOT'].$this->original->file_name_with_path();
+			$err = image_file_scale($as, $at, $this->geo_width, $this->geo_height, $this->geo_opts);
+		}
+		else
+			$err = image_file_scale($this->original->file_name_with_path(), $this->file_name_with_path(), $this->geo_width, $this->geo_height, $this->geo_opts);
 		return $err == NULL;
 	}
 

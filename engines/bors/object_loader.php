@@ -201,12 +201,11 @@ function class_load_by_url($url, $args)
 
 //			echo "Initial url=$url<br/>\n";
 
-			if(preg_match('!\?!', $url_pattern) && !preg_match('!\?!', $url) && !empty($_SERVER['QUERY_STRING']))
-				$check_url = $url."?".$_SERVER['QUERY_STRING'];
-			else
-				$check_url = $url;
+			$check_url = $url_data['scheme'].'://'.$url_data['host'].$url_data['path'];
+			if(preg_match('!\?!', $url_pattern) && !empty($url_data['query']))
+				$check_url .= '?'.$url_data['query'];
 			
-//			echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
+//			if(debug_is_balancer())	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
 			if(preg_match("!^http://({$url_data['host']}[^/]*)$url_pattern$!", $check_url, $match))
 			{
 //				echo "<b>Ok - $class_path</b><br />";

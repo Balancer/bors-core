@@ -1,9 +1,9 @@
-<?
-    function lcml_html_pre($txt)
-    {
+<?php
+
+function lcml_html_pre($txt)
+{
 	if(config('lcml_html_nonmutable'))
 	    return $txt;
-    
     
 //		$txt = "html_disable = {$GLOBALS['lcml']['params']['html_disable']} - $txt";
 

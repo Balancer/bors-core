@@ -98,31 +98,6 @@ class base_object extends base_empty
 		return false;
 	}
 
-	function lcml($text)
-	{
-		if(!$text)
-			return;
-	
-		$ch = class_exists('Cache') ? new Cache() : NULL;
-		if($ch && $ch->get('base_object-lcml', $text) && 0)
-			return $ch->last();
-
-		$text = lcml($text,
-			array(
-				'cr_type' => $this->cr_type(),
-				'sharp_not_comment' => $this->sharp_not_comment(),
-				'html_disable' => $this->html_disable(),
-		));
-
-		if($ch)
-			$ch->set($text, 7*86400);
-			
-		return $text;
-	}
-
-	function sharp_not_comment() { return true; }
-	function html_disable() { return !config('lcml_source_html_enabled'); }
-
 	private $_class_id;
 	function class_id()
 	{

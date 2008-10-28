@@ -3,7 +3,7 @@
 class common_do_login extends base_page
 {
 	function title() { return ec('Авторизация.'); }
-	function template() { return 'forum/common.html'; }
+//	function template() { return 'forum/common.html'; }
 
 	var $error;
 
@@ -16,12 +16,14 @@ class common_do_login extends base_page
 		
 		$this->referer = isset($_GET['redirect_url']) ? $_GET['redirect_url'] : @$_SERVER['HTTP_REFERER'];
 
-		$me = bors_user::do_login(@$_GET['req_username'], @$_GET['req_password'], false);
+		$me = bors_user::do_login(@$_GET['req_username'], @$_GET['req_password'], true);
 
 		if(!is_object($me))
 			return false;
 		
-		return go($this->referer ? $this->referer : '/');
+		$this->error = $me;
+		
+		return go(($this->referer && !preg_match('!\?login!', $this->referer)) ? $this->referer : '/');
 	}
 	
 	function can_cache() { return false; }

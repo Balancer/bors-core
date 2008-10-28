@@ -1,6 +1,6 @@
 <?php
 
-function ungpc(&$array)
+function ungpc_array(&$array)
 {
 	$result = array();
 

@@ -299,6 +299,7 @@ class base_object extends base_empty
 	}
 
 	function cache_static() { return 0; }
+	function cache_static_recreate() { return false; }
 //	var $stb_cache_static = 0;
 	
 	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }

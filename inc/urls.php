@@ -66,6 +66,9 @@ function url_truncate($url, $max_length)
 
 function url_parse($url)
 {
+	if(preg_match('!^/!', $url))
+		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
+
 	$data = parse_url($url);
 
 	if(empty ($data['host']))
@@ -84,7 +87,7 @@ function url_parse($url)
 		$data['local_path'] = $data['root'].str_replace('http://'.$data['host'], '', $url);
 
 	//TODO: грязный хак
-	$data['local_path'] = preg_replace('!^(/var/www/files.balancer.ru/files/)[0-9a-f]{32}/(.*)$!', '$1$2', $data['local_path']);
+	$data['local_path'] = preg_replace('!^(/var/www/files.balancer.ru/files/)[0-9a-f]{32}/(.*)$!', '$1$2', @$data['local_path']);
 		
 	$data['uri'] = "http://".@ $data['host'].@ $data['path'];
 	//TODO: грязный хак

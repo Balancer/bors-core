@@ -535,7 +535,7 @@ class DataBase extends base_object
 			return;
 			
 //		debug_hidden_log("Serialize of DataBase");
-	    return array_keys(get_object_vars(&$this));
+	    return array_keys(get_object_vars($this));
 	}
 							  
 	function wakeup() { $this->reconnect(); return parent::wakeup(); }

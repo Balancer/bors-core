@@ -8,6 +8,10 @@ class driver_oci
 
 	private function reconnect()
 	{
+		if($envs = configh('oci_access', $this->database, 'env'))
+			foreach($envs as $e)
+				putenv($e);
+
 		$this->connection = oci_connect(
 			configh('oci_access', $this->database, 'user'),
 			configh('oci_access', $this->database, 'password'),
@@ -19,7 +23,7 @@ class driver_oci
 	{
 		if(empty($database))
 			$database = config('oci_db_default');
-			
+	
 		$this->database = $database;
 		
 		$this->reconnect();
@@ -29,7 +33,6 @@ class driver_oci
 	{
 //		$query = str_replace('`', '', $query);
 //		$query = str_replace('\'', '', $query);
-		echo "q=$query\n";
 		$this->statement = oci_parse($this->connection, $query);
 	}
 	

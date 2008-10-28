@@ -60,6 +60,10 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	$template = smarty_template($template ? $template : $obj->template());
 	if(!$smarty->template_exists($template))
 		$template = smarty_template($template);
+
+	if(!$smarty->template_exists($template))
+		return "Not existing template {$template} for $obj<br />";
+		
 	$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 	$smarty->assign("page_template", $template);
 		

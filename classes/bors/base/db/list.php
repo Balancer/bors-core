@@ -67,6 +67,11 @@ class base_db_list extends base_object
 			require_once('inc/mysql.php');
 			$where = mysql_where_compile($w);
 		}
+
+		if($this->limit() > 0)
+			$limit = "LIMIT {$this->limit()}";
+		else
+			$limit = "";
 		
 		$join = "";
 		if($jj = $this->left_join())
@@ -95,7 +100,9 @@ class base_db_list extends base_object
 					$join
 				$where
 				$group
-				ORDER BY {$this->order()}") as $x)
+				ORDER BY {$this->order()}
+				$limit
+			") as $x)
 			$list[$x['id']] = $x['title'];
 		
 		return $list;
@@ -114,4 +121,5 @@ class base_db_list extends base_object
 	function zero_item() { return false; }
 	function group() { return false; }
 	function name_as_id() { return false; }
+	function limit() { return -1; }
 }

@@ -4,6 +4,11 @@ require_once 'Image/Transform.php';
 
 function image_file_scale($file_in, &$file_out, $width, $height, $opts)
 {
+	if(config('pics_base_safemodded'))
+	{
+		$file_in = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_in);
+	}
+
 //	echo "image_file_scale($file_in, $file_out, $width, $height, $opts)";
 	$img =& Image_Transform::factory(config('image_transform_engine'));
 	

@@ -5,7 +5,7 @@ require_once('inc/images.php');
 class bors_image_thumb extends bors_image
 {
 	function main_table_storage() { return 'bors_pictures_thumbs'; }
-	function main_db_storage() { return config('cache_database');; }
+	function main_db_storage() { return config('cache_database'); }
 	function can_be_empty() { return true; }
 	
 	private $geo_width, $geo_height, $geo_opts, $geometry, $original;
@@ -64,18 +64,13 @@ class bors_image_thumb extends bors_image
 		
 		$this->new_instance();
 
-<<<<<<< local
 		$this->set_relative_path($new_path, true);
-=======
-		$this->set_relative_path(secure_path('/cache/'.$this->original->relative_path().'/'.$this->geometry), true);
->>>>>>> other
 			
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
 			$this->set($key, $this->original->$key(), true);
 
 		$this->set_file_name($this->original->file_name(), true);
 
-<<<<<<< local
 		$file = $this->original->file_name_with_path();
 		$abs = false;
 		if(!file_exists($file))
@@ -83,24 +78,29 @@ class bors_image_thumb extends bors_image
 			$file = $_SERVER['DOCUMENT_ROOT'] . $file;
 			$abs = true;
 		}
-//		echo "size of ".$this->original->file_name()." = ".filesize($file)."<br/>\n";
-		if(!$this->original->file_name() || !@filesize($file))
-=======
-		if(!$this->original->file_name() || !@filesize($this->original->file_name_with_path()))
->>>>>>> other
+
+		if(config('pics_base_safemodded'))
+		{
+			$rfile = str_replace(config('pics_base_dir'), config('pics_base_url'), $file);
+			$fsize = strlen(file_get_contents($rfile));
+		}
+		else
+		{
+			$rfile = $file;
+			$fsize = filesize($file);
+		}
+
+//		echo "size of ".$this->original->file_name()." = $fsize<br/>\n";
+		if(!$this->original->file_name() || !$fsize)
 			return;
 
 		mkpath($this->image_dir(), 0777);
 		$this->thumb_create($abs);
 
-<<<<<<< local
 //		echo "File {$this->file_name_with_path()}<br />\n"; exit();
-		$this->set_size(filesize($file), true);
-=======
-		$this->set_size(filesize($this->file_name_with_path()), true);
->>>>>>> other
+		$this->set_size($fsize, true);
 
-		$img_data = getimagesize($file);
+		$img_data = getimagesize($rfile);
 
 		$this->set_width($img_data[0], true);
 		$this->set_height($img_data[1], true);

@@ -6,6 +6,7 @@
 <tr><th align="right">{$title}</th><td>
 {if $type == '' or $type == 'input'}{input name=$field_name class="w100p"}{/if}
 {if $type == 'dropdown'}{dropdown name=$field_name list=$arg class="w100p"}{/if}
+{if $type == 'textarea'}{textarea name=$field_name rows=$arg class="w100p"}{/if}
 </td></tr>
 {/foreach}
 <tr><th>&nbsp;</th><th>{submit value="Сохранить"}</th></tr>

@@ -34,7 +34,7 @@ function lcml($txt, $params = array ())
 	$txt = preg_replace("!\n+$!", "\n", $txt);
 
 	if(!trim($txt))
-		return "";
+		return '';
 
 	if(preg_match('!^[\w\d\-\+\.\,]+$!', $txt))
 		return $txt;
@@ -85,15 +85,6 @@ function lcml($txt, $params = array ())
 	if (empty ($params['uri']))
 		$params['uri'] = $page;
 
-	$outfile = 0;
-
-	if ($outfile)
-	{
-		$fh = fopen($GLOBALS['cms']['base_dir']."/funcs/lcml.log", "at");
-		fwrite($fh, $txt."\n---------------------------------------------\n");
-		fclose($fh);
-	}
-
 	if (is_array($params))
 	{
 		foreach ($params as $key => $value)
@@ -128,7 +119,7 @@ function lcml($txt, $params = array ())
 
 	if(config('lcml_sharp_markup'))
 	{
-		include_once ('lcml/sharp.php');
+		include_once('lcml/sharp.php');
 		$txt = lcml_sharp($txt, $mask);
 	}
 	

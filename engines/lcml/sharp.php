@@ -5,7 +5,7 @@
 
     function lcml_sharp($txt, &$mask)
     {
-        $array = split("\n", $txt);
+        $array = explode("\n", $txt);
 		
 		foreach($array as $s)
 			$mask_array[] = str_repeat('.', strlen($s));
@@ -43,7 +43,7 @@
                     }
                 }
 
-                if(function_exists("lst_$m[1]"))
+                if(function_exists("lst_{$m[1]}"))
                 {
                     $func = "lst_$m[1]";
                     $array[$i] = $func(trim($m[3]));
@@ -62,7 +62,7 @@
 //					echo "start=".($start+1).", len=".($i-$start-1);
 					
                     $txt = $func(join("\n",array_slice($array,$start+1,$i-$start-1)),$params);
-                    $txt = split("\n",$txt);
+                    $txt = explode("\n",$txt);
 
 //					print_r($txt);
 
@@ -122,7 +122,7 @@
     {
         $params=array();
         $key="";
-        foreach(split("\n",$txt) as $s)
+        foreach(explode("\n", $txt) as $s)
         {
             if(preg_match("!^(\w+)=(.+)$!",$s,$m))
             {

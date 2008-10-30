@@ -108,8 +108,14 @@ function search_dir($dir, $mask='.*', $level=5)
 // Источник: http://snippets.dzone.com/posts/show/4147
 // Вызов в виде: find_files('/', '\.php$', 'my_handler');
 // function my_handler($filename) { echo $filename . "\n"; }
-function find_files_loop($path, $pattern = '.*', $callback)
+function find_files_loop($path, $pattern = '.*', $callback, $level=0)
 {
+	if($level > 20)
+	{
+		echo "Too deep find loop: $path\n";
+		return;
+	}
+
 	$path = rtrim(str_replace("\\", "/", $path), '/') . '/';
 	$matches = array();
 	$entries = array();
@@ -121,7 +127,7 @@ function find_files_loop($path, $pattern = '.*', $callback)
 	{
 		$fullname = $path . $entry;
 		if ($entry != '.' && $entry != '..' && is_dir($fullname))
-			find_files_loop($fullname, $pattern, $callback);
+			find_files_loop($fullname, $pattern, $callback, $level+1);
 		elseif(is_file($fullname) && preg_match('!'.$pattern.'!', $entry))
 			call_user_func($callback, $fullname);
 	}

@@ -7,14 +7,18 @@ class module_date_calend_month extends base_page
 		$year	= $this->args('year', strftime('%Y'));
 		$month	= $this->args('month', strftime('%m'));
 		$day	= $this->args('day', strftime('%d'));
+		$now	= $this->args('now', time());
 
 		$time0 = intval(strtotime("$year-$month-1 00:00:00"));
-		$days_in_month = date("%t", $time0);
+		$days_in_month = date("t", $time0);
 		$wd1  = strftime("%u",$time0);
 
 		$calend = array();
 
 		$list = $this->args('list');
+
+		$this_month = $year == strftime('%Y', $now) && $month == strftime('%m', $now);
+		$today = strftime('%d', $now);
 
 		$shown_days = 0;
 		while($shown_days <= $days_in_month)
@@ -36,6 +40,7 @@ class module_date_calend_month extends base_page
 							'number' => $shown_days,
 							'url' => $x['url'],
 							'title' => $x['title'],
+							'now' => $this_month && $shown_days == $today,
 						);
 					}
 					else

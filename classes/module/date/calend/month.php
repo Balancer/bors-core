@@ -2,30 +2,14 @@
 
 class module_date_calend_month extends base_page
 {
-	function class_file() { return __FILE__; }
-
-	function data_providers()
+	function local_template_data_set()
 	{
 		$year	= $this->args('year', strftime('%Y'));
 		$month	= $this->args('month', strftime('%m'));
 		$day	= $this->args('day', strftime('%d'));
 
 		$time0 = intval(strtotime("$year-$month-1 00:00:00"));
-		
-		$mm = $month;
-		$yy = $year;
-		
-		if($mm<12)
-			$mm = $mm + 1;
-		else
-		{
-			$mm=1;
-			$yy++;
-		}
-		
-		$time9 = intval(strtotime("$yy-$mm-1 00:00:00"))-1;
-
-		$days_in_month = strftime("%d",$time9);
+		$days_in_month = date("%t", $time0);
 		$wd1  = strftime("%u",$time0);
 
 		$calend = array();

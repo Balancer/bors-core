@@ -7,7 +7,7 @@ function ungpc_array(&$array)
 	foreach($array as $key => $val)
 	{
 		if(is_array($val))
-			$result[$key] = ungpc($val);
+			$result[$key] = ungpc_array($val);
 		else
 			$result[$key] = stripslashes($val);
 	}

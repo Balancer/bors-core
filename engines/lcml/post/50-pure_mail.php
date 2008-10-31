@@ -14,7 +14,7 @@
 
 	function mask_email($email, $img_mask = true)
 	{
-		list($user, $domain) = split('@', $email);
+		list($user, $domain) = explode('@', $email);
 		$rev = "";
 		for($i=strlen($email)-1; $i>=0; $i--)
 			$rev .= $email[$i];

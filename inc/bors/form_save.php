@@ -153,7 +153,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 //	print_d($data);
 
 	if(($file_data = @$data['uploaded_file']) && $file_data['tmp_name'])
-		$object->{'upload_'.$data['upload_name'].'_file'}($file_data, $data);
+		$object->{'upload_'.$file_data['upload_name'].'_file'}($file_data, $data);
 
 //	echo "Set fields for $object: ".print_d($data, true)."<br/>"; set_loglevel(10,0);
 	if($first)

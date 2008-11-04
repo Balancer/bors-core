@@ -134,13 +134,6 @@ function lcml($txt, $params = array ())
 	if($GLOBALS['lcml']['level'] == 1)
 		$txt = ext_load(dirname(__FILE__).'/lcml/post-whole', $txt);
 
-	if ($outfile)
-	{
-		$fh = fopen($GLOBALS['cms']['base_dir']."/funcs/lcml.log", "at");
-		fwrite($fh, $txt."\n=============================================\n\n");
-		fclose($fh);
-	}
-
 	$m = array ();
 	if (preg_match("!^(#.+)$!m", $txt, $m) && !empty ($GLOBALS['lcml']['page']))
 		debug("{$GLOBALS['lcml']['page']}: {$m[1]}", "LCML:");

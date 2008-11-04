@@ -69,6 +69,9 @@ class base_object extends base_empty
 		if($config = $this->config_class())
 		{
 			$this->config = object_load($config, $this);
+			//TODO: workaround странной ошибки на страницах вида http://balancer.ru/user/29251/aliases.html
+			//Call to undefined method airbase_forum_config::set() in /var/www/.bors/bors-core/classes/bors/base/config.php on line 13
+			get_class($this);
 			if(!$this->config)
 				debug_exit("Can't load config ".$this->config_class());
 		}
@@ -158,10 +161,14 @@ class base_object extends base_empty
 		
 		$field_storage = "field_{$field}_storage";
 
-		if(!method_exists($this, $field_storage) && !$this->autofield($field) && !property_exists($this, "stb_{$field}"))
+		if(!method_exists($this, $field_storage) 
+			&& !$this->autofield($field) 
+			&& @$_SERVER['SVCNAME'] != 'tomcat-6' && !property_exists($this, "stb_{$field}")
+		)
 		{
 			echo "<xmp>";
-			debug_print_backtrace();
+			if(@$_SERVER['SVCNAME'] != 'tomcat-6')
+				debug_print_backtrace();
 			echo "</xmp>";
 			exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
 		}
@@ -174,13 +181,12 @@ class base_object extends base_empty
 
 	function get_property($name)
 	{
-		if(property_exists($this, $p="stba_{$name}"))
-			return $this->$p;
-
-		if(property_exists($this, $p="stb_{$name}"))
+		$p="stb_{$name}";
+		if(@$_SERVER['SVCNAME'] == 'tomcat-6' || property_exists($this, $p))
 			return $this->$p;
 		
 		debug_exit("Try to get undefined properties ".get_class($this).".$name");
+		return NULL;
 	}
 
 	function preParseProcess() { return false; }
@@ -195,21 +201,13 @@ class base_object extends base_empty
 
 	function set($field, $value, $db_update)
 	{
-//		echo "set ".get_class($this).".{$field} = $value<br/>\n";
-			
-		$field_name = "stba_$field";
-		if(!property_exists($this, $field_name))
-			$field_name = "stb_$field";
-
-//		if(!property_exists($this, $field_name))
-//			debug_exit("Try to set undefined properties ".get_class($this).".$field");
+		$field_name = "stb_$field";
 
 		if($db_update && @$this->$field_name !== $value)
 		{
 			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
 				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
 				
-//			echo "<xmp>Set {$field_name} from {$this->$field_name} to {$value}</xmp>\n";
 			$this->changed_fields[$field] = $field_name;
 			bors()->add_changed_object($this);
 		}
@@ -487,18 +485,6 @@ class base_object extends base_empty
 		
 		if($res = @$this->_autofields[$field])
 			return $res;
-
-		if(property_exists($this, $p = "stbf_{$field}"))
-		{
-//			echo "={$p}=<br/>\n";
-			if(preg_match('!^\w+$!', $this->$p))
-				return "{$this->$p}({$this->id_field()})";
-			else
-				return $this->$p;
-		}
-			
-		if(property_exists($this, "stba_{$field}"))
-			return "{$field}({$this->id_field()})";
 
 		return NULL;
 	}

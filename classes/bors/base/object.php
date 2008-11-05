@@ -655,6 +655,12 @@ class base_object extends base_empty
 
 	function dir()
 	{
+//		$data = url_parse($this->called_url());
+//		print_d($data);
+
+//		return $data['local_path'];
+//		return preg_match('!/$!', $data['local_path']) ? $data['local_path'] : dirname($data['local_path']);
+	
 		//TODO: затычка!
 		return $_SERVER['DOCUMENT_ROOT'].preg_replace('!^http://[^/]+!', '', $this->called_url());
 	}

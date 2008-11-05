@@ -22,7 +22,7 @@
 	function lp_object($inner, $params)
 	{
 		if(preg_match('!&amp;!', $params['codebase']))
-			$params['codebase'] = html_entity_decode($params['codebase']);
+			$params['codebase'] = html_entity_decode(@$params['codebase']);
 		return "<object ".make_enabled_params($params, 'codebase data width height type').">".lcml($inner)."</object>";
 	}
 

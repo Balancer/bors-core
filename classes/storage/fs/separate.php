@@ -4,6 +4,8 @@ class storage_fs_separate extends base_null
 {
 	function load($object)
 	{
+//		echo "SR={$_SERVER['DOCUMENT_ROOT']}<br/>CU={$object->called_url()}<br />\n";
+
 		$dir = $object->dir();
 		
 		if(!file_exists("{$dir}/.title.txt"))

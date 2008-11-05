@@ -7,7 +7,6 @@ class storage_fs_xml extends base_null
 	function file($object)
 	{
 		$url = $object->url();
-//		echo "url='$url'<br />\n";
 		if(!$url)
 			$url = $object->id();
 

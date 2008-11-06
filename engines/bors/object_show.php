@@ -2,6 +2,7 @@
 
 	function bors_object_show($obj)
 	{
+		$page = $obj->set_page($obj->args('page'));
 //		echo "Bors class=".get_class($obj); exit();
 		if(!$obj)
 			return false;
@@ -30,7 +31,6 @@
 		if($processed === true)
 			return true;
 
-		$page = $obj->page();
 //		if(debug_is_balancer())	debug_exit($obj->url($page) .'!='. $obj->called_url());
 		if($obj->called_url() && !preg_match('!\Q'.$obj->url($page).'\E$!', $obj->called_url()))
 			return go($obj->url($page), true);

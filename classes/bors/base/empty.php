@@ -14,20 +14,6 @@ class base_empty extends base_null
 //		$this->page = $this->default_page();
 	}
 
-	var $page;
-	function page() { return $this->page; }
-	//TODO: со временем - убрать!
-	function set_page($page)
-	{
-		if(!$page && $this->default_page())
-			$this->page = $this->default_page();
-		else
-			$this->page = $page;
-
-//	if($this->page == 1)	{        	echo "set $page; res={$this->page}<br/>";    	debug_trace();	}
-	}
-
-	function default_page() { return 1; }
 	function storage_engine() { return ''; }
 	var $stb_body_engine = '';
 	function loaded() { return true; }

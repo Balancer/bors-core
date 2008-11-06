@@ -348,7 +348,7 @@ function class_load_by_vhosts_url($url)
 					$redirect = false;
 			
 				$id = NULL;
-				$page = 0;
+				$page = NULL;
 				
 				// Формат вида aviaport_image_thumb(3,geometry=2)
 				if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $class_path, $m))	
@@ -443,19 +443,6 @@ function &object_init($class_name, $object_id, $args = array())
 		$obj->set_class_file($class_file);
 	}
 	
-	if(empty($args['page']))
-	{
-		if(method_exists($obj, 'set_page'))
-			$obj->set_page($obj->default_page());
-	}
-	else
-	{
-		if(is_numeric($args['page']))
-			$args['page'] = intval($args['page']);
-
-		$obj->set_page($args['page']);
-	}
-
 	unset($args['local_path']);
 	unset($args['no_load_cache']);
 

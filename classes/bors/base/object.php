@@ -711,13 +711,10 @@ class base_object extends base_empty
 	{
 		if($render_engine = $this->render_engine())
 		{
-			$re = object_load($render_engine);
-			if(!$re)
+			if(!($re = object_load($render_engine)))
 				debug_exit("Can't load render engine {$render_engine} for class {$this}");
-			$page = $this->page();
-			$content = $re->render($this);
-			$this->set_page($page);
-			return $content;
+
+			return $re->render($this);
 		}
 
 	    require_once('engines/smarty/bors.php');
@@ -760,7 +757,7 @@ class base_object extends base_empty
 				$this->title(),
 			), ec(config('temporary_file_contents'))), 120);
 	
-		$content = $this->direct_content($this);
+		$content = $this->direct_content();
 
 		if($use_static)
 			cache_static::save($this, $content);
@@ -789,4 +786,10 @@ class base_object extends base_empty
 	}
 
 	var $stb_was_cleaned = false;
+
+	function default_page() { return 1; }
+
+	private $_page;
+	function page() { return $this->_page; }
+	function set_page($page) { return $this->_page = (!$page && $this->default_page()) ? $this->default_page() : $page; }
 }

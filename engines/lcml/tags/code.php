@@ -21,7 +21,7 @@
         $txt=preg_replace("!^\n+!","",$txt);
         $txt=preg_replace("!\n+$!","",$txt);
 
-        $txt=split("\n",trim($txt));
+        $txt=explode("\n", $txt);
         foreach($txt as $s)
             $s=" $s";
         

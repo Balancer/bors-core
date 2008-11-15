@@ -12,7 +12,7 @@ class base_page extends base_object
 	function set_source($source, $db_update) { $this->set("source", $source, $db_update); }
 	function source() { return $this->stb_source; }
 
-	function items_around_page() { return 5; }
+	function items_around_page() { return 10; }
 
 	function pages_links($css='pages_select', $before='', $after='')
 	{

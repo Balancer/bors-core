@@ -3,9 +3,9 @@ function smarty_modifier_lcmlbb($string, $nocache = false)
 {
 	require_once('engines/lcml.php');
 
-	$ch = ($nocache || !class_exists('bors_cache'))? NULL : new bors_cache();
-	if($ch && $ch->get('smarty-modifiers-lcmlbb-compiled', $string))
-		return $ch->last();
+//	$ch = ($nocache || !class_exists('bors_cache'))? NULL : new bors_cache();
+//	if($ch && $ch->get('smarty-modifiers-lcmlbb-compiled', $string))
+//		return $ch->last();
 
 	$string = lcml($string, 
 		array(
@@ -18,8 +18,8 @@ function smarty_modifier_lcmlbb($string, $nocache = false)
 //			'uri' => "post://{$cur_post['id']}/",
 	));
 
-	if($ch)
-		$ch->set($string, 7*86400);
+//	if($ch)
+//		$ch->set($string, 7*86400);
 
 	return $string;
 }

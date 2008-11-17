@@ -32,7 +32,7 @@ class cache_smart extends cache_base
 			}
 		}
 				
-		$row = $this->dbh->get("SELECT `value`, `expire_time`, `count`, `saved_time`, `create_time` FROM `cache` WHERE `hmd`={$this->last_hmd}");
+		$row = $this->dbh->get("SELECT * FROM `cache` WHERE `hmd`={$this->last_hmd}");
 		$this->last = $row['value'] ? unserialize($row['value']) : $row['value'];
 
 		$now = time();
@@ -51,7 +51,7 @@ class cache_smart extends cache_base
 		$new_count = intval($row['count']) + 1;
 		$rate = $row['saved_time'] * $new_count / (max($now - $row['create_time'], 1));
 
-		if($this->last)
+		if($this->last && $row['saved_time'] > 0.5)
 		{
 			@$GLOBALS['bors_stat_smart_cache_gets_db_hits']++;
 			$this->dbh->update('cache', "`hmd`={$this->last_hmd}", array (
@@ -80,10 +80,10 @@ class cache_smart extends cache_base
 		}
 		else
 			$time_to_expire = abs($time_to_expire);
-			
-		if($time_to_expire > 0)
+
+		$do_time = microtime(true) - $this->start_time;
+		if($time_to_expire > 0 && $do_time > 0.02)
 		{
-			list($usec, $sec) = explode(" ",microtime());
     		$this->dbh->replace('cache', array(
 				'int hmd'	=> $this->last_hmd,
 				'int type'	=> $this->last_type,
@@ -94,7 +94,7 @@ class cache_smart extends cache_base
 				'int create_time' => $infinite ? -1 : time(),
 				'int expire_time' => time() + intval($time_to_expire),
 				'int count' => 1,
-				'float saved_time' => (float)$usec + (float)$sec - $this->start_time,
+				'float saved_time' => $do_time,
 				'float rate' => 0,
 			));
 		}

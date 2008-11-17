@@ -87,10 +87,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	}
 
 	if(!empty($GLOBALS['stat']['start_microtime']))
-	{
-	    list($usec, $sec) = explode(" ",microtime());
-		$smarty->assign("make_time", sprintf("%.3f", ((float)$usec + (float)$sec) - $GLOBALS['stat']['start_microtime']));
-	}
+		$smarty->assign("make_time", sprintf("%.3f", microtime(true) - $GLOBALS['stat']['start_microtime']));
 
 //	echo "*** queries_time = {$GLOBALS['stat']['queries_time']}<br />\n";
 	$smarty->assign("queries_time", sprintf("%.3f", @$GLOBALS['stat']['queries_time']));

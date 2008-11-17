@@ -45,7 +45,7 @@
 		$module_relative_path = NULL;
 		foreach(bors_dirs() as $dir)
 		{
-			$path = preg_replace("!^\Q{$dir}!", '', $caller_path);
+			$path = preg_replace('!^'.preg_quote($dir).'!', '', $caller_path);
 			if($path != $caller_path)
 			{
 				$module_relative_path = $path;

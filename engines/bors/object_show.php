@@ -32,7 +32,7 @@
 			return true;
 
 //		if(debug_is_balancer())	debug_exit($obj->url($page) .'!='. $obj->called_url());
-		if($obj->called_url() && !preg_match('!\Q'.$obj->url($page).'\E$!', $obj->called_url()))
+		if($obj->called_url() && !preg_match('!'.preg_quote($obj->url($page)).'$!', $obj->called_url()))
 			return go($obj->url($page), true);
 
 		if($processed === false)

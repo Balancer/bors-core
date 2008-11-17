@@ -335,7 +335,7 @@ function class_load_by_vhosts_url($url)
 				$check_url = $url;
 
 //			echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$_SERVER['HTTP_HOST']}){$url_pattern}\$!<br />\n";
-			if(preg_match("!^http://(\Q{$data['host']}\E)$url_pattern$!", $check_url, $match))
+			if(preg_match('!^http://('.preg_quote($data['host']).")$url_pattern$!", $check_url, $match))
 			{
 //				echo "Found: $class_path for  $check_url<br />";
 			

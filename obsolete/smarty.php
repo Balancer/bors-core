@@ -236,10 +236,7 @@ function show_page($uri, $data = true)
             $smarty->assign("me", $me);
 
 			if(!empty($GLOBALS['stat']['start_microtime']))
-			{
-			    list($usec, $sec) = explode(" ",microtime());
-    	        $smarty->assign("make_time", sprintf("%.3f", ((float)$usec + (float)$sec) - $GLOBALS['stat']['start_microtime']));
-			}
+    	        $smarty->assign("make_time", sprintf("%.3f", microtime(true) - $GLOBALS['stat']['start_microtime']));
 			
 			$hts->set_data($page, 'cache_create_time', time());
 

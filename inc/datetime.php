@@ -1,30 +1,4 @@
-<?if(isset($funcs_date_loaded) && $funcs_date_loaded) return; $funcs_date_loaded=1;
-
-function jdate($jd)
-{
-    // Usage:  list($month,$day,$year,$weekday) = jdate($julian_day)
-
-    $wkday = ($jd + 1) % 7;       // calculate weekday (0=Sun,6=Sat)
-    $jdate_tmp = $jd - 1721119;
-    $y = intval((4 * $jdate_tmp - 1)/146097);
-    $jdate_tmp = 4 * $jdate_tmp - 1 - 146097 * $y;
-    $d = intval($jdate_tmp/4);
-    $jdate_tmp = intval((4 * $d + 3)/1461);
-    $d = 4 * $d + 3 - 1461 * $jdate_tmp;
-    $d = intval(($d + 4)/4);
-    $m = intval((5 * $d - 3)/153);
-    $d = 5 * $d - 3 - 153 * $m;
-    $d = intval(($d + 5) / 5);
-    $y = 100 * $y + $jdate_tmp;
-    if($m < 10)
-        $m += 3;
-    else
-    {
-        $m -= 9;
-        ++$y;
-    }
-    return Array($m, $d, $y, $wkday);
-}
+<?php
 
 function full_time($time)
 {
@@ -48,94 +22,58 @@ function is_today($time)
 	if($now - $time < 86400 && strftime("%d", $time) == strftime("%d", $now))
 		return true;
 		
-//	echo "*{$GLOBALS['main_uri']}*";
+	//FIXME: разобраться, wtf?
 	if(preg_match("!\d{4}/\d{1,2}/\d{1,2}/$!", @$GLOBALS['main_uri']))
 		return true;
 
 	return false;
 }
 
-	function news_time($time)
-	{
-		global $now;
-		
-		if(is_today($time))
-			return strftime("%H:%M",$time);
-	
-		if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d", $now-86400))
-			return ec("Вчера, ").strftime("%H:%M",$time);
-		
-		return strftime("%d.%m.%Y %H:%M",$time);
-	}
-
-
-	function airbase_time($time)
-	{
-		global $now;
-		if(is_today($time))
-			return ec(strftime("сегодня, %H:%M",$time));
-	
-		if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d",$now-86400))
-			return ec("вчера, ").strftime("%H:%M",$time);
-		
-		return strftime("%Y-%m-%d",$time);
-	}
-
-	function news_short_time($time)
-	{
-		if(is_today($time))
-			return strftime("%H:%M", $time);
-	
-		if($GLOBALS['now'] - $time < 2*86400 && strftime("%d",$time) == strftime("%d", $GLOBALS['now']-86400))
-			return ec("Вчера");
-		
-		return strftime("%d.%m.%Y", $time);
-	}
-
-function month_name($m)
+function news_time($time)
 {
-		$mms = array(
-			1 => ec('Январь'),
-			2 => ec('Февраль'),
-			3 => ec('Март'),
-			4 => ec('Апрель'),
-			5 => ec('Май'),
-			6 => ec('Июнь'),
-			7 => ec('Июль'),
-			8 => ec('Август'),
-			9 => ec('Сентябрь'),
-			10 => ec('Октябрь'),
-			11 => ec('Ноябрь'),
-			12 => ec('Декабрь'));
-			
-		return $mms[intval($m)];
+	global $now;
+		
+	if(is_today($time))
+		return strftime("%H:%M",$time);
+	
+	if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d", $now-86400))
+		return ec("Вчера, ").strftime("%H:%M",$time);
+		
+	return strftime("%d.%m.%Y %H:%M",$time);
 }
 
-function month_name_rp($m)
+function airbase_time($time)
 {
-		$mms = array(
-			1 => ec('Января'),
-			2 => ec('Февраля'),
-			3 => ec('Марта'),
-			4 => ec('Апреля'),
-			5 => ec('Мая'),
-			6 => ec('Июня'),
-			7 => ec('Июля'),
-			8 => ec('Августа'),
-			9 => ec('Сентября'),
-			10 => ec('Октября'),
-			11 => ec('Ноября'),
-			12 => ec('Декабря'));
-			
-		return $mms[intval($m)];
+	global $now;
+	if(is_today($time))
+		return ec(strftime("сегодня, %H:%M",$time));
+	
+	if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d",$now-86400))
+		return ec("вчера, ").strftime("%H:%M",$time);
+	
+	return strftime("%Y-%m-%d",$time);
 }
+
+function news_short_time($time)
+{
+	if(is_today($time))
+		return strftime("%H:%M", $time);
+	
+	if($GLOBALS['now'] - $time < 2*86400 && strftime("%d",$time) == strftime("%d", $GLOBALS['now']-86400))
+		return ec("Вчера");
+		
+	return strftime("%d.%m.%Y", $time);
+}
+
+$GLOBALS['month_names'] = explode(' ', ec('Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь'));
+$GLOBALS['month_names_rp'] = explode(' ', ec('Января Феврал Марта Апреля Мая Июня Июля Августа Сентября Октября Ноября Декабря'));
+
+function month_name($m) { return $GLOBALS['month_names'][$m-1]; }
+function month_name_rp($m) { return $GLOBALS['month_names_rp'][$m-1]; }
 
 function text_date($date)
 {
-	$d = strftime('%d', $date);
-	$m = strftime('%m', $date);
-	$y = strftime('%Y', $date);
-	return intval($d).' '.strtolower(month_name_rp($m)).' '.$y;
+	return date('j', $date).' '.strtolower(month_name_rp(date('n', $date))).' '.date('Y', $date);
 }
 
 function make_input_time($field_name, &$data)
@@ -154,14 +92,14 @@ function make_input_time($field_name, &$data)
 		$month = 1;
 
 	if(!$year)
-		$year = strftime('%Y', $GLOBALS['now']);
+		$year = date('Y', $GLOBALS['now']);
 
 	return $data[$field_name] = strtotime("{$year}-{$month}-{$day} $hour:$min:$sec");
 }
 
 function full_hdate($date, $show_year = true)
 {
-	return intval(strftime('%d', $date)).' '.strtolower(month_name_rp(strftime('%m', $date))).($show_year ? ec(strftime(' %Y года', $date)) : '');
+	return date('j', $date).' '.strtolower(month_name_rp(date('n', $date))).($show_year ? ec(strftime(' %Y года', $date)) : '');
 }
 
 function date_format_mysqltime($time) { return $time ? strftime('\'%Y-%m-%d %H:%M:%S\'', $time) : NULL; }

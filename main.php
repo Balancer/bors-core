@@ -46,8 +46,7 @@
 		}
 	}
 
-    list($usec, $sec) = explode(" ",microtime());
-    $GLOBALS['stat']['start_microtime'] = ((float)$usec + (float)$sec);
+    $GLOBALS['stat']['start_microtime'] = microtime(true);
 
     error_reporting(E_ALL);
     ini_set('display_errors', 'On');

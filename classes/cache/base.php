@@ -16,13 +16,12 @@ class cache_base
 			$uri = $key;
 
 		$this->last_type_name = $type;
-		$this->last_type = $type = "0x".substr(md5($type), 16);
-		$this->last_key  = $key  = "0x".substr(md5($key), 16);
-		$this->last_uri  = $uri  = "0x".substr(md5($uri), 16);
-		$this->last_hmd  = $hmd  = "0x".substr(md5("$type:$key"), 16);
+		$this->last_type = $type = base_convert(substr(md5($type), 16), 16, 10);
+		$this->last_key  = $key  = base_convert(substr(md5($key), 16), 16, 10);
+		$this->last_uri  = $uri  = base_convert(substr(md5($uri), 16), 16, 10);
+		$this->last_hmd  = $hmd  = base_convert(substr(md5("$type:$key"), 16), 16, 10);
 
-		list($usec, $sec) = explode(" ",microtime());
-		$this->start_time = (float)$usec + (float)$sec;
+		$this->start_time = microtime(true);
 	}
 
 	function last() { return $this->last; }

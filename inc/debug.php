@@ -130,7 +130,7 @@ function debug($message,$comment='',$level=3)
 
 function DBG_GetBacktrace($skip = 0, $html = NULL)
 {
-	$MAXSTRLEN = 64;
+	$MAXSTRLEN = 128;
 
 	if(is_null($html))
 	$html = !empty($_SERVER['HTTP_HOST']);

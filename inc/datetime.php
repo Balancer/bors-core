@@ -65,11 +65,11 @@ function news_short_time($time)
 	return strftime("%d.%m.%Y", $time);
 }
 
-$GLOBALS['month_names'] = explode(' ', ec('Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь'));
-$GLOBALS['month_names_rp'] = explode(' ', ec('Января Феврал Марта Апреля Мая Июня Июля Августа Сентября Октября Ноября Декабря'));
+$GLOBALS['month_names'] = explode(' ', 'Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь');
+$GLOBALS['month_names_rp'] = explode(' ', 'Января Феврал Марта Апреля Мая Июня Июля Августа Сентября Октября Ноября Декабря');
 
-function month_name($m) { return $GLOBALS['month_names'][$m-1]; }
-function month_name_rp($m) { return $GLOBALS['month_names_rp'][$m-1]; }
+function month_name($m) { return ec($GLOBALS['month_names'][$m-1]); }
+function month_name_rp($m) { return ec($GLOBALS['month_names_rp'][$m-1]); }
 
 function text_date($date)
 {

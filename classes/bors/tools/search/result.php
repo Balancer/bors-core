@@ -12,12 +12,13 @@ class bors_tools_search_result extends bors_tools_search
 	function nav_name() { return $this->q(); }
 
 	function parents() { return array('/tools/search/'); }
-	
+
 	function q() { return urldecode(@$_GET['q']); }
 	function s() { return empty($_GET['s']) ? 't' : $_GET['s']; }
 	function t() { return @$_GET['t']; }
 	function u() { return @$_GET['u']; }
 	function x() { return !empty($_GET['x']); }
+	function w() { return !empty($_GET['w']); }
 	function f()
 	{
 		$f = @$_GET['f'];
@@ -29,6 +30,12 @@ class bors_tools_search_result extends bors_tools_search
 	
 //	function parents() { return $this->q() ? array('/tools/search.bas?q=') : array('/tools/'); }
 	function can_cached() { return false; }
+
+	function init()
+	{
+		$this->set_arg('page' , max(1, @$_GET['p']));
+		return parent::init();
+	}
 
 	private $data = false;
 	function pre_show()
@@ -45,7 +52,10 @@ class bors_tools_search_result extends bors_tools_search
 		$host = "localhost";
 		$port = 3312;
 
-		$index = "*";
+		if($this->w())
+			$index = "*";
+		else
+			$index = "topics";
 //		$groupby = "topic_id";
 #		$groupsort = "@group desc";
 //		$filter = "topic_id";
@@ -59,7 +69,7 @@ class bors_tools_search_result extends bors_tools_search
 		$cl->SetServer ( $host, $port );
 		$cl->SetConnectTimeout ( 1 );
 //		$cl->SetWeights ( array ( 100, 1 ) );
-		$cl->SetIndexWeights ( array ( 'topics' => 500, 'forum_2' => 100) );
+		$cl->SetIndexWeights ( array ( 'topics' => 1000 , 'forum_2' => 100) );
 
 		if($this->x())
 			$cl->SetMatchMode (SPH_MATCH_PHRASE);
@@ -113,6 +123,7 @@ class bors_tools_search_result extends bors_tools_search
 		$cl->SetRankingMode ( $ranker );
 		$cl->SetArrayResult ( true );
 		$res = $cl->Query ( $this->q(), $index );
+//		print_d($res);
 
 		if($res === false)
 			$data['error'] = $cl->GetLastError();
@@ -126,8 +137,7 @@ class bors_tools_search_result extends bors_tools_search
 			
 //			print_d($res);
 			
-			$opts = array
-			(
+			$opts = array (
 				'before_match'		=> '<b>',
 				'after_match'		=> '</b>',
 				'chunk_separator'	=> ' ... ',
@@ -151,22 +161,36 @@ class bors_tools_search_result extends bors_tools_search
 					$post_ids[] = $x['id'];
 			}
 
-			$this->data['posts'] = $posts = objects_array('forum_post', array('id IN' => $post_ids, 'by_id' => true));
-			$this->data['topics'] = objects_array('forum_topic', array('id IN' => $topic_ids, 'by_id' => true));
+			$this->data['posts'] = array();
+			$x = objects_array('forum_post', array('id IN' => $post_ids, 'by_id' => true));
+			foreach($post_ids as $id)
+				$this->data['posts'][$id] = $x[$id];
+				
+			$this->data['topics'] = array();
+			$x = objects_array('forum_topic', array('id IN' => $topic_ids, 'by_id' => true));
+			foreach($topic_ids as $id)
+				$this->data['topics'][$id] = $x[$id];
+
+			$posts = &$this->data['posts'];
+
 			$docs = array();
 			
 			$loop = 0;
 			foreach($posts as $pid => $p)
 				$docs[$loop++] = strip_tags($p->source());
 
-			$exc = $cl->BuildExcerpts($docs, 'forum_2', $this->q(), $opts);
-			if (!$exc)
-				echo $data['error'] = $cl->GetLastError();
-			else
+			if($post_ids)
 			{
-				$loop = 0;
-				foreach($posts as $pid => $p)
-					$posts[$pid]->set_body($exc[$loop++], false);
+				$exc = $cl->BuildExcerpts($docs, 'forum_2', $this->q(), $opts);
+
+				if (!$exc)
+					echo $data['error'] = $cl->GetLastError();
+				else
+				{
+					$loop = 0;
+					foreach($posts as $pid => $p)
+						$posts[$pid]->set_body($exc[$loop++], false);
+				}
 			}
 		}
 		
@@ -185,7 +209,7 @@ class bors_tools_search_result extends bors_tools_search
 	{
 		$result = array();
 		foreach($list as $key => $val)
-			if(!empty($val))
+			if(!empty($val) && (!is_array($val) || !empty($val[0])))
 				$result[] = $key.'='.urlencode(is_array($val) ? join(',', $val) : $val);
 		
 		return $result ? '?'.join('&', $result) : '';
@@ -199,8 +223,11 @@ class bors_tools_search_result extends bors_tools_search
 				unset($_GET[$key]);
 	}
 	
-	function url($page = NULL, $get = false)
+	function url($page = NULL, $get = true)
 	{
+		if(!$page)
+			$page = $this->args('page');
+	
 		return '/tools/search/result/'.($get ? $this->gets(array(
 			'q' => $this->q(),
 			'f' => $this->f(),
@@ -208,11 +235,10 @@ class bors_tools_search_result extends bors_tools_search
 			't' => $this->t(),
 			'u' => $this->u(),
 			'x' => $this->x(),
-			'p' => $page > 1 ? $page : NULL
+			'w' => $this->w(),
+			'p' => $page > 1 ? $page : NULL,
 		)) : '');
 	}
-
-	function page() { return max(1, @$_GET['p']); }
 
 	function set_x($value) { $_GET['x'] = $value; }
 }

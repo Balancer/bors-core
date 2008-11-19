@@ -14,14 +14,15 @@
 		if(empty($name))
 			$name = @$class;
 			
-		if(empty($name))
+		if(empty($name) || $name == 'this')
 			$name = get_class($main_obj);
 			
 		if(empty($id))
 			$id = NULL;
 		
-		$smarty->assign('current_form_class', $form = object_load($name, $id));
-		$smarty->assign('form', $form = object_load($name, $id));
+		$form = object_load($name, $id);
+		$smarty->assign('current_form_class', $form);
+		$smarty->assign('form', $form);
 
 		if(!isset($uri))
 		{
@@ -50,7 +51,7 @@
 				
 			echo "<form enctype=\"multipart/form-data\"";
 			
-			foreach(split(' ', 'action method name class style enctype') as $p)
+			foreach(explode(' ', 'action method name class style enctype') as $p)
 				if(!empty($$p) && ($p != 'name' || $$p != 'NULL'))
 					echo " $p=\"{$$p}\"";
 			
@@ -64,7 +65,7 @@
 		echo $content;
 		if(isset($uri) && $uri != 'NULL')
 			echo "<input type=\"hidden\" name=\"uri\" value=\"$uri\" />\n";
-		if(!empty($ref))
+		if(isset($ref) && $ref != 'NULL')
 			echo "<input type=\"hidden\" name=\"ref\" value=\"$ref\" />\n";
 
 		if(!empty($act))
@@ -76,12 +77,13 @@
 		if(empty($class_name))
 			$class_name = $name;
 		
-		if(!empty($class_name) && $class_name != 'NULL')
+		if(!empty($class_name) && $class_name != 'NULL' && $class_name != 'this')
 			echo "<input type=\"hidden\" name=\"class_name\" value=\"$class_name\" />\n";
+
 		if(!empty($id))
 			echo "<input type=\"hidden\" name=\"id\" value=\"$id\" />\n";
 
-		if($cbs = base_object::template_data('form_checkboxes'))
+		if($cbs = base_object::template_data('form_checkboxes') && empty($no_auto_checkboxes))
 			echo "<input type=\"hidden\" name=\"checkboxes\" value=\"".join(',', $cbs)."\" />\n";
 		if($vcbs = base_object::template_data('form_checkboxes_list'))
 			echo "<input type=\"hidden\" name=\"checkboxes_list\" value=\"".join(',', $vcbs)."\" />\n";

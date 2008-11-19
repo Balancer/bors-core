@@ -85,6 +85,7 @@
 		foreach(explode('&', $_SERVER['QUERY_STRING']) as $pair)
 		{
 			@list($var, $val) = explode('=', $pair);
+			$var = urldecode($var);
 			if(preg_match('/^(\w+)\[\]$/', $var, $m))
 				$_GET[$m[1]][] = $_POST[$var][] = "$val";
 			else

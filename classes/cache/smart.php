@@ -33,7 +33,7 @@ class cache_smart extends cache_base
 		}
 				
 		$row = $this->dbh->get("SELECT * FROM `cache` WHERE `hmd`={$this->last_hmd}");
-		$this->last = $row['value'] ? unserialize($row['value']) : $row['value'];
+		$this->last = $row['value'] ? @unserialize($row['value']) : $row['value'];
 
 		$now = time();
 

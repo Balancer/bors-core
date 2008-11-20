@@ -83,7 +83,7 @@
 		if(!empty($id))
 			echo "<input type=\"hidden\" name=\"id\" value=\"$id\" />\n";
 
-		if($cbs = base_object::template_data('form_checkboxes') && empty($no_auto_checkboxes))
+		if(($cbs = base_object::template_data('form_checkboxes')) && empty($no_auto_checkboxes))
 			echo "<input type=\"hidden\" name=\"checkboxes\" value=\"".join(',', $cbs)."\" />\n";
 		if($vcbs = base_object::template_data('form_checkboxes_list'))
 			echo "<input type=\"hidden\" name=\"checkboxes_list\" value=\"".join(',', $vcbs)."\" />\n";

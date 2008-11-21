@@ -21,8 +21,8 @@ class bors_admin_image_append extends base_object
 
 		if(!$sort_order)
 		{
-			$cross_order = $this->db()->select('bors_cross', 'MAX(`order`)', array('from_class=' => $obj->class_id(), 'from_id=' => $obj->id()));
-			$parent_order = $this->db()->select('bors_images', 'MAX(`order`)', array('parent_class_id=' => $obj->class_id(), 'parent_object_id=' => $obj->id()));
+			$cross_order = $this->db()->select('bors_cross', 'MAX(`sort_order`)', array('from_class=' => $obj->class_id(), 'from_id=' => $obj->id()));
+			$parent_order = $this->db()->select('bors_images', 'MAX(`sort_order`)', array('parent_class_id=' => $obj->class_id(), 'parent_object_id=' => $obj->id()));
 			
 			$sort_order = max($cross_order, $parent_order);
 		}

@@ -122,7 +122,7 @@
 
     function lcml_urls($txt)
     {
-		if(!empty($GLOBALS['cms']['config']['disable']['post_urls']))
+		if(config('lcml_post_urls_disable'))
 			return $txt;
 
 		$taglist = config('lcml_tags_enabled');

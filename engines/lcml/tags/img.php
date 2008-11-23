@@ -111,8 +111,7 @@ function lt_img($params)
 //						return lcml("Non-image content type ('$content_type') image ={$uri}= error.");
 
 					require_once('inc/filesystem.php');
-					@mkdir(dirname($path), 0775, true);
-					@chmod(dirname($path), 0775);
+					mkpath(dirname($path), 0775);
 					$fh = fopen($path,'wb');
 					fwrite($fh, $data);
 					fclose($fh);
@@ -123,15 +122,13 @@ function lt_img($params)
 //					system($cmd);
 				}
 
-//				exit($path);
-
 				if(file_exists($path) && filesize($path)>0)
 				{
 					$remote = $uri;
 					$uri = str_replace(config('sites_store_path'), config('sites_store_uri'), $path);
 					$data['local'] = true;
 					
-					$db = &new driver_mysql('BORS');
+					$db = &new driver_mysql(config('main_bors_db'));
 					
 					$id = intval($db->select('images', 'id', array('original_url=' => $remote)));
 					if(!$id)
@@ -166,7 +163,6 @@ function lt_img($params)
 					$img_page_uri = preg_replace("!^(http://.+?)(\.[^\.]+)$!", "$1.htm", $uri);
 				else
 					$img_page_uri = $uri.'.htm';
-//				return "_$local_uri<br />_$img_ico_uri<br />";
 
 				require_once('HTTP/Request.php');
 				$req =& new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 2,'timeout' => 4));

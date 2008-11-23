@@ -76,7 +76,8 @@ class bors_image_thumb extends bors_image
 		$abs = false;
 		if(!file_exists($file_orig))
 		{
-			$file_orig = $_SERVER['DOCUMENT_ROOT'] . $file_orig;
+			$file_orig  = $_SERVER['DOCUMENT_ROOT'] . $file_orig;
+			$file_thumb = $_SERVER['DOCUMENT_ROOT'] . $file_thumb;
 			$abs = true;
 		}
 

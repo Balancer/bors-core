@@ -48,7 +48,7 @@ function lcml_html_pre($txt)
 		}
 
 		// Парные тэги, прямо транслирующиеся в BB-код:
-		foreach(explode(' ','style tt') as $tag)
+		foreach(explode(' ','style tt sub sup code quote') as $tag)
 		{
 			$txt = preg_replace("!<$tag>(.+?)</$tag>!is","[$tag]$1[/$tag]", $txt);
 			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!is","[$tag $1]$2[/$tag]", $txt);

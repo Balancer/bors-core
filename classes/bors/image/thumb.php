@@ -109,13 +109,15 @@ class bors_image_thumb extends bors_image
 		else
 		{
 			$file_thumb_r = $file_thumb;
-			$fsize_thumb = filesize($file_thumb_r);
+			$fsize_thumb = @filesize($file_thumb_r);
 		}
 
 //		echo "File {$this->file_name_with_path()}<br />\n"; exit();
 		$this->set_size($fsize_thumb, true);
 
-		$img_data = getimagesize($file_thumb_r);
+		$img_data = @getimagesize($file_thumb_r);
+		if(empty($img_data[0]))
+			debug_hidden_log('image_error', 'Cannot get image width');
 
 		$this->set_width($img_data[0], true);
 		$this->set_height($img_data[1], true);

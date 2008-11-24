@@ -64,6 +64,6 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts)
 	
 	mkpath(dirname($file_out), 0777, true);
 	$img->save($file_out, $img->getImageType());
-	chmod($file_out, 0664);
+	@chmod($file_out, 0664);
 	return $img->isError();
 }

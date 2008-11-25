@@ -19,9 +19,9 @@ class render_quicky extends base_null
 			$tpl->assign($var, $value);
 
 		$tpl->compile_dir = config('cache_dir').'/smarty-templates_c/';
-		$tpl->plugins_dir = array();
-		foreach(bors_dirs() as $dir)
-			$tpl->plugins_dir[] = $dir.'/engines/smarty/plugins';
+//		$tpl->plugins_dir = array();
+//		foreach(bors_dirs() as $dir)
+//			$tpl->plugins_dir[] = $dir.'/engines/smarty/plugins';
 
 		$tpl->plugins_dir[] = 'plugins';
 		$tpl->cache_dir   = config('cache_dir').'/smarty-cache/';

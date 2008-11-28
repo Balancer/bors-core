@@ -82,11 +82,14 @@
 
 	if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY_STRING']))
 	{
-		foreach(split("&", $_SERVER['QUERY_STRING']) as $pair)
+		foreach(explode('&', $_SERVER['QUERY_STRING']) as $pair)
 		{
-			@list($var, $val) = split("=", $pair);
-			$_GET[$var] = "$val";
-			$_POST[$var] = "$val";
+			@list($var, $val) = explode('=', $pair);
+			$var = urldecode($var);
+			if(preg_match('/^(\w+)\[\]$/', $var, $m))
+				$_GET[$m[1]][] = $_POST[$var][] = "$val";
+			else
+				$_GET[$var] = $_POST[$var] = "$val";
 		}
 	}
 

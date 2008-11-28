@@ -3,9 +3,10 @@
 {foreach from=$object->editor_fields_list() key="title" item="desc"}
 {explode vars="field_name,type" value=$desc}
 {explode vars="type,arg" value=$type delim="="}
+{explode vars="arg,args" value=$arg delim=":"}
 <tr><th align="right">{$title}</th><td>
 {if $type == '' or $type == 'input'}{input name=$field_name class="w100p"}{/if}
-{if $type == 'dropdown'}{dropdown name=$field_name list=$arg class="w100p"}{/if}
+{if $type == 'dropdown'}{dropdown name=$field_name list=$arg args=$args class="w100p"}{/if}
 {if $type == 'textarea'}{textarea name=$field_name rows=$arg class="w100p"}{/if}
 </td></tr>
 {/foreach}

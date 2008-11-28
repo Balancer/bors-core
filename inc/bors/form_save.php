@@ -89,8 +89,11 @@ function bors_form_save(&$obj)
 			if($_GET['go'] == "newpage_admin")
 				return go($form->admin_url(1));
 					
-			$_GET['go'] = str_replace('%OBJECT_ID%', $form->id(), $_GET['go']);
-			$_GET['go'] = str_replace('%OBJECT_URL%', $form->url(), $_GET['go']);
+			if($form)
+			{
+				$_GET['go'] = str_replace('%OBJECT_ID%', $form->id(), $_GET['go']);
+				$_GET['go'] = str_replace('%OBJECT_URL%', $form->url(), $_GET['go']);
+			}
 			require_once('inc/navigation.php');
 			return go($_GET['go']);
 		}
@@ -152,8 +155,13 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 //	print_d($data);
 
-	if(($file_data = @$data['uploaded_file']) && $file_data['tmp_name'])
-		$object->{'upload_'.$file_data['upload_name'].'_file'}($file_data, $data);
+	if($file_data = @$data['uploaded_file'])
+	{
+		if($file_data['tmp_name'])
+			$object->{'upload_'.$file_data['upload_name'].'_file'}($file_data, $data);
+		elseif(@$file_data['name'])
+			bors_exit(ec("Ошибка загрузки изображения ").$file_data['name']);
+	}
 
 //	echo "Set fields for $object: ".print_d($data, true)."<br/>"; set_loglevel(10,0);
 	if($first)

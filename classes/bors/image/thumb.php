@@ -71,36 +71,53 @@ class bors_image_thumb extends bors_image
 
 		$this->set_file_name($this->original->file_name(), true);
 
-		$file = $this->original->file_name_with_path();
+		$file_orig  = $this->original->file_name_with_path();
+		$file_thumb = $this->file_name_with_path();
 		$abs = false;
-		if(!file_exists($file))
+		if(!file_exists($file_orig))
 		{
-			$file = $_SERVER['DOCUMENT_ROOT'] . $file;
+			$file_orig  = $_SERVER['DOCUMENT_ROOT'] . $file_orig;
+			$file_thumb = $_SERVER['DOCUMENT_ROOT'] . $file_thumb;
 			$abs = true;
 		}
 
 		if(config('pics_base_safemodded'))
 		{
-			$rfile = str_replace(config('pics_base_dir'), config('pics_base_url'), $file);
-			$fsize = strlen(file_get_contents($rfile));
+			$file_orig_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_orig);
+			//TODO: ужасно, но пока только так.
+			$fsize_orig = strlen(file_get_contents($file_orig_r));
 		}
 		else
 		{
-			$rfile = $file;
-			$fsize = filesize($file);
+			$file_orig_r = $file_orig;
+			$fsize_orig = filesize($file_orig_r);
 		}
 
 //		echo "size of ".$this->original->file_name()." = $fsize<br/>\n";
-		if(!$this->original->file_name() || !$fsize)
+		if(!$this->original->file_name() || !$fsize_orig)
 			return;
 
 		mkpath($this->image_dir(), 0777);
 		$this->thumb_create($abs);
 
-//		echo "File {$this->file_name_with_path()}<br />\n"; exit();
-		$this->set_size($fsize, true);
+		if(config('pics_base_safemodded'))
+		{
+			$file_thumb_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_thumb);
+			//TODO: ужасно, но пока только так.
+			$fsize_thumb = strlen(file_get_contents($file_thumb_r));
+		}
+		else
+		{
+			$file_thumb_r = $file_thumb;
+			$fsize_thumb = @filesize($file_thumb_r);
+		}
 
-		$img_data = getimagesize($rfile);
+//		echo "File {$this->file_name_with_path()}<br />\n"; exit();
+		$this->set_size($fsize_thumb, true);
+
+		$img_data = @getimagesize($file_thumb_r);
+		if(empty($img_data[0]))
+			debug_hidden_log('image_error', 'Cannot get image width');
 
 		$this->set_width($img_data[0], true);
 		$this->set_height($img_data[1], true);
@@ -128,7 +145,7 @@ class bors_image_thumb extends bors_image
 
 	function fullsized_url() { return "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>"; }
 
-	function alt() { return $this->original->alt(); }
+	function alt() { return $this->original ? $this->original->alt() : ""; }
 
 	function url() { return secure_path(config('pics_base_url').$this->relative_path().'/'.$this->file_name()); }
 	

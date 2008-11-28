@@ -260,13 +260,11 @@ class storage_db_mysql_smart extends base_null
 
 				if($common_where)
 				{
-					if($by_id)
-					{
-//						echo "set {$object->id()}<br />\n";
-						$result[$object->id()] = &$object;
-					}
-					else
-						$result[] = &$object;
+					if($object->loaded()) // метод может переопределяться для проверки данных
+						if($by_id)
+							$result[$object->id()] = &$object;
+						else
+							$result[] = &$object;
 
 //					save_cached_object($object);
 					$class = get_class($object);

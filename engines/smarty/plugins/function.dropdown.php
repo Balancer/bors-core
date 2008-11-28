@@ -30,7 +30,6 @@ function smarty_function_dropdown($params, &$smarty)
 	}
 	elseif(preg_match("!^(\w+)\->(\w+)\('(.+)'\)!", $list, $m))
 	{
-//		print_d($m);
 		if($m[1] == 'this')
 			$list = $obj->$m[2]($m[3]);
 		else

@@ -8,7 +8,7 @@ class storage_fs_separate extends base_null
 
 		$dir = $object->dir();
 		
-//		echo "fe=".file_exists("{$dir}/.title.txt")."<br/>";
+//		echo "fe({$dir}/.title.txt)=".file_exists("{$dir}/.title.txt")."<br/>";
 		if(!file_exists("{$dir}/.title.txt"))
 			return $object->set_loaded(false);
 
@@ -19,7 +19,6 @@ class storage_fs_separate extends base_null
 		$d = dir($dir);
 		while(false !== ($entry = $d->read()))
 		{
-//			echo "ent=$entry<br/>";
 			if(preg_match("!\.\[(\w+)\]\.txt$!", $entry, $m))
 			{
 				$data = array();

@@ -57,15 +57,19 @@ class base_page extends base_object
 	function items_per_page() { return 25; }
 	function items_offset() { return ($this->page()-1)*$this->items_per_page(); }
 
+	var $stb_body = false;
 	function body()
 	{
+		if($this->stb_body !== false)
+			return $this->stb_body;
+	
 		if($body_engine = $this->body_engine())
 		{
 			$be = class_load($body_engine);
 			if(!$be)
 				debug_exit("Can't load body engine {$body_engine} for class {$this}");
 
-			return $be->body($this);
+			return $this->stb_body = $be->body($this);
 		}
 			
 		global $me;
@@ -98,7 +102,7 @@ class base_page extends base_object
 			if($group)
 				cache_group::register($group, $this);
 
-		return $content;
+		return $this->stb_body = $content;
 	}
 		
 	function cacheable_body()

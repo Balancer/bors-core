@@ -13,6 +13,7 @@ $map = array(
 		'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
 		'/admin/tools/set\-sort\-order/ => bors_admin_tools_setsortorder',
+		'/admin/tools/set\-default/ => bors_admin_tools_setdefault',
 
 		'/admin/\?object=([^&]+).* => bors_admin_main(1)',
 		'/admin/edit/\?object=([^&]+).* => bors_admin_edit(1)',

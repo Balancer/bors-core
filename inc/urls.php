@@ -85,6 +85,9 @@ function url_parse($url)
 	if($root = @$vhost_data['document_root'])
 		$data['root'] = $root;
 
+	if(empty($data['root']) && file_exists($_SERVER['DOCUMENT_ROOT'].$data['path']))
+		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
+
 	if($data['local'] = !empty ($data['root']))
 		$data['local_path'] = $data['root'].str_replace('http://'.$host, '', $url);
 

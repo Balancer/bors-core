@@ -171,4 +171,12 @@ class bors_image extends base_object_db
 	function parent_object() { return object_load($this->parent_class_id(), $this->parent_object_id()); }
 
 	function can_cached() { return false; }
+
+	function setdefaultfor_url($obj)  { return "/admin/tools/set-default/?object={$obj->internal_uri()}&image={$this->internal_uri()}"; }
+	function imaged_set_default_url($object, $title = NULL)
+	{
+		if($title === NULL)
+			$title = ec('Сделать изображением по умолчанию');
+		return "<a href=\"".$this->setdefaultfor_url($object)."\"><img src=\"/bors-shared/images/notice-16.gif\" width=\"16\" height=\"16\" border=\"0\" alt=\"def\" title=\"$title\"/></a>";
+	}
 }

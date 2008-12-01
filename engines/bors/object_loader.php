@@ -168,16 +168,16 @@ function class_load($class, $id = NULL, $args=array())
 
 function class_load_by_url($url, $args)
 {
-//		echo "Load $url<br />\n";
+//	echo "Load $url<br />\n";
 	
-		if($obj = class_load_by_vhosts_url($url, $args))
-			return $obj;
+	if($obj = class_load_by_vhosts_url($url, $args))
+		return $obj;
 		
-		return class_load_by_local_url($url, $args);
-	}
+	return class_load_by_local_url($url, $args);
+}
 
-	function class_load_by_local_url($url, $args)
-	{
+function class_load_by_local_url($url, $args)
+{
 		$obj = @$GLOBALS['bors_data']['classes_by_uri'][$url];
 
 		if(!empty($obj) && empty($args['no_load_cache']))

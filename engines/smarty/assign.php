@@ -50,7 +50,7 @@
 			{
 				$module_relative_path = $path;
 				break;
-			}                                                 
+			}
 		}
 		
 		$template_uri = $assign_template;

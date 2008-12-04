@@ -50,13 +50,13 @@ class bors_image_thumb extends bors_image
 		else
 			return $this->set_loaded(false);
 
+		if($this->width() && file_exists($this->file_name_with_path()))
+			return $this->set_loaded(true);
+			
 		$this->original = object_load('bors_image', $id);
 
 		if(!$this->original)
 			return $this->set_loaded(false);
-		
-		if($this->width() && file_exists($this->file_name_with_path()))
-			return $this->set_loaded(true);
 
 		$this->delete();
 		
@@ -81,6 +81,7 @@ class bors_image_thumb extends bors_image
 			$abs = true;
 		}
 
+
 		if(config('pics_base_safemodded'))
 		{
 			$file_orig_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_orig);
@@ -98,7 +99,9 @@ class bors_image_thumb extends bors_image
 			return;
 
 		mkpath($this->image_dir(), 0777);
-		$this->thumb_create($abs);
+
+		if(!$this->thumb_create($abs))
+			return $this->set_loaded(false);
 
 		if(config('pics_base_safemodded'))
 		{
@@ -140,6 +143,7 @@ class bors_image_thumb extends bors_image
 		}
 		else
 			$err = image_file_scale($this->original->file_name_with_path(), $this->file_name_with_path(), $this->geo_width, $this->geo_height, $this->geo_opts);
+
 		return $err == NULL;
 	}
 

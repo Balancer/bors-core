@@ -114,6 +114,8 @@ function lcml($txt, $params = array ())
 	$txt = str_replace("\r", '', $txt);
 	$mask = str_repeat('.', strlen($txt));
 
+	$mask = str_repeat('.', strlen($txt));
+
 	foreach(array_reverse(bors_dirs()) as $dir)
 		if(is_dir($x = $dir.'/engines/lcml/pre'))
 			$txt = ext_load($x, $txt, $mask);

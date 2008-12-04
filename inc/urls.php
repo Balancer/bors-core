@@ -81,7 +81,7 @@ function url_parse($url)
 
 	require_once('engines/bors/vhosts_loader.php');
 	$vhost_data = bors_vhost_data($host);
-//	echo ">>>"; print_d($vhost_data); exit();
+
 	if($root = @$vhost_data['document_root'])
 		$data['root'] = $root;
 

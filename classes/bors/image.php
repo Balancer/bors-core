@@ -56,10 +56,10 @@ class bors_image extends base_object_db
 
 	function init()
 	{
+		parent::init();
+		
 		if(!$this->width())
 			$this->recalculate(true);
-			
-		return parent::init();
 	}
 
 	function recalculate($db_update)
@@ -71,6 +71,7 @@ class bors_image extends base_object_db
 		$this->set_height($x[1], $db_update);
 		$this->set_size(@filesize($this->file_name_with_path()), $db_update);
 		$this->set_mime_type($x['mime'], $db_update);
+//		echo "o=".$this->original_filename();
 		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), $db_update);
 		$this->store();
 	}

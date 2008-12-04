@@ -2,8 +2,15 @@
 
 require_once 'Image/Transform.php';
 
-function image_file_scale($file_in, &$file_out, $width, $height, $opts)
+function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 {
+	$flock = __FILE__.'.lock';
+
+	while(file_exists($flock) && filemtime($flock) > time() - 60)
+		usleep(rand(1000, 5000));
+
+	file_put_contents($flock, 1);
+
 	if(config('pics_base_safemodded'))
 	{
 		$file_in = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_in);
@@ -13,8 +20,11 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts)
 	$img =& Image_Transform::factory(config('image_transform_engine'));
 	
 	if(PEAR::isError($img))
+	{
+		unlink($flock);
 		return $img;
-
+	}
+	
 	$img->load($file_in);
 	if(!$opts)
 	{
@@ -65,5 +75,6 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts)
 	mkpath(dirname($file_out), 0777, true);
 	$img->save($file_out, $img->getImageType());
 	@chmod($file_out, 0664);
+	unlink($flock);
 	return $img->isError();
 }

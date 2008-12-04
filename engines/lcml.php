@@ -112,15 +112,14 @@ function lcml($txt, $params = array ())
 	$page = empty ($GLOBALS['lcml']['page']) ? $page : $GLOBALS['lcml']['page'];
 
 	$txt = str_replace("\r", '', $txt);
-	$mask = str_repeat('.', strlen($txt));
 
+	//TODO: кривая времянка.
 	$mask = str_repeat('.', strlen($txt));
 
 	foreach(array_reverse(bors_dirs()) as $dir)
 		if(is_dir($x = $dir.'/engines/lcml/pre'))
 			$txt = ext_load($x, $txt, $mask);
 
-	//TODO: кривая времянка.
 	$mask = str_repeat('.', strlen($txt));
 
 	if(config('lcml_sharp_markup'))

@@ -50,13 +50,13 @@ class bors_image_thumb extends bors_image
 		else
 			return $this->set_loaded(false);
 
+		if($this->width() && file_exists($this->file_name_with_path()))
+			return $this->set_loaded(true);
+			
 		$this->original = object_load('bors_image', $id);
 
 		if(!$this->original)
 			return $this->set_loaded(false);
-		
-		if($this->width() && file_exists($this->file_name_with_path()))
-			return $this->set_loaded(true);
 
 		$this->delete();
 		

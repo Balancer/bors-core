@@ -173,11 +173,15 @@ class base_page extends base_object
 	}
 
 	var $stb_cr_type = '';
+	var $stb_browser_title = '';
 
 	function pre_show()
 	{
 		@header('Content-Type: text/html; charset='.config('default_character_set', 'utf-8'));
 		@header('Content-Language: '.config('page_lang', 'ru'));
+
+		if(!$this->browser_title())
+			$this->set_browser_title($this->title(), false);
 					
 		return parent::pre_show();
 	}
@@ -234,4 +238,6 @@ class base_page extends base_object
 		
 		return $this->_lcml_tags_enabled;
 	}
+	
+	function template_vars() { return parent::template_vars().' browser_title'; }
 }

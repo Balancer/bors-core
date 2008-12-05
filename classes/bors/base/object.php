@@ -289,11 +289,8 @@ class base_object extends base_empty
 
 		$called = true;
 		
-//		echo ":::"; print_d($this->data_providers());
 		foreach($this->data_providers() as $key => $value)
-		{
 			$this->add_template_data($key, $value);
-		}
 	}
 
 	function cache_static() { return 0; }
@@ -378,7 +375,6 @@ class base_object extends base_empty
 			foreach($array as $key => $val)
 			{
 				$method = "set_$key";
-//				echo "Set $key to $val<br />";
 				if(method_exists($this, $method) || $this->autofield($key) || $this->has_smart_field($key))
 					$this->$method($val, $db_update_flag);
 			}
@@ -602,6 +598,7 @@ class base_object extends base_empty
 			cache_static::drop($this);
 
 		delete_cached_object($this);
+		@unlink($this->static_file());
 
 		if(method_exists($this, 'cache_groups_parent'))
 			foreach(explode(' ', $this->cache_groups_parent()) as $group_name)

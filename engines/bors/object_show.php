@@ -67,3 +67,31 @@
 		echo $content;
 		return true;
 	}
+
+function bors_object_create($obj)
+{
+	$page = $obj->set_page($obj->args('page'));
+	if(!$obj)
+		return;
+
+	$processed = $obj->pre_parse($_GET);
+	if($processed === true)
+		return;
+			
+	$processed = $obj->pre_show();
+	if($processed === true)
+		return;
+
+	if($obj->called_url() && !preg_match('!'.preg_quote($obj->url($page)).'$!', $obj->called_url()))
+		return;
+
+	if($processed === false)
+	{
+		bors()->set_main_object($obj);
+
+		if(empty($GLOBALS['main_uri']))
+			$GLOBALS['main_uri'] = $obj->url();
+			
+		$content = $obj->content(true, true);
+	}
+}

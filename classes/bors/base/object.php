@@ -293,10 +293,6 @@ class base_object extends base_empty
 			$this->add_template_data($key, $value);
 	}
 
-	function cache_static() { return 0; }
-	function cache_static_recreate() { return false; }
-//	var $stb_cache_static = 0;
-	
 	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
 
 	function titled_url_ex($title=NULL, $append=NULL)
@@ -531,11 +527,14 @@ class base_object extends base_empty
 		return  $this->class_name().'://'.$this->id().'/'; 
 	}
 
+	function cache_static() { return 0; }
+
 	// Признак постоянного существования объекта.
 	// Если истина, то объект создаётся не по первому запросу, а при сохранении
 	// параметров и/или сбросе кеша, удалении старого статического кеша и т.п.
 	// Применимо только при cache_static === true
-	function permanent() { return false; }
+	function cache_static_recreate() { return false; }
+//	var $stb_cache_static = 0;
 
 	function cache_groups() { return ''; }
 	function cache_groups_parent() { return ''; }

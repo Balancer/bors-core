@@ -1,13 +1,18 @@
+---[ Statcache files clean ]---
 <?php
-	$_SERVER['HTTP_HOST'] = 'j4.forexpf.ru';
-	$_SERVER['DOCUMENT_ROOT'] = '/var/www/html';
+	$start = time();
 
-	define('BORS_CORE', dirname(dirname(__FILE__)));
+	define('BORS_CORE', dirname(dirname(dirname(__FILE__))));
 	define('BORS_LOCAL', dirname(BORS_CORE).'/bors-local');
 
 	include_once(BORS_CORE.'/config.php');
+	bors_init();
 
-	include_once('obsolete/DataBase.php');
+	require_once('obsolete/DataBase.php');
+	require_once('inc/processes.php');
+
+	if(!bors_thread_lock('statfile-cache-clean', 1200))
+		exit("Locked\n");
 
 	$db = &new DataBase('CACHE');
 
@@ -39,3 +44,6 @@
 		
 		echo "<br/>\n";
 	}
+
+	bors_thread_unlock('statfile-cache-clean');
+	echo "In ".(time()-$start)." sec<br/>\n";

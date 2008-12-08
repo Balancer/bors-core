@@ -40,7 +40,12 @@ class cache_static extends base_object_db
 		}
 		
 		if($object->cache_static_recreate())
-			bors_object_create($object);
+		{
+			if(config('bors_tasks'))
+				bors_tools_tasks::add_task($object, 'bors_task_statCacheRecreate', 0, 127);
+			else
+				bors_object_create($object);
+		}
 		else
 			@unlink($object->static_file());
 	}

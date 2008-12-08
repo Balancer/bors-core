@@ -26,11 +26,6 @@ class cache_static extends base_object_db
 		if(!$object)
 			return;
 
-		if($object->was_cleaned())
-			return;
-
-		$object->set_was_cleaned(true, false);
-	
 		$caches = objects_array('cache_static', array('class_id=' => $object->class_id(), 'object_id=' => $object->id()));
 
 		if(file_exists($object->static_file()))
@@ -45,7 +40,7 @@ class cache_static extends base_object_db
 		}
 		
 		if($object->cache_static_recreate())
-			$object->content();
+			bors_object_create($object);
 		else
 			@unlink($object->static_file());
 	}
@@ -78,6 +73,10 @@ class cache_static extends base_object_db
 
 		$cache->new_instance();
 		storage_db_mysql_smart::save($cache);
+
+		foreach(explode(' ', $object->cache_groups()) as $group_name)
+			if($group_name)
+				cache_group::register($group_name, $object);
 
 		$object->set_was_cleaned(false, false);
 

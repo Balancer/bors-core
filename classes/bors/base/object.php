@@ -591,41 +591,40 @@ class base_object extends base_empty
 
 	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
 
+	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }
+	function set_was_cleaned($value) { return $GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()] = $value; }
+
 	function cache_clean_self()
 	{
+		if($this->was_cleaned())
+			return;
+
+		$this->set_was_cleaned(true);
+		
 		if($this->cache_static() > 0)
 			cache_static::drop($this);
 
+		// Чистка memcache и Cache.
 		delete_cached_object($this);
-		@unlink($this->static_file());
-
-		if(method_exists($this, 'cache_groups_parent'))
-			foreach(explode(' ', $this->cache_groups_parent()) as $group_name)
-				if($group_name)
-					foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
-						if($group)
-							$group->clean();
 	}
 
 	function cache_children() { return array(); }
 
 	function cache_clean($clean_object = NULL)
 	{
-		global $cleaned;
-		
 		if(!$clean_object)
 			$clean_object = $this;
 
-		if(empty($cleaned))
-			$cleaned = array();
-				
-		$this->cache_clean_self($clean_object);
+		$this->cache_clean_self();
 		foreach($this->cache_children() as $child_cache)
-			if($child_cache && empty($cleaned[$child_cache->internal_uri()]))
-			{
-				$cleaned[$child_cache->internal_uri()] = true;
-				$child_cache->cache_clean($clean_object);
-			}
+			if($child_cache)
+				$child_cache->cache_clean_self($clean_object);
+
+		foreach(explode(' ', $this->cache_groups_parent()) as $group_name)
+			if($group_name)
+				foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
+					if($group)
+						$group->clean();
 	}
 
 	function touch() { }
@@ -781,8 +780,6 @@ class base_object extends base_empty
 
 		$obj->add_cross($data['link_class_name'], $data['link_object_id']);
 	}
-
-	var $stb_was_cleaned = false;
 
 	function default_page() { return 1; }
 

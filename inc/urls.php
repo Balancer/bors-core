@@ -102,6 +102,11 @@ function url_parse($url)
 	$data['uri'] = "http://".$host.@$data['path'];
 	//TODO: грязный хак
 	$data['uri'] = preg_replace('!^(http://files.balancer.ru/)[0-9a-f]{32}/(.*)$!', '$1$2', $data['uri']);
+
+
+	if($data['root'] == $data['local_path'])
+		$data['local_path'] .= '/';
+	
 	return $data;
 }
 

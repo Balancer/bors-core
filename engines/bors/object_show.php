@@ -72,18 +72,18 @@ function bors_object_create($obj)
 {
 	$page = $obj->set_page($obj->args('page'));
 	if(!$obj)
-		return;
+		return NULL;
 
 	$processed = $obj->pre_parse($_GET);
 	if($processed === true)
-		return;
+		return NULL;
 			
 	$processed = $obj->pre_show();
 	if($processed === true)
-		return;
+		return NULL;
 
 	if($obj->called_url() && !preg_match('!'.preg_quote($obj->url($page)).'$!', $obj->called_url()))
-		return;
+		return NULL;
 
 	if($processed === false)
 	{
@@ -92,6 +92,8 @@ function bors_object_create($obj)
 		if(empty($GLOBALS['main_uri']))
 			$GLOBALS['main_uri'] = $obj->url();
 			
-		$content = $obj->content(true, true);
+		return $obj->content(true, true);
 	}
+	
+	return NULL;
 }

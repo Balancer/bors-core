@@ -1,0 +1,8 @@
+{form name=$this->object()|get:class_name id=$this->object()|get:id action="target"}
+<table class="btab">
+<tr><td>Исходный текст</td><td>{textarea name="source" cols="70" rows="20"}</td></tr>
+<tr><td colSpan="2">{submit value="Сохранить"}</td></tr>
+</table>
+{/form}
+
+{$this->object()}

@@ -45,6 +45,7 @@ function bors_form_save(&$obj)
 				{
 					$objects_common_data['uploaded_file'][$key] = $value;
 					$objects_data['uploaded_file']['upload_name'] = $name;
+					$objects_common_data['uploaded_file']['upload_name'] = $name;
 				}
 			}
 		}
@@ -152,8 +153,6 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		$method = "remove_{$m[1]}_file";
 		$object->$method($data);
 	}
-
-//	print_d($data);
 
 	if($file_data = @$data['uploaded_file'])
 	{

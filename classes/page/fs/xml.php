@@ -6,6 +6,8 @@ class page_fs_xml extends base_page
 	function render_engine()	{ return 'render_page'; }
 	function body_engine()		{ return 'body_source'; }
 	function can_be_empty()		{ return false; }
+	function class_title()		{ return ec('Страница'); }
+	function class_title_rp()	{ return ec('Страницу'); }
 
 	var $_parents;
 	function parents() { return $this->_parents ? $this->_parents : parent::parents(); }
@@ -51,4 +53,12 @@ class page_fs_xml extends base_page
 	}
 	
 	function delete() { $this->storage()->delete($this); }
+
+	function editor_fields_list()
+	{
+		return array(
+			ec('Заголовок:') => 'title',
+			ec('Тело страницы:') => 'source|textarea=20',
+		);
+	}
 }

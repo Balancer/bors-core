@@ -8,7 +8,7 @@
 			return false;
 
 		@header("Status: 200 OK");
-		@header("HTTP/1.1 200 OK");
+//		@header("HTTP/1.1 200 OK");
 		if(config('bors_version_show'))
 		{
 			@header("X-Bors-object-class: {$obj->class_name()}");
@@ -18,7 +18,7 @@
 		$processed = $obj->pre_parse($_GET);
 		if($processed === true)
 			return true;
-			
+
 		if(!empty($_GET))
 		{
 			require_once('inc/bors/form_save.php');
@@ -63,8 +63,9 @@
 		
 		$last_modify = gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		@header('Last-Modified: '.$last_modify);
-	   
+
 		echo $content;
+
 		return true;
 	}
 

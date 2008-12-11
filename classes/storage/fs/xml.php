@@ -28,6 +28,10 @@ class storage_fs_xml extends base_null
 		if(!file_exists($file))
 			return $object->set_loaded(false);
 
+		// По дефолту в xml разрешён HTML и все BB-тэги.
+		$object->set_html_disable(false, false);
+		$object->set_lcml_tags_enabled(NULL, false);
+
 		$content = file_get_contents($file);
 		$xml = &new BorsXml;
 		$xml->parse($content);                                                                     

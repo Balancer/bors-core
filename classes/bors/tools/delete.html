@@ -1,4 +1,8 @@
-Вы уверены, что хотите удалить {$this->object()|get:class_title_rp} &laquo;{$this->object()|get:titled_url}&raquo; ({$this->id()})?
+<p title="{$this->id()}">
+Вы уверены, что хотите удалить 
+{$this->object()|get:class_title_rp|lower} 
+&laquo;{$this->object()|get:titled_url}&raquo;?
+</p>
 
 <big><center>[
 	<a href="{$smarty.server.HTTP_REFERER}">Нет</a> |

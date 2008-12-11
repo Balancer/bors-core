@@ -325,11 +325,15 @@ class base_object extends base_empty
 		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
-	function imaged_delete_url($title = NULL)
+	function imaged_delete_url($title = NULL, $text = '')
 	{
 		if($title === NULL)
 			$title = ec('Удалить объект');
-		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"del\" title=\"$title\"/></a>";
+		
+		if($text)
+			$text = '&nbsp;'.$text;
+		
+		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"del\" title=\"$title\"/>{$text}</a>";
 	}
 
 	function check_data(&$data)

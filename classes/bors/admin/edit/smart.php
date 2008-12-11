@@ -21,7 +21,7 @@ class bors_admin_edit_smart extends base_page
 
 	function pre_parse()
 	{
-		if(!($me = bors()->user()))
+		if(!($me = bors()->user()) && !config('admin_can_nologin'))
 			return bors_message(ec('Вы не авторизованы'));
 	}
 

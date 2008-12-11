@@ -336,6 +336,11 @@ class base_object extends base_empty
 		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"del\" title=\"$title\"/>{$text}</a>";
 	}
 
+	function admin_delete_link()
+	{
+		return $this->imaged_delete_url(NULL, 'Удалить '.strtolower($this->class_title_rp()));
+	}
+
 	function check_data(&$data)
 	{
 		foreach($data as $key => $val)
@@ -503,7 +508,13 @@ class base_object extends base_empty
 
 	function edit_url()  { return '/admin/edit-smart/?object='.$this->internal_uri(); }
 	function admin_url() { return '/admin/?object='.$this->internal_uri(); }
-	function delete_url()  { return '/admin/delete/?object='.$this->internal_uri(); }
+	function admin_parent_url()
+	{
+		if($o = object_load($this->admin_url()))
+			if($p = $o->parents())
+				return $p[0];
+	}
+	function delete_url()  { return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); }
 
 	var $_called_url;
 	function set_called_url($url) { return $this->_called_url = $url; }

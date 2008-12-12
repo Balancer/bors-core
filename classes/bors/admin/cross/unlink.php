@@ -3,7 +3,17 @@
 class bors_admin_cross_unlink extends base_page
 {
 	function config_class() { return config('admin_config_class'); }
-	function parents() { return array($this->id()); }
+	function parents()
+	{
+		$parents = array();
+		if($this->from())
+			$parents[] = $this->from()->admin_url();
+
+		if($this->to())
+			$parents[] = $this->to()->admin_url();
+			
+		return $parents;
+	}
 	function title() { return ec('снятие привязки'); }
 	function from() { return object_load(@$_GET['from']); }
 	function to() { return object_load(@$_GET['to']); }

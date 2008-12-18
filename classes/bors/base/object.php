@@ -289,17 +289,10 @@ class base_object extends base_empty
 
 		$called = true;
 		
-//		echo ":::"; print_d($this->data_providers());
 		foreach($this->data_providers() as $key => $value)
-		{
 			$this->add_template_data($key, $value);
-		}
 	}
 
-	function cache_static() { return 0; }
-	function cache_static_recreate() { return false; }
-//	var $stb_cache_static = 0;
-	
 	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
 
 	function titled_url_ex($title=NULL, $append=NULL)
@@ -332,11 +325,20 @@ class base_object extends base_empty
 		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
-	function imaged_delete_url($title = NULL)
+	function imaged_delete_url($title = NULL, $text = '')
 	{
 		if($title === NULL)
 			$title = ec('Удалить объект');
-		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"del\" title=\"$title\"/></a>";
+		
+		if($text)
+			$text = '&nbsp;'.$text;
+		
+		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"del\" title=\"$title\"/>{$text}</a>";
+	}
+
+	function admin_delete_link()
+	{
+		return $this->imaged_delete_url(NULL, 'Удалить '.strtolower($this->class_title_rp()));
 	}
 
 	function check_data(&$data)
@@ -378,7 +380,6 @@ class base_object extends base_empty
 			foreach($array as $key => $val)
 			{
 				$method = "set_$key";
-//				echo "Set $key to $val<br />";
 				if(method_exists($this, $method) || $this->autofield($key) || $this->has_smart_field($key))
 					$this->$method($val, $db_update_flag);
 			}
@@ -507,7 +508,13 @@ class base_object extends base_empty
 
 	function edit_url()  { return '/admin/edit-smart/?object='.$this->internal_uri(); }
 	function admin_url() { return '/admin/?object='.$this->internal_uri(); }
-	function delete_url()  { return '/admin/delete/?object='.$this->internal_uri(); }
+	function admin_parent_url()
+	{
+		if($o = object_load($this->admin_url()))
+			if($p = $o->parents())
+				return $p[0];
+	}
+	function delete_url()  { return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); }
 
 	var $_called_url;
 	function set_called_url($url) { return $this->_called_url = $url; }
@@ -535,11 +542,14 @@ class base_object extends base_empty
 		return  $this->class_name().'://'.$this->id().'/'; 
 	}
 
+	function cache_static() { return 0; }
+
 	// Признак постоянного существования объекта.
 	// Если истина, то объект создаётся не по первому запросу, а при сохранении
 	// параметров и/или сбросе кеша, удалении старого статического кеша и т.п.
 	// Применимо только при cache_static === true
-	function permanent() { return false; }
+	function cache_static_recreate() { return false; }
+//	var $stb_cache_static = 0;
 
 	function cache_groups() { return ''; }
 	function cache_groups_parent() { return ''; }
@@ -596,40 +606,40 @@ class base_object extends base_empty
 
 	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
 
+	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }
+	function set_was_cleaned($value) { return $GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()] = $value; }
+
 	function cache_clean_self()
 	{
+		if($this->was_cleaned())
+			return;
+
+		$this->set_was_cleaned(true);
+		
 		if($this->cache_static() > 0)
 			cache_static::drop($this);
 
+		// Чистка memcache и Cache.
 		delete_cached_object($this);
-
-		if(method_exists($this, 'cache_groups_parent'))
-			foreach(explode(' ', $this->cache_groups_parent()) as $group_name)
-				if($group_name)
-					foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
-						if($group)
-							$group->clean();
 	}
 
 	function cache_children() { return array(); }
 
 	function cache_clean($clean_object = NULL)
 	{
-		global $cleaned;
-		
 		if(!$clean_object)
 			$clean_object = $this;
 
-		if(empty($cleaned))
-			$cleaned = array();
-				
-		$this->cache_clean_self($clean_object);
+		$this->cache_clean_self();
 		foreach($this->cache_children() as $child_cache)
-			if($child_cache && empty($cleaned[$child_cache->internal_uri()]))
-			{
-				$cleaned[$child_cache->internal_uri()] = true;
-				$child_cache->cache_clean($clean_object);
-			}
+			if($child_cache)
+				$child_cache->cache_clean_self($clean_object);
+
+		foreach(explode(' ', $this->cache_groups_parent()) as $group_name)
+			if($group_name)
+				foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
+					if($group)
+						$group->clean();
 	}
 
 	function touch() { }
@@ -739,14 +749,14 @@ class base_object extends base_empty
 
 	function use_temporary_static_file() { return true; }
 
-	function content($can_use_static = true)
+	function content($can_use_static = true, $recreate = false)
 	{
-		$use_static = $can_use_static && config('cache_static') && $this->cache_static() > 0;
+		$use_static = $recreate || ($can_use_static && config('cache_static') && $this->cache_static() > 0);
 		$file = $this->static_file();
 		$fe = file_exists($file);
 		$fs = $fe && filesize($file) > 2000;
 
-		if($use_static && $file && $fe)
+		if($use_static && $file && $fe && !$recreate)
 			return file_get_contents($this->static_file());
 
 		if($use_static && !$fs && $this->use_temporary_static_file() && config('temporary_file_contents'))
@@ -760,7 +770,7 @@ class base_object extends base_empty
 	
 		$content = $this->direct_content();
 
-		if($use_static)
+		if($use_static || $recreate)
 			cache_static::save($this, $content);
 
 		return $content;
@@ -785,8 +795,6 @@ class base_object extends base_empty
 
 		$obj->add_cross($data['link_class_name'], $data['link_object_id']);
 	}
-
-	var $stb_was_cleaned = false;
 
 	function default_page() { return 1; }
 

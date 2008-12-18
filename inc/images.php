@@ -2,15 +2,12 @@
 
 require_once 'Image/Transform.php';
 require_once 'inc/filesystem.php';
+require_once 'inc/processes.php';
 
 function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 {
-	$flock = __FILE__.'.lock';
-
-	while(file_exists($flock) && filemtime($flock) > time() - 60)
+	while(!bors_thread_lock('image_file_scale', 120))
 		usleep(rand(1000, 5000));
-
-	file_put_contents($flock, 1);
 
 	if(config('pics_base_safemodded'))
 	{
@@ -76,6 +73,6 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 	mkpath(dirname($file_out), 0777, true);
 	$img->save($file_out, $img->getImageType());
 	@chmod($file_out, 0664);
-	unlink($flock);
+	bors_thread_unlock('image_file_scale');
 	return $img->isError();
 }

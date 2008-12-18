@@ -87,7 +87,7 @@ class bors_image extends base_object_db
 		}
 
 		if(!$this->id())
-			bors_exit('Error: empty image id');
+			debug_exit('Error: empty image id');
 
 		$this->set_original_filename($data['name'], true);
 
@@ -95,9 +95,9 @@ class bors_image extends base_object_db
 		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), true);
 		$this->set_file_name($this->id().'.'.$this->extension(), true);
 
-		@mkdir($this->image_dir(), 0777, true);
-		@chmod($this->image_dir(), 0775);
-		move_uploaded_file($data['tmp_name'], $this->file_name_with_path());
+		mkpath($this->image_dir(), 0777);
+		if(!move_uploaded_file($data['tmp_name'], $this->file_name_with_path()))
+			debug_exit("Can't load image {$data['name']}<br/>");
 		@chmod($this->file_name_with_path(), 0664);
 
 		$this->recalculate(true);
@@ -179,5 +179,20 @@ class bors_image extends base_object_db
 		if($title === NULL)
 			$title = ec('Сделать изображением по умолчанию');
 		return "<a href=\"".$this->setdefaultfor_url($object)."\"><img src=\"/bors-shared/images/notice-16.gif\" width=\"16\" height=\"16\" border=\"0\" alt=\"def\" title=\"$title\"/></a>";
+	}
+
+//	function replace_on_new_instance() { return $this->id() == 0; }
+
+	private $_parents = false;
+	function parents()
+	{
+		if($this->_parents !== false)
+			return $this->_parents;
+			
+		$this->_parents = $this->cross_objs();
+		if($p = object_load($this->parent_class_id(), $this->parent_object_id()))
+			$this->_parents[] = $p;
+		
+		return $this->_parents;
 	}
 }

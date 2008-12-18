@@ -4,7 +4,11 @@ class bors_tools_delete extends base_page
 {
 	function config_class() { return config('admin_config_class'); }
 
-	function parents() { return array($this->object()->admin_url()); }
+	function parents()
+	{
+		$obj_admin = $this->object()->admin_url();
+		return $$obj_admin ? $obj_admin : array($this->object()->internal_uri());
+	}
 	
 	function title() { return $this->object()->class_title() . ec(': подтверждение удаления'); }
 	function nav_name() { return ec('удаление'); }

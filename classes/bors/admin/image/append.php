@@ -27,7 +27,7 @@ class bors_admin_image_append extends base_object
 			$sort_order = max($cross_order, $parent_order);
 		}
 		
-		$sort_order = (intval(($sort_order-1)/10)+2)*10;
+		$sort_order = (intval(($sort_order-1)/10)+1)*10;
 
 		$img = object_new('bors_image');
 		$img->new_instance();

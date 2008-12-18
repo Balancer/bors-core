@@ -182,4 +182,17 @@ class bors_image extends base_object_db
 	}
 
 //	function replace_on_new_instance() { return $this->id() == 0; }
+
+	private $_parents = false;
+	function parents()
+	{
+		if($this->_parents !== false)
+			return $this->_parents;
+			
+		$this->_parents = $this->cross_objs();
+		if($p = object_load($this->parent_class_id(), $this->parent_object_id()))
+			$this->_parents[] = $p;
+		
+		return $this->_parents;
+	}
 }

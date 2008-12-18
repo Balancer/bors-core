@@ -8,7 +8,7 @@
 			return false;
 
 		@header("Status: 200 OK");
-		@header("HTTP/1.1 200 OK");
+//		@header("HTTP/1.1 200 OK");
 		if(config('bors_version_show'))
 		{
 			@header("X-Bors-object-class: {$obj->class_name()}");
@@ -18,7 +18,7 @@
 		$processed = $obj->pre_parse($_GET);
 		if($processed === true)
 			return true;
-			
+
 		if(!empty($_GET))
 		{
 			require_once('inc/bors/form_save.php');
@@ -63,7 +63,38 @@
 		
 		$last_modify = gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		@header('Last-Modified: '.$last_modify);
-	   
+
 		echo $content;
+
 		return true;
 	}
+
+function bors_object_create($obj)
+{
+	$page = $obj->set_page($obj->args('page'));
+	if(!$obj)
+		return NULL;
+
+	$processed = $obj->pre_parse($_GET);
+	if($processed === true)
+		return NULL;
+			
+	$processed = $obj->pre_show();
+	if($processed === true)
+		return NULL;
+
+	if($obj->called_url() && !preg_match('!'.preg_quote($obj->url($page)).'$!', $obj->called_url()))
+		return NULL;
+
+	if($processed === false)
+	{
+		bors()->set_main_object($obj);
+
+		if(empty($GLOBALS['main_uri']))
+			$GLOBALS['main_uri'] = $obj->url();
+			
+		return $obj->content(true, true);
+	}
+	
+	return NULL;
+}

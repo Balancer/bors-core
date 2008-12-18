@@ -8,6 +8,9 @@
 
 function bors_form_save(&$obj)
 {
+//	print_d($_GET);
+//	exit();
+
 	if(!empty($_GET['act']))
 	{
 		if(!$obj->access())
@@ -23,6 +26,9 @@ function bors_form_save(&$obj)
 				return true;
 		}
 	}
+
+//	print_d($_GET);
+	
 
 	if(!empty($_GET['class_name']) && $_GET['class_name'] != 'NULL')
 	{
@@ -45,6 +51,7 @@ function bors_form_save(&$obj)
 				{
 					$objects_common_data['uploaded_file'][$key] = $value;
 					$objects_data['uploaded_file']['upload_name'] = $name;
+					$objects_common_data['uploaded_file']['upload_name'] = $name;
 				}
 			}
 		}
@@ -59,7 +66,7 @@ function bors_form_save(&$obj)
 			else
 				$objects_common_data[$key] = $value;
 		}
-		
+
 		$form = $obj;
 		if($objects_data)
 		{
@@ -110,7 +117,11 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	
 //	echo "Store object $class_name($id); ".print_d($data, true)."<br/>"; debug_exit('stop0');
 	if($id)
+	{
 		$object = object_load($class_name, $id);
+		if(!$object)
+			$object = object_new($class_name, $id);
+	}
 	else
 		$object = object_new($class_name);
 
@@ -152,8 +163,6 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		$method = "remove_{$m[1]}_file";
 		$object->$method($data);
 	}
-
-//	print_d($data);
 
 	if($file_data = @$data['uploaded_file'])
 	{

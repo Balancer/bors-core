@@ -81,10 +81,15 @@ function url_parse($url)
 
 	require_once('engines/bors/vhosts_loader.php');
 	$vhost_data = bors_vhost_data($host);
+	if(empty($vhost_data) && $host == $_SERVER['HTTP_HOST'])
+		$vhost_data = array(
+			'document_root' => $_SERVER['DOCUMENT_ROOT'],
+		);
 
 	if($root = @$vhost_data['document_root'])
 		$data['root'] = $root;
 
+	//TODO: а вот это теперь, наверное, можно будет снести благодаря {if(empty($vhost_data) && $host == $_SERVER['HTTP_HOST'])} ...
 	if(empty($data['root']) && file_exists($_SERVER['DOCUMENT_ROOT'].$data['path']))
 		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
 
@@ -97,6 +102,11 @@ function url_parse($url)
 	$data['uri'] = "http://".$host.@$data['path'];
 	//TODO: грязный хак
 	$data['uri'] = preg_replace('!^(http://files.balancer.ru/)[0-9a-f]{32}/(.*)$!', '$1$2', $data['uri']);
+
+
+	if($data['root'] == $data['local_path'])
+		$data['local_path'] .= '/';
+	
 	return $data;
 }
 

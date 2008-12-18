@@ -54,6 +54,18 @@ function airbase_time($time)
 	return strftime("%Y-%m-%d",$time);
 }
 
+function smart_time($time, $human_readable = true)
+{
+	global $now;
+	if(is_today($time))
+		return ec(strftime("сегодня, %H:%M",$time));
+	
+	if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d",$now-86400))
+		return ec("вчера, ").strftime("%H:%M",$time);
+	
+	return $human_readable ? full_hdate($time) : strftime("%d.%m.%Y",$time);
+}
+
 function news_short_time($time)
 {
 	if(is_today($time))

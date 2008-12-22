@@ -10,7 +10,7 @@ function smarty_function_bors_object_load($params, &$smarty)
 		$id = NULL;
 	else
 		$id = @$params['id'];
-	
+
 	unset($params['class'], $params['id'], $params['var'], $params['show']);
 
     if(empty($class)) 
@@ -28,12 +28,12 @@ function smarty_function_bors_object_load($params, &$smarty)
 
 	if($var)
 	{
-    	$smarty->assign_by_ref($var, &$obj);
+    	$smarty->assign_by_ref($var, $obj);
 		return;
 	}
-	
+
 	if($show)
 		return $obj->$show();
-			
+
 //	return $obj->body();
 }

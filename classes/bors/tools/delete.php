@@ -7,9 +7,9 @@ class bors_tools_delete extends base_page
 	function parents()
 	{
 		$obj_admin = $this->object()->admin_url();
-		return $$obj_admin ? $obj_admin : array($this->object()->internal_uri());
+		return $obj_admin ? array($obj_admin) : array($this->object()->internal_uri());
 	}
-	
+
 	function title() { return $this->object()->class_title() . ec(': подтверждение удаления'); }
 	function nav_name() { return ec('удаление'); }
 

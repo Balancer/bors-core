@@ -329,10 +329,10 @@ class base_object extends base_empty
 	{
 		if($title === NULL)
 			$title = ec('Удалить объект');
-		
+
 		if($text)
 			$text = '&nbsp;'.$text;
-		
+
 		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"del\" title=\"$title\"/>{$text}</a>";
 	}
 
@@ -362,11 +362,11 @@ class base_object extends base_empty
 					$array[$var] = NULL;
 				unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"]);
 			}
-		}	
+		}
 
 		if($check_values && $this->check_data($data) === true)
 			return false;
-				
+
 		if($fields_list)
 		{
 			foreach(explode(' ', $fields_list) as $key)
@@ -489,20 +489,20 @@ class base_object extends base_empty
 
 		return NULL;
 	}
-	
+
 	function fields() { return array(); }
-	
+
 	function storage() { return object_load($this->storage_engine()); }
 
 	var $stb_access_engine = NULL;
 	var $stb_config_class = NULL;
-	
+
 	function access()
 	{
 		$access = $this->access_engine();
 		if(!$access)
 			$access = config('access_default', 'access_base');
-		
+
 		return object_load($access, $this);
 	}
 
@@ -513,7 +513,10 @@ class base_object extends base_empty
 		if($o = object_load($this->admin_url()))
 			if($p = $o->parents())
 				return $p[0];
+
+		return @$_SERVER['HTTP_REFERER'];
 	}
+
 	function delete_url()  { return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); }
 
 	var $_called_url;

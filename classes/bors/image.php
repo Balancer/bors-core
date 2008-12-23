@@ -107,6 +107,12 @@ class bors_image extends base_object_db
 
 	function register_file($path)
 	{
+/*		if(!file_exists($path))
+		{
+			$data = url_parse($path);
+			$path = $data['local_path'];
+		}
+*/			
 		$this->set_original_filename(basename($path), true);
 
 		$this->set_relative_path(dirname($path), true);

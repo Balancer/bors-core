@@ -569,14 +569,15 @@ class base_object extends base_empty
 		return $this->_dbh;
 	}
 
-	function sleep()
+	public function __sleep()
 	{
-		if($this->_dbh)
-			$this->_dbh->close();
-
+		if(!$this->_dbh)
+			return;
+			
+		$this->_dbh->close(); 
 		$this->_dbh = NULL;
 
-		return parent::sleep();
+		return array_keys(get_object_vars($this));
 	}
 
 	function main_db_storage() { return config('main_bors_db'); }

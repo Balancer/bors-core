@@ -6,7 +6,7 @@ require_once 'inc/processes.php';
 
 function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 {
-	while(!bors_thread_lock('image_file_scale', 120))
+	while(!bors_thread_lock('image_file_scale', 30))
 		usleep(rand(1000, 5000));
 
 	if(config('pics_base_safemodded'))

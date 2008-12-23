@@ -135,6 +135,10 @@ class bors_image_thumb extends bors_image
 		if(file_exists($this->file_name_with_path()))
 			return;
 
+
+//		echo "OriginalRP = {$this->original->relative_path()}\n"; exit();
+//		echo "Original = {$this->original->file_name_with_path()}\n";
+//		echo "Target   = {$this->file_name_with_path()}\n";
 		if($abs)
 		{
 			$at = $_SERVER['DOCUMENT_ROOT'].$this->file_name_with_path();

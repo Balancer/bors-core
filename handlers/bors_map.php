@@ -1,6 +1,14 @@
 <?php
 
 $map = array(
+	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
+	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
+
+	'/do\-login/ => common_do_login',
+	'/users/do\-login => common_do_login',
+	'/users/do\-logout => common_do_logout',
+	'/actions/do\-logout/ => common_do_logout',
+
 		'.*/\d{4}/\d{1,2}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
 		'.*/\d{4}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
 		'.* => page_fs_separate(url)',
@@ -22,11 +30,4 @@ $map = array(
 		
 		'/admin/image/append => bors_admin_image_append',
 
-	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
-	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
-
-	'/do\-login/ => common_do_login',
-	'/users/do\-login => common_do_login',
-	'/users/do\-logout => common_do_logout',
-	'/actions/do\-logout/ => common_do_logout',
 );

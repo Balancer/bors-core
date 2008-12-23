@@ -25,7 +25,7 @@ class base_page extends base_object
 			return '';
 	}
 
-	function pages_links_nul($css='pages_select', $text = NULL, $delim = '')
+	function pages_links_nul($css='pages_select', $text = NULL, $delim = '', $show_current = true)
 	{
 		if($this->total_pages() < 2)
 			return '';
@@ -34,7 +34,7 @@ class base_page extends base_object
 			$text = ec('Страницы:');
 
 		include_once('inc/design/page_split.php');
-		return '<div class="'.$css.'">'.$text.join($delim, pages_show($this, $this->total_pages(), $this->items_around_page())).'</div>';
+		return '<div class="'.$css.'">'.$text.join($delim, pages_show($this, $this->total_pages(), $this->items_around_page(), $show_current)).'</div>';
 	}
 
 	function getsort($t, $def = false)

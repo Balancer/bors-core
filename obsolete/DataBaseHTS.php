@@ -911,7 +911,7 @@ class DataBaseHTS
 	{
 		$uri = addslashes($this->normalize_uri($uri));
 		$this->dbh->query("INSERT INTO `hts_ids` SET `uri` = '$uri'");
-		$id = $this->dbh->get_last_id();
+		$id = $this->dbh->last_id();
 		if (!$id)
 			exit ("Unknown error. Can't get next ID for " + $uri);
 		return $id;

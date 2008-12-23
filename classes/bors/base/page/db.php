@@ -74,9 +74,6 @@ class base_page_db extends base_page
 
 	function _global_queries() { return array(); }
 
-	function wakeup() { $this->db = &new DataBase($this->main_db_storage()); return parent::wakeup(); }
-	function sleep() { if($this->db) $this->db->close(); $this->db = NULL; return parent::sleep(); }
-
 	function main_id_field()
 	{
 		$f = $this->fields();
@@ -106,5 +103,25 @@ class base_page_db extends base_page
 		
 		if($this->id())
 			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
+	}
+
+	public function __sleep()
+	{
+		if(!$this->db)
+			return;
+			
+		$this->db->close(); 
+		$this->db = NULL;
+
+		return array_keys(get_object_vars($this));
+	}
+
+	public function __wakeup()
+	{
+		if($this->db)
+			return;
+			
+		$driver = $this->db_driver();
+		$this->db = &new $driver($this->main_db_storage());
 	}
 }

@@ -306,13 +306,9 @@ class DataBase extends base_object
 		$ch = NULL;
 		if($cached !== false && class_exists('Cache'))
 		{
-			//				echo 0/0;
 			$ch = &new Cache();
 			if($ch->get("DataBaseQuery:{$this->db_name}-v2", $query))
-			{
-				//					echo "*****arr*****$query******************";
 				return $ch->last();
-			}
 		}
 
 		$res=array();
@@ -508,39 +504,29 @@ class DataBase extends base_object
 		}
 	}
 
-	function get_last_id()
-	{
-		return mysql_insert_id($this->dbh);
-	}
-
 	function last_id()
 	{
 		return mysql_insert_id($this->dbh);
 	}
 
-	function get_field_list()
-	{
-		return $this->get_array("SELECT * FROM `hts_keys`");
-	}
-
 	static function instance($db = NULL) { return new DataBase($db); }
-	function close() {  /*@mysql_close($this->dbh);*/ $this->dbh = NULL; }
-	function sleep()
+	function close()
 	{
-		debug_hidden_log('sleep-errors', "Sleep of DataBase");
-		$this->close();
-		return parent::sleep();
+//		if($this->dbh)
+//			mysql_close($this->dbh);
+		
+		$this->dbh = NULL; 
 	}
 
 	public function __sleep()
 	{
 		if(!$this->dbh)
-		return;
+			return;
 			
-		//		debug_hidden_log("Serialize of DataBase");
+//		mysql_close($this->dbh);
+		debug_hidden_log("SerializeOfDataBase");
 		return array_keys(get_object_vars($this));
 	}
 
-	function wakeup() { $this->reconnect(); return parent::wakeup(); }
 	function can_cached() { return false; }
 }

@@ -138,10 +138,7 @@ class base_page extends base_object
 		return template_assign_data($this->body_template(), $data);
 	}
 
-	function compiled_source()
-	{
-		return lcml($this->source());
-	}
+	function compiled_source() { return lcml($this->source()); }
 
 	function _queries() { return array(); }
 

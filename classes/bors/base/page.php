@@ -16,13 +16,13 @@ class base_page extends base_object
 
 	function pages_links($css='pages_select', $before='', $after='')
 	{
+
+		if($this->total_pages() < 2)
+			return '';
+		
 		include_once("inc/design/page_split.php");
 		$pages = '<li>'.join('</li><li>', pages_show($this, $this->total_pages(), $this->items_around_page())).'</li>';
-
-		if($this->total_pages() > 1)
-			return '<div class="'.$css.'">'.$before.ec('<ul><li>Страницы:</li>').$pages.'</ul>'.$after.'</div>';
-		else
-			return '';
+		return '<div class="'.$css.'">'.$before.ec('<ul><li>Страницы:</li>').$pages.'</ul>'.$after.'</div>';
 	}
 
 	function pages_links_nul($css='pages_select', $text = NULL, $delim = '', $show_current = true)

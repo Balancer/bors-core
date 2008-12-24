@@ -124,4 +124,6 @@ class base_page_db extends base_page
 		$driver = $this->db_driver();
 		$this->db = &new $driver($this->main_db_storage());
 	}
+
+	function compiled_source() { return lcml($this->source()); }
 }

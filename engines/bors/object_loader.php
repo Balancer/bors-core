@@ -443,7 +443,7 @@ function &object_init($class_name, $object_id, $args = array())
 	unset($args['local_path']);
 	unset($args['no_load_cache']);
 
-	if(method_exists($obj, 'set_args'))
+	if(method_exists($obj, 'set_args') && $args)
 		$obj->set_args($args);
 		
 	if($m = defval($args, 'match'))

@@ -525,7 +525,7 @@ class base_object extends base_empty
 	
 	var $stb_url_engine = 'url_calling';
 	private $_url_engine = false;
-	function url($page=1)
+	function url($page = NULL)
 	{
 		if(!$this->_url_engine || !$this->_url_engine->id())
 		{

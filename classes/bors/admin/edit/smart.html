@@ -8,6 +8,7 @@
 {if $type == '' or $type == 'input'}{input name=$field_name class="w100p"}{/if}
 {if $type == 'dropdown'}{dropdown name=$field_name list=$arg args=$args class="w100p"}{/if}
 {if $type == 'textarea'}{textarea name=$field_name rows=$arg class="w100p"}{/if}
+{if $type == 'image'}{bors_object_load class="bors_image" id=$object|get:$field_name var="img"}{$img|get:thumbnail:$arg|get:html_code}{/if}
 </td></tr>
 {/foreach}
 <tr><th>&nbsp;</th><th>{submit value="Сохранить"}</th></tr>

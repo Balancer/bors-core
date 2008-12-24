@@ -57,7 +57,7 @@ class bors_image extends base_object_db
 	function init()
 	{
 		parent::init();
-		
+
 		if(!$this->width())
 			$this->recalculate(true);
 	}
@@ -101,12 +101,18 @@ class bors_image extends base_object_db
 		@chmod($this->file_name_with_path(), 0664);
 
 		$this->recalculate(true);
-		
+
 		return $this;
 	}
 
 	function register_file($path)
 	{
+/*		if(!file_exists($path))
+		{
+			$data = url_parse($path);
+			$path = $data['local_path'];
+		}
+*/			
 		$this->set_original_filename(basename($path), true);
 
 		$this->set_relative_path(dirname($path), true);
@@ -117,7 +123,7 @@ class bors_image extends base_object_db
 		@chmod($this->file_name_with_path(), 0664);
 
 		$this->recalculate(true);
-		
+
 		return $this;
 	}
 
@@ -136,10 +142,10 @@ class bors_image extends base_object_db
 	{
 		if($desc = $this->description())
 			return $desc;
-		
+
 		if($title = $this->title())
 			return $title;
-		
+
 		return ec('[без имени]');
 	}
 
@@ -147,10 +153,10 @@ class bors_image extends base_object_db
 	{
 		if($alt = $this->alt())
 			return $alt;
-		
+
 		if($desc = $this->description())
 			return $desc;
-		
+
 		return '';
 	}
 
@@ -162,7 +168,7 @@ class bors_image extends base_object_db
 
 		if(!file_exists($file))
 			return false;
-		
+
 		@header('Content-type: ' . $this->mime_type());
 		@header('Content-Length: ' . filesize($file));
 		echo file_get_contents($file);
@@ -188,11 +194,21 @@ class bors_image extends base_object_db
 	{
 		if($this->_parents !== false)
 			return $this->_parents;
-			
+
 		$this->_parents = $this->cross_objs();
 		if($p = object_load($this->parent_class_id(), $this->parent_object_id()))
 			$this->_parents[] = $p;
-		
+
 		return $this->_parents;
 	}
+
+	function editor_fields_list()
+	{
+		return array(
+			ec('Заголовок:') => 'title',
+			ec('Изображение:') => 'id|image=468x468',
+		);
+	}
+
+	function access_engine() { return config('access_public_class', 'access_base'); }
 }

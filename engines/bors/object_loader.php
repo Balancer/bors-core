@@ -76,7 +76,6 @@ function &load_cached_object($class_name, $id, $args, &$found = 0)
 
 			if($x->can_cached() && !$updated)
 			{
-//				$x->wakeup();
 //				$GLOBALS['bors_data']['cached_objects4'][get_class($x)][$x->id()] = $x;
 				$found = 2;
 				return $x;
@@ -101,8 +100,6 @@ function save_cached_object(&$object, $delete = false)
 	if(($memcache = config('memcached_instance')) && $object->can_cached())
 	{
 		$hash = 'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
-
-//		$object->sleep();
 
 		if($delete)
 			@$memcache->delete($hash);
@@ -446,7 +443,7 @@ function &object_init($class_name, $object_id, $args = array())
 	unset($args['local_path']);
 	unset($args['no_load_cache']);
 
-	if(method_exists($obj, 'set_args'))
+	if(method_exists($obj, 'set_args') && $args)
 		$obj->set_args($args);
 		
 	if($m = defval($args, 'match'))

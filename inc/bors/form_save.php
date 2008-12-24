@@ -15,7 +15,7 @@ function bors_form_save(&$obj)
 	{
 		if(!$obj->access())
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($obj)."; access_engine=".$obj->access_engine());
-	
+
 		if(!$obj->access()->can_action($_GET['act']))
 			return bors_message(ec("[1] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).", method=can_action)"));
 
@@ -28,7 +28,6 @@ function bors_form_save(&$obj)
 	}
 
 //	print_d($_GET);
-	
 
 	if(!empty($_GET['class_name']) && $_GET['class_name'] != 'NULL')
 	{
@@ -55,7 +54,7 @@ function bors_form_save(&$obj)
 				}
 			}
 		}
-		
+
 		foreach($_GET as $key => $value)
 		{
 			if(is_array($value))
@@ -84,7 +83,7 @@ function bors_form_save(&$obj)
 		}
 		else
 			$form = bors_form_save_object($_GET['class_name'], @$_GET['id'], $objects_common_data, true, true);
-		
+
 		if($form === true)
 			return true;
 
@@ -95,7 +94,7 @@ function bors_form_save(&$obj)
 
 			if($_GET['go'] == "newpage_admin")
 				return go($form->admin_url(1));
-					
+
 			if($form)
 			{
 				$_GET['go'] = str_replace('%OBJECT_ID%', $form->id(), $_GET['go']);

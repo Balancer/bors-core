@@ -72,4 +72,5 @@ class base_rss extends base_page
 	
 	//TODO: Реализовать статическое кеширование файлов, отличных от index.html / text/html
 	function cache_static() { return 0; }
+	function index_file() { return 'index.xml'; }
 }

@@ -94,7 +94,7 @@ function url_parse($url)
 		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
 
 	if($data['local'] = !empty ($data['root']))
-		$data['local_path'] = $data['root'].str_replace('http://'.$host, '', $url);
+		$data['local_path'] = $data['root'].preg_replace('!^http://'.preg_quote($host).'!', '', $url);
 
 	//TODO: грязный хак
 	$data['local_path'] = preg_replace('!^(/var/www/files.balancer.ru/files/)[0-9a-f]{32}/(.*)$!', '$1$2', @$data['local_path']);
@@ -106,7 +106,10 @@ function url_parse($url)
 
 	if(@$data['root'] == $data['local_path'])
 		$data['local_path'] .= '/';
-	
+
+	if(preg_match('/^(.+?)\?.+/', $data['local_path'], $m))
+		$data['local_path'] = $m[1];
+
 	return $data;
 }
 

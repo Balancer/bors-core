@@ -33,7 +33,7 @@ class DataBase extends base_object
 		//			debug_hidden_log("DB Construct");
 
 		if(empty($base))
-		$base = config('main_bors_db');
+			$base = config('main_bors_db');
 			
 		$this->db_name = $base;
 			

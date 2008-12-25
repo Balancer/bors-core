@@ -34,7 +34,7 @@ class base_image_thumbnail extends base_image
 		if(!$this->original->file_name() || !@filesize($this->original->file_name_with_path()))
 			return false;
 
-		@mkdir($this->image_dir(), 0777, true);
+		mkpath($this->image_dir(), 0777);
 		@chmod($this->image_dir(), 0777);
 		$this->thumb_create($this->geometry);
 

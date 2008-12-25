@@ -70,7 +70,7 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 		
 	}
 	
-	mkpath(dirname($file_out), 0777, true);
+	mkpath(dirname($file_out), 0777);
 	$img->save($file_out, $img->getImageType());
 	@chmod($file_out, 0664);
 	bors_thread_unlock('image_file_scale');

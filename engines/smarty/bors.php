@@ -18,10 +18,10 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	$smarty->cache_dir   = secure_path(config('cache_dir').'/smarty-cache/');
 
 	if(!@file_exists($smarty->compile_dir))
-		@mkdir($smarty->compile_dir, 0777, true);
+		@mkpath($smarty->compile_dir, 0777);
 	@chmod($smarty->compile_dir, 0777);
 	if(!@file_exists($smarty->cache_dir))
-		@mkdir($smarty->cache_dir, 0777, true);
+		@mkpath($smarty->cache_dir, 0777);
 	@chmod($smarty->cache_dir, 0777);
 
 	$caching = !$obj->is_cache_disabled() && config('templates_cache_disabled') !== true;

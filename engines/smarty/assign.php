@@ -19,9 +19,9 @@
 		$smarty->cache_dir   = config('cache_dir').'/smarty-cache/';
 
 		if(!file_exists($smarty->compile_dir))
-			@mkdir($smarty->compile_dir, 0775, true);
+			@mkpath($smarty->compile_dir, 0775);
 		if(!file_exists($smarty->cache_dir))
-			@mkdir($smarty->cache_dir, 0775, true);
+			@mkpath($smarty->cache_dir, 0775);
 
 
 		$caching = !is_null($uri)

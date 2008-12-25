@@ -86,7 +86,7 @@ class cache_static extends base_object_db
 		$object->set_was_cleaned(false, false);
 
 //		echo "$file<br />";
-		@mkdir(dirname($file), 0777, true);
+		mkpath(dirname($file), 0777);
 		@chmod(dirname($file), 0777);
 		@file_put_contents($file, $content);
 		@chmod($file, 0664);

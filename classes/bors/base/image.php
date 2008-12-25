@@ -40,7 +40,7 @@ class base_image extends base_object
 		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), true);
 		$this->set_file_name($this->id().'.'.$this->extension(), true);
 
-		@mkdir($this->image_dir(), 0777, true);
+		mkpath($this->image_dir(), 0777);
 		move_uploaded_file($data['tmp_name'], $this->file_name_with_path());
 
 		$this->recalculate(true);

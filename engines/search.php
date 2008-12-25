@@ -6,7 +6,8 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 		return $object;
 
 	debug_hidden_log('blocked-code-errors', "Try to index $object");
-	bors_exit('Try to reindex');
+	echo('Try to reindex '.$object);
+	return;
 	
 	$source	= $object->search_source();
 	$title	= $object->title();

@@ -1,10 +1,9 @@
 ---[ Timed tasks ]---
 <?php
 
-define('BORS_CORE', dirname(dirname(dirname(__FILE__))));
-define('BORS_LOCAL', dirname(BORS_CORE).'/bors-local');
+require_once('../config.php');
 
-include_once(BORS_CORE.'/config.php');
+require_once(BORS_CORE.'/config.php');
 bors_init();
 
 $start = time();

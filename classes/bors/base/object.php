@@ -552,6 +552,7 @@ class base_object extends base_empty
 	// параметров и/или сбросе кеша, удалении старого статического кеша и т.п.
 	// Применимо только при cache_static === true
 	function cache_static_recreate() { return false; }
+	function cache_static_can_be_dropped() { return true; }
 //	var $stb_cache_static = 0;
 
 	function cache_groups() { return ''; }
@@ -620,7 +621,7 @@ class base_object extends base_empty
 
 		$this->set_was_cleaned(true);
 		
-		if($this->cache_static() > 0)
+		if($this->cache_static() > 0 && $this->cache_static_can_be_dropped())
 			cache_static::drop($this);
 
 		// Чистка memcache и Cache.
@@ -747,6 +748,12 @@ class base_object extends base_empty
 		$file = @$data['local_path'];
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
+
+		if(preg_match('/viewforum.php/', $file))
+		{
+			debug_hidden_log('stat-cache', 'try to cache viewforum.php!');
+			return NULL;
+		}
 
 		return $file;
 	}

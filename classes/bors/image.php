@@ -80,6 +80,24 @@ class bors_image extends base_object_db
 
 	function upload($data, $dir)
 	{
+		if(!file_exists($file = $data['tmp_name']))
+		{
+			debug_hidden_log('image-error', 'Upload not existens file '.$file);
+			debug_exit("Can't load image {$data['name']}: File not exists<br/>");
+		}
+
+		if(!($x = @getimagesize($file)))
+		{
+			debug_hidden_log('image-error', 'Can not get image sizes for '.$file);
+			debug_exit("Can't load image {$data['name']}: Incorrect image<br/>");
+		}
+
+		if(!$x[0] || !$x[1] || !preg_match('/^image/', $x['mime']))
+		{
+			debug_hidden_log('image-error', 'Got wrong image sizes for '.$file);
+			debug_exit("Can't load image {$data['name']}: Wrong file format<br/>");
+		}
+
 		if(!$this->id())
 		{
 			debug_hidden_log('new-instance-errors', 'empty image id, try to create new by store');
@@ -96,7 +114,7 @@ class bors_image extends base_object_db
 		$this->set_file_name($this->id().'.'.$this->extension(), true);
 
 		mkpath($this->image_dir(), 0777);
-		if(!move_uploaded_file($data['tmp_name'], $this->file_name_with_path()))
+		if(!move_uploaded_file($file, $this->file_name_with_path()))
 			debug_exit("Can't load image {$data['name']}<br/>");
 		@chmod($this->file_name_with_path(), 0664);
 
@@ -112,7 +130,7 @@ class bors_image extends base_object_db
 			$data = url_parse($path);
 			$path = $data['local_path'];
 		}
-*/			
+*/
 		$this->set_original_filename(basename($path), true);
 
 		$this->set_relative_path(dirname($path), true);

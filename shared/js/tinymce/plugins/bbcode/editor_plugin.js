@@ -61,7 +61,7 @@
 			rep(/<u>/gi,"[u]");
 			rep(/<\/u>/gi,"[/u]");
 			rep(/<br>/gi,"\n");
-			rep(/<br [^>]*>/gi,"\n");
+			rep(/<br [^>]*?>/gi,"\n");
 			rep(/<p>/gi,"\n\n");
 			rep(/<p [^>]*>/gi,"\n\n");
 			rep(/<span[^>]*>/gi,"");

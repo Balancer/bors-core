@@ -517,7 +517,10 @@ class base_object extends base_empty
 		return @$_SERVER['HTTP_REFERER'];
 	}
 
-	function delete_url()  { return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); }
+	function delete_url()
+	{
+		return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); 
+	}
 
 	var $_called_url;
 	function set_called_url($url) { return $this->_called_url = $url; }

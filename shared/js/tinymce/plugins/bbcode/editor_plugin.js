@@ -92,6 +92,12 @@
 			rep(/<tbody>/gi,"");
 			rep(/<\/tbody>/gi,"");
 
+			rep(/<object ([^>]*?)>/gi,"[object $1]");
+			rep(/<\/object>/gi,"[/object]");
+			rep(/<param ([^>]*?)\s*\/>/gi,"[param $1][/param]");
+			rep(/<param ([^>]*?)>/gi,"[param $1]");
+			rep(/<\/param>/gi,"[/param]");
+
 /*
 			rep(/<font.*?color=\"(.*?)\".*?class=\"codeStyle\".*?>(.*?)<\/font>/gi,"[code][color=$1]$2[/color][/code]");
 			rep(/<font.*?color=\"(.*?)\".*?class=\"quoteStyle\".*?>(.*?)<\/font>/gi,"[quote][color=$1]$2[/color][/quote]");
@@ -153,6 +159,12 @@
 			rep(/\[td rowspan=\"(\d+)\"\]/gi,"<td rowspan=\"$1\">");
 			rep(/\[td colspan=\"(\d+)\"\]/gi,"<td colspan=\"$1\">");
 			rep(/\[\/td\]/gi,"</td>");
+
+			rep(/\[object (.+?)\]/gi,"<object $1>");
+			rep(/\[\/object\]/gi,"</object>");
+			rep(/\[param (.+?)\]/gi,"<param $1>");
+			rep(/\[\/param\]/gi,"</param>");
+
 			return _text; 
 		}
 	});

@@ -14,15 +14,20 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 		$file_in = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_in);
 	}
 
-//	echo "image_file_scale($file_in, $file_out, $width, $height, $opts)";
+	$data = getimagesize($file_in);
+	if(!$data || !$data[0] || $data[0] > 2048 || $data[1] > 2048)
+		return false;
+
+//	echo "image_file_scale($file_in, $file_out, $width, $height, $opts)<br/>\n";
+
 	$img =& Image_Transform::factory(config('image_transform_engine'));
-	
+
 	if(PEAR::isError($img))
 	{
 		unlink($flock);
 		return $img;
 	}
-	
+
 	$img->load($file_in);
 	if(!$opts)
 	{
@@ -36,7 +41,7 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 	else
 	{
 		$opts = explode(',', $opts);
-		
+
 		$img_h = $img->getImageHeight();
 		$img_w = $img->getImageWidth();
 
@@ -44,12 +49,12 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 			$width = $height * $img_w / $img_h;
 		if(!$height)
 			$height = $width * $img_h / $img_w;
-	
+
 		$scale_up = in_array('up', $opts);
 		$crop = in_array('crop', $opts);
-		
+
 		$scale_down = ($height && $img_h >= $height) || ($width && $img_w >= $width);
-		
+
 		if($scale_up || $scale_down) // ресайз обязателен
 		{
 			$upw = $img_w*$height/$img_h;
@@ -60,16 +65,16 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 				$upw = $width;
 				$uph = $img_h*$width/$img_w;
 			}
-					
+
 			$img->resize($upw, $uph);
 			if($upw > $width || $uph > $height)
 				$img->crop($width, $height, ($upw-$width)/2, ($uph-$height)/2);
 
 //			bors_exit("img={$img_w}x{$img_h}, need={$width}x{$height}, up=$scale_up, crop=$crop, upWxH={$upw}x{$uph}");
 		}
-		
+
 	}
-	
+
 	mkpath(dirname($file_out), 0777);
 	$img->save($file_out, $img->getImageType());
 	@chmod($file_out, 0664);

@@ -224,6 +224,7 @@ class bors_image extends base_object_db
 	{
 		return array(
 			ec('Заголовок:') => 'title',
+			ec('Описание:') => 'description|textarea',
 			ec('Изображение:') => 'id|image=468x468',
 		);
 	}

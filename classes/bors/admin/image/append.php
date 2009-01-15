@@ -17,6 +17,12 @@ class bors_admin_image_append extends base_object
 		if(!$obj)
 			return;
 
+		$tmp_file = $data['tmp_name'];
+
+		$data = getimagesize($tmp_file);
+		if(!$data || !$data[0] || $data[0] > config('image_upload_max_width', 2048) || $data[1] > config('image_upload_max_height', 2048))
+			return;
+
 		$sort_order = intval($get['sort_order']);
 
 		if(!$sort_order)
@@ -32,7 +38,7 @@ class bors_admin_image_append extends base_object
 		$img = object_new('bors_image');
 		$img->new_instance();
 		$img->upload(array(
-			'tmp_name' => $data['tmp_name'],
+			'tmp_name' => $tmp_file,
 			'name' => $data['name'],
 		), $get['upload_dir']);
 

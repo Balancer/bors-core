@@ -93,7 +93,6 @@
 		}
 	}
 
-
 	$_GET = array_merge($_GET, $_POST);
 
 	require_once('engines/bors/object_show.php');

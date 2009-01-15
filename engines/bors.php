@@ -54,9 +54,11 @@ function bors_object_new_instance_db(&$object)
 
 //	debug_trace();
 
-	$object->set_create_time(time(), true);
-	$object->set_modify_time(time(), true);
-	
+	if(!$object->create_time())
+		$object->set_create_time(time(), true);
+	if(!$object->modify_time())
+		$object->set_modify_time(time(), true);
+
 	$object->storage()->create($object);
 }
 

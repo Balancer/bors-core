@@ -798,6 +798,7 @@ class base_object extends base_empty
 	function cross_objs($to_class = '') { return bors_get_cross_objs($this, $to_class); }
 	function cross_objects($to_class = '') { return bors_get_cross_objs($this, $to_class); }
 	function add_cross($class, $id, $order = 0) { return bors_add_cross($this->class_id(), $this->id(), $class, $id, $order); }
+	function add_cross_object($object, $order = 0) { return bors_add_cross_obj($this, $object, $order); }
 	function cross_remove_object($obj) { bors_remove_cross_pair($this->class_id(), $this->id(), $obj->class_id(), $obj->id()); }
 
 	function on_action_link($data)

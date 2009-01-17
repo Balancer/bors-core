@@ -16,7 +16,10 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 
 	$data = getimagesize($file_in);
 	if(!$data || !$data[0] || $data[0] > 2048 || $data[1] > 2048)
+	{
+		debug_hidden_log('image_error', "{$file_in} -> {$file_out}($width, $height, $opts) convert error: ".@$data[0].'x'.@$data[1]);
 		return false;
+	}
 
 //	echo "image_file_scale($file_in, $file_out, $width, $height, $opts)<br/>\n";
 

@@ -104,17 +104,17 @@ class DataBase extends base_object
 	function query($query, $ignore_error=false)
 	{
 		if(!$query)
-		return;
+			return;
 
 		if(!$this->dbh)
-		$this->reconnect();
+			$this->reconnect();
 
 		if(!config('mysql_disable_autoselect_db'))
-		@mysql_select_db($this->db_name, $this->dbh);
+			@mysql_select_db($this->db_name, $this->dbh);
 		//					 or die(__FILE__.':'.__LINE__." Could not select database '{$this->db_name}' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
 			
 		if(empty($GLOBALS['global_db_queries']))
-		$GLOBALS['global_db_queries'] = 0;
+			$GLOBALS['global_db_queries'] = 0;
 			
 		$GLOBALS['global_db_queries']++;
 
@@ -134,7 +134,7 @@ class DataBase extends base_object
 		//				debug_hidden_log('query', "time: {$qtime}\nquery: ".$query);
 
 		if(empty($GLOBALS['stat']['queries_time']))
-		$GLOBALS['stat']['queries_time'] = 0;
+			$GLOBALS['stat']['queries_time'] = 0;
 
 		$GLOBALS['stat']['queries_time'] += $qtime;
 
@@ -142,22 +142,22 @@ class DataBase extends base_object
 		debug_hidden_log('mysql-slow', "Slow query [{$qtime}s]: ".$query);
 			
 		if(@$_GET['log_level'] == 4 && $qtime > @$_GET['qtime'])
-		echolog("<small>query {$GLOBALS['global_db_queries']}($qtime)=|".htmlspecialchars($query)."|</small>", 4);
+			echolog("<small>query {$GLOBALS['global_db_queries']}($qtime)=|".htmlspecialchars($query)."|</small>", 4);
 
 		if(config('debug_mysql_queries_log'))
-		debug_hidden_log('mysql-queries', "[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query);
+			debug_hidden_log('mysql-queries', "[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query);
 			
 		if(loglevel(11))
-		debug_trace();
+			debug_trace();
 
 		echolog("<xmp>result=|".print_r($this->result, true)."|</xmp>", 6);
 
 		//   @mysql_num_rows(), ..	SELECT!
 		if($this->result)
-		if(preg_match("!^SELECT!", $query))
-		return $this->rows = mysql_num_rows($this->result);
-		else
-		return $this->result;
+			if(preg_match("!^SELECT!", $query))
+				return $this->rows = mysql_num_rows($this->result);
+			else
+				return $this->result;
 
 		if(!$ignore_error)
 		{

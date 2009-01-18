@@ -150,7 +150,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 			if($object->$method($data))
 				return true;
 	}
-	
+
 	if($object->check_data($data) === true)
 		return true;
 
@@ -177,13 +177,13 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 	if(!$object->set_fields($data, true))
 		return true;
-		
+
 	if($last)
 	{
 		$object->set_modify_time(time(), true);
 		$object->post_set($data);
 	}
-	
+
 	if(!$object->id() && method_exists($object, 'new_instance'))
 		$object->new_instance();
 

@@ -3,12 +3,12 @@
 function smarty_function_dropdown($params, &$smarty)
 {
 	extract($params);
-		
+
 	$obj = $smarty->get_template_vars('current_form_class');
-		
+
 	echo "<select";
 
-	foreach(split(' ', 'size style multiple') as $p)
+	foreach(explode(' ', 'size style multiple') as $p)
 		if(!empty($$p))
 			echo " $p=\"{$$p}\"";
 
@@ -44,12 +44,12 @@ function smarty_function_dropdown($params, &$smarty)
 	{
 		eval('$list='.$list);
 	}
-	
+
 	if(empty($get))
 		$current = preg_match('!^\w+$!', $name) ? (isset($value)?$value:$obj->$name()) : 0;
 	else
 		$current = $obj->$get();
-		
+
 	if(!$current && !empty($list['default']))
 		$current = $list['default'];
 
@@ -59,6 +59,6 @@ function smarty_function_dropdown($params, &$smarty)
 	foreach($list as $id => $name)
 		if($id !== 'default')
 			echo "<option value=\"$id\"".(in_array($id, $current) ? " selected=\"selected\"" : "").">$name</option>\n";
-	
+
 	echo "</select>";
 }

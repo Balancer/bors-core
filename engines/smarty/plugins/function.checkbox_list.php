@@ -2,34 +2,57 @@
 	function smarty_function_checkbox_list($params, &$smarty)
 	{
 		extract($params);
-		
+
 		$obj = $smarty->get_template_vars('current_form_class');
-		
+
 		$params = "";
-		foreach(split(' ', 'size style') as $p)
+		foreach(explode(' ', 'size style') as $p)
 			if(!empty($$p))
 				$params .= " $p=\"{$$p}\"";
 
-	if(preg_match("!^(\w+)\->(\w+)!", $list, $m))
+	if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))
 	{
 		if($m[1] == 'this')
-			$list = $obj->$list();
+			$list = $obj->$m[2]();
 		else
 			$list = object_load($m[1])->$m[2]();
 	}
+	elseif(preg_match("!^(\w+)\->(\w+)\('(.+)'\)!", $list, $m))
+	{
+		if($m[1] == 'this')
+			$list = $obj->$m[2]($m[3]);
+		else
+			$list = object_load($m[1])->$m[2]($m[3]);
+	}
+	elseif(preg_match("!^\w+$!", $list))
+	{
+		$list = &new $list(@$args);
+		$list = $list->named_list();
+	}
 	else
-		$list = object_load($list)->named_list();
+	{
+		eval('$list='.$list);
+	}
 
-	$current = $obj->$name();
-		
 	if(!$current && !empty($list['default']))
 		$current = $list['default'];
 
 	if(empty($delim))
 		$delim = "<br />";
-	
+
 	$ids = array();
-	
+
+	if(empty($get))
+		$current = preg_match('!^\w+$!', $name) ? (isset($value)?$value:$obj->$name()) : 0;
+	else
+		$current = $obj->$get();
+
+	if(!$current && !empty($list['default']))
+		$current = $list['default'];
+
+	if(!is_array($current))
+		$current = array($current);
+
 	foreach($list as $id => $iname)
 	{
 		$ids[] = $id;

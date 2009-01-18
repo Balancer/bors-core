@@ -602,7 +602,7 @@ class base_object extends base_empty
 
 	function set_checkboxes_list($check_list, $db_up)
 	{
-		foreach(split(',', $check_list) as $name)
+		foreach(explode(',', $check_list) as $name)
 			if(empty($_GET[$name]))
 				$this->{'set_'.$name}(array(), $db_up);
 	}
@@ -623,7 +623,7 @@ class base_object extends base_empty
 			return;
 
 		$this->set_was_cleaned(true);
-		
+
 		if($this->cache_static() > 0 && $this->cache_static_can_be_dropped())
 			cache_static::drop($this);
 

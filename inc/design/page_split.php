@@ -59,7 +59,8 @@
 	{
 		$pages = array();
 		$total_pages = intval($total_pages);
-		$current_page = $show_current ? $obj->args('page', $show_current ? 1 : NULL) : -1;
+//		$current_page = $show_current ? $obj->args('page', $show_current ? 1 : NULL) : -1;
+		$current_page = $show_current ? $obj->page() : -1;
 
 		if($total_pages < 2)
 			return $pages;

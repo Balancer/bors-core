@@ -18,6 +18,14 @@ class bors_admin_edit extends base_page
 		);
 	}
 	
+	function pre_show()
+	{
+		if(!$this->object())
+			return bors_message(ec('Неизвестный объект '.@$_GET['object']));
+		
+		return false;
+	}
+	
 	function parents() { return array($this->object()); }
 	function title() { return ec('Редактор объекта ').$this->object()->title(); }
 	function nav_name() { return ec('редактор'); }

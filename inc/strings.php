@@ -80,3 +80,5 @@ function truncate($string, $length = 80, $etc = '...', $break_words = false, $mi
         return $string;
     }
 }
+
+function stripq($text) { return str_replace('\\"', '"', $text); }

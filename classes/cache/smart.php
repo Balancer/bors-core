@@ -26,7 +26,7 @@ class cache_smart extends cache_base
 			}
 		}
 				
-		$dbh = &new driver_mysql(config('cache_database'));
+		$dbh = new driver_mysql(config('cache_database'));
 		$row = $dbh->select('cache', '*', array('raw hmd' => $this->last_hmd));
 		$dbh->close(); $dbh = NULL;
 		$this->last = $row['value'] ? @unserialize($row['value']) : $row['value'];
@@ -64,9 +64,8 @@ class cache_smart extends cache_base
 		if(config('cache_disabled'))
 			return $this->last = $value;
 
-
 		// Если время хранения отрицательное - используется только memcached, при его наличии.
-		
+	
 		if($memcache = config('memcached_instance'))
 		{
 //			$memcache = &new Memcache;
@@ -77,6 +76,9 @@ class cache_smart extends cache_base
 			$time_to_expire = abs($time_to_expire);
 
 		$do_time = microtime(true) - $this->start_time;
+		if($do_time < 0.01 && $time_to_expire > 0)
+			debug_hidden_log('cache-not-needed', $do_time);
+		
 		if($time_to_expire > 0 && $do_time > 0.02)
 		{
 			$dbh = &new driver_mysql(config('cache_database'));

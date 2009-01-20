@@ -14,13 +14,15 @@
         }
         closedir($dh);
         
+//		echo "[$txt] $dir<br/>\n";
+		
         sort($files);
 
 		$functions = array();
 
         foreach($files as $file) 
         {
-//            echo "load $file<br>\n";
+//			echo "load $file<br/>\n";
 
             if(preg_match("!(.+)\.php$!", $file, $m))
             {
@@ -34,6 +36,7 @@
 //            else
 //                ext_load("$dir/$file");
 
+//			echo "After: $txt<br/>\n";
         }
 
 		if(!$mask)
@@ -89,7 +92,9 @@
 		foreach($functions as $fn)
 		{
 			$out = $txt;
+//			echo "$fn: "; print_d(restore_format($txt));
 			$txt = $fn($txt);
+
 			if(!$txt && $out)
 				echo "Drop on $fn convert '".substr($out,0,256)."...'";
 		}

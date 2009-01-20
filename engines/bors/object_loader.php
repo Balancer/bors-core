@@ -203,7 +203,7 @@ function class_load_by_local_url($url, $args)
 				$check_url .= '?'.$url_data['query'];
 			
 //			if(debug_is_balancer())	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
-			if(preg_match("!^http://({$url_data['host']}[^/]*)$url_pattern$!", $check_url, $match))
+			if(preg_match("!^http://({$url_data['host']}[^/]*)$url_pattern$!i", $check_url, $match))
 			{
 //				echo "<b>Ok - $class_path</b><br />";
 				
@@ -332,7 +332,7 @@ function class_load_by_vhosts_url($url)
 				$check_url = $url;
 
 //			echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$_SERVER['HTTP_HOST']}){$url_pattern}\$!<br />\n";
-			if(preg_match('!^http://('.preg_quote($data['host']).")$url_pattern$!", $check_url, $match))
+			if(preg_match('!^http://('.preg_quote($data['host']).")$url_pattern$!i", $check_url, $match))
 			{
 //				echo "Found: $class_path for  $check_url<br />";
 			

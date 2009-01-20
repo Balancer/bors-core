@@ -3,6 +3,7 @@
 function debug_exit($message)
 {
 	echo DBG_GetBacktrace();
+	debug_hidden_log('debug_exit', $message);
 	exit($message);
 }
 
@@ -10,6 +11,8 @@ function debug_trace()
 {
 	echo DBG_GetBacktrace();
 }
+
+function debug_in_console() { return empty($_SERVER['HTTP_HOST']); }
 
 function debug_xmp($text, $string = false)
 {

@@ -39,9 +39,22 @@ function &object_new($class, $id = NULL)
 	return $obj;
 }
 
-function &object_new_instance($class, $id = NULL)
+function &object_new_instance($class, $id = NULL, $db_update = true)
 {
+	if(is_array($id))
+	{
+		$data = $id;
+		$id = NULL;
+	}
+	else
+		$data = false;
+
 	$obj = &object_new($class, $id);
+
+	if($data !== false)
+		foreach($data as $key => $value)
+			$obj->set($key, $value, $db_update);
+
 	$obj->new_instance();
 	return $obj;
 }

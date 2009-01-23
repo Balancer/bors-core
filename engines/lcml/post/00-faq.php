@@ -5,4 +5,3 @@
         $txt = preg_replace("!^A:\s+!m", "<br/><b><i>Ответ:</i></b> ", $txt);
         return $txt;
     }
-?>

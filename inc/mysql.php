@@ -34,6 +34,8 @@ function mysql_where_compile($conditions_array)
 			$where[] = $field_cond . '=\'' . addslashes($value) . '\'';
 		elseif(preg_match('!^int (\w+)$!', $field_cond, $m))
 			$where[] = $m[1] . '=' . $value;
+		elseif(preg_match('!^raw (\w+)$!', $field_cond, $m))
+			$where[] = $m[1] . '=' . $value;
 		else
 			$where[] = $field_cond . '\'' . addslashes($value) . '\'';
 	}

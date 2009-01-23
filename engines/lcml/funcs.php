@@ -15,8 +15,8 @@
     function save_format($txt)
     {
         $txt = str_replace(
-			array(" ","\n","<",">","&", "*","#",'[',']'),
-			array("---save_space---","---save_cr---","---less---","---great---","---ampersand---","---mul---","---hash---",'---square-bracket-open---','---square-bracket-close---'),
+			array(" ","\n","<",">","&", "*","#",'[',']', '$'),
+			array("---save_space---","---save_cr---","---less---","---great---","---ampersand---","---mul---","---hash---",'---square-bracket-open---','---square-bracket-close---', '---dollar-sign---'),
 			$txt);
         return $txt;
     }
@@ -24,8 +24,8 @@
     function restore_format($txt)
     {
         $txt = str_replace(
-			array("---save_space---","---save_cr---","---less---","---great---","---ampersand---","---mul---","---hash---",'---square-bracket-open---','---square-bracket-close---'), 
-			array(" ","\n","<",">","&","*","#",'[',']'), 
+			array("---save_space---","---save_cr---","---less---","---great---","---ampersand---","---mul---","---hash---",'---square-bracket-open---','---square-bracket-close---', '---dollar-sign---'), 
+			array(" ","\n","<",">","&","*","#",'[',']', '$'), 
 			$txt);
         return $txt;
     }

@@ -41,7 +41,10 @@ class storage_db_mysql_smart extends base_null
 			$added = array();
 			$main_id_name = '';
 
-			$dbh = &new DataBase($db);
+			if(!$db)
+				bors_exit("Can't load empty DB for $object");
+			
+			$dbh = new driver_mysql($db);
 
 			$dbhash = $hash.$db;
 			if(empty($stdbms_cache[$dbhash]))

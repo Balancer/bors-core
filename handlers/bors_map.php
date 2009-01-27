@@ -6,6 +6,7 @@ $map = array(
 
 	'/do\-login/ => common_do_login',
 	'/users/do\-login => common_do_login',
+
 	'/users/do\-logout => common_do_logout',
 	'/actions/do\-logout/ => common_do_logout',
 
@@ -26,6 +27,7 @@ $map = array(
 		'/admin/\?object=([^&]+).* => bors_admin_main(1)',
 		'/admin/edit/\?object=([^&]+).* => bors_admin_edit(1)',
 		'/admin/clean/\?object=([^&]+).* => bors_admin_tools_clean(1)',
+		'/admin/login/ => bors_admin_login',
 		'/admin/logout/ => bors_admin_logout',
 		
 		'/admin/image/append => bors_admin_image_append',

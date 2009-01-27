@@ -46,19 +46,19 @@ class base_object extends base_empty
 				{
 					if(is_numeric($property))
 						$property = $db_field;
-					
+
 					if($property == $test_property)
 						list($r_db, $r_table, $r_db_field) = array($db, $table, $db_field);
 
 					if($property == 'id')
 						$r_id_field = $db_field;
-						
+
 					if($r_id_field && $r_db_field)
 						return array($r_db, $r_table, $r_id_field, $r_db_field);
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -393,7 +393,7 @@ class base_object extends base_empty
 		$cond = $this->check_value_conditions();
 		if(!($assert = @$cond[$field]))
 			return true;
-			
+
 		if(preg_match('!^(.+)\|(.+?)$!', $assert, $m))
 		{
 			$assert  = $m[1];
@@ -408,7 +408,7 @@ class base_object extends base_empty
 			bors_message($message);
 			return false;
 		}
-		
+
 		return true;
 	}
 

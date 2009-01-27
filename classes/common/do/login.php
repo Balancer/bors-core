@@ -16,14 +16,15 @@ class common_do_login extends base_page
 		
 		$this->referer = isset($_GET['redirect_url']) ? $_GET['redirect_url'] : @$_SERVER['HTTP_REFERER'];
 
-		$me = bors_user::do_login(@$_GET['req_username'], @$_GET['req_password'], true);
+		$me = bors_user::do_login(@$_GET['req_username'], @$_GET['req_password'], false);
 
 		if(!is_object($me))
+		{
+			$this->error = $me;
 			return false;
+		}
 		
-		$this->error = $me;
-		
-		return go(($this->referer && !preg_match('!\?login!', $this->referer)) ? $this->referer : '/');
+		return go(($this->referer && !preg_match('!login!', $this->referer)) ? $this->referer : '/');
 	}
 	
 	function can_cache() { return false; }

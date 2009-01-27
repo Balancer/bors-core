@@ -251,7 +251,7 @@ class storage_db_mysql_smart extends base_null
 						$value = $this->do_func($m[2], $value);
 					}
 					
-					if(preg_match('!^\d+$!', $value))
+					if(preg_match('!^\d+$!', $value) && intval($value) == $value)
 						$value = intval($value);
 					
 					$object->{"set_$name"}($value, false);

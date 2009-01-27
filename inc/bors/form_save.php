@@ -55,9 +55,14 @@ function bors_form_save(&$obj)
 			}
 		}
 
+		if(empty($_GET['checkboxes_list']))
+			$checkboxes_list = array();
+		else
+			$checkboxes_list = explode(',', $_GET['checkboxes_list']);
+
 		foreach($_GET as $key => $value)
 		{
-			if(is_array($value))
+			if(is_array($value) && !in_array($key, $checkboxes_list))
 			{
 				foreach($value as $idx => $val2)
 					$objects_data[$idx][$key] = $val2;
@@ -185,7 +190,10 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	}
 
 	if(!$object->id() && method_exists($object, 'new_instance'))
+	{
 		$object->new_instance();
+		$object->on_new_instance($data);
+	}
 
 	if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 		$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));

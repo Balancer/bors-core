@@ -418,12 +418,12 @@ class base_object extends base_empty
 	{
 		if(!$this->id())
 			return;
-		
+
 		if(empty($this->changed_fields))
 			return;
-				
+
 		include_once('engines/search.php');
-				
+
 		if($cache_clean)
 			$this->cache_clean();
 			
@@ -698,7 +698,8 @@ class base_object extends base_empty
 
 	function pre_set() { }
 	function post_set() { }
-	
+	function on_new_instance() { }
+
 	var $stb_sort_order;
 //	private $sort_order = 0;
 //	function sort_order() { return $this->sort_order; }

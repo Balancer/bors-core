@@ -16,7 +16,7 @@ function bors_class_names_load($reload = false)
 		$loaded[0][$x['id']] = $x['name'];
 		$loaded[1][$x['name']] = $x['id'];
 	}
-	
+
 	return $loaded;
 }
 
@@ -33,6 +33,9 @@ function class_name_to_id($object)
 		bors_exit("Too long class name: '$class_name'");
 	}
 
+	if(!$class_name)
+		return NULL;
+
 	$loaded = bors_class_names_load();
 	if($class_id = @$loaded[1][$class_name])
 		return $class_id;
@@ -41,9 +44,9 @@ function class_name_to_id($object)
 	$db->insert('bors_class_names', array('name' => $class_name));
 	$class_id = $db->last_id();
 	$db->close();
-	
+
 	bors_class_names_load();
-	
+
 	return $class_id;
 }
 

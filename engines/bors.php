@@ -12,7 +12,7 @@ function object_load($class, $object_id=NULL, $args=array())
 {
 	if(is_numeric($class))
 		$class = class_id_to_name($class);
-	
+
 	if(config('debug_trace_object_load'))
 	{
 		static $load_counter = 0;
@@ -20,10 +20,10 @@ function object_load($class, $object_id=NULL, $args=array())
 		if($load_counter++ > config('debug_object_load_limit'))
 			debug_exit('Object load limit exceed.');
 	}
-	
+
 	if(!$class)
 		return;
-	
+
 	return class_load($class, $object_id, $args);
 }
 
@@ -117,4 +117,16 @@ function bors_exit($message = 0)
 	bors()->changed_save();
 	exit($message);
 	return true;
+}
+
+function bors_parse_internal_uri($uri)
+{
+	echo "parse $uri<Br/>";
+	if(!preg_match('!^(\w+)://(.+)$!', $uri, $m))
+		return array(NULL, NULL);
+
+	if(preg_match('!^(\w+)/$!', $m[2], $mm))
+		$m[2] = $mm[1];
+
+	return array($m[1], $m[2]);
 }

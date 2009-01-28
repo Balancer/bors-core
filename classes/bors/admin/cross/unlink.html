@@ -1,9 +1,7 @@
 Вы уверены, что хотите снять привязку объектов
-<i>{$this->from()|get:class_title} &laquo;{$this->from()|get:titled_url}&raquo;</i>
-и
-<i>{$this->to()|get:class_title} &laquo;{$this->to()|get:titled_url}&raquo;</i>
+<i>{$this->from_titled_url()}</i> и <i>{$this->to_titled_url()}</i>?
 
 <big><center>[
 	<a href="{$smarty.server.HTTP_REFERER}">Нет</a> |
-	<a href="/admin/cross_unlink?from={$this->from()|get:internal_uri}&to={$this->to()|get:internal_uri}&act=unlink&ref={$this->ref()}">Да</a>
+	<a href="/admin/cross_unlink?from={$this->from_internal_uri()}&to={$this->to_internal_uri()}&act=unlink&ref={$this->ref()}">Да</a>
 ]</center></big>

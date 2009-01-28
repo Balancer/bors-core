@@ -809,7 +809,15 @@ class base_object extends base_empty
 		else
 			$obj = object_load($data['link_object_from']);
 
-		$obj->add_cross($data['link_class_name'], $data['link_object_id']);
+		if(!$obj)
+			return bors_exit(ec('Не существующий привязывающий объект ').$data['link_object_from']);
+
+		$target = object_load($data['link_class_name'], $data['link_object_id']);
+
+		if(!$target)
+			return bors_exit(ec('Не существующий привязываемый объект ').$data['link_class_name'].'://'. $data['link_object_id']);
+
+		$obj->add_cross_object($target);
 	}
 
 	function default_page() { return 1; }

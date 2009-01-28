@@ -26,7 +26,14 @@
 			if($processed === true)
 				return true;
 		}
-		
+
+		$access_object = $obj->access();
+		if(!$access_object)
+			debug_exit("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
+
+		if(!$access_object->can_read())
+			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас не доступа к этому ресурсу")) : true;
+
 		$processed = $obj->pre_show();
 		if($processed === true)
 			return true;
@@ -41,11 +48,11 @@
 
 			if(empty($GLOBALS['main_uri']))
 				$GLOBALS['main_uri'] = $obj->url();
-			
+
 			$my_user = bors()->user();
 			if($my_user && $my_user->id())
 				base_page::add_template_data('my_user', $my_user);
-	
+
 			$content = $obj->content();
 		}
 		else
@@ -54,13 +61,6 @@
 		if($content === false)
 			return false;
 
-		$access_object = $obj->access();
-		if(!$access_object)
-			debug_exit("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
-			
-		if(!$access_object->can_read())
-			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас не доступа к этому ресурсу")) : true;
-		
 		$last_modify = gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		@header('Last-Modified: '.$last_modify);
 

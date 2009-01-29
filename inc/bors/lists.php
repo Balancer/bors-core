@@ -42,7 +42,7 @@ function bors_named_hierarchic_list_db($class_name, $zero_item = NULL)
 		else
 			$roots[$x['id']] = $x['title'];
 
-	print_d($children);
+//	print_d($children);
 
 	foreach($roots as $root_id => $title)
 	{

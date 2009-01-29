@@ -38,8 +38,8 @@
 		if($processed === true)
 			return true;
 
-//		if(debug_is_balancer())	debug_exit($obj->url($page) .'!='. $obj->called_url());
-		if($obj->called_url() && !preg_match('!'.preg_quote($obj->url($page)).'$!', $obj->called_url()))
+		$called_url = preg_replace('/\?.*$/', '', $obj->called_url());
+		if($obj->called_url() && !preg_match('!'.preg_quote($obj->url($page)).'$!', $called_url))
 			return go($obj->url($page), true);
 
 		if($processed === false)

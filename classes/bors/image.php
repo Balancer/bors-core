@@ -35,7 +35,7 @@ class bors_image extends base_object_db
 
 	function file_name_with_path() { return $this->image_dir().$this->file_name(); }
 
-	function image_dir() { return secure_path(config('pics_base_dir').'/'.$this->relative_path().'/'); }
+	function image_dir() { return secure_path(config('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$this->relative_path().'/'); }
 
 	function url() { return secure_path(config('pics_base_url').'/'.$this->relative_path().'/'.$this->file_name()); }
 

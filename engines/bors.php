@@ -113,8 +113,14 @@ function bors()
 
 function bors_exit($message = 0)
 {
+	global $bors_exit_doing;
+	if(!empty($bors_exit_doing))
+		return;
+	
+	$bors_exit_doing = true;
 	cache_static::drop(bors()->main_object());
 	bors()->changed_save();
+	$bors_exit_doing = false;
 	exit($message);
 	return true;
 }

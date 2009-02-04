@@ -11,6 +11,9 @@ function lcml_html_pre($txt)
 
 		if(empty($GLOBALS['lcml']['params']['html_disable']))
 			return $txt;
+
+		foreach(array('&raquo;' => '»', '&laquo;' => '«', '&mdash;' => '—') as $from => $to)
+			$txt = str_replace($from, $to, $txt);
 		
 //		$txt = preg_replace("!</p>!","", $txt);
 //		$txt = preg_replace("!<p>!","<br /><br />", $txt);
@@ -69,6 +72,6 @@ function lcml_html_pre($txt)
 			$txt = preg_replace("!<img [^>]*src=$q([$mask]+){$q}[^>]*?>!is", "[img]$1[/img]", $txt);
 			$txt = preg_replace("!<a [^>]*href=$q([$mask]+){$q}[^>]*>(.*?)</a>!is", "[url=$1]$2[/url]", $txt);
 		}
-		
+
 		return htmlspecialchars($txt, ENT_NOQUOTES);
     }

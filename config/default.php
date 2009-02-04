@@ -14,3 +14,6 @@ config_set('bors_version_show', '2');
 
 config_set('lcml_sharp_markup', false);
 config_set('temporary_file_contents', file_get_contents(dirname(__FILE__).'/../resources/temporary.html'));
+
+config_set('images_resize_max_width', 2048);
+config_set('images_resize_max_height', 2048);

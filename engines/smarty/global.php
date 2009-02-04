@@ -18,15 +18,8 @@ function templates_noindex()
 	base_object::add_template_data_array('meta[robots]', 'noindex, follow');
 }
 
-/*function do_php($code)
+function do_php($code)
 {
-	ob_start();
 	eval($code);
-	$out = ob_get_contents();
-	ob_clean();
-	if(preg_match("!/var/www/!", $out))
-		return "$out Error in code<xmp>$code</xmp>";
-
-	return $out;
+	return $content;
 }
-*/

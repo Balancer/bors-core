@@ -6,8 +6,14 @@ require_once 'inc/processes.php';
 
 function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 {
-	while(!bors_thread_lock('image_file_scale', 30))
+	while(!bors_thread_lock('image_file_scale', 30, "{$file_in} => {$file_out} [{$width}x{$height}($opts)]"))
 		usleep(rand(1000, 5000));
+
+	if(file_exists($file_out))
+	{
+		bors_thread_unlock('image_file_scale');
+		return false;
+	}
 
 	if(config('pics_base_safemodded'))
 	{
@@ -15,7 +21,7 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 	}
 
 	$data = getimagesize($file_in);
-	if(!$data || !$data[0] || $data[0] > 2048 || $data[1] > 2048)
+	if(!$data || !$data[0] || $data[0] > 4096 || $data[1] > 4096)
 	{
 		debug_hidden_log('image_error', "{$file_in} -> {$file_out}($width, $height, $opts) convert error: ".@$data[0].'x'.@$data[1]);
 		return false;
@@ -27,7 +33,7 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 
 	if(PEAR::isError($img))
 	{
-		unlink($flock);
+		bors_thread_unlock('image_file_scale');
 		return $img;
 	}
 

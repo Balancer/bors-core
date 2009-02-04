@@ -1,6 +1,6 @@
 <?php
 
-function bors_named_list_db($class_name, $zero_item = NULL)
+function bors_named_list_db($class_name, $zero_item = NULL, $where = array())
 {
 	$obj = object_new($class_name);
 
@@ -14,7 +14,10 @@ function bors_named_list_db($class_name, $zero_item = NULL)
 	if(isset($zero_item))
 		$res[0] = $zero_item;
 
-	foreach($db->select_array($items_tab, 'id, title', array('order' => 'title')) as $x)
+	if(empty($where['order']))
+		$where['order'] = 'title';
+
+	foreach($db->select_array($items_tab, 'id, title', $where) as $x)
 		$res[$x['id']] = $x['title'];
 
 	return $res;

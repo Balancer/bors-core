@@ -17,16 +17,13 @@ class DataBase extends base_object
 	{
 		$this->close();
 	
-//		if(debug_in_console() || debug_is_balancer())
-//			echo "Reconnect for ".get_class($this)." to {$this->x1}, {$this->db_name} at ".date('r')."<br/>\n";
-	
 		$loop = 0;
 		do
 		{
 			if(config('mysql_persistent'))
-				$this->dbh = @mysql_pconnect($this->x1, $this->x2, $this->x3);
+				$this->dbh = @mysql_pconnect($this->x1, $this->x2, $this->x3, true);
 			else
-				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3);
+				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3, true);
 
 			if(!$this->dbh && config('mysql_try_reconnect'))
 				sleep(5);
@@ -37,14 +34,11 @@ class DataBase extends base_object
 			debug_exit("mysql_connect({$this->x1}, {$this->x2}) to '{$this->db_name}' failed ".mysql_errno().": ".mysql_error()."<BR />");
 
 		set_global_key("DataBaseHandler:{$this->x1}", $this->db_name, $this->dbh);
-		set_global_key("DataBaseStartTime:{$this->x1}", $this->db_name, time());
+		set_global_key("DataBaseStartTime:{$this->x1}", $this->db_name, $this->start_time = time());
 	}
 
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
 	{
-//		if(debug_in_console() || debug_is_balancer())
-//			echo "DB Construct for $base<br/>\n";
-			
 		$this->db_name = $base;
 			
 		if(!$base)
@@ -71,19 +65,20 @@ class DataBase extends base_object
 		)
 		{
 			
-			@$GLOBALS['global_db_resume_connections']++;
+			debug_count_inc('mysql_resume_connections');
 
 			$this->dbh = global_key("DataBaseHandler:$server", $base);
 			$this->start_time = global_key("DataBaseStartTime:$server", $base);
 
-//			if(debug_is_balancer())
-//				echo "re $base: ".(time()-$this->start_time)."<br/>";
-
-			mysql_select_db($base, $this->dbh);
+			if(!mysql_select_db($base, $this->dbh))
+			{
+				echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
+				bors_exit();
+			}
 		}
 		else
 		{
-			@$GLOBALS['global_db_new_connections']++;
+			debug_count_inc('mysql_new_connections');
 
 			$this->reconnect();
 
@@ -92,10 +87,6 @@ class DataBase extends base_object
 				echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 				bors_exit();
 			}
-
-			// echo "new\[{$base}]=".$this->dbh."<br>\n";
-//			if(debug_in_console())
-//				echo "new \[{$base}]=".$this->dbh," \n";
 		}
 
 		if(config('mysql_set_character_set'))
@@ -155,12 +146,16 @@ class DataBase extends base_object
 		
 		if(!$ignore_error)
 		{
-			bors_exit('MySQL Error of class='.get_class($this).' at now='.date('r').' handler=: '.mysql_error($this->dbh).
-				'; db='.$this->db_name.
-				'; time from last query: '.((microtime(true) - $this->last_query_time)/1000000).
-				'; was connected at '.date('r', $this->start_time)." ({$this->start_time})");
+			bors_exit("MySQL Error: driver class=".get_class($this)."<br>\n"
+				."now=".date('r')."<br>\n"
+				."dbh={$this->dbh}; <br/>\n"
+				."error=".mysql_error($this->dbh)."<br/>\n"
+				."db name={$this->db_name}<br/>\n"
+				.'time from last query: '.((microtime(true) - $this->last_query_time)/1000000)."<br/>\n"
+				.'was connected at '.date('r', $this->start_time)." ({$this->start_time})");
 		}
 
+		$this->last_query_time = microtime(true);
 		return false;
 	}
 
@@ -237,20 +232,12 @@ class DataBase extends base_object
 		{
 			$ch = &new Cache();
 			if($ch->get("DataBaseQuery:{$this->db_name}", $query) !== NULL)
-			{
-				//					echo "*****get*****$query******************";
 				return unserialize($ch->last());
-			}
 		}
 			
-		//			if(is_global_key("db_get",$query))
-		//				return global_key("db_get",$query);
-
 		$this->query($query, $ignore_error);
 		$this->fetch();
 		$this->free();
-
-		//			echo "res = {$this->row}";
 
 		if($ch/* && $this->row !== false*/)
 		$ch->set(serialize($this->row), $cached);

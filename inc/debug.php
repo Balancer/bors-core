@@ -256,6 +256,7 @@ function debug_timing_info_all()
 {
 	global $bors_debug_timing;
 	$result = "";
+	ksort($bors_debug_timing);
 	foreach($bors_debug_timing as $section => $data)
 		$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls]\n";
 
@@ -266,6 +267,7 @@ function debug_count_info_all()
 {
 	global $bors_debug_counts;
 	$result = "";
+	ksort($bors_debug_counts);
 	foreach($bors_debug_counts as $section => $count)
 		$result .= $section.": {$count}\n";
 

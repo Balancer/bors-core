@@ -825,4 +825,6 @@ class base_object extends base_empty
 	private $_page;
 	function page() { return $this->_page; }
 	function set_page($page) { return $this->_page = $page ? $page : $this->default_page(); }
+
+	function empty_id_handler() { return NULL; }
 }

@@ -143,7 +143,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		if(!$object->access())
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($object)."; access_engine=".$object->access_engine());
 
-		if(!$object->access()->can_action())
+		if(!$object->access()->can_action($data))
 			return bors_message(ec("[2] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($object).", access=".($object->access_engine())."/".get_class($object->access()).", method=can_action)"));
 
 		if(empty($data['subaction']))
@@ -199,8 +199,13 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));
 
 	if(!$object->id())
-		return debug_exit('Empty id for '.$object->class_name());
-
+	{
+		if($x = $object->empty_id_handler())
+			return $x;
+		else
+			return debug_exit('Empty id for '.$object->class_name());
+	}
+	
 //	echo "Final id: {$object->id()}<br />";
 
 //	bors()->changed_save();

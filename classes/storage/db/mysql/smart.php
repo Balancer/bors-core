@@ -501,7 +501,7 @@ class storage_db_mysql_smart extends base_null
 					}
 
 					$data[$table_name][$field] = $value;
-				}						
+				}
 
 				if($oid)
 					$data[$table_name][$def_id] = $oid;
@@ -513,12 +513,13 @@ class storage_db_mysql_smart extends base_null
 				if($replace)
 					$dbh->replace($table_name, $tab_data);
 				else
-					$dbh->insert($table_name, $tab_data);
-					
+					$dbh->insert_ignore($table_name, $tab_data);
+
 				if(empty($oid))
 					$object->set_id($oid = $dbh->last_id());
 			}
-		}				
+		}
+
 		$object->changed_fields = array();
 	}
 }

@@ -202,7 +202,7 @@ class bors_image extends base_object_db
 	{
 		if($title === NULL)
 			$title = ec('Сделать изображением по умолчанию');
-		return "<a href=\"".$this->setdefaultfor_url($object)."\"><img src=\"/bors-shared/images/notice-16.gif\" width=\"16\" height=\"16\" border=\"0\" alt=\"def\" title=\"$title\"/></a>";
+		return "<a href=\"".$this->setdefaultfor_url($object)."\"><img src=\"/bors-shared/images/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
 	}
 
 //	function replace_on_new_instance() { return $this->id() == 0; }

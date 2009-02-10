@@ -378,7 +378,7 @@ function search_titles_like($title, $limit=20, $forum=0)
 	            {
 	                $n++;
 					$sub = $t['id'] % 1000;
-					$out .= "<a href=\"http://balancer.ru/forum/topic/$sub/{$t['id']}/\" title=\"[{$w}]\"><img src=\"http://airbase.ru/img/design/icons/topic-9x10.png\" width=\"9\" heght=\"10\" border=\"0\" align=\"absmiddle\">&nbsp;{$t['subject']}</a><br />\n";//&nbsp;&#183;&nbsp;
+					$out .= "<a href=\"http://balancer.ru/forum/topic/$sub/{$t['id']}/\" title=\"[{$w}]\"><img src=\"http://airbase.ru/img/design/icons/topic-9x10.png\" width=\"9\" heght=\"10\" align=\"absmiddle\">&nbsp;{$t['subject']}</a><br />\n";//&nbsp;&#183;&nbsp;
 	    		}
 			}
 		}

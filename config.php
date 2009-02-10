@@ -27,6 +27,10 @@ function mysql_access($db = 'BORS', $login = NULL, $password = NULL, $host='loca
 		$GLOBALS['cms']['mysql'][$db]['server'] = $host;
 }
 
+function config_mysql_login($db, $default = '') { return $res = @$GLOBALS['cms']['mysql'][$db]['login'] ? $res : $default; }
+function config_mysql_password($db, $default = 'root') { return $res = @$GLOBALS['cms']['mysql'][$db]['password'] ? $res : $default; }
+function config_mysql_server($db, $default = 'localhost') { return $res = @$GLOBALS['cms']['mysql'][$db]['server'] ? $res : $default; }
+
 //config_set('debug_mysql_queries_log', '/var/www/balancer.ru/htdocs/logs/sql-timig.log');
 
 if(file_exists(BORS_LOCAL.'/config-pre.php'))

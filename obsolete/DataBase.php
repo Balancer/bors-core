@@ -146,6 +146,8 @@ class DataBase extends base_object
 		
 		if(!$ignore_error)
 		{
+			debug_trace();
+			
 			bors_exit("MySQL Error: driver class=".get_class($this)."<br>\n"
 				."now=".date('r')."<br>\n"
 				."dbh={$this->dbh}; <br/>\n"

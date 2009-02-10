@@ -51,11 +51,7 @@ class bors_image_thumb extends bors_image
 			return $this->set_loaded(false);
 
 		if($this->width() && file_exists($this->file_name_with_path()))
-		{
-			if(debug_is_balancer())
-				echo "cool for {$this->id()}<br/>";
 			return $this->set_loaded(true);
-		}
 			
 		$this->original = object_load('bors_image', $id);
 

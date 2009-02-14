@@ -25,7 +25,7 @@ class bors_global extends base_empty
 	private $changed_objects = array();
 		
 	function add_changed_object($obj) { $this->changed_objects[$obj->internal_uri()] = $obj; }
-	function drop_changed_object($obj) { if(is_object($obj)) unset($this->changed_objects[$obj->internal_uri()]); }
+	function drop_changed_object($obj) { if(is_object($obj)) unset($this->changed_objects[$obj->internal_uri()]); else unset($this->changed_objects[$obj]); }
 		
 	function changed_save()
 	{
@@ -49,6 +49,7 @@ class bors_global extends base_empty
 				
 			$storage->save($obj);
 			save_cached_object($obj);
+			$this->drop_changed_object($obj);
 
 			if(config('search_autoindex') && $obj->auto_search_index())
 			{

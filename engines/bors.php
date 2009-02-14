@@ -136,3 +136,10 @@ function bors_parse_internal_uri($uri)
 
 	return array($m[1], $m[2]);
 }
+
+function bors_drop_global_caches()
+{
+	unset($GLOBALS['bors_data']['global']['present']);
+	unset($GLOBALS['HTS_GLOBAL_DATA']);
+	unset($GLOBALS['bors_data']['cached_objects4']);
+}

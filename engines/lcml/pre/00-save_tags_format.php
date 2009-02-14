@@ -1,6 +1,6 @@
 <?php
 
-include('inc/strings.php');
+include_once('inc/strings.php');
 
 function lcml_save_tags_format($txt)
 {

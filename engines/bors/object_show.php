@@ -8,7 +8,7 @@
 			return false;
 
 		@header("Status: 200 OK");
-//		@header("HTTP/1.1 200 OK");
+		@header("HTTP/1.1 200 OK");
 		if(config('bors_version_show'))
 		{
 			@header("X-Bors-object-class: {$obj->class_name()}");

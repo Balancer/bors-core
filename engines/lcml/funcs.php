@@ -15,12 +15,12 @@ function check_lcml_access($var, $default=false)
 
 function save_format($txt)
 {
-	return '>>>base64-save-format>>>'.chunk_split(base64_encode($txt), 32, '# #').'<<<base64-save-format<<<';
+	return 'lllbase64_save_formatlll'.chunk_split(base64_encode($txt), 32, '# #').'rrrbase64_save_formatrrr';
 }
 
 function restore_format($txt)
 {
-	return preg_replace('/>>>base64-save-format>>>(.+)<<<base64-save-format<<</e', "base64_decode(str_replace('# #', '', '$1'))", $txt);
+	return preg_replace('/lllbase64_save_formatlll(.+)rrrbase64_save_formatrrr/e', "base64_decode(str_replace('# #', '', '$1'))", $txt);
 }
 
 function remove_format($txt)

@@ -27,7 +27,8 @@
         
 		$txt=join("\n",$txt);
 
-		$txt = str_replace("\n", "<br />---save_cr---", $txt);
+//		$txt = str_replace("\n", "<br />---save_cr---", $txt);
+		$txt = str_replace("\n", "<br />\n", $txt);
 
         $txt = "<div class=\"code\"><tt>$txt</tt>";
 

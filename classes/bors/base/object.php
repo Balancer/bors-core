@@ -320,17 +320,20 @@ class base_object extends base_empty
 		return '<a href="'.$this->edit_url($this->page()).'">'.$title.'</a>';
 	}
 
+	function imaged_edit_link($title = NULL) { return $this->imaged_edit_url($title); }
 	function imaged_edit_url($title = NULL)
 	{
 		if($title === NULL)
-			$title = ec('Редактировать объект');
+			$title = ec('Редактировать ').strtolower($this->class_title_rp());
 		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
+	function imaged_delete_link($title = NULL, $text = '') { return $this->imaged_delete_url($title, $text); }
+	
 	function imaged_delete_url($title = NULL, $text = '')
 	{
 		if($title === NULL)
-			$title = ec('Удалить объект');
+			$title = ec('Удалить ').strtolower($this->class_title_rp());
 
 		if($text)
 			$text = '&nbsp;'.$text;

@@ -113,8 +113,14 @@ function bors()
 
 function bors_exit($message = 0)
 {
+	global $bors_exit_doing;
+	if(!empty($bors_exit_doing))
+		return;
+	
+	$bors_exit_doing = true;
 	cache_static::drop(bors()->main_object());
 	bors()->changed_save();
+	$bors_exit_doing = false;
 	exit($message);
 	return true;
 }
@@ -129,4 +135,11 @@ function bors_parse_internal_uri($uri)
 		$m[2] = $mm[1];
 
 	return array($m[1], $m[2]);
+}
+
+function bors_drop_global_caches()
+{
+	unset($GLOBALS['bors_data']['global']['present']);
+	unset($GLOBALS['HTS_GLOBAL_DATA']);
+	unset($GLOBALS['bors_data']['cached_objects4']);
 }

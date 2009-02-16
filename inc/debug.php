@@ -201,7 +201,7 @@ function debug_page_stat()
 <noindex>
 Новых mysql-соединений: <?echo $GLOBALS['global_db_new_connections'];?><br />
 Продолженных mysql-соединений: <?echo $GLOBALS['global_db_resume_connections'];?><br />
-Всего запросов <?echo $GLOBALS['global_db_queries'];?><br />
+Всего запросов <?echo debug_count('mysql_queries');?><br />
 Попадений в кеш данных: <?echo $GLOBALS['global_key_count_hit'];?><br />
 Промахов в кеш данных: <?echo $GLOBALS['global_key_count_miss'];?><br />
 Время генерации страницы: <?echo microtime(true) - $GLOBALS['stat']['start_microtime'];?>сек.<br />
@@ -215,6 +215,10 @@ else
 <?
 }
 
+
+$GLOBALS['bors_debug_counts'] = array();
+function debug_count_inc($category, $inc = 1) { @$GLOBALS['bors_debug_counts'][$category] += $inc; }
+function debug_count($category) { return @$GLOBALS['bors_debug_counts'][$category]; }
 
 $GLOBALS['bors_debug_timing'] = array();
 function debug_timing_start($category)
@@ -252,8 +256,20 @@ function debug_timing_info_all()
 {
 	global $bors_debug_timing;
 	$result = "";
+	ksort($bors_debug_timing);
 	foreach($bors_debug_timing as $section => $data)
-	$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls]\n";
+		$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls]\n";
+
+	return $result;
+}
+
+function debug_count_info_all()
+{
+	global $bors_debug_counts;
+	$result = "";
+	ksort($bors_debug_counts);
+	foreach($bors_debug_counts as $section => $count)
+		$result .= $section.": {$count}\n";
 
 	return $result;
 }

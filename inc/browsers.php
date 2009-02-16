@@ -18,6 +18,10 @@ function get_browser_info($user_agent)
 		$os = 'J2ME';
 	elseif(preg_match('!Intel Mac OS X!', $user_agent))
 		$os = 'MacOSX';
+	elseif(preg_match('!Macintosh; PPC Mac OS X!', $user_agent))
+		$os = 'MacOSX';
+	elseif(preg_match('!OS/2;!', $user_agent))
+		$os = 'OS/2';
 	elseif(preg_match('!J2ME!', $user_agent))
 		$os = 'J2ME';
 	elseif(preg_match('!Windows NT 6.0!', $user_agent))

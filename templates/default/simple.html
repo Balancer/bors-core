@@ -78,14 +78,11 @@ div.pages_select a.select_page {
 === debug-info ===
 {if $this}class = {$this->class_name()}{/if} 
 template[3] = {$template}
-queries = {$queries} 
-queries_time = {$queries_time} 
 make_time = {$make_time} 
 template = {$page_template} 
 created = {$now|strftime:"%d.%m.%Y %H:%M"} 
 {if $this}{math assign=exp equation="x+y" x=$this->cache_static() y=$now}static expire = {$exp|strftime:"%d.%m.%Y %H:%M"} 
 {/if} 
 -->
-
 
 </html>

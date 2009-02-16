@@ -8,4 +8,5 @@ class base_null
 	function can_cached() { return false; }
 	function loaded() { return false; }
 	function set_class_file() { }
+	static function id_prepare($id) { return $id; }
 }

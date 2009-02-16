@@ -8,7 +8,7 @@
 			return false;
 
 		@header("Status: 200 OK");
-//		@header("HTTP/1.1 200 OK");
+		@header("HTTP/1.1 200 OK");
 		if(config('bors_version_show'))
 		{
 			@header("X-Bors-object-class: {$obj->class_name()}");
@@ -38,8 +38,9 @@
 		if($processed === true)
 			return true;
 
-//		if(debug_is_balancer())	debug_exit($obj->url($page) .'!='. $obj->called_url());
-		if($obj->called_url() && !preg_match('!'.preg_quote($obj->url($page)).'$!', $obj->called_url()))
+		$called_url = preg_replace('/\?.*$/', '', $obj->called_url());
+		$target_url = preg_replace('/\?.*$/', '', $obj->url($page));
+		if($obj->called_url() && !preg_match('!'.preg_quote($target_url).'$!', $called_url))
 			return go($obj->url($page), true);
 
 		if($processed === false)
@@ -61,7 +62,14 @@
 		if($content === false)
 			return false;
 
-		$last_modify = gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
+		$access_object = $obj->access();
+		if(!$access_object)
+			debug_exit("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
+			
+		if(!$access_object->can_read())
+			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас не доступа к этому ресурсу")) : true;
+		
+		$last_modify = @gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		@header('Last-Modified: '.$last_modify);
 
 		echo $content;

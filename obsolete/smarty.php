@@ -313,10 +313,6 @@ function show_page($uri, $data = true)
 			$smarty->clear_cache($tpl, $page);
 		
 
-		$smarty->assign("queries_time", sprintf("%.3f", $GLOBALS['stat']['queries_time']));
-		$smarty->assign("queries", $GLOBALS['global_db_queries']);
-
-
 		$out = $smarty->fetch($tpl, $page);
 	    error_reporting($errrep_save);
 

@@ -6,7 +6,7 @@ config_set('cache_dir', $_SERVER['DOCUMENT_ROOT'].'/../.cache');
 
 config_set('debug_class_load_trace', true);
 
-config_set('smarty_path', 'smarty-2.6.19');
+config_set('smarty_path', 'smarty-2.6.21');
 config_set('main_bors_db', 'BORS');
 config_set('bors_core_db', 'BORS');
 
@@ -14,3 +14,6 @@ config_set('bors_version_show', '2');
 
 config_set('lcml_sharp_markup', false);
 config_set('temporary_file_contents', file_get_contents(dirname(__FILE__).'/../resources/temporary.html'));
+
+config_set('images_resize_max_width', 2048);
+config_set('images_resize_max_height', 2048);

@@ -122,6 +122,13 @@ class base_object extends base_empty
 	function local_template_data_set() { return array(); }
 	function local_template_data_array() { return $this->template_data; }
 
+	function set_template_data($data, $db_up)
+	{
+		foreach($data as $x)
+			if(preg_match('/(.+)=(.+)/', $x, $m))
+				$this->add_global_template_data(trim($m[1]), trim($m[2]));
+	}
+
 	function add_global_template_data($var_name, $value) { return set_global_template_var($var_name, $value); }
 	function global_template_data_set() { return array(); }
 	function global_template_data_array() { return global_template_vars(); }
@@ -225,7 +232,7 @@ class base_object extends base_empty
 			bors()->add_changed_object($this);
 		}
 
-		$this->$field_name = $value;
+		return $this->$field_name = $value;
 	}
 
 	function render_engine() { return false; }
@@ -259,6 +266,8 @@ class base_object extends base_empty
 	var $stb_title = '';
 	function title() { return $this->stb_title; }
 	function set_title($new_title, $db_update) { $this->set("title", $new_title, $db_update); }
+
+	var $stb_keywords_string = '';
 
 	var $stb_description = NULL;
 	function set_description($description, $db_update) { $this->set("description", $description, $db_update); }
@@ -318,22 +327,25 @@ class base_object extends base_empty
 		return '<a href="'.$this->edit_url($this->page()).'">'.$title.'</a>';
 	}
 
+	function imaged_edit_link($title = NULL) { return $this->imaged_edit_url($title); }
 	function imaged_edit_url($title = NULL)
 	{
 		if($title === NULL)
-			$title = ec('Редактировать объект');
-		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"edit\" title=\"$title\"/></a>";
+			$title = ec('Редактировать ').strtolower($this->class_title_rp());
+		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
+	function imaged_delete_link($title = NULL, $text = '') { return $this->imaged_delete_url($title, $text); }
+	
 	function imaged_delete_url($title = NULL, $text = '')
 	{
 		if($title === NULL)
-			$title = ec('Удалить объект');
+			$title = ec('Удалить ').strtolower($this->class_title_rp());
 
 		if($text)
 			$text = '&nbsp;'.$text;
 
-		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"del\" title=\"$title\"/>{$text}</a>";
+		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" alt=\"del\" title=\"$title\"/>{$text}</a>";
 	}
 
 	function admin_delete_link()
@@ -506,8 +518,8 @@ class base_object extends base_empty
 		return object_load($access, $this);
 	}
 
-	function edit_url()  { return '/admin/edit-smart/?object='.$this->internal_uri(); }
-	function admin_url() { return '/admin/?object='.$this->internal_uri(); }
+	function edit_url()  { return '/admin/edit-smart/?object='.urlencode($this->internal_uri()); }
+	function admin_url() { return '/admin/?object='.urlencode($this->internal_uri()); }
 	function admin_parent_url()
 	{
 		if($o = object_load($this->admin_url()))
@@ -624,11 +636,18 @@ class base_object extends base_empty
 
 		$this->set_was_cleaned(true);
 
+
 		if($this->cache_static() > 0 && $this->cache_static_can_be_dropped())
 			cache_static::drop($this);
 
 		// Чистка memcache и Cache.
 		delete_cached_object($this);
+
+		foreach(explode(' ', $this->cache_groups_parent()) as $group_name)
+			if($group_name)
+				foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
+					if($group)
+						$group->clean();
 	}
 
 	function cache_children() { return array(); }
@@ -642,12 +661,6 @@ class base_object extends base_empty
 		foreach($this->cache_children() as $child_cache)
 			if($child_cache)
 				$child_cache->cache_clean_self($clean_object);
-
-		foreach(explode(' ', $this->cache_groups_parent()) as $group_name)
-			if($group_name)
-				foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
-					if($group)
-						$group->clean();
 	}
 
 	function touch() { }

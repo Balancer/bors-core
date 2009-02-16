@@ -4,10 +4,6 @@ require_once('engines/bors.php');
 require_once('inc/global-data.php');
 require_once('inc/texts.php');
 
-//	$global_db_new_connections=0;
-//	$global_db_resume_connections=0;
-//	$global_db_queries=0;
-
 class DataBase extends base_object
 {
 	var $dbh;
@@ -15,24 +11,19 @@ class DataBase extends base_object
 	var $row;
 	var $db_name;
 	var $x1, $x2, $x3;
-	private $start_time;
-	private $start_microtime;
+	var $start_time;
 
 	function reconnect()
 	{
-		if(debug_in_console())
-			echo "Reconnect to {$this->x1}, {$this->x2} at ".date('r')."\n";
-	
-		$this->start_microtime = microtime(true);
-		$this->start_time = time(true);
+		$this->close();
 	
 		$loop = 0;
 		do
 		{
 			if(config('mysql_persistent'))
-				$this->dbh = @mysql_pconnect($this->x1, $this->x2, $this->x3);
+				$this->dbh = @mysql_pconnect($this->x1, $this->x2, $this->x3, true);
 			else
-				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3);
+				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3, true);
 
 			if(!$this->dbh && config('mysql_try_reconnect'))
 				sleep(5);
@@ -41,13 +32,19 @@ class DataBase extends base_object
 
 		if(!$this->dbh)
 			debug_exit("mysql_connect({$this->x1}, {$this->x2}) to '{$this->db_name}' failed ".mysql_errno().": ".mysql_error()."<BR />");
+
+		set_global_key("DataBaseHandler:{$this->x1}", $this->db_name, $this->dbh);
+		set_global_key("DataBaseStartTime:{$this->x1}", $this->db_name, $this->start_time = time());
+
+		if(!mysql_select_db($this->db_name, $this->dbh))
+		{
+			echolog(__FILE__.':'.__LINE__." Could not select database '$db_name' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
+			bors_exit();
+		}
 	}
 
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
 	{
-		//		if(@$_COOKIE['user_id'] == 10000)
-		//			debug_hidden_log("DB Construct");
-			
 		$this->db_name = $base;
 			
 		if(!$base)
@@ -67,37 +64,30 @@ class DataBase extends base_object
 		$this->x2 = $login;
 		$this->x3 = $password;
 			
-		if(config('mysql_use_pool') && is_global_key("DataBaseHandler:$server", $base))
+		if(config('mysql_use_pool2') 
+			&& is_global_key("DataBaseHandler:$server", $base) 
+			&& (time() - global_key("DataBaseStartTime:$server", $base) < 7 )
+			&& $this->db_name == $base
+		)
 		{
-			@$GLOBALS['global_db_resume_connections']++;
+			
+			debug_count_inc('mysql_resume_connections');
 
 			$this->dbh = global_key("DataBaseHandler:$server", $base);
-//			if(debug_in_console())
-//				echo "cont\[{$base}]=".$this->dbh."\n";
-			mysql_select_db($base, $this->dbh);
-		}
-		else
-		{
-			@$GLOBALS['global_db_new_connections']++;
-
-			$this->reconnect();
+			$this->start_time = global_key("DataBaseStartTime:$server", $base);
 
 			if(!mysql_select_db($base, $this->dbh))
 			{
 				echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
-//				if(empty($_GLOBALS['bors_exit_doing']))
-//				{
-					$_GLOBALS['bors_exit_doing'] = true;
-//					bors_exit();
-					exit();
-//				}
+				bors_exit();
 			}
-
-			set_global_key("DataBaseHandler:$server", $base, $this->dbh);
-			// echo "new\[{$base}]=".$this->dbh."<br>\n";
-//			if(debug_in_console())
-//				echo "new \[{$base}]=".$this->dbh," \n";
 		}
+		else
+		{
+			debug_count_inc('mysql_new_connections');
+			$this->reconnect();
+		}
+
 
 		if(config('mysql_set_character_set'))
 		{
@@ -125,18 +115,10 @@ class DataBase extends base_object
 		if(!$query)
 			return;
 
-		if(!$this->dbh)
+		if(!$this->dbh || time()-$this->start_time > 10)
 			$this->reconnect();
 
-		if(!config('mysql_disable_autoselect_db'))
-			@mysql_select_db($this->db_name, $this->dbh);
-			
-		if(empty($GLOBALS['global_db_queries']))
-			$GLOBALS['global_db_queries'] = 0;
-			
-		$GLOBALS['global_db_queries']++;
-
-		echolog("<small>query {$GLOBALS['global_db_queries']}[{$this->db_name}]=|".htmlspecialchars($query)."|</small>", 5);
+		debug_count_inc('mysql_queries');
 
 		$qstart = microtime(true);
 			
@@ -146,26 +128,12 @@ class DataBase extends base_object
 
 		$qtime = microtime(true) - $qstart;
 
-		if(empty($GLOBALS['stat']['queries_time']))
-			$GLOBALS['stat']['queries_time'] = 0;
-
-		$GLOBALS['stat']['queries_time'] += $qtime;
-
-		if($qtime > config('debug_mysql_slow', 10))
+		if($qtime > config('debug_mysql_slow', 5))
 			debug_hidden_log('mysql-slow', "Slow query [{$qtime}s]: ".$query);
 			
-		if(@$_GET['log_level'] == 4 && $qtime > @$_GET['qtime'])
-			echolog("<small>query {$GLOBALS['global_db_queries']}($qtime)=|".htmlspecialchars($query)."|</small>", 4);
-
 		if(config('debug_mysql_queries_log'))
 			debug_hidden_log('mysql-queries', "[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query);
 			
-		if(loglevel(11))
-			debug_trace();
-
-		echolog("<xmp>result=|".print_r($this->result, true)."|</xmp>", 6);
-
-		//   @mysql_num_rows(), ..	SELECT!
 		if($this->result)
 		{
 			$this->last_query_time = microtime(true);
@@ -178,23 +146,17 @@ class DataBase extends base_object
 		
 		if(!$ignore_error)
 		{
-			if(config('log_level') > 5)
-			{
-				$fh = @fopen("{$_SERVER['DOCUMENT_ROOT']}/hts-queries.log",'at');
-				@fputs($fh,"Error: ".mysql_error($this->dbh)."\n");
-				@fclose($fh);
-			}
-
-			echolog('MySql Error '.mysql_error($this->dbh)." for DB='{$this->db_name}' in query '<tt>$query</tt>'", 1);
-
-			//				debug_hidden_log("DataBase query error:\nq=\"".$query."\"\ndump=".print_r($this, true));
-
-			debug_exit('MySQL Error at '.date('r').': '.mysql_error($this->dbh).
-				'; time from connect: '.((microtime(true) - $this->start_microtime)/1000000).
-				'; time from last query: '.((microtime(true) - $this->last_query_time)/1000000).
-				'; was connected at '.date('r', $this->start_time));
+			debug_trace();
+			bors_exit("MySQL Error: driver class=".get_class($this)."<br>\n"
+				."now=".date('r')."<br>\n"
+				."dbh={$this->dbh}; <br/>\n"
+				."error=".mysql_error($this->dbh)."<br/>\n"
+				."db name={$this->db_name}<br/>\n"
+				.'time from last query: '.((microtime(true) - $this->last_query_time)/1000000)."<br/>\n"
+				.'was connected at '.date('r', $this->start_time)." ({$this->start_time})");
 		}
 
+		$this->last_query_time = microtime(true);
 		return false;
 	}
 
@@ -206,31 +168,31 @@ class DataBase extends base_object
 	function fetch()
 	{
 		if(!$this->result)
-		return $this->row = false;
+			return $this->row = false;
 
 		$this->row = mysql_fetch_assoc($this->result);
 
 		if(!$this->row)
-		return false;
+			return false;
 
 		if(empty($GLOBALS['bors_data']['config']['gpc']))
 		{
 			if(sizeof($this->row)==1)
-			foreach($this->row as $s)
-			$this->row = $s;
+				foreach($this->row as $s)
+					$this->row = $s;
 			else
-			foreach($this->row as $k => $v)
-			$this->row[$k] = $v;
+				foreach($this->row as $k => $v)
+					$this->row[$k] = $v;
 
 			return $this->row;
 		}
 
 		if(sizeof($this->row)==1)
-		foreach($this->row as $s)
-		$this->row = quote_fix($s);
+			foreach($this->row as $s)
+				$this->row = quote_fix($s);
 		else
-		foreach($this->row as $k => $v)
-		$this->row[$k] = quote_fix($v);
+			foreach($this->row as $k => $v)
+			$this->row[$k] = quote_fix($v);
 			
 		return $this->row;
 	}
@@ -243,23 +205,23 @@ class DataBase extends base_object
 	function fetch1()
 	{
 		if(!$this->result)
-		return $this->row = false;
+			return $this->row = false;
 
 		$this->row = mysql_fetch_assoc($this->result);
 
 		if(!$this->row)
-		return false;
+			return false;
 
 		if(empty($GLOBALS['bors_data']['config']['gpc']))
 		{
 			foreach($this->row as $s)
-			$this->row = $s;
+				$this->row = $s;
 
 			return $this->row;
 		}
 
 		foreach($this->row as $s)
-		$this->row = quote_fix($s);
+			$this->row = quote_fix($s);
 			
 		return $this->row;
 	}
@@ -271,20 +233,12 @@ class DataBase extends base_object
 		{
 			$ch = &new Cache();
 			if($ch->get("DataBaseQuery:{$this->db_name}", $query) !== NULL)
-			{
-				//					echo "*****get*****$query******************";
 				return unserialize($ch->last());
-			}
 		}
 			
-		//			if(is_global_key("db_get",$query))
-		//				return global_key("db_get",$query);
-
 		$this->query($query, $ignore_error);
 		$this->fetch();
 		$this->free();
-
-		//			echo "res = {$this->row}";
 
 		if($ch/* && $this->row !== false*/)
 		$ch->set(serialize($this->row), $cached);
@@ -538,7 +492,7 @@ class DataBase extends base_object
 		$this->dbh = NULL; 
 	}
 
-	public function __sleep()
+/*	public function __sleep()
 	{
 		if(!$this->dbh)
 			return;
@@ -547,6 +501,6 @@ class DataBase extends base_object
 		debug_hidden_log("SerializeOfDataBase");
 		return array_keys(get_object_vars($this));
 	}
-
+*/
 	function can_cached() { return false; }
 }

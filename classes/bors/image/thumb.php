@@ -81,7 +81,6 @@ class bors_image_thumb extends bors_image
 			$abs = true;
 		}
 
-
 		if(config('pics_base_safemodded'))
 		{
 			$file_orig_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_orig);
@@ -94,7 +93,7 @@ class bors_image_thumb extends bors_image
 			$fsize_orig = filesize($file_orig_r);
 		}
 
-//		echo "size of ".$this->original->file_name()." = $fsize<br/>\n";
+//		echo "size of ".$this->original->file_name()." = $fsize_orig<br/>\n";
 		if(!$this->original->file_name() || !$fsize_orig)
 			return;
 
@@ -112,10 +111,10 @@ class bors_image_thumb extends bors_image
 		else
 		{
 			$file_thumb_r = $file_thumb;
-			$fsize_thumb = @filesize($file_thumb_r);
+			$fsize_thumb = filesize($file_thumb_r);
 		}
 
-//		echo "File {$this->file_name_with_path()}<br />\n"; exit();
+//		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
 		$this->set_size($fsize_thumb, true);
 
 		$img_data = @getimagesize($file_thumb_r);
@@ -137,8 +136,8 @@ class bors_image_thumb extends bors_image
 
 
 //		echo "OriginalRP = {$this->original->relative_path()}\n"; exit();
-//		echo "Original = {$this->original->file_name_with_path()}\n";
-//		echo "Target   = {$this->file_name_with_path()}\n";
+//		echo "Original = {$this->original->file_name_with_path()}\n"; exit();
+//		echo "Target   = {$this->file_name_with_path()}\n"; exit();
 		if($abs)
 		{
 			$at = $_SERVER['DOCUMENT_ROOT'].$this->file_name_with_path();

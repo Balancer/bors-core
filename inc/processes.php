@@ -1,13 +1,13 @@
 <?php
 
-function bors_thread_lock($section_name, $timeout = 60)
+function bors_thread_lock($section_name, $timeout = 60, $content = 1)
 {
 	$flock = config('cache_dir')."/$section_name.thread_lock";
 	
 	if(file_exists($flock) && filemtime($flock) > time() - $timeout)
 		return false;
 	                
-	file_put_contents($flock, 1);
+	file_put_contents($flock, $content);
 
 	return true;                    
 }

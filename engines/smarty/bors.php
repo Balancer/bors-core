@@ -70,7 +70,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	if(!empty($GLOBALS['cms']['templates']['data']))
 		foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
 		{
-//			echo "assign data $key to $value<br />";
+//			echo "assign data '$key' = '$value'<br />";
 			$smarty->assign($key, $value);
 		}
 
@@ -89,17 +89,13 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	if(!empty($GLOBALS['stat']['start_microtime']))
 		$smarty->assign("make_time", sprintf("%.3f", microtime(true) - $GLOBALS['stat']['start_microtime']));
 
-//	echo "*** queries_time = {$GLOBALS['stat']['queries_time']}<br />\n";
-	$smarty->assign("queries_time", sprintf("%.3f", @$GLOBALS['stat']['queries_time']));
-	$smarty->assign("queries", intval(@$GLOBALS['global_db_queries']));
-
 //	echo "Template=$template";
 //	echo "is cached=".$smarty->is_cached($template);
 	$out = $smarty->fetch($template);
 //	$out = $smarty->fetch($template);
 //	echo "is cached=".$smarty->is_cached($template);
 
-/*	$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripslashes('$1'))", $out); */
+	$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripq('$1'))", $out);
 
 	return $out;
 }

@@ -430,6 +430,8 @@ function &object_init($class_name, $object_id, $args = array())
 	if(!($class_file = class_include($class_name, defval($args, 'local_path'))))
 		return $obj;
 
+	$object_id = call_user_func(array($class_name, 'id_prepare'), $object_id);
+
 	$found = 0;
 	if(empty($args['no_load_cache']))
 		$obj = &load_cached_object($class_name, $object_id, $args, $found);

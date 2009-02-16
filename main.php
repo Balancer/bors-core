@@ -167,7 +167,7 @@
 	if(config('404_page_url'))
 		return go(config('404_page_url'), true);
 
-	if(config('404_show'))
+	if(config('404_show', true))
 		echo ec("Page '$uri' not found");
 //	echo "</pre>";
 

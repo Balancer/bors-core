@@ -1,5 +1,7 @@
 <?php
 
+include_once('inc/bors/lists.php');
+
 function smarty_function_dropdown($params, &$smarty)
 {
 	extract($params);

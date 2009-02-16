@@ -20,7 +20,7 @@ function save_format($txt)
 
 function restore_format($txt)
 {
-	return preg_replace('/lllbase64_save_formatlll(.+)rrrbase64_save_formatrrr/e', "base64_decode(str_replace('# #', '', '$1'))", $txt);
+	return preg_replace('/lllbase64_save_formatlll(.+?)rrrbase64_save_formatrrr/e', "base64_decode(str_replace('# #', '', '$1'))", $txt);
 }
 
 function remove_format($txt)

@@ -35,6 +35,12 @@ class DataBase extends base_object
 
 		set_global_key("DataBaseHandler:{$this->x1}", $this->db_name, $this->dbh);
 		set_global_key("DataBaseStartTime:{$this->x1}", $this->db_name, $this->start_time = time());
+
+		if(!mysql_select_db($this->db_name, $this->dbh))
+		{
+			echolog(__FILE__.':'.__LINE__." Could not select database '$db_name' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
+			bors_exit();
+		}
 	}
 
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
@@ -79,15 +85,9 @@ class DataBase extends base_object
 		else
 		{
 			debug_count_inc('mysql_new_connections');
-
 			$this->reconnect();
-
-			if(!mysql_select_db($base, $this->dbh))
-			{
-				echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
-				bors_exit();
-			}
 		}
+
 
 		if(config('mysql_set_character_set'))
 		{
@@ -147,7 +147,6 @@ class DataBase extends base_object
 		if(!$ignore_error)
 		{
 			debug_trace();
-			
 			bors_exit("MySQL Error: driver class=".get_class($this)."<br>\n"
 				."now=".date('r')."<br>\n"
 				."dbh={$this->dbh}; <br/>\n"

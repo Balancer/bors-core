@@ -122,6 +122,13 @@ class base_object extends base_empty
 	function local_template_data_set() { return array(); }
 	function local_template_data_array() { return $this->template_data; }
 
+	function set_template_data($data, $db_up)
+	{
+		foreach($data as $x)
+			if(preg_match('/(.+)=(.+)/', $x, $m))
+				$this->add_global_template_data(trim($m[1]), trim($m[2]));
+	}
+
 	function add_global_template_data($var_name, $value) { return set_global_template_var($var_name, $value); }
 	function global_template_data_set() { return array(); }
 	function global_template_data_array() { return global_template_vars(); }

@@ -70,7 +70,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	if(!empty($GLOBALS['cms']['templates']['data']))
 		foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
 		{
-//			echo "assign data $key to $value<br />";
+//			echo "assign data '$key' = '$value'<br />";
 			$smarty->assign($key, $value);
 		}
 

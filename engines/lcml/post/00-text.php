@@ -11,7 +11,7 @@
         $txt=preg_replace("!\^(\-?[\d\.]+)!","<sup>$1</sup>",$txt);
 
         $txt = preg_replace("!<<!", "&laquo;", $txt);
-        $txt = preg_replace("!>>!", "&raguo;", $txt);
+        $txt = preg_replace("!>>!", "&raquo;", $txt);
 
         $txt = str_replace('[p]', '<p/>', $txt);
 

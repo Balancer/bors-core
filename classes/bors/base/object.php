@@ -47,6 +47,9 @@ class base_object extends base_empty
 					if(is_numeric($property))
 						$property = $db_field;
 
+//					if(preg_match('/^(\w+)\|.+/', $db_field, $m))
+//						$db_field = $m[1];
+
 					if($property == $test_property)
 						list($r_db, $r_table, $r_db_field) = array($db, $table, $db_field);
 
@@ -63,8 +66,7 @@ class base_object extends base_empty
 	}
 
 	private $config;
-
-	function init($data_load = true)
+	function _configure()
 	{
 		if($config = $this->config_class())
 		{
@@ -75,7 +77,10 @@ class base_object extends base_empty
 			if(!$this->config)
 				debug_exit("Can't load config ".$this->config_class());
 		}
-		
+	}
+
+	function init($data_load = true)
+	{
 		if(!$data_load)
 			return false;
 		

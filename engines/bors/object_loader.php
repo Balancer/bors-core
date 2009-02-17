@@ -454,6 +454,8 @@ function &object_init($class_name, $object_id, $args = array())
 	if($url = defval($args, 'called_url'))
 		$obj->set_called_url(preg_replace('!\?$!', '', $url));
 
+	$obj->_configure();
+
 	if(!$obj->loaded())
 		$obj->init();
 

@@ -42,8 +42,11 @@ function utf8_win($s)
     return $s;
 }
 
-	function sklon($n, $s1, $s2, $s5) // 1 нож 2 ножа 5 ножей
+	function sklon($n, $s1, $s2=NULL, $s5=NULL) // 1 нож 2 ножа 5 ножей
 	{
+		if($s2 === NULL)
+			list($s1, $s2, $s5) = explode(',', $s1);
+			
     	$ns=intval(substr($n,-1));
  		$n2=intval(substr($n,-2));
 

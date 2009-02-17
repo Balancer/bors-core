@@ -15,7 +15,18 @@ class module_date_calend_month extends base_page
 
 		$calend = array();
 
-		$list = $this->args('list');
+		if(!($list = $this->args('list')))
+		{
+			$list = array();
+			$counts = array();
+			foreach(objects_array($this->args('class_name'), array("create_time BETWEEN {$time0} AND {$time9}")) as $x)
+				@$counts[date('j', $x->create_time())]++;
+			foreach($counts as $day => $count)
+				$list[$day] = array(
+					'url' => $this->args('base_url').date('Y/m/d/'), 
+					'title' => $count .' '. sklon($count, $this->args('sklon')),
+				);
+		}
 
 		$this_month = $year == strftime('%Y', $now) && $month == strftime('%m', $now);
 		$today = strftime('%d', $now);
@@ -54,6 +65,6 @@ class module_date_calend_month extends base_page
 			$calend[] = $week;
 		}
 
-		return array('calend' => $calend, 'table_class' => $this->args('table'));
+		return array('calend' => $calend, 'table_class' => $this->args('table', 'btab'));
 	}
 }

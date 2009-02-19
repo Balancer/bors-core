@@ -235,7 +235,7 @@ class storage_db_mysql_smart extends base_null
 			{
 				if(!$select)
 					return NULL;
-				
+
 				$dbh->query('SELECT '.join(',', $select).' '.$from.' '.$where, false);
 			}
 
@@ -250,16 +250,17 @@ class storage_db_mysql_smart extends base_null
 						$name	= $m[1];
 						$value = $this->do_func($m[2], $value);
 					}
-					
+
 					if(preg_match('!^\d+$!', $value) && intval($value) == $value)
 						$value = intval($value);
-					
+
 					$object->{"set_$name"}($value, false);
 
 					$was_loaded = true;
 				}
 
 				$object->set_loaded($was_loaded);
+//				save_cached_object($object);
 
 				if($common_where)
 				{
@@ -290,10 +291,10 @@ class storage_db_mysql_smart extends base_null
 	{
 		if(!$func)
 			return $str;
-		
+
 		if(function_exists($func))
 			return $func($str);
-			
+
 		$func = str_replace('$$$', '$str');
 		eval("\$value = $func;");
 		return $value;
@@ -302,14 +303,14 @@ class storage_db_mysql_smart extends base_null
 	function save($object)
 	{
 		global $back_functions;
-		
+
 //		echo "Save ".get_class($object)."({$object->id()})";
-		
+
 		if(!$object->id() || is_object($object->id()) || empty($object->changed_fields))
 			return false;
 
 		$oid = addslashes($object->id());
-			
+
 		foreach($object->fields() as $db => $tables)
 		{
 			$tab_count = 0;
@@ -350,7 +351,7 @@ class storage_db_mysql_smart extends base_null
 						continue;
 
 					$value = $object->$property();
-					
+
 					// Выделяем имя функции постобработки, передаваемом в виде
 					// 'WWW.News.Header(ID)|html_entity_decode($str)'
 					// --------------------^^^^^^^^^^^^^^^^^^^^^^^^^-
@@ -366,7 +367,7 @@ class storage_db_mysql_smart extends base_null
 					// 'UNIX_TIMESTAMP(WWW.News.Date(ID))
 					// -^^^^^^^^^^^^^^^-----------------^
 					$sql_func	= false;
-					
+
 					if(preg_match('!^(\w+) \( ([\w\.]+\(.+\)) \)$!x', $field, $m))
 					{
 						$field		= $m[2];
@@ -380,7 +381,7 @@ class storage_db_mysql_smart extends base_null
 					}
 
 //					echo "=== s: $field sf: $sql_func ===</br>\n";
-				
+
 					if(preg_match('!^(\w+) \( ([^\(\)]+) \)$!x', $field, $m))
 					{
 						$id_field = $m[2];
@@ -388,11 +389,11 @@ class storage_db_mysql_smart extends base_null
 					}
 					else
 						$id_field = $def_id;
-						
+
 					if(empty($added[$table_name.'-'.$id_field]))
 					{
 						$added[$table_name.'-'.$id_field] = true;
-						
+
 						$current_tab = "`tab".($tab_count++)."`";
 						if(empty($update))
 						{
@@ -402,17 +403,18 @@ class storage_db_mysql_smart extends base_null
 						else
 							$update .= $join.$table_name.'` AS '.$current_tab.' ON ('.make_id_field($current_tab, $id_field, $oid).')';
 					}
-				
+
 					if($sql_func)
 						$set["raw {$current_tab}.{$field}"] = "{$sql_func}('".addslashes($value)."')";
 					else
 						$set["{$current_tab}.{$field}"] = $value;
 				}
 			}
-	
+
 			if($update)
 				$dbh->query($update.$dbh->make_string_set($set).' '.$where, false);
-		}				
+		}
+
 		$object->changed_fields = array();
 //		exit();
 	}
@@ -424,7 +426,7 @@ class storage_db_mysql_smart extends base_null
 		$oid = $object->id();
 		$data = array();
 		$replace = $object->replace_on_new_instance();
-		
+
 		foreach($object->fields() as $db => $tables)
 		{
 //			echo "Database: $db; tables="; print_r($tables); echo "<br />\n";
@@ -455,7 +457,7 @@ class storage_db_mysql_smart extends base_null
 						continue;
 
 					$value = isset($data[$property]) ? $data[$property] : $object->$property();
-					
+
 					// Выделяем имя функции постобработки, передаваемом в виде
 					// 'WWW.News.Header(ID)|html_entity_decode($str)'
 					// --------------------^^^^^^^^^^^^^^^^^^^^^^^^^-
@@ -471,7 +473,7 @@ class storage_db_mysql_smart extends base_null
 					// 'UNIX_TIMESTAMP(WWW.News.Date(ID))
 					// -^^^^^^^^^^^^^^^-----------------^
 					$sql_func	= false;
-					
+
 					if(preg_match('!^(\w+) \( ([\w\.]+\(.+\)) \)$!x', $field, $m))
 					{
 						$field		= $m[2];
@@ -485,7 +487,7 @@ class storage_db_mysql_smart extends base_null
 					}
 
 //					echo "=== s: $field sf: $sql_func ===</br>";
-				
+
 					if(preg_match('!^(\w+) \( ([^\(\)]+) \)$!x', $field, $m))
 					{
 						$id_field = $m[2];

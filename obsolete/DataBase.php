@@ -16,22 +16,28 @@ class DataBase extends base_object
 	function reconnect()
 	{
 		$this->close();
-	
+
 		$loop = 0;
 		do
 		{
 			if(config('mysql_persistent'))
 				$this->dbh = @mysql_pconnect($this->x1, $this->x2, $this->x3, true);
 			else
-				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3, true);
+				$this->dbh = mysql_connect($this->x1, $this->x2, $this->x3, true);
+
+//			echo "'{$this->x1}, {$this->x2}, {$this->x3}' -> {$this->dbh}<br />";
 
 			if(!$this->dbh && config('mysql_try_reconnect'))
 				sleep(5);
-				
+
 		} while(!$this->dbh && config('mysql_try_reconnect') && $loop++ < config('mysql_try_reconnect'));
 
 		if(!$this->dbh)
-			debug_exit("mysql_connect({$this->x1}, {$this->x2}) to '{$this->db_name}' failed ".mysql_errno().": ".mysql_error()."<BR />");
+		{
+			echo("mysql_connect({$this->x1}, {$this->x2}) to '{$this->db_name}' failed ".mysql_errno().": ".mysql_error()."<BR />");
+			bors_exit();
+			exit();
+		}
 
 		set_global_key("DataBaseHandler:{$this->x1}", $this->db_name, $this->dbh);
 		set_global_key("DataBaseStartTime:{$this->x1}", $this->db_name, $this->start_time = time());

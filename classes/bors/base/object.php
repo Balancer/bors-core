@@ -302,21 +302,21 @@ class base_object extends base_empty
 			return;
 
 		$called = true;
-		
+
 		foreach($this->data_providers() as $key => $value)
 			$this->add_template_data($key, $value);
 	}
 
 	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
 
-	function titled_url_ex($title=NULL, $append=NULL)
+	function titled_url_ex($title=NULL, $append=NULL, $url_append='')
 	{
 		if($title===NULL)
 			$title = $this->title();
-		
-		return '<a href="'.$this->url($this->page()).'"'.($append?' '.$append:'').">{$title}</a>"; 
+
+		return '<a href="'.$this->url($this->page()).$url_append.'"'.($append?' '.$append:'').">{$title}</a>"; 
 	}
-	
+
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
 	function titled_admin_url($title = NULL)
 	{
@@ -808,12 +808,13 @@ class base_object extends base_empty
 
 		return $content;
 	}
-		
+
 	function show($object) { echo $this->get_content($object); }
-	
+
 	function object_title() { return $this->class_title().ec(' «').$this->title().ec('»'); }
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }
-	
+
+	function cross_ids($to_class) { return bors_get_cross_ids($this, $to_class); }
 	function cross_objs($to_class = '') { return bors_get_cross_objs($this, $to_class); }
 	function cross_objects($to_class = '') { return bors_get_cross_objs($this, $to_class); }
 	function add_cross($class, $id, $order = 0) { return bors_add_cross($this->class_id(), $this->id(), $class, $id, $order); }

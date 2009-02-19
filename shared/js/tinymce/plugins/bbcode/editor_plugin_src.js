@@ -75,7 +75,7 @@
 			rep(/<br\/>/gi,"\n");
 			rep(/<br>/gi,"\n");
 			rep(/<p>/gi,"");
-			rep(/<\/p>/gi,"\n\n");
+			rep(/<\/p>/gi,"\n");
 			rep(/&nbsp;/gi," ");
 			rep(/&quot;/gi,"\"");
 			rep(/&lt;/gi,"<");
@@ -84,7 +84,6 @@
 
 			return s; 
 		},
-
 
 		// BBCode -> HTML from PunBB dialect
 		_punbb_bbcode2html : function(s) {

@@ -91,9 +91,6 @@ function delete_cached_object($object) { return save_cached_object($object, true
 
 function save_cached_object(&$object, $delete = false)
 {
-//	if(debug_is_balancer())
-//		echo "Store $object<br/>\n";
-
 	if(!method_exists($object, 'id') || is_object($object->id()))
 		return;
 
@@ -105,7 +102,7 @@ function save_cached_object(&$object, $delete = false)
 			@$memcache->delete($hash);
 		else
 			@$memcache->set($hash, $object, true, rand(600, 1200));
-		
+
 	}
 
 	if($delete)
@@ -118,7 +115,7 @@ function class_internal_uri_load($uri)
 {
 		if(!preg_match("!^(\w+)://(.*)$!", $uri, $m))
 			return NULL;
-	
+
 		$class_name = $m[1];
 
 		$id = $m[2];

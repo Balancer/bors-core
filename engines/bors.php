@@ -32,7 +32,12 @@ function &object_new($class, $id = NULL)
     $obj = &new $class($id);
 
 	if($id !== NULL)
+	{
+		$id = call_user_func(array($class_name, 'id_prepare'), $id);
 		$obj->set_id($id);
+	}
+	
+	$obj->_configure();
 
 	$obj->init(false);
 
@@ -49,6 +54,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true)
 	else
 		$data = false;
 
+	$id = call_user_func(array($class_name, 'id_prepare'), $id);
 	$obj = &object_new($class, $id);
 
 	if($data !== false)
@@ -56,6 +62,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true)
 			$obj->set($key, $value, $db_update);
 
 	$obj->new_instance();
+	$obj->_configure();
 	return $obj;
 }
 

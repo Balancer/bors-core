@@ -198,7 +198,7 @@ class base_object extends base_empty
 		if(!config('strict_autho_fields_check')
 				|| @$_SERVER['SVCNAME'] == 'tomcat-6' 
 				|| property_exists($this, $p))
-			return $this->$p;
+			return @$this->$p;
 		
 		debug_exit("Try to get undefined properties ".get_class($this).".$name");
 		return NULL;

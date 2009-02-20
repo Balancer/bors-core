@@ -18,8 +18,9 @@ class storage_db_mysql_smart extends base_null
 
 		global $stdbms_cache;
 		
-		$hash = md5(join('!', array($object->class_name(), print_r($object->fields(), true), $common_where, $only_count)));
-//		echo "hash for ".$object->class_name()."/$common_where =$hash<Br/>\n";
+		$hash = md5(join('!', array($object->class_name(), $common_where, $only_count)));
+
+		global $dbhs;
 
 		foreach($object->fields() as $db => $tables)
 		{
@@ -40,8 +41,11 @@ class storage_db_mysql_smart extends base_null
 			if(!$db)
 				bors_exit("Can't load empty DB for $object");
 			
-			$dbh = new driver_mysql($db);
-
+			if(empty($dbhs[$db]))
+				$dbh = $dbhs[$db] = new driver_mysql($db);
+			else
+				$dbh = $dbhs[$db];
+				
 			$dbhash = $hash.$db;
 			if(empty($stdbms_cache[$dbhash]))
 			{
@@ -49,7 +53,7 @@ class storage_db_mysql_smart extends base_null
 			
 			  foreach($tables as $table_name => $fields)
 			  {
-				if(preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m)) // table(id)
+				if(strpos($table_name, '(') && preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m)) // table(id)
 				{
 					$table_name	= $m[1];
 					$def_id		= $m[2];
@@ -97,10 +101,10 @@ class storage_db_mysql_smart extends base_null
 					// Выделяем имя функции постобработки, передаваемом в виде
 					// 'WWW.News.Header(ID)|html_entity_decode($str)'
 					// --------------------^^^^^^^^^^^^^^^^^^^^^^^^^-
-					if(preg_match('!^(.+)\|(.+)$!', $field, $m))
+					if(preg_match('!^(.+)(\|.+)$!', $field, $m))
 					{
 						$field		= $m[1];
-						$php_func	= '|'.$m[2];
+						$php_func	= $m[2];
 					}
 					else
 						$php_func 	= '';
@@ -240,17 +244,17 @@ class storage_db_mysql_smart extends base_null
 			{
 				foreach($row as $name => $value)
 				{
-					if($pos = strrpos($name, '|'))
+					if($pos = strpos($name, '|'))
 					{
 						list($name, $fn) = explode('|', $name);
 						$value = $this->do_func($fn, $value);
 					}
 
-					if(is_numeric($value) && intval($value) == $value)
-						$value = intval($value);
+					if(is_numeric($value) && ($x = intval($value)) == $value)
+						$value = $x;
 
 					$object->{"set_$name"}($value, false);
-
+						
 					$was_loaded = true;
 				}
 

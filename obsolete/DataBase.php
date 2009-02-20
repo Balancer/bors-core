@@ -145,7 +145,7 @@ class DataBase extends base_object
 			$this->last_query_time = microtime(true);
 			
 			if(preg_match("!^SELECT!", $query))
-				return $this->rows = mysql_num_rows($this->result);
+				return mysql_num_rows($this->result);
 			else
 				return $this->result;
 		}
@@ -174,62 +174,58 @@ class DataBase extends base_object
 	function fetch()
 	{
 		if(!$this->result)
-			return $this->row = false;
+			return false;
 
-		$this->row = mysql_fetch_assoc($this->result);
-
-		if(!$this->row)
+		if(!($row = mysql_fetch_assoc($this->result)))
 			return false;
 
 		if(empty($GLOBALS['bors_data']['config']['gpc']))
 		{
-			if(sizeof($this->row)==1)
-				foreach($this->row as $s)
-					$this->row = $s;
+			if(sizeof($row)==1)
+				foreach($row as $s)
+					$row = $s;
 			else
-				foreach($this->row as $k => $v)
-					$this->row[$k] = $v;
+				foreach($row as $k => $v)
+					$row[$k] = $v;
 
-			return $this->row;
+			return $row;
 		}
 
-		if(sizeof($this->row)==1)
-			foreach($this->row as $s)
-				$this->row = quote_fix($s);
+		if(sizeof($row)==1)
+			foreach($row as $s)
+				$row = quote_fix($s);
 		else
-			foreach($this->row as $k => $v)
-			$this->row[$k] = quote_fix($v);
+			foreach($row as $k => $v)
+				$row[$k] = quote_fix($v);
 			
-		return $this->row;
+		return $row;
 	}
 
 	function fetch_row()
 	{
-		return $this->row = mysql_fetch_assoc($this->result);
+		return mysql_fetch_assoc($this->result);
 	}
 
 	function fetch1()
 	{
 		if(!$this->result)
-			return $this->row = false;
+			return false;
 
-		$this->row = mysql_fetch_assoc($this->result);
-
-		if(!$this->row)
+		if(!($row = mysql_fetch_assoc($this->result)))
 			return false;
 
 		if(empty($GLOBALS['bors_data']['config']['gpc']))
 		{
-			foreach($this->row as $s)
-				$this->row = $s;
+			foreach($row as $s)
+				$row = $s;
 
-			return $this->row;
+			return $row;
 		}
 
-		foreach($this->row as $s)
-			$this->row = quote_fix($s);
+		foreach($row as $s)
+			$row = quote_fix($s);
 			
-		return $this->row;
+		return $row;
 	}
 
 	function get($query, $ignore_error=false, $cached=false)
@@ -243,22 +239,22 @@ class DataBase extends base_object
 		}
 			
 		$this->query($query, $ignore_error);
-		$this->fetch();
+		$row = $this->fetch();
 		$this->free();
 
-		if($ch/* && $this->row !== false*/)
-		$ch->set(serialize($this->row), $cached);
+		if($ch)
+			$ch->set(serialize($row), $cached);
 
-		return $this->row;//  set_global_key("db_get", $query, $this->row);
+		return $row;//  set_global_key("db_get", $query, $row);
 	}
 
 	function get1($query, $ignore_error=false)
 	{
 		$this->query($query, $ignore_error);
-		$this->fetch1();
+		$row = $this->fetch1();
 		$this->free();
 
-		return $this->row;
+		return $row;
 	}
 
 	function get_value($table, $key_search, $value, $key_res)
@@ -274,8 +270,8 @@ class DataBase extends base_object
 	{
 		$this->query($query);
 			
-		while($this->fetch() !== false)
-		$func($this->row);
+		while(($row = $this->fetch()) !== false)
+			$func($row);
 
 		$this->free();
 	}
@@ -296,18 +292,13 @@ class DataBase extends base_object
 			
 		$this->query($query, $ignore_error);
 			
-		while($this->fetch()!==false)
-		{
-			//				$found = true;
-			$res[]=$this->row;
-		}
+		while(($row = $this->fetch()) !== false)
+			$res[]=$row;
 
 		$this->free();
 
-		//			echo "res = ".print_r($res,true).", ch=".($ch!=NULL).",$cached";
-
 		if($ch/* && $found*/)
-		$ch->set($res, $cached);
+			$ch->set($res, $cached);
 
 		return $res;
 	}

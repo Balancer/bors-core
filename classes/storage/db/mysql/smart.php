@@ -4,15 +4,11 @@ class storage_db_mysql_smart extends base_null
 {
 	function load(&$object, $common_where = NULL, $only_count = false, $args=array())
 	{
-//		global $cnt; echo "[".($cnt++)."] Try load ".get_class($object)."({$object->id()}); common_where=$common_where; only_count=$only_count<br />\n";
-
 		if(!($common_where || $only_count) && (!$object->id() || is_object($object->id())))
 			return false;
 
 		$oid = addslashes(isset($args['object_id']) ? $args['object_id'] : $object->id());
 		$by_id = !empty($args['by_id']);
-//		if(!$oid)
-//			debug_exit('empty oid');
 		
 		$result = array();
 
@@ -79,8 +75,6 @@ class storage_db_mysql_smart extends base_null
 				else
 					$join = ' LEFT JOIN `';
 					
-//				echo "<small>Do $table_name => ".print_r($fields, true)." with id = '{$def_id}'</small><br/>\n";
-
 				foreach($fields as $property => $field)
 				{
 					if(is_numeric($property))
@@ -127,8 +121,6 @@ class storage_db_mysql_smart extends base_null
 						$sql_func	= $m[1];
 					}
 
-//					echo "=== s: '$field' sf: $sql_func ===</br>";
-				
 					if(preg_match('!^(\w+)\(([^\(\)]+)\)$!x', $field, $m))
 					{
 						$id_field = $m[2];
@@ -149,7 +141,7 @@ class storage_db_mysql_smart extends base_null
 						}
 						else
 						{
-							$current_tab = '`'.$table_name.'`'; // "`tab".($tab_count++)."`";
+							$current_tab = '`'.$table_name.'`';
 							$ids[$current_tab] = $def_id;
 							$tab_names[$tab_count++] = $current_tab;
 							if(empty($main_tab))
@@ -167,15 +159,12 @@ class storage_db_mysql_smart extends base_null
 						{
 							if($common_where !== NULL)
 							{
-//								echo "ct=$current_tab; idf=$id_field; mt=$main_tab; ids={$ids[$main_tab]}<br/>";
 								if(!$on)
 									$on = "$current_tab.$id_field = $main_tab.`".$ids[$main_tab]."`";
 							}
 						 	else
 								$on	= make_id_field($current_tab, $id_field);
 
-
-//							echo "ct='$current_tab'; tn='$table_name'<br/>";
 							if($table_name != $current_tab)
 								$from .= $join.$table_name.'` AS '.$current_tab.' ON ('.$on.')';
 							else

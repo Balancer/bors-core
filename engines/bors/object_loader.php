@@ -417,7 +417,7 @@ function &object_init($class_name, $object_id, $args = array())
 	if(config('debug_class_search_track'))
 		echo "<small>object_init($class_name, $object_id,...)</small><br/>\n";
 
-	// В этом методе нельзя исползовать debug_test()!!!
+	// В этом методе нельзя использовать debug_test()!!!
 
 	$obj = NULL;
 

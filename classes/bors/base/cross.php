@@ -10,7 +10,7 @@ class base_cross extends base_page_db
 		if($this->cross_ids !== NULL)
 			return $this->cross_ids;
 			
-		$this->cross_ids = $this->db->get_array("
+		$this->cross_ids = $this->db()->get_array("
 				SELECT `".$this->cross_storage_id_to()."`
 					FROM `".$this->main_table_storage()."`
 					WHERE `".$this->cross_storage_id_from()."` = '".addslashes($this->id)."'");
@@ -20,12 +20,12 @@ class base_cross extends base_page_db
 
 	function clean()
 	{
-		$this->db->query("DELETE FROM `".$this->main_table_storage()."` WHERE `".$this->cross_storage_id_from()."` = '".addslashes($this->id)."'");
+		$this->db()->query("DELETE FROM `".$this->main_table_storage()."` WHERE `".$this->cross_storage_id_from()."` = '".addslashes($this->id)."'");
 	}
 
 	function setup($to_id)
 	{
-		$this->db->store($this->main_table_storage(), 
+		$this->db()->store($this->main_table_storage(), 
 				"`".$this->cross_storage_id_from()."` = '".addslashes($this->id).
 				"' AND `".$this->cross_storage_id_to()."` = '".addslashes($to_id)."'", array(
 			$this->cross_storage_id_from() => $this->id,

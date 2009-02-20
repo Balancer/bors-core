@@ -50,7 +50,7 @@
 			
 		for($i=0, $stop=strlen($txt); $i<$stop; $i++)
 		{
-			if(substr($mask, $i, 1) == 'X')
+			if($mask[$i] == 'X')
 			{
 				if($can_modif)
 				{

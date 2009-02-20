@@ -173,7 +173,8 @@ class base_object extends base_empty
 		
 		$field_storage = "field_{$field}_storage";
 
-		if(!method_exists($this, $field_storage) 
+		if(config('strict_autho_fields_check')
+			&& !method_exists($this, $field_storage) 
 			&& !$this->autofield($field) 
 			&& @$_SERVER['SVCNAME'] != 'tomcat-6' && !property_exists($this, "stb_{$field}")
 		)
@@ -194,7 +195,9 @@ class base_object extends base_empty
 	function get_property($name)
 	{
 		$p="stb_{$name}";
-		if(@$_SERVER['SVCNAME'] == 'tomcat-6' || property_exists($this, $p))
+		if(!config('strict_autho_fields_check')
+				|| @$_SERVER['SVCNAME'] == 'tomcat-6' 
+				|| property_exists($this, $p))
 			return $this->$p;
 		
 		debug_exit("Try to get undefined properties ".get_class($this).".$name");

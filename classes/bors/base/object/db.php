@@ -4,8 +4,6 @@ require_once('inc/bors/cross.php');
 
 class base_object_db extends base_object
 {
-	var $db;
-
 	function storage_engine() { return 'storage_db_mysql_smart'; }
 	function db_driver() { return 'driver_mysql'; }
 	function can_be_empty() { return false; }
@@ -14,20 +12,18 @@ class base_object_db extends base_object
 	
 	function __construct($id)
 	{
-		$driver = $this->db_driver();
-		$this->db = &new $driver($this->main_db_storage());
 		$id = $this->uri2id($id);
 			
 		parent::__construct($id);
-		bors_db_fields_init($this);
+//		bors_db_fields_init($this);
 	}
 
 	function id_field() { $fields = $this->main_table_fields(); return empty($fields['id']) ? 'id' : $fields['id']; }
 	
 	function new_instance() { bors_object_new_instance_db($this); }
 
-	function select($field, $where_map) { return $this->db->select($this->main_table_storage(), $field, $where_map); }
-	function select_array($field, $where_map) { return $this->db->select_array($this->main_table_storage(), $field, $where_map); }
+	function select($field, $where_map) { return $this->db()->select($this->main_table_storage(), $field, $where_map); }
+	function select_array($field, $where_map) { return $this->db()->select_array($this->main_table_storage(), $field, $where_map); }
 
 	function fields() { return array($this->main_db_storage() => $this->main_db_fields()); }
 	function main_db_fields()
@@ -69,25 +65,5 @@ class base_object_db extends base_object
 		
 		if($this->id())
 			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
-	}
-
-	public function __wakeup()
-	{
-		if($this->db)
-			return;
-			
-		$driver = $this->db_driver();
-		$this->db = &new $driver($this->main_db_storage());
-	}
-
-	public function __sleep()
-	{
-		if(!$this->db)
-			return;
-			
-		$this->db->close(); 
-		$this->db = NULL;
-
-		return array_keys(get_object_vars($this));
 	}
 }

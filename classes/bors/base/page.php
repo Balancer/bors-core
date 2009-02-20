@@ -120,8 +120,7 @@ class base_page extends base_object
 		//TODO: Вычистить все _queries.
 		if($qlist = $this->_queries())
 		{
-			if(empty($this->db) || empty($this->db->dbh))
-				$this->db = &new DataBase($this->main_db_storage());
+			$db = new DataBase($this->main_db_storage());
 			
 			foreach($qlist as $qname => $q)
 			{
@@ -133,9 +132,9 @@ class base_page extends base_object
 				}
 
 				if(preg_match("/!(.+)$/s", $q, $m))
-					$data[$qname] = $this->db->get($m[1], false, $cache);
+					$data[$qname] = $db->get($m[1], false, $cache);
 				else
-					$data[$qname] = $this->db->get_array($q, false, $cache);
+					$data[$qname] = $db->get_array($q, false, $cache);
 			}
 		}
 		$data['template_dir'] = $this->class_dir();

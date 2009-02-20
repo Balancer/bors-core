@@ -2,8 +2,6 @@
 
 class base_page_db extends base_page
 {
-	var $db;
-
 	function can_be_empty() { return false; }
 
 	function parents()
@@ -20,15 +18,10 @@ class base_page_db extends base_page
 	
 	function __construct($id)
 	{
-		$driver = $this->db_driver();
-		if(!$this->main_db_storage())
-			debug_exit('Empty '.$this->class_name().'.main_db_storage()');
-			
-		$this->db = &new $driver($this->main_db_storage());
 		$id = $this->uri2id($id);
 			
 		parent::__construct($id);
-		bors_db_fields_init($this);
+//		bors_db_fields_init($this);
 	}
 
 	function template_data_fill()
@@ -50,7 +43,7 @@ class base_page_db extends base_page
 				$cache	= $m[2];
 			}
 					
-			$GLOBALS['cms']['templates']['data'][$qname] = $this->db->get_array($q, false, $cache);
+			$GLOBALS['cms']['templates']['data'][$qname] = $this->db()->get_array($q, false, $cache);
 		}
 	}
 
@@ -69,8 +62,8 @@ class base_page_db extends base_page
 	
 	function fields_first() { return NULL; }
 
-	function select($field, $where_map) { return $this->db->select($this->main_table_storage(), $field, $where_map); }
-	function select_array($field, $where_map) { return $this->db->select_array($this->main_table_storage(), $field, $where_map); }
+	function select($field, $where_map) { return $this->db()->select($this->main_table_storage(), $field, $where_map); }
+	function select_array($field, $where_map) { return $this->db()->select_array($this->main_table_storage(), $field, $where_map); }
 
 	function _global_queries() { return array(); }
 
@@ -103,26 +96,6 @@ class base_page_db extends base_page
 		
 		if($this->id())
 			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
-	}
-
-	public function __sleep()
-	{
-		if(!$this->db)
-			return;
-			
-		$this->db->close(); 
-		$this->db = NULL;
-
-		return array_keys(get_object_vars($this));
-	}
-
-	public function __wakeup()
-	{
-		if($this->db)
-			return;
-			
-		$driver = $this->db_driver();
-		$this->db = &new $driver($this->main_db_storage());
 	}
 
 	function compiled_source() { return lcml($this->source()); }

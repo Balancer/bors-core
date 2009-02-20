@@ -25,4 +25,6 @@ class base_list extends base_empty
 
 		return $res;
 	}
+
+	static function factory($id = NULL) { return object_load($this->class_name(), $id); }
 }

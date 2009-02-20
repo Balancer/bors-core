@@ -31,7 +31,7 @@ class common_author extends base_page_db
 	{
 		$result = array();
 
-		foreach($this->db->get_array("SELECT * FROM authors_index WHERE author_id = ".$this->id()) as $x)
+		foreach($this->db()->get_array("SELECT * FROM authors_index WHERE author_id = ".$this->id()) as $x)
 			$result[] = class_load($x['class_name'], $x['class_id']);
 
 		return $result;

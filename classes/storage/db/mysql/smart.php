@@ -4,7 +4,7 @@ class storage_db_mysql_smart extends base_null
 {
 	function load(&$object, $common_where = NULL, $only_count = false, $args=array())
 	{
-//		echo "Try load ".get_class($object)."({$object->id()}); common_where=$common_where; only_count=$only_count<br />\n";
+//		global $cnt; echo "[".($cnt++)."] Try load ".get_class($object)."({$object->id()}); common_where=$common_where; only_count=$only_count<br />\n";
 
 		if(!($common_where || $only_count) && (!$object->id() || is_object($object->id())))
 			return false;
@@ -15,10 +15,6 @@ class storage_db_mysql_smart extends base_null
 //			debug_exit('empty oid');
 		
 		$result = array();
-
-//		echo "MySqlStorage.load: <b>{$object->internal_uri()}</b>, size=".sizeof(get_object_vars($object))."; cnt=".(++$count)."<br />";
-
-//		echo get_class($object); print_d($object->fields());
 
 		global $stdbms_cache;
 		
@@ -244,14 +240,13 @@ class storage_db_mysql_smart extends base_null
 			{
 				foreach($row as $name => $value)
 				{
-//					echo "name=<b>$name</b><br />";
-					if(preg_match('!^(.+)\|(.+)$!', $name, $m))
+					if($pos = strrpos($name, '|'))
 					{
-						$name	= $m[1];
-						$value = $this->do_func($m[2], $value);
+						list($name, $fn) = explode('|', $name);
+						$value = $this->do_func($fn, $value);
 					}
 
-					if(preg_match('!^\d+$!', $value) && intval($value) == $value)
+					if(is_numeric($value) && intval($value) == $value)
 						$value = intval($value);
 
 					$object->{"set_$name"}($value, false);
@@ -260,7 +255,7 @@ class storage_db_mysql_smart extends base_null
 				}
 
 				$object->set_loaded($was_loaded);
-//				save_cached_object($object);
+				save_cached_object($object);
 
 				if($common_where)
 				{
@@ -270,20 +265,14 @@ class storage_db_mysql_smart extends base_null
 						else
 							$result[] = &$object;
 
-//					save_cached_object($object);
 					$class = get_class($object);
 					$object = &new $class(NULL);
 				}
 			}
 
-//			if($object)
-//				$result[] = $object;
-
 			$dbh->close();
 		}
 
-
-//		save_cached_object($object);
 		return $common_where ? $result : $was_loaded;
 	}
 

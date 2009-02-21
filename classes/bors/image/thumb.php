@@ -7,7 +7,7 @@ class bors_image_thumb extends bors_image
 	function main_table_storage() { return 'bors_pictures_thumbs'; }
 	function main_db_storage() { return config('cache_database'); }
 	function can_be_empty() { return true; }
-	
+
 	private $geo_width, $geo_height, $geo_opts, $geometry, $original;
 
 	function fields()
@@ -29,9 +29,9 @@ class bors_image_thumb extends bors_image
 	{
 		if(is_numeric($this->id()) && $this->args('geometry'))
 			$this->set_id($this->id().','.$this->args('geometry'));
-	
+
 		parent::init();
-		
+
 		if(preg_match('!^(\d+),((\d*)x(\d*))$!', $this->id(), $m))
 		{
 			$id = $m[1];
@@ -52,20 +52,20 @@ class bors_image_thumb extends bors_image
 
 		if($this->width() && file_exists($this->file_name_with_path()))
 			return $this->set_loaded(true);
-			
+
 		$this->original = object_load('bors_image', $id);
 
 		if(!$this->original)
 			return $this->set_loaded(false);
 
 		$this->delete();
-		
+
 		$new_path = secure_path('/cache/'.$this->original->relative_path().'/'.$this->geometry);
-		
+
 		$this->new_instance();
 
 		$this->set_relative_path($new_path, true);
-			
+
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
 			$this->set($key, $this->original->$key(), true);
 
@@ -90,7 +90,8 @@ class bors_image_thumb extends bors_image
 		else
 		{
 			$file_orig_r = $file_orig;
-			$fsize_orig = filesize($file_orig_r);
+			if(!($fsize_orig = @filesize($file_orig_r)))
+				debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
 		}
 
 //		echo "size of ".$this->original->file_name()." = $fsize_orig<br/>\n";

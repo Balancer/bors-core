@@ -21,9 +21,9 @@ class DataBase extends base_object
 		do
 		{
 			if(config('mysql_persistent'))
-				$this->dbh = @mysql_pconnect($this->x1, $this->x2, $this->x3, config('mysql_use_pool2'));
+				$this->dbh = @mysql_pconnect($this->x1, $this->x2, $this->x3, config('mysql_renew_links'));
 			else
-				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3, config('mysql_use_pool2'));
+				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3, config('mysql_renew_links'));
 
 //			echo "'{$this->x1}, {$this->x2}, {$this->x3}' -> {$this->dbh}<br />";
 

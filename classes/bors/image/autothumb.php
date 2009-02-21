@@ -10,24 +10,24 @@ class bors_image_autothumb extends base_object
 		if(!preg_match('!^(/.*/)(\d*x\d*)/([^/]+)$!', $thumb_path, $m))
 			if(!preg_match('!^(/.*/)(\d*x\d*\([^)]+\))/([^/]+)$!', $thumb_path, $m))
 				return;
-		
+
 		$origin_path = $m[1].$m[3];
 		$this->geo = $m[2];
-		
+
 		if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $origin_path))
 			return;
-		
+
 		parent::__construct($this->origin_path = $origin_path);
 	}
-	
+
 	function loaded() { return $this->origin_path; }
 	function can_be_empty() { return false; }
-	
+
 	function pre_show()
 	{
 		$rel  = dirname($this->origin_path);
 		$file = basename($this->origin_path);
-		
+
 		$img = objects_first('bors_image', array('relative_path' => $rel, 'file_name' => $file));
 		if(!$img || !file_exists($img->file_name_with_path()))
 		{
@@ -35,7 +35,7 @@ class bors_image_autothumb extends base_object
 			$img->register_file($this->origin_path);
 			$img->new_instance();
 		}
-		
+
 		$thumb = $img->thumbnail($this->geo);
 		return $thumb->pre_show();
 	}

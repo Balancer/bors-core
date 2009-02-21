@@ -26,5 +26,5 @@ class base_list extends base_empty
 		return $res;
 	}
 
-	static function factory($id = NULL) { return object_load($this->class_name(), $id); }
+	static function factory($id = NULL) { return object_load(self::get_class_static(1), $id); }
 }

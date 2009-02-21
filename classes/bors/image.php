@@ -67,13 +67,18 @@ class bors_image extends base_object_db
 		$x = @getimagesize($this->url());
 		if(!$x)
 			$x = @getimagesize($this->file_name_with_path());
-		$this->set_width(intval(@$x[0]), $db_update);
-		$this->set_height(intval(@$x[1]), $db_update);
-		$this->set_size(intval(@filesize($this->file_name_with_path())), $db_update);
-		$this->set_mime_type(@$x['mime'], $db_update);
-//		echo "o=".$this->original_filename();
-		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), $db_update);
-		$this->store();
+
+		if(!empty($x[0]) && !empty($x['mime']))
+		{
+			$this->set_width(intval($x[0]), $db_update);
+			$this->set_height(intval($x[1]), $db_update);
+			$this->set_size(intval(filesize($this->file_name_with_path())), $db_update);
+			$this->set_mime_type($x['mime'], $db_update);
+//			echo "o=".$this->original_filename();
+//			echo "ext=".preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename());
+			$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), $db_update);
+			$this->store();
+		}
 	}
 
 	function admin_url() { return config('admin_host_url').'/images/'.($this->id() ? $this->id() : '%OBJECT_ID%').'/'; }

@@ -239,11 +239,11 @@ class storage_db_mysql_smart extends base_null
 						$value = $this->do_func($fn, $value);
 					}
 
-					if(is_numeric($value) && ($x = intval($value)) == $value)
-						$value = $x;
+//					if(is_numeric($value) && "".($x = intval($value)) === "$value")
+//						$value = $x;
 
 					$object->{"set_$name"}($value, false);
-						
+
 					$was_loaded = true;
 				}
 

@@ -44,7 +44,7 @@ class DataBase extends base_object
 
 		if(!mysql_select_db($this->db_name, $this->dbh))
 		{
-			echolog(__FILE__.':'.__LINE__." Could not select database '$db_name' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
+			echolog(__FILE__.':'.__LINE__." Could not select database '{$this->db_name}' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 			bors_exit();
 		}
 	}

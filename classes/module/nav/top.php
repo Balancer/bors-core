@@ -2,6 +2,8 @@
 
 class module_nav_top extends base_page
 {
+	function body_engine() { return 'body_php'; }
+
 	private $visited_pairs;
 
 	function local_template_data_set()

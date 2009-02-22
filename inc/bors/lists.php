@@ -57,3 +57,11 @@ function bors_named_hierarchic_list_db($class_name, $zero_item = NULL)
 	
 	return $res;
 }
+
+function bors_list_item_name($class_name, $item_id)
+{
+	$list = class_load($class_name);
+	if(!$list)
+		return "<b>{$item_id}</b> <small>Can't load class {$class_name} in ".__FILE__."</small>";
+	return $list->id_to_name($item_id);
+}

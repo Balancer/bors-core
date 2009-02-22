@@ -9,7 +9,19 @@ class base_object extends base_empty
 	var $match;
 	function set_match($match) { return $this->match = $match;	}
 
-	function parents() { return array(empty($this->match[2]) ? "http://{$this->match[1]}/" : "http://{$this->match[1]}{$this->match[2]}"); }
+	private $_parents = false;
+	function set_parents($array) { return $this->_parents = $array;	}
+	function parents($exact = false)
+	{
+		if($this->_parents !== false)
+			return $this->_parents;
+
+		if($exact)
+			return $this->_parents = array();
+
+		return $this->_parents = array(empty($this->match[2]) ? "http://{$this->match[1]}/" : "http://{$this->match[1]}{$this->match[2]}");
+	}
+
 	var $stb_children = array();
 
 	function rss_body()

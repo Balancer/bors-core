@@ -1,7 +1,9 @@
 <?php
 
-	function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
-	{
+function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
+{
+//	debug_timing_start('template_smarty_assign');
+
 		unset($GLOBALS['module_data']);
 
 		require_once(config('smarty_path').'/Smarty.class.php');
@@ -209,5 +211,6 @@
 
 		$result = $smarty->fetch($template_uri);
 
-		return $result;
-	}
+//	debug_timing_stop('template_smarty_assign');
+	return $result;
+}

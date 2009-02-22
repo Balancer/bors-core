@@ -230,7 +230,7 @@ function debug_timing_start($category)
 	$current = &$bors_debug_timing[$category];
 
 	if($current['start'])
-	debug_exit(ec("Вторичный вызов незавершённой функции {debug_timing_start('$category')}."));
+	debug_exit(ec("Вторичный вызов незавершённой функции debug_timing_start('$category')."));
 
 	list($usec, $sec) = explode(" ",microtime());
 	$current['start'] = ((float)$usec + (float)$sec);
@@ -242,7 +242,7 @@ function debug_timing_stop($category)
 	$current = &$bors_debug_timing[$category];
 
 	if(empty($current['start']))
-	debug_exit(ec("Вызов неактивированной функции {debug_timing_stop('$category')}."));
+	debug_exit(ec("Вызов неактивированной функции debug_timing_stop('$category')."));
 
 	list($usec, $sec) = explode(" ",microtime());
 	$time = ((float)$usec + (float)$sec) - $current['start'];

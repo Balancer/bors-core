@@ -4,6 +4,8 @@ require_once("bors_smarty_common.php");
 
 function template_assign_bors_object($obj, $template = NULL, $global = false)
 {
+	debug_timing_start('template_smarty_bors');
+
 	require_once(config('smarty_path').'/Smarty.class.php');
 	$smarty = &new Smarty;
 	require('smarty-register.php');
@@ -62,7 +64,10 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 		$template = smarty_template($template);
 
 	if(!$smarty->template_exists($template))
+	{
+		debug_timing_stop('template_smarty_bors');
 		return "Not existing template {$template} for $obj<br />";
+	}
 		
 	$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 	$smarty->assign("page_template", $template);
@@ -86,16 +91,10 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 			$smarty->assign($var, $value);
 	}
 
-	if(!empty($GLOBALS['stat']['start_microtime']))
-		$smarty->assign("make_time", sprintf("%.3f", microtime(true) - $GLOBALS['stat']['start_microtime']));
-
-//	echo "Template=$template";
-//	echo "is cached=".$smarty->is_cached($template);
 	$out = $smarty->fetch($template);
-//	$out = $smarty->fetch($template);
-//	echo "is cached=".$smarty->is_cached($template);
 
 	$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripq('$1'))", $out);
 
+	debug_timing_stop('template_smarty_bors');
 	return $out;
 }

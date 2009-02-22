@@ -112,7 +112,8 @@ class bors_image_thumb extends bors_image
 		else
 		{
 			$file_thumb_r = $file_thumb;
-			$fsize_thumb = filesize($file_thumb_r);
+			//TODO: придумать обработку больших картинок.
+			$fsize_thumb = @filesize($file_thumb_r);
 		}
 
 //		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();

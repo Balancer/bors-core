@@ -220,8 +220,9 @@ class base_object extends base_empty
 
 		if($db_update && @$this->$field_name !== $value)
 		{
-			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
-				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
+//TODO: продумать систему контроля типов.
+//			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
+//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
 				
 			$this->changed_fields[$field] = $field_name;
 			bors()->add_changed_object($this);
@@ -244,6 +245,7 @@ class base_object extends base_empty
 	}
 
 	function render_engine() { return false; }
+
 	function is_cache_disabled() { return true; }
 	function template_vars() { return 'body source'; }
 	function template_local_vars() { return 'create_time description id modify_time nav_name title'; }
@@ -753,7 +755,7 @@ class base_object extends base_empty
 		if($render_engine = $this->render_engine())
 		{
 			if(!($re = object_load($render_engine)))
-				debug_exit("Can't load render engine {$render_engine} for class {$this}");
+				debug_exit("Can't load global render engine {$render_engine} for object '{$this}'");
 
 			return $re->render($this);
 		}

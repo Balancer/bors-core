@@ -112,23 +112,9 @@
 	if($_SERVER['QUERY_STRING'])
 		$uri .= '?'.$_SERVER['QUERY_STRING'];
 
-	$ret = false;
+	$res = false;
 	if($object = object_load($uri))
-		$ret = bors_object_show($object);
-
-	//TODO: снести совсем старый код.
-	/*
-	if(!$object || $ret !== true)
-	{
-		if(config('obsolete_use_handlers_system'))
-		{
-			require_once('obsolete/handlers.php');
-			$ret = main_handlers_engine($uri);
-		}
-		else
-			$ret = false;
-	}
-	*/
+		$res = bors_object_show($object);
 
 	bors()->changed_save();
 
@@ -143,21 +129,39 @@
 
 	if(config('debug_timing'))
 	{
-		echo "<!--\nDebug timing:\n";
-		echo "Total time: $time sec.\n";
-		echo debug_timing_info_all();
-		echo "-->\n";
+		$deb = "<!--\n=== debug-info ===\n"
+			."created = ".date('r')."\n";
+
+		if($object)
+		{
+			$deb .= "class = {$object->class_name()}\n"
+				."class_file = {$object->class_file()}\n";
+			if($cs = $object->cache_static())
+				$deb .= "cache static expire = ". date('r', time()+$cs)."\n";
+
+			$deb .= "class_template = {$object->template()}\n";
+		}
+
+		$deb .= "\n=== debug counting: ===\n";
+		$deb .= debug_count_info_all();
+
+		$deb .= "\n=== debug timing: ===\n";
+		$deb .= debug_timing_info_all();
+		$deb .= "Total time: $time sec.\n";
+		$deb .= "-->\n";
+		
+		$res = str_replace('</body>', $deb.'</body>', $res);
 	}
 	
-	if($ret === true)
+	if($res === true)
 		return;
 
-	if($ret !== false)
-		$uri = $ret;
-
-
-//	echo "<pre>";
-
+	if($res !== false)
+	{
+		echo $res;
+		return;
+	}
+	
 	if(empty($title))
 		$title='';
 
@@ -169,7 +173,3 @@
 
 	if(config('404_show', true))
 		echo ec("Page '$uri' not found");
-//	echo "</pre>";
-
-//	if(preg_match('!^(.+)(</html>.*)$!is', $out, $m))
-//		$out = $m[1].debug_timing_info_all().$m[2];

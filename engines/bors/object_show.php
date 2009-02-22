@@ -1,5 +1,8 @@
 <?php
 
+	// Возвращает false при ошибке показа объекта
+	// true - если была какая-то отработка и требуется прекратить дальнейшую работу.
+	// Иначе - строку с результатом для вывода.
 	function bors_object_show($obj)
 	{
 		$page = $obj->set_page($obj->args('page'));
@@ -72,9 +75,7 @@
 		$last_modify = @gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		@header('Last-Modified: '.$last_modify);
 
-		echo $content;
-
-		return true;
+		return $content;
 	}
 
 function bors_object_create($obj)

@@ -16,7 +16,7 @@ class body_php extends base_null
 		$self = $object;
 		$tpl = preg_replace('!\.php$!', '.tpl.php', $object->class_file());
 		ob_start();
-		include($tpl);
+		require($tpl);
 		$result = ob_get_contents();
 		ob_end_clean();
 		

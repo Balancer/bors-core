@@ -152,11 +152,11 @@
 		
 		$res = str_replace('</body>', $deb.'</body>', $res);
 	}
-	
+
 	if($res === true)
 		return;
 
-	if($res !== false)
+	if($res)
 	{
 		echo $res;
 		return;

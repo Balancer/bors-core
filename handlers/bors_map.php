@@ -15,6 +15,7 @@ $map = array(
 		'.* => page_fs_separate(url)',
 		'.* => page_fs_xml(url)',
 		'.* => base_page_hts(url)',
+		'.* => auto_object_php(url)',
 		'(/admin/)\?object=([^&]+).* => bors_admin_main(1)',
 		'/admin/delete/\?object=([^&]+).* => bors_tools_delete(1)',
 		'/admin/edit\-smart/\?object=([^&]+) => bors_admin_edit_smart(1)',

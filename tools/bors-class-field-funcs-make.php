@@ -1,7 +1,7 @@
 <?php
 
 define(BORS_CORE, dirname(dirname(__FILE__)));
-define(BORS_LOCAL, BORS_CORE.'/../.bors-local');
+define(BORS_LOCAL, '/var/www/rp.wrk.ru/bors-local');
 include_once("../config.php");
 
 main($argv);

@@ -1,6 +1,7 @@
 <?php
 
 require_once('inc/bors/lists.php');
+require_once('inc/bors/modules.php');
 
 class body_php extends base_null
 {

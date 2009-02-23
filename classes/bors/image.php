@@ -33,6 +33,42 @@ class bors_image extends base_object_db
 		);
 	}
 
+function alt() { return $this->stb_alt; }
+function set_alt($v, $dbup) { return $this->fset('alt', $v, $dbup); }
+function parent_class_id() { return $this->stb_parent_class_id; }
+function set_parent_class_id($v, $dbup) { return $this->fset('parent_class_id', $v, $dbup); }
+function parent_object_id() { return $this->stb_parent_object_id; }
+function set_parent_object_id($v, $dbup) { return $this->fset('parent_object_id', $v, $dbup); }
+function sort_order() { return $this->stb_sort_order; }
+function set_sort_order($v, $dbup) { return $this->fset('sort_order', $v, $dbup); }
+function author_name() { return $this->stb_author_name; }
+function set_author_name($v, $dbup) { return $this->fset('author_name', $v, $dbup); }
+function image_type() { return $this->stb_image_type; }
+function set_image_type($v, $dbup) { return $this->fset('image_type', $v, $dbup); }
+function relative_path() { return $this->stb_relative_path; }
+function set_relative_path($v, $dbup) { return $this->fset('relative_path', $v, $dbup); }
+function file_name() { return $this->stb_file_name; }
+function set_file_name($v, $dbup) { return $this->fset('file_name', $v, $dbup); }
+function original_filename() { return $this->stb_original_filename; }
+function set_original_filename($v, $dbup) { return $this->fset('original_filename', $v, $dbup); }
+function resolution_limit() { return $this->stb_resolution_limit; }
+function set_resolution_limit($v, $dbup) { return $this->fset('resolution_limit', $v, $dbup); }
+function width() { return $this->stb_width; }
+function set_width($v, $dbup) { return $this->fset('width', $v, $dbup); }
+function height() { return $this->stb_height; }
+function set_height($v, $dbup) { return $this->fset('height', $v, $dbup); }
+function size() { return $this->stb_size; }
+function set_size($v, $dbup) { return $this->fset('size', $v, $dbup); }
+function extension() { return $this->stb_extension; }
+function set_extension($v, $dbup) { return $this->fset('extension', $v, $dbup); }
+function mime_type() { return $this->stb_mime_type; }
+function set_mime_type($v, $dbup) { return $this->fset('mime_type', $v, $dbup); }
+function created_from() { return $this->stb_created_from; }
+function set_created_from($v, $dbup) { return $this->fset('created_from', $v, $dbup); }
+function moderated() { return $this->stb_moderated; }
+function set_moderated($v, $dbup) { return $this->fset('moderated', $v, $dbup); }
+
+
 	function file_name_with_path() { return $this->image_dir().$this->file_name(); }
 
 	function image_dir() { return secure_path(config('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$this->relative_path().'/'); }

@@ -136,29 +136,29 @@ function DBG_GetBacktrace($skip = 0, $html = NULL)
 	$MAXSTRLEN = 128;
 
 	if(is_null($html))
-	$html = !empty($_SERVER['HTTP_HOST']);
+		$html = !empty($_SERVER['HTTP_HOST']);
 
 	if($html)
-	$s = '<pre align="left">';
+		$s = '<pre align="left">';
 	else
-	$s = '';
+		$s = '';
 
 	$traceArr = debug_backtrace();
 
 	for($i = 0; $i <= $skip; $i++)
-	array_shift($traceArr);
+		array_shift($traceArr);
 
 	$tabs = 0; //sizeof($traceArr)-1;
 	for($pos=0; $pos<sizeof($traceArr); $pos++)
 	{
 		$arr = $traceArr[sizeof($traceArr)-$pos-1];
 		for ($i=0; $i < $tabs; $i++)
-		$s .= $html ? '&nbsp;' : ' ';
+			$s .= $html ? '&nbsp;' : ' ';
 		$tabs++;
 		if($html)
-		$s .= '<font face="Courier New,Courier">';
+			$s .= '<font face="Courier New,Courier">';
 		if(isset($arr['class']))
-		$s .= $arr['class'].'.';
+			$s .= $arr['class'].'.';
 		$args = array();
 		if(!empty($arr['args']))
 		{
@@ -173,24 +173,24 @@ function DBG_GetBacktrace($skip = 0, $html = NULL)
 					$v = (string) @$v;
 					$str = htmlspecialchars(substr($v,0,$MAXSTRLEN));
 					if (strlen($v) > $MAXSTRLEN) $str .= '...';
-					$args[] = "\"".$str."\"";
+						$args[] = "\"".$str."\"";
 				}
 			}
 		}
 		$s .= $arr['function'].'('.implode(', ',$args).')';
 		if($html)
-		$s .= '</font>';
+			$s .= '</font>';
 		$Line = (isset($arr['line'])? $arr['line'] : "unknown");
 		$File = (isset($arr['file'])? $arr['file'] : "unknown");
 		if($html)
-		$s .= sprintf("<span style=\"font-size: 8pt;\">[<a href=\"file:/%s\">%s</a>:%d]</span>", $File, $File, $Line);
+			$s .= sprintf("<span style=\"font-size: 8pt;\">[<a href=\"file:/%s\">%s</a>:%d]</span>", $File, $File, $Line);
 		else
-		$s .= sprintf("[%s:%d]", $File, $Line);
+			$s .= sprintf("[%s:%d]", $File, $Line);
 		$s .= "\n";
 	}
 
 	if($html)
-	$s .= '</pre>';
+		$s .= '</pre>';
 
 	return $s;
 }

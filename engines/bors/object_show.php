@@ -53,10 +53,6 @@
 			if(empty($GLOBALS['main_uri']))
 				$GLOBALS['main_uri'] = $obj->url();
 
-			$my_user = bors()->user();
-			if($my_user && $my_user->id())
-				base_page::add_template_data('my_user', $my_user);
-
 			$content = $obj->content();
 		}
 		else

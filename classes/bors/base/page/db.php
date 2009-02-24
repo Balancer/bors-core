@@ -76,7 +76,7 @@ class base_page_db extends base_page
 			return $fid;
 		if($f[0] == 'id')
 			return 'id';
-		
+
 		return NULL;
 	}
 

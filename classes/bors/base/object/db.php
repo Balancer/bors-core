@@ -9,11 +9,11 @@ class base_object_db extends base_object
 	function can_be_empty() { return false; }
 
 	function uri2id($id) { return $id; }
-	
+
 	function __construct($id)
 	{
 		$id = $this->uri2id($id);
-			
+
 		parent::__construct($id);
 //		bors_db_fields_init($this);
 	}
@@ -42,7 +42,7 @@ class base_object_db extends base_object
 			return $fid;
 		if($f[0] == 'id')
 			return 'id';
-		
+
 		return NULL;
 	}
 
@@ -51,18 +51,18 @@ class base_object_db extends base_object
 		$tab = $this->main_table_storage();
 		if(!$tab)
 			debug_exit("Try to delete empty main table in class ".__FILE__.":".__LINE__);
-		
-		
+
+
 		$id_field = $this->main_id_field();
 		if(!$id_field)
 			debug_exit("Try to delete empty id field in class ".__FILE__.":".__LINE__);
-		
+
 		if($remove_cross)
 		{
 			require_once('inc/bors/cross.php');
 			bors_remove_cross_to($this->class_name(), $this->id());
 		}
-		
+
 		if($this->id())
 			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
 	}

@@ -59,7 +59,7 @@ function lcml_smilies_list($dir)
 		config_set('cache_disabled', false);
         $cache = &new Cache();
 
-        if($cache->get('smilies-v11', $dir))
+        if($cache->get('smilies-'.config('lcml_smiles_cache_tag'), $dir))
 		{
 //			if(is_array($cache->last()))
 //			{

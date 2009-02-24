@@ -93,11 +93,11 @@ function bors_db_fields_init($obj)
 			{
 				if(is_numeric($property))
 					$property = $db_field;
-					
+
 				$obj->{'stb_'.$property} = NULL;
 			}
 		}
-	}		
+	}
 }
 
 function defval($data, $name, $default=NULL)

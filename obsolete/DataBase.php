@@ -156,7 +156,8 @@ class DataBase extends base_object
 			bors_exit("MySQL Error: driver class=".get_class($this)."<br>\n"
 				."now=".date('r')."<br>\n"
 				."dbh={$this->dbh}; <br/>\n"
-				."error=".mysql_error($this->dbh)."<br/>\n"
+				."query=<span style=\"color:blue\">{$query}</span><br/>\n"
+				."error=<span style=\"color:red\">".mysql_error($this->dbh)."</span><br/>\n"
 				."db name={$this->db_name}<br/>\n"
 				.'time from last query: '.((microtime(true) - $this->last_query_time)/1000000)."<br/>\n"
 				.'was connected at '.date('r', $this->start_time)." ({$this->start_time})");

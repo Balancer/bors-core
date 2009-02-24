@@ -120,6 +120,8 @@ function bors()
 
 function bors_exit($message = 0)
 {
+	echo $message;
+
 	global $bors_exit_doing;
 	if(!empty($bors_exit_doing))
 		return;
@@ -128,7 +130,7 @@ function bors_exit($message = 0)
 	cache_static::drop(bors()->main_object());
 	bors()->changed_save();
 	$bors_exit_doing = false;
-	exit($message);
+	exit();
 	return true;
 }
 

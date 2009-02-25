@@ -8,6 +8,7 @@ foreach($links as $linkline)
 			$first = false;
 		else
 			echo $delim;
+
 		echo "<a href=\"{$obj->url()}\" title=\"".htmlspecialchars($obj->title())."\"";
 		if($nav_obj->url() == $obj->url())
 			echo " class=\"nav_top_current\"";

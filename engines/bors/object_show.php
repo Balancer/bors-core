@@ -48,7 +48,8 @@
 
 		if($processed === false)
 		{
-			bors()->set_main_object($obj);
+			if(!(bors()->main_object()))
+				bors()->set_main_object($obj);
 
 			if(empty($GLOBALS['main_uri']))
 				$GLOBALS['main_uri'] = $obj->url();

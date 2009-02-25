@@ -15,7 +15,10 @@
 			$name = @$class;
 
 		if(empty($name) || $name == 'this')
-			$name = get_class($main_obj);
+		{
+			$name = $main_obj->class_name();
+			$id   = $main_obj->id();
+		}
 
 		if(empty($id))
 			$id = NULL;

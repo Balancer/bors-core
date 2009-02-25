@@ -101,7 +101,10 @@ function bors_class_field_to_db($class, $field = NULL)
 	$table	 = call_user_func(array($class, 'main_table_storage'));
 	$fields	 = array_smart_expand(call_user_func(array($class, 'main_table_fields')));
 
-	return $field ? $table.'.'.$fields[$field] : $table;
+	if(!$field)
+		return $table;
+	
+	return $table.'.'.(($f = @$fields[$field]) ? $f : $field);
 }
 
 function mysql_bors_join_parse($join)

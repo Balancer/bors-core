@@ -11,6 +11,9 @@
 			$cbs = base_object::template_data('form_checkboxes');
 			$cbs[] = $name;
 			base_object::add_template_data('form_checkboxes', $cbs);
+			
+			if($value)
+				$checked = "checked";
 		}
 			
 		if(!isset($value) && isset($def))

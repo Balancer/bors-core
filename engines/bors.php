@@ -54,7 +54,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true)
 	else
 		$data = false;
 
-	$id = call_user_func(array($class_name, 'id_prepare'), $id);
+	$id = call_user_func(array($class, 'id_prepare'), $id);
 	$obj = &object_new($class, $id);
 
 	if($data !== false)

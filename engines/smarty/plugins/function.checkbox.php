@@ -18,12 +18,9 @@
 
 		echo "<input type=\"checkbox\"";
 
-		foreach(split(' ', 'name size style') as $p)
+		foreach(explode(' ', 'checked name size style value') as $p)
 			if(!empty($$p))
 				echo " $p=\"{$$p}\"";
-
-		if($value)
-			echo " checked=\"true\"";
 
 		echo " />\n";
 	}

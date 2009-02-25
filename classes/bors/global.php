@@ -19,7 +19,7 @@ class bors_global extends base_empty
 		return $this->user;
 	}
 
-	function set_main_object($obj) { return $this->main_object = $obj; }
+	function set_main_object($obj) { return $this->main_object = &$obj; }
 	function main_object() { return $this->main_object; }
 
 	private $changed_objects = array();

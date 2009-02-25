@@ -247,7 +247,7 @@ class base_object extends base_empty
 	{
 		$field_name = "stb_$field";
 
-		if($db_update && $this->$field_name != $value)
+		if($db_update && @$this->$field_name != $value)
 		{
 			$this->changed_fields[$field] = $field_name;
 			bors()->add_changed_object($this);

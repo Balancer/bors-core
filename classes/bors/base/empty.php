@@ -2,16 +2,15 @@
 
 class base_empty extends base_null
 {
-	var $id;
-	var $initial_id = NULL;
+	private $_id;
+	private $_initial_id = NULL;
 
-	function id() { return $this->id; }
-	function set_id($id) { $this->id = $id; }
+	function id() { return $this->_id; }
+	function set_id($id) { return $this->_id = $id; }
 	
 	function __construct($id)
 	{
-		$this->id = $this->initial_id = $id;
-//		$this->page = $this->default_page();
+		$this->set_id($this->initial_id = $id);
 	}
 
 	function storage_engine() { return ''; }

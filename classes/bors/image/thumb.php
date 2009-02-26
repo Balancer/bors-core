@@ -12,7 +12,7 @@ class bors_image_thumb extends bors_image
 
 	function fields()
 	{
-		return array($this->main_db_storage() => array($this->main_table_storage() => array(
+		return array($this->main_db() => array($this->main_table() => array(
 			'id',
 			'relative_path',
 			'file_name',

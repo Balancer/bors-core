@@ -23,7 +23,7 @@ class base_db_list extends base_object
 			@list($db, $table, $id_field, $title_field) = $item_class->has_smart_field('title');
 
 		if(empty($db))
-			$db = $item_class->main_db_storage();
+			$db = $item_class->main_db();
 
 		$this->_dbh = &new DataBase($db);
 
@@ -38,20 +38,20 @@ class base_db_list extends base_object
 			return;
 		}
 		
-		if(preg_match('!^(\w+)\((\w+)\)(\|.+)?$!', $item_class->field_title_storage(), $m))
+		if(preg_match('!^(\w+)\((\w+)\)(\|.+)?$!', $item_class->title_field(), $m))
 		{
 			$this->_title_field = $m[1];
 			$this->_id_field = $m[2];
-			$this->_table = $item_class->main_table_storage();
+			$this->_table = $item_class->main_table();
 		}
-		elseif(preg_match('!^(\w+)\.(\w+)\((\w+)\)(\|.+)?$!', $item_class->field_title_storage(), $m))
+		elseif(preg_match('!^(\w+)\.(\w+)\((\w+)\)(\|.+)?$!', $item_class->title_field(), $m))
 		{
 			$this->_table = $m[1];
 			$this->_title_field = $m[2];
 			$this->_id_field = $m[3];
 		}
 		else
-			debug_exit("Error: unknown title field format {$this->item_class()}->({$item_class->field_title_storage()})");
+			debug_exit("Error: unknown title field format {$this->item_class()}->({$item_class->title_field()})");
 	}
 
 	function named_list()

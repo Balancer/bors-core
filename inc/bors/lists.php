@@ -4,8 +4,8 @@ function bors_named_list_db($class_name, $zero_item = NULL, $where = array())
 {
 	$obj = object_new($class_name);
 
-	$items_db = $obj->main_db_storage();
-	$items_tab = $obj->main_table_storage();
+	$items_db = $obj->main_db();
+	$items_tab = $obj->main_table();
 	$db = new driver_mysql($items_db);
 
 
@@ -27,8 +27,8 @@ function bors_named_hierarchic_list_db($class_name, $zero_item = NULL)
 {
 	$obj = object_new($class_name);
 
-	$items_db = $obj->main_db_storage();
-	$items_tab = $obj->main_table_storage();
+	$items_db = $obj->main_db();
+	$items_tab = $obj->main_table();
 	$db = new driver_mysql($items_db);
 
 	$res = array();

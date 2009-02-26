@@ -602,7 +602,7 @@ class base_object extends base_empty
 	function db($database_name = NULL)
 	{
 		if($this->_dbh === NULL)
-			$this->_dbh = &new driver_mysql($database_name ? $database_name : $this->main_db_storage());
+			$this->_dbh = &new driver_mysql($database_name ? $database_name : $this->main_db());
 			
 		return $this->_dbh;
 	}
@@ -618,9 +618,12 @@ class base_object extends base_empty
 		return array_keys(get_object_vars($this));
 	}
 
+	function main_db() { return $this->main_db_storage(); }
 	function main_db_storage() { return config('main_bors_db'); }
+	function main_table(){ return $this->main_table_storage(); }
 	function main_table_storage(){ return $this->class_name(); }
 	function main_table_fields() { return array(); }
+	function title_field() { $this->field_title_storage(); }
 	function field_title_storage() { $f=$this->main_table_fields(); return @$f['title'].'(id)'; }
 
 	function set_checkboxes($check_list, $db_up)

@@ -7,15 +7,15 @@ class bors_admin_edit extends base_page
 	function title()
 	{
 		if(!$this->id())
-			return ec('Добавить ') . $this->object()->class_title_rp();
+			return ec('Добавить ') . strtolower($this->object()->class_title_rp());
 
 
-		return ec('Редактируется ') . $this->object()->class_title_rp() . $this->object()->title();
+		return ec('Редактируется ') . strtolower($this->object()->class_title()) . ' ' . $this->object()->title();
 	}
 
 	function nav_name()
 	{
-		return $this->id() ? ec('редактор') : ec('новое');
+		return $this->id() ? ec('редактор') : ec('добавить');
 	}
 
 	private $_object = false;
@@ -26,4 +26,6 @@ class bors_admin_edit extends base_page
 
 		return $this->_object = object_load($this->main_class(), $this->id());
 	}
+
+	function template_local_vars() { return parent::template_local_vars().($this->id() ? ' object' : ''); }
 }

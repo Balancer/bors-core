@@ -176,7 +176,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 			bors_exit(ec("Ошибка загрузки изображения ").$file_data['name']);
 	}
 
-//	echo "Set fields for $object: ".print_d($data, true)."<br/>"; set_loglevel(10,0);
+//	echo "Set fields for $object: ".print_d($data, true)."<br/>"; exit();
 	if($first)
 		$object->pre_set($data);
 

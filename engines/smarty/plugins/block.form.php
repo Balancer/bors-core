@@ -40,6 +40,8 @@
 
 		if($content == NULL) // Открытие формы
 		{
+			$class = @$css_class;
+		
 			if(empty($method))
 				$method = 'post';
 

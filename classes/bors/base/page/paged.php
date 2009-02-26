@@ -18,5 +18,5 @@ class base_page_paged extends base_page
 
 	function total_items() { return objects_count($this->main_class(), $this->where()); }
 
-	function local_template_vars() { return parent::local_template_vars().' items'; }
+	function template_local_vars() { return parent::template_local_vars().' items'; }
 }

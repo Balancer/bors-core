@@ -33,7 +33,7 @@ function &object_new($class, $id = NULL)
 
 	if($id !== NULL)
 	{
-		$id = call_user_func(array($class_name, 'id_prepare'), $id);
+		$id = call_user_func(array($class, 'id_prepare'), $id);
 		$obj->set_id($id);
 	}
 	

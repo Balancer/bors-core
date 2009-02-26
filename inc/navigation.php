@@ -5,7 +5,7 @@
 	{
 		if(strpos($uri, '?') === false && !empty($_SERVER['QUERY_STRING']))
 			$uri .= '?'.$_SERVER['QUERY_STRING'];
-			
+
 		return go($uri, $permanent, $time, $exit);
 	}
 
@@ -27,7 +27,7 @@
 	            header("Status: 302 Moved Temporarily");
 			if(preg_match("!\n!", $uri))
 				echolog("cr in uri '$uri'", 1);
-				
+
 			header("Location: $uri");
 
 			if($exit)
@@ -36,7 +36,7 @@
 
 //		if($text)
 //	        echo "Load page <a href=\"$uri\">$uri</a><br />\n";
-			
+
 		echo "<meta http-equiv=\"refresh\" content=\"$time; url=$uri\">";
 
 //        debug("headers already out in $filename:$linenum");
@@ -50,12 +50,12 @@
     function go_ref($def = "/")
 	{
 		unset($_SERVER['QUERY_STRING']);
-		
+
 		if(!empty($GLOBALS['ref']))
-			go($GLOBALS['ref']);
+			return go($GLOBALS['ref']);
 
 		if(!empty($_SERVER['HTTP_REFERER']))
-			go($_SERVER['HTTP_REFERER']);
-			
-		go($def);
+			return go($_SERVER['HTTP_REFERER']);
+
+		return go($def);
 	}

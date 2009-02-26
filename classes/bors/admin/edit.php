@@ -11,7 +11,7 @@ class bors_admin_edit extends base_page
 		return $this->object;
 	}
 
-	function local_template_data_set()
+	function local_data()
 	{
 		return array(
 			'object' => $this->object(),

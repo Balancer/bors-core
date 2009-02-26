@@ -136,6 +136,7 @@ class base_object extends base_empty
 
 	private $template_data = array();
 	function add_local_template_data($var_name, $value) { return $this->template_data[$var_name] = $value; }
+	function local_data() { return $this->local_template_data_set(); }
 	function local_template_data_set() { return array(); }
 	function local_template_data_array() { return $this->template_data; }
 
@@ -308,7 +309,7 @@ class base_object extends base_empty
 		if($this->config)
 			$this->config->template_init();
 
-		foreach($this->local_template_data_set() as $key => $value)
+		foreach($this->local_data() as $key => $value)
 			$this->add_local_template_data($key, $value);
 
 		foreach($this->global_template_data_set() as $key => $value)

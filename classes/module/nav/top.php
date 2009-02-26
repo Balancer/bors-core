@@ -6,7 +6,7 @@ class module_nav_top extends base_page
 
 	private $visited_pairs;
 
-	function local_template_data_set()
+	function local_data()
 	{
 		$this->visited_pairs = array();
 

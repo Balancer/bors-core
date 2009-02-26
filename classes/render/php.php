@@ -23,7 +23,7 @@ class render_php extends base_null
 		foreach($object->local_template_data_array() as $var => $value)
 			$$var = $value;
 
-		foreach($object->local_template_data_set() as $var => $value)
+		foreach($object->local_data() as $var => $value)
 			$$var = $value;
 
 		$tpl_file = false;

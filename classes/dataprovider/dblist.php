@@ -8,7 +8,7 @@ class dataprovider_dblist extends base_object
 	{
 		$obj = $this->id();
 	
-		$dbh = &new DataBase($obj->main_db_storage());
+		$dbh = &new DataBase($obj->main_db());
 	
 		$list = array();
 
@@ -42,10 +42,10 @@ class dataprovider_dblist extends base_object
 		else
 			$limit = '';
 
-		$obj->fset('total_items', $dbh->get("SELECT COUNT(*) FROM {$obj->main_table_storage()} {$join} {$where}"), false);
+		$obj->fset('total_items', $dbh->get("SELECT COUNT(*) FROM {$obj->main_table()} {$join} {$where}"), false);
 		$obj->fset('items_per_page', $obj->limit(), false);
 
-		$query = "SELECT DISTINCT `".addslashes($obj->main_table_storage())."`.`".addslashes($obj->id_field())."` FROM `".addslashes($obj->main_table_storage())."` $join $where ORDER BY {$obj->order()} {$limit}";
+		$query = "SELECT DISTINCT `".addslashes($obj->main_table())."`.`".addslashes($obj->id_field())."` FROM `".addslashes($obj->main_table())."` $join $where ORDER BY {$obj->order()} {$limit}";
 		
 //		echo $query;
 		

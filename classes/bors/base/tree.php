@@ -20,7 +20,7 @@ class base_tree extends base_page_db
 		
 		foreach($this->db()->get_array("
 				SELECT `".$this->tree_table_id()."`
-					FROM `".$this->main_table_storage()."`
+					FROM `".$this->main_table()."`
 					ORDER BY ".$this->tree_order()) as $obj_id)
 		{
 			$result[] = $obj_id;
@@ -35,7 +35,7 @@ class base_tree extends base_page_db
 		
 		foreach($this->db()->get_array("
 				SELECT `".$this->tree_table_id()."`
-					FROM `".$this->main_table_storage()."`
+					FROM `".$this->main_table()."`
 						WHERE `".$this->tree_parent_id()."` = 0
 					ORDER BY ".$this->tree_order()) as $obj_id)
 		{
@@ -55,7 +55,7 @@ class base_tree extends base_page_db
 		
 		foreach($this->db()->get_array("
 				SELECT `".$this->tree_table_id()."` AS `id`, `".$this->tree_table_title()."` AS `title`, `".$this->tree_parent_id()."` AS `parent`
-					FROM `".$this->main_table_storage()."`
+					FROM `".$this->main_table()."`
 					ORDER BY ".$this->tree_order()) as $x)
 		{
 			$this->tree[$x['parent']][] = $x;
@@ -87,7 +87,7 @@ class base_tree extends base_page_db
 		
 		foreach($this->db()->get_array("
 				SELECT `".$this->tree_table_id()."`
-					FROM `".$this->main_table_storage()."`
+					FROM `".$this->main_table()."`
 						WHERE `".$this->tree_parent_id()."` = ".$this->id()."
 					ORDER BY ".$this->tree_order()) as $obj_id)
 		{

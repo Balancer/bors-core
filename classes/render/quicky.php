@@ -15,7 +15,7 @@ class render_quicky extends base_null
 		foreach($object->local_template_data_array() as $var => $value)
 			$tpl->assign($var, $value);
 
-		foreach($object->local_template_data_set() as $var => $value)
+		foreach($object->local_data() as $var => $value)
 			$tpl->assign($var, $value);
 
 		$tpl->compile_dir = config('cache_dir').'/smarty-templates_c/';

@@ -25,7 +25,7 @@ class bors_admin_edit_smart extends base_page
 			return bors_message(ec('Вы не авторизованы'));
 	}
 
-	function local_template_data_set()
+	function local_data()
 	{
 		return array(
 			'object' => $this->object(),

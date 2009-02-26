@@ -2,7 +2,7 @@
 
 class module_date_calend_month extends base_page
 {
-	function local_template_data_set()
+	function local_data()
 	{
 		$year	= $this->args('year', strftime('%Y'));
 		$month	= $this->args('month', strftime('%m'));

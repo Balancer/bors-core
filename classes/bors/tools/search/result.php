@@ -197,7 +197,7 @@ class bors_tools_search_result extends bors_tools_search
 		return false;
 	}
 
-	function local_template_data_set()
+	function local_data()
 	{
 		return $this->data;
 	}

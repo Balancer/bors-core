@@ -2,7 +2,7 @@
 
 class module_nav_leftexpand extends base_page
 {
-	function local_template_data_set()
+	function local_data()
 	{
 		$list = array();
 

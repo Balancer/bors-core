@@ -18,26 +18,31 @@ function mysql_where_compile($conditions_array)
 		$value = str_replace('%ID%', '%MySqlStorageOID%', $value);
 //		echo "$field_cond  $value<br/>\n";
 
+		$w = false;
 		if(preg_match('! (NOT )?IN$!', $field_cond))
 		{
 			if(is_array($value))
 				$value = join(',', array_map('addslashes', $value));
 
 			if($value)
-				$where[] = mysql_bors_join_parse($field_cond) . '(' . $value . ')';
+				$w = mysql_bors_join_parse($field_cond) . '(' . $value . ')';
 			else
-				$where[] = "0";
+				$w = "0";
 		}
 		elseif(is_numeric($field_cond)) // Готовое условие
-			$where[] = $value;
+			$w = $value;
 		elseif(preg_match('!^\w+$!', $field_cond))
-			$where[] = $field_cond . '=\'' . addslashes($value) . '\'';
+			$w = $field_cond . '=\'' . addslashes($value) . '\'';
 		elseif(preg_match('!^int (\w+)$!', $field_cond, $m))
-			$where[] = $m[1] . '=' . $value;
+			$w = $m[1] . '=' . $value;
 		elseif(preg_match('!^raw (\w+)$!', $field_cond, $m))
-			$where[] = $m[1] . '=' . $value;
+			$w = $m[1] . '=' . $value;
 		else
-			$where[] = $field_cond . '\'' . addslashes($value) . '\'';
+			$w = $field_cond . '\'' . addslashes($value) . '\'';
+		
+//		echo "$w => ".mysql_bors_join_parse($w)."<br/>";
+		if($w)
+			$where[] = mysql_bors_join_parse($w);
 	}
 	
 	return 'WHERE '.join(' AND ', $where);

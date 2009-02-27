@@ -1,4 +1,5 @@
 <table class="{$table_class}">
+{if $show_caption}<caption>{$show_date|date:m|month_name} {$show_date|date:Y}</caption>{/if}
 <tr><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th></tr>
 {foreach from=$calend item="week"}
 <tr>

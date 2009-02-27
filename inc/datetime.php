@@ -111,6 +111,9 @@ function make_input_time($field_name, &$data)
 
 function full_hdate($date, $show_year = true)
 {
+	if(!$date)
+		$date = time();
+
 	return date('j', $date).' '.strtolower(month_name_rp(date('n', $date))).($show_year ? ec(strftime(' %Y года', $date)) : '');
 }
 

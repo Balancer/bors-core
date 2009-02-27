@@ -22,6 +22,9 @@ class base_db_list extends base_object
 		if(method_exists($item_class, 'fields'))
 			@list($db, $table, $id_field, $title_field) = $item_class->has_smart_field('title');
 
+		if($this->title_field())
+			$title_field = $this->title_field();
+
 		if(empty($db))
 			$db = $item_class->main_db();
 
@@ -117,6 +120,7 @@ class base_db_list extends base_object
 	function where() { return NULL; }
 	function order() { return "title"; }
 	function left_join()   { return array(); }
+	function title_field()   { return false; }
 	function inner_join()  { return array(); }
 	function zero_item() { return false; }
 	function group() { return false; }

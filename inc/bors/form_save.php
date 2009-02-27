@@ -81,7 +81,10 @@ function bors_form_save(&$obj)
 			{
 				$last = (++$count == $total);
 				$data = array_merge($data, $objects_common_data);
-				if(true === ($form = ($result = bors_form_save_object($data['class_name'], @$data['id'], $data, $first, $last))))
+				$result = bors_form_save_object($data['class_name'], @$data['id'], $data, $first, $last);
+				if($result === true || is_object($result))
+					$form = $result;
+				if(true === $result)
 					break;
 				$first = false;
 			}
@@ -156,8 +159,8 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 				return true;
 	}
 
-	if($object->check_data($data) === true)
-		return true;
+	if(($ret = $object->check_data($data)))
+		return $ret;
 
 	foreach($data as $key => $val)
 	{

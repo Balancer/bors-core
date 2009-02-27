@@ -195,12 +195,12 @@ function class_load_by_local_url($url, $args)
 
 //			echo "Initial url=$url<br/>\n";
 
-			$check_url = $url_data['scheme'].'://'.$url_data['host'].$url_data['path'];
+			$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
 			if(preg_match('!\?!', $url_pattern) && !empty($url_data['query']))
 				$check_url .= '?'.$url_data['query'];
 			
 //			if(debug_is_balancer())	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
-			if(preg_match("!^http://({$url_data['host']}[^/]*)$url_pattern$!i", $check_url, $match))
+			if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
 			{
 //				echo "<b>Ok - $class_path</b><br />";
 				

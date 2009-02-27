@@ -4,7 +4,7 @@ function lcml_html_pre($txt)
 {
 	if(config('lcml_html_nonmutable'))
 	    return $txt;
-    
+
 //		$txt = "html_disable = {$GLOBALS['lcml']['params']['html_disable']} - $txt";
 
 		$txt = preg_replace('/<!\-\-.*?\-\->/', '', $txt);
@@ -14,7 +14,7 @@ function lcml_html_pre($txt)
 
 		foreach(array('&raquo;' => '»', '&laquo;' => '«', '&mdash;' => '—') as $from => $to)
 			$txt = str_replace($from, $to, $txt);
-		
+
 //		$txt = preg_replace("!</p>!","", $txt);
 //		$txt = preg_replace("!<p>!","<br /><br />", $txt);
 		$txt = preg_replace("!<tr!","<tabtr", $txt);
@@ -56,7 +56,7 @@ function lcml_html_pre($txt)
 			$txt = preg_replace("!<$tag>(.+?)</$tag>!is","[$tag]$1[/$tag]", $txt);
 			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!is","[$tag $1]$2[/$tag]", $txt);
 		}
-	
+
 		foreach(explode(' ','b big br center code div font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr table td th html_img html_a') as $tag)
 		{
 			$txt = preg_replace("!<$tag>!i","[$tag]", $txt);
@@ -73,5 +73,5 @@ function lcml_html_pre($txt)
 			$txt = preg_replace("!<a [^>]*href=$q([$mask]+){$q}[^>]*>(.*?)</a>!is", "[url=$1]$2[/url]", $txt);
 		}
 
-		return htmlspecialchars($txt, ENT_NOQUOTES);
+		return config('lcml_html_special_chars_enable') ? $txt : htmlspecialchars($txt, ENT_NOQUOTES);
     }

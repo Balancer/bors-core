@@ -352,6 +352,13 @@ class base_object extends base_empty
 		return '<a href="'.$this->edit_url($this->page()).'">'.$title.'</a>';
 	}
 
+	function imaged_admin_link($title = NULL)
+	{
+		if($title === NULL)
+			$title = ec('Администрировать ').strtolower($this->class_title_rp());
+		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
+}
+
 	function imaged_edit_link($title = NULL) { return $this->imaged_edit_url($title); }
 	function imaged_edit_url($title = NULL)
 	{
@@ -397,9 +404,14 @@ class base_object extends base_empty
 		{
 			foreach(explode(',', $array['time_vars']) as $var)
 			{
-				$array[$var] = mktime (@$array["{$var}_hour"], @$array["{$var}_minute"], @$array["{$var}_second"], @$array["{$var}_month"], @$array["{$var}_day"], @$array["{$var}_year"]);
-				if(empty($array["{$var}_year"]))
+				if(@$array["{$var}_month"] && @$array["{$var}_day"] && @$array["{$var}_year"])
+					$array[$var] = mktime (@$array["{$var}_hour"], @$array["{$var}_minute"], @$array["{$var}_second"], @$array["{$var}_month"], @$array["{$var}_day"], @$array["{$var}_year"]);
+				else
+					$array[$var] = intval(@$array["{$var}_year"]).'-'.intval(@$array["{$var}_month"]).'-'.intval(@$array["{$var}_day"]);
+
+				if(empty($array["{$var}_month"]) && empty($array["{$var}_day"]) && empty($array["{$var}_year"]))
 					$array[$var] = NULL;
+
 				unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"]);
 			}
 		}

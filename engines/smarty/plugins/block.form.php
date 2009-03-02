@@ -14,6 +14,12 @@
 		if(empty($name))
 			$name = @$class;
 
+		if(!empty($object))
+		{
+			$name = $object->class_name();
+			$id   = $object->id();
+		}
+
 		if(empty($name) || $name == 'this')
 		{
 			$name = $main_obj->class_name();

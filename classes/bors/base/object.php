@@ -371,7 +371,7 @@ class base_object extends base_empty
 	
 	function imaged_delete_url($title = NULL, $text = '')
 	{
-		if($title === NULL)
+		if($title == 'del')
 			$title = ec('Удалить ').strtolower($this->class_title_rp());
 
 		if($text === NULL)

@@ -45,6 +45,8 @@ function bors_cross_object_init($row)
 
 function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array())
 {
+	global $bors_cross_types_map;
+
 	if(!$object)
 	{
 		debug_hidden_log('cross-errors', 'Try to get cross for empty object. [' . ($to_class ? "to_class={$to_class}" : ''). ']');
@@ -69,23 +71,56 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 	$limit = empty($args['limit']) ? '' : 'LIMIT '.addslashes($args['limit']);
 	$order = empty($args['sort_order']) ? 'ORDER BY `sort_order`, to_id' : addslashes(mysql_order_compile($args['sort_order']));
 
-	$dbh->query("SELECT to_class as class_id, to_id as object_id, `sort_order` as sort_order FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} $order $limit");
+	$dbh->query("SELECT to_class as class_id, to_id as object_id, sort_order, type_id FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} $order $limit");
+
+	$object_iu = $object->internal_uri();
+	while($row = $dbh->fetch_row())
+		if($x = bors_cross_object_init($row))
+		{
+			$x_iu = $x->internal_uri();
+			if($x_iu < $object_iu)
+				$bors_cross_types_map[$x_iu][$object_iu] = $row['type_id'];
+			else
+				$bors_cross_types_map[$object_iu][$x_iu] = $row['type_id'];
+			$result[] = $x;
+		}
+		else
+		{
+			bors_remove_cross_pair($row['class_id'], $row['object_id'], $object->class_id(), $object->id());
+			debug_hidden_log('cross-errors', "Empty cross ".print_r($row, true)." with {$object} [class_id = {$object->class_id()}]");
+		}
+		
+	$dbh->query("SELECT from_class as class_id, from_id as object_id, sort_order, type_id FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} $order $limit");
 
 	while($row = $dbh->fetch_row())
-		if($res = bors_cross_object_init($row))
-			$result[] = $res;
-		else
-			debug_hidden_log('cross-errors', "Empty cross ".print_r($row, true)." with {$object} [class_id = {$object->class_id()}]");
+		if($x = bors_cross_object_init($row))
+		{
+			$x_iu = $x->internal_uri();
+			if($x_iu < $object_iu)
+				$bors_cross_types_map[$x_iu][$object_iu] = $row['type_id'];
+			else
+				$bors_cross_types_map[$object_iu][$x_iu] = $row['type_id'];
 
-	$dbh->query("SELECT from_class as class_id, from_id as object_id, `sort_order` as sort_order FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} $order $limit");
-
-	while($row = $dbh->fetch_row())
-		if($res = bors_cross_object_init($row))
-			$result[] = $res;
+			$result[] = $x;
+		}
 		else
+		{
 			debug_hidden_log('cross-errors', "Empty cross ".print_r($row, true)." with {$object} [class_id = {$object->class_id()}]");
+			bors_remove_cross_pair($row['class_id'], $row['object_id'], $object->class_id(), $object->id());
+		}
 
 	return $result;
+}
+
+function bors_cross_type_id($x1, $x2)
+{
+	global $bors_cross_types_map;
+	$x1_iu = $x1->internal_uri();
+	$x2_iu = $x2->internal_uri();
+	if($x1_iu < $x2_iu)
+		return intval(@$bors_cross_types_map[$x1_iu][$x2_iu]);
+	else
+		return intval(@$bors_cross_types_map[$x2_iu][$x1_iu]);
 }
 
 function bors_cross_where_cond($field, $cond)
@@ -130,7 +165,7 @@ function bors_add_cross_obj($from, $to, $order=0, $dbh = NULL)
 	));
 }
 
-function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $dbh = NULL)
+function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $type_id = 0, $dbh = NULL)
 {
 	if(!$dbh)
 		$dbh = &new driver_mysql(config('bors_core_db'));
@@ -153,6 +188,7 @@ function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $dbh
 	}
 
 	$dbh->replace('bors_cross', array(
+		'type_id' => $type_id,
 		'from_class' => $from_class,
 		'from_id' => $from_id,
 		'to_class' => $to_class,

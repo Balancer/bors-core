@@ -37,7 +37,7 @@ class base_rss extends base_page
 		    $item->link = $o->url();
 			
 			$item->description = dc($obj->rss_body($o, $obj->rss_strip()));
-			$item->date = $o->create_time(); 
+			$item->date = intval($o->create_time());
 			$item->source = $obj->rss_source_url();
 			$owner = $o->owner();
 			if($owner)

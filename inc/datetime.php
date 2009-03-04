@@ -121,3 +121,21 @@ function date_format_mysqltime($time) { return $time ? strftime('\'%Y-%m-%d %H:%
 function date_format_mysql($time) { return $time ? strftime('\'%Y-%m-%d\'', $time) : NULL; }
 
 function date_day_begin($time) { return strtotime(date('Y-m-d', $time)); }
+
+function part_date($date)
+{
+	if(is_numeric($date))
+		list($year, $month, $day) = explode('-', date('Y-m-d', $date));
+	else
+		list($year, $month, $day) = explode('-', $date);
+
+	if(!$year)
+		return '';
+
+	if(!$month)
+		return $year.ec(' г.');
+	if(!$day)
+		return month_name($month).' '.$year.ec(' г.');
+
+	return $day.' '.month_name_rp($month).' '.$year.ec(' г.');
+}

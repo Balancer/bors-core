@@ -29,7 +29,7 @@ class auto_object_php extends base_object
 			$object->set_called_url($this->id());
 			bors()->set_main_object($object);
 			if(!$object->parents(true))
-				$object->set_parents(array(dirname($data['path']).'/'));
+				$object->set_parents(array(dirname($path).'/'));
 		}
 		
 		return $object;

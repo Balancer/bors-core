@@ -383,6 +383,16 @@ class base_object extends base_empty
 		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" alt=\"del\" title=\"$title\"/>{$text}</a>";
 	}
 
+	private function _setdefaultfor_url($target_id, $field_for_def)  { return "/admin/tools/set-default/?object={$this->internal_uri()}&target_id={$target_id}&target_field=$field_for_def"; }
+	function imaged_set_default_link($target_id, $field_for_def, $title = NULL)
+	{
+		if($title === NULL)
+			$title = ec('Сделать выбранным по умолчанию');
+
+		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/bors-shared/images/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
+	}
+
+
 	function admin_delete_link()
 	{
 		return $this->imaged_delete_url(NULL, 'Удалить '.strtolower($this->class_title_rp()));

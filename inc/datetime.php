@@ -7,6 +7,9 @@ function full_time($time)
 
 function short_time($time)
 {
+	if(!$time)
+		return '';
+
 	global $now;
 	$time = intval($time);
 

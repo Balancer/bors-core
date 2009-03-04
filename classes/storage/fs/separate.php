@@ -4,12 +4,22 @@ class storage_fs_separate extends base_null
 {
 	function load($object)
 	{
-//		echo "SR={$_SERVER['DOCUMENT_ROOT']}<br/>CU={$object->called_url()}<br />\n";
+		$url_data = parse_url($object->called_url());
+		$path = $url_data['path'];
 
-		$dir = $object->dir();
-		
-//		echo "fe({$dir}/.title.txt)=".file_exists("{$dir}/.title.txt")."<br/>";
-		if(!file_exists("{$dir}/.title.txt"))
+		if(!($found = file_exists(($dir = "{$_SERVER['DOCUMENT_ROOT']}{$path}").'.title.txt')))
+		{
+			foreach(bors_dirs() as $base)
+			{
+				if(file_exists(($dir = "{$base}/data/fs-separate{$path}").'.title.txt'))
+				{
+					$found = true;
+					break;
+				}
+			}
+		}
+
+		if(!$found)
 			return $object->set_loaded(false);
 
 		// По дефолту в separate разрешён HTML и все BB-тэги.

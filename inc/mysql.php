@@ -55,9 +55,11 @@ function mysql_order_compile($order_list)
 		
 	if(empty($order_list))
 		return '';
-		
+
+	$order_list = mysql_bors_join_parse($order_list);
+
 	$order = array();
-	foreach(split(',', $order_list) as $o)
+	foreach(explode(',', $order_list) as $o)
 	{
 		if(preg_match('!^\-(.+)$!', $o, $m))
 			$order[] = $m[1].' DESC';
@@ -108,8 +110,13 @@ function bors_class_field_to_db($class, $field = NULL)
 
 	if(!$field)
 		return $table;
-	
-	return $table.'.'.(($f = @$fields[$field]) ? $f : $field);
+
+	$f = $field;
+	if(!empty($fields[$field]))
+		if(preg_match('!^(.+)\|.+!', $f = $fields[$field], $m))
+			$f = $m[1];
+
+	return $table.'.'.$f;
 }
 
 function mysql_bors_join_parse($join)
@@ -122,10 +129,9 @@ function mysql_bors_join_parse($join)
 
 function mysql_args_compile($args)
 {
-	$join = '';
+	$join = array();
 	if(!empty($args['inner_join']))
 	{
-		$join = array();
 		if(is_array($args['inner_join']))
 		{
 			foreach($args['inner_join'] as $j)
@@ -134,10 +140,23 @@ function mysql_args_compile($args)
 		else
 			$join[] = 'INNER JOIN '.mysql_bors_join_parse($args['inner_join']);
 		
-		$join = join(' ', $join);
-		
 		unset($args['inner_join']);
 	}
+
+	if(!empty($args['left_join']))
+	{
+		if(is_array($args['left_join']))
+		{
+			foreach($args['left_join'] as $j)
+				$join[] = 'LEFT JOIN '.mysql_bors_join_parse($j);
+		}
+		else
+			$join[] = 'LEFT JOIN '.mysql_bors_join_parse($args['left_join']);
+		
+		unset($args['left_join']);
+	}
+
+	$join = join(' ', $join);
 
 	$limit = mysql_limits_compile($args);
 	unset($args['limit']);

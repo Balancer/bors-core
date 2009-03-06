@@ -48,3 +48,19 @@ function truncate($string, $length = 80, $etc = '...', $break_words = false, $mi
 }
 
 function stripq($text) { return str_replace('\\"', '"', $text); }
+
+function bors_hypher($string)
+{
+	global $bors_3rd_glob_hypher;
+	if(empty($bors_3rd_glob_hypher))
+	{
+		require_once 'phphypher/hypher.php';
+		$bors_3rd_glob_hypher = hypher_load(BORS_3RD_PARTY.'/phphypher/hyph_ru_RU.conf');
+	}
+
+	$mb_enc = ini_get('mbstring.internal_encoding');
+	ini_set('mbstring.internal_encoding', 'windows-1251');
+	$result = iconv('windows-1251', 'utf-8', hypher($bors_3rd_glob_hypher, iconv('utf-8', 'windows-1251//translit', $string)));
+	ini_set('mbstring.internal_encoding', $mb_enc);
+	return $result;
+}

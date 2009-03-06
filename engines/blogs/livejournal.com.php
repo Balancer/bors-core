@@ -29,6 +29,8 @@ function bors_blog_livejournal_com_post($user_id, $title_obj, $url_obj, $body_ob
 	$time		= $body_obj->create_time();
 	$message	= bors_blog_message($title_obj, &$url_obj, $body_obj);
 	$subject	= $title_obj->title();
+	if($desc = $title_obj->description())
+		$subject .= " ($desc)";
 
 	$year	= strftime('%Y', $time);
 	$month	= strftime('%m', $time);
@@ -104,6 +106,8 @@ function bors_blog_livejournal_com_edit($user_id, $title_obj, $url_obj, $body_ob
 	$message	= bors_blog_message($title_obj, $url_obj, $body_obj);
 	
 	$title		= $title_obj->title();
+	if($desc = $title_obj->description())
+		$title .= " ($desc)";
 
 	$year	= strftime('%Y', $time);
 	$month	= strftime('%m', $time);

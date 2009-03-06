@@ -200,9 +200,12 @@ class storage_db_mysql_smart extends base_null
 			  else
 				$where .= ' LIMIT 1';
 
-			  $stdbms_cache[$dbhash]['select'] = $select;
-			  $stdbms_cache[$dbhash]['from'] = $from;
-			  $stdbms_cache[$dbhash]['where'] = $where;
+				if(preg_match("/^\w+$/", $main_id_name))
+				{
+				  $stdbms_cache[$dbhash]['select'] = $select;
+				  $stdbms_cache[$dbhash]['from'] = $from;
+				  $stdbms_cache[$dbhash]['where'] = $where;
+				}
 			}
 			else
 			{

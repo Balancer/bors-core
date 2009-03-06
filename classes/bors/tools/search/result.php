@@ -16,7 +16,7 @@ class bors_tools_search_result extends bors_tools_search
 	function q() { return urldecode(@$_GET['q']); }
 	function s() { return empty($_GET['s']) ? 't' : $_GET['s']; }
 	function t() { return @$_GET['t']; }
-	function u() { return @$_GET['u']; }
+	function u() { return urldecode(@$_GET['u']); }
 	function x() { return !empty($_GET['x']); }
 	function w() { return !empty($_GET['w']); }
 	function f()
@@ -162,14 +162,18 @@ class bors_tools_search_result extends bors_tools_search
 			}
 
 			$this->data['posts'] = array();
-			$x = objects_array('forum_post', array('id IN' => $post_ids, 'by_id' => true));
+			if($post_ids)
+				$x = objects_array('forum_post', array('id IN' => $post_ids, 'by_id' => true));
 			foreach($post_ids as $id)
 				$this->data['posts'][$id] = $x[$id];
 				
 			$this->data['topics'] = array();
-			$x = objects_array('forum_topic', array('id IN' => $topic_ids, 'by_id' => true));
-			foreach($topic_ids as $id)
-				$this->data['topics'][$id] = $x[$id];
+			if($topic_ids)
+			{
+				$x = objects_array('forum_topic', array('id IN' => $topic_ids, 'by_id' => true));
+				foreach($topic_ids as $id)
+					$this->data['topics'][$id] = $x[$id];
+			}
 
 			$posts = &$this->data['posts'];
 

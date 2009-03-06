@@ -197,6 +197,7 @@ function url_parse($url)
         $uri = strtr($uri, array(
         '"' => "~", 
         '`' => "~",
+        ';' => ".",
         "'" => "~",
         '#' => '-N',
         '&' => '-and-',
@@ -212,7 +213,7 @@ function url_parse($url)
 
 //        $uri = rawurlencode($uri);
 //        $uri = str_replace('%','_',$uri);
-		$uri = preg_replace('![^\w\-~\.\,\;]!', '-', $uri);
+		$uri = preg_replace('![^\w\-~\.\,]!', '-', $uri);
         $uri = preg_replace("!\-{2,}!",'-', $uri);
         $uri = preg_replace("!^\-+!",'', $uri);
         $uri = preg_replace("!\-+$!",'', $uri);

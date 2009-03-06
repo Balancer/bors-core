@@ -22,7 +22,7 @@ function mysql_where_compile($conditions_array)
 		if(preg_match('! (NOT )?IN$!', $field_cond))
 		{
 			if(is_array($value))
-				$value = join(',', array_map('addslashes', $value));
+				$value = "'".join("','", array_map('addslashes', $value))."'";
 
 			if($value)
 				$w = mysql_bors_join_parse($field_cond) . '(' . $value . ')';

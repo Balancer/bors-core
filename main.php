@@ -149,7 +149,7 @@
 		$deb .= debug_timing_info_all();
 		$deb .= "Total time: $time sec.\n";
 		$deb .= "-->\n";
-		
+
 		$res = str_replace('</body>', $deb.'</body>', $res);
 	}
 

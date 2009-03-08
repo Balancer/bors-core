@@ -38,7 +38,12 @@ bors_init();
 				echo "Can't delete";
 			}
 			else
+			{
 				echo 'Deleted';
+				@rmdir(dirname($x['file']));
+				@rmdir(dirname(dirname($x['file'])));
+				@rmdir(dirname(dirname(dirname($x['file']))));
+			}
 		}
 		
 		echo "<br/>\n";

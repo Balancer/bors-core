@@ -622,6 +622,7 @@ class base_object extends base_empty
 	}
 
 	function cache_static() { return 0; }
+	function cache_static_expire() { return $this->cache_static() ? $this->cache_static() + time() : 0; }
 
 	// Признак постоянного существования объекта.
 	// Если истина, то объект создаётся не по первому запросу, а при сохранении

@@ -1,7 +1,6 @@
 <?php
 
-define('BORS_CORE', '/home/balancer/work/programming/php/bors-core');
-define('BORS_LOCAL', '/home/balancer/work/programming/php/bors-aviaport-hg/');
+require_once('../config.php');
 	
 require_once(BORS_CORE.'/config.php');
 require_once('inc/filesystem.php');

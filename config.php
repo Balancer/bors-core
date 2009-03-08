@@ -114,8 +114,9 @@ function bors_init()
 
 function bors_dirs($host = NULL)
 {
-	if($host)
+	if(!$host)
 		$host = @$_SERVER['HTTP_HOST'];
+
 	$vhost = '/vhosts/'.$host;
 
 	return array_unique(array(

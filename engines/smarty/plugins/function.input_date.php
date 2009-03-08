@@ -16,7 +16,7 @@ function smarty_function_input_date($params, &$smarty)
 	
 	if(!$date)
 		$date = $can_drop ? 0 : $GLOBALS['now'];
-	
+
 	$day = 0;
 	$mon = 0;
 	$yea = 0;

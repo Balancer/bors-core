@@ -311,6 +311,17 @@ class base_object extends base_empty
 		if($this->config)
 			$this->config->template_init();
 
+		if($this->auto_assign_all_fields())
+		{
+			foreach($this->main_table_fields() as $property => $field)
+			{
+				if(is_numeric($property))
+					$property = $field;
+		
+				$this->add_local_template_data($property, $this->$property());
+			}
+		}
+
 		foreach($this->local_data() as $key => $value)
 			$this->add_local_template_data($key, $value);
 
@@ -894,4 +905,5 @@ class base_object extends base_empty
 	function set_page($page) { return $this->_page = $page ? $page : $this->default_page(); }
 
 	function empty_id_handler() { return NULL; }
+	function auto_assign_all_fields() { return false; }
 }

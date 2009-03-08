@@ -16,6 +16,7 @@ function class_include($class_name, $local_path = "")
 
 	foreach(bors_dirs() as $dir)
 	{
+//		echo "check {$dir}/classes/{$class_path}{$class_file}.php<br/>";
 		if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.php"))
 		{
 			require_once($file_name);
@@ -375,7 +376,7 @@ function class_load_by_vhosts_url($url)
 				else
 					$class = $class_path;
 
-//				echo "$class_path($id) - $url";
+//				echo "$class_path($id) - $url<br/>";
 				
 				$args = array(	
 						'local_path' => $host_data['bors_local'],
@@ -387,7 +388,6 @@ function class_load_by_vhosts_url($url)
 					$args = array_merge($args, $page);
 				else
 					$args['page'] = $page;
-
 
 				if($obj = object_init($class_path, $id, $args))
 				{
@@ -428,6 +428,8 @@ function &object_init($class_name, $object_id, $args = array())
 	if(!($class_file = class_include($class_name, defval($args, 'local_path'))))
 		return $obj;
 
+//	echo "$class_file<br/>";
+
 	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id);
 
 	$found = 0;
@@ -440,6 +442,7 @@ function &object_init($class_name, $object_id, $args = array())
 		$obj->set_class_file($class_file);
 	}
 	
+//	echo "f ".get_class($obj)."<br/>";
 	unset($args['local_path']);
 	unset($args['no_load_cache']);
 
@@ -453,6 +456,7 @@ function &object_init($class_name, $object_id, $args = array())
 		$obj->set_called_url(preg_replace('!\?$!', '', $url));
 
 	$obj->_configure();
+
 
 	if(!$obj->loaded())
 		$obj->init();

@@ -42,15 +42,19 @@
 		if(!$mask)
 			return lcml_functions_do($functions, $txt);
 
-//		echo "Use mask post:\n$txt\n$mask\n\n";
-		
+		if(($mask_len = strlen($mask)) != ($txt_len = strlen($txt)))
+		{
+			debug_hidden_log('error_lcml', "mask length ($mask_len) != text length ($txt_len) for text '$txt'");
+			return lcml_functions_do($functions, $txt);
+		}
+
 		$result = "";
 		$start = 0;
 		$can_modif = true;
 			
 		for($i=0, $stop=strlen($txt); $i<$stop; $i++)
 		{
-			if(substr($mask, $i, 1) == 'X')
+			if(@$mask[$i] == 'X')
 			{
 				if($can_modif)
 				{
@@ -88,11 +92,10 @@
 
 	function lcml_functions_do($functions, $txt)
 	{
-//		echo "Apply funcs for '$txt'\n";
 		foreach($functions as $fn)
 		{
 			$out = $txt;
-//			echo "$fn: "; print_d(restore_format($txt));
+
 			$txt = $fn($txt);
 
 			if(!$txt && $out)

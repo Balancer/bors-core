@@ -112,10 +112,19 @@ function bors_init()
 	require_once('classes/Cache.php');
 }
 
-function bors_dirs()
+function bors_dirs($host = NULL)
 {
-	$vhost = '/vhosts/'.@$_SERVER['HTTP_HOST'];
-	return array_unique(array(BORS_LOCAL.$vhost, BORS_LOCAL, BORS_HOST.$vhost, BORS_HOST, BORS_CORE));
+	if($host)
+		$host = @$_SERVER['HTTP_HOST'];
+	$vhost = '/vhosts/'.$host;
+
+	return array_unique(array(
+		BORS_LOCAL.$vhost,
+		BORS_LOCAL,
+		BORS_HOST.$vhost,
+		BORS_HOST,
+		BORS_CORE,
+	));
 }
 
 function bors_include($file, $warn = false)

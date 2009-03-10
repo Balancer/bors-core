@@ -4,6 +4,6 @@
 //        if(!check_lcml_access('usehtml'))
 //            return $txt;
 
-        $txt = save_format($txt);
+        $txt = save_format(restore_format($txt));
         return $txt;
     }

@@ -37,7 +37,7 @@ else
 		foreach($params as $key=>$value)
 			$ps .= "\$GLOBALS['module_data']['$key'] = '".addslashes($value)."'; ";
 
-		$out = /*save_format*/("<?php ob_start(); $ps include(\"modules/{$params['url']}.php\"); \$content = ob_get_contents(); ob_clean(); ?>");
+		$out = "<?php ob_start(); $ps include(\"modules/{$params['url']}.php\"); \$content = ob_get_contents(); ob_clean(); ?>";
 		
 		unset($GLOBALS['module_data']);
 		

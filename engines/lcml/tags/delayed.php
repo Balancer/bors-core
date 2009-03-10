@@ -2,5 +2,5 @@
 
 function lp_delayed($txt, $params)
 {
-	return "<span><!--".save_format($txt)."--></span>";
+	return save_format("<span><!--".trim(restore_format($txt))."--></span>");
 }

@@ -1,6 +1,8 @@
 <?
     function lp_chess($text,$params)
     {
+		$text = restore_format($text);
+	
 		global $wgScriptPath;
 		$errrep_save = error_reporting();
 		error_reporting($errrep_save & ~E_NOTICE);
@@ -12,7 +14,7 @@
 		ini_set('include_path', $incs);
 
 		if(preg_match("/^!/m", $ret))
-			return "<span style=\"font-size: 8pt;\">".save_format($ret)."</span>";
+			return save_format("<span style=\"font-size: 8pt;\">{$ret}</span>");
 		else
 			return save_format($ret);
 	}

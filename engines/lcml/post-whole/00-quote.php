@@ -1,6 +1,7 @@
-<?
-    function lcml_quote($txt)
-    {
+<?php
+
+function lcml_quote($txt)
+{
 		$txt = preg_replace('!^\s*={10,}\s*$!m',  '<hr style="height:3px; width:98%;text-align: left;" />', $txt);
 		$txt = preg_replace('!^\s*\-{10,}\s*$!m', '<hr style="height:1px; width:98%;text-align: left;" />', $txt);
 		
@@ -11,7 +12,7 @@
 		
 			if(strlen($s) > 255)
 			{
-				foreach(split(' ', $s) as $tmp)
+				foreach(explode(' ', $s) as $tmp)
 					if(strlen($tmp) > 255)
 					{
 						$res .= "$s\n";
@@ -28,4 +29,4 @@
 		}
 		
         return $res;
-    }
+}

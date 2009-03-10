@@ -2,5 +2,5 @@
 
 function lp_javascript($txt, $params)
 {
-	return "<script type=\"text/javascript\"><!--".save_format("\n$txt\n")."--></script>";
+	return save_format("<script type=\"text/javascript\"><!--\n".trim(restore_format($txt))."\n--></script>");
 }

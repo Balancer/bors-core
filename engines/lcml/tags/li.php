@@ -6,7 +6,7 @@
 
     function lp_li($text)
     {
-        return save_format("<li>".lcml($text)."</li>\n");
+        return "<li>".lcml($text)."</li>";
     }
 
     function lp_ul($text, $param)
@@ -16,7 +16,7 @@
 		else
 			$type = "";
 
-        return save_format("<ul$type>\n".lcml($text)."</ul>\n");
+        return "<ul$type>".lcml($text)."</ul>";
     }
 
     function lp_ol($text, $param)
@@ -26,7 +26,7 @@
 		else
 			$type = "";
 			
-        return save_format("<ol$type>\n".lcml($text)."</ol>\n");
+        return "<ol$type>".lcml($text)."</ol>";
     }
 
 require_once('inc/strings.php');

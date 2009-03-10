@@ -82,7 +82,7 @@
 
 	if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY_STRING']))
 	{
-		foreach(explode('&', $_SERVER['QUERY_STRING']) as $pair)
+		foreach(split('[&\?]', $_SERVER['QUERY_STRING']) as $pair)
 		{
 			@list($var, $val) = explode('=', $pair);
 			$var = urldecode($var);

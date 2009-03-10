@@ -4,19 +4,40 @@ class base_page_paged extends base_page
 {
 	function where() { return array(); }
 	function order() { return '-modify_time'; }
+	function group() { return false; }
 
-	function items()
+	private function _where($where = array())
 	{
-		$where = $this->where();
-		$where['page'] = $this->page();
-		$where['per_page'] = $this->items_per_page();
-		if($order = $this->order())
-			$where['order'] = $order;
-		
-		return objects_array($this->main_class(), $where);
+		$where = array_merge($this->where(), $where);
+
+		if($group = $this->group())
+			$where['group'] = $group;
+
+		return $where;
 	}
 
-	function total_items() { return objects_count($this->main_class(), $this->where()); }
+	private $_items;
+	function items()
+	{
+		if(!is_null($this->_items))
+			return $this->_items;
+	
+
+		return $this->_items = objects_array($this->main_class(), $this->_where(array(
+			'page' => $this->page(),
+			'per_page' => $this->items_per_page(),
+			'order' => $this->order(),
+		)));
+	}
+
+	private $_total;
+	function total_items()
+	{
+		if(!is_null($this->_total))
+			return $this->_total;
+
+		return $this->_total = objects_count($this->main_class(), $this->_where());
+	}
 
 	function template_local_vars() { return parent::template_local_vars().' items'; }
 	function url_engine() { return 'url_calling2'; }

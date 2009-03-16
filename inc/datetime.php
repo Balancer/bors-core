@@ -86,6 +86,10 @@ $GLOBALS['month_names_rp'] = explode(' ', 'Января Февраля Март�
 function month_name($m) { return ec($GLOBALS['month_names'][$m-1]); }
 function month_name_rp($m) { return ec($GLOBALS['month_names_rp'][$m-1]); }
 
+$GLOBALS['day_names'] = explode(' ', 'Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье');
+
+function week_day_name($day_num) { return ec($GLOBALS['day_names'][$day_num-1]); }
+
 function text_date($date)
 {
 	return date('j', $date).' '.strtolower(month_name_rp(date('n', $date))).' '.date('Y', $date);

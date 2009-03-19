@@ -28,10 +28,10 @@ class module_nav_top extends base_page
 		if(!$obj)
 			return $result;
 			
-		if(@$shown["$obj"])
+		if($shown[$obj->internal_uri()])
 			return $result;
 	
-		$show["$obj"] = true;
+		$shown[$obj->internal_uri()] = true;
 
 		if(!$obj->parents())
 			return $result;
@@ -48,10 +48,10 @@ class module_nav_top extends base_page
 			}
 				
 			$parent_obj = object_load($parent);
-			if(!$parent_obj || $parent_obj == $obj)
+			if(!$parent_obj || $parent_obj->internal_uri() == $obj->internal_uri())
 				continue;
 			
-			$shown[] = $parent_obj;
+			$shown[$parent_obj->internal_uri()] = true;
 
 			$parent_nav = object_load($this->class_name(), $parent_obj);
 			$parent_link_line = $parent_nav->link_line(false, $shown);

@@ -415,8 +415,8 @@ function class_load_by_vhosts_url($url)
 
 function &object_init($class_name, $object_id, $args = array())
 {
-	if(config('debug_class_search_track'))
-		echo "<small>object_init($class_name, $object_id,...)</small><br/>\n";
+//	if(config('debug_class_search_track'))
+//		echo "<small>object_init($class_name, $object_id,...)</small><br/>\n";
 
 	// В этом методе нельзя использовать debug_test()!!!
 
@@ -427,8 +427,6 @@ function &object_init($class_name, $object_id, $args = array())
 
 	if(!($class_file = class_include($class_name, defval($args, 'local_path'))))
 		return $obj;
-
-//	echo "$class_file<br/>";
 
 	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id);
 
@@ -442,7 +440,6 @@ function &object_init($class_name, $object_id, $args = array())
 		$obj->set_class_file($class_file);
 	}
 	
-//	echo "f ".get_class($obj)."<br/>";
 	unset($args['local_path']);
 	unset($args['no_load_cache']);
 

@@ -180,24 +180,27 @@ class base_object extends base_empty
 			if($field = $this->autofield($match[1]))
 				return $field;
 			
-			echo "<xmp>";
-			debug_print_backtrace();
-			echo "</xmp>";
+			debug_trace();
 			exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
 		}
 		
 		$field_storage = "field_{$field}_storage";
 
-		if(config('strict_autho_fields_check')
-			&& !method_exists($this, $field_storage) 
-			&& !$this->autofield($field) 
+		//TODO: сделать более жёсткой проверку на setting
+		if(!$setting && config('strict_auto_fields_check')
+			&& !method_exists($this, $field_storage)
+			&& empty($params[2]) // При установке из ORM Без проверки на тип!
+			&& !$this->autofield($field)
 			&& @$_SERVER['SVCNAME'] != 'tomcat-6' && !property_exists($this, "stb_{$field}")
 		)
 		{
-			echo "<xmp>";
+			$auto_objs = $this->auto_objects();
+			if($f = @$auto_objs[$field])
+				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+					return $this->set($field, object_load($m[1], $this->$m[2]()), false);
+		
 			if(@$_SERVER['SVCNAME'] != 'tomcat-6')
-				debug_print_backtrace();
-			echo "</xmp>";
+				debug_trace();
 			exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
 		}
 
@@ -210,7 +213,7 @@ class base_object extends base_empty
 	function get_property($name)
 	{
 		$p="stb_{$name}";
-		if(!config('strict_autho_fields_check')
+		if(!config('strict_auto_fields_check')
 				|| @$_SERVER['SVCNAME'] == 'tomcat-6' 
 				|| property_exists($this, $p))
 			return @$this->$p;
@@ -584,6 +587,7 @@ class base_object extends base_empty
 	}
 
 	function fields() { return array(); }
+	function auto_objects() { return array(); }
 
 	function storage() { return object_load($this->storage_engine()); }
 
@@ -706,7 +710,7 @@ class base_object extends base_empty
 
 	private $args = array();
 	function set_args($args) { return $this->args = $args; }
-	function set_arg($name, $value) { return $this->args[$name] = $value; }
+	function _set_arg($name, $value) { return $this->args[$name] = $value; }
 	function args($name=false, $def = NULL) { return $name ? (isset($this->args[$name]) ? $this->args[$name] : $def) : $this->args; }
 
 	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
@@ -821,9 +825,6 @@ class base_object extends base_empty
 
 		return $this->extends_class_id;
 	}
-
-	var $stb_owner_id = NULL;
-	function owner() { return NULL; }
 
 	function direct_content()
 	{

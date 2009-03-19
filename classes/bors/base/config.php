@@ -18,7 +18,13 @@ class base_config extends base_empty
 	{
 		$object = $this->id();
 		foreach($this->template_data() as $key => $value)
-			$object->add_template_data($key, $value);
+		{
+			if(strpos($key, '['))
+				$object->add_template_data_array($key, $value);
+			else
+				$object->add_template_data($key, $value);
+		}
+
 		foreach($this->template_data_array() as $key => $value)
 			$object->add_template_data_array($key, $value);
 	}

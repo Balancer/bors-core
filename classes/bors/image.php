@@ -2,7 +2,7 @@
 
 class bors_image extends base_object_db
 {
-	function main_table_storage() { return 'bors_images'; }
+	function main_table() { return config('images_table', 'bors_images'); }
 	function main_db_storage() { return config('bors_core_db'); }
 
 	function main_table_fields()

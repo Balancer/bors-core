@@ -3,7 +3,7 @@
 class bors_tools_tasks extends base_object_db
 {
 	function main_db_storage() { return config('bors_core_db'); }
-	function main_table_storage() { return 'bors_tasks'; }
+	function main_table() { return 'bors_tasks'; }
 	function main_table_fields()
 	{
 		return array('id', 'target_class_id', 'target_object_id', 'working_class_id', 'create_time', 'execute_time', 'priority');
@@ -29,7 +29,7 @@ class bors_tools_tasks extends base_object_db
 	static function add_task($target_object, $worker_class_name, $execute_time = 0, $priority = 0)
 	{
 		$db = &new driver_mysql(bors_tools_tasks::main_db_storage());
-		$db->insert_ignore(bors_tools_tasks::main_table_storage(), array(
+		$db->insert_ignore(bors_tools_tasks::main_table(), array(
 			'target_class_id' => $target_object->class_id(),
 			'target_object_id' => $target_object->id(),
 			'target_object_page' => $target_object->page(),

@@ -3,7 +3,7 @@
 class common_author extends base_page_db
 {
 	function main_db_storage(){ return 'common'; }
-	function main_table_storage() { return 'authors'; }
+	function main_table() { return 'authors'; }
 
 	function field_create_time_storage() { return 'create_time(id)'; }
 	function field_modify_time_storage() { return 'modify_time(id)'; }

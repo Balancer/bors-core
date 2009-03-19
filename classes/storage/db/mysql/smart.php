@@ -245,7 +245,7 @@ class storage_db_mysql_smart extends base_null
 //					if(is_numeric($value) && "".($x = intval($value)) === "$value")
 //						$value = $x;
 
-					$object->{"set_$name"}($value, false);
+					$object->{"set_$name"}($value, false, true);
 
 					$was_loaded = true;
 				}

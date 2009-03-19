@@ -45,7 +45,7 @@ function bors_cross_object_init($row)
 
 function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array())
 {
-	global $bors_cross_types_map;
+	global $bors_cross_types_map, $bors_cross_sort_orders;
 
 	if(!$object)
 	{
@@ -79,9 +79,15 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 		{
 			$x_iu = $x->internal_uri();
 			if($x_iu < $object_iu)
+			{
 				$bors_cross_types_map[$x_iu][$object_iu] = $row['type_id'];
+				$bors_cross_sort_orders[$x_iu][$object_iu] = $row['sort_order'];
+			}
 			else
+			{
 				$bors_cross_types_map[$object_iu][$x_iu] = $row['type_id'];
+				$bors_cross_sort_orders[$object_iu][$x_iu] = $row['sort_order'];
+			}
 			$result[] = $x;
 		}
 		else
@@ -97,10 +103,15 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 		{
 			$x_iu = $x->internal_uri();
 			if($x_iu < $object_iu)
+			{
 				$bors_cross_types_map[$x_iu][$object_iu] = $row['type_id'];
+				$bors_cross_sort_orders[$x_iu][$object_iu] = $row['sort_order'];
+			}
 			else
+			{
 				$bors_cross_types_map[$object_iu][$x_iu] = $row['type_id'];
-
+				$bors_cross_sort_orders[$object_iu][$x_iu] = $row['sort_order'];
+			}
 			$result[] = $x;
 		}
 		else
@@ -117,10 +128,35 @@ function bors_cross_type_id($x1, $x2)
 	global $bors_cross_types_map;
 	$x1_iu = $x1->internal_uri();
 	$x2_iu = $x2->internal_uri();
-	if($x1_iu < $x2_iu)
-		return intval(@$bors_cross_types_map[$x1_iu][$x2_iu]);
-	else
-		return intval(@$bors_cross_types_map[$x2_iu][$x1_iu]);
+	if($x1_iu > $x2_iu)
+	{
+		$x = $x1_iu;
+		$x1_iu = $x2_iu;
+		$x2_iu = $x;
+	}
+
+	if(empty($bors_cross_types_map[$x1_iu][$x2_iu]))
+		bors_get_cross_objs($x1, $x2->class_name());
+
+	return intval(@$bors_cross_types_map[$x1_iu][$x2_iu]);
+}
+
+function bors_cross_sort_order($x1, $x2)
+{
+	global $bors_cross_sort_orders;
+	$x1_iu = $x1->internal_uri();
+	$x2_iu = $x2->internal_uri();
+	if($x1_iu > $x2_iu)
+	{
+		$x = $x1_iu;
+		$x1_iu = $x2_iu;
+		$x2_iu = $x;
+	}
+
+	if(empty($bors_cross_sort_orders[$x1_iu][$x2_iu]))
+		bors_get_cross_objs($x1, $x2->class_name());
+
+	return intval(@$bors_cross_sort_orders[$x1_iu][$x2_iu]);
 }
 
 function bors_cross_where_cond($field, $cond)

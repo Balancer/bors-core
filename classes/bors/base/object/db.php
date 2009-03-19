@@ -15,7 +15,8 @@ class base_object_db extends base_object
 		$id = $this->uri2id($id);
 
 		parent::__construct($id);
-//		bors_db_fields_init($this);
+//		if(config('strict_auto_fields_check'))
+//			bors_db_fields_init($this);
 	}
 
 	function id_field() { $fields = $this->main_table_fields(); return empty($fields['id']) ? 'id' : $fields['id']; }

@@ -4,7 +4,7 @@ require_once('inc/images.php');
 
 class bors_image_thumb extends bors_image
 {
-	function main_table_storage() { return 'bors_pictures_thumbs'; }
+	function main_table() { return 'bors_pictures_thumbs'; }
 	function main_db_storage() { return config('cache_database'); }
 	function can_be_empty() { return true; }
 

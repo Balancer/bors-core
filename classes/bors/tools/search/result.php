@@ -33,7 +33,7 @@ class bors_tools_search_result extends bors_tools_search
 
 	function init()
 	{
-		$this->set_arg('page' , max(1, @$_GET['p']));
+		$this->_set_arg('page' , max(1, @$_GET['p']));
 		return parent::init();
 	}
 

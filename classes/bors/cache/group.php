@@ -3,7 +3,7 @@
 class cache_group extends base_object_db
 {
 	function main_db_storage() { return config('cache_database'); }
-	function main_table_storage() { return 'cache_groups'; }
+	function main_table() { return 'cache_groups'; }
 	function main_table_fields() { return array('id', 'cache_group', '_target_class_id', '_target_object_id', 'create_time'); }
 
 	static function register($group, $obj)

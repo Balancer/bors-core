@@ -21,7 +21,8 @@ class base_page_db extends base_page
 		$id = $this->uri2id($id);
 			
 		parent::__construct($id);
-//		bors_db_fields_init($this);
+//		if(config('strict_auto_fields_check'))
+//			bors_db_fields_init($this);
 	}
 
 	function template_data_fill()

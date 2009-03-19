@@ -152,11 +152,22 @@ function DBG_GetBacktrace($skip = 0, $html = NULL)
 	for($pos=0; $pos<sizeof($traceArr); $pos++)
 	{
 		$arr = $traceArr[sizeof($traceArr)-$pos-1];
+		$indent = '';
 		for ($i=0; $i < $tabs; $i++)
-			$s .= $html ? '&nbsp;' : ' ';
+			$indent .= $html ? '&nbsp;' : ' ';
+
+		$Line = (isset($arr['line'])? $arr['line'] : "unknown");
+		$File = (isset($arr['file'])? $arr['file'] : "unknown");
+		if($html)
+			$s .= "$indent".sprintf("<span style=\"font-size:8pt;margin:0;padding:0;color:#999\">%s:%d</span>", $File, $Line);
+		else
+			$s .= sprintf("[%s:%d]", $File, $Line);
+
+		$s .= "\n$indent";
+
 		$tabs++;
 		if($html)
-			$s .= '<font face="Courier New,Courier">';
+			$s .= '<span style="font-family:monospace;size:9pt;padding:0;margin:0">';
 		if(isset($arr['class']))
 			$s .= $arr['class'].'.';
 		$args = array();
@@ -177,15 +188,15 @@ function DBG_GetBacktrace($skip = 0, $html = NULL)
 				}
 			}
 		}
-		$s .= $arr['function'].'('.implode(', ',$args).')';
 		if($html)
-			$s .= '</font>';
-		$Line = (isset($arr['line'])? $arr['line'] : "unknown");
-		$File = (isset($arr['file'])? $arr['file'] : "unknown");
-		if($html)
-			$s .= sprintf("<span style=\"font-size: 8pt;\">[<a href=\"file:/%s\">%s</a>:%d]</span>", $File, $File, $Line);
+			$s .= "<b>{$arr['function']}</b>";
 		else
-			$s .= sprintf("[%s:%d]", $File, $Line);
+			$s .= $arr['function'];
+
+		$s .= '('.implode(', ',$args).')';
+
+		if($html)
+			$s .= '</span>';
 		$s .= "\n";
 	}
 

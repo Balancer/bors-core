@@ -2,10 +2,6 @@
 	if(config('bors_version_show'))
 		header('X-Bors: v' .config('bors_version_show'));
 
-//	if($_SERVER['REMOTE_ADDR'] == '89.178.142.225')
-//		$_GET['XDEBUG_PROFILE'] = 1;
-//		ini_set("xdebug.profiler_enable", "1");
-
 	if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 	{
 		$_SERVER['REQUEST_URI'] = $m[1];
@@ -20,16 +16,9 @@
 	{
 		@file_put_contents($file = $_SERVER['DOCUMENT_ROOT']."/cms/logs/main-php-referers.log", @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 		@chmod($file, 0666);
-		exit("Link error");
+		exit("Do not user direct bors-call!");
 	}
 
-/*	if($_SERVER['REMOTE_ADDR'] == '89.108.87.121')
-	{
-		@file_put_contents($file = $_SERVER['DOCUMENT_ROOT']."/cms/logs/main-php-89.108.87.121.log", $_SERVER['REQUEST_URI'] . "; ref=" . @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
-		@chmod($file, 0666);
-		exit("Link error");
-	}
-*/
 	global $client;
 	$client['is_bot'] = false;
 	foreach(array(

@@ -17,7 +17,7 @@ function objects_array($class, $args = array())
 		$cargs['by_id'] = true;
 	unset($args['by_id']);
 
-	$where = mysql_args_compile($args);
+	$where = mysql_args_compile($args, $class);
 		
 	$init = &new $class(NULL);
 
@@ -42,7 +42,7 @@ function objects_count($class, $args = array())
 	else	
 		$init = new $class(NULL);
 
-	$where = mysql_args_compile($args);
+	$where = mysql_args_compile($args, $class);
 
 	$cargs = array();
 

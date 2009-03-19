@@ -7,7 +7,6 @@ class body_php extends base_null
 {
 	function body($object)
 	{
-
 		if(!$object->loaded() && !$object->can_be_empty())
 			return false;
 

@@ -616,7 +616,10 @@ class base_object extends base_empty
 
 	function delete_url()
 	{
-		return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); 
+		if($x = $this->has_smart_field('is_deleted')) //array($r_db, $r_table, $r_id_field, $r_db_field
+			return '/admin/mark/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); 
+		else
+			return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); 
 	}
 
 	var $_called_url;

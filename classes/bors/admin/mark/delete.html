@@ -1,0 +1,11 @@
+<p title="{$this->id()}">
+Укажите причину, по которой Вы хотите скрыть
+{$this->object()|get:class_title_rp|lower} 
+&laquo;{$this->object()|get:titled_url}&raquo;?
+</p>
+
+{form subaction="delete"}
+{textarea name="note" value=""}
+{submit value="Отметить удалённым"}
+{hidden name="ref" value=$this->ref()}
+{/form}

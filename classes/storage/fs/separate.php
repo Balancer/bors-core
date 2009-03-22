@@ -4,10 +4,10 @@ class storage_fs_separate extends base_null
 {
 	function load($object)
 	{
-		$url_data = parse_url($object->called_url());
-		$path = $url_data['path'];
+		$url_data = url_parse($object->called_url());
+		$dir = $url_data['local_path'];
 
-		if(!($found = file_exists(($dir = "{$_SERVER['DOCUMENT_ROOT']}{$path}").'.title.txt')))
+		if(!($found = file_exists($dir.'/.title.txt')))
 		{
 			foreach(bors_dirs() as $base)
 			{
@@ -33,8 +33,8 @@ class storage_fs_separate extends base_null
 			{
 				$data = array();
 				foreach(file("{$dir}/{$entry}") as $s)
-					$data[] = ec($s);
-				
+					$data[] = $object->cs_f2i($s);
+
 				if(method_exists($object, $method = "set_{$m[1]}"))
 					$object->$method( $data, false);
 				else
@@ -42,7 +42,7 @@ class storage_fs_separate extends base_null
 			}
 			elseif(preg_match("!\.(\w+)\.txt$!", $entry, $m))
 			{
-				$data = ec(file_get_contents("{$dir}/{$entry}"));
+				$data = $object->cs_f2i(file_get_contents("{$dir}/{$entry}"));
 				if(method_exists($object, $method = "set_{$m[1]}"))
 					$object->$method($data, false);
 				else
@@ -52,7 +52,7 @@ class storage_fs_separate extends base_null
 		$d->close();
 		return $object->set_loaded(true);
 	}
-	
+
 	function save($object)
 	{
 		debug_exit("Try to save file separated format");

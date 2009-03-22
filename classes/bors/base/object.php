@@ -166,7 +166,7 @@ class base_object extends base_empty
 		if(preg_match('!^autofield!', $method))
 			return NULL;
 //			debug_exit(ec("Неопределённый метод $method в классе ".get_class($this)));
-	
+
 		$field   = $method;
 		$setting = false;
 		if(preg_match('!^set_(\w+)$!', $method, $match))
@@ -183,7 +183,7 @@ class base_object extends base_empty
 			debug_trace();
 			exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
 		}
-		
+
 		$field_storage = "field_{$field}_storage";
 
 		//TODO: сделать более жёсткой проверку на setting
@@ -225,12 +225,27 @@ class base_object extends base_empty
 	function preParseProcess() { return false; }
 	function preShowProcess() { return false; }
 
-	function pre_parse($get = array())
-	{
-		return $this->preParseProcess($get);
-	}
-	
+	function pre_parse($get = array()) { return $this->preParseProcess($get); }
 	function pre_show($get = array()) { return $this->preShowProcess($get); }
+
+	private $__mutex;
+	private function __mutex_lock()
+	{
+		if(!$this->__mutex)
+		{
+			$this->__mutex = sem_get(ftok($this->class_file(), 'm'));
+			sem_acquire($this->__mutex);
+		}
+	}
+
+	private function __mutex_unlock()
+	{
+		if($this->__mutex)
+		{
+			sem_release($this->__mutex);
+			$this->__mutex = NULL;
+		}
+	}
 
 	function set($field, $value, $db_update)
 	{
@@ -238,10 +253,16 @@ class base_object extends base_empty
 
 		if($db_update && @$this->$field_name !== $value)
 		{
-//TODO: продумать систему контроля типов.
+			if(config('mutex_lock_enable'))
+				$this->__mutex_lock();
+
+			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
+				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
+
+			//TODO: продумать систему контроля типов.
 //			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
 //				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
-				
+
 			$this->changed_fields[$field] = $field_name;
 			bors()->add_changed_object($this);
 		}
@@ -255,6 +276,9 @@ class base_object extends base_empty
 
 		if($db_update && @$this->$field_name != $value)
 		{
+			if(config('mutex_lock_enable'))
+				$this->__mutex_lock();
+				
 			$this->changed_fields[$field] = $field_name;
 			bors()->add_changed_object($this);
 		}
@@ -278,7 +302,7 @@ class base_object extends base_empty
 		if($this->stb_modify_time)
 			return $this->stb_modify_time;
 
-		return time(); 
+		return time();
 	}
 
 	var $stb_modify_time = NULL;
@@ -288,7 +312,7 @@ class base_object extends base_empty
 		if($exactly || $this->stb_modify_time)
 			return $this->stb_modify_time;
 
-		return time(); 
+		return time();
 	}
 
 	var $stb_title = '';
@@ -866,6 +890,24 @@ class base_object extends base_empty
 
 	function use_temporary_static_file() { return true; }
 
+	function internal_charset() { return config('internal_charset', 'utf-8'); }
+	function output_charset() { return config('output_charset', 'utf-8'); }
+	function files_charset() { return config('files_charset', 'utf-8'); }
+	function db_charset() { return config('db_charset', 'utf-8'); }
+
+	function cs_f2i($str) { return iconv($this->files_charset(), $this->internal_charset().'//translit', $str); }
+	function cs_i2o($str)
+	{
+		if(preg_match('/koi8|cp866/i', $out_cs = $this->output_charset()))
+		{
+			$str = str_replace(
+				array('«'      ,'»'),
+				array('&laquo;','&raquo;'),
+				$str);
+		}
+		return iconv($this->internal_charset(), $out_cs.'//translit', $str);
+	}
+
 	function content($can_use_static = true, $recreate = false)
 	{
 		$use_static = $recreate || ($can_use_static && config('cache_static') && $this->cache_static() > 0);
@@ -884,8 +926,11 @@ class base_object extends base_empty
 				$this->url($this->page()),
 				$this->title(),
 			), ec(config('temporary_file_contents'))), 120);
-	
+
 		$content = $this->direct_content();
+
+		if($this->internal_charset() != $this->output_charset())
+			$content = $this->cs_i2o($content);
 
 		if($use_static || $recreate)
 			cache_static::save($this, $content);

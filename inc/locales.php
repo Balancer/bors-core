@@ -39,7 +39,7 @@ function array_iconv($from_charset, $to_charset, $array)
 	{
 		foreach($array as $k => $v)
 			if(is_array($v))
-				$array[$k] = iconv_array($from_charset, $to_charset, $v);
+				$array[$k] = array_iconv($from_charset, $to_charset, $v);
 			else
 				$array[$k] = iconv($from_charset, $to_charset, $v);
 	}

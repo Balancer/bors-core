@@ -247,9 +247,10 @@ class storage_db_mysql_smart extends base_null
 //					if(is_numeric($value) && "".($x = intval($value)) === "$value")
 //						$value = $x;
 
-					if($need_convert)
+					if($need_convert && $value)
 						$value = $object->cs_d2i($value);
 
+//					echo "$object -> set_{$name}($value)<br/>";
 					$object->{"set_$name"}($value, false, true);
 
 					$was_loaded = true;

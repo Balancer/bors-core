@@ -18,6 +18,7 @@ $map = array(
 		'.* => auto_object_php(url)',
 		'(/admin/)\?object=([^&]+).* => bors_admin_main(1)',
 		'/admin/delete/\?object=([^&]+).* => bors_tools_delete(1)',
+		'/admin/mark/delete/\?object=([^&]+).* => bors_admin_mark_delete(1)',
 		'/admin/edit\-smart/\?object=([^&]+) => bors_admin_edit_smart(1)',
 		'/admin/edit\-smart/ => bors_admin_edit_smart',
 		'/admin/cross_unlink\?.* => bors_admin_cross_unlink',

@@ -114,7 +114,11 @@ function bors_class_field_to_db($class, $field = NULL)
 
 		$class = new $class(NULL);
 
-		$table	 = $class->main_table();
+		$x = $class->has_smart_field($field); // array($r_db, $r_table, $r_id_field, $r_db_field);
+		$table	 = @$x[1];
+		if(empty($table))
+			$class->main_table();
+//		echo "$class: $table, {$x[1]}<br/>";
 		$fields	 = array_smart_expand($class->main_table_fields());
 	}
 
@@ -127,7 +131,7 @@ function bors_class_field_to_db($class, $field = NULL)
 		if(preg_match('!^(.+)\|.+!', $f = $fields[$field], $m))
 			$f = $m[1];
 
-	return $table.'.'.$f;
+	return ($table ? $table.'.' : '') . $f;
 }
 
 function mysql_bors_join_parse($join, $class_name='')

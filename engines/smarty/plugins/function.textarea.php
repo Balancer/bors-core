@@ -6,7 +6,7 @@
 		$obj = $smarty->get_template_vars('current_form_class');
 		
 		if(!isset($value))
-			$value = $obj->$name();
+			$value = $obj ? $obj->$name() : NULL;
 
 		if(empty($rows))
 			$rows = 7;

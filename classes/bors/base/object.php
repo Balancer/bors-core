@@ -461,7 +461,7 @@ class base_object extends base_empty
 						.'-'.intval(@$array["{$var}_day"])
 						.' '.intval(@$array["{$var}_hour"])
 						.':'.intval(@$array["{$var}_minute"])
-						.':'.intval(@$array["{$var}_seconds"]).' +0400');
+						.':'.intval(@$array["{$var}_seconds"]).(@$array["{$var}_year"] >= 1970 ? ' +0200' : ' +0400'));
 /*					echo intval(@$array["{$var}_year"])
 						.'-'.intval(@$array["{$var}_month"])
 						.'-'.intval(@$array["{$var}_day"])
@@ -469,7 +469,8 @@ class base_object extends base_empty
 						.':'.intval(@$array["{$var}_minute"])
 						.':'.intval(@$array["{$var}_seconds"])."\n";
 					echo $array[$var]."\n";
-					echo date("r", $array[$var]);*/
+					echo date("r", $array[$var]);
+*/					
 					// mktime (@$array["{$var}_hour"], @$array["{$var}_minute"], @$array["{$var}_second"], @$array["{$var}_month"], @$array["{$var}_day"], @$array["{$var}_year"]);
 				}
 				else // Не полный формат даты, например, 2009-0-0 - пишем как строку.
@@ -895,7 +896,9 @@ class base_object extends base_empty
 	function files_charset() { return config('files_charset', 'utf-8'); }
 	function db_charset() { return config('db_charset', 'utf-8'); }
 
-	function cs_f2i($str) { return iconv($this->files_charset(), $this->internal_charset().'//translit', $str); }
+	function cs_f2i($str) { return iconv($this->files_charset(), $this->internal_charset().'//IGNORE', $str); }
+	function cs_d2i($str) { return iconv($this->db_charset(), $this->internal_charset().'//IGNORE', $str); }
+	function cs_i2d($str, $f='') { return iconv($this->internal_charset(), $this->db_charset().'//IGNORE', $str); }
 	function cs_i2o($str)
 	{
 		if(preg_match('/koi8|cp866/i', $out_cs = $this->output_charset()))
@@ -905,7 +908,12 @@ class base_object extends base_empty
 				array('&laquo;','&raquo;'),
 				$str);
 		}
-		return iconv($this->internal_charset(), $out_cs.'//translit', $str);
+
+		$res = iconv($this->internal_charset(), $out_cs.'//IGNORE', $str);
+		if($str && !$res)
+			debug_hidden_log('iconv_error', $this->internal_uri().", {$this->internal_charset()} -> {$out_cs}: $str");
+		
+		return $res;
 	}
 
 	function content($can_use_static = true, $recreate = false)
@@ -927,10 +935,17 @@ class base_object extends base_empty
 				$this->title(),
 			), ec(config('temporary_file_contents'))), 120);
 
+
 		$content = $this->direct_content();
 
 		if($this->internal_charset() != $this->output_charset())
 			$content = $this->cs_i2o($content);
+
+		if(!$content)
+		{
+			cache_static::drop($this);
+			return '';
+		}
 
 		if($use_static || $recreate)
 			cache_static::save($this, $content);

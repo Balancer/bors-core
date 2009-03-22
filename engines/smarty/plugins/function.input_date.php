@@ -40,7 +40,9 @@ function smarty_function_input_date($params, &$smarty)
 	}
 	
 	if(empty($year_min))
-		$year_min = strftime('%Y') - 20;
+		$year_min = strftime('%Y') - 20; 
+
+	$year_min = max(1902, $year_min);// Минимальная корректная UNIXTIME дата - декабрь 1901-го.
 
 	echo "<select name=\"{$name}_day\">\n";
 	if($can_drop || !$day)

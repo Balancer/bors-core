@@ -83,6 +83,10 @@
 	}
 
 	$_GET = array_merge($_GET, $_POST);
+	if(($ics = config('internal_charset')) != ($ocs = config('output_charset')))
+		foreach($_GET as $k => $v)
+			if(!is_array($v))
+				$_GET[$k] = iconv($ocs, $ics.'//IGNORE', $v);
 
 	require_once('engines/bors/object_show.php');
 	require_once('engines/bors/vhosts_loader.php');

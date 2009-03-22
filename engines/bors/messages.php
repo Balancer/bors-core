@@ -4,6 +4,12 @@ function bors_message($text, $params=array())
 {
 	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+	
+	$ocs = config('output_charset', config('default_character_set', 'utf-8'));
+	$ics = config('internal_charset', 'utf-8');
+	
+	@header('Content-Type: text/html; charset='.$ocs);
+	@header('Content-Language: '.config('page_lang', 'ru'));
 
 	$redir = defval($params, 'redirect', false);
 	$title = defval($params, 'title', ec('Ошибка!'));
@@ -42,7 +48,7 @@ function bors_message($text, $params=array())
 //	show_page(@$GLOBALS['main_uri']);
 
 	//TODO: исправить!!
-	echo $message;
+	echo iconv($ics, $ocs, $message);
 
 	if($redir === true)
 	{
@@ -60,6 +66,15 @@ function bors_message($text, $params=array())
 
 function bors_message_tpl($template, $obj, $params)
 {
+	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+	
+	$ocs = config('output_charset', config('default_character_set', 'utf-8'));
+	$ics = config('internal_charset', 'utf-8');
+	
+	@header('Content-Type: text/html; charset='.$ocs);
+	@header('Content-Language: '.config('page_lang', 'ru'));
+
 	require_once('engines/smarty/assign.php');
 
 	$redir = defval($params, 'redirect', false);
@@ -77,7 +92,7 @@ function bors_message_tpl($template, $obj, $params)
 	$GLOBALS['page_data']['source'] = $body;
 
 //	show_page(@$GLOBALS['main_uri']);
-	echo $body;
+	echo iconv($ics, $ocs, $body);
 
 	if($redir === true)
 	{

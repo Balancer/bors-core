@@ -112,7 +112,7 @@
         if(preg_match("!<title>(.+?)</title>!is",$data,$m)) //@file_get_contents($url)
         {
             if($charset)
-                $m[1] = iconv($charset,'utf-8//translit', $m[1]);
+                $m[1] = iconv($charset,'utf-8//IGNORE', $m[1]);
 
             return "<a href=\"{$original_url}\" class=\"external\">".substr(trim(preg_replace("!\s+!"," ",str_replace("\n"," ",strip_tags($m[1])))),0,256)."</a>";
         }

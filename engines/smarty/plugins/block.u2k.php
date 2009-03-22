@@ -3,7 +3,7 @@
 	{
 	    if ($content) 
 		{
-	        echo iconv('utf-8','koi8-r//translit',$content);
+	        echo iconv('utf-8','koi8-r//IGNORE',$content);
 	    }
 	}
 ?>

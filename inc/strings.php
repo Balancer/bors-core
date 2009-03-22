@@ -60,7 +60,7 @@ function bors_hypher($string)
 
 	$mb_enc = ini_get('mbstring.internal_encoding');
 	ini_set('mbstring.internal_encoding', 'windows-1251');
-	$result = iconv('windows-1251', 'utf-8', hypher($bors_3rd_glob_hypher, iconv('utf-8', 'windows-1251//translit', $string)));
+	$result = iconv('windows-1251', 'utf-8', hypher($bors_3rd_glob_hypher, iconv('utf-8', 'windows-1251//IGNORE', $string)));
 	ini_set('mbstring.internal_encoding', $mb_enc);
 	return $result;
 }

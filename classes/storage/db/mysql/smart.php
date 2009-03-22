@@ -18,6 +18,8 @@ class storage_db_mysql_smart extends base_null
 
 		global $dbhs;
 
+		$need_convert = $object->db_charset() != $object->internal_charset();
+
 		foreach($object->fields() as $db => $tables)
 		{
 			if(empty($db))
@@ -245,6 +247,9 @@ class storage_db_mysql_smart extends base_null
 //					if(is_numeric($value) && "".($x = intval($value)) === "$value")
 //						$value = $x;
 
+					if($need_convert)
+						$value = $object->cs_d2i($value);
+
 					$object->{"set_$name"}($value, false, true);
 
 					$was_loaded = true;
@@ -295,6 +300,8 @@ class storage_db_mysql_smart extends base_null
 			return false;
 
 		$oid = addslashes($object->id());
+
+		$need_convert = $object->db_charset() != $object->internal_charset();
 
 		foreach($object->fields() as $db => $tables)
 		{
@@ -389,6 +396,9 @@ class storage_db_mysql_smart extends base_null
 							$update .= $join.$table_name.'` AS '.$current_tab.' ON ('.make_id_field($current_tab, $id_field, $oid).')';
 					}
 
+					if($need_convert)
+						$value = $object->cs_i2d($value, $field);
+
 					if($sql_func)
 						$set["raw {$current_tab}.{$field}"] = "{$sql_func}('".addslashes($value)."')";
 					else
@@ -411,6 +421,8 @@ class storage_db_mysql_smart extends base_null
 		$oid = $object->id();
 		$data = array();
 		$replace = $object->replace_on_new_instance();
+
+		$need_convert = $object->db_charset() != $object->internal_charset();
 
 		foreach($object->fields() as $db => $tables)
 		{
@@ -481,11 +493,15 @@ class storage_db_mysql_smart extends base_null
 					else
 						$id_field = $def_id;
 
+
 					if($sql_func)
 					{
 						$value = $sql_func."('".addslashes($value)."')";
 						$field = "raw ".$field;
 					}
+
+					if($need_convert)
+						$value = $object->cs_i2d($value);
 
 					$data[$table_name][$field] = $value;
 				}

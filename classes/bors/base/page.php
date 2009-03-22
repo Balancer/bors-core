@@ -181,18 +181,18 @@ class base_page extends base_object
 
 	function pre_show()
 	{
-		@header('Content-Type: text/html; charset='.config('default_character_set', 'utf-8'));
+		@header('Content-Type: text/html; charset='.config('output_charset', config('default_character_set', 'utf-8')));
 		@header('Content-Language: '.config('page_lang', 'ru'));
 
 		if(!$this->browser_title())
 			$this->set_browser_title($this->title(), false);
-					
+
 		return parent::pre_show();
 	}
 
 	var $stb_visits = 0;
 	var $stb_num_replies = 0;
-	
+
 	function children_list() { return join("\n", $this->children())."\n"; }
 	function set_children_list($value, $dbup) { return $this->set_children($value ? explode("\n", trim($value)) : array(), $dbup); }
 

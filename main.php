@@ -150,7 +150,7 @@
 		echo $res;
 		return;
 	}
-	
+
 	if(empty($title))
 		$title='';
 

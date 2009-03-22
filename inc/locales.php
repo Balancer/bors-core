@@ -11,7 +11,7 @@ function ec($txt)
 	$charset = config('charset', 'utf-8');
 	if($charset == 'utf-8')
 		return $txt;
-		
+
 	return iconv('utf-8', $charset.'//translit', $txt);
 }
 

@@ -5,7 +5,7 @@ require_once('inc/images.php');
 class bors_image_thumb extends bors_image
 {
 	function main_table() { return 'bors_pictures_thumbs'; }
-	function main_db_storage() { return config('cache_database'); }
+	function main_db() { return config('cache_database'); }
 	function can_be_empty() { return true; }
 
 	private $geo_width, $geo_height, $geo_opts, $geometry, $original;

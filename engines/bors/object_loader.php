@@ -458,7 +458,7 @@ function object_init($class_name, $object_id, $args = array())
 	if(!$obj->loaded())
 		$obj->init();
 
-	if(($object_id || $url) && !$obj->can_be_empty() && !$obj->loaded())
+	if(/*($object_id || $url) && */!$obj->can_be_empty() && !$obj->loaded())
 		return NULL;
 	
 	if($found != 1 && $obj->can_cached())

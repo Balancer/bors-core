@@ -23,7 +23,7 @@ function smarty_function_bors_radio($params, &$smarty)
 
 	if(empty($object))
 	{
-		$current = $obj->$name();
+		$current = $obj ? $obj->$name() : NULL;
 		$object = "";
 	}
 	else

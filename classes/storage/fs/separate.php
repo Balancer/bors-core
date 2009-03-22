@@ -43,7 +43,7 @@ class storage_fs_separate extends base_null
 			}
 			elseif(preg_match("!\.(\w+)\.txt$!", $entry, $m))
 			{
-				echo $data = $object->cs_f2i(file_get_contents("{$dir}/{$entry}"));
+				$data = $object->cs_f2i(file_get_contents("{$dir}/{$entry}"));
 				if(method_exists($object, $method = "set_{$m[1]}"))
 					$object->$method($data, false);
 				else

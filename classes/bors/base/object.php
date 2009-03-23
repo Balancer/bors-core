@@ -933,7 +933,7 @@ class base_object extends base_empty
 			), array(
 				$this->url($this->page()),
 				$this->title(),
-			), ec(config('temporary_file_contents'))), 120);
+			), $this->cs_i2o(config('temporary_file_contents'))), 120);
 
 
 		$content = $this->direct_content();

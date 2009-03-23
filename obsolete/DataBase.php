@@ -130,7 +130,7 @@ class DataBase extends base_object
 		$dcs = config('db_charset');
 
 		if($ics != $dcs)
-			$query = array_iconv($ics, $dcs.'//IGNORE', $query);
+			$query = iconv($ics, $dcs.'//IGNORE', $query);
 
 		$qstart = microtime(true);
 			

@@ -28,8 +28,8 @@ class module_nav_top extends base_page
 		if(!$obj)
 			return $result;
 			
-		if($shown[$obj->internal_uri()])
-			return $result;
+//		if($shown[$obj->internal_uri()])
+//			return $result;
 	
 		$shown[$obj->internal_uri()] = true;
 

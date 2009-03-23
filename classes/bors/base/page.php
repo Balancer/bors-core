@@ -132,9 +132,9 @@ class base_page extends base_object
 				}
 
 				if(preg_match("/!(.+)$/s", $q, $m))
-					$data[$qname] = array_iconv(config('db_charset'), config('internal_charset'), $db->get($m[1], false, $cache));
+					$data[$qname] = $db->get($m[1], false, $cache);
 				else
-					$data[$qname] = array_iconv(config('db_charset'), config('internal_charset'), $db->get_array($q, false, $cache));
+					$data[$qname] = $db->get_array($q, false, $cache);
 			}
 		}
 		$data['template_dir'] = $this->class_dir();

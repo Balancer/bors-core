@@ -126,6 +126,12 @@ class DataBase extends base_object
 
 		debug_count_inc('mysql_queries');
 
+		$ics = config('internal_charset');
+		$dcs = config('db_charset');
+
+		if($ics != $dcs)
+			$query = array_iconv($ics, $dcs.'//IGNORE', $query);
+
 		$qstart = microtime(true);
 			
 		debug_timing_start('mysql_query_main');
@@ -174,6 +180,9 @@ class DataBase extends base_object
 
 	function fetch()
 	{
+		$ics = config('internal_charset');
+		$dcs = config('db_charset');
+
 		if(!$this->result)
 			return false;
 
@@ -183,21 +192,41 @@ class DataBase extends base_object
 		if(empty($GLOBALS['bors_data']['config']['gpc']))
 		{
 			if(sizeof($row)==1)
+			{
 				foreach($row as $s)
+				{
+					if($ics != $dcs)
+						$s = iconv($dcs, $ics.'//IGNORE', $s);
 					$row = $s;
+				}
+			}
 			else
+			{
 				foreach($row as $k => $v)
+				{
+					if($ics != $dcs)
+						$v = iconv($dcs, $ics.'//IGNORE', $v);
 					$row[$k] = $v;
+				}
+			}
 
 			return $row;
 		}
 
 		if(sizeof($row)==1)
 			foreach($row as $s)
+			{
+				if($ics != $dcs)
+					$s = iconv($dcs, $ics.'//IGNORE', $s);
 				$row = quote_fix($s);
+			}
 		else
 			foreach($row as $k => $v)
+			{
+				if($ics != $dcs)
+					$v = iconv($dcs, $ics.'//IGNORE', $v);
 				$row[$k] = quote_fix($v);
+			}
 			
 		return $row;
 	}

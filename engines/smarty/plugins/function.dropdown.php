@@ -51,7 +51,7 @@ function smarty_function_dropdown($params, &$smarty)
 	}
 	
 	if(empty($get))
-		$current = preg_match('!^\w+$!', $name) ? (isset($value)?$value:$obj->$name()) : 0;
+		$current = preg_match('!^\w+$!', $name) ? (isset($value)?$value:($obj?$obj->$name():NULL)) : 0;
 	else
 		$current = $obj->$get();
 

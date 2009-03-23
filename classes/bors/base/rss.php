@@ -3,6 +3,7 @@
 class base_rss extends base_page
 {
 	function render_engine() { return 'base_rss'; }
+	function output_charset() { return 'utf-8'; }
 	
 	function rss_strip() { return 1024;}
 	function rss_source_url() { return '/xxx/';}

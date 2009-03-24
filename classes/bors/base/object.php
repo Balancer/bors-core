@@ -914,7 +914,7 @@ class base_object extends base_empty
 
 	function content($can_use_static = true, $recreate = false)
 	{
-		$use_static = $recreate || ($can_use_static && config('cache_static') && $this->cache_static() > 0);
+		$use_static = config('cache_static') && ($recreate || ($can_use_static && $this->cache_static() > 0));
 		$file = $this->static_file();
 		$fe = file_exists($file);
 		$fs = $fe && filesize($file) > 2000;
@@ -922,7 +922,11 @@ class base_object extends base_empty
 		if($use_static && $file && $fe && !$recreate)
 			return file_get_contents($this->static_file());
 
-		if($use_static && !$fs && $this->use_temporary_static_file() && config('temporary_file_contents'))
+		if($use_static 
+			&& !$fs 
+			&& $this->use_temporary_static_file() 
+			&& config('temporary_file_contents')
+		)
 			cache_static::save($this, $this->cs_i2o(str_replace(array(
 				'$url',
 				'$title',

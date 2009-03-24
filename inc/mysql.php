@@ -1,6 +1,6 @@
 <?php
 
-function mysql_where_compile($conditions_array, $class='')
+function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 {
 //	if(isset($conditions_array['where']))
 //		$conditions_array = $conditions_array['where'];
@@ -42,7 +42,7 @@ function mysql_where_compile($conditions_array, $class='')
 		
 //		echo "$w => ".mysql_bors_join_parse($w)."<br/>";
 		if($w)
-			$where[] = mysql_bors_join_parse($w, $class);
+			$where[] = mysql_bors_join_parse($w, $class, $was_joined);
 	}
 	
 	return 'WHERE '.join(' AND ', $where);
@@ -100,7 +100,7 @@ function array_smart_expand(&$array)
 	return $result;
 }
 
-function bors_class_field_to_db($class, $field = NULL)
+function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 {
 	if(is_object($class))
 	{
@@ -131,15 +131,21 @@ function bors_class_field_to_db($class, $field = NULL)
 		if(preg_match('!^(.+)\|.+!', $f = $fields[$field], $m))
 			$f = $m[1];
 
-	return ($table ? $table.'.' : '') . $f;
+	if(!$was_joined && $table == $class->main_table())
+		$table = '';
+
+	if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+		return $m[1].'('.($table ? $table.'.' : '') . $m[2] .')';
+	else
+		return ($table ? $table.'.' : '') . $f;
 }
 
-function mysql_bors_join_parse($join, $class_name='')
+function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 {
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
 	$join = preg_replace('!(\w+)\.(\w+)!e', 'bors_class_field_to_db("$1", "$2")', $join);
 	if($class_name)
-		$join = preg_replace('!^(\w+)(\s*(=|>|<))!e', 'bors_class_field_to_db("'.$class_name.'", "$1")."$2"', $join);
+		$join = preg_replace('!^(\w+)(\s*(=|>|<))!e', 'bors_class_field_to_db("'.$class_name.'", "$1", '.($was_joined ? 1 : 0).')."$2"', $join);
 	return $join;
 }
 
@@ -202,7 +208,7 @@ function mysql_args_compile($args, $class='')
 	}
 	
 	if(empty($args['where']))
-		$where = mysql_where_compile($args, $class);
+		$where = mysql_where_compile($args, $class, $join);
 	else
 		$where = mysql_where_compile($args['where']);
 	

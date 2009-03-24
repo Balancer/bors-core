@@ -2,18 +2,6 @@
 
 class base_tree extends base_page_db
 {
-	function storage_engine() { return 'storage_db_mysql'; }
-
-	var $stb_parent_id;
-	function parent_id() { return $this->stb_parent_id; }
-	function set_parent_id($parent_id, $db_update) { $this->set("parent_id", $parent_id, $db_update); }
-	function field_child_id_storage() { return $this->tree_child_id().'('.$this->tree_table_id().')'; }
-	function field_parent_id_storage() { return $this->tree_parent_id().'('.$this->tree_table_id().')'; }
-
-	var $stb_child_id;
-	function child_id() { return $this->stb_child_id; }
-	function set_child_id($child_id, $db_update) { $this->set("child_id", $child_id, $db_update); }
-
 	function all_ids()
 	{
 		$result = array();

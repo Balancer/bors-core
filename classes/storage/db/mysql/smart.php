@@ -348,6 +348,7 @@ class storage_db_mysql_smart extends base_null
 					// Выделяем имя функции постобработки, передаваемом в виде
 					// 'WWW.News.Header(ID)|html_entity_decode($str)'
 					// --------------------^^^^^^^^^^^^^^^^^^^^^^^^^-
+
 					if(preg_match('!^(.+)\|(.+)$!', $field, $m))
 					{
 						$field		= $m[1];
@@ -399,6 +400,8 @@ class storage_db_mysql_smart extends base_null
 
 //					if($need_convert)
 //						$value = $object->cs_i2d($value, $field);
+
+	
 
 					if($sql_func)
 						$set["raw {$current_tab}.{$field}"] = "{$sql_func}('".addslashes($value)."')";

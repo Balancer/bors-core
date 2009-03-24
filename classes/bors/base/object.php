@@ -904,16 +904,12 @@ class base_object extends base_empty
 		if(preg_match('/koi8|cp866/i', $out_cs = $this->output_charset()))
 		{
 			$str = str_replace(
-				array('«'      ,'»'),
-				array('&laquo;','&raquo;'),
+				array('«'      ,'»',      '–',      '—'),
+				array('&laquo;','&raquo;','&ndash;','&mdash;'),
 				$str);
 		}
 
-		$res = iconv($this->internal_charset(), $out_cs.'//IGNORE', $str);
-		if($str && !$res)
-			debug_hidden_log('iconv_error', $this->internal_uri().", {$this->internal_charset()} -> {$out_cs}: $str");
-		
-		return $res;
+		return iconv($this->internal_charset(), $out_cs.'//IGNORE', $str);
 	}
 
 	function content($can_use_static = true, $recreate = false)

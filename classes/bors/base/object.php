@@ -923,13 +923,13 @@ class base_object extends base_empty
 			return file_get_contents($this->static_file());
 
 		if($use_static && !$fs && $this->use_temporary_static_file() && config('temporary_file_contents'))
-			cache_static::save($this, str_replace(array(
+			cache_static::save($this, $this->cs_i2o(str_replace(array(
 				'$url',
 				'$title',
 			), array(
 				$this->url($this->page()),
 				$this->title(),
-			), $this->cs_i2o(config('temporary_file_contents'))), 120);
+			), config('temporary_file_contents'))), 120);
 
 
 		$content = $this->direct_content();

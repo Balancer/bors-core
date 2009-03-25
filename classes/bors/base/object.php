@@ -161,6 +161,7 @@ class base_object extends base_empty
 			$GLOBALS['cms']['templates']['data'][$var_name][] = $value;
 	}
 
+	function strict_auto_fields_check() { return config('strict_auto_fields_check'); }
 	function __call($method, $params)
 	{
 		if(preg_match('!^autofield!', $method))
@@ -187,7 +188,7 @@ class base_object extends base_empty
 		$field_storage = "field_{$field}_storage";
 
 		//TODO: сделать более жёсткой проверку на setting
-		if(!$setting && config('strict_auto_fields_check')
+		if(!$setting && $this->strict_auto_fields_check()
 			&& !method_exists($this, $field_storage)
 			&& empty($params[2]) // При установке из ORM Без проверки на тип!
 			&& !$this->autofield($field)
@@ -213,7 +214,7 @@ class base_object extends base_empty
 	function get_property($name)
 	{
 		$p="stb_{$name}";
-		if(!config('strict_auto_fields_check')
+		if(!$this->strict_auto_fields_check()
 				|| @$_SERVER['SVCNAME'] == 'tomcat-6' 
 				|| property_exists($this, $p))
 			return @$this->$p;

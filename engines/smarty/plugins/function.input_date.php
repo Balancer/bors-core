@@ -7,7 +7,7 @@ function smarty_function_input_date($params, &$smarty)
 	extract($params);
 		
 	$obj = $smarty->get_template_vars('current_form_class');
-	
+
 	$date = $obj ? $obj->$name() : NULL;
 	if(!$date && !empty($def))
 		$date = $def;

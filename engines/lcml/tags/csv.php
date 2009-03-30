@@ -46,7 +46,7 @@
 //        if(!empty($params['noborder']))
 //            echo $params['noborder'];
             
-        foreach(split("\n", $txt) as $s)
+        foreach(explode("\n", $txt) as $s)
         {
             if($s = trim($s))
             {

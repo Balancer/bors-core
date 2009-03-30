@@ -1,6 +1,6 @@
 <?php
 
-require_once('engines/lcml.php');
+require_once('engines/lcml/main.php');
 
 class body_html extends base_null
 {

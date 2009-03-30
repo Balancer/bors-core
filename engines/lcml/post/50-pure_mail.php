@@ -2,14 +2,7 @@
     function lcml_pure_mail($txt)
     {
 		$mail_chars = 'a-zA-Z0-9\_\-\+\.';
-		if(config('lcml_email_nomask'))
-	        $txt=preg_replace("!(\s+|^|\])([$mail_chars]+@[$mail_chars]+)(\s+|$|\[|;|\.|:)!ime", "'$1'.mask_email('$2', false).'$3'", $txt);
-		else
-	        $txt=preg_replace("!(\s+|^|\])([$mail_chars]+@[$mail_chars]+)(\s+|$|\[|;|\.|:)!ime", "'$1'.mask_email('$2', true).'$3'", $txt);
-
-//		echo "<xmp>$txt</xmp>";
-
-        return $txt;
+        return preg_replace("!(^|[\s\]])([$mail_chars]+@[$mail_chars]+)([\s\[;\.:]|$)!ime", "'$1'.mask_email('$2', ".(config('lcml_email_nomask') ? 'false' : 'true').").'$3'", $txt);
     }
 
 	function mask_email($email, $img_mask = true)

@@ -3,13 +3,13 @@
     {
 //		exit($GLOBALS['lcml']['params']['uri']);
 	
-		@list($objs, $params) = @split("\n\n", trim($text));
-		$objs = split("\n", $objs);
+		@list($objs, $params) = @explode("\n\n", trim($text));
+		$objs = explode("\n", $objs);
 		
 		$db = new DataBase('AIRBASE');
 		
 		if($params)
-			$params = split("\n", $params);
+			$params = explode("\n", $params);
 		else
 		{
 			foreach($objs as $obj)

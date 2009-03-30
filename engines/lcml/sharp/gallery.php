@@ -11,11 +11,11 @@
 
         $page = $hts->normalize_uri($GLOBALS['main_uri']);
 
-        foreach(split("\n", $txt) as $s)
+        foreach(explode("\n", $txt) as $s)
         {
 //			echo $s;
 		
-			@list($iimg, $description, $copyright, $author, $uri) = @split("\|", $s);
+			@list($iimg, $description, $copyright, $author, $uri) = @explode('|', $s);
 			
 //			echo "($iimg, $description, $copyright, $author, uri=$uri)";
 
@@ -34,7 +34,7 @@
                 $hts->nav_link($page, $img);
             }
 
-            foreach(split(' ','description copyright author') as $p)
+            foreach(explode(' ','description copyright author') as $p)
                 if(!$hts->get_data($img, $p))
                     $hts->get_data($img, $p, $$p);
 

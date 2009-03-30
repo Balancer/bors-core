@@ -16,7 +16,7 @@
         }
         $res.="<script charset=\"UTF-8\">begLogos($w".($h?",":"")."$h)</script><noscript><ul></noscript>\n";
 
-        foreach(split("\n",$txt) as $s)
+        foreach(explode("\n",$txt) as $s)
         {
             preg_match("!^(#logitm\s+)?(.*?)\|(.*?),(.*?),(.*)$!",$s,$m);
             list($name,$url,$img,$desc)=array($m[2],$m[3],$m[4],$m[5]);

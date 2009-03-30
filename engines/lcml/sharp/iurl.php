@@ -4,8 +4,8 @@
         if(!trim($txt))
             return "";
 
-        list($txt,$description) = split("\|",$txt.'|');
-        list($url,$img,$w,$h,$align,$copyright,$idesc) = split(",",$txt.',,,,,,');
+        list($txt,$description) = explode('|',$txt.'|');
+        list($url,$img,$w,$h,$align,$copyright,$idesc) = explode(",",$txt.',,,,,,');
         $align = trim($align);
 
 // #iurl files/kam1-titul300.jpg, files/kam1-titul200.jpg, 200, 303, center

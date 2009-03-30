@@ -1,6 +1,6 @@
 <?php
 
-require_once('engines/lcml.php');
+require_once('engines/lcml/main.php');
 
 class base_page extends base_object
 {

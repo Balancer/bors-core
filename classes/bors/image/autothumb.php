@@ -39,4 +39,6 @@ class bors_image_autothumb extends base_object
 		$thumb = $img->thumbnail($this->geo);
 		return $thumb->pre_show();
 	}
+
+	function body() { return NULL; }
 }

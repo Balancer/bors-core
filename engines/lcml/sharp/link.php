@@ -4,7 +4,7 @@
         if(!trim($txt))
             return "";
 
-        list($url,$image,$title,$description,$author,$date) = split("\|",$txt.'|||||');
+        list($url,$image,$title,$description,$author,$date) = explode('|',$txt.'|||||');
 
         if($image)
             $image="[img $image nohref 200x left]";

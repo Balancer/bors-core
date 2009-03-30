@@ -2,7 +2,7 @@
 
 function lcml_lists($txt)
 {
-	$txt = split("\n", $txt);
+	$txt = explode("\n", $txt);
 
         $sum = array();
         $ul_open = 0;

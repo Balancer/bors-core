@@ -285,7 +285,7 @@
 		require_once("inc/filesystem.php");
 		$params['uri'] = secure_path($params['uri']);
 
-        list($iws, $ihs) = split("x", $params['size']."x");
+        list($iws, $ihs) = explode("x", $params['size']."x");
         if(!$params['width'] && $iws)
             $params['width'] = $iws + 6;
 

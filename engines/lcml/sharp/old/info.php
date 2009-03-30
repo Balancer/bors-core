@@ -2,7 +2,7 @@
     function lst_info($txt) 
     { 
 
-        list($n, $dtm, $login, $subj, $br, $text) = split("\|", $txt."|||||");
+        list($n, $dtm, $login, $subj, $br, $text) = explode("|", $txt."|||||");
 		$user_nick=user_data($login, "nick", $login);
         
         if(!preg_match("!\d\d.\d\d.\d\d\d\d \d\d:\d\d!", $dtm))

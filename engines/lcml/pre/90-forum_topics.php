@@ -1,6 +1,9 @@
 <?
     function lcml_forum_topics($txt)
     {
+    	if(!config('lcml_balancer'))
+    		return $txt;
+    
         //http://forums.airbase.ru/index.php?showtopic=3353
         //http://forums.airbase.ru/index.php?act=ST&f=3&t=25525
         //http://www.airbase.ru/forums/index.php?act=ST&f=3&t=5830&st=105

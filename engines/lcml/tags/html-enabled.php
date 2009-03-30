@@ -1,8 +1,8 @@
 <?php
-    foreach(split(" ","b big i s strong sub sup small u xmp") as $tag)
+    foreach(explode(" ","b big i s strong sub sup small u xmp") as $tag)
 		eval("function lp_$tag(\$txt){return '<$tag>'.lcml(\$txt).'</$tag>';}");
 
-    foreach(split(" ","br hr") as $tag)
+    foreach(explode(" ","br hr") as $tag)
 		eval("function lt_$tag(){return '<$tag />';}");
 
 	function lp_html_iframe($inner, $params)

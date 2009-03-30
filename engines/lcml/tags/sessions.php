@@ -2,7 +2,7 @@
     function lt_session($params)
     {
 		session_start();
-		foreach(split(' ', $params['orig']) as $var)
+		foreach(explode(' ', $params['orig']) as $var)
 			session_register($var);
 		return "";
     }

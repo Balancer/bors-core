@@ -24,7 +24,7 @@ class base_image_thumbnail extends base_image
 //		$this->set_relative_path('cache/'.$this->original->relative_path().'/'.($this->id()%100).'/'.$this->geometry, true);
 		$this->set_relative_path('cache/'.$this->original->relative_path().'/'.$this->geometry, true);
 			
-		foreach(split(' ', 'extension title alt description author_name picture_type') as $key)
+		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
 			$this->set($key, $this->original->$key(), true);
 
 //		$this->set_file_name($this->id().'.'.$this->extension(), true);

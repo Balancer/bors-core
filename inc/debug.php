@@ -2,14 +2,9 @@
 
 function debug_exit($message)
 {
-	echo DBG_GetBacktrace();
+	echo debug_trace();
 	debug_hidden_log('debug_exit', $message);
 	exit($message);
-}
-
-function debug_trace()
-{
-	echo DBG_GetBacktrace();
 }
 
 function debug_in_console() { return empty($_SERVER['HTTP_HOST']); }
@@ -110,7 +105,7 @@ function echolog($message, $level=3)
 		if($level==1)
 		{
 			echo "Backtrace error:<br/ >\n";
-			echo DBG_GetBacktrace();
+			echo debug_trace();
 		}
 
 		if(empty($GLOBALS['echofile']))
@@ -131,7 +126,7 @@ function debug($message,$comment='',$level=3)
 	@fclose($fh);
 }
 
-function DBG_GetBacktrace($skip = 0, $html = NULL)
+function debug_trace($skip = 0, $html = NULL)
 {
 	$MAXSTRLEN = 128;
 
@@ -149,9 +144,9 @@ function DBG_GetBacktrace($skip = 0, $html = NULL)
 		array_shift($traceArr);
 
 	$tabs = 0; //sizeof($traceArr)-1;
-	for($pos=0; $pos<sizeof($traceArr); $pos++)
+	for($pos=0, $stop=sizeof($traceArr); $pos<$stop; $pos++)
 	{
-		$arr = $traceArr[sizeof($traceArr)-$pos-1];
+		$arr = $traceArr[$stop-$pos-1];
 		$indent = '';
 		for ($i=0; $i < $tabs; $i++)
 			$indent .= $html ? '&nbsp;' : ' ';
@@ -159,9 +154,9 @@ function DBG_GetBacktrace($skip = 0, $html = NULL)
 		$Line = (isset($arr['line'])? $arr['line'] : "unknown");
 		$File = (isset($arr['file'])? $arr['file'] : "unknown");
 		if($html)
-			$s .= "$indent".sprintf("<span style=\"font-size:8pt;margin:0;padding:0;color:#999\">%s:%d</span>", $File, $Line);
+			$s .= "$indent<span style=\"font-size:8pt;margin:0;padding:0;color:#999\">{$file}:{$Line}</span>";
 		else
-			$s .= sprintf("[%s:%d]", $File, $Line);
+			$s .= "[{$File}:{$Line}]";
 
 		$s .= "\n$indent";
 
@@ -302,7 +297,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true)
 	.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
 	. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
 	. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
-	. DBG_GetBacktrace(0, false)
+	. debug_trace(0, false)
 	. "\n---------------------------\n\n";
 
 

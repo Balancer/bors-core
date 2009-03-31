@@ -1,5 +1,7 @@
 <?php
 
+require_once('inc/strings.php');
+
 class module_date_calend_month extends base_page
 {
 	function local_data()
@@ -18,6 +20,14 @@ class module_date_calend_month extends base_page
 
 		$calend = array();
 		$base_url = $this->args('base_url');
+		if(preg_match('/^(strftime):(.+)$/', $base_url, $m))
+		{
+			$base_url = false;
+			$time_func = $m[1];
+			$format = $m[2];
+			$begin_of_month = strtotime(date('Y-m-1', $time0));
+		}
+		
 		$Ym = date('Y', $time0).'/'.date('m', $time0);
 
 		if(!($list = $this->args('list')))
@@ -32,7 +42,7 @@ class module_date_calend_month extends base_page
 
 			foreach($counts as $day => $count)
 				$list[$day] = array(
-					'url' => $base_url.$Ym.sprintf('/%02d/', $day), 
+					'url' => $base_url ? $base_url.$Ym.sprintf('/%02d/', $day) : $time_func($format, $begin_of_month + ($day-1)*86400), 
 					'title' => $count .' '. sklon($count, $this->args('sklon')),
 				);
 		}

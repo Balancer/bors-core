@@ -8,29 +8,28 @@ function tr($txt)
 
 function ec($txt)
 {
-//	$charset = config('charset', 'utf-8');
-//	if($charset == 'utf-8')
+	$charset = config('internal_charset', 'utf-8');
+	if($charset == 'utf-8')
 		return $txt;
 
-//	return iconv('utf-8', $charset.'//IGNORE', $txt);
+	return iconv('utf-8', $charset.'//IGNORE', $txt);
 }
 
 function dc($txt, $charset_from = NULL, $charset_to = NULL)
 {
-	return $txt;
-//	if(!$charset_to)
-//		$charset_to = config('charset_internal', 'utf-8');
+	if(!$charset_to)
+		$charset_to = 'utf-8';
 
-//	if(!$charset_from)
-//		$charset_from = config('charset', 'utf-8');
+	if(!$charset_from)
+		$charset_from = config('internal_charset', 'utf-8');
 
-//	if($charset_from == $charset_to)
-//		return $txt;
+	if($charset_from == $charset_to)
+		return $txt;
 
-//	if($charset_to == 'koi8-r')
-//		echo $txt = str_replace(array('«','»'), array('&laquo;','&raquo;'), $txt);
+	if($charset_to == 'koi8-r')
+		echo $txt = str_replace(array('«','»'), array('&laquo;','&raquo;'), $txt);
 
-//	return iconv($charset_from, $charset_to, $txt);
+	return iconv($charset_from, $charset_to, $txt);
 }
 
 function array_iconv($from_charset, $to_charset, $array)
@@ -47,4 +46,12 @@ function array_iconv($from_charset, $to_charset, $array)
 		$array = iconv($from_charset, $to_charset, $array);
 
 	return $array;
+}
+
+function u_lower($text)
+{
+	if(($ics = config('internal_charset')) != ($scs = config('system_charset')))
+		return iconv($scs, $ics.'//IGNORE', strtolower(iconv($ics, $scs.'//IGNORE', $text)));
+	
+	else return strtolower($text);
 }

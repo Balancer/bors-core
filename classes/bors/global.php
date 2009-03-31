@@ -12,6 +12,7 @@ class bors_global extends base_empty
 		if($this->user === false)
 		{
 			$this->user = object_load(config('user_class'), -1);
+
 			if($this->user)
 				$this->user->set_last_visit_time($GLOBALS['now'], true);
 		}

@@ -118,7 +118,7 @@ class bors_lcml
 		$start = 0;
 		$can_modif = true;
 			
-		for($i=0, $stop=strlen($txt); $i<$stop; $i++)
+		for($i=0, $stop=strlen($text); $i<$stop; $i++)
 		{
 			if($mask[$i] == 'X')
 			{

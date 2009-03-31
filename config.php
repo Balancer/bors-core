@@ -121,13 +121,18 @@ function bors_dirs($host = NULL)
 
 	$vhost = '/vhosts/'.$host;
 
-	return array_unique(array(
+	$data = array(
 		BORS_LOCAL.$vhost,
 		BORS_LOCAL,
 		BORS_HOST.$vhost,
 		BORS_HOST,
 		BORS_CORE,
-	));
+	);
+
+	if(defined('BORS_APPEND'))
+		$data = array_merge($data, explode(' ', BORS_APPEND));
+	
+	return array_unique($data);
 }
 
 function bors_include($file, $warn = false)

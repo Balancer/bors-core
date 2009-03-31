@@ -30,7 +30,7 @@ function smarty_function_module($params, &$smarty)
 		$GLOBALS['module_data'][$key] = $val;
 		
 	ob_start();
-	include("modules/$name");
+	bors_include("modules/$name", true);
 	$res = ob_get_contents();
 	ob_end_clean();
 	return $res;

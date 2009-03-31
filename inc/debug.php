@@ -154,7 +154,7 @@ function debug_trace($skip = 0, $html = NULL)
 		$Line = (isset($arr['line'])? $arr['line'] : "unknown");
 		$File = (isset($arr['file'])? $arr['file'] : "unknown");
 		if($html)
-			$s .= "$indent<span style=\"font-size:8pt;margin:0;padding:0;color:#999\">{$file}:{$Line}</span>";
+			$s .= "$indent<span style=\"font-size:8pt;margin:0;padding:0;color:#999\">{$File}:{$Line}</span>";
 		else
 			$s .= "[{$File}:{$Line}]";
 

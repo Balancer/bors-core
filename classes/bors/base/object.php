@@ -257,8 +257,8 @@ class base_object extends base_empty
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();
 
-			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
-				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
+//			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
+//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
 
 			//TODO: продумать систему контроля типов.
 //			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)

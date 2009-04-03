@@ -95,7 +95,7 @@ class bors_lcml
 	function parse($text, $params = array())
 	{
 		$GLOBALS['lcml']['params'] = $this->_params;
-		$GLOBALS['lcml']['params']['html_disable'] = false; // TODO: !!!
+		$GLOBALS['lcml']['params']['html_disable'] = $this->p('html_disable');
 		$GLOBALS['lcml']['cr_type'] = $this->p('cr_type');
 		
 		if($this->_params['level'] == 1)
@@ -171,7 +171,18 @@ function lcml($text, $params = array())
 	return $res;
 }
 
-function lcmlbb($string)
+function lcml_bb($string)
+{
+	return lcml($string, array(
+			'cr_type' => 'save_cr',
+			'forum_type' => 'punbb',
+			'sharp_not_comment' => true,
+			'html_disable' => 'full',
+			'nocache' => true,
+	));
+}
+
+function lcml_bbh($string)
 {
 	return lcml($string, array(
 			'cr_type' => 'save_cr',

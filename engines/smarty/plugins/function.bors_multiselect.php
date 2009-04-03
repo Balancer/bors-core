@@ -29,7 +29,7 @@
 	else
 		$list = object_load($list)->named_list();
 
-	$current = $obj->$name();
+	$current = $obj ? $obj->$name() : array();
 		
 	foreach($list as $id => $iname)
 		$out .= "<option value=\"$id\"".(in_array($id, $current) ? " selected=\"selected\"" : "").">$iname</option>\n";

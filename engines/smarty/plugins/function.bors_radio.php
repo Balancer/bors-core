@@ -43,6 +43,6 @@ function smarty_function_bors_radio($params, &$smarty)
 	foreach($list as $id => $iname)
 	{
 //		echo "$id == $current? -> ".($id == $current)."<br />";
-		echo "<input type=\"radio\" name=\"{$object}".addslashes($name)."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$params />&nbsp;$iname$delim\n";
+		echo "<label><input type=\"radio\" name=\"{$object}".addslashes($name)."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$params />&nbsp;$iname</label>$delim\n";
 	}
 }

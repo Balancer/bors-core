@@ -135,13 +135,22 @@ function bors_dirs($host = NULL)
 	return array_unique($data);
 }
 
-function bors_include($file, $warn = false)
+function bors_include_once($file, $warn = false)
+{
+	return bors_include($file, $warn, true);
+}
+
+function bors_include($file, $warn = false, $once = false)
 {
 	foreach(bors_dirs() as $dir)
 	{
 		if(file_exists($ff = $dir.'/'.$file))
 		{
-			require_once($ff);
+			if($once)
+				require_once($ff);
+			else
+				require($ff);
+
 			return;
 		}
 	}

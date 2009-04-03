@@ -118,7 +118,7 @@
 		@chmod($file, 0666);
 	}
 
-	if(config('debug_timing'))
+	if(config('debug_timing') && is_string($res))
 	{
 		$deb = "<!--\n=== debug-info ===\n"
 			."created = ".date('r')."\n";

@@ -5,12 +5,15 @@ function lcml_html_pre($txt)
 	if(config('lcml_html_nonmutable'))
 	    return $txt;
 
-//		$txt = "html_disable = {$GLOBALS['lcml']['params']['html_disable']} - $txt";
+//	$txt = "html_disable = {$GLOBALS['lcml']['params']['html_disable']} - $txt";
 
 		$txt = preg_replace('/<!\-\-.*?\-\->/', '', $txt);
 
 		if(empty($GLOBALS['lcml']['params']['html_disable']))
 			return $txt;
+
+		if($GLOBALS['lcml']['params']['html_disable'] == 'full')
+			return htmlspecialchars($txt);
 
 		foreach(array('&raquo;' => '»', '&laquo;' => '«', '&mdash;' => '—') as $from => $to)
 			$txt = str_replace($from, $to, $txt);

@@ -1,5 +1,5 @@
 <?php
-function smarty_modifier_lcmlbb($string, $nocache = false)
+function smarty_modifier_lcml_bb($string, $nocache = false)
 {
 	require_once('engines/lcml/main.php');
 
@@ -13,7 +13,7 @@ function smarty_modifier_lcmlbb($string, $nocache = false)
 			'forum_type' => 'punbb',
 //			'forum_base_uri' => 'http://balancer.ru/forum',
 			'sharp_not_comment' => true,
-			'html_disable' => true,
+			'html_disable' => 'full',
 			'nocache' => $nocache,
 //			'uri' => "post://{$cur_post['id']}/",
 	));

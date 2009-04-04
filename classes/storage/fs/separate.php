@@ -8,12 +8,14 @@ class storage_fs_separate extends base_null
 		$path = $url_data['path'];
 		$dir = $url_data['local_path'];
 
-		if(!($found = file_exists($dir.'/.title.txt')))
+		if($found = file_exists($dir.'/.title.txt'))
+			$pfx = '\.';
 		{
 			foreach(bors_dirs() as $base)
 			{
-				if(file_exists(($dir = "{$base}/data/fs-separate{$path}").'.title.txt'))
+				if(file_exists(($dir = "{$base}/data/fs-separate{$path}").'title.txt'))
 				{
+					$pfx = '';
 					$found = true;
 					break;
 				}
@@ -30,7 +32,7 @@ class storage_fs_separate extends base_null
 		$d = dir($dir);
 		while(false !== ($entry = $d->read()))
 		{
-			if(preg_match("!\.\[(\w+)\]\.txt$!", $entry, $m))
+			if(preg_match("!$pfx\[(\w+)\]\.txt$!", $entry, $m))
 			{
 				$data = array();
 				foreach(file("{$dir}/{$entry}") as $s)
@@ -41,7 +43,7 @@ class storage_fs_separate extends base_null
 				else
 					$object->set($m[1], $data, false);
 			}
-			elseif(preg_match("!\.(\w+)\.txt$!", $entry, $m))
+			elseif(preg_match("!$pfx(\w+)\.txt$!", $entry, $m))
 			{
 				$data = $object->cs_f2i(file_get_contents("{$dir}/{$entry}"));
 				if(method_exists($object, $method = "set_{$m[1]}"))

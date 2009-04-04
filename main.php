@@ -103,9 +103,11 @@
 	if($_SERVER['QUERY_STRING'])
 		$uri .= '?'.$_SERVER['QUERY_STRING'];
 
+/**********************************************************************************************************/
 	$res = false;
 	if($object = object_load($uri))
 		$res = bors_object_show($object);
+/**********************************************************************************************************/
 
 	bors()->changed_save();
 
@@ -144,7 +146,7 @@
 		$res = str_replace('</body>', $deb.'</body>', $res);
 	}
 
-	if($res === true)
+	if($res === true || $res == 1)
 		return;
 
 	if($res)

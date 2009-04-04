@@ -1,5 +1,5 @@
 <?php
-function smarty_modifier_lcmlbb($string, $nocache = false)
+function smarty_modifier_lcml_bb($string, $nocache = false)
 {
 	require_once('engines/lcml/main.php');
 

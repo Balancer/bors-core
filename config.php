@@ -33,6 +33,7 @@ function config_mysql_server($db, $default = 'localhost') { return $res = @$GLOB
 
 //config_set('debug_mysql_queries_log', '/var/www/balancer.ru/htdocs/logs/sql-timig.log');
 
+ini_set('session.use_trans_sid', false);
 session_start();
 
 if(file_exists(BORS_LOCAL.'/config-pre.php'))

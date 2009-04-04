@@ -1,10 +1,7 @@
 <?php
 
-    include_once('extentions.php');
-    ext_load(dirname(__FILE__).'/sharp');
-
-    function lcml_sharp($txt, &$mask)
-    {
+function lcml_sharp($txt, &$mask)
+{
         $array = explode("\n", $txt);
 		
 		foreach($array as $s)
@@ -116,10 +113,10 @@
             $txt.="\n<?\$id=\"$::page_data{forum_id}\";\$page=\"$::page\";include(\"/home/airbase/html/inc/show/forum-comments.phtml\");?>\n";
 */        
         return /*"<xmp>$out</xmp>".*/$txt;
-    }
+}
 
-    function lcml_sharp_getset($txt)
-    {
+function lcml_sharp_getset($txt)
+{
         $params=array();
         $key="";
         foreach(explode("\n", $txt) as $s)
@@ -136,4 +133,4 @@
             }
         }
         return $params;
-    }
+}

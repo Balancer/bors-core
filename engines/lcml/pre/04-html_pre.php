@@ -12,11 +12,11 @@ function lcml_html_pre($txt)
 		if(empty($GLOBALS['lcml']['params']['html_disable']))
 			return $txt;
 
-		if($GLOBALS['lcml']['params']['html_disable'] == 'full')
-			return htmlspecialchars($txt);
+//		foreach(array('&raquo;' => '»', '&laquo;' => '«', '&mdash;' => '—') as $from => $to)
+//			$txt = str_replace($from, $to, $txt);
 
-		foreach(array('&raquo;' => '»', '&laquo;' => '«', '&mdash;' => '—') as $from => $to)
-			$txt = str_replace($from, $to, $txt);
+		if($GLOBALS['lcml']['params']['html_disable'] == 'full')
+			return str_replace('&amp;', '&', htmlspecialchars($txt));
 
 //		$txt = preg_replace("!</p>!","", $txt);
 //		$txt = preg_replace("!<p>!","<br /><br />", $txt);

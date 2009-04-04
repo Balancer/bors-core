@@ -35,7 +35,7 @@ function do_clean($file)
 	if($t+600 > $GLOBALS['now'])
 		return;
 
-	debug_hidden_log('static-clean', "{$m[1]}: {$file}", false);
+//	debug_hidden_log('static-clean', "{$m[1]}: {$file}", false);
 	@unlink($file);
 	@rmdir(dirname($file));
 	@rmdir(dirname(dirname($file)));

@@ -32,5 +32,5 @@
 require_once('inc/strings.php');
 function lp_list($text)
 {
-	return preg_replace('/^\[\*\](.*?)$/me', "'<li>'.lcml(stripq('$1')).'</li>'", $text);
+	return save_format(preg_replace('/^\[\*\](.*?)$/me', "'<li>'.lcml(stripq('$1')).'</li>'", $text));
 }

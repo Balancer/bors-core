@@ -8,6 +8,7 @@ $map = array(
 	'/users/do\-login => common_do_login',
 
 	'/users/do\-logout => common_do_logout',
+	'/user/cookie\-hash\-update\.bas\?(\w+) => user_cookieHashUpdate(1)',
 	'/actions/do\-logout/ => common_do_logout',
 
 		'.*/\d{4}/\d{1,2}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',

@@ -114,16 +114,20 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 
 		$class = new $class(NULL);
 
-		$x = $class->has_smart_field($field); // array($r_db, $r_table, $r_id_field, $r_db_field);
-		$table	 = @$x[1];
-		if(empty($table))
-			$class->main_table();
+		if(method_exists($class, 'has_smart_field'))
+		{
+			$x = $class->has_smart_field($field); // array($r_db, $r_table, $r_id_field, $r_db_field);
+//		$x = call_user_func(array($class, 'has_smart_field'), array($field)); // array($r_db, $r_table, $r_id_field, $r_db_field);
+			$table	 = @$x[1];
+			if(empty($table))
+				$class->main_table();
 //		echo "$class: $table, {$x[1]}<br/>";
-		$fields	 = array_smart_expand($class->main_table_fields());
+			$fields	 = array_smart_expand($class->main_table_fields());
+		}
 	}
 
 
-	if(!$field)
+	if(empty($field))
 		return $table;
 
 	$f = $field;

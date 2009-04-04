@@ -1,17 +1,18 @@
-<?
-    // URLs processing
-    // Global vars: none
-    //
-    // (c) Balancer 2003-2004
-    // 07.06.04 0.1.2 исправлена обработка ссылок, "упирающихся" в тэг, например, <li> http://www.ru/<li>
-    // 08.06.04 0.1.3 если сервер теперь не возвращает кодировку, считается, что она - Windows-1251
-    // 28.06.04 0.1.4 исправления выделения ссылок, заканчивающихся [, |, ] и т.п.
-    // 01.08.04 0.1.5 * выкидываются тэги, если они включены в заголовок
-    // 10.08.04 0.1.6 * ограничен размер закачиваемой части (если это поддерживается сервером) первыми четырьмя килобайтами
-    // 09.09.04 0.1.7 + внешние ссылки - класс external. Внутренние - по имени
-    // 11.01.05 0.1.8 * обработка редиректов перенесена на модуль HTTP_Request. Введены таймауты.
-    // 12.01.05 0.1.9 + Введена кодировка по умолчанию и её запрос у сервера.
-    // 17.01.07 0.1.10 * Исправление нового формата HTTP_Request
+<?php
+
+// URLs processing
+// Global vars: none
+//
+// (c) Balancer 2003-2004
+// 07.06.04 0.1.2 исправлена обработка ссылок, "упирающихся" в тэг, например, <li> http://www.ru/<li>
+// 08.06.04 0.1.3 если сервер теперь не возвращает кодировку, считается, что она - Windows-1251
+// 28.06.04 0.1.4 исправления выделения ссылок, заканчивающихся [, |, ] и т.п.
+// 01.08.04 0.1.5 * выкидываются тэги, если они включены в заголовок
+// 10.08.04 0.1.6 * ограничен размер закачиваемой части (если это поддерживается сервером) первыми четырьмя килобайтами
+// 09.09.04 0.1.7 + внешние ссылки - класс external. Внутренние - по имени
+// 11.01.05 0.1.8 * обработка редиректов перенесена на модуль HTTP_Request. Введены таймауты.
+// 12.01.05 0.1.9 + Введена кодировка по умолчанию и её запрос у сервера.
+// 17.01.07 0.1.10 * Исправление нового формата HTTP_Request
 
     // Константы
 
@@ -25,7 +26,7 @@
 
     function lcml_urls_title($url)
     {
-        if(class_exists('Cache'))
+        if(0 && class_exists('Cache'))
         {
             $cache = &new Cache();
             if($cache->get('url_titles-v4', $url))
@@ -57,8 +58,11 @@
 			$query = $m[2];
 		}
 
-		if(preg_match("!/[^/]+\.[^/]+$!", $pure_url) && !preg_match("!\.(html|htm|phtml|shtml|jsp|pl|php|php4|php5|cgi)$!i", $pure_url))
-	    	    return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";
+		if(preg_match("!/[^/]+\.[^/]+$!", $pure_url) 
+				&& !preg_match("!\.(html|htm|phtml|shtml|jsp|pl|php|php4|php5|cgi)$!i", $pure_url)
+				&& !preg_match("!^http://[^/]+/?$!i", $pure_url)
+		)
+			return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";
 
 		if(!$query && class_exists('DataBaseHTS') && config('hts_db'))
         {
@@ -91,7 +95,10 @@
         if(preg_match("!lenta\.ru!", $url))
 			curl_setopt($ch, CURLOPT_PROXY, 'home.balancer.ru:3128');
 		
+		require_once('inc/urls.php');
+
 		$data = trim(curl_exec($ch));
+//		$data = trim(curl_redir_exec($ch));
 
 		$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 //		echo "<xmp>"; print_r($data); echo "</xmp>";

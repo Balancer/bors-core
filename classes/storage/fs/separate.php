@@ -10,6 +10,7 @@ class storage_fs_separate extends base_null
 
 		if($found = file_exists($dir.'/.title.txt'))
 			$pfx = '\.';
+		else
 		{
 			foreach(bors_dirs() as $base)
 			{

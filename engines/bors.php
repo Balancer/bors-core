@@ -152,3 +152,24 @@ function bors_drop_global_caches()
 	unset($GLOBALS['HTS_GLOBAL_DATA']);
 	unset($GLOBALS['bors_data']['cached_objects4']);
 }
+
+function bors_server_var($name, $default)
+{
+	$sv = objects_first('bors_var_db', array('name' => $name, 'order' => '-create_time'));
+	return $sv ? $sv->value() : $default;
+}
+
+function bors_set_server_var($name, $value, $keep_alive = -1)
+{
+	$sv = objects_first('bors_var_db', array('name' => $name, 'order' => '-create_time'));
+
+	if(!$sv)
+	{
+		$sv = object_new_instance('bors_var_db');
+		$sv->set_name($name, true);
+	}
+
+	$sv->set_value($value, true);
+	$sv->set_expire_time($keep_alive > 0 ? time() + $keep_alive : 365*86400, true);
+	$sv->store();
+}

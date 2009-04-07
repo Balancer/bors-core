@@ -1,5 +1,7 @@
 <?php
 
+require_once('inc/strings.php');
+
 function full_time($time)
 {
 	return strftime("%d.%m.%Y %H:%M",$time);

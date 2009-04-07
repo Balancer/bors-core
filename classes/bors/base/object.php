@@ -203,7 +203,7 @@ class base_object extends base_empty
 		
 			if(@$_SERVER['SVCNAME'] != 'tomcat-6')
 				debug_trace();
-			exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
+			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
 		}
 
 		if($setting)

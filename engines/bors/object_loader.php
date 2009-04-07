@@ -40,6 +40,8 @@ function class_include($class_name, $local_path = "")
 
 function __autoload($class_name) { class_include($class_name); }
 
+function bors_object_caches_drop() { unset($GLOBALS['bors_data']['cached_objects4']); }
+
 function &load_cached_object($class_name, $id, $args, &$found = 0)
 {
 	$obj = NULL;

@@ -39,19 +39,25 @@
     	    $text = $res . $more_text;
 	    }
 
-	    $close_tags=split(" ","a i b u s font div span td tr tt table blockquote pre xmp");
 
-    	for($i=0, $count = count($close_tags); $i<$count; $i++)
-	    {
-			$tag = $close_tags[$i];
-        	$n = preg_match_all("!<$tag(\s|>)!i", $text, $m) - preg_match_all("!</$tag(\s|>)!i", $text, $m);
-	        if($n > 0)
-        	    while($n--)
-            	    $text .="</$tag>";
-    	}
-
-	    return "$text";
+	    return bors_close_tags("$text");
 	}
+
+function bors_close_tags($text)
+{
+    $close_tags = explode(" ","a i b u s font div option select span td tr tt table blockquote pre xmp");
+
+   	for($i=0, $count = count($close_tags); $i<$count; $i++)
+    {
+		$tag = $close_tags[$i];
+       	$n = preg_match_all("!<$tag(\s|>)!i", $text, $m) - preg_match_all("!</$tag(\s|>)!i", $text, $m);
+        if($n > 0)
+       	    while($n--)
+           	    $text .="</$tag>";
+   	}
+   	
+   	return $text;
+}
 
 	function to_one_string($s)
 	{

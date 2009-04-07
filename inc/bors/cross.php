@@ -191,7 +191,10 @@ function bors_add_cross_obj($from, $to, $order=0, $dbh = NULL)
 		list($from, $to) = array($to, $from);
 	elseif($from->class_id() == $to->class_id() && $from->id() > $to->id())
 		list($from, $to) = array($to, $from);
-	
+
+	if($from->class_id() == $to->class_id() && $from->id() == $to->id())
+		return;
+
 	$dbh->replace('bors_cross', array(
 		'from_class' => $from->class_id(),
 		'from_id' => $from->id(),
@@ -201,7 +204,7 @@ function bors_add_cross_obj($from, $to, $order=0, $dbh = NULL)
 	));
 }
 
-function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $type_id = 0, $dbh = NULL)
+function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $type_id = 0, $dbh = NULL, $ins_type = 'replace')
 {
 	if(!$dbh)
 		$dbh = &new driver_mysql(config('bors_core_db'));
@@ -211,6 +214,9 @@ function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $typ
 
 	if(!is_numeric($to_class))
 		$to_class = class_name_to_id($to_class);
+
+	if($from_class == $to_class && $from_id == $to_id)
+		return;
 
 	if($from_class > $to_class)
 	{
@@ -223,14 +229,28 @@ function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $typ
 		list($from_id, $to_id) = array($to_id, $from_id);
 	}
 
-	$dbh->replace('bors_cross', array(
-		'type_id' => $type_id,
-		'from_class' => $from_class,
-		'from_id' => $from_id,
-		'to_class' => $to_class,
-		'to_id' => $to_id,
-		'sort_order'	=> $order
-	));
+	if($ins_type == 'ignore')
+	{
+		$dbh->insert_ignore('bors_cross', array(
+			'type_id' => $type_id,
+			'from_class' => $from_class,
+			'from_id' => $from_id,
+			'to_class' => $to_class,
+			'to_id' => $to_id,
+			'sort_order'	=> $order
+		));
+	}
+	else
+	{
+		$dbh->replace('bors_cross', array(
+			'type_id' => $type_id,
+			'from_class' => $from_class,
+			'from_id' => $from_id,
+			'to_class' => $to_class,
+			'to_id' => $to_id,
+			'sort_order'	=> $order
+		));
+	}
 }
 
 function bors_remove_cross_pair($from_class, $from_id, $to_class, $to_id, $dbh = NULL)

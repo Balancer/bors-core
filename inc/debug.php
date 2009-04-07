@@ -2,6 +2,12 @@
 
 function debug_exit($message)
 {
+	if($tmp = @ob_get_contents())
+	{
+		ob_end_clean();
+		echo bors_close_tags($tmp);
+	}
+
 	echo debug_trace();
 	debug_hidden_log('debug_exit', $message);
 	exit($message);

@@ -17,3 +17,5 @@ config_set('temporary_file_contents', file_get_contents(dirname(__FILE__).'/../r
 
 config_set('images_resize_max_width', 2048);
 config_set('images_resize_max_height', 2048);
+
+config_set('internal_charset', 'utf-8');

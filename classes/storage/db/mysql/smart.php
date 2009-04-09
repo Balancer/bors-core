@@ -16,8 +16,6 @@ class storage_db_mysql_smart extends base_null
 		
 		$hash = md5(join('!', array($object->class_name(), $common_where, $only_count)));
 
-		global $dbhs;
-
 		$need_convert = $object->db_charset() != $object->internal_charset();
 
 		foreach($object->fields() as $db => $tables)
@@ -39,10 +37,7 @@ class storage_db_mysql_smart extends base_null
 			if(!$db)
 				bors_exit("Can't load empty DB for $object");
 			
-			if(empty($dbhs[$db]))
-				$dbh = $dbhs[$db] = new driver_mysql($db);
-			else
-				$dbh = $dbhs[$db];
+			$dbh = new driver_mysql($db);
 				
 			$dbhash = $hash.$db;
 			if(empty($stdbms_cache[$dbhash]))

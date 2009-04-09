@@ -42,11 +42,8 @@
     ini_set('log_errors', 'On');
 
     require_once('config.php');
-	
-	ini_set('default_charset', config('default_character_set', 'utf-8'));
-	setlocale(LC_ALL, config('locale', 'ru_RU.UTF-8'));
 
-	bors_init();
+//	bors_init();
 
 	if($client['is_bot'] && config('bot_lavg_limit'))
 	{

@@ -25,8 +25,6 @@ class DataBase extends base_object
 			else
 				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3, config('mysql_renew_links'));
 
-//			echo "'{$this->x1}, {$this->x2}, {$this->x3}' -> {$this->dbh}<br />";
-
 			if(!$this->dbh && config('mysql_try_reconnect'))
 				sleep(5);
 
@@ -46,6 +44,21 @@ class DataBase extends base_object
 		{
 			echolog(__FILE__.':'.__LINE__." Could not select database '{$this->db_name}' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 			bors_exit();
+		}
+
+		if($c = config('mysql_set_character_set'))
+		{
+			debug_timing_start('mysql_set_character_set');
+			$this->query("SET CHARACTER SET '$c'");
+			debug_timing_stop('mysql_set_character_set');
+		}
+
+		if($c = config('mysql_set_names_charset'))
+		{
+			debug_timing_start('mysql_set_names');
+			mysql_set_charset($c, $this->dbh);
+			$this->query("SET NAMES '$c'");
+			debug_timing_stop('mysql_set_names');
 		}
 	}
 
@@ -94,23 +107,6 @@ class DataBase extends base_object
 			$this->reconnect();
 		}
 
-
-		if(config('mysql_set_character_set'))
-		{
-			debug_timing_start('mysql_set_character_set');
-			mysql_query('SET CHARACTER SET '.config('mysql_set_character_set'), $this->dbh)
-			or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-			debug_timing_stop('mysql_set_character_set');
-		}
-
-		if(config('mysql_set_names_charset'))
-		{
-			debug_timing_start('mysql_set_names');
-			mysql_query('SET NAMES '.config('mysql_set_names_charset'), $this->dbh)
-			or die(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />");
-			debug_timing_stop('mysql_set_names');
-		}
-
 		if(!$this->dbh)
 			debug_exit(" NULL DBH ".mysql_errno().": ".mysql_error()."<BR />");
 	}
@@ -121,7 +117,7 @@ class DataBase extends base_object
 		if(!$query)
 			return;
 
-		if(!$this->dbh || time()-$this->start_time > 10)
+		if(!$this->dbh || time() - $this->start_time > 10)
 			$this->reconnect();
 
 		debug_count_inc('mysql_queries');
@@ -158,7 +154,7 @@ class DataBase extends base_object
 		
 		if(!$ignore_error)
 		{
-			debug_trace();
+			echo debug_trace();
 			bors_exit("MySQL Error: driver class=".get_class($this)."<br>\n"
 				."now=".date('r')."<br>\n"
 				."dbh={$this->dbh}; <br/>\n"
@@ -513,9 +509,10 @@ class DataBase extends base_object
 	static function instance($db = NULL) { return new DataBase($db); }
 	function close()
 	{
-//		if($this->dbh)
-//			mysql_close($this->dbh);
-		
+		if(!$this->dbh)
+			return;
+
+		mysql_close($this->dbh);
 		$this->dbh = NULL; 
 	}
 

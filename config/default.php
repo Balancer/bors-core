@@ -18,4 +18,8 @@ config_set('temporary_file_contents', file_get_contents(dirname(__FILE__).'/../r
 config_set('images_resize_max_width', 2048);
 config_set('images_resize_max_height', 2048);
 
+// Кодировки
 config_set('internal_charset', 'utf-8');
+config_set('db_charset', 'utf-8');
+config_set('default_character_set', 'utf-8');
+config_set('locale', 'ru_RU.UTF-8');

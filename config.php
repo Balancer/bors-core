@@ -96,6 +96,9 @@ $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
 
 function bors_init()
 {
+	ini_set('default_charset', config('default_character_set'));
+	setlocale(LC_ALL, config('locale'));
+
 	if(config('memcached'))
 	{
 		$memcache = &new Memcache;

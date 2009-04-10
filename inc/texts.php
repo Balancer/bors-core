@@ -59,20 +59,34 @@ function bors_close_tags($text)
    	return $text;
 }
 
-	function to_one_string($s)
-	{
-	    if(sizeof($s)>1) $s=join("\n",$s);
-    	$s=str_replace("\n","<br />",$s);
-	    $s=str_replace("\|","&#124;",$s);
-    	$s=str_replace("\r","",$s);
+function to_one_string($s)
+{
+    if(sizeof($s)>1) 
+    	$s=join("\n",$s);
 
-	    return $s;
-	}
+   	$s=str_replace("\n","<br />",$s);
+    $s=str_replace("\|","&#124;",$s);
+   	$s=str_replace("\r","",$s);
 
-	function quote_fix($text)
-	{
-		if(!empty($GLOBALS['bors_data']['config']['gpc']) && preg_match("!\\\\!", $text))
-			return stripslashes($text);
+    return $s;
+}
 
-		return $text;
-	}
+function quote_fix($text)
+{
+	if(!empty($GLOBALS['bors_data']['config']['gpc']) && preg_match("!\\\\!", $text))
+		return stripslashes($text);
+
+	return $text;
+}
+
+function bors_text_clear($text)
+{
+	$text = preg_replace('/&\w+;/', ' ', $text);
+	$text = preg_replace('/&#\d+;/', ' ', $text);
+	$text = str_replace(
+		array('«','»','№'), 
+		array(' ',' ',' '),
+		$text);
+	$text = preg_replace("![\x01-/ :-@ [-` {-~]!x", ' ', $text);
+	return trim(strtolower(preg_replace('/\s{2,}/', ' ', $text)));
+}

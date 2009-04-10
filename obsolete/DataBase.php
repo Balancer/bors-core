@@ -512,7 +512,7 @@ class DataBase extends base_object
 		if(!$this->dbh)
 			return;
 
-		mysql_close($this->dbh);
+//		mysql_close($this->dbh);
 		$this->dbh = NULL; 
 	}
 

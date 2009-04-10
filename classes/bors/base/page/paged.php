@@ -6,6 +6,15 @@ class base_page_paged extends base_page
 	function order() { return '-modify_time'; }
 	function group() { return false; }
 
+	function class_file()
+	{
+		$pcf = parent::class_file();
+		if(!file_exists(str_replace('.php', '.html', $pcf)))
+			return __FILE__;
+
+		return $pcf;
+	}
+
 	private function _where($where = array())
 	{
 		$where = array_merge($this->where(), $where);

@@ -200,7 +200,9 @@ function bors_add_cross_obj($from, $to, $order=0, $dbh = NULL)
 		'from_id' => $from->id(),
 		'to_class' => $to->class_id(),
 		'to_id' => $to->id(),
-		'sort_order'	=> $order
+		'sort_order'	=> $order,
+		'create_time' => time(),
+		'modify_time' => time(),
 	));
 }
 
@@ -237,7 +239,9 @@ function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $typ
 			'from_id' => $from_id,
 			'to_class' => $to_class,
 			'to_id' => $to_id,
-			'sort_order'	=> $order
+			'sort_order'	=> $order,
+			'create_time' => time(),
+			'modify_time' => time(),
 		));
 	}
 	else
@@ -248,7 +252,9 @@ function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $typ
 			'from_id' => $from_id,
 			'to_class' => $to_class,
 			'to_id' => $to_id,
-			'sort_order'	=> $order
+			'sort_order'	=> $order,
+			'create_time' => time(),
+			'modify_time' => time(),
 		));
 	}
 }

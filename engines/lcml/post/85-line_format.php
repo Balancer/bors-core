@@ -16,7 +16,8 @@
             case 'none':
                 break;
             case 'empty_as_para':
-                $txt = preg_split("!\n\n+!", $txt);
+                $txt = preg_split("!\n{2,}!", $txt);
+//				print_d($txt);
 				
 				if(sizeof($txt) > 1)
 					$txt = "<p>".join("</p>\n\n<p>", $txt)."</p>";

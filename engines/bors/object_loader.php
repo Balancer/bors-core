@@ -456,7 +456,6 @@ function object_init($class_name, $object_id, $args = array())
 
 	$obj->_configure();
 
-
 	if(!$obj->loaded())
 		$obj->init();
 

@@ -6,7 +6,7 @@
 
     function lp_li($text)
     {
-        return "<li>".lcml($text)."</li>";
+        return "<li>".lcml(" $text ")."</li>";
     }
 
     function lp_ul($text, $param)

@@ -94,6 +94,8 @@ class bors_lcml
 
 	function parse($text, $params = array())
 	{
+		$text = str_replace("\r", '', $text);
+	
 		$GLOBALS['lcml']['params'] = $this->_params;
 		$GLOBALS['lcml']['params']['html_disable'] = $this->p('html_disable');
 		$GLOBALS['lcml']['cr_type'] = $this->p('cr_type');

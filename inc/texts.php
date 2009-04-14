@@ -88,5 +88,5 @@ function bors_text_clear($text)
 		array(' ',' ',' '),
 		$text);
 	$text = preg_replace("![\x01-/ :-@ [-` {-~]!x", ' ', $text);
-	return trim(strtolower(preg_replace('/\s{2,}/', ' ', $text)));
+	return ' '.trim(strtolower(preg_replace('/\s{2,}/', ' ', $text))).' ';
 }

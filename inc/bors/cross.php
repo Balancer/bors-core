@@ -206,7 +206,7 @@ function bors_add_cross_obj($from, $to, $order=0, $dbh = NULL)
 	));
 }
 
-function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $type_id = 0, $dbh = NULL, $ins_type = 'replace')
+function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $type_id = 0, $dbh = NULL, $ins_type = 'replace', $owner_id = NULL)
 {
 	if(!$dbh)
 		$dbh = &new driver_mysql(config('bors_core_db'));
@@ -231,32 +231,22 @@ function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $typ
 		list($from_id, $to_id) = array($to_id, $from_id);
 	}
 
+	$data = array(
+		'type_id' => $type_id,
+		'from_class' => $from_class,
+		'from_id' => $from_id,
+		'to_class' => $to_class,
+		'to_id' => $to_id,
+		'sort_order'	=> $order,
+		'create_time' => time(),
+		'modify_time' => time(),
+		'owner_id' => $owner_id,
+	);
+
 	if($ins_type == 'ignore')
-	{
-		$dbh->insert_ignore('bors_cross', array(
-			'type_id' => $type_id,
-			'from_class' => $from_class,
-			'from_id' => $from_id,
-			'to_class' => $to_class,
-			'to_id' => $to_id,
-			'sort_order'	=> $order,
-			'create_time' => time(),
-			'modify_time' => time(),
-		));
-	}
+		$dbh->insert_ignore('bors_cross', $data);
 	else
-	{
-		$dbh->replace('bors_cross', array(
-			'type_id' => $type_id,
-			'from_class' => $from_class,
-			'from_id' => $from_id,
-			'to_class' => $to_class,
-			'to_id' => $to_id,
-			'sort_order'	=> $order,
-			'create_time' => time(),
-			'modify_time' => time(),
-		));
-	}
+		$dbh->replace('bors_cross', $data);
 }
 
 function bors_remove_cross_pair($from_class, $from_id, $to_class, $to_id, $dbh = NULL)

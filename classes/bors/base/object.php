@@ -577,7 +577,6 @@ class base_object extends base_empty
 	function data_provider() { return NULL; }
 	function data_providers() { return array(); }
 
-
 	var $_autofields;
 	function autofield($field)
 	{

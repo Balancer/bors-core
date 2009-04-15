@@ -1,5 +1,6 @@
 <html>
 <head><title>{$title}</title></head>
+<link rel="stylesheet" type="text/css" href="/bors-shared/css/bors/core.css" />
 <body>
 <small>{module class="nav_top" id=$this}</small>
 <div align="right">{$description}</div>
@@ -9,7 +10,7 @@
 {if $access}
 <hr />
 <small><center> 
-	edit <a href="{$main_uri}?edit">page</a> | 
+	edit <a href="{$main_uri}?edit">page</a> |
 	<a href="{$main_uri}?edit-data">data</a> |
 	<a href="{$main_uri}?nav_edit">navigation</a>
 </center></small>

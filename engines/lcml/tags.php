@@ -2,7 +2,7 @@
     function lcml_tags($txt, &$mask)
     {
 		$taglist = config('lcml_tags_enabled');
-        
+
         $end = 0;
 		$next_end = -1;
 		$start = time();
@@ -52,16 +52,27 @@
                                 $part1 = substr($txt, 0, $pos);
 								$part2 = substr($txt, $end, $next_pos-$end);
                                 $part3 = substr($txt, $next_end);
-                                $part2 = $cfunc($part2, params($params));
-                                $txt = $part1.$part2.$part3;
+                                $tag_params = params($params);
+                                $part2 = $cfunc($part2, $tag_params);
+
+                                if(!empty($tag_params['skip_around_cr']))
+                                {
+									$part1 = rtrim($part1);
+                                	$part3 = ltrim($part3);
+                                	$pos = strlen($part1);
+//                                	$next_end = $pos + strlen($part2);
+                                }
+
 								$mask = substr($mask, 0, $pos).str_repeat('X',strlen($part2)).substr($mask, $next_end);
+
+                                $txt = $part1.$part2.$part3;
 // 				                echo "<xmp>tag=$func,p1='$part1'\np2='$part2'\np3='$part3'\n,end=$end,nextpos=$next_pos</xmp>";
                                 $next_pos = false;
                                 $pos = strlen($part1.$part2); //с конца изменённого фрагмента
                             }
                         }
                     } while($next_pos !== false);
-					
+
                     $end  = $pos; // В другой раз проверяем с этого же места
                     continue;
                 }
@@ -73,7 +84,7 @@
 					)
                 {
 					$func = "lt_$func";
-					
+
                     if(!empty($outfile))
                     {
                         $fh = fopen($GLOBALS['cms']['base_dir']."/funcs/lcml.log","at");

@@ -24,6 +24,8 @@ $map = array(
 		'/admin/edit\-smart/ => bors_admin_edit_smart',
 		'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
+	'/admin/ => bors_ext_admin_main',
+
 	'/admin/tools/cache_drop/\?object=(.*) => bors_admin_tools_clean(1)',
 	'/admin/tools/set\-sort\-order/ => bors_admin_tools_setsortorder',
 	'/admin/tools/set\-default/ => bors_admin_tools_setdefault',

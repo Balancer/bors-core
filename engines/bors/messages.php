@@ -80,19 +80,20 @@ function bors_message_tpl($template, $obj, $params)
 	$redir = defval($params, 'redirect', false);
 	$title = defval($params, 'title', ec('Ошибка!'));
 	$timeout = defval($params, 'timeout', -1);
+	$global_template = defval($params, 'template', config('default_template'));
 	
 	$params['this'] = &$obj;
 	$params['template_dir'] = $obj->class_dir();
 	
 	$body = template_assign_data($template, $params);
 
-//	print_d($params); exit($body);
+	$params['title'] = $title;
+	$params['source'] = $body;
+	$params['body'] = $body;
 
-	$GLOBALS['page_data']['title'] = $title;
-	$GLOBALS['page_data']['source'] = $body;
+	echo $message = template_assign_data($global_template, $params);
 
-//	show_page(@$GLOBALS['main_uri']);
-	echo iconv($ics, $ocs, $body);
+//	echo iconv($ics, $ocs, $message);
 
 	if($redir === true)
 	{

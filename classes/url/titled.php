@@ -29,6 +29,7 @@ class url_titled extends url_base
 			$uri_name = $obj->uri_name();
 			if(strlen($uri_name) > 3)
 				$uri_name .= '-';
+
 			$infix = $uri_name.$obj->id();
 			
 			$prefix .= $infix;

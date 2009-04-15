@@ -84,7 +84,7 @@ class bors_lcml
 
 			$text = $fn($text);
 
-			if(!$text && $original)
+			if(!trim($text) && trim($original))
 				debug_hidden_log('lcml-error', "Drop on $fn convert '$original'");
 		}
 

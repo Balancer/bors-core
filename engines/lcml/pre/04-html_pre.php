@@ -9,14 +9,19 @@ function lcml_html_pre($txt)
 
 		$txt = preg_replace('/<!\-\-.*?\-\->/', '', $txt);
 
+//		print_d($GLOBALS['lcml']['params']['html_disable']);
 		if(empty($GLOBALS['lcml']['params']['html_disable']))
 			return $txt;
 
 //		foreach(array('&raquo;' => '»', '&laquo;' => '«', '&mdash;' => '—') as $from => $to)
 //			$txt = str_replace($from, $to, $txt);
 
-		if($GLOBALS['lcml']['params']['html_disable'] == 'full')
+//		echo "***:{$GLOBALS['lcml']['params']['html_disable']}";
+
+		if("".$GLOBALS['lcml']['params']['html_disable'] == 'full')
 			return str_replace('&amp;', '&', htmlspecialchars($txt));
+
+//		echo "***";
 
 //		$txt = preg_replace("!</p>!","", $txt);
 //		$txt = preg_replace("!<p>!","<br /><br />", $txt);

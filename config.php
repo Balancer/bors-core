@@ -31,8 +31,6 @@ function config_mysql_login($db, $default = '') { return $res = @$GLOBALS['cms']
 function config_mysql_password($db, $default = 'root') { return $res = @$GLOBALS['cms']['mysql'][$db]['password'] ? $res : $default; }
 function config_mysql_server($db, $default = 'localhost') { return $res = @$GLOBALS['cms']['mysql'][$db]['server'] ? $res : $default; }
 
-//config_set('debug_mysql_queries_log', '/var/www/balancer.ru/htdocs/logs/sql-timig.log');
-
 ini_set('session.use_trans_sid', false);
 session_start();
 

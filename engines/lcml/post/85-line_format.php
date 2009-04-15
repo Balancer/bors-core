@@ -2,8 +2,6 @@
 
     function lcml_line_format($txt)
     {
-		$txt = preg_replace("!\n$!", '', $txt);
-	
         if(empty($GLOBALS['lcml']['cr_type']))
             $cr_type = 'empty_as_para';
         else

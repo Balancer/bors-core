@@ -13,3 +13,9 @@
 3. BORS_LOCAL/
 4. BORS_CORE/vhosts/<hostname>/
 5. BORS_CORE/
+
+=== Именования групп ===
+
+bors_core - ядро системы
+bors_common - общие расширения
+bors_ext - расширения

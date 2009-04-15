@@ -1,33 +1,35 @@
-<?
-	function lt_li($text)
-	{
-		return "<li />";
-	}
+<?php
 
-    function lp_li($text)
-    {
-        return "<li>".lcml(" $text ")."</li>";
-    }
+function lt_li($text)
+{
+	return "<li />";
+}
 
-    function lp_ul($text, $param)
-    {
-		if($param['orig'])
-			$type = " type=\"".htmlspecialchars($param['orig'])."\"";
-		else
-			$type = "";
+function lp_li($text)
+{
+	return "<li>".lcml($text)."</li>";
+}
 
-        return "<ul$type>".lcml($text)."</ul>";
-    }
+function lp_ul($text, &$param)
+{
+	if($param['orig'])
+		$type = " type=\"".htmlspecialchars($param['orig'])."\"";
+	else
+		$type = "";
 
-    function lp_ol($text, $param)
-    {
-		if($param['orig'])
-			$type = " type=\"".htmlspecialchars($param['orig'])."\"";
-		else
-			$type = "";
-			
-        return "<ol$type>".lcml($text)."</ol>";
-    }
+	$param['skip_around_cr'] = true;
+	return "<ul$type>".lcml($text)."</ul>\n";
+}
+
+function lp_ol($text, $param)
+{
+	if($param['orig'])
+		$type = " type=\"".htmlspecialchars($param['orig'])."\"";
+	else
+		$type = "";
+
+	return "<ol$type>".lcml($text)."</ol>\n";
+}
 
 require_once('inc/strings.php');
 function lp_list($text)

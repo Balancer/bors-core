@@ -23,7 +23,7 @@ class bors_lcml
 	{
 		if(!empty(bors_lcml::$data))
 			return;
-		
+
 		bors_lcml::$data['pre_functions'] = array();
 		bors_lcml::actions_load('pre', bors_lcml::$data['pre_functions']);
 
@@ -50,7 +50,7 @@ class bors_lcml
 //		echo "Load $dir<br/>\n";
         if(!is_dir($dir))
 			return;
-        
+
         $files = array();
 
         if($dh = opendir($dir)) 
@@ -59,7 +59,7 @@ class bors_lcml
                     $files[] = $file;
 
         closedir($dh);
-        
+
         sort($files);
 
         foreach($files as $file) 
@@ -69,7 +69,7 @@ class bors_lcml
                 include_once("$dir/$file");
 
                 $fn = "lcml_".substr($file, 3, -4);
-                
+
                 if(function_exists($fn))
 					$functions[] = $fn;
             }

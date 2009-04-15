@@ -42,13 +42,13 @@ class base_page extends base_object
 		$sort = @$_GET['s'];
 		if(!$sort)
 			$sort = $t;
-		
+
 		$r = intval(@$_GET['r']);
 		if($t == $sort)
 			$r = ($r ? 0 : 1);
 		else
 			$r = 0;
-			
+
 		return "s={$t}" . ($r ? '&r=1' : '');
 	}
 
@@ -57,7 +57,7 @@ class base_page extends base_object
 	{
 		if($this->_total_pages === false)
 			$this->_total_pages = ($total = $this->total_items()) >= 0 ? intval(($total - 1)/$this->items_per_page()) + 1 : 1;
-		
+
 		return $this->_total_pages;
 	}
 
@@ -70,7 +70,7 @@ class base_page extends base_object
 	{
 		if($this->stb_body !== false)
 			return $this->stb_body;
-	
+
 		if($body_engine = $this->body_engine())
 		{
 			$be = class_load($body_engine);
@@ -79,22 +79,22 @@ class base_page extends base_object
 
 			return $this->stb_body = $be->body($this);
 		}
-			
+
 		global $me;
-		
+
 		if($this->need_access_level() > 1 && $this->need_access_level() > $me->get("level"))
 		{
 			require_once("funcs/modules/messages.php");
 			return error_message(ec("У Вас недостаточный уровень доступа для этой страницы. Ваш уровень ").$me->get("level").ec(", требуется ").$this->need_access_level());
 		}
-			
+
 		if(!$this->cache_life_time())
 			return $this->cacheable_body();
-			
+
 		$ch = &new Cache();
-			
+
 		$drop_cache = $this->cache_life_time() || !empty($_GET['drop_cache']);
-			
+
 		if($ch->get('bors-cached-body-v18', $this->internal_uri()) && !$drop_cache)
 		{
 			$add = "\n<!-- cached; create=".strftime("%d.%m.%Y %H:%M", $ch->create_time)."; expire=".strftime("%d.%m.%Y %H:%M", $ch->expire_time)." -->";
@@ -105,23 +105,23 @@ class base_page extends base_object
 
 		// Зарегистрируем сохранённый кеш в группах кеша, чтобы можно было чистить
 		// при обновлении данных, от которых зависит наш контент
-			
+
 		foreach(explode(' ', $this->cache_groups()) as $group)
 			if($group)
 				cache_group::register($group, $this);
 
 		return $this->stb_body = $content;
 	}
-		
+
 	function cacheable_body()
 	{
 		$data = array();
-		
+
 		//TODO: Вычистить все _queries.
 		if($qlist = $this->_queries())
 		{
 			$db = new DataBase($this->main_db());
-			
+
 			foreach($qlist as $qname => $q)
 			{
 				$cache = false;

@@ -4,9 +4,14 @@ function lcml_sharp($txt, &$mask)
 {
         $array = explode("\n", $txt);
 		
+		$pos = 0;
 		foreach($array as $s)
-			$mask_array[] = str_repeat('.', strlen($s));
-		
+		{
+			$l = strlen($s);
+			$mask_array[] = substr($mask, $pos, $l+1); //str_repeat('.', strlen($s));
+			$pos += $l + 1;
+		}
+
         $in_pair=0;
         $changed=0;
         $start=-1;
@@ -102,7 +107,7 @@ function lcml_sharp($txt, &$mask)
         }
         
         $txt  = join("\n", $array);
-        $mask = join(".",  $mask_array);
+        $mask = join("",  $mask_array);
 
 //        if($changed)
 //		{

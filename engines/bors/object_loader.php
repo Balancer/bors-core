@@ -418,6 +418,7 @@ function class_load_by_vhosts_url($url)
 function object_init($class_name, $object_id, $args = array())
 {
 //	if(config('debug_class_search_track'))
+//	if(debug_is_balancer())
 //		echo "<small>object_init($class_name, $object_id,...)</small><br/>\n";
 
 	// В этом методе нельзя использовать debug_test()!!!
@@ -441,7 +442,7 @@ function object_init($class_name, $object_id, $args = array())
 		$obj = &new $class_name($object_id);
 		$obj->set_class_file($class_file);
 	}
-	
+
 	unset($args['local_path']);
 	unset($args['no_load_cache']);
 

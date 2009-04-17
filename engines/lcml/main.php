@@ -95,31 +95,27 @@ class bors_lcml
 	function parse($text, $params = array())
 	{
 		$text = str_replace("\r", '', $text);
-	
+
 		$GLOBALS['lcml']['params'] = $this->_params;
 		$GLOBALS['lcml']['params']['html_disable'] = $this->p('html_disable');
 		$GLOBALS['lcml']['cr_type'] = $this->p('cr_type');
-		
+
 		if($this->_params['level'] == 1)
 			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text);
 
 		$mask = str_repeat('.', strlen($text));
-		
-		$text = lcml_tags($text, $mask);
 
+		$text = lcml_tags($text, $mask);
 		if(config('lcml_sharp_markup'))
 		{
 			require_once('engines/lcml/sharp.php');
 			$text = lcml_sharp($text, $mask);
 		}
 
-		if($this->_params['level'] != 1)
-			return $text;
-
 		$result = "";
 		$start = 0;
 		$can_modif = true;
-			
+
 		for($i=0, $stop=strlen($text); $i<$stop; $i++)
 		{
 			if($mask[$i] == 'X')
@@ -128,7 +124,7 @@ class bors_lcml
 				{
 					if($start != $i)
 						$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], substr($text, $start, $i-$start));
-						
+
 					$start = $i;
 					$can_modif = false;
 				}
@@ -148,13 +144,14 @@ class bors_lcml
 		{
 			if($can_modif)
 				$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], substr($text, $start, strlen($text) - $start));
-			else				
+			else
 				$result .= substr($text, $start, strlen($text) - $start);
 		}
 
 		$text = $result;
 
-		$text = $this->functions_do(bors_lcml::$data['post_whole_functions'], $text);
+		if($this->_params['level'] == 1)
+			$text = $this->functions_do(bors_lcml::$data['post_whole_functions'], $text);
 
 		return $text;
 	}
@@ -169,7 +166,7 @@ function lcml($text, $params = array())
 	$lc->set_p('level', $lc->p('level')+1);
 	$res = $lc->parse($text);
 	$lc->set_p('level', $lc->p('level')-1);
-	
+
 	return $res;
 }
 

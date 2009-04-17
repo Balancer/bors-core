@@ -11,7 +11,7 @@ function lcml_smilies($txt)
 {
 	if(!config('smilies_dir'))
 		return $txt;
-	
+
 	$txt = lcml_smilies_by_list($txt);
 	$txt = lcml_smilies_by_files(config('smilies_dir'), $txt);
 
@@ -21,10 +21,10 @@ function lcml_smilies($txt)
 function lcml_smilies_by_list(&$txt)
 {
 	global $smilies_list;
-	
+
 	if(empty($smilies_list))
 		$smilies_list = file(config('smilies_dir')."/list.txt");
-	
+
 	foreach($smilies_list as $x)
 	{
 		@list($code, $file) = explode(' ', chop($x));
@@ -33,7 +33,7 @@ function lcml_smilies_by_list(&$txt)
 		else
 			$txt = preg_replace('/(?<!"):$code:(?!")/', "<img src=\"".config('smilies_url')."/$code.gif\" alt=\":$code:\" title=\":$code:\" class=\"smile\" />", $txt);
 	}
-	
+
 	return $txt;
 }
 

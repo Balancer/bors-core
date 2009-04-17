@@ -992,4 +992,7 @@ class base_object extends base_empty
 
 	function empty_id_handler() { return NULL; }
 	function auto_assign_all_fields() { return false; }
+
+	function link_time1() { return NULL; }
+	function link_time2() { return NULL; }
 }

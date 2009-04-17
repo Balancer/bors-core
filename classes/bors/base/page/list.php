@@ -3,7 +3,7 @@
 class base_page_list extends base_page
 {
 	function where() { return array(); }
-	function order() { return 'create_time'; }
+	function order() { return '-create_time'; }
 	function group() { return false; }
 
 	private function _where($where = array())

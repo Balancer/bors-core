@@ -13,16 +13,7 @@
         {
             case 'none':
                 break;
-            case 'empty_as_para':
-                $txt = preg_split("!\n{2,}!", $txt);
-//				print_d($txt);
-				
-				if(sizeof($txt) > 1)
-					$txt = "<p>".join("</p>\n\n<p>", $txt)."</p>";
-				else
-					$txt = $txt[0];
-                break;
-            case 'string_as_para':  
+            case 'string_as_para':
                 $txt = preg_replace("!(^|\n)!", "\n<p>", $txt); 
                 break;
             case 'dblstring_as_para':
@@ -31,7 +22,17 @@
                 $txt = preg_replace("!\n!", " ", $txt);
                 break;
             case 'save_cr':
+            case 'cr_as_br':
                 $txt = preg_replace("!\n!", "<br />\n", $txt);
+                break;
+            case 'empty_as_para':
+            default:
+                $txt = preg_split("!\n{2,}!", $txt);
+
+				if(sizeof($txt) > 1)
+					$txt = "<p>".join("</p>\n\n<p>", $txt)."</p>";
+				else
+					$txt = $txt[0];
                 break;
         }
 

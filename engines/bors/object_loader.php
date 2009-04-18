@@ -42,7 +42,7 @@ function __autoload($class_name) { class_include($class_name); }
 
 function bors_object_caches_drop() { unset($GLOBALS['bors_data']['cached_objects4']); }
 
-function &load_cached_object($class_name, $id, $args, &$found = 0)
+function &load_cached_object($class_name, $id, $args, &$found=0)
 {
 	$obj = NULL;
 
@@ -91,6 +91,14 @@ function &load_cached_object($class_name, $id, $args, &$found = 0)
 }
 
 function delete_cached_object($object) { return save_cached_object($object, true); }
+
+function delete_cached_object_by_id($class_name, $object_id)
+{
+	$memcache = config('memcached_instance');
+	$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$object_id;
+	@$memcache->delete($hash);
+	unset($GLOBALS['bors_data']['cached_objects4'][$class_name][$object_id]);
+}
 
 function save_cached_object(&$object, $delete = false)
 {
@@ -435,10 +443,19 @@ function object_init($class_name, $object_id, $args = array())
 
 	$found = 0;
 	if(empty($args['no_load_cache']))
+	{
 		$obj = &load_cached_object($class_name, $object_id, $args, $found);
-	
+		if($obj && ($obj->id() != $object_id))
+		{
+			$found = 0;
+			delete_cached_object_by_id($class_name, $object_id);
+			$obj = NULL;
+		}
+	}
+
 	if(!$obj)
 	{
+		$found = 0;
 		$obj = &new $class_name($object_id);
 		$obj->set_class_file($class_file);
 	}
@@ -462,10 +479,10 @@ function object_init($class_name, $object_id, $args = array())
 
 	if(/*($object_id || $url) && */!$obj->can_be_empty() && !$obj->loaded())
 		return NULL;
-	
+		
 	if($found != 1 && $obj->can_cached())
 		save_cached_object($obj);
-		
+
 	return $obj;
 }
 

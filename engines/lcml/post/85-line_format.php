@@ -7,7 +7,7 @@
         else
             $cr_type = $GLOBALS['lcml']['cr_type'];
 
-//        $txt .= "===$cr_type==<xmp>$txt</xmp>==";
+//		$txt .= "===$cr_type==<xmp>$txt</xmp>==";
 
         switch($cr_type)
         {
@@ -30,7 +30,7 @@
                 $txt = preg_split("!\n{2,}!", $txt);
 
 				if(sizeof($txt) > 1)
-					$txt = "<p>".join("</p>\n\n<p>", $txt)."</p>";
+					$txt = join("</p>\n\n<p>", $txt);
 				else
 					$txt = $txt[0];
                 break;

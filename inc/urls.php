@@ -93,8 +93,22 @@ function url_parse($url)
 	if(empty($data['root']) && file_exists($_SERVER['DOCUMENT_ROOT'].$data['path']))
 		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
 
+	$data['local_path'] = NULL;
 	if($data['local'] = !empty ($data['root']))
-		$data['local_path'] = $data['root'].preg_replace('!^http://'.preg_quote($host).'!', '', $url);
+	{
+		$relative_path = preg_replace('!^http://'.preg_quote($host).'!', '', $url);
+/*		if($relative_path[0] != '/')
+		{
+			$base_relative_path = preg_replace('!^http://'.preg_quote($host).'!', '', bors()->main_object()->url());
+			if(file_exists($lp = $data['root'].$base_relative_path.$relative_path))
+				$data['local_path'] = $lp;
+			else
+				if(file_exists($lp = $data['root'].$base_relative_path.'img/'.$relative_path))
+					$data['local_path'] = $lp;
+		}
+		else
+*/			$data['local_path'] = $data['root'].$relative_path;
+	}
 
 	//TODO: грязный хак
 	$data['local_path'] = preg_replace('!^(/var/www/files.balancer.ru/files/)[0-9a-f]{32}/(.*)$!', '$1$2', @$data['local_path']);
@@ -102,7 +116,6 @@ function url_parse($url)
 	$data['uri'] = "http://".$host.@$data['path'];
 	//TODO: грязный хак
 	$data['uri'] = preg_replace('!^(http://files.balancer.ru/)[0-9a-f]{32}/(.*)$!', '$1$2', $data['uri']);
-
 
 	if(@$data['root'] == $data['local_path'])
 		$data['local_path'] .= '/';

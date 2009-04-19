@@ -53,8 +53,8 @@ class cache_static extends base_object_db
 	static function save($object, $content, $expire_time = false)
 	{
 		$object_id = $object->id();
-		if($object_id && !is_numeric($object_id))
-			return;
+//		if($object_id && !is_numeric($object_id))
+//			return;
 	
 		$file = $object->static_file();
 		if(!$file) // TODO: отловить

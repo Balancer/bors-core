@@ -37,8 +37,9 @@ class module_date_calend_month extends base_page
 			
 			$time_field = $this->args('class_time_field', 'create_time');
 
-			foreach(objects_array($this->args('class_name'), array($this->args('class_name').".{$time_field} BETWEEN {$time0} AND {$time9}")) as $x)
-				@$counts[date('j', $x->$time_field())]++;
+			if($this->args('class_name'))
+				foreach(objects_array($this->args('class_name'), array($this->args('class_name').".{$time_field} BETWEEN {$time0} AND {$time9}")) as $x)
+					@$counts[date('j', $x->$time_field())]++;
 
 			foreach($counts as $day => $count)
 				$list[$day] = array(

@@ -19,9 +19,17 @@ class base_object extends base_empty
 		if($exact)
 			return $this->_parents = array();
 
-		return $this->_parents = array(
-			empty($this->match[2]) ? "http://{$this->match[1]}/" : "http://{$this->match[1]}{$this->match[2]}"
-		);
+		if(empty($this->match[2]))
+		{
+			if(empty($this->match[1]))
+				$parent = dirname($this->called_url()).'/';
+			else
+				$parent = "http://{$this->match[1]}/";
+		}
+		else
+			$parent = "http://{$this->match[1]}{$this->match[2]}";
+
+		return $this->_parents = array($parent);
 	}
 
 	var $stb_children = array();

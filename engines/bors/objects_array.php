@@ -51,3 +51,12 @@ function objects_count($class, $args = array())
 
 	return $init->storage()->load($init, $where, true, $cargs);
 }
+
+function bors_field_array_extract($objects_array, $field)
+{
+	$result = array();
+	foreach($objects_array as $x)
+		$result[] = $x->$field();
+
+	return $result;
+}

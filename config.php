@@ -61,8 +61,11 @@ $includes = array(
 	BORS_3RD_PARTY.'/PEAR',
 );
 
+if(defined('BORS_APPEND'))
+	$includes = array_merge($includes, explode(' ', BORS_APPEND));
+
 $delim = empty($_ENV['windir']) ? ":" : ";";
-ini_set('include_path', ini_get('include_path') . $delim . join($delim, $includes));
+ini_set('include_path', ini_get('include_path') . $delim . join($delim, array_unique($includes)));
 
 require_once('classes/inc/BorsMemCache.php');
 require_once('inc/debug.php');
@@ -123,17 +126,18 @@ function bors_dirs($host = NULL)
 
 	$vhost = '/vhosts/'.$host;
 
-	$data = array(
+	$data = array();
+	if(defined('BORS_APPEND'))
+		$data = array_merge($data, explode(' ', BORS_APPEND));
+
+	$data = array_merge($data, array(
 		BORS_LOCAL.$vhost,
 		BORS_LOCAL,
 		BORS_HOST.$vhost,
 		BORS_HOST,
 		BORS_CORE,
-	);
+	));
 
-	if(defined('BORS_APPEND'))
-		$data = array_merge($data, explode(' ', BORS_APPEND));
-	
 	return array_unique($data);
 }
 

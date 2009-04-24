@@ -21,7 +21,6 @@ class base_page_list extends base_page
 	{
 		if(!is_null($this->_items))
 			return $this->_items;
-	
 
 		return $this->_items = objects_array($this->main_class(), $this->_where(array(
 			'order' => $this->order(),

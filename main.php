@@ -28,7 +28,7 @@
 			'yandex' => 'Yandex',
 		) as $pattern => $bot)
 	{
-		if(preg_match("!".$pattern."!i", $_SERVER['HTTP_USER_AGENT']))
+		if(preg_match("!".$pattern."!i", @$_SERVER['HTTP_USER_AGENT']))
 		{
 			$client['is_bot'] = $bot;
 			break;

@@ -26,7 +26,10 @@ class DataBase extends base_object
 				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3, config('mysql_renew_links'));
 
 			if(!$this->dbh && config('mysql_try_reconnect'))
+			{
+				debug_hidden_log('mysql_try_reconnect', NULL, false);
 				sleep(5);
+			}
 
 		} while(!$this->dbh && config('mysql_try_reconnect') && $loop++ < config('mysql_try_reconnect'));
 

@@ -17,7 +17,8 @@ function lt_img($params)
 			// Заменим ссылку в кеш на полную картинку
 			require_once('inc/filesystem.php');
 //			$uri = secure_path(abs_path_from_relative(preg_replace("!^(.+?)/cache/(.+)/\d*x\d*/(.+?)$!", "$1/$2/$3", $uri), $GLOBALS['lcml']['uri']));
-			$uri = secure_path(abs_path_from_relative(preg_replace("!^(.+?)/cache/(.+)/\d*x\d*/(.+?)$!", "$1/$2/$3", $uri), bors()->main_object()->url()));
+			if($main_object = bors()->main_object())
+				$uri = secure_path(abs_path_from_relative(preg_replace("!^(.+?)/cache/(.+)/\d*x\d*/(.+?)$!", "$1/$2/$3", $uri), $main_object->url()));
 
 			$data = url_parse($uri);
 //			echo $uri; print_d($data); exit();

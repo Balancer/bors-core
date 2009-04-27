@@ -1,5 +1,7 @@
 <?php
 
+require_once('inc/texts.php');
+
 function debug_exit($message)
 {
 	if($tmp = @ob_get_contents())

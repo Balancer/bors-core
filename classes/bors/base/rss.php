@@ -17,8 +17,8 @@ class base_rss extends base_page
 		$rss = &new UniversalFeedCreator(); 
 		$rss->useCached("RSS2.0", '/tmp/rss-'.md5($obj->url()).'.xml', config('rss_static_lifetime'));
 		$rss->encoding = 'utf-8'; 
-		$rss->title = dc($obj->rss_title());
-		$rss->description = dc($obj->rss_description());
+		$rss->title = $obj->rss_title();
+		$rss->description = $obj->rss_description();
 		$rss->link = $obj->rss_url();
 		$rss->syndicationURL = $obj->url(); 
 
@@ -34,15 +34,15 @@ class base_rss extends base_page
 		foreach($obj->rss_items() as $o)
 		{	
 		    $item = &new FeedItem();
-	    	$item->title = dc($o->rss_title());
+	    	$item->title = $o->rss_title();
 		    $item->link = $o->url();
 			
-			$item->description = dc($obj->rss_body($o, $obj->rss_strip()));
+			$item->description = $obj->rss_body($o, $obj->rss_strip());
 			$item->date = intval($o->create_time());
 			$item->source = $obj->rss_source_url();
 			$owner = $o->owner();
 			if($owner)
-				$item->author = dc($owner->title());
+				$item->author = $owner->title();
 							     
 			$rss->addItem($item); 
 		} 

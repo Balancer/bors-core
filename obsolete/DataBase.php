@@ -35,7 +35,7 @@ class DataBase extends base_object
 
 		if(!$this->dbh)
 		{
-			echo("mysql_connect({$this->x1}, {$this->x2}) to '{$this->db_name}' failed ".mysql_errno().": ".mysql_error()."<BR />");
+			echo("mysql_connect({$this->x1}, {$this->x2}) to DB '{$this->db_name}' failed ".mysql_errno().": ".mysql_error()."<BR />");
 			bors_exit();
 			exit();
 		}

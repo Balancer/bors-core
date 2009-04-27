@@ -21,10 +21,10 @@ class base_object extends base_empty
 
 		if(empty($this->match[2]))
 		{
-			if(empty($this->match[1]))
+//			if(empty($this->match[1]))
 				$parent = dirname($this->called_url()).'/';
-			else
-				$parent = "http://{$this->match[1]}/";
+//			else
+//				$parent = "http://{$this->match[1]}/";
 		}
 		else
 			$parent = "http://{$this->match[1]}{$this->match[2]}";
@@ -196,6 +196,14 @@ class base_object extends base_empty
 
 		$field_storage = "field_{$field}_storage";
 
+		if(!$setting)
+		{
+			$auto_objs = $this->auto_objects();
+			if($f = @$auto_objs[$field])
+				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+					return $this->set($field, object_load($m[1], $this->$m[2]()), false);
+		}
+
 		//TODO: сделать более жёсткой проверку на setting
 		if(!$setting && $this->strict_auto_fields_check()
 			&& !method_exists($this, $field_storage)
@@ -204,11 +212,6 @@ class base_object extends base_empty
 			&& @$_SERVER['SVCNAME'] != 'tomcat-6' && !property_exists($this, "stb_{$field}")
 		)
 		{
-			$auto_objs = $this->auto_objects();
-			if($f = @$auto_objs[$field])
-				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
-					return $this->set($field, object_load($m[1], $this->$m[2]()), false);
-		
 			if(@$_SERVER['SVCNAME'] != 'tomcat-6')
 				debug_trace();
 			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");

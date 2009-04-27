@@ -20,6 +20,11 @@ class bors_global extends base_empty
 		return $this->user;
 	}
 
+	function user_id()
+	{
+		return ($user = $this->user()) ? $user->id() : 0;
+	}
+
 	function set_main_object(&$obj) { return $this->main_object = &$obj; }
 	function &main_object() { return $this->main_object; }
 

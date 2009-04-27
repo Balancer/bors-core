@@ -22,6 +22,7 @@ class module_nav_top extends base_page
     function link_line($show_self = true, &$shown = array())
     {
 		$obj = $this->id();
+//    	echo "<b>$obj</b>:<br/>url: {$obj->url()}<br/>parents: ".print_r($obj->parents(), true)."<br/><br/>";
 
 		$result = array(array());
 	

@@ -14,7 +14,7 @@ class bors_global extends base_empty
 			$this->user = object_load(config('user_class'), -1);
 
 			if($this->user)
-				$this->user->set_last_visit_time($GLOBALS['now'], true);
+				$this->user->set_last_visit_time(time(), true); // global $now тут не прокатит, т.к. может вызываться до инициализации конфигов.
 		}
 		
 		return $this->user;

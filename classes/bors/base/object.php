@@ -923,6 +923,18 @@ class base_object extends base_empty
 
 		return iconv($this->internal_charset(), $out_cs.'//IGNORE', $str);
 	}
+	function cs_u2i($str) // utf-8 to internal
+	{
+		if(preg_match('/koi8|cp866/i', $ics = $this->internal_charset()))
+		{
+			$str = str_replace(
+				array('«'      ,'»',      '–',      '—'),
+				array('&laquo;','&raquo;','&ndash;','&mdash;'),
+				$str);
+		}
+
+		return iconv('utf-8', $ics.'//IGNORE', $str);
+	}
 
 	function content($can_use_static = true, $recreate = false)
 	{
@@ -940,13 +952,15 @@ class base_object extends base_empty
 			&& $this->use_temporary_static_file() 
 			&& config('temporary_file_contents')
 		)
-			cache_static::save($this, $this->cs_i2o(str_replace(array(
+			cache_static::save($this, /*$this->cs_i2o*/(str_replace(array(
 				'$url',
 				'$title',
+				'$charset',
 			), array(
 				$this->url($this->page()),
 				$this->title(),
-			), config('temporary_file_contents'))), 120);
+				$this->output_charset(),
+			), $this->cs_u2i(config('temporary_file_contents')))), 120);
 
 
 		$content = $this->direct_content();

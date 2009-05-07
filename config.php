@@ -1,16 +1,19 @@
 <?php
 
-if(!defined("BORS_CORE"))
-	define("BORS_CORE", '/var/www/.bors/bors-core');
+if(!defined('BORS_CORE'))
+	exit('You must define BORS_CORE path!');
 
-if(!defined("BORS_LOCAL"))
-	define("BORS_LOCAL", '/var/www/.bors/bors-local');
+if(!defined('BORS_LOCAL'))
+	define('BORS_LOCAL', dirname(BORS_CORE).'/bors-local');
 
-if(!defined("BORS_HOST"))
-	define("BORS_HOST", $_SERVER['DOCUMENT_ROOT'].'/../.bors-host');
+if(!defined('BORS_HOST'))
+	define('BORS_HOST', realpath($_SERVER['DOCUMENT_ROOT'].'/../bors-host'));
+
+if(!defined('BORS_SITE'))
+	define('BORS_SITE', realpath($_SERVER['DOCUMENT_ROOT'].'/../bors-site'));
 
 if(!defined('BORS_3RD_PARTY'))
-	define('BORS_3RD_PARTY', dirname(__FILE__).'/../bors-third-party');
+	define('BORS_3RD_PARTY', dirname(BORS_CORE).'/bors-third-party');
 
 function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }
 function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
@@ -34,11 +37,9 @@ function config_mysql_server($db, $default = 'localhost') { return $res = @$GLOB
 ini_set('session.use_trans_sid', false);
 session_start();
 
-if(file_exists(BORS_LOCAL.'/config-pre.php'))
-	include_once(BORS_LOCAL.'/config-pre.php');
-
-if(file_exists(BORS_HOST.'/config-pre.php'))
-	include_once(BORS_HOST.'/config-pre.php');
+foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
+if(file_exists($file = "{$base_dir}/config-pre.php"))
+	include_once($file);
 
 require_once('config/default.php');
 config_set('admin_config_class', 'bors_admin_config');
@@ -50,11 +51,10 @@ $host = @$_SERVER['HTTP_HOST'];
 
 $vhost = '/vhosts/'.@$_SERVER['HTTP_HOST'];
 $includes = array(
+	BORS_SITE,
+	BORS_HOST,
 	BORS_LOCAL.$vhost,
 	BORS_LOCAL,
-	BORS_HOST.$vhost,
-	BORS_HOST,
-	"{$_SERVER['DOCUMENT_ROOT']}/include",
 	BORS_CORE,
 	BORS_CORE.'/PEAR',
 	BORS_3RD_PARTY,
@@ -84,6 +84,9 @@ if(file_exists(BORS_LOCAL.'/config.php'))
 
 if(file_exists(BORS_HOST.'/config.php'))
 	include_once(BORS_HOST.'/config.php');
+
+if(file_exists(BORS_SITE.'/config.php'))
+	include_once(BORS_SITE.'/config.php');
 
 if(config('debug_can_change_now'))
 {
@@ -121,6 +124,10 @@ function bors_init()
 
 function bors_dirs($host = NULL)
 {
+	static $dirs = NULL;
+	if($dirs)
+		return $dirs;
+
 	if(!$host)
 		$host = @$_SERVER['HTTP_HOST'];
 
@@ -131,14 +138,14 @@ function bors_dirs($host = NULL)
 		$data = array_merge($data, explode(' ', BORS_APPEND));
 
 	$data = array_merge($data, array(
+		BORS_SITE,
+		BORS_HOST,
 		BORS_LOCAL.$vhost,
 		BORS_LOCAL,
-		BORS_HOST.$vhost,
-		BORS_HOST,
 		BORS_CORE,
 	));
 
-	return array_unique($data);
+	return $dirs = array_unique($data);
 }
 
 function bors_include_once($file, $warn = false)
@@ -160,15 +167,15 @@ function bors_include($file, $warn = false, $once = false)
 			return;
 		}
 	}
-	
+
 	if(!$warn)
 		return;
-	
+
 	$message = "Can't load {$file}";
-	
+
 	if($warn == 2)
 		return bors_exit($message);
-	
+
 	echo $message;
 }
 

@@ -25,9 +25,9 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 
 	if(!$data 
 		|| !$data[0] 
-		|| $data[0] > config('images_resize_max_width', 2048)  
-		|| $data[1] > config('images_resize_max_height', 2048)
-		|| $data[0]*$data[1] > config('images_resize_max_area', 5000000)
+		|| $data[0] > config('images_resize_max_width')
+		|| $data[1] > config('images_resize_max_height')
+		|| $data[0]*$data[1] > config('images_resize_max_area')
 	)
 	{
 		debug_hidden_log('image_error', "{$file_in} -> {$file_out}($width, $height, $opts) convert error: ".@$data[0].'x'.@$data[1]);

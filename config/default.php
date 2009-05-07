@@ -6,7 +6,7 @@ config_set('cache_dir', '/tmp/bors-cache');
 
 config_set('debug_class_load_trace', true);
 
-config_set('smarty_path', 'smarty-2.6.21');
+config_set('smarty_path', 'smarty-2.6.22');
 config_set('main_bors_db', 'BORS');
 config_set('bors_core_db', 'BORS');
 

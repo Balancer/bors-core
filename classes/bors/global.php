@@ -6,7 +6,7 @@ class bors_global extends base_empty
 {
 	private $user = false;
 	private $main_object = NULL;
-	
+
 	function user()
 	{
 		if($this->user === false)
@@ -14,9 +14,9 @@ class bors_global extends base_empty
 			$this->user = object_load(config('user_class'), -1);
 
 			if($this->user)
-				$this->user->set_last_visit_time($GLOBALS['now'], true);
+				$this->user->set_last_visit_time(@$GLOBALS['now'], true);
 		}
-		
+
 		return $this->user;
 	}
 
@@ -24,30 +24,30 @@ class bors_global extends base_empty
 	function &main_object() { return $this->main_object; }
 
 	private $changed_objects = array();
-		
+
 	function add_changed_object($obj) { $this->changed_objects[$obj->internal_uri()] = $obj; }
 	function drop_changed_object($obj) { if(is_object($obj)) unset($this->changed_objects[$obj->internal_uri()]); else unset($this->changed_objects[$obj]); }
-		
+
 	function changed_save()
 	{
 		include_once('engines/search.php');
-		
+
 		if(empty($this->changed_objects))
 			return;
-				
+
 		foreach($this->changed_objects as $name => $obj)
 		{
 			if(!$obj->id() || empty($obj->changed_fields))
 				continue;
-				
+
 			$obj->cache_clean();
-			
+
 			if(!($storage = $obj->storage_engine()))
 				$storage = 'storage_db_mysql_smart';
 //				debug_exit('Not defined storage engine for '.$obj->class_name());
-			
+
 			$storage = object_load($storage);
-				
+
 			$storage->save($obj);
 			save_cached_object($obj);
 			$this->drop_changed_object($obj);

@@ -74,6 +74,8 @@
 		}
 
 		echo $content;
+
+		// === Закрытие формы ===
 		if(isset($uri) && $uri != 'NULL')
 			echo "<input type=\"hidden\" name=\"uri\" value=\"$uri\" />\n";
 		if(isset($ref) && $ref != 'NULL')
@@ -100,6 +102,9 @@
 			echo "<input type=\"hidden\" name=\"checkboxes_list\" value=\"".join(',', $vcbs)."\" />\n";
 		if($tmv = base_object::template_data('form_time_vars'))
 			echo "<input type=\"hidden\" name=\"time_vars\" value=\"".join(',', $tmv)."\" />\n";
+
+		if(!base_object::template_data('form_have_go'))
+			echo "<input type=\"hidden\" name=\"go\" value=\"newpage_admin\" />\n";
 
 		echo "</form>\n";
 		base_object::add_template_data('form_checkboxes_list', NULL);

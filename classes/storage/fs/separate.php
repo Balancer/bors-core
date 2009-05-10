@@ -23,6 +23,8 @@ class storage_fs_separate extends base_null
 			}
 		}
 
+//		echo "base=$base; pfx=$pfx; found=$found<Br/>\n";
+
 		if(!$found)
 			return $object->set_loaded(false);
 

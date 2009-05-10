@@ -14,10 +14,15 @@ class bors_global extends base_empty
 			$this->user = object_load(config('user_class'), -1);
 
 			if($this->user)
-				$this->user->set_last_visit_time(@$GLOBALS['now'], true);
+				$this->user->set_last_visit_time(time(), true); // global $now тут не прокатит, т.к. может вызываться до инициализации конфигов.
 		}
 
 		return $this->user;
+	}
+
+	function user_id()
+	{
+		return ($user = $this->user()) ? $user->id() : 0;
 	}
 
 	function set_main_object(&$obj) { return $this->main_object = &$obj; }
@@ -60,24 +65,24 @@ class bors_global extends base_empty
 					bors_search_object_index($obj, 'replace');
 			}
 		}
-			
+
 		$this->changed_objects = false;
 	}
-		
+
 	function real_uri($uri)
 	{
 		if(!preg_match("!^([\w/]+)://(.*[^/])(/?)$!", $uri, $m))
 			return "";
 		if($m[1] == 'http')
 			return $uri;
-				
+
 		$cls = class_load($m[1], $m[2].(preg_match("!^\d+$!", $m[2]) ? '' : '/'));
-			
+
 		if(method_exists($cls, 'url'))
 			return $cls->url();
 		else
 			return $uri;
 	}
-	
+
 	function referer() { return empty($_GET['ref']) ? @$_SERVER['HTTP_REFERER'] : $_GET['ref']; }
 }

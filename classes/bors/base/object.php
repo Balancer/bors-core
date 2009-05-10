@@ -21,10 +21,10 @@ class base_object extends base_empty
 
 		if(empty($this->match[2]))
 		{
-			if(empty($this->match[1]))
+//			if(empty($this->match[1]))
 				$parent = dirname($this->called_url()).'/';
-			else
-				$parent = "http://{$this->match[1]}/";
+//			else
+//				$parent = "http://{$this->match[1]}/";
 		}
 		else
 			$parent = "http://{$this->match[1]}{$this->match[2]}";
@@ -196,6 +196,14 @@ class base_object extends base_empty
 
 		$field_storage = "field_{$field}_storage";
 
+		if(!$setting)
+		{
+			$auto_objs = $this->auto_objects();
+			if($f = @$auto_objs[$field])
+				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+					return $this->set($field, object_load($m[1], $this->$m[2]()), false);
+		}
+
 		//TODO: сделать более жёсткой проверку на setting
 		if(!$setting && $this->strict_auto_fields_check()
 			&& !method_exists($this, $field_storage)
@@ -204,11 +212,6 @@ class base_object extends base_empty
 			&& @$_SERVER['SVCNAME'] != 'tomcat-6' && !property_exists($this, "stb_{$field}")
 		)
 		{
-			$auto_objs = $this->auto_objects();
-			if($f = @$auto_objs[$field])
-				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
-					return $this->set($field, object_load($m[1], $this->$m[2]()), false);
-		
 			if(@$_SERVER['SVCNAME'] != 'tomcat-6')
 				debug_trace();
 			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
@@ -920,6 +923,18 @@ class base_object extends base_empty
 
 		return iconv($this->internal_charset(), $out_cs.'//IGNORE', $str);
 	}
+	function cs_u2i($str) // utf-8 to internal
+	{
+		if(preg_match('/koi8|cp866/i', $ics = $this->internal_charset()))
+		{
+			$str = str_replace(
+				array('«'      ,'»',      '–',      '—'),
+				array('&laquo;','&raquo;','&ndash;','&mdash;'),
+				$str);
+		}
+
+		return iconv('utf-8', $ics.'//IGNORE', $str);
+	}
 
 	function content($can_use_static = true, $recreate = false)
 	{
@@ -937,13 +952,15 @@ class base_object extends base_empty
 			&& $this->use_temporary_static_file() 
 			&& config('temporary_file_contents')
 		)
-			cache_static::save($this, $this->cs_i2o(str_replace(array(
+			cache_static::save($this, /*$this->cs_i2o*/(str_replace(array(
 				'$url',
 				'$title',
+				'$charset',
 			), array(
 				$this->url($this->page()),
 				$this->title(),
-			), config('temporary_file_contents'))), 120);
+				$this->output_charset(),
+			), $this->cs_u2i(config('temporary_file_contents')))), 120);
 
 
 		$content = $this->direct_content();

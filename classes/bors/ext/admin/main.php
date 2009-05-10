@@ -1,6 +1,6 @@
 <?php
 
-//config_set('default_template', 'default/simple.html');
+// config_set('default_template', 'default/simple.html');
 
 class bors_ext_admin_main extends base_page
 {

@@ -80,6 +80,8 @@ function bors_object_new_instance_db(&$object)
 	if(!$object->modify_time(true))
 		$object->set_modify_time(time(), true);
 
+	$object->set_record_editor_id(bors()->user_id(), true);
+
 	$object->storage()->create($object);
 }
 

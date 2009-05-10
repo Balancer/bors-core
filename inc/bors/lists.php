@@ -23,6 +23,29 @@ function bors_named_list_db($class_name, $zero_item = NULL, $where = array())
 	return $res;
 }
 
+function bors_named_list_db_field_distinct($class_name, $field='title', $zero_item = NULL, $where = array())
+{
+	$obj = object_new($class_name);
+
+	$items_db = $obj->main_db();
+	$items_tab = $obj->main_table();
+	$db = new driver_mysql($items_db);
+
+
+	$res = array();
+
+	if(isset($zero_item))
+		$res[0] = $zero_item;
+
+	if(empty($where['order']))
+		$where['order'] = 'title';
+
+	foreach($db->select_array($items_tab, 'DISTINCT('.addslashes($field).')', $where) as $x)
+		$res[$x] = $x;
+
+	return $res;
+}
+
 function bors_named_hierarchic_list_db($class_name, $zero_item = NULL)
 {
 	$obj = object_new($class_name);

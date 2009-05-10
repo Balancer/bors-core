@@ -9,11 +9,11 @@ class storage_db_mysql_smart extends base_null
 
 		$oid = addslashes(isset($args['object_id']) ? $args['object_id'] : $object->id());
 		$by_id = !empty($args['by_id']);
-		
+
 		$result = array();
 
 		global $stdbms_cache;
-		
+
 		$hash = md5(join('!', array($object->class_name(), $common_where, $only_count)));
 
 		$need_convert = $object->db_charset() != $object->internal_charset();
@@ -34,11 +34,8 @@ class storage_db_mysql_smart extends base_null
 			$added = array();
 			$main_id_name = '';
 
-			if(!$db)
-				bors_exit("Can't load empty DB for $object");
-			
 			$dbh = new driver_mysql($db);
-				
+
 			$dbhash = $hash.$db;
 			if(empty($stdbms_cache[$dbhash]))
 			{

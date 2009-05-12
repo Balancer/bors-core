@@ -23,14 +23,18 @@ class storage_fs_separate extends base_null
 			}
 		}
 
-//		echo "base=$base; pfx=$pfx; found=$found<Br/>\n";
 
 		if(!$found)
 			return $object->set_loaded(false);
 
+//		echo "base=$dir; pfx=$pfx; found=$found<Br/>\n";
+
 		// По дефолту в separate разрешён HTML и все BB-тэги.
 		$object->set_html_disable(false, false);
 		$object->set_lcml_tags_enabled(NULL, false);
+
+		$object->set_storage_base_dir($dir, false);
+		$object->set_storage_file_prefix($pfx, false);
 
 		$d = dir($dir);
 		while(false !== ($entry = $d->read()))
@@ -61,6 +65,16 @@ class storage_fs_separate extends base_null
 
 	function save($object)
 	{
+		echo "bd=".$object->storage_base_dir()."<br/>";
+//		echo "pfx={$this->_file_prefix}<br/>";
+//		echo "o={$object->id()}<Br/>";
+		foreach($object->changed_fields as $field_name => $field_property)
+		{
+			echo "Set $field_name to {$object->$field_property}<br/>";
+		}
+
 		debug_exit("Try to save file separated format");
+
+		return true;
 	}
 }

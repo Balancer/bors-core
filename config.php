@@ -12,6 +12,9 @@ if(!defined('BORS_HOST'))
 if(!defined('BORS_SITE'))
 	define('BORS_SITE', realpath($_SERVER['DOCUMENT_ROOT'].'/../bors-site'));
 
+if(!defined('BORS_EXT'))
+	define('BORS_EXT', dirname(BORS_CORE).'/bors-ext');
+
 if(!defined('BORS_3RD_PARTY'))
 	define('BORS_3RD_PARTY', dirname(BORS_CORE).'/bors-third-party');
 
@@ -57,6 +60,7 @@ $includes = array(
 	BORS_LOCAL,
 	BORS_CORE,
 	BORS_CORE.'/PEAR',
+	BORS_EXT,
 	BORS_3RD_PARTY,
 	BORS_3RD_PARTY.'/PEAR',
 );
@@ -110,6 +114,9 @@ function bors_init()
 		config_set_ref('memcached_instance', $memcache);
 	}
 
+	if($user_class = config('user_class'))
+		eval("class bors_user extends {$user_class} { }");
+
 	require_once('engines/bors.php');
 
 	require_once('inc/navigation.php');
@@ -142,10 +149,11 @@ function bors_dirs($host = NULL)
 		BORS_HOST,
 		BORS_LOCAL.$vhost,
 		BORS_LOCAL,
+		BORS_EXT,
 		BORS_CORE,
 	));
 
-	return $dirs = array_unique($data);
+	return $dirs = array_unique(array_filter($data));
 }
 
 function bors_include_once($file, $warn = false)

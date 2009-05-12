@@ -22,7 +22,7 @@ class bors_global extends base_empty
 
 	function user_id()
 	{
-		return ($user = $this->user()) ? $user->id() : 0;
+		return ($user = $this->user()) ? $user->id() : NULL;
 	}
 
 	function set_main_object(&$obj) { return $this->main_object = &$obj; }

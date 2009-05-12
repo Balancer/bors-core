@@ -27,6 +27,8 @@ class bors_admin_edit_smart extends base_page
 
 	function local_data()
 	{
+		templates_noindex();
+
 		return array(
 			'object' => $this->object(),
 			'fields' => $this->fields(),

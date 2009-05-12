@@ -13,4 +13,12 @@ class page_fs_separate extends base_page
 	function set_parents($array) { return $this->_parents = $array; }
 
 //	function url($page=1) { return object_load($this->url_engine(), $this)->url($page); }
+
+	function editor_fields_list()
+	{
+		return array(
+			ec('Заголовок:') => 'title',
+			ec('Тело страницы:') => 'source|textarea=20',
+		);
+	}
 }

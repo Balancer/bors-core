@@ -7,10 +7,13 @@ class base_page extends base_object
 	function render_engine() { return 'render_page'; }
 	function storage_engine() { return NULL; }
 	function can_be_empty() { return true; }
-	
+
 	var $stb_source = NULL;
 	function set_source($source, $db_update) { $this->set("source", $source, $db_update); }
 	function source() { return $this->stb_source; }
+
+	function me() { return bors()->user(); }
+	function me_id() { return bors()->user_id(); }
 
 	function items_around_page() { return 10; }
 
@@ -19,7 +22,7 @@ class base_page extends base_object
 
 		if($this->total_pages() < 2)
 			return '';
-		
+
 		include_once("inc/design/page_split.php");
 		$pages = '<li>'.join('</li><li>', pages_show($this, $this->total_pages(), $this->items_around_page())).'</li>';
 		return '<div class="'.$css.'">'.$before.ec('<ul><li>Страницы:</li>').$pages.'</ul>'.$after.'</div>';
@@ -159,7 +162,7 @@ class base_page extends base_object
 			$tf = preg_replace("!\.php$!", "$1.$ext", $cf);
 			if(!file_exists($tf))
 				$tf = preg_replace("!\.php$!", "$1.$ext", __FILE__);
-			
+
 			return "xfile:{$tf}";
 		}
 		else
@@ -200,7 +203,7 @@ class base_page extends base_object
 	{
 		if(!$text)
 			return;
-	
+
 		$ch = class_exists('Cache') ? new Cache() : NULL;
 		if($ch && $ch->get('base_object-lcml', $text) && 0)
 			return $ch->last();
@@ -217,7 +220,7 @@ class base_page extends base_object
 
 		if($ch)
 			$ch->set($text, 7*86400);
-			
+
 		return $text;
 	}
 
@@ -229,7 +232,7 @@ class base_page extends base_object
 	{
 		if($this->_html_disable === NULL)
 			$this->_html_disable = !config('lcml_source_html_enabled');
-		
+
 		return $this->_html_disable;
 	}
 
@@ -239,9 +242,9 @@ class base_page extends base_object
 	{
 		if($this->_lcml_tags_enabled === -1)
 			$this->_lcml_tags_enabled = config('lcml_tags_enabled');
-		
+
 		return $this->_lcml_tags_enabled;
 	}
-	
+
 	function template_vars() { return parent::template_vars().' browser_title'; }
 }

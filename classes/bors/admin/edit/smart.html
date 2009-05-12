@@ -5,9 +5,9 @@
 {explode vars="type,arg" value=$type delim="="}
 {explode vars="arg,args" value=$arg delim=":"}
 <tr><th align="right">{$title}</th><td>
-{if $type == '' or $type == 'input'}{input name=$field_name class="w100p"}{/if}
+{if $type == '' or $type == 'input'}{input name=$field_name class="w100p" value=$this->object()->$field_name()}{/if}
 {if $type == 'dropdown'}{dropdown name=$field_name list=$arg args=$args class="w100p"}{/if}
-{if $type == 'textarea'}{textarea name=$field_name rows=$arg class="w100p"}{/if}
+{if $type == 'textarea'}{textarea name=$field_name rows=$arg class="w100p" value=$this->object()->$field_name()}{/if}
 {if $type == 'image'}{bors_object_load class="bors_image" id=$object|get:$field_name var="img"}{$img|get:thumbnail:$arg|get:html_code}{/if}
 {if $type == 'input_date'}{input_date name=$field_name can_drop=1 year_min=1900}{/if}
 </td></tr>

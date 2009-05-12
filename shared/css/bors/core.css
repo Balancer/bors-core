@@ -45,6 +45,13 @@ table.btab td { background: white; }
 	background-color: #def;
 }
 
+table.null, table.null td,  table.null th {
+	border: none;
+	padding: 0;
+	margin: 0;
+	vertical-align: top;
+}
+
 .w100p { width: 98%; }
 
 div.clear {

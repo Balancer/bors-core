@@ -38,10 +38,10 @@ class base_object extends base_empty
 	{
 		if($body = $this->description())
 			return $this->lcml($body);
-		
+
 		if($body = $this->source())
 			return $this->lcml($body);
-		
+
 		return $this->body();
 	}
 
@@ -53,7 +53,7 @@ class base_object extends base_empty
 		$r_table = NULL;
 		$r_id_field = NULL;
 		$r_db_field = NULL;
-	
+
 		foreach($this->fields() as $db => $tables)
 		{
 			foreach($tables as $table => $fields)
@@ -189,7 +189,7 @@ class base_object extends base_empty
 		{
 			if($field = $this->autofield($match[1]))
 				return $field;
-			
+
 			debug_trace();
 			exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
 		}
@@ -230,7 +230,7 @@ class base_object extends base_empty
 				|| @$_SERVER['SVCNAME'] == 'tomcat-6' 
 				|| property_exists($this, $p))
 			return @$this->$p;
-		
+
 		debug_exit("Try to get undefined properties ".get_class($this).".$name");
 		return NULL;
 	}
@@ -291,7 +291,7 @@ class base_object extends base_empty
 		{
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();
-				
+
 			$this->changed_fields[$field] = $field_name;
 			bors()->add_changed_object($this);
 		}
@@ -302,7 +302,7 @@ class base_object extends base_empty
 	function render_engine() { return false; }
 
 	function is_cache_disabled() { return true; }
-	function template_vars() { return 'body source'; }
+	function template_vars() { return 'body source me me_id'; }
 	function template_local_vars() { return 'create_time description id modify_time nav_name title'; }
 
 	var $stb_create_time = NULL;
@@ -408,7 +408,7 @@ class base_object extends base_empty
 		if($title === NULL)
 			$title = ec('Администрировать ').strtolower($this->class_title_rp());
 		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
-}
+	}
 
 	function imaged_edit_link($title = NULL) { return $this->imaged_edit_url($title); }
 	function imaged_edit_url($title = NULL)
@@ -418,8 +418,15 @@ class base_object extends base_empty
 		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
+	function titled_new_link($title = NULL)
+	{
+		if($title === NULL)
+			$title = $this->title() ? $this->title() : '---';
+		return '<a href="'.$this->new_url($this->page()).'">'.$title.'</a>';
+	}
+
 	function imaged_delete_link($text = NULL, $title = NULL) { return $this->imaged_delete_url($title, $text); }
-	
+
 	function imaged_delete_url($title = NULL, $text = '')
 	{
 		if($title == 'del')
@@ -642,6 +649,7 @@ class base_object extends base_empty
 
 	function edit_url()  { return '/admin/edit-smart/?object='.urlencode($this->internal_uri()); }
 	function admin_url() { return '/admin/?object='.urlencode($this->internal_uri()); }
+	function new_url()  { return '/admin/new-smart/?object='.urlencode($this->internal_uri()); }
 	function admin_parent_url()
 	{
 		if($o = object_load($this->admin_url()))

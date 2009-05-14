@@ -2,7 +2,7 @@
 
 class base_object extends base_empty
 {
-	var $_loaded = false;
+	private $_loaded = false;
 	function loaded() { return $this->_loaded; }
 	function set_loaded($value = true) { return $this->_loaded = $value; }
 
@@ -105,7 +105,7 @@ class base_object extends base_empty
 	{
 		if(!$data_load)
 			return false;
-		
+
 		if($storage_engine = $this->storage_engine())
 		{
 			$storage_engine = object_load($storage_engine, NULL, array('no_load_cache' => true));
@@ -137,8 +137,12 @@ class base_object extends base_empty
 		return $this->_class_id;
 	}
 
-	function class_title() { return get_class($this); }
-	function class_title_rp() { return $this->class_title(); }
+	function class_title()    { return ec('Объект ').get_class($this); }	// Именительный: Кто? Что?
+	function class_title_rp() { return ec('объекта ').get_class($this); }	// РодительныйГенитивКого? Чего?
+	function class_title_dp() { return ec('объекту ').get_class($this); }	// Дательный Кому? Чему?
+	function class_title_vp() { return ec('объект ').get_class($this); }	// Винительный Кого? Что?
+	function class_title_tp() { return ec('объектом ').get_class($this); }	// Творительный Кем? Чем?
+	function class_title_pp() { return ec('объекте ').get_class($this); }	// Предложный О ком? О чём?
 
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 	
@@ -379,6 +383,7 @@ class base_object extends base_empty
 	}
 
 	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
+	function titled_link() { return $this->titled_url(); }
 
 	function titled_url_ex($title=NULL, $append=NULL, $url_append='')
 	{
@@ -450,6 +455,7 @@ class base_object extends base_empty
 		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/bors-shared/images/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
 	}
 
+	function admin() { return object_load(config('admin_engine', 'bors_admin_engine'), $this); }
 
 	function admin_delete_link()
 	{
@@ -470,8 +476,6 @@ class base_object extends base_empty
 		//TODO: заюзать make_input_time? (funcs/datetime.php)
 		if(!empty($array['time_vars']))
 		{
-//			print_d($array);
-//			exit();
 			foreach(explode(',', $array['time_vars']) as $var)
 			{
 				if(@$array["{$var}_month"] && @$array["{$var}_day"] && @$array["{$var}_year"])
@@ -521,7 +525,10 @@ class base_object extends base_empty
 			foreach($array as $key => $val)
 			{
 				$method = "set_$key";
-				if(method_exists($this, $method) || $this->autofield($key) || $this->has_smart_field($key))
+				if(method_exists($this, $method) 
+						|| $this->autofield($key) 
+						|| $this->has_smart_field($key)
+				)
 					$this->$method($val, $db_update_flag);
 			}
 		}
@@ -567,15 +574,15 @@ class base_object extends base_empty
 
 		if($cache_clean)
 			$this->cache_clean();
-			
+
 		if(!($storage = $this->storage_engine()))
 		{
 			$storage = 'storage_db_mysql_smart';
 //			debug_hidden_log('Not defined storage engine for '.$this->class_name());
 		}
-			
+
 		$storage = object_load($storage);
-				
+
 		$storage->save($this);
 		save_cached_object($this);
 
@@ -586,7 +593,7 @@ class base_object extends base_empty
 			else
 				bors_search_object_index($this, 'replace');
 		}
-			
+
 		bors()->drop_changed_object($this->internal_uri());
 	}
 
@@ -604,7 +611,7 @@ class base_object extends base_empty
 		if(empty($this->_autofields))
 		{
 			$_autofields = array();
-		
+
 			foreach(explode(' ', $this->autofields()) as $f)
 			{
 				$id	  = 'id';
@@ -623,7 +630,7 @@ class base_object extends base_empty
 				$this->_autofields[$name] = "{$f}({$id})";
 			}
 		}
-		
+
 		if($res = @$this->_autofields[$field])
 			return $res;
 
@@ -760,8 +767,6 @@ class base_object extends base_empty
 	function set_args($args) { return $this->args = $args; }
 	function _set_arg($name, $value) { return $this->args[$name] = $value; }
 	function args($name=false, $def = NULL) { return $name ? (isset($this->args[$name]) ? $this->args[$name] : $def) : $this->args; }
-
-	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
 
 	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }
 	function set_was_cleaned($value) { return $GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()] = $value; }
@@ -1029,4 +1034,6 @@ class base_object extends base_empty
 
 	function link_time1() { return NULL; }
 	function link_time2() { return NULL; }
+
+	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
 }

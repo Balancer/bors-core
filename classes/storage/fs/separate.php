@@ -4,9 +4,16 @@ class storage_fs_separate extends base_null
 {
 	function load($object)
 	{
-		$url_data = url_parse($object->called_url());
+		if(!($id = $object->called_url()))
+			$id = $object->id();
+
+		if(!$id)
+			return false;
+
+		$url_data = url_parse($id);
 		$path = $url_data['path'];
 		$dir = $url_data['local_path'];
+		$pfx = '';
 
 		if($found = file_exists($dir.'/.title.txt'))
 			$pfx = '\.';
@@ -16,18 +23,14 @@ class storage_fs_separate extends base_null
 			{
 				if(file_exists(($dir = "{$base}/data/fs-separate{$path}").'title.txt'))
 				{
-					$pfx = '';
 					$found = true;
 					break;
 				}
 			}
 		}
 
-
 		if(!$found)
 			return $object->set_loaded(false);
-
-//		echo "base=$dir; pfx=$pfx; found=$found<Br/>\n";
 
 		// По дефолту в separate разрешён HTML и все BB-тэги.
 		$object->set_html_disable(false, false);
@@ -35,6 +38,8 @@ class storage_fs_separate extends base_null
 
 		$object->set_storage_base_dir($dir, false);
 		$object->set_storage_file_prefix($pfx, false);
+		$create_time = time();
+		$modify_time = 0;
 
 		$d = dir($dir);
 		while(false !== ($entry = $d->read()))
@@ -57,24 +62,47 @@ class storage_fs_separate extends base_null
 					$object->$method($data, false);
 				else
 					$object->set($m[1], $data, false);
+				if($m[1] == 'title' || $m[1] == 'source')
+				{
+					$create_time = min($create_time, filectime("{$dir}/{$entry}"));
+					$modify_time = max($modify_time, filemtime("{$dir}/{$entry}"));
+				}
+				if($m[1] == 'create_time')
+					$create_time = 0;
+				if($m[1] == 'modify_time')
+					$modify_time = time()+99999;
 			}
 		}
 		$d->close();
+
+		if($create_time)
+			$object->set_create_time($create_time, true);
+		if($modify_time <= time())
+			$object->set_modify_time($modify_time, true);
+
 		return $object->set_loaded(true);
 	}
 
 	function save($object)
 	{
-		echo "bd=".$object->storage_base_dir()."<br/>";
-//		echo "pfx={$this->_file_prefix}<br/>";
-//		echo "o={$object->id()}<Br/>";
+		$base = $object->storage_base_dir();
+		$pfx  = $object->storage_file_prefix();
+		$success = true;
 		foreach($object->changed_fields as $field_name => $field_property)
 		{
-			echo "Set $field_name to {$object->$field_property}<br/>";
+			$data = $object->$field_property;
+			if(is_array($data))
+			{
+				$file = secure_path("$base/{$pfx}[{$field_name}].txt");
+				$data = join("\n", $data);
+			}
+			else
+				$file = secure_path("$base/$pfx$field_name.txt");
+
+			@file_put_contents($file, $data);
+			@chmod($file, 0666);
 		}
 
-		debug_exit("Try to save file separated format");
-
-		return true;
+		return $success;
 	}
 }

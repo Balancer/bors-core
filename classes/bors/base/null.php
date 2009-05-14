@@ -10,4 +10,6 @@ class base_null
 	function loaded() { return false; }
 	function set_class_file() { }
 	static function id_prepare($id) { return $id; }
+	function __toString() { return $this->class_name().'://!'; }
+	function id() { return NULL; }
 }

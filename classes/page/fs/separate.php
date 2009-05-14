@@ -17,8 +17,13 @@ class page_fs_separate extends base_page
 	function editor_fields_list()
 	{
 		return array(
-			ec('Заголовок:') => 'title',
-			ec('Тело страницы:') => 'source|textarea=20',
+			ec('Полный заголовок материала:') => 'title',
+			ec('Краткий заголовок материала:') => 'nav_name',
+			ec('Краткое описание:') => 'description|textarea=2',
+			ec('Текст:') => 'source|textarea=20',
+			ec('Тип перевода строк:') => 'cr_type|dropdown=common_list_crTypes',
 		);
 	}
+
+	function autofields() { return 'cr_type'; }
 }

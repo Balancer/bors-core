@@ -25,14 +25,16 @@
 <h1>{$title}</h1>
 {$body}
 
+{assign var="admin" value=$this->admin()}
+{if $admin}
 {js_if cond="top.is_admin"}
-<hr />
-<small><center>
-{$this->titled_edit_url('редактировать')} |
-{$this->titled_admin_url('управлять')} |
-{$this->titled_new_link('добавить новое')}
-</center></small>
+<div class="small-box"><small>
+{$admin->edit_imaged_link('', 'редактировать данный объект')}
+{$admin->property_imaged_link('', 'редактировать свойства данного объекта')}
+{$admin->append_child_imaged_link('', 'добавить новый дочерний объект')}
+</small></div>
 {/js_if}
+{/if}
 <!--
 class = {$this->class_name()}
 class_file = {$this->class_file()}

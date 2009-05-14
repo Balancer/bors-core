@@ -83,3 +83,17 @@ xmp {
 	padding: 4px;
 	background-color: #ddd;
 }
+
+.small-box {
+	border: 1px solid #ccc;
+	padding: 1px;
+	background-color: #ddd;
+}
+
+.box {
+	border: 1px solid #ccc;
+	padding: 4px;
+	background-color: #ddd;
+}
+
+.right { text-align: right; }

@@ -7,7 +7,7 @@ class base_empty extends base_null
 
 	function id() { return $this->_id; }
 	function set_id($id) { return $this->_id = $id; }
-	
+
 	function __construct($id)
 	{
 		$this->set_id($this->initial_id = $id);
@@ -20,4 +20,5 @@ class base_empty extends base_null
 	function cache_clean() { }
 
 	function auto_search_index() { return false; }
+	function __toString() { return $this->class_name().'://'.$this->id(); }
 }

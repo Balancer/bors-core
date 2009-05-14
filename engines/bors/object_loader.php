@@ -474,7 +474,7 @@ function object_init($class_name, $object_id, $args = array())
 
 	if(method_exists($obj, 'set_args') && $args)
 		$obj->set_args($args);
-		
+
 	if($m = defval($args, 'match'))
 		$obj->set_match($m);
 
@@ -488,7 +488,7 @@ function object_init($class_name, $object_id, $args = array())
 
 	if(/*($object_id || $url) && */!$obj->can_be_empty() && !$obj->loaded())
 		return NULL;
-		
+
 	if($found != 1 && $obj->can_cached())
 		save_cached_object($obj);
 
@@ -500,6 +500,6 @@ function bors_objects_preload($objects, $field, $preload_class)
 	$ids = array();
 	foreach($objects as $x)
 		$ids[$x->$field()] = 1;
-	
+
 	return objects_array($preload_class, array('id IN' => array_keys($ids)));
 }

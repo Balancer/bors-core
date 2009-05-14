@@ -37,4 +37,5 @@ class bors_admin_edit_smart extends base_page
 	}
 
 //	function url() { return '/admin/edit-smart/?object='.$this->object()->internal_uri(); }
+	function admin() { return $this->object()->admin(); }
 }

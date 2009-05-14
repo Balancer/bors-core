@@ -7,7 +7,9 @@ class page_fs_xml extends base_page
 	function body_engine()		{ return 'body_source'; }
 	function can_be_empty()		{ return false; }
 	function class_title()		{ return ec('Страница'); }
-	function class_title_rp()	{ return ec('Страницу'); }
+	function class_title_rp()	{ return ec('страницы'); }
+	function class_title_dp()	{ return ec('странице'); }
+	function class_title_vp()	{ return ec('страницу'); }
 
 	var $_parents;
 	function parents() { return $this->_parents ? $this->_parents : parent::parents(); }
@@ -21,7 +23,7 @@ class page_fs_xml extends base_page
 	{
 		if(preg_match('!^(/.+\.xml)/$!', $id, $m))
 			$id = "http://{$_SERVER['HTTP_HOST']}{$m[1]}";
-		
+
 		parent::__construct($id);
 	}
 
@@ -35,10 +37,10 @@ class page_fs_xml extends base_page
 		$parent = parent::url($page);
 		if($parent)
 			return $parent;
-			
+
 		return $this->relative_path();
 	}
-	
+
 	private $_storage;
 	function storage()
 	{
@@ -48,17 +50,22 @@ class page_fs_xml extends base_page
 			if(!$this->_storage)
 				debug_exit("Can't load storage engine '{$this->storage_engine()}' in ".join(",<br/>\n", bors_dirs()));
 		}
-		
+
 		return $this->_storage;
 	}
-	
+
 	function delete() { $this->storage()->delete($this); }
 
 	function editor_fields_list()
 	{
 		return array(
-			ec('Заголовок:') => 'title',
-			ec('Тело страницы:') => 'source|textarea=20',
+			ec('Полный заголовок материала:') => 'title',
+			ec('Краткий заголовок материала:') => 'nav_name',
+			ec('Краткое описание:') => 'description|textarea=2',
+			ec('Текст:') => 'source|textarea=20',
+			ec('Тип перевода строк:') => 'cr_type|dropdown=common_list_crTypes',
 		);
 	}
+
+	function storage_skip_fields() { return 'storage_file url_engine'; }
 }

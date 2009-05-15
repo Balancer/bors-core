@@ -9,15 +9,13 @@ class base_object extends base_empty
 	var $match;
 	function set_match($match) { return $this->match = $match;	}
 
-	private $_parents = false;
-	function set_parents($array) { return $this->_parents = $array;	}
 	function parents($exact = false)
 	{
-		if($this->_parents !== false)
-			return $this->_parents;
+		if($this->stb_parents)
+			return $this->stb_parents;
 
 		if($exact)
-			return $this->_parents = array();
+			return $this->stb_parents = array();
 
 		if(empty($this->match[2]))
 		{
@@ -29,10 +27,11 @@ class base_object extends base_empty
 		else
 			$parent = "http://{$this->match[1]}{$this->match[2]}";
 
-		return $this->_parents = array($parent);
+		return $this->stb_parents = array($parent);
 	}
 
 	var $stb_children = array();
+	var $stb_parents = array();
 
 	function rss_body()
 	{
@@ -350,6 +349,12 @@ class base_object extends base_empty
 	function set_template($template, $db_update) { $this->set("template", $template, $db_update); }
 	function template() { return $this->stb_template ? $this->stb_template : config('default_template'); }
 
+	function parents_string() { return join("\n", $this->parents());  }
+	function set_parents_string($string, $dbup) { $this->set_parents(array_filter(explode("\n", $string)), $dbup); return $string;  }
+
+	function children_string() { return join("\n", $this->children());  }
+	function set_children_string($string, $dbup) { $this->set_children(array_filter(explode("\n", $string)), $dbup); return $string;  }
+
 	function template_data_fill()
 	{
 		if($this->config)
@@ -455,7 +460,8 @@ class base_object extends base_empty
 		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/bors-shared/images/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
 	}
 
-	function admin() { return object_load(config('admin_engine', 'bors_admin_engine'), $this); }
+	function admin_engine() { return config('admin_engine', 'bors_admin_engine'); }
+	function admin() { return object_load($this->admin_engine(), $this); }
 
 	function admin_delete_link()
 	{

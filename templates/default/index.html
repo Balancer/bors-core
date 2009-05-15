@@ -23,18 +23,11 @@
 <small>{module class="nav_top" id=$this}</small>
 <div align="right">{$description}</div>
 <h1>{$title}</h1>
+{include file="xfile:default/inc/admin-tools.html"}
+
 {$body}
 
-{assign var="admin" value=$this->admin()}
-{if $admin}
-{js_if cond="top.is_admin"}
-<div class="small-box"><small>
-{$admin->edit_imaged_link('', 'редактировать данный объект')}
-{$admin->property_imaged_link('', 'редактировать свойства данного объекта')}
-{$admin->append_child_imaged_link('', 'добавить новый дочерний объект')}
-</small></div>
-{/js_if}
-{/if}
+{include file="xfile:default/inc/admin-tools.html"}
 <!--
 class = {$this->class_name()}
 class_file = {$this->class_file()}

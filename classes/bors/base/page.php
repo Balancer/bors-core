@@ -196,6 +196,7 @@ class base_page extends base_object
 	var $stb_visits = 0;
 	var $stb_num_replies = 0;
 
+	// TODO: найти использование и снести под children_string
 	function children_list() { return join("\n", $this->children())."\n"; }
 	function set_children_list($value, $dbup) { return $this->set_children($value ? explode("\n", trim($value)) : array(), $dbup); }
 

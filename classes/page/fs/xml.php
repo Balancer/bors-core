@@ -8,17 +8,13 @@ class page_fs_xml extends base_page
 	function admin_engine()	{ return 'bors_admin_engine_page'; }
 
 	function can_be_empty()		{ return false; }
-	function class_title()		{ return ec('Страница'); }
-	function class_title_rp()	{ return ec('страницы'); }
-	function class_title_dp()	{ return ec('странице'); }
-	function class_title_vp()	{ return ec('страницу'); }
 
-	function __construct($id)
+	static function id_prepare($id)
 	{
 		if(preg_match('!^(/.+\.xml)/$!', $id, $m))
 			$id = "http://{$_SERVER['HTTP_HOST']}{$m[1]}";
 
-		parent::__construct($id);
+		return $id;
 	}
 
 	function relative_path()
@@ -49,17 +45,6 @@ class page_fs_xml extends base_page
 	}
 
 	function delete() { $this->storage()->delete($this); }
-
-	function editor_fields_list()
-	{
-		return array(
-			ec('Полный заголовок материала:') => 'title',
-			ec('Краткий заголовок материала:') => 'nav_name',
-			ec('Краткое описание:') => 'description|textarea=2',
-			ec('Текст:') => 'source|textarea=20',
-			ec('Тип перевода строк:') => 'cr_type|dropdown=common_list_crTypes',
-		);
-	}
 
 	function storage_skip_fields() { return 'storage_file url_engine'; }
 }

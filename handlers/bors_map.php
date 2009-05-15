@@ -24,7 +24,9 @@ $map = array(
 	'/admin/edit\-smart/ => bors_admin_edit_smart',
 	'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
+	'/_bors/admin/append/child\?object=([^&]*) => bors_admin_append_child(1)',
 	'/_bors/admin/edit/page\?object=([^&]+) => bors_admin_edit_page(1)',
+	'/_bors/admin/property\?object=([^&]*) => bors_admin_property(1)',
 
 	'/___/ => bors_ext_admin_main',
 	'/___/core/ => bors_ext_admin_core_main',

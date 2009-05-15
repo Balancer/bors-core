@@ -8,6 +8,11 @@ class base_page extends base_object
 	function storage_engine() { return NULL; }
 	function can_be_empty() { return true; }
 
+	function class_title()		{ return ec('Страница'); }
+	function class_title_rp()	{ return ec('страницы'); }
+	function class_title_dp()	{ return ec('странице'); }
+	function class_title_vp()	{ return ec('страницу'); }
+
 	var $stb_source = NULL;
 	function set_source($source, $db_update) { $this->set("source", $source, $db_update); }
 	function source() { return $this->stb_source; }

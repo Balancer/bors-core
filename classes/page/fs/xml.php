@@ -2,22 +2,16 @@
 
 class page_fs_xml extends base_page
 {
-	function storage_engine()	{ return 'storage_fs_xml'; }
-	function render_engine()	{ return 'render_page'; }
-	function body_engine()		{ return 'body_source'; }
+	function storage_engine() { return 'storage_fs_xml'; }
+	function render_engine(){ return 'render_page'; }
+	function body_engine()	{ return 'body_source'; }
+	function admin_engine()	{ return 'bors_admin_engine_page'; }
+
 	function can_be_empty()		{ return false; }
 	function class_title()		{ return ec('Страница'); }
 	function class_title_rp()	{ return ec('страницы'); }
 	function class_title_dp()	{ return ec('странице'); }
 	function class_title_vp()	{ return ec('страницу'); }
-
-	var $_parents;
-	function parents() { return $this->_parents ? $this->_parents : parent::parents(); }
-	function set_parents($array) { return $this->_parents = $array; }
-
-	private $_children;
-	function children() { return $this->_children ? $this->_children : parent::children(); }
-	function set_children($array) { return $this->_children = $array; }
 
 	function __construct($id)
 	{

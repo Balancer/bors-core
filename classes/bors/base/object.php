@@ -302,7 +302,7 @@ class base_object extends base_empty
 		return $this->$field_name = $value;
 	}
 
-	function render_engine() { return false; }
+	function render_engine() { return config('render_engine', false); }
 
 	function is_cache_disabled() { return true; }
 	function template_vars() { return 'body source me me_id'; }

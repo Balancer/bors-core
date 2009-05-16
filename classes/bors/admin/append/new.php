@@ -1,19 +1,10 @@
 <?php
 
-class bors_admin_append_child extends base_page
+class bors_admin_append_new extends base_page
 {
 	function config_class() { return config('admin_config_class'); }
-	function parents() { return $this->object() ? array($this->object()->url()) : array(); }
-	function title() { return ec('новая дочерняя страница'); }
-
-	function object()
-	{
-		$id = urldecode($this->id());
-		if(preg_match('!^/!', $id))
-			$id = 'http://'.$_SERVER['HTTP_HOST'].$id;
-
-		return object_load($id);
-	}
+	function parents() { return array('/'); }
+	function title() { return ec('новая страница'); }
 
 	function pre_parse()
 	{
@@ -30,19 +21,13 @@ class bors_admin_append_child extends base_page
 	{
 		templates_noindex();
 
-		$base = $this->object()->url();
-		$idx = 1;
-		while(object_load($sub = "{$base}new_{$idx}/") && $idx < 100)
-			$idx++;
-
 		return array(
-			'object' => $this->object(),
-			'sub_url' => $sub,
+			'new_url' => $this->id(),
 			'referer' => ($ref = bors()->referer()) ? $ref : 'newpage_admin',
 		);
 	}
 
-	function admin() { return $this->object()->admin(); }
+	function admin() { return false; }
 
 	function on_action($data)
 	{

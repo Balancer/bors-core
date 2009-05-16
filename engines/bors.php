@@ -24,6 +24,10 @@ function object_load($class, $object_id=NULL, $args=array())
 	if(!$class)
 		return;
 
+	//TODO: сделать отброс пробельных символов
+//	if(!is_object($object_id))
+//		$object_id = trim($object_id, "\n\r ");
+
 	return class_load($class, $object_id, $args);
 }
 
@@ -36,7 +40,7 @@ function &object_new($class, $id = NULL)
 		$id = call_user_func(array($class, 'id_prepare'), $id);
 		$obj->set_id($id);
 	}
-	
+
 	$obj->_configure();
 
 	$obj->init(false);
@@ -44,26 +48,32 @@ function &object_new($class, $id = NULL)
 	return $obj;
 }
 
-function &object_new_instance($class, $id = NULL, $db_update = true)
+function &object_new_instance($class, $id = NULL, $db_update = true, $need_check_data = false)
 {
 	if(is_array($id))
 	{
 		$data = $id;
-		$id = NULL;
+		$id = @$data['id'];
 	}
 	else
 		$data = false;
 
 	$id = call_user_func(array($class, 'id_prepare'), $id);
-	$obj = &object_new($class, $id);
+	$object = &object_new($class, $id);
 
-	if($data !== false)
-		foreach($data as $key => $value)
-			$obj->set($key, $value, $db_update);
+	$object->set_owner_id(bors()->user_id(), true);
+	$object->set_last_editor_id(bors()->user_id(), true);
 
-	$obj->new_instance();
-	$obj->_configure();
-	return $obj;
+	if(!$object->set_fields($data, true, NULL, $need_check_data) && $need_check_data)
+	{
+		bors()->drop_changed_object($object);
+		$object = NULL;
+		return $object;
+	}
+
+	$object->new_instance();
+	$object->_configure();
+	return $object;
 }
 
 function bors_object_new_instance_db(&$object)
@@ -80,6 +90,7 @@ function bors_object_new_instance_db(&$object)
 	if(!$object->modify_time(true))
 		$object->set_modify_time(time(), true);
 
+	$object->set_owner_id(bors()->user_id(), true);
 	$object->set_last_editor_id(bors()->user_id(), true);
 
 	$object->storage()->create($object);

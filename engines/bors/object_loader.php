@@ -147,10 +147,10 @@ function class_load($class, $id = NULL, $args=array())
 
 	if(preg_match("!^/!", $class))
 		$class = 'http://'.$_SERVER['HTTP_HOST'].$class;
-	
+
 	if(!is_object($id) && preg_match("!^(\d+)/$!", $id, $m))
 		$id = $m[1];
-	
+
 	if(preg_match("!^(\w+)://.+!", $class, $m))
 	{
 		if(preg_match("!^http://!", $class))
@@ -423,7 +423,7 @@ function class_load_by_vhosts_url($url)
 						else
 							return object_load($obj->url($page));
 					}
-					
+
 					return $obj;
 				}
 			}
@@ -441,6 +441,7 @@ function object_init($class_name, $object_id, $args = array())
 	// В этом методе нельзя использовать debug_test()!!!
 
 	$obj = NULL;
+	$original_id = $object_id;
 
 	if($object_id === 'NULL')
 		$object_id = NULL;
@@ -448,10 +449,15 @@ function object_init($class_name, $object_id, $args = array())
 	if(!($class_file = class_include($class_name, defval($args, 'local_path'))))
 		return $obj;
 
-	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id);
-
 	$found = 0;
-	if(empty($args['no_load_cache']))
+	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id);
+	if(is_object($object_id) && !is_object($original_id))
+	{
+		$obj = $object_id;
+		$object_id = $obj->id();
+		$found = 2;
+	}
+	elseif(empty($args['no_load_cache']))
 	{
 		$obj = &load_cached_object($class_name, $object_id, $args, $found);
 		if($obj && ($obj->id() != $object_id))

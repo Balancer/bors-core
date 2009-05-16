@@ -15,11 +15,11 @@ class base_page_db extends base_page
 	function new_instance() { bors_object_new_instance_db($this); }
 
 	function uri2id($id) { return $id; }
-	
+
 	function __construct($id)
 	{
 		$id = $this->uri2id($id);
-			
+
 		parent::__construct($id);
 //		if(config('strict_auto_fields_check'))
 //			bors_db_fields_init($this);

@@ -18,7 +18,7 @@ function objects_array($class, $args = array())
 	unset($args['by_id']);
 
 	$where = mysql_args_compile($args, $class);
-		
+
 	$init = &new $class(NULL);
 
 	return $init->storage()->load($init, $where, false, $cargs);
@@ -36,7 +36,7 @@ function objects_count($class, $args = array())
 {
 	if(is_numeric($class))
 		$class = class_id_to_name($class);
-	
+
 	if(is_object($class))
 		$init = $class;
 	else	
@@ -59,4 +59,27 @@ function bors_field_array_extract($objects_array, $field)
 		$result[] = $x->$field();
 
 	return $result;
+}
+
+function objects_delete($class, $args = array())
+{
+	if(is_numeric($class))
+		$class = class_id_to_name($class);
+
+	$cargs = array();
+
+	if(!empty($args['object_id']))
+		$cargs['object_id'] = $args['object_id'];
+	unset($args['object_id']);
+
+	if(!empty($args['by_id']))
+		$cargs['by_id'] = true;
+	unset($args['by_id']);
+
+	$where = mysql_args_compile($args, $class);
+
+	$init = &new $class(NULL);
+
+	foreach($init->storage()->load($init, $where, false, $cargs) as $x)
+		$x->delete();
 }

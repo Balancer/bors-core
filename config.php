@@ -114,9 +114,6 @@ function bors_init()
 		config_set_ref('memcached_instance', $memcache);
 	}
 
-	if($user_class = config('user_class'))
-		eval("class bors_user extends {$user_class} { }");
-
 	require_once('engines/bors.php');
 
 	require_once('inc/navigation.php');

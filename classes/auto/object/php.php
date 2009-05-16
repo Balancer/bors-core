@@ -3,7 +3,7 @@
 class auto_object_php extends base_object
 {
 	function init() { }
-	function loaded() { return $this->object(); }
+	function loaded() { return is_object($this->object()); }
 	function can_be_empty() { return false; }
 
 	private $object = false;

@@ -16,8 +16,11 @@ function smarty_block_js_if($params, $content, &$smarty)
 		return;
 	}
 
-	echo "<script  type=\"text/javascript\"><!--
-if(".base_object::template_data('smarty_block_js_if_cond')."){document.write(\"".addslashes(str_replace("\n", '\n', $content))."\")}
---></script>";
+	echo "<script  type=\"text/javascript\"><!--\n";
+	echo "if(".base_object::template_data('smarty_block_js_if_cond')."){\n";
+	foreach(explode("\n", $content) as $s)
+		echo " document.writeln(\"".addslashes($s)."\")\n";
+	echo "}\n";
+	echo "--></script>\n";
 	return;
 }

@@ -1,19 +1,40 @@
-<html>
-<head><title>{$title}</title></head>
-<link rel="stylesheet" type="text/css" href="/bors-shared/css/bors/core.css" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>{$browser_title}</title>
+	<meta http-equiv="content-type" content="text/html; charset={$this->output_charset()}" />
+	<link rel="SHORTCUT ICON" href="/favicon.ico" />
+	<script src="/_bors/js/funcs.js"></script>
+{if $header}
+{foreach from=$header item="h"}
+{$h}
+{/foreach}
+{/if}
+{if $meta}{foreach key=key item=value from=$meta}
+<meta name="{$key}" content="{$value|htmlspecialchars}" />
+{/foreach}{/if}
+{foreach item=s from=$head_append}
+{$s}
+{/foreach}
+</head>
+
+<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
 <body>
 <small>{module class="nav_top" id=$this}</small>
 <div align="right">{$description}</div>
 <h1>{$title}</h1>
+{include file="xfile:default/inc/admin-tools.html"}
+
 {$body}
 
-{if $access}
-<hr />
-<small><center> 
-	edit <a href="{$main_uri}?edit">page</a> |
-	<a href="{$main_uri}?edit-data">data</a> |
-	<a href="{$main_uri}?nav_edit">navigation</a>
-</center></small>
+{include file="xfile:default/inc/admin-tools.html"}
+<!--
+class = {$this->class_name()}
+class_file = {$this->class_file()}
+{if $this->cache_static()}
+static expire = {$this->cache_static_expire()|date:'r'}
 {/if}
+class_template = {$this->template()}
+-->
 </body>
 </html>

@@ -45,6 +45,13 @@ table.btab td { background: white; }
 	background-color: #def;
 }
 
+table.null, table.null td,  table.null th {
+	border: none;
+	padding: 0;
+	margin: 0;
+	vertical-align: top;
+}
+
 .w100p { width: 98%; }
 
 div.clear {
@@ -76,3 +83,17 @@ xmp {
 	padding: 4px;
 	background-color: #ddd;
 }
+
+.small-box {
+	border: 1px solid #ccc;
+	padding: 1px;
+	background-color: #ddd;
+}
+
+.box {
+	border: 1px solid #ccc;
+	padding: 4px;
+	background-color: #ddd;
+}
+
+.right { text-align: right; }

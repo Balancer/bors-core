@@ -1,12 +1,11 @@
 <?php
 
-class bors_admin_edit_smart extends base_page
+class bors_admin_property extends base_page
 {
 	function config_class() { return config('admin_config_class'); }
-
-	function parents() { return $this->object() ? array($this->object()->admin_parent_url()) : array(); }
-
-	function title() { return ec('редактор'); }
+	function parents() { return $this->object() ? array($this->object()->url()) : array(); }
+	function title() { return ec('Свойства ').strtolower($this->object()->class_title_rp()).ec(' «').$this->object()->title().ec('»'); }
+	function nav_name() { return ec('свойства'); }
 
 	function object()
 	{
@@ -17,12 +16,15 @@ class bors_admin_edit_smart extends base_page
 		return object_load($id); 
 	}
 
-	function fields() { return explode(',', $this->args('fields')); }
-
 	function pre_parse()
 	{
 		if(!($me = bors()->user()) && !config('admin_can_nologin'))
 			return bors_message(ec('Вы не авторизованы'));
+
+		if(!$me->can_edit($this->object()))
+			return bors_message(ec('Вы не можете редактировать этот объект'));
+
+		return false;
 	}
 
 	function local_data()
@@ -31,11 +33,9 @@ class bors_admin_edit_smart extends base_page
 
 		return array(
 			'object' => $this->object(),
-			'fields' => $this->fields(),
 			'referer' => ($ref = bors()->referer()) ? $ref : 'newpage_admin',
 		);
 	}
 
-//	function url() { return '/admin/edit-smart/?object='.$this->object()->internal_uri(); }
 	function admin() { return $this->object()->admin(); }
 }

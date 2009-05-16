@@ -3,7 +3,7 @@
 class page_fs_separate extends base_page
 {
 	function storage_engine()	{ return 'storage_fs_separate'; }
-	function render_engine()	{ return 'render_page'; }
+	function render_engine()	{ return config('render_engine', 'render_page'); }
 	var $stb_body_engine = 'body_source';
 	function can_be_empty()		{ return false; }
 	function can_cached()		{ return false; }

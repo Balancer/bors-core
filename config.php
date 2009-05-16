@@ -148,6 +148,7 @@ function bors_dirs($host = NULL)
 		BORS_LOCAL,
 		BORS_EXT,
 		BORS_CORE,
+		BORS_3RD_PARTY,
 	));
 
 	return $dirs = array_unique(array_filter($data));

@@ -1,0 +1,18 @@
+{if $this->error}
+<dl>
+<dd>Ошибка: {$this->error}</dd>
+</dl>
+{else}
+{if not $me}
+<h2>Аутентификация</h2>
+<form action="/_bors/users/do-login.bas" method="post">
+<table class="btab">
+<tr><th class="right">Имя пользователя:</th><td><input name="login" value="" /></td></tr>
+<tr><th class="right">Пароль:</th><td><input type="password" name="password" value="" /></td></tr>
+<tr><th colSpan="2"><input type="submit" value="Вход"></th></tr>
+</table>
+</form>
+{else}
+Здравствуйте, <b>{$me->title()}</b>! [<a href="/_bors/users/do-logout.bas">выход</a>]
+{/if}
+{/if}

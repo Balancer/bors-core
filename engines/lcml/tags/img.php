@@ -4,7 +4,7 @@ require_once('inc/urls.php');
 
 function lt_img($params) 
 { 
-//		print_d($params); exit();
+		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.
 
 		if(empty($params['size']))
 			$params['size'] = '468x468';

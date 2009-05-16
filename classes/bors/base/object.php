@@ -500,7 +500,7 @@ class base_object extends base_empty
 						.':'.intval(@$array["{$var}_seconds"])."\n";
 					echo $array[$var]."\n";
 					echo date("r", $array[$var]);
-*/					
+*/
 					// mktime (@$array["{$var}_hour"], @$array["{$var}_minute"], @$array["{$var}_second"], @$array["{$var}_month"], @$array["{$var}_day"], @$array["{$var}_year"]);
 				}
 				else // Не полный формат даты, например, 2009-0-0 - пишем как строку.
@@ -511,11 +511,9 @@ class base_object extends base_empty
 
 				unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"]);
 			}
-
-//			print_d($array);
 		}
 
-		if($check_values && $this->check_data($data) === true)
+		if($check_values && $this->check_data($array) === true)
 			return false;
 
 		if($fields_list)

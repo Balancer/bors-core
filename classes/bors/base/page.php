@@ -253,4 +253,12 @@ class base_page extends base_object
 	}
 
 	function template_vars() { return parent::template_vars().' browser_title'; }
+
+	function check_value_conditions()
+	{
+		return array_merge(parent::check_value_conditions(), array(
+			'title'	=> ec("!=''|Заголовок страницы должен быть указан"),
+			'source'=> ec("!=''|Текст страницы должен быть задан"),
+		));
+	}
 }

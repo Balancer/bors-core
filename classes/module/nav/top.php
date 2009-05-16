@@ -49,6 +49,7 @@ class module_nav_top extends base_page
 			}
 
 			$parent_obj = object_load($parent);
+//			echo "p($obj): $parent -> $parent_obj<br/>";
 			if(!$parent_obj || $parent_obj->internal_uri() == $obj->internal_uri())
 				continue;
 

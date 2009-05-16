@@ -17,7 +17,7 @@ class storage_fs_xml extends base_null
 		else
 			return $object->set_loaded(false);
 
-		return config('storage_xml_base_dir', secure_path(BORS_SITE.'/.data')).preg_replace('!^http://[^/]+!', '', $file);
+		return config('storage_xml_base_dir', secure_path(BORS_SITE.'/data/fs-xml/')).preg_replace('!^http://[^/]+!', '', $file);
 	}
 
 	function file_path($object)
@@ -40,7 +40,7 @@ class storage_fs_xml extends base_null
 	{
 		$file = storage_fs_xml::file($object);
 		$file_path = storage_fs_xml::file_path($object);
-//		echo "Load {$object->url()} [{$object->id()}] as $file<br/>\n";
+//		echo "Load url={$object->url()} [{$object->id()}] as $file<br/>\n";
 
 		if(!file_exists($file))
 			foreach(bors_dirs() as $base)
@@ -114,8 +114,6 @@ class storage_fs_xml extends base_null
 		if(!($file = $object->storage_file()))
 			$file = storage_fs_xml::file($object);
 
-		mkpath(dirname($file));
-
 		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<bors>\n";
 		$fields = get_object_vars($object);
 		$fields['stb_children'] = $object->children();
@@ -155,7 +153,7 @@ class storage_fs_xml extends base_null
 
 		$result .= "</bors>\n";
 
-		@mkdir(dirname($file), 0777, true);
+		mkpath(dirname($file), 0777);
 		@chmod(dirname($file), 0777);
 		file_put_contents($file, $result);
 		@chmod($file, 0666);

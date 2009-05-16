@@ -85,11 +85,24 @@ class storage_fs_separate extends base_null
 
 	function save($object)
 	{
+
 		$base = $object->storage_base_dir();
 		$pfx  = $object->storage_file_prefix();
+
+		if(empty($base))
+		{
+			$url_data = url_parse($object->id());
+			$base = secure_path(config('page.fs.separate.base_dir', BORS_SITE.'/data/fs-separate/').$url_data['path']);
+		}
+
+		$skip_fields = explode(' ', $object->storage_skip_fields());
+
 		$success = true;
 		foreach($object->changed_fields as $field_name => $field_property)
 		{
+			if(in_array($field_name, $skip_fields))
+				continue;
+
 			$data = $object->$field_property;
 			if(is_array($data))
 			{
@@ -99,6 +112,7 @@ class storage_fs_separate extends base_null
 			else
 				$file = secure_path("$base/$pfx$field_name.txt");
 
+			mkpath(dirname($file), 0777);
 			@file_put_contents($file, $data);
 			@chmod($file, 0666);
 		}

@@ -36,6 +36,9 @@ function class_name_to_id($object)
 	if(!$class_name)
 		return NULL;
 
+	if(!config('main_bors_db'))
+		return $class_name;
+
 	$loaded = bors_class_names_load();
 	if($class_id = @$loaded[1][$class_name])
 		return $class_id;

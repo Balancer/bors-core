@@ -43,4 +43,12 @@ class bors_admin_append_child extends base_page
 	}
 
 	function admin() { return $this->object()->admin(); }
+
+	function on_action($data)
+	{
+		$data['id'] = $data['new_url'];
+		unset($data['new_url']);
+		$new = object_new_instance($data['new_object_class'], $data, true, true);
+		return $new ? go($new->url()) : true;
+	}
 }

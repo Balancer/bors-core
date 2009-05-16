@@ -14,7 +14,8 @@ class page_fs_xml extends base_page
 		if(preg_match('!^(/.+\.xml)/$!', $id, $m))
 			$id = "http://{$_SERVER['HTTP_HOST']}{$m[1]}";
 
-		return $id;
+		//TODO: сделать отброс также \r
+		return trim($id);
 	}
 
 	function relative_path()

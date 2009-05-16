@@ -11,8 +11,8 @@
 		$rev = "";
 		for($i=strlen($email)-1; $i>=0; $i--)
 			$rev .= $email[$i];
-		
+
 		return "<script type=\"text/javascript\">document.write('<a href='+'\"'+'ma'+'i'+'lto'+':' +'".addslashes($rev)."'.split('').reverse().join('') +'\">')</script>$user"
-			.($img_mask ? "<span style=\"color: red;\"><img src=\"http://balancer.ru/img/rt.gif\" width=\"16\" height=\"16\" align=\"absmiddle\"/></span>" : "<span>&#64;</span>")
+			.($img_mask ? "<span style=\"color: red;\"><img src=\"/_bors/i/rt.gif\" width=\"16\" height=\"16\" align=\"absmiddle\"/></span>" : "<span>&#64;</span>")
 			."$domain<script type=\"text/javascript\">document.write('</'+'a>')</script>";
 	}

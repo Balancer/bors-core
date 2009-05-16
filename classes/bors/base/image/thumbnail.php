@@ -49,7 +49,7 @@ class base_image_thumbnail extends base_image
 
 //		echo "{$this}: {$this->wxh()}<br />\n";
 		$this->set_loaded(true);
-		
+
 		return false;
 	}
 

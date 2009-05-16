@@ -19,7 +19,7 @@ class render_php extends base_null
 
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$$var = $object->$var();
-		
+
 		foreach($object->local_template_data_array() as $var => $value)
 			$$var = $value;
 

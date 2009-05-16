@@ -8,6 +8,7 @@
 
 function bors_form_save(&$obj)
 {
+//	echo $obj;
 //	print_d($_GET);
 //	exit();
 
@@ -126,6 +127,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if($id)
 	{
 		$object = object_load($class_name, $id);
+
 		if(!$object)
 			$object = object_new($class_name, $id);
 	}
@@ -189,7 +191,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if($last)
 	{
 		$object->set_modify_time(time(), true);
-		$object->set_record_editor_id(bors()->user_id(), true);
+		$object->set_last_editor_id(bors()->user_id(), true);
 		$object->post_set($data);
 	}
 

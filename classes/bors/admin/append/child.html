@@ -1,0 +1,13 @@
+{form action=$this->url()}
+<table class="btab w100p">
+<tr><th class="right" width="200">Адрес страницы:<br/><small>поменяйте!</small></th><td>{input name="new_url" value=$sub_url class="w100p"}</td></tr>
+<tr><th class="right">Заголовок:</th><td>{input name="title" value="" class="w100p"}</td></tr>
+<tr><th class="right">Описание<br/><small>не обязательно</small>:</th><td>{textarea name="description" value="" class="w100p" rows="2"}</td></tr>
+<tr><th class="right">Содержание:</th><td>{textarea name="source" value="" class="w100p" rows="15"}</td></tr>
+<tr><th class="right">Тип перевода строк:</th><td>{dropdown name="cr_type" list="common_list_crTypes" value="" class="w100p"}</td></tr>
+<tr><th class="right">Родительские страницы:<br/><small>по одной на строку</small></th><td>{textarea name="parents_string" value=$object->url() class="w100p" rows="2"}</td></tr>
+<tr><th class="right">Класс страницы:</th><td>{dropdown name="new_object_class" value=$object->class_name() list="bors_class_namesList"}
+<tr><th colSpan="2">{submit value="Сохранить"}</th></tr>
+</table>
+{go value="newpage"}
+{/form}

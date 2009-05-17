@@ -6,11 +6,9 @@
 	<link rel="SHORTCUT ICON" href="/favicon.ico" />
 	<script src="/_bors/js/cfuncs.js"></script>
 	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
-{if $header}
-{foreach from=$head_append item="h"}
+{if $header}{foreach from=$header item="h"}
 {$h}
-{/foreach}
-{/if}
+{/foreach}{/if}
 {if $meta}{foreach key=key item=value from=$meta}
 <meta name="{$key}" content="{$value|htmlspecialchars}" />
 {/foreach}{/if}

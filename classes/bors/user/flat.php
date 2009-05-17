@@ -57,9 +57,10 @@ class bors_user_flat extends bors_user_base
 		$md5_password = md5($password);
 
 		foreach(self::_load_users_data() as $test_user_id => $x)
+		{
 			if($login == $x['login'] && $x['md5_password'] == $md5_password)
 				return self::_user_object($test_user_id, true);
-
+		}
 		return false;
 	}
 

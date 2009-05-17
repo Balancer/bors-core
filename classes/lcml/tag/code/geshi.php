@@ -10,8 +10,11 @@ class lcml_tag_code_geshi extends base_empty
 	function render($code, $params)
 	{
 		$code = preg_replace('/^\s*?\n|\s*?\n$/','',$code);
+		$lang1 = strtolower(empty($params['language']) ? 'text' : $params['language']);
 
-		$geshi = new GeSHi($code, strtolower($params['language']));
+		$geshi = new GeSHi($code, NULL);
+		$lang2 = $geshi->get_language_name_from_extension($lang1);
+		$geshi->set_language($lang = ($lang2 ? $lang2 : $lang1));
 		$geshi->set_encoding('utf-8');
 		$geshi->enable_classes();
 		$geshi->set_header_type(GESHI_HEADER_PRE);
@@ -23,6 +26,6 @@ class lcml_tag_code_geshi extends base_empty
 
 		base_object::add_template_data_array('head_append', '<link rel="stylesheet" type="text/css" href="/_bors/css/bors/code-geshi.css" />');
 
-		return $geshi->error() ? false : $highlighted_code;
+		return $geshi->error() ? false : "<div class=\"code-head\">code $lang</div>$highlighted_code";
 	}
 }

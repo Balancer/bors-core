@@ -2,9 +2,9 @@
 {if $admin}
 {js_if cond="top.is_admin"}
 <div class="small-box right"><small>
-{$admin->edit_imaged_link('', 'редактировать данный объект')}
-{$admin->property_imaged_link('', 'редактировать свойства данного объекта')}
-{$admin->append_child_imaged_link('', 'добавить новый дочерний объект')}
+{$admin->imaged_edit_link('', 'редактировать данный объект')}
+{$admin->imaged_property_link('', 'редактировать свойства данного объекта')}
+{$admin->imaged_append_child_link('', 'добавить новый дочерний объект')}
 </small></div>
 {/js_if}
 {/if}

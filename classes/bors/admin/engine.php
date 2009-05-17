@@ -29,15 +29,14 @@ class bors_admin_engine extends base_empty
 		return '/_bors/admin/property?object='.urlencode($obj->internal_uri());
 	}
 
-	function edit_imaged_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
+	function imaged_edit_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
 	{
 		$obj = $this->real_object();
 
 		if(is_null($title))
 			$title = ec('Редактировать ')
-				.strtolower($obj->class_title_rp())
-				.' '
-				.$obj->title();
+				.strtolower($obj->class_title_vp())
+				.ec(' «').$obj->title().ec('»');
 
 		$x = $title ? '&nbsp;' : '';
 		$url = $this->edit_url();
@@ -54,7 +53,7 @@ class bors_admin_engine extends base_empty
 			return "<img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
 
-	function append_child_imaged_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
+	function imaged_append_child_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
 	{
 		$obj = $this->real_object();
 
@@ -76,7 +75,7 @@ class bors_admin_engine extends base_empty
 			return "<img src=\"/_bors/i/new-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
 
-	function property_imaged_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
+	function imaged_property_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
 	{
 		$obj = $this->real_object();
 

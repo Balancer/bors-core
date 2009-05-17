@@ -83,6 +83,11 @@ require_once('obsolete/DataBaseHTS.php');
 if(file_exists(BORS_CORE.'/config/local.php'))
 	include_once(BORS_CORE.'/config/local.php');
 
+if(defined('BORS_APPEND'))
+	foreach(explode(' ', BORS_APPEND) as $path)
+		if(file_exists($path.'/config.php'))
+			include_once($path.'/config.php');
+
 if(file_exists(BORS_LOCAL.'/config.php'))
 	include_once(BORS_LOCAL.'/config.php');
 

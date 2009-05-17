@@ -28,7 +28,7 @@ class base_config extends base_empty
 		foreach($this->template_data_array() as $key => $value)
 			$object->add_template_data_array($key, $value);
 	}
-	
+
 	function config_data() { return array(); }
 	function template_data() { return array(); }
 	function template_data_array() { return array(); }

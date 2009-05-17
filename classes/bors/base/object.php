@@ -726,7 +726,7 @@ class base_object extends base_empty
 	{
 		if($this->_dbh === NULL)
 			$this->_dbh = &new driver_mysql($database_name ? $database_name : $this->main_db());
-			
+
 		return $this->_dbh;
 	}
 

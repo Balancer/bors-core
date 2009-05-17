@@ -5,31 +5,32 @@ function _e($str)
 	return $str;
 }
 
-function bloginfo($key)
+function get_bloginfo($key)
 {
 	global $wp_object;
 
 	switch($key)
 	{
 		case 'charset':
-			echo $wp_object->output_charset();
-			break;
+			return $wp_object->output_charset();
 		case 'description':
-			echo $wp_object->description();
-			break;
+			return $wp_object->description();
 		case 'name':
-			echo ($o=$wp_object->owner()) ? $o->title() : config('default_owner_name');
-			break;
+			return ($o=$wp_object->owner()) ? $o->title() : config('default_owner_name');
+		case 'rss2_url':
+			return $wp_object->rss_url();
 		case 'stylesheet_url':
-			echo '/css/wordpress/'.$wp_object->template().'/style.css';
-			break;
+			return '/css/wordpress/'.$wp_object->template().'/style.css';
 		case 'url':
-			echo '/';
-			break;
+			return '/';
 		default:
-			echo "$key;";
-			break;
+			return "$key;";
 	}
+}
+
+function bloginfo($key)
+{
+	echo get_bloginfo($key);
 }
 
 function get_header()
@@ -46,17 +47,32 @@ function get_sidebar()
 	include_once($base.'/sidebar.php');
 }
 
-function have_posts()
-{
-	return false;
-}
-
 function get_footer()
 {
 	global $wp_object;
 	$base = $wp_object->template_wordpress_base_dir();
 	include_once($base.'/footer.php');
 }
+
+function have_posts()
+{
+	static $shown = 0;
+	if($shown++ > 1)
+		return false;
+
+	return true;
+}
+
+function the_post() { echo 'Post'; }
+function the_title() { echo $GLOBALS['wp_object']->title(); }
+function the_content() { echo $GLOBALS['wp_object']->body(); }
+function the_category() { echo 'category'; }
+function the_tags() { echo 'tags'; }
+function edit_post_link() { echo $GLOBALS['wp_object']->admin()->imaged_edit_link(); }
+function next_post_link() { }
+function next_posts_link() { }
+function previous_post_link() { }
+function previous_posts_link() { }
 
 function wp_footer() { echo ''; }
 function wp_get_archives($link) { echo ''; } // ??
@@ -69,6 +85,8 @@ function wp_register() { echo 'wp_register;'; }
 function wp_tag_cloud($count) { echo '<a href="#">wp_tag_cloud;</a>'; }
 function wp_title() { echo $GLOBALS['wp_object']->title(); }
 
+function single_post_title() { return $GLOBALS['wp_object']->title(); }
+
 function get_archives($type, $count) { echo '<li><a href="#">get_archives;</a></li>'; }
 function get_links($x1, $open_tag, $close_tag, $x2) { echo 'get_links;'; }
 
@@ -79,7 +97,7 @@ function is_tag() { return false; }
 function is_month() { return false; }
 function is_year() { return false; }
 function is_search() { return false; }
-function is_page() { return false; }
+function is_page() { return true; }
 function is_author() { return false; }
 
-function is_front_page() { return true; }
+function is_front_page() { return false; }

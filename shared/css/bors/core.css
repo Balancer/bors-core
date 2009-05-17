@@ -1,3 +1,5 @@
+@import url("style.css");
+
 body {
 	font-size: 9pt;
 	font-family: Verdana;
@@ -52,13 +54,6 @@ table.null, table.null td,  table.null th {
 	vertical-align: top;
 }
 
-.w100p { width: 98%; }
-
-div.clear {
-	height: 0px;
-	clear: both;
-}
-
 div.pages_select a {
 	margin: 0 3px;
 	padding: 1px 2px;
@@ -96,4 +91,7 @@ xmp {
 	background-color: #ddd;
 }
 
-.right { text-align: right; }
+.code {
+	background: white;
+	border: 1px solid #ccc;
+}

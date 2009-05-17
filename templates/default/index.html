@@ -4,9 +4,10 @@
 	<title>{$browser_title}</title>
 	<meta http-equiv="content-type" content="text/html; charset={$this->output_charset()}" />
 	<link rel="SHORTCUT ICON" href="/favicon.ico" />
-	<script src="/_bors/js/funcs.js"></script>
+	<script src="/_bors/js/cfuncs.js"></script>
+	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
 {if $header}
-{foreach from=$header item="h"}
+{foreach from=$head_append item="h"}
 {$h}
 {/foreach}
 {/if}
@@ -18,7 +19,6 @@
 {/foreach}
 </head>
 
-<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
 <body>
 <small>{module class="nav_top" id=$this}</small>
 <div align="right">{$description}</div>

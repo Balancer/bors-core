@@ -23,7 +23,7 @@ class cache_static extends base_object_db
 
 	static function drop($object)
 	{
-		if(!$object)
+		if(!$object || !config('cache_database'))
 			return;
 
 		$caches = objects_array('cache_static', array('class_id=' => $object->class_id(), 'object_id=' => $object->id()));
@@ -31,14 +31,14 @@ class cache_static extends base_object_db
 		if(file_exists($object->static_file()))
 			if($cache = object_load('cache_static', $object->static_file()))
 				$caches[] = $cache;
-	
+
 		foreach($caches as $cache)
 		{
 			@unlink($cache->id());
 			if(!file_exists($cache->id()))
 				$cache->delete(false);
 		}
-		
+
 		if($object->cache_static_recreate())
 		{
 			if(config('bors_tasks'))
@@ -49,7 +49,7 @@ class cache_static extends base_object_db
 		else
 			@unlink($object->static_file());
 	}
-	
+
 	static function save($object, $content, $expire_time = false)
 	{
 		$object_id = $object->id();

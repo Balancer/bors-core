@@ -301,7 +301,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true)
 
 	$out = strftime('%Y-%m-%d %H:%M:%S: ') . $message . "\n";
 	if($trace)
-	$out .= "url: http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"
+	$out .= "url: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
 	.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
 	. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
 	. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"

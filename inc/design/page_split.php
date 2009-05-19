@@ -55,7 +55,9 @@
 		return array(max(2, $current_page - $limit_down), min($total_pages - 1, $current_page + $limit_up));
 	}
 
-	function pages_show($obj, $total_pages, $limit, $show_current = true, $current_page_class = 'current_page', $other_page_class = 'select_page')
+	function pages_show($obj, $total_pages, $limit,
+		$show_current = true, $current_page_class = 'current_page', $other_page_class = 'select_page',
+		$use_items_count = false, $per_page = 0, $total_items = 0)
 	{
 		$pages = array();
 		$total_pages = intval($total_pages);
@@ -74,20 +76,20 @@
 		list($start, $stop) = pages_start_stop_calculate($current_page, $total_pages, $limit);
 //		$pages[] = $start;
 //		$pages[] = $stop;
-		
-		$pages[] = get_page_link($obj, 1, 1==$current_page ? $current_page_class : $other_page_class, $q);
-		
+
+		$pages[] = get_page_link($obj, 1, 1==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
+
 		if($start > 2)
 			$pages[] = "...";
 
 		for($i = $start; $i <= $stop; $i++)
-			$pages[] = get_page_link($obj, $i, $i==$current_page ? $current_page_class : $other_page_class, $q);
-		
+			$pages[] = get_page_link($obj, $i, $i==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
+
 		if($stop < $total_pages - 1)
 			$pages[] = "...";
 
-		$pages[] = get_page_link($obj, $total_pages, $total_pages==$current_page ? $current_page_class : $other_page_class, $q);
-		
+		$pages[] = get_page_link($obj, $total_pages, $total_pages==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
+
 //		for($i = $total_pages - intval($limit/2) + 1; $i <= $total_pages; $i++)
 //			$pages[] = get_page_link($obj, $i, $i==$current_page ? $current_page_class : $other_page_class, $q);
 		
@@ -96,7 +98,7 @@
 		return $pages;
 	}
 
-	function get_page_link($obj, $page_num, $class="", $q = "")
+	function get_page_link($obj, $page_num, $class="", $q = "", $use_items_count = false, $per_page = 0, $total_items = 0)
 	{
 		if(is_object($obj))
 		{
@@ -110,8 +112,20 @@
 			if($page_num > 1)
 				$p .= "page$page_num/";
 		}
-				
-		return "<a href=\"$p$q\"".($class? " class=\"$class\"" : "" ).">$page_num</a>";
+
+		if($use_items_count)
+		{
+			$start = ($page_num-1)*$per_page + 1;
+			$stop  = $start + $per_page - 1;
+			if($stop > $total_items)
+				$stop = $total_items;
+
+			$title = "{$start}-{$stop}";
+		}
+		else
+			$title = $page_num;
+
+		return "<a href=\"$p$q\"".($class? " class=\"$class\"" : "" ).">$title</a>";
 	}
 
 	function check_page($p, $current_page, $total_pages)

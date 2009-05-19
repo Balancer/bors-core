@@ -72,16 +72,16 @@ function url_parse($url)
 	$data = parse_url($url);
 
 	if(empty ($data['host']))
-		$data['host'] = $_SERVER['HTTP_HOST'];
+		$data['host'] = @$_SERVER['HTTP_HOST'];
 
-	if(preg_match("!^{$_SERVER['HTTP_HOST']}$!", $data['host']))
+	if(preg_match("!^".@$_SERVER['HTTP_HOST']."$!", $data['host']))
 		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
 
 	$host = $data['host'].(empty($data['port']) ? '' : ':'.$data['port']);
 
 	require_once('engines/bors/vhosts_loader.php');
 	$vhost_data = bors_vhost_data($host);
-	if(empty($vhost_data) && $host == $_SERVER['HTTP_HOST'])
+	if(empty($vhost_data) && $host == @$_SERVER['HTTP_HOST'])
 		$vhost_data = array(
 			'document_root' => $_SERVER['DOCUMENT_ROOT'],
 		);

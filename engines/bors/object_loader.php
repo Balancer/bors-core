@@ -4,6 +4,9 @@ function class_include($class_name, $local_path = "")
 {
 	if($file_name = @$GLOBALS['bors_data']['class_included'][$class_name])
 		return $file_name;
+
+	if(in_array($class_name, config('classes_skip', array())))
+		return false;
 	
 	$class_path = "";
 	$class_file = $class_name;

@@ -7,8 +7,9 @@ class page_db extends base_page_db
 	function body_engine()	{ return 'body_source'; }
 	function admin_engine()	{ return 'bors_admin_engine_page'; }
 
-	function main_db() { return config('main_bors_db'); }
+	function main_db()    { return config('main_bors_db'); }
 	function main_table() { return 'bors_pages'; }
+
 	function main_table_fields()
 	{
 		return array(

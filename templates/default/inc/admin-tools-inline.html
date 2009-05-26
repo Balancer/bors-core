@@ -1,0 +1,8 @@
+{assign var="admin" value=$this->admin()}
+{if $admin}
+{js_if cond="top.is_admin"}
+{$admin->imaged_edit_link('', 'редактировать данный объект')}
+{$admin->imaged_property_link('', 'редактировать свойства данного объекта')}
+{$admin->imaged_append_child_link('', 'добавить новый дочерний объект')}
+{/js_if}
+{/if}

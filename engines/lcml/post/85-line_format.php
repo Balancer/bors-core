@@ -25,6 +25,18 @@
             case 'cr_as_br':
                 $txt = preg_replace("!\n!", "<br />\n", $txt);
                 break;
+            case 'smart':
+            	echo "Smart!";
+                $txt = preg_split("!\n{2,}!", $txt);
+
+				if(sizeof($txt) > 1)
+					$txt = join("</p>>>>save_cr<<<<p>", $txt);
+				else
+					$txt = $txt[0];
+				$txt = str_replace("\n", "<br/>\n", $txt);
+				$txt = str_replace('>>>save_cr<<<', "\n", $txt);
+				return "<p>$txt</p>";
+				break;
             case 'empty_as_para':
             default:
                 $txt = preg_split("!\n{2,}!", $txt);

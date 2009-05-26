@@ -19,9 +19,12 @@
 		$cbs[] = $name;
 		base_object::add_template_data('form_checkboxes', $cbs);
 
-		echo "<input type=\"checkbox\" value=\"1\"";
+		if(empty($value))
+			$value = 1;
 
-		foreach(explode(' ', 'checked name size style') as $p)
+		echo "<input type=\"checkbox\"";
+
+		foreach(explode(' ', 'checked name size style value') as $p)
 			if(!empty($$p))
 				echo " $p=\"{$$p}\"";
 

@@ -57,7 +57,7 @@
 	{
 		$ids[] = $id;
 		$checked = in_array($id, $current);
-		echo "<input type=\"checkbox\" name=\"".addslashes($name)."[]\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$params />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."$delim\n";
+		echo "<label><input type=\"checkbox\" name=\"".addslashes($name)."[]\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$params />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."</label>$delim\n";
 	}
 
 	$vcbs = base_object::template_data('form_checkboxes_list');

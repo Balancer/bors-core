@@ -8,7 +8,7 @@
 
 === Порядок загрузки компонентов. ===
 
-1. BORS_HOST/
+1. BORS_SITE/
 2. BORS_LOCAL/vhosts/<hostname>/
 3. BORS_LOCAL/
 4. BORS_CORE/vhosts/<hostname>/

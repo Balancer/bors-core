@@ -526,15 +526,16 @@ class base_object extends base_empty
 		}
 		else
 		{
-			foreach($array as $key => $val)
-			{
-				$method = "set_$key";
-				if(method_exists($this, $method) 
-						|| $this->autofield($key) 
-						|| $this->has_smart_field($key)
-				)
-					$this->$method($val, $db_update_flag);
-			}
+			if($array)
+				foreach($array as $key => $val)
+				{
+					$method = "set_$key";
+					if(method_exists($this, $method) 
+							|| $this->autofield($key) 
+							|| $this->has_smart_field($key)
+					)
+						$this->$method($val, $db_update_flag);
+				}
 		}
 
 		return true;

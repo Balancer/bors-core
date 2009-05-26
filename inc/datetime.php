@@ -118,6 +118,45 @@ function make_input_time($field_name, &$data)
 	return $data[$field_name] = strtotime("{$year}-{$month}-{$day} $hour:$min:$sec");
 }
 
+function bors_form_parse_time(&$array)
+{
+	//TODO: заюзать make_input_time? (funcs/datetime.php)
+	if(empty($array['time_vars']))
+		return;
+
+	foreach(explode(',', $array['time_vars']) as $var)
+	{
+		if(@$array["{$var}_month"] && @$array["{$var}_day"] && @$array["{$var}_year"])
+		{
+			$array[$var] = strtotime(intval(@$array["{$var}_year"])
+				.'-'.intval(@$array["{$var}_month"])
+				.'-'.intval(@$array["{$var}_day"])
+				.' '.intval(@$array["{$var}_hour"])
+				.':'.intval(@$array["{$var}_minute"])
+				.':'.intval(@$array["{$var}_seconds"]));//.(@$array["{$var}_year"] >= 1970 ? ' +0200' : ' +0400'));
+/*			echo intval(@$array["{$var}_year"])
+				.'-'.intval(@$array["{$var}_month"])
+				.'-'.intval(@$array["{$var}_day"])
+				.' '.intval(@$array["{$var}_hour"])
+				.':'.intval(@$array["{$var}_minute"])
+				.':'.intval(@$array["{$var}_seconds"])."\n";
+			echo $array[$var]."\n";
+			echo date("r", $array[$var]);
+*/
+			// mktime (@$array["{$var}_hour"], @$array["{$var}_minute"], @$array["{$var}_second"], @$array["{$var}_month"], @$array["{$var}_day"], @$array["{$var}_year"]);
+		}
+		else // Не полный формат даты, например, 2009-0-0 - пишем как строку.
+			$array[$var] = intval(@$array["{$var}_year"]).'-'.intval(@$array["{$var}_month"]).'-'.intval(@$array["{$var}_day"]);
+
+		if(empty($array["{$var}_month"]) && empty($array["{$var}_day"]) && empty($array["{$var}_year"]))
+			$array[$var] = NULL;
+
+		unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"]);
+	}
+	
+	unset($array['time_vars']);
+}
+
 function full_hdate($date, $show_year = true)
 {
 	if(!$date)

@@ -5,10 +5,16 @@ function smarty_function_input_date($params, &$smarty)
 	include_once('inc/datetime.php');
 	
 	extract($params);
-		
-	$obj = $smarty->get_template_vars('current_form_class');
 
-	$date = $obj ? $obj->$name() : NULL;
+	if(!isset($value))
+	{
+		$obj = $smarty->get_template_vars('current_form_class');
+		$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($obj?$obj->$name():NULL)) : '';
+	}
+
+//	$obj = $smarty->get_template_vars('current_form_class');
+
+	$date = $value; // $obj ? $obj->$name() : NULL;
 	if(!$date && !empty($def))
 		$date = $def;
 	
@@ -48,22 +54,22 @@ function smarty_function_input_date($params, &$smarty)
 	if($can_drop || !$day)
 		echo "<option value=\"0\">--</option>\n";
 	for($i = 1; $i<=31; $i++)
-		echo "<option value=\"$i\"".($i==$day?' selected="true"':'').">$i</option>\n";
-	echo "</select>";
+		echo "<option".($i==$day?' selected="true"':'').">$i</option>"; //  value=\"$i\"
+	echo "</select>\n";
 
 	echo "<select name=\"{$name}_month\">\n";
 	if($can_drop || !$mon)
 		echo "<option value=\"0\">-----</option>\n";
 	for($i = 1; $i<=12; $i++)
-		echo "<option value=\"$i\"".($i==$mon?' selected="true"':'').">".month_name_rp($i)."</option>\n";
-	echo "</select>";
+		echo "<option value=\"$i\"".($i==$mon?' selected="true"':'').">".month_name_rp($i)."</option>";
+	echo "</select>\n";
 	
 	echo "<select name=\"{$name}_year\">\n";
 	if($can_drop || !$yea)
 		echo "<option value=\"0\">----</option>\n";
 	for($i = strftime('%Y')+1; $i>=$year_min ; $i--)
-		echo "<option value=\"$i\"".($i==$yea?' selected="true"':'').">$i</option>\n";
-	echo "</select>";
+		echo "<option".($i==$yea?' selected="true"':'').">$i</option>"; // value=\"$i\"
+	echo "</select>\n";
 
 	if(!empty($time))
 	{
@@ -73,15 +79,15 @@ function smarty_function_input_date($params, &$smarty)
 		if($can_drop)
 			echo "<option value=\"0\">--</option>\n";
 		for($i = 0; $i<=23; $i++)
-			echo "<option value=\"$i\"".($i==$hh?' selected="true"':'').">".sprintf('%02d',$i)."</option>\n";
-		echo "</select>";
+			echo "<option".($i==$hh?' selected="true"':'').">".sprintf('%02d',$i)."</option>"; // value=\"$i\"
+		echo "</select>\n";
 
 		echo "<select name=\"{$name}_minute\">\n";
 		if($can_drop)
 			echo "<option value=\"0\">--</option>\n";
 		for($i = 0; $i<=59; $i++)
-			echo "<option value=\"$i\"".($i==$mm?' selected="true"':'').">".sprintf('%02d',$i)."</option>\n";
-		echo "</select>";
+			echo "<option".($i==$mm?' selected="true"':'').">".sprintf('%02d',$i)."</option>"; //  value=\"$i\"
+		echo "</select>\n";
 	}
 
 	$tmv = base_object::template_data('form_time_vars');

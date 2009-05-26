@@ -108,4 +108,7 @@
 
 		echo "</form>\n";
 		base_object::add_template_data('form_checkboxes_list', NULL);
+		base_object::add_template_data('form_checkboxes', NULL);
+		base_object::add_template_data('form_time_vars', NULL);
+		base_object::add_template_data('form_have_go', NULL);
 	}

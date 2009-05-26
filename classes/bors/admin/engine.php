@@ -99,4 +99,41 @@ class bors_admin_engine extends base_empty
 		else
 			return "<img src=\"/_bors/i/property-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
+
+	function hide_url()
+	{
+		if(method_exists($obj = $this->object(), 'hide_url'))
+			return $obj->hide_url();
+
+		return '/_bors/admin/visibility?act=' . ( $obj->is_hidden() ? 'show' : 'hide') . '&object='.urlencode($obj->internal_uri());
+	}
+	function imaged_hide_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
+	{
+		$obj = $this->object();
+
+		$full_title = ($obj->is_hidden() ? ec('Показать ') : ec('Скрыть '))
+			.strtolower($obj->class_title())
+			.' '
+			.$obj->title();
+
+		if(is_null($title))
+			$title = $full_title;
+
+		$x = $title ? '&nbsp;' : '';
+		$url = $this->hide_url();
+
+		if(is_null($popup))
+			$popup = $full_title;
+
+		if(!bors()->main_object() || $unlink_in_admin && preg_match('!'.preg_quote($obj->admin()->hide_url(), '!').'!', bors()->main_object()->url()))
+			$url = '';
+
+		$img = $obj->is_hidden() ? 'visible' : 'hidden';
+		$alt = $obj->is_hidden() ? 'show' : 'hide';
+
+		if($url)
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}<a href=\"{$url}\" title=\"$popup\">{$title}</a>";
+		else
+			return "<img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
+	}
 }

@@ -61,6 +61,15 @@ function bors_form_save(&$obj)
 		else
 			$checkboxes_list = explode(',', $_GET['checkboxes_list']);
 
+		if(!empty($_GET['checkboxes']))
+		{
+			foreach(explode(',', $_GET['checkboxes']) as $cbn)
+				if(empty($_GET[$cbn]))
+					$_GET[$cbn] = 0;
+
+			unset($_GET['checkboxes']);
+		}
+
 		foreach($_GET as $key => $value)
 		{
 			if(is_array($value) && !in_array($key, $checkboxes_list))

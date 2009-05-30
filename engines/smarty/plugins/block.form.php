@@ -97,11 +97,11 @@
 			echo "<input type=\"hidden\" name=\"id\" value=\"$id\" />\n";
 
 		if(($cbs = base_object::template_data('form_checkboxes')) && empty($no_auto_checkboxes))
-			echo "<input type=\"hidden\" name=\"checkboxes\" value=\"".join(',', $cbs)."\" />\n";
+			echo "<input type=\"hidden\" name=\"checkboxes\" value=\"".join(',', array_unique(array_filter($cbs)))."\" />\n";
 		if($vcbs = base_object::template_data('form_checkboxes_list'))
-			echo "<input type=\"hidden\" name=\"checkboxes_list\" value=\"".join(',', $vcbs)."\" />\n";
+			echo "<input type=\"hidden\" name=\"checkboxes_list\" value=\"".join(',', array_unique(array_filter($vcbs)))."\" />\n";
 		if($tmv = base_object::template_data('form_time_vars'))
-			echo "<input type=\"hidden\" name=\"time_vars\" value=\"".join(',', $tmv)."\" />\n";
+			echo "<input type=\"hidden\" name=\"time_vars\" value=\"".join(',', array_unique(array_filter($tmv)))."\" />\n";
 
 		if(!base_object::template_data('form_have_go'))
 			echo "<input type=\"hidden\" name=\"go\" value=\"newpage_admin\" />\n";

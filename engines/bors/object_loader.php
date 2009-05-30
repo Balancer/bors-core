@@ -330,6 +330,9 @@ function class_load_by_vhosts_url($url)
 			return NULL;
 
 		$host_data = $bors_data['vhosts'][$data['host']];
+
+		$url = $data['scheme'].'://'.$data['host'].$data['path'];
+		$query = @$data['query'];
 		
 		foreach($host_data['bors_map'] as $pair)
 		{
@@ -340,7 +343,7 @@ function class_load_by_vhosts_url($url)
 			$class_path  = trim($match[2]);
 
 			if(preg_match("!\\\\\?!", $url_pattern))
-				$check_url = $url."?".$_SERVER['QUERY_STRING'];
+				$check_url = $url."?".$query;
 			else
 				$check_url = $url;
 

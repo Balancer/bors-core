@@ -48,12 +48,13 @@ class cache_smart extends cache_base
 		{
 			@$GLOBALS['bors_stat_smart_cache_gets_db_hits']++;
 			$dbh = &new driver_mysql(config('cache_database'));
-			$dbh->update('cache', "`hmd`={$this->last_hmd}", array (
+			$dbh->update('cache', array('hmd'=>$this->last_hmd), array (
 				'int access_time' => $now, 
 				'int count' => $new_count,
 				'float rate' => $rate,
 			));
-			$dbh->close(); $dbh = NULL;
+			$dbh->close(); 
+			$dbh = NULL;
 		}	
 			
 		return ($this->last ? $this->last : $default);

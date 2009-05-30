@@ -15,6 +15,7 @@ $map = array(
 	'.*/\d{4}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
 	'.* => page_fs_xml(url)',
 	'.* => page_fs_separate(url)',
+//	'.* => page_db(url)',
 	'.* => base_page_hts(url)',
 	'.* => auto_object_php(url)',
 	'(/admin/)\?object=([^&]+).* => bors_admin_main(1)',

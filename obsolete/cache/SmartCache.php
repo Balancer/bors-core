@@ -55,7 +55,7 @@
 			if($this->last)
 			{
 				@$GLOBALS['bors_stat_smart_cache_gets_db_hits']++;
-				$this->dbh->update('cache', "`hmd`={$this->last_hmd}", array (
+				$this->dbh->update('cache', array('hmd'=>$this->last_hmd), array(
 					'int access_time' => $now, 
 					'int count' => $new_count,
 					'float rate' => $rate,

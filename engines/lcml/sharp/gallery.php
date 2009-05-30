@@ -51,7 +51,8 @@
 
 			$ico = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/200x150$3", $img);
 
-            list($iw, $ih, $it) = getimagesize($ico);
+			//TODO: поставить проверку на отсутствующие изображения
+            list($iw, $ih, $it) = @getimagesize($ico);
 
             $ico640_url  = preg_replace("!/200x150/!","/640x480/",$ico);
             $ico800_url  = preg_replace("!/200x150/!","/800x600/",$ico);

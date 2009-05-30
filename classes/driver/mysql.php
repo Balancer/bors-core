@@ -49,6 +49,11 @@ class driver_mysql extends DataBase
 		return $this->get_array("SELECT $field FROM $table ".mysql_args_compile($where_map), false);
 	}
 
+	function update($table, $where, $fields)
+	{
+		return $this->query("UPDATE `".addslashes($table)."` ".$this->make_string_set($fields)." ".mysql_where_compile($where));
+	}
+
 /* $res = (new driver_mysql('BORS'))
 		.from($table)
 		.order('-create_time')

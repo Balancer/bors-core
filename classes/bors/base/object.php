@@ -888,7 +888,9 @@ class base_object extends base_empty
 	{
 		if($render_engine = $this->render_engine())
 		{
-			if(!($re = object_load($render_engine)))
+			if($render_engine == 'self')
+				$re = $this;
+			elseif(!($re = object_load($render_engine)))
 				debug_exit("Can't load global render engine {$render_engine} for object '{$this}'");
 
 			return $re->render($this);

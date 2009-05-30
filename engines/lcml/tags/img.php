@@ -139,7 +139,7 @@ function lt_img($params)
 						$id = $db->last_id();
 					}
 
-					$db->update('images', 'id='.$id, array('local_path' => $path));
+					$db->update('images', array('id' => $id), array('local_path' => $path));
 				}
 			}
 

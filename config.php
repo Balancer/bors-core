@@ -68,8 +68,7 @@ $includes = array(
 if(defined('BORS_APPEND'))
 	$includes = array_merge($includes, explode(' ', BORS_APPEND));
 
-$delim = empty($_ENV['windir']) ? ":" : ";";
-ini_set('include_path', ini_get('include_path') . $delim . join($delim, array_unique($includes)));
+ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEPARATOR, array_unique($includes)));
 
 require_once('classes/inc/BorsMemCache.php');
 require_once('inc/debug.php');

@@ -218,7 +218,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		if($x = $object->empty_id_handler())
 			return $x;
 		else
-			return debug_exit('Empty id for '.$object->class_name());
+			return debug_exit(ec('Пустой id нового объекта ').$object->class_name().ec('. Возможно нужно использовать function replace_on_new_instance() { return true; }'));
 	}
 	
 //	echo "Final id: {$object->id()}<br />";

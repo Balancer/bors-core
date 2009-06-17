@@ -136,7 +136,7 @@ class base_object extends base_empty
 		return $this->_class_id;
 	}
 
-	function class_title()    { return ec('Объект ').get_class($this); }	// Именительный: Кто? Что?
+	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
 	function class_title_rp() { return ec('объекта ').get_class($this); }	// РодительныйГенитивКого? Чего?
 	function class_title_dp() { return ec('объекту ').get_class($this); }	// Дательный Кому? Чему?
 	function class_title_vp() { return ec('объект ').get_class($this); }	// Винительный Кого? Что?
@@ -659,9 +659,9 @@ class base_object extends base_empty
 		return object_load($access, $this);
 	}
 
-	function edit_url()  { return '/admin/edit-smart/?object='.urlencode($this->internal_uri()); }
-	function admin_url() { return '/admin/?object='.urlencode($this->internal_uri()); }
-	function new_url()  { return '/admin/new-smart/?object='.urlencode($this->internal_uri()); }
+	function edit_url()  { return '/_bors/admin/edit-smart/?object='.urlencode($this->internal_uri()); }
+	function admin_url() { return '/_bors/admin/?object='.urlencode($this->internal_uri()); }
+	function new_url()  { return '/_bors/admin/new-smart/?object='.urlencode($this->internal_uri()); }
 	function admin_parent_url()
 	{
 		if($o = object_load($this->admin_url()))

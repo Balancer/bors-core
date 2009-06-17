@@ -22,11 +22,21 @@
 		if(empty($value))
 			$value = 1;
 
+		if($label)
+			echo "<label>";
 		echo "<input type=\"checkbox\"";
 
 		foreach(explode(' ', 'checked name size style value') as $p)
 			if(!empty($$p))
 				echo " $p=\"{$$p}\"";
 
-		echo " />\n";
+		echo " />";
+
+		if(empty($delim))
+			$delim = '&nbsp;';
+
+		if($label)
+			echo "{$delim}{$label}</label>";
+
+		echo "\n";
 	}

@@ -10,7 +10,18 @@ class bors_admin_engine extends base_empty
 		if(method_exists($obj = $this->real_object(), 'edit_url'))
 			return $obj->edit_url();
 
-		return '/admin/edit-smart/?object='.urlencode($obj->internal_uri());
+		return '/_bors/admin/edit-smart/?object='.urlencode($obj->internal_uri());
+	}
+
+	function delete_url()
+	{
+		if(method_exists($obj = $this->real_object(), 'delete_url'))
+			return $obj->delete_url();
+
+		if($obj->has_smart_field('is_deleted'))
+			return '/_bors/admin/mark/delete/?object='.$obj->internal_uri().'&ref='.$obj->admin_parent_url(); 
+		else
+			return '/_bors/admin/delete/?object='.$obj->internal_uri().'&ref='.$obj->admin_parent_url(); 
 	}
 
 	function append_child_url()
@@ -135,5 +146,30 @@ class bors_admin_engine extends base_empty
 			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}<a href=\"{$url}\" title=\"$popup\">{$title}</a>";
 		else
 			return "<img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
+	}
+
+	function imaged_delete_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
+	{
+		$obj = $this->real_object();
+
+		if(is_null($title))
+			$title = ec('Удаление ')
+				.strtolower($obj->class_title_rp())
+				.' '
+				.$obj->title();
+
+		$x = $title ? '&nbsp;' : '';
+		$url = $this->delete_url();
+
+		if(is_null($popup))
+			$popup = $title;
+
+		if(!bors()->main_object() || $unlink_in_admin && preg_match('!'.preg_quote($obj->admin()->delete_url(), '!').'!', bors()->main_object()->url()))
+			$url = '';
+
+		if($url)
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/delete-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}<a href=\"{$url}\" title=\"$popup\">{$title}</a>";
+		else
+			return "<img src=\"/_bors/i/delete-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
 }

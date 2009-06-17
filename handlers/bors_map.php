@@ -18,11 +18,11 @@ $map = array(
 //	'.* => page_db(url)',
 	'.* => base_page_hts(url)',
 	'.* => auto_object_php(url)',
-	'(/admin/)\?object=([^&]+).* => bors_admin_main(1)',
+	'(/_bors/admin/)\?object=([^&]+).* => bors_admin_main(1)',
 	'/admin/delete/\?object=([^&]+).* => bors_tools_delete(1)',
 	'/admin/mark/delete/\?object=([^&]+).* => bors_admin_mark_delete(1)',
-	'/admin/edit\-smart/\?object=([^&]+) => bors_admin_edit_smart(1)',
-	'/admin/edit\-smart/ => bors_admin_edit_smart',
+	'/_bors/admin/edit\-smart/\?object=([^&]+) => bors_admin_edit_smart(1)',
+	'/_bors/admin/edit\-smart/ => bors_admin_edit_smart',
 	'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
 	'/_bors/ => bors_admin_main',
@@ -47,7 +47,7 @@ $map = array(
 	'/admin/tools/set\-sort\-order/ => bors_admin_tools_setsortorder',
 	'/admin/tools/set\-default/ => bors_admin_tools_setdefault',
 
-	'/admin/\?object=([^&]+).* => bors_admin_main(1)',
+	'/_bors/admin/\?object=([^&]+).* => bors_admin_main(1)',
 	'/admin/edit/\?object=([^&]+).* => bors_admin_edit(1)',
 	'/admin/clean/\?object=([^&]+).* => bors_admin_tools_clean(1)',
 	'/admin/login/ => bors_admin_login',

@@ -5,6 +5,7 @@ class base_page_list extends base_page
 	function where() { return array(); }
 	function order() { return '-create_time'; }
 	function group() { return false; }
+	function limit() { return false; }
 
 	private function _where($where = array())
 	{
@@ -12,6 +13,9 @@ class base_page_list extends base_page
 
 		if($group = $this->group())
 			$where['group'] = $group;
+
+		if($limit = $this->limit())
+			$where['limit'] = $limit;
 
 		return $where;
 	}

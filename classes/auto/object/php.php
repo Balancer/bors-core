@@ -24,7 +24,11 @@ class auto_object_php extends base_object
 		$class_path = str_replace('/', '_', trim($path, '/'));
 		$class_base = config('classes_auto_base', 'auto_php');
 		
-		$object = object_load($class_base.'_'.$class_path, $this->id());
+		if(!($object = object_load($class_base.'_'.$class_path, $this->id())))
+		{
+			$class_path .= '_main';
+			$object = object_load($class_base.'_'.$class_path, $this->id());
+		}
 
 		if(!method_exists($object, 'is_auto_url_mapped_class') || !$object->is_auto_url_mapped_class())
 			$object = NULL;

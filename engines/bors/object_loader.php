@@ -1,13 +1,13 @@
 <?php
 
-function class_include($class_name, $local_path = "")
+function class_include($class_name)
 {
 	if($file_name = @$GLOBALS['bors_data']['class_included'][$class_name])
 		return $file_name;
 
 	if(in_array($class_name, config('classes_skip', array())))
 		return false;
-	
+
 	$class_path = "";
 	$class_file = $class_name;
 
@@ -26,7 +26,7 @@ function class_include($class_name, $local_path = "")
 			$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
 			return $file_name;
 		}
-			
+
 		if(file_exists($file_name = "{$dir}/classes/bors/{$class_path}{$class_file}.php"))
 		{
 			require_once($file_name);
@@ -36,8 +36,8 @@ function class_include($class_name, $local_path = "")
 	}
 
 	if(class_exists($class_name))
-		return class_include(get_parent_class($class_name), $local_path);
-	
+		return class_include(get_parent_class($class_name));
+
 	return false;
 }
 

@@ -21,7 +21,13 @@ class auto_object_php extends base_object
 			$page = $m[2];
 		}
 		
-		$object = $this->object = object_load('auto_php_'.str_replace('/', '_', trim($path, '/')), $this->id());
+		$class_path = str_replace('/', '_', trim($path, '/'));
+		$class_base = config('classes_auto_base', 'auto_php');
+		
+		$object = object_load($class_base.'_'.$class_path, $this->id());
+
+		if(!method_exists($object, 'is_auto_url_mapped_class') || !$object->is_auto_url_mapped_class())
+			$object = NULL;
 
 		if($object)
 		{
@@ -29,10 +35,10 @@ class auto_object_php extends base_object
 			$object->set_called_url($this->id());
 			bors()->set_main_object($object);
 			if(!$object->parents(true))
-				$object->set_parents(array(dirname($path).'/'));
+				$object->set_parents(array(dirname($path).'/'), false);
 		}
 		
-		return $object;
+		return $this->object = $object;
 	}
 
 	function content()

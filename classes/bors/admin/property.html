@@ -1,6 +1,7 @@
 {form object=$object}
 <table class="btab w100p">
-<tr><th class="right" width="200">Описание<br/><small>не обязательно</small>:</th><td>{textarea name="description" class="w100p" rows="2"}</td></tr>
+<tr><th class="right" width="200">Навигационное имя<br/><small>не обязательно</small>:</th><td>{input name="nav_name" class="w100p"}</td></tr>
+<tr><th class="right">Описание<br/><small>не обязательно</small>:</th><td>{textarea name="description" class="w100p" rows="2"}</td></tr>
 <tr><th class="right">Тип перевода строк:</th><td>{dropdown name="cr_type" list="common_list_crTypes" class="w100p"}</td></tr>
 <tr><th class="right">Родительские объекты:<br/><small>по одной ссылке на строку, нужны для указания навигации к текущему объекту</small></th><td>{textarea name="parents_string" class="w100p" rows="3"}</td></tr>
 <tr><th class="right">Дочерние объекты:<br/><small>по одной ссылке на строку, нужны для указания автоматических меню у родителей</small></th><td>{textarea name="children_string" class="w100p" rows="3"}</td></tr>

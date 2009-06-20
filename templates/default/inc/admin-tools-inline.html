@@ -4,5 +4,11 @@
 {$admin->imaged_edit_link('', 'редактировать данный объект')}
 {$admin->imaged_property_link('', 'редактировать свойства данного объекта')}
 {$admin->imaged_append_child_link('', 'добавить новый дочерний объект')}
+{$admin->imaged_logout_link('', 'выход из системы')}
 {/js_if}
+{if $show_login_button}
+{js_if cond="!top.is_admin"}
+{$admin->imaged_login_link('', 'вход в систему')}
+{/js_if}
+{/if}
 {/if}

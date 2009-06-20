@@ -38,6 +38,7 @@ $map = array(
 	'.*/\?login => bors_admin_users_login',
 
 	'(.*/)\?new => bors_admin_append_new(1)',
+	'(.*/)\?logout => common_do_logout',
 
 	'/___/ => bors_ext_admin_main',
 	'/___/core/ => bors_ext_admin_core_main',

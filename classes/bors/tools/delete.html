@@ -1,7 +1,7 @@
 <p title="{$this->id()}">
 Вы уверены, что хотите удалить 
-{$this->object()|get:class_title_rp|lower} 
-&laquo;{$this->object()|get:titled_url}&raquo;?
+{$this->object()|get:class_title_vp|lower} 
+{if $this->object()->title()}&laquo;{$this->object()|get:titled_url}&raquo;{/if}?
 </p>
 
 <big><center>[

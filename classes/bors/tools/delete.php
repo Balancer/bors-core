@@ -15,12 +15,27 @@ class bors_tools_delete extends base_page
 
 	function object() { return object_load($this->id()); }
 
+	function pre_show()
+	{
+		$obj = $this->object();
+		if(!$obj)
+			return bors_message(ec('Не найден объект ').$this->id());
+
+		if(!$obj->access()->can_delete())
+			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_url());
+
+		return false;
+	}
+
 	function on_action_delete()
 	{
 		$obj = $this->object();
 		if(!$obj)
 			return bors_message(ec('Не найден объект ').$this->id());
 		
+		if(!$obj->access()->can_delete())
+			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_url());
+
 		$obj->delete();
 		return go($_GET['ref']);
 	}

@@ -288,7 +288,7 @@ class storage_db_mysql_smart extends base_null
 	{
 		global $back_functions;
 
-//		echo "Save ".get_class($object)."({$object->id()})";
+//		echo "Save ".get_class($object)."({$object->id()})<br/>";
 
 		if(!$object->id() || is_object($object->id()) || empty($object->changed_fields))
 			return false;
@@ -299,16 +299,13 @@ class storage_db_mysql_smart extends base_null
 
 		foreach($object->fields() as $db => $tables)
 		{
-			$tab_count = 0;
-			$set = array();
-			$update = '';
-			$where = '';
-			$added = array();
-
-			$dbh = &new DataBase($db);
+			$dbh = &new driver_mysql($db);
 
 			foreach($tables as $table_name => $fields)
 			{
+				$set = array();
+				$id_field = false;
+
 				if(preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m))
 				{
 					$table_name	= $m[1];
@@ -377,38 +374,32 @@ class storage_db_mysql_smart extends base_null
 					else
 						$id_field = $def_id;
 
-					if(empty($added[$table_name.'-'.$id_field]))
-					{
-						$added[$table_name.'-'.$id_field] = true;
-
-						$current_tab = "`tab".($tab_count++)."`";
-						if(empty($update))
-						{
-							$update = 'UPDATE `'.$table_name.'` AS '.$current_tab;
-							$where = 'WHERE '.make_id_field($current_tab, $id_field, $oid);
-						}
-						else
-							$update .= $join.$table_name.'` AS '.$current_tab.' ON ('.make_id_field($current_tab, $id_field, $oid).')';
-					}
-
-//					if($need_convert)
-//						$value = $object->cs_i2d($value, $field);
-
-	
+//					if(empty($added[$table_name.'-'.$id_field]))
+//					{
+//						$added[$table_name.'-'.$id_field] = true;
+//						$current_tab = "`tab".($tab_count++)."`";
+//						if(empty($update))
+//						{
+//							$update = 'UPDATE `'.$table_name.'` AS '.$current_tab;
+//							$where = 'WHERE '.make_id_field($current_tab, $id_field, $oid);
+//						}
+//						else
+//							$update .= $join.$table_name.'` AS '.$current_tab.' ON ('.make_id_field($current_tab, $id_field, $oid).')';
+//					}
 
 					if($sql_func)
-						$set["raw {$current_tab}.{$field}"] = "{$sql_func}('".addslashes($value)."')";
+						$set["raw {$field}"] = "{$sql_func}('".addslashes($value)."')";
 					else
-						$set["{$current_tab}.{$field}"] = $value;
+						$set["{$field}"] = $value;
 				}
+				
+				// Закончили сбор обновляемых полей. Обновляем таблицу.
+				if($id_field)
+					$dbh->update($table_name, array($id_field => $oid), $set);
 			}
-
-			if($update)
-				$dbh->query($update.$dbh->make_string_set($set).' '.$where, false);
 		}
 
 		$object->changed_fields = array();
-//		exit();
 	}
 
 	function create($object)

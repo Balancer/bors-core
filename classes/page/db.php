@@ -7,8 +7,8 @@ class page_db extends base_page_db
 	function body_engine()	{ return 'body_source'; }
 	function admin_engine()	{ return 'bors_admin_engine_page'; }
 
-	function main_db()    { return config('main_bors_db'); }
-	function main_table() { return 'bors_pages'; }
+//	function main_db()    { return config('main_bors_db'); }
+//	function main_table() { return 'bors_pages'; }
 
 	function main_table_fields()
 	{
@@ -31,12 +31,12 @@ class page_db extends base_page_db
 		);
 	}
 
-	static function id_prepare($id)
+	static function id_prepare($id, $class_name)
 	{
 		if(!is_numeric(rtrim($id, '/')))
 		{
-			$db = new driver_mysql(self::main_db());
-			$object = objects_first('page_db', array('main_url' => $id));
+			$db = new driver_mysql(call_user_func(array($class_name, 'main_db')));
+			$object = objects_first($class_name, array('main_url' => $id));
 			$db->close();
 			return $object;
 		}

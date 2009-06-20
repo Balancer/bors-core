@@ -342,7 +342,7 @@ class base_object extends base_empty
 	function description() { return $this->stb_description; }
 
 	var $stb_nav_name = NULL;
-	function set_nav_name($nav_name, $db_update) { $this->set("nav_name", $nav_name, $db_update); }
+	function set_nav_name($nav_name, $db_update) { return $this->set("nav_name", $nav_name, $db_update); }
 	function nav_name() { return !empty($this->stb_nav_name) ? $this->stb_nav_name : $this->title(); }
 
 	var $stb_template = NULL;

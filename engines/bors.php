@@ -58,7 +58,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	else
 		$data = false;
 
-	$id = call_user_func(array($class, 'id_prepare'), $id);
+	$id = call_user_func(array($class, 'id_prepare'), $id, $class);
 	$object = &object_new($class, $id);
 
 	$object->set_owner_id(bors()->user_id(), true);

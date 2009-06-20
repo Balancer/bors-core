@@ -59,7 +59,7 @@ class bors_admin_engine extends base_empty
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}<a href=\"{$url}\" title=\"$popup\">{$title}</a>";
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -81,7 +81,7 @@ class bors_admin_engine extends base_empty
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/new-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}<a href=\"{$url}\" title=\"$popup\">{$title}</a>";
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/new-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/new-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -106,7 +106,7 @@ class bors_admin_engine extends base_empty
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/property-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}<a href=\"{$url}\" title=\"$popup\">{$title}</a>";
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/property-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/property-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -143,7 +143,7 @@ class bors_admin_engine extends base_empty
 		$alt = $obj->is_hidden() ? 'show' : 'hide';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}<a href=\"{$url}\" title=\"$popup\">{$title}</a>";
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -168,8 +168,47 @@ class bors_admin_engine extends base_empty
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/delete-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}<a href=\"{$url}\" title=\"$popup\">{$title}</a>";
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/delete-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/delete-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
+
+	function login_url() { return $this->real_object()->url().'?login'; }
+	function imaged_login_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
+	{
+		$obj = $this->real_object();
+
+		if(is_null($title))
+			$title = ec('Вход в систему');
+
+		$x = $title ? '&nbsp;' : '';
+		$url = $this->login_url();
+
+		if(is_null($popup))
+			$popup = $title;
+
+		if(!bors()->main_object() || preg_match('!\?login$!', bors()->main_object()->url()))
+			$url = '';
+
+		if($url)
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/login-16.gif\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+		else
+			return "<img src=\"/_bors/i/login-16.gif\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
+	}
+
+	function logout_url() { return $this->real_object()->url().'?logout'; }
+	function imaged_logout_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
+	{
+		if(is_null($title))
+			$title = ec('Выход из системы');
+
+		$x = $title ? '&nbsp;' : '';
+		$url = $this->logout_url();
+
+		if(is_null($popup))
+			$popup = $title;
+
+		return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/logout-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+	}
+
 }

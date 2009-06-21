@@ -95,7 +95,11 @@ class bors_user_flat extends bors_user_base
 		if($expired == -1)
 			$expired = time()+86400*365;
 
-		foreach(array('user_id' => $this->id(), 'cookie_hash' => $this->cookie_hash(), 'is_admin' => $this->is_admin()) as $k => $v)
+		foreach(array(
+			'user_id' => $this->id(), 
+			'cookie_hash' => $this->cookie_hash(), 
+			'is_admin' => $this->is_admin()
+		) as $k => $v)
 		{
 			SetCookie($k, $v, $expired, "/", '.'.$_SERVER['HTTP_HOST']);
 			SetCookie($k, $v, $expired, "/", $_SERVER['HTTP_HOST']);

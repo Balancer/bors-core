@@ -18,6 +18,8 @@ class bors_access_log extends base_object_db
 			'operation_time',
 			'has_bors',
 			'has_bors_url',
+			'user_agent',
+			'is_bot',
 		);
 	}
 }

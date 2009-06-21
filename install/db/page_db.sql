@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS `bors_pages` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `main_url` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL default '',
+  `description` text NOT NULL,
+  `description_html` text NOT NULL,
+  `source` longtext NOT NULL,
+  `source_html` longtext NOT NULL,
+  `parents_string_db` text NOT NULL,
+  `create_time` int(10) unsigned NOT NULL default '0',
+  `modify_time` int(10) unsigned NOT NULL default '0',
+  `owner_id` int(10) unsigned NOT NULL,
+  `last_editor_id` int(10) unsigned NOT NULL,
+  `visits` int(10) unsigned default NULL,
+  `first_visit_time` int(10) unsigned default NULL,
+  `last_visit_time` int(10) unsigned default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `create_time` (`create_time`),
+  KEY `modify_time` (`modify_time`),
+  KEY `main_url` (`main_url`),
+  KEY `owner_id` (`owner_id`),
+  KEY `last_editor_id` (`last_editor_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

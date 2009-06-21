@@ -38,7 +38,7 @@ function config_mysql_password($db, $default = 'root') { return $res = @$GLOBALS
 function config_mysql_server($db, $default = 'localhost') { return $res = @$GLOBALS['cms']['mysql'][$db]['server'] ? $res : $default; }
 
 ini_set('session.use_trans_sid', false);
-session_start();
+@session_start();
 
 foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 if(file_exists($file = "{$base_dir}/config-pre.php"))

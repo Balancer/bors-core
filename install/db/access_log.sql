@@ -11,6 +11,10 @@ CREATE TABLE IF NOT EXISTS `bors_access_log` (
   `operation_time` float NOT NULL,
   `has_bors` tinyint(1) unsigned NOT NULL,
   `has_bors_url` tinyint(1) unsigned NOT NULL,
+  `user_agent` varchar(255) NOT NULL,
+  `is_bot` varchar(64) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `user_ip` (`user_ip`)
 );
+
+

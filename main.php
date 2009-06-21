@@ -153,6 +153,8 @@
 			'referer' => @$_SERVER['HTTP_REFERER'],
 			'access_time' => $GLOBALS['stat']['start_time'],
 			'operation_time' =>  str_replace(',', '.', microtime(true) - $GLOBALS['stat']['start_microtime']),
+			'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
+			'is_bot' => $client['is_bot'],
 		);
 
 		if($object)

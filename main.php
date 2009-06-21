@@ -36,6 +36,7 @@
 	}
 
     $GLOBALS['stat']['start_microtime'] = microtime(true);
+    $GLOBALS['stat']['start_time'] = time();
 
     error_reporting(E_ALL);
     ini_set('display_errors', 'On');
@@ -141,6 +142,30 @@
 		$deb .= "-->\n";
 
 		$res = str_replace('</body>', $deb.'</body>', $res);
+	}
+
+	if(config('access_log'))
+	{
+		$data = array(
+			'user_ip' => $_SERVER['REMOTE_ADDR'],
+			'user_id' => bors()->user_id(),
+			'server_uri' => $uri,
+			'referer' => @$_SERVER['HTTP_REFERER'],
+			'access_time' => $GLOBALS['stat']['start_time'],
+			'operation_time' =>  str_replace(',', '.', microtime(true) - $GLOBALS['stat']['start_microtime']),
+		);
+
+		if($object)
+		{
+			$data['object_class_name'] = $object->class_name();
+			$data['object_id'] = $object->id();
+			$data['has_bors'] = 1;
+			$data['has_bors_url'] = 1;
+			$data['access_url'] = $object->url();
+		}
+		
+		$x = object_new_instance('bors_access_log', $data);
+		$x->store();
 	}
 
 	if($res === true || $res == 1)

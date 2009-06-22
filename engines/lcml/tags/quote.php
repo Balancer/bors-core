@@ -6,5 +6,9 @@ function lp_quote($txt, $params)
 		$out = " <blockquote>";
 	else
 		$out = " <blockquote><small><b><div class=\"quotetop\" style=\"border-bottom-width: 1px; border-bottom-style: solid;\">{$params['description']}</div></b></small>";
-	return $out.'<div>'.lcml(trim($txt)).'</div></blockquote> ';
+
+	if(empty($params['skip_markup']))
+		return $out.'<div>'.lcml(trim($txt)).'</div></blockquote> ';
+	else
+		return $out.'<div>'.str_replace("\n", "<br/>\n", $txt).'</div></blockquote> ';
 }

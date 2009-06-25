@@ -187,6 +187,7 @@ function lcml_h($string)
 	return $result;
 }
 
+function lcmlbb($string) { return lcml_bb($string); } // Нужно для совместимости со старым кодом.
 function lcml_bb($string)
 {
 	return lcml($string, array(

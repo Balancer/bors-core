@@ -61,9 +61,9 @@ function smarty_function_dropdown($params, &$smarty)
 	if(!is_array($current))
 		$current = array($current);
 
-	foreach($list as $id => $name)
+	foreach($list as $id => $iname)
 		if($id !== 'default')
-			echo "<option value=\"$id\"".(in_array($id, $current) ? " selected=\"selected\"" : "").">$name</option>\n";
+			echo "<option value=\"$id\"".(in_array($id, $current) ? " selected=\"selected\"" : "").">$iname</option>\n";
 
 	echo "</select>";
 }

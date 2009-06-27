@@ -27,6 +27,7 @@
 			'rambler' => 'Rambler',
 			'google' => 'Google',
 			'yandex' => 'Yandex',
+			'Yanga' => 'Yanga',
 		) as $pattern => $bot)
 	{
 		if(preg_match("!".$pattern."!i", @$_SERVER['HTTP_USER_AGENT']))

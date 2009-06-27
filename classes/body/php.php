@@ -10,7 +10,7 @@ class body_php extends base_null
 		if(!$object->loaded() && !$object->can_be_empty())
 			return false;
 
-		debug_timing_start('body_php_body');
+		debug_timing_start('body_php_body-'.$object->class_name());
 
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$$var = $object->$var();
@@ -31,7 +31,7 @@ class body_php extends base_null
 		$result = ob_get_contents();
 		ob_end_clean();
 		
-		debug_timing_stop('body_php_body');
+		debug_timing_stop('body_php_body-'.$object->class_name());
 		return $result;
 	}
 }

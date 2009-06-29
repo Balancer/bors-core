@@ -19,7 +19,7 @@ function smarty_template($template_name, $callers_dir = NULL)
 	if(@file_exists($file = $callers_dir . '/' . $template_name))
 		return 'xfile:'.$file;
 
-	foreach(bors_dirs() as $dir)
+	foreach(bors_dirs(true) as $dir)
 	{
 		if(file_exists($file = $dir.'/templates/'.$template_name))
 			return 'xfile:'.$file;

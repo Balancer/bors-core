@@ -3,7 +3,7 @@
 class base_page_paged extends base_page
 {
 	function where() { return array(); }
-	function order() { return '-modify_time'; }
+	function order() { return '-create_time'; }
 	function group() { return false; }
 
 	function class_file()

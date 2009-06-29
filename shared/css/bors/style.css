@@ -4,6 +4,10 @@
 .f8pt { font-size: 8pt !important; }
 .f10pt { font-size: 10pt !important; }
 
+.red { color: red; }
+.b { font-weight: bold; }
+.nobr { white-space: nowrap; }
+
 div.clear {	height: 0px; clear: both; }
 
 table.null, table.null td,  table.null th {

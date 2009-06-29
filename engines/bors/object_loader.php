@@ -207,7 +207,7 @@ function class_load_by_local_url($url, $args)
 		$url_pattern = trim($match[1]);
 		$class_path  = trim($match[2]);
 
-//		echo "Initial url=$url<br/>\n";
+//		echo "Initial url=$url, pair=$pair<br/>\n";
 
 		$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
 		if(preg_match('!\?!', $url_pattern) && !empty($url_data['query']))

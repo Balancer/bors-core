@@ -468,6 +468,7 @@ class base_object extends base_empty
 		return $this->imaged_delete_url(NULL, 'Удалить '.strtolower($this->class_title_rp()));
 	}
 
+	// true if break
 	function check_data(&$data)
 	{
 		foreach($data as $key => $val)

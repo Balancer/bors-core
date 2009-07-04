@@ -19,7 +19,7 @@ class storage_fs_separate extends base_null
 			$pfx = '\.';
 		else
 		{
-			foreach(bors_dirs() as $base)
+			foreach(bors_dirs(true) as $base)
 			{
 				if(file_exists(($dir = "{$base}/data/fs-separate{$path}").'title.txt'))
 				{

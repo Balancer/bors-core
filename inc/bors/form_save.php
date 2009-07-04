@@ -8,9 +8,7 @@
 
 function bors_form_save(&$obj)
 {
-//	echo $obj;
-//	print_d($_GET);
-//	exit();
+//	echo $obj; print_d($_GET); exit();
 
 	if(!empty($_GET['act']))
 	{

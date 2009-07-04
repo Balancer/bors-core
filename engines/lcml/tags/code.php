@@ -48,7 +48,9 @@ function lp_code($txt, $params)
 
 		$txt .= "</div>";
         
-        $txt = preg_replace("!( {2,})!em","str_repeat('&nbsp;',strlen('$1'))",$txt);
+//        $txt = preg_replace("!( {2,})!em","str_repeat('&nbsp;',strlen('$1'))", $txt);
+		$txt = preg_replace("!^ !m","&nbsp;",$txt);
+		$txt = preg_replace("! {2}!","&nbsp; ",$txt);
 		
 		return save_format($txt);
 }

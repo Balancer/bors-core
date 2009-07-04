@@ -120,6 +120,18 @@ function get_browser_info($user_agent)
 		$os = 'YandexBot';
 	}
 
+	if(preg_match('!Nigma!', $user_agent))
+	{
+		$browser = 'NigmaBot';
+		$os = 'NigmaBot';
+	}
+
+	if(preg_match('!Yanga!', $user_agent))
+	{
+		$browser = 'YangaBot';
+		$os = 'YangaBot';
+	}
+
 	if($ov)
 		$ov = $ov[1];
 	if($bv)

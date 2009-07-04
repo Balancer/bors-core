@@ -82,11 +82,6 @@ require_once('obsolete/DataBaseHTS.php');
 if(file_exists(BORS_CORE.'/config/local.php'))
 	include_once(BORS_CORE.'/config/local.php');
 
-if(defined('BORS_APPEND'))
-	foreach(explode(' ', BORS_APPEND) as $path)
-		if(file_exists($path.'/config.php'))
-			include_once($path.'/config.php');
-
 if(file_exists(BORS_LOCAL.'/config.php'))
 	include_once(BORS_LOCAL.'/config.php');
 
@@ -130,11 +125,11 @@ function bors_init()
 	require_once('classes/Cache.php');
 }
 
-function bors_dirs($host = NULL)
+function bors_dirs($skip_config = false, $host = NULL)
 {
 	static $dirs = NULL;
-	if($dirs)
-		return $dirs;
+	if(isset($dirs[$skip_config]))
+		return $dirs[$skip_config];
 
 	if(!$host)
 		$host = @$_SERVER['HTTP_HOST'];
@@ -142,7 +137,7 @@ function bors_dirs($host = NULL)
 	$vhost = '/vhosts/'.$host;
 
 	$data = array();
-	if(defined('BORS_APPEND'))
+	if(!$skip_config && defined('BORS_APPEND'))
 		$data = array_merge($data, explode(' ', BORS_APPEND));
 
 	$data = array_merge($data, array(
@@ -155,7 +150,7 @@ function bors_dirs($host = NULL)
 		BORS_3RD_PARTY,
 	));
 
-	return $dirs = array_unique(array_filter($data));
+	return $dirs[$skip_config] = array_unique(array_filter($data));
 }
 
 function bors_include_once($file, $warn = false)

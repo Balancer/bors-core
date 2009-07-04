@@ -177,135 +177,135 @@ function class_load($class, $id = NULL, $args=array())
 function class_load_by_url($url, $args)
 {
 //	echo "Load $url<br />\n";
-	
+
 	if($obj = class_load_by_vhosts_url($url, $args))
 		return $obj;
-		
+
 	return class_load_by_local_url($url, $args);
 }
 
 function class_load_by_local_url($url, $args)
 {
-		$obj = @$GLOBALS['bors_data']['classes_by_uri'][$url];
+	$obj = @$GLOBALS['bors_data']['classes_by_uri'][$url];
 
-		if(!empty($obj) && empty($args['no_load_cache']))
-			return $obj;
+	if(!empty($obj) && empty($args['no_load_cache']))
+		return $obj;
 
-		if(empty($GLOBALS['bors_map']))
+	if(empty($GLOBALS['bors_map']))
+	{
+		echo "Warning: empty bors_map<br />\n";
+		return NULL;
+	}
+
+	$url_data = @parse_url($url);
+
+	foreach($GLOBALS['bors_map'] as $pair)
+	{
+		if(!preg_match('!^(.*)\s*=>\s*(.+)$!', $pair, $match))
+			exit(ec("Ошибка формата bors_map: {$pair}"));
+
+		$url_pattern = trim($match[1]);
+		$class_path  = trim($match[2]);
+
+//		echo "Initial url=$url<br/>\n";
+
+		$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
+		if(preg_match('!\?!', $url_pattern) && !empty($url_data['query']))
+			$check_url .= '?'.$url_data['query'];
+
+//		if(debug_is_balancer())	echo "pair=$pair<br />\n";
+//		if(debug_is_balancer())	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
+//		if(debug_is_balancer() && strpos($pair, 'balancer.ru'))	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
+		if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
 		{
-			echo "Warning: empty bors_map<br />\n";
-			return NULL;
-		}
-		
-		$url_data = @parse_url($url);
+//			echo "<b>Ok - $class_path</b><br />";
 
-		foreach($GLOBALS['bors_map'] as $pair)
-		{
-			if(!preg_match('!^(.*)\s*=>\s*(.+)$!', $pair, $match))
-				exit(ec("Ошибка формата bors_map: {$pair}"));
-			
-			$url_pattern = trim($match[1]);
-			$class_path  = trim($match[2]);
+			$id = NULL;
+			$page = NULL;
 
-//			echo "Initial url=$url<br/>\n";
-
-			$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
-			if(preg_match('!\?!', $url_pattern) && !empty($url_data['query']))
-				$check_url .= '?'.$url_data['query'];
-			
-//			if(debug_is_balancer())	echo "pair=$pair<br />\n";
-//			if(debug_is_balancer())	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
-//			if(debug_is_balancer() && strpos($pair, 'balancer.ru'))	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
-			if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
+			if(preg_match("!^redirect:(.+)$!", $class_path, $m))
 			{
-//				echo "<b>Ok - $class_path</b><br />";
-				
-				$id = NULL;
-				$page = NULL;
-				
-				if(preg_match("!^redirect:(.+)$!", $class_path, $m))
+				$class_path = $m[1];
+				$redirect = true;
+			}
+			else
+				$redirect = false;
+
+			// Формат вида aviaport_image_thumb(3,geometry=2)
+			if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $class_path, $m))	
+			{
+				$args = array();
+				foreach(split(',', $m[3]) as $pair)
 				{
-					$class_path = $m[1];
-					$redirect = true;
-				}
-				else
-					$redirect = false;
-				
-				// Формат вида aviaport_image_thumb(3,geometry=2)
-				if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $class_path, $m))	
-				{
-					$args = array();
-					foreach(split(',', $m[3]) as $pair)
+					if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
 					{
-						if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
-						{
-							if(is_numeric($mm[2]))
-								$args[$mm[1]] = $match[$mm[2]+1];
-							else
-								$args[$mm[1]] = $mm[2];
-						}
-					}
-					
-					$class_path = $m[1];
-					$id = $match[$m[2]+1];
-					
-					$page = $args;
-				}
-				elseif(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $class_path, $m))	
-				{
-					$class_path = $m[1];
-					$id = $match[$m[2]+1];
-					$page = @$match[$m[3]+1];
-				}
-				elseif(preg_match("!^(.+)\((\w+)\)$!", $class_path, $class_match))	
-				{
-					$class_path = $class_match[1];
-					switch($class_match[2])
-					{
-						case 'url':
-							$id = $url;
-							break;
-						default:
-							$id = $match[$class_match[2]+1];
-							break;
-					}
-				}
-
-				$args = array('match'=>$match, 'called_url'=>$url);
-
-				if(preg_match("!^(.+)/([^/]+)$!", $class_path, $m))
-					$class = $m[2];
-				else
-					$class = $class_path;
-
-				if(is_array($page))
-					$args = array_merge($args, $page);
-				else
-					$args['page'] = $page;
-
-//				echo "object_init($class_path, $id)<br />";
-				if(($obj = object_init($class_path, $id, $args))
-					&& ($obj->can_be_empty() || $obj->loaded())
-				)
-				{
-					if($redirect)
-					{
-						if(!config('do_not_exit'))
-						{
-							echo "Redirect by $url_pattern";
-							go($obj->url($page), true);
-							bors_exit("Redirect");
-						}
+						if(is_numeric($mm[2]))
+							$args[$mm[1]] = $match[$mm[2]+1];
 						else
-							return object_load($obj->url($page));
+							$args[$mm[1]] = $mm[2];
 					}
-					return $obj;
+				}
+
+				$class_path = $m[1];
+				$id = $match[$m[2]+1];
+
+				$page = $args;
+			}
+			elseif(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $class_path, $m))	
+			{
+				$class_path = $m[1];
+				$id = $match[$m[2]+1];
+				$page = @$match[$m[3]+1];
+			}
+			elseif(preg_match("!^(.+)\((\w+)\)$!", $class_path, $class_match))	
+			{
+				$class_path = $class_match[1];
+				switch($class_match[2])
+				{
+					case 'url':
+						$id = $url;
+						break;
+					default:
+						$id = $match[$class_match[2]+1];
+						break;
 				}
 			}
-		}
-//		exit();
 
-		return NULL;
+			$args = array('match'=>$match, 'called_url'=>$url);
+
+			if(preg_match("!^(.+)/([^/]+)$!", $class_path, $m))
+				$class = $m[2];
+			else
+				$class = $class_path;
+
+			if(is_array($page))
+				$args = array_merge($args, $page);
+			else
+				$args['page'] = $page;
+
+//			echo "object_init($class_path, $id)<br />";
+			if(($obj = object_init($class_path, $id, $args))
+				&& ($obj->can_be_empty() || $obj->loaded())
+			)
+			{
+				if($redirect)
+				{
+					if(!config('do_not_exit'))
+					{
+						echo "Redirect by $url_pattern";
+						go($obj->url($page), true);
+						bors_exit("Redirect");
+					}
+					else
+						return object_load($obj->url($page));
+				}
+				return $obj;
+			}
+		}
+	}
+//	exit();
+
+	return NULL;
 }
 
 function class_load_by_vhosts_url($url)

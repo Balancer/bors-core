@@ -57,8 +57,8 @@ function borsmaps_load()
 	global $bors_map;
 	if(empty($bors_map))
 		$bors_map = array();
-		
-	foreach(bors_dirs() as $dir)
+
+	foreach(bors_dirs(true) as $dir)
 	{
 		$map = array();
 		if(file_exists($file = secure_path("{$dir}/handlers/bors_map.php")))

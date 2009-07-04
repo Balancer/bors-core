@@ -37,7 +37,19 @@ class bors_image_autothumb extends base_object
 		}
 
 		$thumb = $img->thumbnail($this->geo);
-		return $thumb->pre_show();
+		if($thumb->pre_show())
+			return true;
+
+		@list($width, $height) = explode('x', $this->geo);
+		require_once('inc/bors/bors_images.php');
+		bors_image_message(ec("Ошибка\nизображения "), array(
+			'print' => true,
+			'width' => $width ? $width : 100,
+			'height' => $height ? $height: 100,
+		));
+
+		debug_hidden_log('image-thumb-error');
+		return true;
 	}
 
 	function body() { return NULL; }

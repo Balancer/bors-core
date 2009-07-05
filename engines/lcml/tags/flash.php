@@ -28,7 +28,7 @@
 
 	function lp_td($inner, $params)
 	{
-		return "<td ".make_enabled_params($params, 'class style').">".lcml($inner)."</td>";
+		return "<td ".make_enabled_params($params, 'class style').">".lcml($inner, array('only_tags' => true))."</td>";
 	}
 
 	function lp_span($inner, $params)

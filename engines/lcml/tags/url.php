@@ -31,7 +31,7 @@
 			$params['description'] = $url;
 		else
 		{
-			$description = lcml($params['description'],  array('html'=>'safe'));
+			$description = lcml($params['description'],  array('html'=>'safe', 'only_tags' => true));
 //			if(!preg_match('!a href!', $description))
 				$params['description'] = $description;
 		}

@@ -168,8 +168,11 @@ function lcml($text, $params = array())
 		$lc = new bors_lcml($params);
 
 	$lc->set_p('level', $lc->p('level')+1);
-	$lc->set_p('only_tags', @$params['only_tags']);
+	$save_tags = $lc->p('only_tags');
+	if(!empty($params['only_tags']))
+		$lc->set_p('only_tags', $params['only_tags']);
 	$res = $lc->parse($text);
+	$lc->set_p('only_tags', $save_tags);
 	$lc->set_p('level', $lc->p('level')-1);
 
 	return $res;

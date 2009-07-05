@@ -115,11 +115,16 @@
 
     function find_next_open_tag($txt, $pos)
     {
+//    	echo "find tags in ".substr(str_replace("\n", '\n', $txt), $pos, 80)."\n";
+
     	$strlen = strlen($txt);
-        while($pos < $strlen && ($pos = next_open_brace($txt, $pos)) !== false)
+//        while($pos < $strlen && ($pos = next_open_brace($txt, $pos)) !== false)
+        while($pos < $strlen && ($pos = strpos($txt, '[', $pos)) !== false && $pos < $strlen-2)
         {
-            $pos_open  = next_open_brace ($txt, $pos+1); // Следующий открывающийся тэг
-            $pos_close = next_close_brace($txt, $pos+1); // Ближайший закрывающий знак
+			$pos_open  = strpos($txt, '[', $pos+1); // Следующий открывающийся тэг
+//            $pos_open  = next_open_brace ($txt, $pos+1); // Следующий открывающийся тэг
+            $pos_close = strpos($txt, ']', $pos+1); // Ближайший закрывающий знак
+//            $pos_close = next_close_brace($txt, $pos+1); // Ближайший закрывающий знак
             $in = 0;
             $end = 0;
 
@@ -138,7 +143,7 @@
                     break;
                 }
 
-				
+
                 // Закрывающийся имеется ближе открывающегося, но
                 // мы уже внутри другого открытого.
                 // закрываем его и считаем дальше
@@ -150,7 +155,8 @@
                 if($pos_open > $pos_close && $in !=0)
                 {
                     $in--;
-                    $pos_close = next_close_brace($txt, $pos_close + 1);
+//                    $pos_close = next_close_brace($txt, $pos_close + 1);
+                    $pos_close = strpos($txt, ']', $pos_close + 1);
 //					echo "2: new pos_close=$pos_close; in=$in\n";
 					continue;
                 }
@@ -165,8 +171,10 @@
 				//                       ^ -- new pos_close
                 if($pos_open < $pos_close)
                 {
+//                    $pos_open  = strpos($txt, '[', $pos_open +1);
                     $pos_open  = next_open_brace ($txt, $pos_open +1);
-                    $pos_close = next_close_brace($txt, $pos_close+1);
+                    $pos_close = strpos($txt, ']', $pos_close+1);
+//                    $pos_close = next_close_brace($txt, $pos_close+1);
 //					$in++;
 //					echo "3: new in=$in\n"; echopos($pos_open, 'pos_open'); echopos($pos_close, 'pos_close');
                 }
@@ -190,34 +198,34 @@
     }
 
 	function next_open_brace($txt, $pos)
-	{	
+	{
     	$strlen = strlen($txt);
 		while($pos < $strlen)
 		{
 			$pos = @strpos($txt, '[', $pos);
 			if($pos === false || $pos > $strlen-3)
 				return false;
-		
+
 			if(preg_match("!\w|/!", substr($txt, $pos+1, 1)))
 				return $pos;
-			
+
 			$pos++;
-		}	
+		}
 		return false;
 	}
-
+/*
 	function next_close_brace($txt, $pos)
 	{
 		$pos = strpos($txt, ']', $pos);
 		if($pos === false)
 			return false;
-		
+
 		if($pos == 0)
 			return false;
-		
+
 		return $pos;
 	}
-    
+*/
     function params($in)
     {
         $params=array();

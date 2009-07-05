@@ -46,14 +46,12 @@
 
     require_once('config.php');
 
-//	bors_init();
-
 	if($client['is_bot'] && config('bot_lavg_limit'))
 	{
 		$cache = &new BorsMemCache();
 		if(!($load_avg = $cache->get('system-load-average')))
 		{
-			$uptime=explode(' ', exec('uptime'));
+			$uptime = explode(' ', exec('uptime'));
 			$cache->set($load_avg = floatval($uptime[10]), 30);
 		}
 
@@ -67,6 +65,27 @@
 			@chmod($file, 0666);
 			exit("Service Temporarily Unavailable");
 		}
+	}
+
+	if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect_trap'))
+	{
+		if($client['is_bot'])
+			if(config('404_page_url'))
+				return go(config('404_page_url'), true);
+			
+		header('Status: 503 Service Temporarily Unavailable');
+		header('Retry-After: 3600');
+
+		@file_put_contents($file = $_SERVER['DOCUMENT_ROOT']."/logs/load_trap.log", 
+			date('Y.m.d H:i:s ')
+				.$_SERVER['REQUEST_URI']
+				."; ref=".@$_SERVER['HTTP_REFERER'] 
+				. "; IP=".@$_SERVER['REMOTE_ADDR']
+				."; UA=".@$_SERVER['HTTP_USER_AGENT']
+				."; LA={$load_avg}\n", FILE_APPEND);
+		@chmod($file, 0666);
+
+		exit("Service Temporarily Unavailable");
 	}
 
 	if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY_STRING']))

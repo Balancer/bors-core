@@ -1,0 +1,33 @@
+<h2>Загрузка по пользователям</h2>
+<table class="btab w100p">
+<tr><th>user ip</th>
+	<th>user id</th>
+	<th>всего обращений</th>
+	<th>потрачено секунд</th>
+	<th>бот</th>
+	<th>user agent</th>
+</tr>
+{foreach from=$max_cpu_by_user item="x"}
+<tr><td>{$x.user_ip}</td>
+	<td>{$x.user_id}</td>
+	<td>{$x.cnt}</td>
+	<td>{$x.su}</td>
+	<td>{$x.is_bot}</td>
+	<td>{$x.user_agent}</td>
+</tr>
+{/foreach}
+</table>
+
+<h2>Загрузка по классам</h2>
+<table class="btab w100p">
+<tr><th>class name</th>
+	<th>всего обращений</th>
+	<th>потрачено секунд</th>
+</tr>
+{foreach from=$max_cpu_by_classes item="x"}
+<tr><td>{$x.class_name}</td>
+	<td>{$x.cnt}</td>
+	<td>{$x.su}</td>
+</tr>
+{/foreach}
+</table>

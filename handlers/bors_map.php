@@ -30,10 +30,13 @@ $map = array(
 	'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
 	'/_bors/ => bors_admin_main',
+	'/_bors/admin/ => bors_admin_main',
 	'/_bors/admin/append/child\?object=([^&]*) => bors_admin_append_child(1)',
 	'/_bors/admin/edit/page\?object=([^&]+) => bors_admin_edit_page(1)',
 	'/_bors/admin/property\?object=([^&]*) => bors_admin_property(1)',
 	'/_bors/admin/visibility\?act=(show|hide)&object=([^&]*) => bors_admin_visibility(2)',
+	'/_bors/admin/reports/ => bors_admin_reports_main',
+	'/_bors/admin/reports/load/ => bors_admin_reports_load',
 	'/_bors/users/do\-login\.bas => bors_admin_users_login',
 	'/_bors/users/do\-logout\.bas => bors_admin_users_logout',
 

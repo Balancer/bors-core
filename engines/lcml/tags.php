@@ -35,11 +35,11 @@
 						}
 
                         // Если он такой же, как наш, то увеличиваем счётчик вложений
-                        if(strtolower($next_func) == strtolower($func))
+                        if($next_func == $func)
                             $opened++;
 
                         // Если он закрывающийся нашего типа, то...
-                        if(strtolower($next_func) == strtolower("/$func"))
+                        if($next_func == "/$func")
                         {
                             // Если есть вложения - уменьшаем
                             if($opened)
@@ -115,9 +115,8 @@
 
     function find_next_open_tag($txt, $pos)
     {
-        while($pos < strlen($txt) 
-				&& ($pos = next_open_brace($txt, $pos)) !== false
-			)
+    	$strlen = strlen($txt);
+        while($pos < $strlen && ($pos = next_open_brace($txt, $pos)) !== false)
         {
             $pos_open  = next_open_brace ($txt, $pos+1); // Следующий открывающийся тэг
             $pos_close = next_close_brace($txt, $pos+1); // Ближайший закрывающий знак
@@ -177,31 +176,34 @@
                 $end = $pos_close;
 
             if(!$end)
-                $end = strlen($txt);
+                $end = $strlen;
 
             // Вырезаем целиком найденный тэг, без квадратных скобок
             $tag = substr($txt, $pos+1, $end-$pos-1);
 
-            preg_match("!^([^\s\|]*)\s*(.*?)$!s",$tag,$m); // func, params
-            return array($pos, $end+1, $tag, isset($m[1]) ? $m[1] : "" , isset($m[2]) ? $m[2] : "");
+            preg_match("!^([^\s\|]*)\s*(.*?)$!s", $tag, $m); // func, params
+			//      $next_pos, $next_end, $next_tag, $next_func
+            return array($pos, $end+1, $tag, isset($m[1]) ? strtolower($m[1]) : "" , isset($m[2]) ? $m[2] : "");
         }
 
         return array(false, false, '', '', '');
     }
 
 	function next_open_brace($txt, $pos)
-	{
-		$pos = @strpos($txt, '[', $pos);
-		if($pos === false)
-			return false;
+	{	
+    	$strlen = strlen($txt);
+		while($pos < $strlen)
+		{
+			$pos = @strpos($txt, '[', $pos);
+			if($pos === false || $pos > $strlen-3)
+				return false;
 		
-		if($pos == strlen($txt)-1)
-			return false;
-		
-		if(preg_match("!\w|/!", substr($txt, $pos+1, 1)))
-			return $pos;
+			if(preg_match("!\w|/!", substr($txt, $pos+1, 1)))
+				return $pos;
 			
-		return next_open_brace($txt, $pos+1);
+			$pos++;
+		}	
+		return false;
 	}
 
 	function next_close_brace($txt, $pos)

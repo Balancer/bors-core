@@ -106,6 +106,10 @@ class bors_lcml
 		$mask = str_repeat('.', strlen($text));
 
 		$text = lcml_tags($text, $mask);
+
+		if($this->p('only_tags'))
+			return $text;
+		
 		if(config('lcml_sharp_markup'))
 		{
 			require_once('engines/lcml/sharp.php');
@@ -164,6 +168,7 @@ function lcml($text, $params = array())
 		$lc = new bors_lcml($params);
 
 	$lc->set_p('level', $lc->p('level')+1);
+	$lc->set_p('only_tags', @$params['only_tags']);
 	$res = $lc->parse($text);
 	$lc->set_p('level', $lc->p('level')-1);
 

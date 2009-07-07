@@ -425,7 +425,7 @@ class base_object extends base_empty
 	{
 		if($title === NULL)
 			$title = ec('Редактировать ').strtolower($this->class_title_rp());
-		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
+		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
 	function titled_new_link($title = NULL)
@@ -440,7 +440,7 @@ class base_object extends base_empty
 	function imaged_delete_url($title = NULL, $text = '')
 	{
 		if($title == 'del')
-			$title = ec('Удалить ').strtolower($this->class_title_rp());
+			$title = ec('Удалить ').strtolower($this->class_title_vp());
 
 		if($text === NULL)
 			$text = $title;
@@ -448,7 +448,7 @@ class base_object extends base_empty
 		if($text)
 			$text = '&nbsp;'.$text;
 
-		return "<a href=\"{$this->delete_url()}\"><img src=\"/bors-shared/images/drop-16.png\" width=\"16\" height=\"16\" alt=\"del\" title=\"$title\"/>{$text}</a>";
+		return "<a href=\"{$this->delete_url()}\"><img src=\"/_bors/images/drop-16.png\" width=\"16\" height=\"16\" alt=\"del\" title=\"$title\"/>{$text}</a>";
 	}
 
 	private function _setdefaultfor_url($target_id, $field_for_def)  { return "/admin/tools/set-default/?object={$this->internal_uri()}&target_id={$target_id}&target_field=$field_for_def"; }
@@ -457,7 +457,7 @@ class base_object extends base_empty
 		if($title === NULL)
 			$title = ec('Сделать выбранным по умолчанию');
 
-		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/bors-shared/images/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
+		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/_bors/i/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
 	}
 
 	function admin_engine() { return config('admin_engine', 'bors_admin_engine'); }
@@ -465,7 +465,7 @@ class base_object extends base_empty
 
 	function admin_delete_link()
 	{
-		return $this->imaged_delete_url(NULL, 'Удалить '.strtolower($this->class_title_rp()));
+		return $this->imaged_delete_url(NULL, 'Удалить '.strtolower($this->class_title_vp()));
 	}
 
 	// true if break
@@ -528,6 +528,7 @@ class base_object extends base_empty
 		else
 		{
 			if($array)
+			{
 				foreach($array as $key => $val)
 				{
 					$method = "set_$key";
@@ -537,6 +538,7 @@ class base_object extends base_empty
 					)
 						$this->$method($val, $db_update_flag);
 				}
+			}
 		}
 
 		return true;
@@ -661,11 +663,11 @@ class base_object extends base_empty
 	}
 
 	function edit_url()  { return '/_bors/admin/edit-smart/?object='.urlencode($this->internal_uri()); }
-	function admin_url() { return '/_bors/admin/?object='.urlencode($this->internal_uri()); }
+	function admin_url($exact = false) { return $exact ? NULL : '/_bors/admin/?object='.urlencode($this->internal_uri()); }
 	function new_url()  { return '/_bors/admin/new-smart/?object='.urlencode($this->internal_uri()); }
 	function admin_parent_url()
 	{
-		if($o = object_load($this->admin_url()))
+		if($o = object_load($this->admin_url(true)))
 			if($p = $o->parents())
 				return $p[0];
 

@@ -16,7 +16,7 @@ class storage_fs_separate extends base_null
 		$pfx = '';
 
 		if($found = file_exists($dir.'/.title.txt'))
-			$pfx = '\.';
+			$pfx = '.';
 		else
 		{
 			foreach(bors_dirs(true) as $base)
@@ -42,20 +42,23 @@ class storage_fs_separate extends base_null
 		$modify_time = 0;
 
 		$d = dir($dir);
+		$loaded_fields = array();
 		while(false !== ($entry = $d->read()))
 		{
-			if(preg_match("!$pfx\[(\w+)\]\.txt$!", $entry, $m))
+			if(preg_match("!".preg_quote($pfx)."\[(\w+)\]\.txt$!", $entry, $m))
 			{
 				$data = array();
 				foreach(file("{$dir}/{$entry}") as $s)
 					$data[] = $object->cs_f2i($s);
 
 				if(method_exists($object, $method = "set_{$m[1]}"))
-					$object->$method( $data, false);
+					$object->$method($data, false);
 				else
 					$object->set($m[1], $data, false);
+				
+				$loaded_fields[$m[1]] = $data;
 			}
-			elseif(preg_match("!$pfx(\w+)\.txt$!", $entry, $m))
+			elseif(preg_match("!".preg_quote($pfx)."(\w+)\.txt$!", $entry, $m))
 			{
 				$data = $object->cs_f2i(file_get_contents("{$dir}/{$entry}"));
 				if(method_exists($object, $method = "set_{$m[1]}"))
@@ -71,6 +74,8 @@ class storage_fs_separate extends base_null
 					$create_time = 0;
 				if($m[1] == 'modify_time')
 					$modify_time = time()+99999;
+
+				$loaded_fields[$m[1]] = $data;
 			}
 		}
 		$d->close();
@@ -80,12 +85,12 @@ class storage_fs_separate extends base_null
 		if($modify_time <= time())
 			$object->set_modify_time($modify_time, true);
 
+		$object->set___loaded_fields($loaded_fields, false);
 		return $object->set_loaded(true);
 	}
 
 	function save($object)
 	{
-
 		$base = $object->storage_base_dir();
 		$pfx  = $object->storage_file_prefix();
 
@@ -118,5 +123,19 @@ class storage_fs_separate extends base_null
 		}
 
 		return $success;
+	}
+
+	function delete($object)
+	{
+		$base = $object->storage_base_dir();
+		$pfx  = $object->storage_file_prefix();
+		$d = dir($base);
+		while(false !== ($entry = $d->read()))
+			if(preg_match("!".preg_quote($pfx)."(\[\w+\]|\w+)\.txt$!", $entry, $m))
+				@unlink(secure_path($base.'/'.$entry));
+		do
+		{
+			@rmdir($base);
+		} while(($base = dirname($base)) && $base != '/');
 	}
 }

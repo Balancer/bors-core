@@ -265,4 +265,15 @@ class base_page extends base_object
 			'source'=> ec("!=''|Текст страницы должен быть задан"),
 		));
 	}
+
+	function editor_fields_list()
+	{
+		return array(
+			ec('Полный заголовок материала:') => 'title',
+			ec('Краткий заголовок материала:') => 'nav_name',
+			ec('Краткое описание:') => 'description|textarea=2',
+			ec('Текст:') => 'source|textarea=20',
+			ec('Тип перевода строк:') => 'cr_type|dropdown=common_list_crTypes',
+		);
+	}
 }

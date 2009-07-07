@@ -4,8 +4,7 @@
 		extract($params);
 		
 		$obj = $smarty->get_template_vars('current_form_class');
-		
-		$value = $obj->$name();
+		$value = $obj ? $obj->$name() : '';
 		
 		echo "<input type=\"password\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
 

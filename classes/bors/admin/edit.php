@@ -7,7 +7,7 @@ class bors_admin_edit extends base_page
 	function title()
 	{
 		if(!$this->id())
-			return ec('Добавить ') . strtolower($this->object()->class_title_rp());
+			return ec('Добавить ') . strtolower($this->object()->class_title_vp());
 
 		return ec('Редактируется ') . strtolower($this->object()->class_title()) . ' ' . $this->object()->title();
 	}

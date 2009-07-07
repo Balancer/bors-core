@@ -246,7 +246,7 @@ function set_moderated($v, $dbup) { return $this->fset('moderated', $v, $dbup); 
 	{
 		if($title === NULL)
 			$title = ec('Сделать изображением по умолчанию');
-		return "<a href=\"".$this->setdefaultfor_url($object)."\"><img src=\"/bors-shared/images/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
+		return "<a href=\"".$this->setdefaultfor_url($object)."\"><img src=\"/_bors/i/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
 	}
 
 //	function replace_on_new_instance() { return $this->id() == 0; }

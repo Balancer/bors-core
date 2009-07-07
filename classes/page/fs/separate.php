@@ -14,18 +14,9 @@ class page_fs_separate extends base_page
 
 	function url($page=NULL) { return ($u=parent::url($page)) ? $u : $this->id(); }
 
-	function editor_fields_list()
-	{
-		return array(
-			ec('Полный заголовок материала:') => 'title',
-			ec('Краткий заголовок материала:') => 'nav_name',
-			ec('Краткое описание:') => 'description|textarea=2',
-			ec('Текст:') => 'source|textarea=20',
-			ec('Тип перевода строк:') => 'cr_type|dropdown=common_list_crTypes',
-		);
-	}
-
 	function autofields() { return 'cr_type'; }
 
 	function storage_skip_fields() { return 'class_name go id new_object_class object parent_object_uri parents_string uri'; }
+
+	function delete() { $this->storage()->delete($this); }
 }

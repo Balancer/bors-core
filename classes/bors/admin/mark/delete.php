@@ -21,13 +21,16 @@ class bors_admin_mark_delete extends base_page
 		if(!$obj)
 			return bors_message(ec('Не найден объект ').$this->id());
 
-		object_new_instance('bors_moderator_note', array(
-			'user_id' => $obj->owner_id(),
-			'moderator_id' => bors()->user()->id(),
-			'target_class_id' => $obj->class_id(),
-			'target_object_id' => $obj->id(),
-			'comment' => @$data['note'],
-		));
+		if(class_exists('bors_moderator_note'))
+		{
+			object_new_instance('bors_moderator_note', array(
+				'user_id' => $obj->owner_id(),
+				'moderator_id' => bors()->user()->id(),
+				'target_class_id' => $obj->class_id(),
+				'target_object_id' => $obj->id(),
+				'comment' => @$data['note'],
+			));
+		}
 		
 		$obj->set_is_deleted(true, true);
 		return go($data['ref']);

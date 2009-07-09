@@ -3,20 +3,24 @@
 class page_fs_separate extends base_page
 {
 	function storage_engine()	{ return 'storage_fs_separate'; }
-	function render_engine()	{ return config('render_engine', 'render_page'); }
-	var $stb_body_engine = 'body_source';
 	function can_be_empty()		{ return false; }
 	function can_cached()		{ return false; }
 
-	var $_parents;
-	function parents() { return $this->_parents ? $this->_parents : parent::parents(); }
-	function set_parents($array) { return $this->_parents = $array; }
+	function attr_preset()
+	{
+		return array_merge(parent::attr_preset(), array(
+			'body_engine'	=> 'body_source',
+			'render_engine'	=> config('render_engine', 'render_page'),
+		));
+	}
+
+//	var $_parents;
+//	function parents() { return $this->_parents ? $this->_parents : parent::parents(); }
+//	function set_parents($array) { return $this->_parents = $array; }
 
 	function url($page=NULL) { return ($u=parent::url($page)) ? $u : $this->id(); }
 
-	function autofields() { return 'cr_type'; }
-
-	function storage_skip_fields() { return 'class_name go id new_object_class object parent_object_uri parents_string uri'; }
+//	function dont_check_fields() { return array_merge(parent::dont_check_fields, array('cr_type')); }
 
 	function delete() { $this->storage()->delete($this); }
 }

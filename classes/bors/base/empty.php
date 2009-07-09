@@ -13,8 +13,14 @@ class base_empty extends base_null
 		$this->set_id($this->initial_id = $id);
 	}
 
+	function attr_preset()
+	{
+		return array_merge(parent::attr_preset(), array(
+			'body_engine'	=> '',
+		));
+	}
+
 	function storage_engine() { return ''; }
-	var $stb_body_engine = '';
 	function loaded() { return true; }
 	function internal_uri() { return get_class($this).'://'.$this->id(); }
 	function cache_clean() { }

@@ -99,25 +99,16 @@ function bors_object_new_instance_db(&$object)
 function bors_db_fields_init($obj)
 {
 	foreach($obj->fields() as $db => $tables)
-	{
 		foreach($tables as $tables => $fields)
-		{
 			foreach($fields as $property => $db_field)
-			{
-				if(is_numeric($property))
-					$property = $db_field;
-
-				$obj->{'stb_'.$property} = NULL;
-			}
-		}
-	}
+				$obj->data[is_numeric($property) ? $db_field : $property] = NULL;
 }
 
 function defval($data, $name, $default=NULL)
 {
 	if(!isset($data[$name]))
 		return $default;
-	
+
 	return $data[$name];
 }
 

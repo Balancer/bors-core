@@ -13,13 +13,24 @@ class base_page extends base_object
 	function class_title_dp()	{ return ec('странице'); }
 	function class_title_vp()	{ return ec('страницу'); }
 
-	function source() { return $this->data['source']; }
+	function source() { return @$this->data['source']; }
 	function set_source($source, $db_update) { return $this->set('source', $source, $db_update); }
 
 	function me() { return bors()->user(); }
 	function me_id() { return bors()->user_id(); }
 
 	function items_around_page() { return 10; }
+
+	function attr_preset()
+	{
+		return array_merge(parent::attr_preset(), array(
+			'cr_type'	=> '',
+			'browser_title'	=> '',
+			'body_engine' => '',
+			'visits' => 0,
+			'num_replies' => 0,
+		));
+	}
 
 	function pages_links($css='pages_select', $before='', $after='')
 	{
@@ -186,23 +197,13 @@ class base_page extends base_object
 		return $this->id() ? $this->class_title() : '';
 	}
 
-	function attr_preset()
-	{
-		return array_merge(parent::attr_preset(), array(
-			'cr_type'	=> '',
-			'browser_title'	=> '',
-			'visits' => 0,
-			'num_replies' => 0,
-		));
-	}
-
 	function pre_show()
 	{
 		@header('Content-Type: text/html; charset='.config('output_charset', config('default_character_set', 'utf-8')));
 		@header('Content-Language: '.config('page_lang', 'ru'));
 
 		if(!$this->browser_title())
-			$this->set_attr('browser_title', $this->title());
+			$this->set_attr('browser_title', "".$this->title());
 
 		return parent::pre_show();
 	}

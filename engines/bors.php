@@ -104,15 +104,6 @@ function bors_db_fields_init($obj)
 				$obj->data[is_numeric($property) ? $db_field : $property] = NULL;
 }
 
-function defval($data, $name, $default=NULL)
-{
-	if(!isset($data[$name]))
-		return $default;
-
-	return $data[$name];
-}
-
-
 $GLOBALS['bors_global'] = NULL;
 function bors()
 {

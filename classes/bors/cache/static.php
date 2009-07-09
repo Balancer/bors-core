@@ -52,6 +52,7 @@ class cache_static extends base_object_db
 
 	static function save($object, $content, $expire_time = false)
 	{
+		echo "Save static $object<Br/>";
 		$object_id = $object->id();
 //		if($object_id && !is_numeric($object_id))
 //			return;
@@ -77,6 +78,7 @@ class cache_static extends base_object_db
 		$cache->set_recreate($object->cache_static_recreate(), true);
 
 		$cache->new_instance();
+		print_d($cache);
 		storage_db_mysql_smart::save($cache);
 
 		foreach(explode(' ', $object->cache_groups()) as $group_name)
@@ -84,6 +86,9 @@ class cache_static extends base_object_db
 				cache_group::register($group_name, $object);
 
 		$object->set_was_cleaned(false, false);
+
+		if(($ic=config('internal_charset')) != ($oc=config('output_charset')))
+			$content = iconv($ic, $ic.'//translit', $content);
 
 		mkpath(dirname($file), 0777);
 		@chmod(dirname($file), 0777);

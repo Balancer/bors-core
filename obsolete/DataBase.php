@@ -16,14 +16,30 @@ class DataBase extends base_object
 	function reconnect()
 	{
 		$this->close();
+		$db_name = $this->db_name;
+
+		if($this->x2)
+		{
+			$server   = $this->x1;
+			$login    = $this->x2;
+			$password = $this->x3;
+			$real_db  = $db_name;
+		}
+		else
+		{
+			$real_db  = config_mysql('db_real', $db_name);
+			$server   = config_mysql('server', $db_name);
+			$login    = config_mysql('login', $db_name);
+			$password = config_mysql('password', $db_name);
+		}
 
 		$loop = 0;
 		do
 		{
 			if(config('mysql_persistent'))
-				$this->dbh = @mysql_pconnect($this->x1, $this->x2, $this->x3, config('mysql_renew_links'));
+				$this->dbh = @mysql_pconnect($server, $login, $password, config('mysql_renew_links'));
 			else
-				$this->dbh = @mysql_connect($this->x1, $this->x2, $this->x3, config('mysql_renew_links'));
+				$this->dbh = @mysql_connect($server, $login, $password, config('mysql_renew_links'));
 
 			if(!$this->dbh && config('mysql_try_reconnect'))
 			{
@@ -34,21 +50,13 @@ class DataBase extends base_object
 		} while(!$this->dbh && config('mysql_try_reconnect') && $loop++ < config('mysql_try_reconnect'));
 
 		if(!$this->dbh)
-		{
-			echo("mysql_connect({$this->x1}, {$this->x2}) to DB '{$this->db_name}' failed ".mysql_errno().": ".mysql_error()."<BR />");
-			echo debug_trace();
-			bors_exit();
-			exit();
-		}
+			debug_exit("mysql_connect({$server}, {$login}) to DB '{$db_name} => {$real_db}' failed ".mysql_errno().": ".mysql_error()."<br />");
 
-		set_global_key("DataBaseHandler:{$this->x1}", $this->db_name, $this->dbh);
-		set_global_key("DataBaseStartTime:{$this->x1}", $this->db_name, $this->start_time = time());
+		set_global_key("DataBaseHandler:{$server}", $db_name, $this->dbh);
+		set_global_key("DataBaseStartTime:{$server}", $db_name, $this->start_time = time());
 
-		if(!mysql_select_db($this->db_name, $this->dbh))
-		{
-			echolog(__FILE__.':'.__LINE__." Could not select database '{$this->db_name}' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
-			bors_exit();
-		}
+		if(!mysql_select_db($real_db, $this->dbh))
+			debug_exit(__FILE__.':'.__LINE__." Could not select database '{$real_db}' <= '{$db_name}' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<br />", 1);
 
 		if($c = config('mysql_set_character_set'))
 		{
@@ -71,29 +79,21 @@ class DataBase extends base_object
 		$this->db_name = $base;
 			
 		if(!$base)
-			debug_exit('Empty database construct');
-
-		if(empty($login))	$login		= @$GLOBALS['cms']['mysql'][$base]['login'];
-		if(empty($password)) $password	= @$GLOBALS['cms']['mysql'][$base]['password'];
-		if(empty($server))   $server	= @$GLOBALS['cms']['mysql'][$base]['server'];
-
-		if(empty($login))	$login		= @$GLOBALS['cms']['mysql_login'];
-		if(empty($password)) $password	= @$GLOBALS['cms']['mysql_pw'];
-		if(empty($server))   $server	= @$GLOBALS['cms']['mysql_server'];
-
-		if(empty($server))   $server	= 'localhost';
+			debug_exit('Error: try to DataBase construct without database name');
 
 		$this->x1 = $server;
 		$this->x2 = $login;
 		$this->x3 = $password;
 			
+		if(!$login)
+			$server   = config_mysql('server', $base);
+
 		if(config('mysql_use_pool2') 
 			&& is_global_key("DataBaseHandler:$server", $base) 
 			&& (time() - global_key("DataBaseStartTime:$server", $base) < 7 )
 			&& $this->db_name == $base
 		)
 		{
-			
 			debug_count_inc('mysql_resume_connections');
 
 			$this->dbh = global_key("DataBaseHandler:$server", $base);

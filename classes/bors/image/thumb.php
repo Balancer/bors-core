@@ -51,7 +51,7 @@ class bors_image_thumb extends bors_image
 			return $this->set_loaded(false);
 
 //		echo "width={$this->width()} && fe({$this->file_name_with_path()})=".file_exists($this->file_name_with_path());
-		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
+		if($this->width() /*&& file_exists($this->file_name_with_path())*/ && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_loaded(true);
 
 		$this->original = object_load('bors_image', $id);
@@ -59,7 +59,7 @@ class bors_image_thumb extends bors_image
 		if(!$this->original)
 			return $this->set_loaded(false);
 
-		$this->delete();
+//		$this->delete();
 
 		$new_path = secure_path('/cache/'.$this->original->relative_path().'/'.$this->geometry);
 
@@ -136,7 +136,6 @@ class bors_image_thumb extends bors_image
 	{
 		if(file_exists($this->file_name_with_path()))
 			return;
-
 
 //		echo "OriginalRP = {$this->original->relative_path()}\n"; exit();
 //		echo "Original = {$this->original->file_name_with_path()}\n"; exit();

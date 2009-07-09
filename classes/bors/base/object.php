@@ -12,6 +12,9 @@ class base_object extends base_empty
 			'access_engine' => '',
 	); }
 
+//	function set_id($id) { return $this->data['id'] = $id; }
+//	function id() { return @$this->data['id']; }
+
 	private $__loaded = false;
 	function loaded() { return $this->__loaded; }
 	function set_loaded($value = true) { return $this->__loaded = $value; }
@@ -30,7 +33,7 @@ class base_object extends base_empty
 		if(empty($this->__match[2]))
 			$parent = dirname($this->called_url()).'/';
 		else
-			$parent = "http://{$this->match[1]}{$this->match[2]}";
+			$parent = "http://{$this->__match[1]}{$this->__match[2]}";
 
 		return $this->data['parents'] = array($parent);
 	}
@@ -199,15 +202,10 @@ class base_object extends base_empty
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
 				return $this->attr[$method] = object_load($m[1], $this->$m[2]());
 
-		if($this->strict_auto_fields_check()
-			&& empty($params[2]) // При установке из ORM Без проверки на тип!
-//			&& @$_SERVER['SVCNAME'] != 'tomcat-6'
-		)
-		{
-//			if(@$_SERVER['SVCNAME'] != 'tomcat-6')
-//			debug_trace();
+		if($this->strict_auto_fields_check())
 			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
-		}
+
+		return NULL;
 	}
 
 	function preParseProcess() { return false; }
@@ -270,7 +268,7 @@ class base_object extends base_empty
 		if($exactly || !empty($this->data['create_time']))
 			return $this->data['create_time'];
 
-		if($this->data['modify_time'])
+		if(!empty($this->data['modify_time']))
 			return $this->data['modify_time'];
 
 		return time();
@@ -480,11 +478,7 @@ class base_object extends base_empty
 				foreach($array as $key => $val)
 				{
 					$method = "set_$key";
-					if(method_exists($this, $method) 
-							|| $this->autofield($key) 
-							|| $this->has_smart_field($key)
-					)
-						$this->$method($val, $db_update_flag);
+					$this->$method($val, $db_update_flag);
 				}
 			}
 		}
@@ -592,9 +586,8 @@ class base_object extends base_empty
 			return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); 
 	}
 
-	var $_called_url;
-	function set_called_url($url) { return $this->_called_url = $url; }
-	function called_url() { return $this->_called_url; }
+	function set_called_url($url) { return $this->attr['called_url'] = $url; }
+	function called_url() { return $this->attr['called_url']; }
 
 	function url($page = NULL)
 	{
@@ -862,6 +855,7 @@ class base_object extends base_empty
 	{
 		$use_static = config('cache_static') 
 			&& ($recreate || ($can_use_static && $this->cache_static() > 0));
+
 		$file = $this->static_file();
 		$fe = file_exists($file);
 		$fs = $fe && filesize($file) > 2000;

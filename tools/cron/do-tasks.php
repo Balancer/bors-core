@@ -1,9 +1,13 @@
----[ Timed tasks ]---
 <?php
 
 require_once('../config.php');
-
 require_once(BORS_CORE.'/config.php');
+
+if(!config('bors_tasks_enabled'))
+	return;
+
+echo "---[ Timed tasks ]---\n";
+
 bors_init();
 
 $start = time();

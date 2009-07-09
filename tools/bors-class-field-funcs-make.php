@@ -17,13 +17,13 @@ function main($argv)
 	{
 		if(is_numeric($property))
 			$property = $db_field;
-			
+
 		if($property == 'id')
 			continue;
 
 		if(!method_exists($cls, $property))
-			echo "function {$property}() { return \$this->stb_{$property}; }\n";
+			echo "function {$property}() { return @\$this->data['{$property}']; }\n";
 		if(!method_exists($cls, "set_{$property}"))
-			echo "function set_{$property}(\$v, \$dbup) { return \$this->fset('{$property}', \$v, \$dbup); }\n";
+			echo "function set_{$property}(\$v, \$dbup) { return \$this->set('{$property}', \$v, \$dbup); }\n";
 	}
 }

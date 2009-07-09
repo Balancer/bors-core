@@ -13,9 +13,8 @@ class base_page extends base_object
 	function class_title_dp()	{ return ec('странице'); }
 	function class_title_vp()	{ return ec('страницу'); }
 
-	var $stb_source = NULL;
-	function set_source($source, $db_update) { $this->set("source", $source, $db_update); }
-	function source() { return $this->stb_source; }
+	function source() { return $this->data['source']; }
+	function set_source($source, $db_update) { return $this->set('source', $source, $db_update); }
 
 	function me() { return bors()->user(); }
 	function me_id() { return bors()->user_id(); }
@@ -77,11 +76,10 @@ class base_page extends base_object
 	function total_items() { return -1; }
 	function items_offset() { return ($this->page()-1)*$this->items_per_page(); }
 
-	var $stb_body = false;
 	function body()
 	{
-		if($this->stb_body !== false)
-			return $this->stb_body;
+		if(isset($this->attr['body']))
+			return $this->attr['body'];
 
 		if($body_engine = $this->body_engine())
 		{
@@ -89,7 +87,7 @@ class base_page extends base_object
 			if(!$be)
 				debug_exit("Can't load body engine {$body_engine} for class {$this}");
 
-			return $this->stb_body = $be->body($this);
+			return $this->attr['body'] = $be->body($this);
 		}
 
 		global $me;
@@ -122,7 +120,7 @@ class base_page extends base_object
 			if($group)
 				cache_group::register($group, $this);
 
-		return $this->stb_body = $content;
+		return $this->attr['body'] = $content;
 	}
 
 	function cacheable_body()
@@ -188,8 +186,15 @@ class base_page extends base_object
 		return $this->id() ? $this->class_title() : '';
 	}
 
-	var $stb_cr_type = '';
-	var $stb_browser_title = '';
+	function attr_preset()
+	{
+		return array_merge(parent::attr_preset(), array(
+			'cr_type'	=> '',
+			'browser_title'	=> '',
+			'visits' => 0,
+			'num_replies' => 0,
+		));
+	}
 
 	function pre_show()
 	{
@@ -201,9 +206,6 @@ class base_page extends base_object
 
 		return parent::pre_show();
 	}
-
-	var $stb_visits = 0;
-	var $stb_num_replies = 0;
 
 	// TODO: найти использование и снести под children_string
 	function children_list() { return join("\n", $this->children())."\n"; }

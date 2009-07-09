@@ -202,7 +202,7 @@ class base_page extends base_object
 		@header('Content-Language: '.config('page_lang', 'ru'));
 
 		if(!$this->browser_title())
-			$this->set_browser_title($this->title(), false);
+			$this->set_attr('browser_title', $this->title());
 
 		return parent::pre_show();
 	}

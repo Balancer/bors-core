@@ -229,7 +229,7 @@ function bors_search_get_word_id($word, $db = NULL)
 		$word_id = $db->last_id();
 	}
 
-//	if(strtolower($original) == strtolower($word))
+//	if(bors_lower($original) == bors_lower($word))
 //		echo dc("{$original} => {$word}\n");
 		
 	return $GLOBALS['bors_search_get_word_id_cache'][$word] = $GLOBALS['bors_search_get_word_id_cache'][$original] = intval($word_id);

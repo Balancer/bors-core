@@ -30,7 +30,7 @@
 
         function stem_word($word) 
         {
-                $word = strtolower($word);
+                $word = bors_lower($word);
                 $word = str_replace('£', 'Å', $word);
                 # Check against cache of stemmed words
                 if ($this->Stem_Caching && isset($this->Stem_Cache[$word])) {

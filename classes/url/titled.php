@@ -35,7 +35,7 @@ class url_titled extends url_base
 			$prefix .= $infix;
 			$prefix_lp .= $infix;
 
-			if(!($suffix = substr(translite_uri_simple($obj->title()), 0, 40)))
+			if(!($suffix = substr(translite_uri_simple($obj->title()), 0, 60)))
 				$suffix = '~';
 				
 			$suffix = '--'.$suffix;

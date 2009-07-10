@@ -231,8 +231,8 @@ class bors_tools_search_result extends bors_tools_search
 	{
 		if(!$page)
 			$page = $this->args('page');
-	
-		return '/tools/search/result/'.($get ? $this->gets(array(
+
+		return $_SERVER['REQUEST_URI'].($get ? $this->gets(array(
 			'q' => $this->q(),
 			'f' => $this->f(),
 			's' => $this->s(),

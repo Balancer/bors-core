@@ -416,7 +416,7 @@ class base_object extends base_empty
 	function imaged_admin_link($title = NULL)
 	{
 		if($title === NULL)
-			$title = ec('Администрировать ').strtolower($this->class_title_rp());
+			$title = ec('Администрировать ').bors_lower($this->class_title_rp());
 		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
@@ -424,7 +424,7 @@ class base_object extends base_empty
 	function imaged_edit_url($title = NULL)
 	{
 		if($title === NULL)
-			$title = ec('Редактировать ').strtolower($this->class_title_rp());
+			$title = ec('Редактировать ').bors_lower($this->class_title_rp());
 		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
@@ -440,7 +440,7 @@ class base_object extends base_empty
 	function imaged_delete_url($title = NULL, $text = '')
 	{
 		if($title == 'del')
-			$title = ec('Удалить ').strtolower($this->class_title_rp());
+			$title = ec('Удалить ').bors_lower($this->class_title_rp());
 
 		if($text === NULL)
 			$text = $title;
@@ -465,7 +465,7 @@ class base_object extends base_empty
 
 	function admin_delete_link()
 	{
-		return $this->imaged_delete_url(NULL, 'Удалить '.strtolower($this->class_title_rp()));
+		return $this->imaged_delete_url(NULL, 'Удалить '.bors_lower($this->class_title_rp()));
 	}
 
 	// true if break

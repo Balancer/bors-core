@@ -47,5 +47,8 @@ class page_fs_xml extends base_page
 
 	function delete() { $this->storage()->delete($this); }
 
-	function storage_skip_fields() { return 'storage_file url_engine'; }
+	function new_instance()
+	{
+		$this->storage()->save($this);
+	}
 }

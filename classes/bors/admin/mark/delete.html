@@ -1,11 +1,15 @@
+{if class_exists('bors_moderator_note')}
 <p title="{$this->id()}">
 Укажите причину, по которой Вы хотите скрыть
-{$this->object()|get:class_title_rp|lower} 
+{$this->object()|get:class_title_vp|lower} 
 &laquo;{$this->object()|get:titled_url}&raquo;?
 </p>
+{/if}
 
 {form subaction="delete"}
+{if class_exists('bors_moderator_note')}
 {textarea name="note" value=""}
+{/if}
 {submit value="Отметить удалённым"}
 {hidden name="ref" value=$this->ref()}
 {/form}

@@ -504,6 +504,24 @@ function object_init($class_name, $object_id, $args = array())
 	if($found != 1 && $obj->can_cached())
 		save_cached_object($obj);
 
+	if(($map = config('objects_auto_convert')) 
+			&& ($to_class = @$map[$obj->class_name()])
+			&& ($data = $obj->__loaded_fields())
+	)
+	{
+		if(!empty($obj->changed_fields))
+			foreach($obj->changed_fields as $field => $property)
+				$data[$field] = $obj->$property;
+
+		$obj->store();
+		$x = object_new($to_class);
+		$x->set_called_url($obj->called_url(), false);
+		foreach($data as $key => $value)
+			$x->{"set_$key"}($value, true);
+		$x->new_instance();
+		$obj->delete();
+	}
+
 	return $obj;
 }
 

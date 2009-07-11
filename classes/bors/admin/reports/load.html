@@ -4,6 +4,7 @@
 	<th>user id</th>
 	<th>всего обращений</th>
 	<th>потрачено секунд</th>
+	<th>%</th>
 	<th>бот</th>
 	<th>user agent</th>
 </tr>
@@ -11,7 +12,8 @@
 <tr><td>{$x.user_ip}</td>
 	<td>{$x.user_id}</td>
 	<td>{$x.cnt}</td>
-	<td>{$x.su}</td>
+	<td>{$x.su|round:2}</td>
+	<td>{math equation="time / total * 100" time=$x.su total=$total_time assign="perc"}{$perc|round:2}</td>
 	<td>{$x.is_bot}</td>
 	<td>{$x.user_agent}</td>
 </tr>
@@ -23,11 +25,13 @@
 <tr><th>class name</th>
 	<th>всего обращений</th>
 	<th>потрачено секунд</th>
+	<th>%</th>
 </tr>
 {foreach from=$max_cpu_by_classes item="x"}
 <tr><td>{$x.class_name}</td>
 	<td>{$x.cnt}</td>
-	<td>{$x.su}</td>
+	<td>{$x.su|round:2}</td>
+	<td>{math equation="time / total * 100" time=$x.su total=$total_time assign="perc"}{$perc|round:2}</td>
 </tr>
 {/foreach}
 </table>

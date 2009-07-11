@@ -26,6 +26,7 @@ config_set('images_resize_max_area', 5000000);
 
 // Кодировки
 config_set('internal_charset', 'utf-8');		// Внутренняя кодировка фреймворка, обычно равна системной
+config_set('output_charset', 'utf-8');			// Кодировка, в которой данные отдаются браузеру и сохраняются в статический кеш
 config_set('db_charset', 'utf-8');				// Кодировка БД
 config_set('default_character_set', 'utf-8');
 config_set('locale', 'ru_RU.UTF-8');

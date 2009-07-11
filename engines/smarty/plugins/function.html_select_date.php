@@ -170,7 +170,7 @@ function smarty_function_html_select_date($params, &$smarty)
         }
     }
 
-    $field_order = strtoupper($field_order);
+    $field_order = bors_upper($field_order);
 
     $html_result = $month_result = $day_result = $year_result = "";
 

@@ -266,7 +266,7 @@ class base_object extends base_empty
 	function create_time($exactly = false)
 	{
 		if($exactly || !empty($this->data['create_time']))
-			return $this->data['create_time'];
+			return @$this->data['create_time'];
 
 		if(!empty($this->data['modify_time']))
 			return $this->data['modify_time'];
@@ -278,7 +278,7 @@ class base_object extends base_empty
 	function modify_time($exactly = false)
 	{
 		if($exactly || !empty($this->data['modify_time']))
-			return $this->data['modify_time'];
+			return @$this->data['modify_time'];
 
 		return time();
 	}
@@ -362,7 +362,7 @@ class base_object extends base_empty
 	function imaged_admin_link($title = NULL)
 	{
 		if($title === NULL)
-			$title = ec('Администрировать ').strtolower($this->class_title_rp());
+			$title = ec('Администрировать ').bors_lower($this->class_title_rp());
 		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
@@ -370,7 +370,7 @@ class base_object extends base_empty
 	function imaged_edit_url($title = NULL)
 	{
 		if($title === NULL)
-			$title = ec('Редактировать ').strtolower($this->class_title_rp());
+			$title = ec('Редактировать ').bors_lower($this->class_title_rp());
 		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
@@ -386,7 +386,7 @@ class base_object extends base_empty
 	function imaged_delete_url($title = NULL, $text = '')
 	{
 		if($title == 'del')
-			$title = ec('Удалить ').strtolower($this->class_title_vp());
+			$title = ec('Удалить ').bors_lower($this->class_title_vp());
 
 		if($text === NULL)
 			$text = $title;
@@ -411,7 +411,7 @@ class base_object extends base_empty
 
 	function admin_delete_link()
 	{
-		return $this->imaged_delete_url(NULL, 'Удалить '.strtolower($this->class_title_vp()));
+		return $this->imaged_delete_url(NULL, 'Удалить '.bors_lower($this->class_title_vp()));
 	}
 
 	// true if break
@@ -657,7 +657,7 @@ class base_object extends base_empty
 			if(method_exists($this, $method = 'set_'.$name))
 				$this->$method(empty($_GET[$name]) ? 0 : 1, $db_up);
 			else
-				$this->fset($name, empty($_GET[$name]) ? 0 : 1, $db_up);
+				$this->set($name, empty($_GET[$name]) ? 0 : 1, $db_up);
 		}
 	}
 

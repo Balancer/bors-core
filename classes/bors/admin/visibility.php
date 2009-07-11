@@ -4,7 +4,7 @@ class bors_admin_visibility extends base_page
 {
 	function config_class() { return config('admin_config_class'); }
 	function parents() { return $this->object() ? array($this->object()->url()) : array(); }
-	function title() { return ec('Свойства ').strtolower($this->object()->class_title_rp()).ec(' «').$this->object()->title().ec('»'); }
+	function title() { return ec('Свойства ').bors_lower($this->object()->class_title_rp()).ec(' «').$this->object()->title().ec('»'); }
 	function nav_name() { return ec('свойства'); }
 
 	function object()

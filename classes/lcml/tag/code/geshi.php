@@ -10,7 +10,7 @@ class lcml_tag_code_geshi extends base_empty
 	function render($code, $params)
 	{
 		$code = preg_replace('/^\s*?\n|\s*?\n$/','',$code);
-		$lang1 = strtolower(empty($params['language']) ? 'text' : $params['language']);
+		$lang1 = bors_lower(empty($params['language']) ? 'text' : $params['language']);
 
 		$geshi = new GeSHi($code, NULL);
 		$lang2 = $geshi->get_language_name_from_extension($lang1);

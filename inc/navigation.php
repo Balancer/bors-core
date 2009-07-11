@@ -14,7 +14,8 @@
 		bors()->changed_save();
 
 		if(config('do_not_exit'))
-			debug_exit("Go to <a href=\"{$uri}\">{$uri}</a>");
+			return true;
+//			debug_exit("Go to <a href=\"{$uri}\">{$uri}</a>");
 
 		if(config('bors_version_show'))
 			@header("X-bors-go: {$uri}");

@@ -25,20 +25,20 @@ function truncate($string, $length = 80, $etc = '...', $break_words = false, $mi
     if ($length == 0)
         return '';
 
-    if (strlen($string) > $length)
+    if(bors_strlen($string) > $length)
 	{
-        $length -= min($length, strlen($etc));
+        $length -= min($length, bors_strlen($etc));
         if (!$break_words && !$middle)
 		{
-            $string = preg_replace('/\s+?(\S+)?$/', '', substr($string, 0, $length+1));
+            $string = preg_replace('/\s+?(\S+)?$/', '', bors_substr($string, 0, $length+1));
         }
         if(!$middle)
 		{
-            return substr($string, 0, $length) . $etc;
+            return bors_substr($string, 0, $length) . $etc;
         }
 		else
 		{
-            return substr($string, 0, $length/2) . $etc . substr($string, -$length/2);
+            return bors_substr($string, 0, $length/2) . $etc . bors_substr($string, -$length/2);
         }
     }
 	else
@@ -63,4 +63,19 @@ function bors_hypher($string)
 	$result = iconv('windows-1251', 'utf-8', hypher($bors_3rd_glob_hypher, iconv('utf-8', 'windows-1251//IGNORE', $string)));
 	ini_set('mbstring.internal_encoding', $mb_enc);
 	return $result;
+}
+
+if(function_exists('mb_strtolower')) 
+{
+	eval('function bors_upper($str) { return mb_strtoupper($str); }');
+	eval('function bors_lower($str) { return mb_strtolower($str); }');
+	eval('function bors_strlen($str) { return mb_strlen($str); }');
+	eval('function bors_substr($str, $start, $length=NULL) { return is_null($length) ? mb_substr($str, $start) : mb_substr($str, $start, $length); }');
+}
+else
+{
+	eval('function bors_lower($str) { return strtolower($str); }');
+	eval('function bors_upper($str) { return strtoupper($str); }');
+	eval('function bors_strlen($str) { return strlen($str); }');
+	eval('function bors_substr($str, $start, $length=NULL) { return is_null($length) ? substr($str, $start) : substr($str, $start, $length); }');
 }

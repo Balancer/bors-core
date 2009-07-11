@@ -33,7 +33,7 @@
 			if($cin)
 				$alt .= ", $cin";
 
-			$file = strtolower($cc).".gif";
+			$file = bors_lower($cc).".gif";
 			if(!file_exists("/var/www/balancer.ru/htdocs/img/flags/$file"))
 				$file = "-.gif";
 			$res = '<img src="http://balancer.ru/img/flags/'.$file.'" class="flag" title="'.addslashes($alt).'" alt="'.$cc.'"/>';

@@ -46,7 +46,7 @@ class bors_admin_engine extends base_empty
 
 		if(is_null($title))
 			$title = ec('Редактировать ')
-				.strtolower($obj->class_title_vp())
+				.bors_lower($obj->class_title_vp())
 				.ec(' «').$obj->title().ec('»');
 
 		$x = $title ? '&nbsp;' : '';
@@ -92,7 +92,7 @@ class bors_admin_engine extends base_empty
 
 		if(is_null($title))
 			$title = ec('Свойства ')
-				.strtolower($obj->class_title_rp())
+				.bors_lower($obj->class_title_rp())
 				.' '
 				.$obj->title();
 
@@ -123,7 +123,7 @@ class bors_admin_engine extends base_empty
 		$obj = $this->object();
 
 		$full_title = ($obj->is_hidden() ? ec('Показать ') : ec('Скрыть '))
-			.strtolower($obj->class_title())
+			.bors_lower($obj->class_title())
 			.' '
 			.$obj->title();
 
@@ -154,7 +154,7 @@ class bors_admin_engine extends base_empty
 
 		if(is_null($title))
 			$title = ec('Удаление ')
-				.strtolower($obj->class_title_rp())
+				.bors_lower($obj->class_title_rp())
 				.' '
 				.$obj->title();
 

@@ -57,7 +57,10 @@ function bors_message($text, $params=array())
 //	show_page(@$GLOBALS['main_uri']);
 
 	//TODO: исправить!!
-	echo iconv($ics, $ocs, $message);
+	if($ics != $ocs)
+		echo iconv($ics, $ocs, $message);
+	else
+		echo $message;
 
 	if($redir === true)
 	{

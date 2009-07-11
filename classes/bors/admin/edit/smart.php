@@ -4,7 +4,16 @@ class bors_admin_edit_smart extends base_page
 {
 	function config_class() { return config('admin_config_class'); }
 
-	function parents() { return $this->object() ? array($this->object()->admin_parent_url()) : array(); }
+	function parents()
+	{
+		if(!($obj = $this->object()))
+			return array();
+
+		if(($adm = $obj->admin_parent_url()) && $adm != $this->url())
+			return array($adm);
+
+		return array($obj->url());
+	}
 
 	function title() { return ec('редактор'); }
 

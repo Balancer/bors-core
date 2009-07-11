@@ -20,12 +20,6 @@ class storage_db_mysql_smart extends base_null
 
 		foreach($object->fields() as $db => $tables)
 		{
-			if(empty($db))
-			{
-				print_d($object->fields());
-				debug_exit("Empty db for {$object->class_name()}");
-			}
-
 			$tab_count = 0;
 			$select = array();
 			$from = '';
@@ -243,7 +237,9 @@ class storage_db_mysql_smart extends base_null
 						$value = $object->cs_d2i($value);
 
 //					echo "$object -> set_{$name}($value)<br/>";
+//					$object->data[$name] = $value;
 					$object->{"set_$name"}($value, false, true);
+//					$object->set($name, "$value", false, true);
 
 					$was_loaded = true;
 				}
@@ -255,9 +251,9 @@ class storage_db_mysql_smart extends base_null
 				{
 					if($object->loaded()) // метод может переопределяться для проверки данных
 						if($by_id)
-							$result[$object->id()] = &$object;
+							$result[$object->id()] = $object;
 						else
-							$result[] = &$object;
+							$result[] = $object;
 
 					$class = get_class($object);
 					$object = &new $class(NULL);

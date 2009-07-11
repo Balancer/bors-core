@@ -20,15 +20,21 @@ class base_page_list extends base_page
 		return $where;
 	}
 
+	function items_prepare(&$items) { }
+
 	private $_items;
 	function items()
 	{
 		if(!is_null($this->_items))
 			return $this->_items;
 
-		return $this->_items = objects_array($this->main_class(), $this->_where(array(
+		$this->_items = objects_array($this->main_class(), $this->_where(array(
 			'order' => $this->order(),
 		)));
+
+		$this->items_prepare($this->_items);
+
+		return $this->_items;
 	}
 
 	function template_local_vars() { return parent::template_local_vars().' items'; }

@@ -58,7 +58,7 @@ class storage_fs_xml extends base_null
 		$object->set_html_disable(false, false);
 		$object->set_lcml_tags_enabled(NULL, false);
 
-		$object->set_storage_file($file, false);
+		$object->set_attr('storage_file', $file, false);
 
 		$xml = &new BorsXml;
 		$xml->parse($content);
@@ -96,14 +96,15 @@ class storage_fs_xml extends base_null
 
 				if($ordered)
 					ksort($value);
-
-//				print_d($value);
 			}
 
 			if(!is_array($value) && preg_match('!time!', $key) && !is_numeric($value))
 				$value = strtotime($value);
 
 			$object->{"set_$key"}($value, false);
+			if($key == 'modify_time')
+				$object->{"set_$key"}($value+1, true);
+
 		}
 
 		return $object->set_loaded($loaded);
@@ -115,21 +116,9 @@ class storage_fs_xml extends base_null
 			$file = storage_fs_xml::file($object);
 
 		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<bors>\n";
-		$fields = get_object_vars($object);
-		$fields['stb_children'] = $object->children();
 
-		$skip_fields = explode(' ', $object->storage_skip_fields());
-
-		foreach($fields as $field => $value)
+		foreach($object->data as $field => $value)
 		{
-			if(!$value || !preg_match('!^stb_(\w+)$!', $field, $m))
-				continue;
-
-			$field = $m[1];
-
-			if(in_array($field, $skip_fields))
-				continue;
-
 			$result .= "<$field>";
 			if(is_array($value))
 			{
@@ -155,7 +144,7 @@ class storage_fs_xml extends base_null
 
 		mkpath(dirname($file), 0777);
 		@chmod(dirname($file), 0777);
-		file_put_contents($file, $result);
+		@file_put_contents($file, $result);
 		@chmod($file, 0666);
 
 		return true;

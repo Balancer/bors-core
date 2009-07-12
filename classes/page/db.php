@@ -2,13 +2,9 @@
 
 class page_db extends base_page_db
 {
-	function storage_engine() { return 'storage_db_mysql_smart'; }
 	function render_engine(){ return 'render_page'; }
 	function body_engine()	{ return 'body_source'; }
 	function admin_engine()	{ return 'bors_admin_engine_page'; }
-
-//	function main_db()    { return config('main_bors_db'); }
-//	function main_table() { return 'bors_pages'; }
 
 	function main_table_fields()
 	{
@@ -16,6 +12,7 @@ class page_db extends base_page_db
 			'id',
 			'main_url',
 			'title',
+			'nav_name',
 			'description',
 			'description_html',
 			'source',
@@ -51,6 +48,7 @@ class page_db extends base_page_db
 //			if($p = objects_array('bors_parent', array('child_class_id' => $this->class_id(), 'child_object_id', $this->id())))
 //			$this->set_parents_string_db(join("\n", $p), true);
 		}
+
 		return $p ? $p : parent::parents();
 	}
 

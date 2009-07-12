@@ -1,6 +1,6 @@
 <?php
 
-require_once('inc/xmlrpc/xmlrpc.inc');
+require_once(config('3rdp_xmlrpc_path').'/lib/xmlrpc.inc');
 require_once('inc/texts/unicode.php');
 $GLOBALS['xmlrpc_internalencoding'] = 'UTF-8';
 
@@ -41,7 +41,7 @@ function bors_blog_livejournal_com_post($user_id, $title_obj, $url_obj, $body_ob
 	$lj_userid = $x['login'];
 	$lj_passwd = $x['password'];
    
-   $client=new xmlrpc_client("/interface/xmlrpc", "www.livejournal.com", 80);
+	$client = new xmlrpc_client("/interface/xmlrpc", "www.livejournal.com", 80);
     
     $params = new xmlrpcval( array(
 		'username' => new xmlrpcval($lj_userid,'string'),

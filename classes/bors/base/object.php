@@ -299,7 +299,7 @@ class base_object extends base_empty
 	function parents_string() { return join("\n", $this->parents());  }
 	function set_parents_string($string, $dbup) { $this->set_parents(array_filter(explode("\n", $string)), $dbup); return $string;  }
 
-	function children_string() { return join("\n", $this->children());  }
+	function children_string() { return ($cs = $this->children()) ? join("\n", $cs) : '';  }
 	function set_children_string($string, $dbup) { $this->set_children(array_filter(explode("\n", $string)), $dbup); return $string;  }
 
 	function template_data_fill()

@@ -21,19 +21,19 @@
 	    $text=preg_replace("/^#nav(.+?)#/","",$text);
     	$text=preg_replace("!\-+!","-",$text);
 
-	    if(strlen($text)>$len)
+	    if(bors_strlen($text)>$len)
     	{
         	$res="";
 	        $do_flag=1;
     	    $in_tag=0;
         	while($do_flag && $text)
 	        {
-    	        $c=substr($text,0,1);
-        	    $text=substr($text,1);
+    	        $c = bors_substr($text,0,1);
+        	    $text = bors_substr($text,1);
             	$res.=$c;
 	            if($c=='<') $in_tag++;
     	        if($c=='>' && $in_tag>0) $in_tag--;
-        	    if(!$in_tag && strlen($res)>=$len)
+        	    if(!$in_tag &&  bors_strlen($res)>=$len)
             	    $do_flag=0;
 	        }
     	    $text = $res . $more_text;

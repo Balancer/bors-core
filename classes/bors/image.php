@@ -102,7 +102,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 	function recalculate($db_update)
 	{
-		debug_hidden_log('recalculate', "$this:\n".print_r($this->data, true));
+//		debug_hidden_log('recalculate', "$this:\n".print_r($this->data, true));
 		$x = @getimagesize($this->url());
 		if(!$x)
 			$x = @getimagesize($this->file_name_with_path());
@@ -225,6 +225,8 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 	function pre_show()
 	{
 		$file = $this->file_name_with_path();
+//		if(debug_is_balancer())
+//			debug_hidden_log('1', "file=$file, fex=".file_exists($file));
 		if(!file_exists($file))
 			$file = $_SERVER['DOCUMENT_ROOT'] . $file;
 

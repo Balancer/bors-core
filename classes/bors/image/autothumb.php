@@ -48,7 +48,7 @@ class bors_image_autothumb extends base_object
 			'height' => $height ? $height: 100,
 		));
 
-		debug_hidden_log('image-thumb-error');
+		debug_hidden_log('image-thumb-error', "geo={$this->geo}, img={$img}");
 		return true;
 	}
 

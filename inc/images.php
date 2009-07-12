@@ -23,14 +23,24 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 
 	$data = getimagesize($file_in);
 
-	if(!$data
-		|| !$data[0]
-		|| $data[0] > config('images_resize_max_width')
+	if(!$data || !$data[0])
+	{
+		debug_hidden_log('image-error', "Can't get width for image {$file_in} (tr resize to {$file_out}($width, $height, $opts); WxH = ".@$data[0].'x'.@$data[1]);
+		bors_thread_unlock('image_file_scale');
+		return false;
+	}
+
+	if($data[0] > config('images_resize_max_width')
 		|| $data[1] > config('images_resize_max_height')
 		|| $data[0]*$data[1] > config('images_resize_max_area')
 	)
 	{
-		debug_hidden_log('image_error', "{$file_in} -> {$file_out}($width, $height, $opts) convert error: ".@$data[0].'x'.@$data[1]);
+		debug_hidden_log('image-error', "Image {$file_in} too big to resize to 
+{$file_out}
+geo = ($width, $height, $opts)
+Source WxH= ".$data[0].'x'.$data[1].'='.($data[0]*$data[1])."
+Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."=".config('images_resize_max_area')
+);
 		bors_thread_unlock('image_file_scale');
 		return false;
 	}

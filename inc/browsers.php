@@ -51,6 +51,8 @@ function get_browser_info($user_agent)
 		$browser = 'Iceweasel';
 	elseif(preg_match('!Firefox!', $user_agent))
 		$browser = 'Firefox';
+	elseif(preg_match('!Shiretoko!', $user_agent))
+		$browser = 'Firefox';
 	elseif(preg_match('!GranParadiso!', $user_agent))
 		$browser = 'Firefox';
 	elseif(preg_match('!Safari!', $user_agent))

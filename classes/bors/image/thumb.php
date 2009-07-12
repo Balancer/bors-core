@@ -10,9 +10,9 @@ class bors_image_thumb extends bors_image
 
 	private $geo_width, $geo_height, $geo_opts, $geometry, $original;
 
-	function fields()
+	function main_table_fields()
 	{
-		return array($this->main_db() => array($this->main_table() => array(
+		return array(
 			'id',
 			'relative_path',
 			'file_name',
@@ -22,7 +22,7 @@ class bors_image_thumb extends bors_image
 			'size',
 			'extension',
 			'mime_type',
-		)));
+		);
 	}
 
 	function init()
@@ -50,8 +50,11 @@ class bors_image_thumb extends bors_image
 		else
 			return $this->set_loaded(false);
 
-//		echo "width={$this->width()} && fe({$this->file_name_with_path()})=".file_exists($this->file_name_with_path());
-		if($this->width() /*&& file_exists($this->file_name_with_path())*/ && substr($this->file_name_with_path(),-1) != '/')
+//		if(debug_is_balancer())
+//			debug_hidden_log('2', "width={$this->width()} && fe({$this->file_name_with_path()})=".file_exists($this->file_name_with_path()));
+
+		//TODO: сделать вариант, совместимый с safe_mod!
+		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_loaded(true);
 
 		$this->original = object_load('bors_image', $id);
@@ -95,7 +98,9 @@ class bors_image_thumb extends bors_image
 				debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
 		}
 
-//		echo "size of ".$this->original->file_name()." = $fsize_orig<br/>\n";
+//		if(debug_is_balancer())
+//			debug_hidden_log('4', "size of ".$this->original->file_name()." = $fsize_orig");
+
 		if(!$this->original->file_name() || !$fsize_orig)
 			return;
 
@@ -122,7 +127,7 @@ class bors_image_thumb extends bors_image
 
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
-			debug_hidden_log('image_error', 'Cannot get image width');
+			debug_hidden_log('image-error', 'Cannot get image width');
 
 		$this->set_width($img_data[0], true);
 		$this->set_height($img_data[1], true);
@@ -134,12 +139,17 @@ class bors_image_thumb extends bors_image
 
 	private function thumb_create($abs = false)
 	{
+/*
+		if(debug_is_balancer())
+			debug_hidden_log('3', "
+OriginalRP = {$this->original->relative_path()}
+Original = {$this->original->file_name_with_path()}
+Target   = {$this->file_name_with_path()}\n
+		");
+*/
 		if(file_exists($this->file_name_with_path()))
 			return;
 
-//		echo "OriginalRP = {$this->original->relative_path()}\n"; exit();
-//		echo "Original = {$this->original->file_name_with_path()}\n"; exit();
-//		echo "Target   = {$this->file_name_with_path()}\n"; exit();
 		if($abs)
 		{
 			$at = $_SERVER['DOCUMENT_ROOT'].$this->file_name_with_path();

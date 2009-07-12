@@ -254,6 +254,7 @@ class base_object extends base_empty
 		return $this->data[$field] = $value;
 	}
 
+	function attr($attr, $def = NULL) { return isset($this->attr[$attr]) ? $this->attr[$attr] : $def; }
 	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
 
 	function render_engine() { return config('render_engine', false); }

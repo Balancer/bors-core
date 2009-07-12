@@ -274,21 +274,21 @@
 
 //		print_d($in);
 
-		if(preg_match_all("!(\w+)=\"([^\"]+)\"!", $in, $match, PREG_SET_ORDER))
+		if(preg_match_all("!(?<=^|\s)(\w+)=\"([^\"]+)\"(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)
 				$params[strtolower($m[1])] = $m[2];
 		}
 		
-		if(preg_match_all("!(\w+)='([^']+)'!", $in, $match, PREG_SET_ORDER))
+		if(preg_match_all("!(?<=^|\s)(\w+)='([^']+)'(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)
 				$params[strtolower($m[1])] = $m[2];
 		}
 		
-		if(preg_match_all("!(\w+)=([^\"'\s]+)!", $in, $match, PREG_SET_ORDER))
+		if(preg_match_all("!(?<=^|\s)(\w+)=([^\"'\s]+)(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)
@@ -354,12 +354,28 @@
         return $params;
     }
 
-function make_enabled_params($params, $names_list)
+function make_enabled_params($params, $names_list, $skip_list = '')
 {
 	$res = array();
 	foreach(explode(' ', $names_list) as $name)
+	{
 		if(isset($params[$name]))
 			$res[] = "$name=\"".$params[$name]."\"";
+
+		unset($params[$name]);
+	}
+
+	if($params)
+	{
+		$skip_list = " {$skip_list} orig _border url uri border width xwidth _width ";
+		$att = array();
+		foreach($params as $key => $value)
+			if($value && strpos($skip_list, " $key ")===false)
+				$att[] = "params['$key']='$value'\n";
+
+		if($att)
+			debug_hidden_log('lcml-need-attention', "Unknown parameters: ".join(' ', $att));
+	}
+
 	return join(' ', $res);
 }
-

@@ -18,7 +18,7 @@ function lp_ul($text, &$param)
 		$type = "";
 
 	$param['skip_around_cr'] = true;
-	return "<ul$type>".lcml($text)."</ul>\n";
+	return "\n<ul$type>".lcml($text)."</ul>\n";
 }
 
 function lp_ol($text, $param)
@@ -28,7 +28,7 @@ function lp_ol($text, $param)
 	else
 		$type = "";
 
-	return "<ol$type>".lcml($text)."</ol>\n";
+	return "\n<ol$type>".lcml($text)."</ol>\n";
 }
 
 require_once('inc/strings.php');

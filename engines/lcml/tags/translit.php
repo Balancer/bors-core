@@ -68,7 +68,7 @@ function lp_tr($s)
     $from="abwvgdezijklmnoprstufhc'yABWVGDEZIJKLMNOPRSTUFhC'Y";
       $to="абввгдезийклмнопрстуфхцьыАБВВГДЕЗИЙКЛМНОПРСТУФхЦЬЫ";
 
-    for($i=0;$i<strlen($from);$i++)
+    for($i=0;$i<bors_strlen($from);$i++)
         $s=str_replace($from[$i],$to[$i*2].$to[$i*2+1],$s);
 
     $s=preg_replace("!([а-яА-Я])'!","$1ь",$s);

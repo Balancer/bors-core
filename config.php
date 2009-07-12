@@ -54,7 +54,7 @@ function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }
 
 ini_set('session.use_trans_sid', false);
-@session_start();
+//@session_start();
 
 foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 if(file_exists($file = "{$base_dir}/config-pre.php"))

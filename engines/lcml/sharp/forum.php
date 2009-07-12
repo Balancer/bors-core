@@ -1,12 +1,23 @@
-<?
-    function lst_forum($txt)
-    {
-        if(!trim($txt))
-            return "";
-        $GLOBALS['pagedata']['forum']=$txt;
-        $GLOBALS['forum_tag_found']=1;
-        return "<script src=\"http://airbase.ru/js/include.php/inc/show/forum-comments.phtml?id=$txt\"></script>".
-        "<noscript><a href=\"http://airbase.ru/inc/show/forum-comments.phtml?id=$txt\">комментарии</a></noscript>";
-//        return "<?\$id=\"$txt\";\$"."xpage=\"".(isset($GLOBALS['main_uri'])?$GLOBALS['main_uri']:'')."\";include(\"/home/airbase/html/inc/show/forum-comments.phtml\");
-    }
-?>
+<?php
+
+function lst_forum($txt)
+{
+	if(!trim($txt))
+		return "";
+
+	if($ubb = object_load('forum_topic_ubb', "14/$txt"))
+		$tid = $ubb->topic_id();
+	else
+		$tid = $txt;
+
+	if($tid)
+		$topic = object_load('forum_topic', $tid);
+	else
+		return "";
+	
+	if(!$topic)
+		return "";
+
+	return "<script src=\"/js/board/comments/$tid.js\"></script>".
+		"<noscript><a href=\"{$topic->url()}\">комментарии ({$topic->num_replies()})</a></noscript>";
+}

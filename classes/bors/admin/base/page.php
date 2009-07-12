@@ -20,6 +20,11 @@ class bors_admin_base_page extends base_page
 	{
 		if(!($me = bors()->user()) && !config('admin_can_nologin'))
 			return bors_message(ec('Вы не авторизованы'));
+
+		if(!$me->can_edit($this->object()))
+			return bors_message(ec('Вы не можете редактировать этот объект'));
+
+		return false;
 	}
 
 	function admin() { return $this->object()->admin(); }

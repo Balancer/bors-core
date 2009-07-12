@@ -5,18 +5,18 @@
    function csv_explode($str, $delim = ',', $qual = "\"")
    {
        $skipchars = array( $qual, "\\" );
-       $len = strlen($str);
+       $len = bors_strlen($str);
        $inside = false;
        $word = '';
        for ($i = 0; $i < $len; ++$i) 
        {
-           $c=substr($str,$i,1);
+           $c=bors_substr($str,$i,1);
            if ($c == $delim && !$inside) 
            {
                $out[] = $word;
                $word = '';
            } 
-           else if ($inside && in_array($c, $skipchars) && ($i<$len && substr($str,$i+1,1) == $qual)) 
+           else if ($inside && in_array($c, $skipchars) && ($i<$len && bors_substr($str,$i+1,1) == $qual)) 
            {
                $word .= $qual;
                $i++;
@@ -36,7 +36,7 @@
 
     function lp_csv($txt, $params)
     {
-		$lcml_parse_cells = strlen($txt) < 512;
+		$lcml_parse_cells = bors_strlen($txt) < 512;
 	
         $tab = &new bcsTable();
 

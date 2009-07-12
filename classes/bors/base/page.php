@@ -217,7 +217,7 @@ class base_page extends base_object
 		if(!$text)
 			return;
 
-		$ch = class_exists('Cache') ? new Cache() : NULL;
+		$ch = (class_exists('Cache') && !config('lcml_cache_disable')) ? new Cache() : NULL;
 		if($ch && $ch->get('base_object-lcml', $text) && 0)
 			return $ch->last();
 

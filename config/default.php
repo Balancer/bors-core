@@ -14,7 +14,7 @@ config_set('bors_version_show', '2');
 
 config_set('lcml_sharp_markup', false);
 config_set('lcml.code.engines_order', 'lcml_tag_code_geshi');
-config_set('lcml.code.geshi.base_dir', 'geshi-1.0.8.3');
+config_set('lcml.code.geshi.base_dir', 'geshi-1.0.8.4');
 config_set('temporary_file_contents', file_get_contents(dirname(__FILE__).'/../resources/temporary.html'));
 
 // Максимальные ширина, высота и площадь картинки для обработки

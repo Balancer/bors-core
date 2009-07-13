@@ -89,7 +89,7 @@ class base_page extends base_object
 
 	function body()
 	{
-		if(isset($this->attr['body']))
+		if(array_key_exists('body', $this->attr))
 			return $this->attr['body'];
 
 		if($body_engine = $this->body_engine())

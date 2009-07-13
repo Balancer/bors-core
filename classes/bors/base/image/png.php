@@ -8,8 +8,9 @@ class base_image_png extends base_object
 
 	function render($object)
 	{
-		header("Content-type: " . image_type_to_mime_type(IMAGETYPE_PNG));
-		return $object->image();
+		$image = $object->image(); // Высчитываем картинку до передачи типа, чтобы видеть ошибки
+//		header("Content-type: " . image_type_to_mime_type(IMAGETYPE_PNG));
+		return $image;
 	}
 
 	function image()

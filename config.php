@@ -20,7 +20,7 @@ if(!defined('BORS_3RD_PARTY'))
 
 function defval($data, $name, $default=NULL)
 {
-	if(isset($data[$name]))
+	if($data && array_key_exists($name, $data))
 		return $data[$name];
 
 	return $default;
@@ -30,10 +30,10 @@ function nospace($str) { return str_replace(' ', '', $str); }
 
 function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }
 function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
-function config($key, $def = NULL) { return isset($GLOBALS['cms']['config'][$key]) ? $GLOBALS['cms']['config'][$key] : $def; }
+function config($key, $def = NULL) { return array_key_exists($key, $GLOBALS['cms']['config']) ? $GLOBALS['cms']['config'][$key] : $def; }
 
 function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
-function configh($section, $hash, $key, $def = NULL) { return isset($GLOBALS['cms']['config'][$section][$hash][$key]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
+function configh($section, $hash, $key, $def = NULL) { return array_key_exists($key, @$GLOBALS['cms']['config'][$section][$hash]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
 
 function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 {

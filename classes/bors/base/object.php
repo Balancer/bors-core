@@ -2,7 +2,7 @@
 
 class base_object extends base_empty
 {
-	var $data;
+	var $data = array();
 	var $attr = array(
 		'url_engine' => 'url_calling',
 	);
@@ -189,11 +189,11 @@ class base_object extends base_empty
 			return $this->set($match[1], $params[0], $params[1]);
 
 		// Проверяем нет ли уже загруженного значения данных объекта
-		if(isset($this->data[$method]))
+		if(array_key_exists($method, $this->data))
 			return $this->data[$method];
 
 		// Проверяем нет ли уже загруженного значения атрибута (временных несохраняемых данных) объекта
-		if(isset($this->attr[$method]))
+		if(array_key_exists($method, $this->attr))
 			return $this->attr[$method];
 
 		// Проверяем автоматические объекты.
@@ -254,8 +254,15 @@ class base_object extends base_empty
 		return $this->data[$field] = $value;
 	}
 
-	function attr($attr, $def = NULL) { return isset($this->attr[$attr]) ? $this->attr[$attr] : $def; }
+	function attr($attr, $def = NULL) { return array_key_exists($attr, $this->attr) ? $this->attr[$attr] : $def; }
 	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
+	function load_attr($attr, $init)
+	{
+		if(array_key_exists($attr, $this->attr))
+			return $this->attr[$attr];
+
+		return $this->attr[$attr] = $init;
+	}
 
 	function render_engine() { return config('render_engine', false); }
 
@@ -672,7 +679,7 @@ class base_object extends base_empty
 	private $args = array();
 	function set_args($args) { return $this->args = $args; }
 	function _set_arg($name, $value) { return $this->args[$name] = $value; }
-	function args($name=false, $def = NULL) { return $name ? (isset($this->args[$name]) ? $this->args[$name] : $def) : $this->args; }
+	function args($name=false, $def = NULL) { return $name ? (array_key_exists($name, $this->args) ? $this->args[$name] : $def) : $this->args; }
 
 	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }
 	function set_was_cleaned($value) { return $GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()] = $value; }

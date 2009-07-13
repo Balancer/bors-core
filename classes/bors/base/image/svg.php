@@ -1,15 +1,15 @@
 <?php
 
-class base_image_png extends base_object
+class base_image_svg extends base_object
 {
 	function can_be_empty() { return true; }
 
-	function render_engine() { return 'base_image_png'; }
+	function render_engine() { return 'base_image_svg'; }
 
 	function render($object)
 	{
 		$image = $object->image(); // Высчитываем картинку до передачи типа, чтобы видеть ошибки
-		header("Content-type: " . image_type_to_mime_type(IMAGETYPE_PNG));
+//		header("Content-type: image/svg+xml");
 		return $image;
 	}
 
@@ -17,9 +17,9 @@ class base_image_png extends base_object
 	{
 		ob_start();
 		$this->show_image();
-		$png = ob_get_contents();
+		$svg = ob_get_contents();
 		ob_end_clean();
 		
-		return $png;
+		return $svg;
 	}
 }

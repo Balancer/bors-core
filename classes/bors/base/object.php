@@ -886,13 +886,12 @@ class base_object extends base_empty
 				$this->output_charset(),
 			), $this->cs_u2i(config('temporary_file_contents')))), 120);
 
-
 		$content = $this->direct_content();
 
 		if($this->internal_charset() != $this->output_charset())
 			$content = $this->cs_i2o($content);
 
-		if(!$content)
+		if(empty($content))
 		{
 			cache_static::drop($this);
 			return '';

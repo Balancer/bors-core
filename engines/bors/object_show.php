@@ -35,7 +35,7 @@
 			debug_exit("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
 
 		if(!$access_object->can_read())
-			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас не доступа к этому ресурсу")) : true;
+			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас нет доступа к этому ресурсу\n<small>(access=$access_object)</small>\n<!-- $access_object, class_file = {$access_object->class_file()}-->")) : true;
 
 		$processed = $obj->pre_show();
 		if($processed === true)
@@ -67,7 +67,7 @@
 			debug_exit("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
 
 		if(!$access_object->can_read())
-			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас не доступа к этому ресурсу")) : true;
+			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас нет доступа к этому ресурсу [2]\n<!-- $access_object, class_file = {$access_object->class_file()}-->")) : true;
 
 		$last_modify = @gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		@header('Last-Modified: '.$last_modify);

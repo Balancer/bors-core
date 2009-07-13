@@ -5,6 +5,7 @@ class auto_object_php extends base_object
 	function init() { }
 	function loaded() { return is_object($this->object()); }
 	function can_be_empty() { return false; }
+	function nav_name() { return $this->object()->nav_name(); }
 
 	private $object = false;
 	function object()

@@ -3,13 +3,11 @@
 class base_object extends base_empty
 {
 	var $data = array();
-	var $attr = array(
-		'url_engine' => 'url_calling',
-	);
 
 	function attr_preset() { return array(
 			'config_class' => '',
 			'access_engine' => '',
+			'url_engine' => 'url_calling',
 	); }
 
 //	function set_id($id) { return $this->data['id'] = $id; }
@@ -252,16 +250,6 @@ class base_object extends base_empty
 		}
 
 		return $this->data[$field] = $value;
-	}
-
-	function attr($attr, $def = NULL) { return array_key_exists($attr, $this->attr) ? $this->attr[$attr] : $def; }
-	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
-	function load_attr($attr, $init)
-	{
-		if(array_key_exists($attr, $this->attr))
-			return $this->attr[$attr];
-
-		return $this->attr[$attr] = $init;
 	}
 
 	function render_engine() { return config('render_engine', false); }

@@ -5,6 +5,8 @@ class base_empty extends base_null
 	private $_id;
 	private $_initial_id = NULL;
 
+	var $attr = array();
+
 	function id() { return $this->_id; }
 	function set_id($id) { return $this->_id = $id; }
 
@@ -27,4 +29,15 @@ class base_empty extends base_null
 
 	function auto_search_index() { return false; }
 	function __toString() { return $this->class_name().'://'.$this->id(); }
+
+	function attr($attr, $def = NULL) { return array_key_exists($attr, $this->attr) ? $this->attr[$attr] : $def; }
+	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
+	function load_attr($attr, $init)
+	{
+		if(array_key_exists($attr, $this->attr))
+			return $this->attr[$attr];
+
+		return $this->attr[$attr] = $init;
+	}
+
 }

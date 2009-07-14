@@ -21,7 +21,7 @@ function http_get($url)
 		
 	$data = curl_exec($ch);
 	
-	print_r($data);
+//	print_r($data);
 	
 	curl_close($ch);
 	

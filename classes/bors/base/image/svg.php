@@ -9,7 +9,7 @@ class base_image_svg extends base_object
 	function render($object)
 	{
 		$image = $object->image(); // Высчитываем картинку до передачи типа, чтобы видеть ошибки
-//		header("Content-type: image/svg+xml");
+		header("Content-type: image/svg+xml");
 		return $image;
 	}
 

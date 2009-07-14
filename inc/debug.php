@@ -305,6 +305,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true)
 	.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
 	. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
 	. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
+	. (!empty($_SERVER['HTTP_USER_AGENT']) ? "user agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"
 	. debug_trace(0, false)
 	. "\n---------------------------\n\n";
 

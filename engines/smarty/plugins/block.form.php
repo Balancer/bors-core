@@ -23,10 +23,11 @@
 		if(empty($name) || $name == 'this')
 		{
 			$name = $main_obj->class_name();
-			$id   = $main_obj->id();
+			if(empty($id))
+				$id = $main_obj->id() ;
 		}
 
-		if(empty($id))
+		if(empty($id) || $id == 'NULL')
 			$id = NULL;
 
 		$form = object_load($name, $id);

@@ -22,7 +22,7 @@ class base_object extends base_empty
 
 	function parents($exact = false)
 	{
-		if($ps = $this->data['parents'])
+		if($ps = @$this->data['parents'])
 			return $ps;
 
 		if($exact)

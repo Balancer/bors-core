@@ -17,4 +17,7 @@ class bors_votes_thumb extends base_object_db
 	}
 
 	function replace_on_new_instance() { return true; }
+
+	function owner()  { return $this->load_attr('owner',  object_load('forum_user', $this->user_id())); }
+	function object() { return $this->load_attr('object', object_load($this->target_class_name(), $this->target_object_id())); }
 }

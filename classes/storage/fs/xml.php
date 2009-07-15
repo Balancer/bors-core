@@ -75,7 +75,7 @@ class storage_fs_xml extends base_null
 			$loaded = true;
 
 			if(empty($data[0]['i']))
-				$value = $data[0]['cdata'];
+				$value = @$data[0]['cdata'];
 			else
 			{
 				$value = array();

@@ -1,4 +1,7 @@
-<?
+<?php
+
+require_once('strings.php');
+
 	function strip_text($text, $len=192, $more_text = '&#133;')
 	{
     	$text=to_one_string($text);

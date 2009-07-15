@@ -26,7 +26,7 @@ function bors_form_save(&$obj)
 		}
 	}
 
-//	print_d($_GET);
+//	print_d($_GET); exit();
 
 	if(!empty($_GET['class_name']) && $_GET['class_name'] != 'NULL')
 	{

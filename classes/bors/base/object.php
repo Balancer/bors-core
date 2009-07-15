@@ -115,7 +115,7 @@ class base_object extends base_empty
 		{
 			$storage_engine = object_load($storage_engine, NULL, array('no_load_cache' => true));
 			if(!$storage_engine)
-				debug_exit("Can't load storage engine '{$this->storage_engine()}' in ".join(",<br/>\n", bors_dirs()));
+				debug_exit("Can't load storage engine '{$this->storage_engine()}' for class <b>{$this->class_name()}</b><br/>at {$this->class_file()}  in dirs:<br/>".join(",<br/>\n", bors_dirs()));
 			elseif($storage_engine->load($this) !== false || $this->can_be_empty())
 				$this->__loaded = true;
 		}

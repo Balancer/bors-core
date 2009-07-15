@@ -33,9 +33,6 @@
     
     function smarty_resource_file_get_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
     {
-//		echo "gts for $tpl_name / {$smarty->template_dir}<br/>\n";
-//		print_d($smarty);
-	
 		$found = false;
 	
 		if(file_exists($tpl_name))

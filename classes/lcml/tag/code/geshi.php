@@ -26,6 +26,10 @@ class lcml_tag_code_geshi extends base_empty
 
 		base_object::add_template_data_array('head_append', '<link rel="stylesheet" type="text/css" href="/_bors/css/bors/code-geshi.css" />');
 
-		return $geshi->error() ? false : "<div class=\"code-head\">code $lang</div>$highlighted_code";
+		if(empty($params['description']))
+			$title = "code $lang";
+		else
+			$title = $params['description'];
+		return $geshi->error() ? false : "<div class=\"code-head\">{$title}</div>$highlighted_code";
 	}
 }

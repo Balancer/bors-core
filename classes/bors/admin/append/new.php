@@ -3,7 +3,7 @@
 class bors_admin_append_new extends base_page
 {
 	function config_class() { return config('admin_config_class'); }
-	function parents() { return array('/'); }
+	function parents() { return array(dirname($this->id()).'/'); }
 	function title() { return ec('новая страница'); }
 
 	function pre_parse()

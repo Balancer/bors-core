@@ -201,7 +201,7 @@ class base_object extends base_empty
 				return $this->attr[$method] = object_load($m[1], $this->$m[2]());
 
 		if($this->strict_auto_fields_check())
-			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
+			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."</b>'<br/>at {$this->class_file()}");
 
 		return NULL;
 	}
@@ -643,8 +643,11 @@ class base_object extends base_empty
 	function main_table(){ return $this->main_table_storage(); }
 	function main_table_storage(){ return $this->class_name(); }
 	function main_table_fields() { return array(); }
-	function title_field() { $this->field_title_storage(); }
-	function field_title_storage() { $f=$this->main_table_fields(); return @$f['title'].'(id)'; }
+	function title_field()
+	{
+		$f = $this->main_table_fields();
+		return ($ft = @$f['title']) ? $ft : 'title';
+	}
 
 	function set_checkboxes($check_list, $db_up)
 	{

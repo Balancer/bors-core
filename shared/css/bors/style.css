@@ -19,6 +19,5 @@ table.null, table.null td,  table.null th {
 
 pre {
 	white-space: pre-wrap;       /* css-3 */
-	word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	font-family: monospace !important;
 }

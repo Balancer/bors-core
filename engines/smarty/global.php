@@ -19,8 +19,12 @@ function templates_noindex()
 	base_object::add_template_data_array('meta[robots]', 'noindex, follow');
 }
 
-function templates_jquery() { base_object::add_template_data_array('js_include', 'http://code.jquery.com/jquery-latest.js'); }
-function templates_jquery_plug($name) { base_object::add_template_data_array('js_include', '/_bors3rdp/jquery/plugins/'.$name); }
+function templates_jquery()
+{
+	base_object::add_template_data_array('js_include', '/_bors/js/jquery.js');
+	base_object::add_template_data('jquery_has_added', true);
+}
+function templates_jquery_plugin($name) { base_object::add_template_data_array('js_include', '/_bors3rdp/jquery/plugins/'.$name); }
 
 function do_php($code)
 {

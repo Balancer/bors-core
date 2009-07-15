@@ -7,9 +7,9 @@ class bors_admin_edit extends base_page
 	function title()
 	{
 		if(!$this->id())
-			return ec('Добавить ') . strtolower($this->object()->class_title_vp());
+			return ec('Добавить ') . bors_lower($this->object()->class_title_vp());
 
-		return ec('Редактируется ') . strtolower($this->object()->class_title()) . ' ' . $this->object()->title();
+		return ec('Редактируется ') . bors_lower($this->object()->class_title()) . ' ' . $this->object()->title();
 	}
 
 	function nav_name()

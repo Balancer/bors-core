@@ -1,103 +1,16 @@
 @import url("style.css");
 
-body {
-	font-size: 9pt;
-	font-family: Verdana;
-	background-color: #eee;
-	color: #555;
-}
-
-a {
-	color: #000;
-}
-
-a:visited {
-	color: #777;
-}
-
-a:hover {
-	color: #cc0;
-}
-
-table.btab { 
-	margin: 8px 0px 4px 0px; 
-	border-left: 1px solid #9bd;
-	border-top: 1px solid #9bd;
-	padding: 0;
-	border-collapse: collapse;
-}
-
-table.btab td { background: white; }
-
-.btab td, .btab th 
-{
-	border-right: 1px solid #9bd;
-	border-bottom: 1px solid #9bd;
-	padding: 2px;
-	margin: 0;
-}
-
-.btab caption {
-	color: #def;
-	background-color: #358;
-}
-
-.btab th {
-	color: #358;
-	background-color: #def;
-}
-
-div.pages_select a {
-	margin: 0 3px;
-	padding: 1px 2px;
-	border: 1px solid #358;
-	text-decoration: none;
-}
-
-div.pages_select a.current_page {
-	background-color: #358;
-	color: white;
-}
-
-div.pages_select a.select_page {
-}
-
-img {
-	border: none;
-}
-
-xmp {
-	border: 1px solid #ccc;
-	padding: 4px;
-	background-color: #ddd;
-}
-
-.small-box {
-	border: 1px solid #ccc;
-	padding: 1px;
-	background-color: #ddd;
-}
-
-.box {
-	border: 1px solid #ccc;
-	padding: 4px;
-	background-color: #ddd;
-}
-
 .code {
-	background: white;
-	border: 1px solid #ccc;
 	margin-top: 0;
 }
 
+ol.code {
+	padding-left: 30px;
+}
+
 .code-head {
-	background: #999;
-	color: white;
-	border-top: 1px solid #ccc;
-	border-left: 1px solid #ccc;
-	border-right: 1px solid #ccc;
 	margin-bottom: 0;
 	font-weight: bold;
-	padding-left: 20px;
-	font-size: 1.1em;
+	padding-left: 30px;
+	font-size: 0.9em;
 }

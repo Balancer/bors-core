@@ -37,14 +37,14 @@ class bors_tools_search_result extends bors_tools_search
 		return parent::init();
 	}
 
-	private $data = false;
+	private $_data = false;
 	function pre_show()
 	{
-		if($this->data !== false)
+		if($this->_data !== false)
 			return false;
 		
 		$data = array();
-		$this->data = &$data;
+		$this->_data = &$data;
 		
 		if(!$this->q())
 			return false;
@@ -161,21 +161,21 @@ class bors_tools_search_result extends bors_tools_search
 					$post_ids[] = $x['id'];
 			}
 
-			$this->data['posts'] = array();
+			$this->_data['posts'] = array();
 			if($post_ids)
 				$x = objects_array('forum_post', array('id IN' => $post_ids, 'by_id' => true));
 			foreach($post_ids as $id)
-				$this->data['posts'][$id] = $x[$id];
+				$this->_data['posts'][$id] = $x[$id];
 				
-			$this->data['topics'] = array();
+			$this->_data['topics'] = array();
 			if($topic_ids)
 			{
 				$x = objects_array('forum_topic', array('id IN' => $topic_ids, 'by_id' => true));
 				foreach($topic_ids as $id)
-					$this->data['topics'][$id] = $x[$id];
+					$this->_data['topics'][$id] = $x[$id];
 			}
 
-			$posts = &$this->data['posts'];
+			$posts = &$this->_data['posts'];
 
 			$docs = array();
 			
@@ -203,10 +203,10 @@ class bors_tools_search_result extends bors_tools_search
 
 	function local_data()
 	{
-		return $this->data;
+		return $this->_data;
 	}
 	
-	function total_items() { return $this->data['res']['total']; }
+	function total_items() { return $this->_data['res']['total']; }
 	function id() { return true; }
 	
 	private function gets($list)
@@ -231,8 +231,8 @@ class bors_tools_search_result extends bors_tools_search
 	{
 		if(!$page)
 			$page = $this->args('page');
-	
-		return '/tools/search/result/'.($get ? $this->gets(array(
+
+		return $_SERVER['REQUEST_URI'].($get ? $this->gets(array(
 			'q' => $this->q(),
 			'f' => $this->f(),
 			's' => $this->s(),

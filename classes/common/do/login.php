@@ -10,7 +10,10 @@ class common_do_login extends base_page
 	function pre_parse()
 	{
 		if(empty($_GET))
-			return false;
+		{
+			debug_hidden_log('Ошибка передачи параметров в класс логина');
+			return bors_message('Ошибка передачи параметров. Возможно, сбой в настройке сервера. Администрация извещена о проблеме.');
+		}
 	
 		require_once('obsolete/users.php');
 		

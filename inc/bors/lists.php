@@ -14,10 +14,13 @@ function bors_named_list_db($class_name, $zero_item = NULL, $where = array())
 	if(isset($zero_item))
 		$res[0] = $zero_item;
 
-	if(empty($where['order']))
-		$where['order'] = 'title';
+	$id_field = $obj->id_field();
+	$title_field = $obj->title_field();
 
-	foreach($db->select_array($items_tab, 'id, title', $where) as $x)
+	if(empty($where['order']))
+		$where['order'] = $title_field;
+
+	foreach($db->select_array($items_tab, "$id_field as id, $title_field as title", $where) as $x)
 		$res[$x['id']] = $x['title'];
 
 	return $res;

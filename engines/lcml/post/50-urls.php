@@ -121,7 +121,7 @@
             if($charset)
                 $m[1] = iconv($charset,'utf-8//IGNORE', $m[1]);
 
-            return "<a href=\"{$original_url}\" class=\"external\">".substr(trim(preg_replace("!\s+!"," ",str_replace("\n"," ",strip_tags($m[1])))),0,256)."</a>";
+            return "<a href=\"{$original_url}\" class=\"external\">".bors_substr(trim(preg_replace("!\s+!"," ",str_replace("\n"," ",strip_tags($m[1])))),0,256)."</a>";
         }
 
         return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";

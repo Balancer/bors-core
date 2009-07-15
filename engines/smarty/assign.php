@@ -60,14 +60,19 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		if($module_relative_path)
 		{
 //			echo 'xfile:'.BORS_HOST.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template;
-			if($smarty->template_exists($tpl = 'xfile:'.BORS_HOST.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template))
+			if($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template))
 				$template_uri = $tpl;
-			elseif($smarty->template_exists($tpl = 'xfile:'.BORS_HOST.$module_relative_path.'/'.$assign_template))
+			elseif($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.$module_relative_path.'/'.$assign_template))
 				$template_uri = $tpl;
 			else			
 				foreach(bors_dirs() as $dir)
-					if($smarty->template_exists($tpl = 'xfile:'.$dir.$module_relative_path.'/'.$assign_template))
+				{
+//					echo "Check ".'xfile:'.secure_path($dir.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template)."<br/>";
+					if($smarty->template_exists($tpl = 'xfile:'.secure_path($dir.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template)))
 						$template_uri = $tpl;
+					elseif($smarty->template_exists($tpl = 'xfile:'.$dir.$module_relative_path.'/'.$assign_template))
+						$template_uri = $tpl;
+				}
 		}
 
 //		$caller_local_tpln = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".$hts->get_data($GLOBALS['main_uri'], 'template', '', true)."/", $caller_path)."/";
@@ -113,9 +118,9 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		if(!$smarty->template_exists($template_uri))
 			$template_uri = smarty_template($assign_template, $caller_path);
 		
-		if(!$template_uri)	
+		if(!$template_uri)
 			debug_exit('Not found template '.$assign_template);
-		
+
 		if(!$smarty->template_exists($template_uri))
 			$template_uri = $assign_template;
 

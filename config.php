@@ -18,27 +18,43 @@ if(!defined('BORS_EXT'))
 if(!defined('BORS_3RD_PARTY'))
 	define('BORS_3RD_PARTY', dirname(BORS_CORE).'/bors-third-party');
 
-function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }
-function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
-function config($key, $def = NULL) { return isset($GLOBALS['cms']['config'][$key]) ? $GLOBALS['cms']['config'][$key] : $def; }
-
-function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
-function configh($section, $hash, $key, $def = NULL) { return isset($GLOBALS['cms']['config'][$section][$hash][$key]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
-
-function mysql_access($db = 'BORS', $login = NULL, $password = NULL, $host='localhost')
+function defval($data, $name, $default=NULL)
 {
-	$GLOBALS['cms']['mysql'][$db]['login'] = $login;
-	$GLOBALS['cms']['mysql'][$db]['password'] = $password;
-	if($host && $host != 'localhost')
-		$GLOBALS['cms']['mysql'][$db]['server'] = $host;
+	if($data && array_key_exists($name, $data))
+		return $data[$name];
+
+	return $default;
 }
 
-function config_mysql_login($db, $default = '') { return $res = @$GLOBALS['cms']['mysql'][$db]['login'] ? $res : $default; }
-function config_mysql_password($db, $default = 'root') { return $res = @$GLOBALS['cms']['mysql'][$db]['password'] ? $res : $default; }
-function config_mysql_server($db, $default = 'localhost') { return $res = @$GLOBALS['cms']['mysql'][$db]['server'] ? $res : $default; }
+function nospace($str) { return str_replace(' ', '', $str); }
+
+function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }
+function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
+function config($key, $def = NULL) { return array_key_exists($key, $GLOBALS['cms']['config']) ? $GLOBALS['cms']['config'][$key] : $def; }
+
+function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
+function configh($section, $hash, $key, $def = NULL) { return array_key_exists($key, @$GLOBALS['cms']['config'][$section][$hash]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
+
+function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
+{
+	if(preg_match('/^(\w+)=>(\w+)$/', nospace($db), $m))
+	{
+		$db = $m[1];
+		$db_real = $m[2];
+	}
+	else
+		$db_real = $db;
+
+	$GLOBALS["_bors_conf_mysql_{$db}_db_real"] = $db_real;
+	$GLOBALS["_bors_conf_mysql_{$db}_login"]   = $login;
+	$GLOBALS["_bors_conf_mysql_{$db}_password"]= $password;
+	$GLOBALS["_bors_conf_mysql_{$db}_server"]  = $host;
+}
+
+function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }
 
 ini_set('session.use_trans_sid', false);
-@session_start();
+//@session_start();
 
 foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 if(file_exists($file = "{$base_dir}/config-pre.php"))

@@ -49,10 +49,13 @@
 
 	function lp_html_a($inner, $params)
 	{
+//		print_d($params);
+	
 		$params['href'] = preg_replace("!javascript!", "жабаскрипт", $params['href']);
 		if(preg_match('!&amp;!', $params['href']))
 			$params['href'] = html_entity_decode($params['href']);
-		return "<a ".make_enabled_params($params, 'href style title').">".lcml($inner)."</a>";
+
+		return "<a ".make_enabled_params($params, 'href style title', 'target').">".lcml($inner)."</a>";
 	}
 
 	function lt_html_img($params)

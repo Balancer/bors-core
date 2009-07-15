@@ -60,10 +60,16 @@ function lcml_html_pre($txt)
 		}
 
 		// Парные тэги, прямо транслирующиеся в BB-код:
-		foreach(explode(' ','style tt sub sup code quote') as $tag)
+		foreach(explode(' ','form style tt sub sup code quote') as $tag)
 		{
 			$txt = preg_replace("!<$tag>(.+?)</$tag>!is","[$tag]$1[/$tag]", $txt);
 			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!is","[$tag $1]$2[/$tag]", $txt);
+		}
+
+		// Строго одиночные тэги
+		foreach(explode(' ','input') as $tag)
+		{
+			$txt = preg_replace("!<$tag\s+([^>]+)>!is","[$tag $1]", $txt);
 		}
 
 		foreach(explode(' ','b big br center code div font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr table td th html_img html_a') as $tag)

@@ -14,10 +14,10 @@ function lcml_quote($txt)
 	{
 		$break = false;
 		
-		if(strlen($s) > 255)
+		if(bors_strlen($s) > 255)
 		{
 			foreach(explode(' ', $s) as $tmp)
-				if(strlen($tmp) > 255)
+				if(bors_strlen($tmp) > 255)
 				{
 					$res .= "$s\n";
 					$break = true;

@@ -16,7 +16,7 @@ function smarty_function_module($params, &$smarty)
 		
 		if(!$id)
 			$id = bors()->main_object();
-			
+
 		$obj = object_load('module_'.$class, $id, $params);
 		
 		if(!$obj)

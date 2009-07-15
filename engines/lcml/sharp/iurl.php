@@ -1,8 +1,9 @@
-<?
-    function lst_iurl($txt)
-    {
-        if(!trim($txt))
-            return "";
+<?php
+
+function lst_iurl($txt)
+{
+	if(!trim($txt))
+		return "";
 
         list($txt,$description) = explode('|',$txt.'|');
         list($url,$img,$w,$h,$align,$copyright,$idesc) = explode(",",$txt.',,,,,,');
@@ -33,5 +34,4 @@ XXX;
         $hts.="</table></th></tr></table></th></tr></table>\n$ral";
         return "$hts";
     
-    }
-?>
+}

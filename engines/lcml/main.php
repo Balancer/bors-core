@@ -103,13 +103,13 @@ class bors_lcml
 		if($this->_params['level'] == 1)
 			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text);
 
-		$mask = str_repeat('.', strlen($text));
+		$mask = str_repeat('.', bors_strlen($text));
 
 		$text = lcml_tags($text, $mask);
 
 		if($this->p('only_tags'))
 			return $text;
-		
+
 		if(config('lcml_sharp_markup'))
 		{
 			require_once('engines/lcml/sharp.php');
@@ -120,14 +120,14 @@ class bors_lcml
 		$start = 0;
 		$can_modif = true;
 
-		for($i=0, $stop=strlen($text); $i<$stop; $i++)
+		for($i=0, $stop=bors_strlen($text); $i<$stop; $i++)
 		{
 			if($mask[$i] == 'X')
 			{
 				if($can_modif)
 				{
 					if($start != $i)
-						$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], substr($text, $start, $i-$start));
+						$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, $i-$start));
 
 					$start = $i;
 					$can_modif = false;
@@ -137,19 +137,19 @@ class bors_lcml
 			{
 				if(!$can_modif)
 				{
-					$result .= substr($text, $start, $i-$start);
+					$result .= bors_substr($text, $start, $i-$start);
 					$start = $i;
 					$can_modif = true;
 				}
 			}
 		}
 
-		if($start < strlen($text))
+		if($start < bors_strlen($text))
 		{
 			if($can_modif)
-				$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], substr($text, $start, strlen($text) - $start));
+				$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, bors_strlen($text) - $start));
 			else
-				$result .= substr($text, $start, strlen($text) - $start);
+				$result .= bors_substr($text, $start, bors_strlen($text) - $start);
 		}
 
 		$text = $result;

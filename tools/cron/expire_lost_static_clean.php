@@ -11,7 +11,10 @@ bors_exit();
 function main()
 {
 	foreach(config('cache_stat_dirs') as $dir)
+	{
+		echo "Do clean $dir\n";
 		find_files_loop($dir, '.*\.html$', 'do_clean');
+	}
 }
 
 function do_clean($file)
@@ -33,13 +36,17 @@ function do_clean($file)
 		return;
 	
 	if($t+600 > $GLOBALS['now'])
+	{
+//		echo "[{$m[1]}] save $file\n";
 		return;
+	}
 
+//	echo "[{$m[1]}] $file\n";
 //	debug_hidden_log('static-clean', "{$m[1]}: {$file}", false);
 	@unlink($file);
 	@rmdir(dirname($file));
 	@rmdir(dirname(dirname($file)));
 	@rmdir(dirname(dirname(dirname($file))));
 	if(file_exists($file))
-		debug_hidden_log('static-clean', "Can't remove {$file}", false);
+		debug_hidden_log('static-clean-error', "Can't remove {$file}", false);
 }

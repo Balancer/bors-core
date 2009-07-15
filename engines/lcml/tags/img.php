@@ -4,10 +4,15 @@ require_once('inc/urls.php');
 
 function lt_img($params) 
 { 
+	$url = bors()->main_object() ? bors()->main_object()->url() : NULL;
+	require_once('inc/airbase/images.php');
+	$data = airbase_image_data($file, $url);
+
+	if(!$data['local'])
 		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.
 
-		if(empty($params['size']))
-			$params['size'] = '468x468';
+	if(empty($params['size']))
+		$params['size'] = '468x468';
 
 		if(!empty($params['url']))
 		{

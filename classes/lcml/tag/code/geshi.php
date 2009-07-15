@@ -9,8 +9,12 @@ class lcml_tag_code_geshi extends base_empty
 {
 	function render($code, $params)
 	{
+		// Страшный костыль. Но иначе иногда рвёт после вставки кривых строк из под винды.
+		if(str_replace('�', '?', $code) != $code)
+			return "<div class=\"box error\">Ошибка: некорректные символы в коде</div>";
+	
 		$code = preg_replace('/^\s*?\n|\s*?\n$/','',$code);
-		$lang1 = strtolower(empty($params['language']) ? 'text' : $params['language']);
+		$lang1 = bors_lower(empty($params['language']) ? 'text' : $params['language']);
 
 		$geshi = new GeSHi($code, NULL);
 		$lang2 = $geshi->get_language_name_from_extension($lang1);
@@ -26,6 +30,10 @@ class lcml_tag_code_geshi extends base_empty
 
 		base_object::add_template_data_array('head_append', '<link rel="stylesheet" type="text/css" href="/_bors/css/bors/code-geshi.css" />');
 
-		return $geshi->error() ? false : "<div class=\"code-head\">code $lang</div>$highlighted_code";
+		if(empty($params['description']))
+			$title = "code $lang";
+		else
+			$title = $params['description'];
+		return $geshi->error() ? false : "<div class=\"code-head\">{$title}</div>$highlighted_code";
 	}
 }

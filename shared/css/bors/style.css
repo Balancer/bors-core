@@ -8,7 +8,7 @@
 .b { font-weight: bold; }
 .nobr { white-space: nowrap; }
 
-div.clear {	height: 0px; clear: both; }
+div.clear {	height: 0px !important; clear: both; }
 
 table.null, table.null td,  table.null th {
 	border: none;

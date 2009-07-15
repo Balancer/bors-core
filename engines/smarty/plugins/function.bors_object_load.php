@@ -21,8 +21,8 @@ function smarty_function_bors_object_load($params, &$smarty)
 
 	if(isset($params['page']) && count($params) == 1)
 		$params = $params['page'];
-	elseif(empty($params))
-		$params = 1;
+//	elseif(empty($params)) //TODO: wtf??
+//		$params = 1;
 
 	$obj = object_load($class, $id, $params);
 

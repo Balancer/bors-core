@@ -26,15 +26,31 @@ function lp_style($inner, $params)
 //TODO: сделать проверку на наличие активного кода в стилях.
 function lp_style($inner, $params)
 {
-		return "<style type=\"text/css\">{$inner}</style>";
+	return "<style type=\"text/css\">{$inner}</style>";
 }
 
 function lp_table($inner, $params)
 {
-	if(empty($params['class']) && !empty($params['border']))
+	if(empty($params['class']) && empty($params['style']) && !empty($params['border']))
 	{
 		unset($params['border']);
 		$params['class'] = 'btab';
 	}
 	return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">".lcml($inner)."</table>";
+}
+
+function lp_form($inner, $params)
+{
+	if(!preg_match('!^http://(aeterna\.ru)!', @$params['action']))
+	{
+		debug_hidden_log('lcml-need-attention', "Need check form action {$params['action']}");
+		return ec('Публикация форм неизвестных ресурсов запрещена. Администратору отправлена заявка на проверку этого ресурса.');
+	}
+
+	return "<form ".make_enabled_params($params, 'name method action').">".lcml($inner)."</form>\n";
+}
+
+function lt_input($params)
+{
+	return "<input ".make_enabled_params($params, 'type name value')." />\n";
 }

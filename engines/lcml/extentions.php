@@ -42,9 +42,9 @@
 		if(!$mask)
 			return lcml_functions_do($functions, $txt);
 
-		if(($mask_len = strlen($mask)) != ($txt_len = strlen($txt)))
+		if(($mask_len = strlen($mask)) != ($txt_len = bors_strlen($txt)))
 		{
-			debug_hidden_log('error_lcml', "mask length ($mask_len) != text length ($txt_len) for text '$txt'");
+			debug_hidden_log('lcml-error', "mask length ($mask_len) != text length ($txt_len) for text '$txt'");
 			return lcml_functions_do($functions, $txt);
 		}
 
@@ -52,14 +52,14 @@
 		$start = 0;
 		$can_modif = true;
 			
-		for($i=0, $stop=strlen($txt); $i<$stop; $i++)
+		for($i=0, $stop=bors_strlen($txt); $i<$stop; $i++)
 		{
 			if(@$mask[$i] == 'X')
 			{
 				if($can_modif)
 				{
 					if($start != $i)
-						$result .= lcml_functions_do($functions, substr($txt, $start, $i-$start));
+						$result .= lcml_functions_do($functions, bors_substr($txt, $start, $i-$start));
 						
 					$start = $i;
 					$can_modif = false;
@@ -69,8 +69,7 @@
 			{
 				if(!$can_modif)
 				{
-//					echo "Skip for '".substr($txt, $start, $i-$start)."'\n";
-					$result .= substr($txt, $start, $i-$start);
+					$result .= bors_substr($txt, $start, $i-$start);
 					$start = $i;
 					$can_modif = true;
 				}
@@ -78,13 +77,12 @@
 		}
 
 
-		if($start < strlen($txt))
+		if($start < bors_strlen($txt))
 		{
-//			echo "Rest= $start, ".strlen($txt).", '$result:$txt'='".substr($txt, $start, strlen($txt) - $start)."'\n";
 			if($can_modif)
-				$result .= lcml_functions_do($functions, substr($txt, $start, strlen($txt) - $start));
+				$result .= lcml_functions_do($functions, bors_substr($txt, $start, bors_strlen($txt) - $start));
 			else				
-				$result .= substr($txt, $start, strlen($txt) - $start);
+				$result .= bors_substr($txt, $start, bors_strlen($txt) - $start);
 		}
 			
         return $result;
@@ -99,7 +97,7 @@
 			$txt = $fn($txt);
 
 			if(!$txt && $out)
-				echo "Drop on $fn convert '".substr($out,0,256)."...'";
+				debug_hidden_message('lcml-error', "Lost text on $fn function. Original: '$out'");
 		}
 
 		return $txt;

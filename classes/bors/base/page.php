@@ -13,14 +13,24 @@ class base_page extends base_object
 	function class_title_dp()	{ return ec('странице'); }
 	function class_title_vp()	{ return ec('страницу'); }
 
-	var $stb_source = NULL;
-	function set_source($source, $db_update) { $this->set("source", $source, $db_update); }
-	function source() { return $this->stb_source; }
+	function source() { return @$this->data['source']; }
+	function set_source($source, $db_update) { return $this->set('source', $source, $db_update); }
 
 	function me() { return bors()->user(); }
 	function me_id() { return bors()->user_id(); }
 
 	function items_around_page() { return 10; }
+
+	function attr_preset()
+	{
+		return array_merge(parent::attr_preset(), array(
+			'cr_type'	=> '',
+			'browser_title'	=> '',
+			'body_engine' => '',
+			'visits' => 0,
+			'num_replies' => 0,
+		));
+	}
 
 	function pages_links($css='pages_select', $before='', $after='')
 	{
@@ -77,11 +87,10 @@ class base_page extends base_object
 	function total_items() { return -1; }
 	function items_offset() { return ($this->page()-1)*$this->items_per_page(); }
 
-	var $stb_body = false;
 	function body()
 	{
-		if($this->stb_body !== false)
-			return $this->stb_body;
+		if(array_key_exists('body', $this->attr))
+			return $this->attr['body'];
 
 		if($body_engine = $this->body_engine())
 		{
@@ -89,7 +98,7 @@ class base_page extends base_object
 			if(!$be)
 				debug_exit("Can't load body engine {$body_engine} for class {$this}");
 
-			return $this->stb_body = $be->body($this);
+			return $this->attr['body'] = $be->body($this);
 		}
 
 		global $me;
@@ -122,7 +131,7 @@ class base_page extends base_object
 			if($group)
 				cache_group::register($group, $this);
 
-		return $this->stb_body = $content;
+		return $this->attr['body'] = $content;
 	}
 
 	function cacheable_body()
@@ -188,22 +197,16 @@ class base_page extends base_object
 		return $this->id() ? $this->class_title() : '';
 	}
 
-	var $stb_cr_type = '';
-	var $stb_browser_title = '';
-
 	function pre_show()
 	{
 		@header('Content-Type: text/html; charset='.config('output_charset', config('default_character_set', 'utf-8')));
 		@header('Content-Language: '.config('page_lang', 'ru'));
 
 		if(!$this->browser_title())
-			$this->set_browser_title($this->title(), false);
+			$this->set_attr('browser_title', "".$this->title());
 
 		return parent::pre_show();
 	}
-
-	var $stb_visits = 0;
-	var $stb_num_replies = 0;
 
 	// TODO: найти использование и снести под children_string
 	function children_list() { return join("\n", $this->children())."\n"; }
@@ -214,7 +217,7 @@ class base_page extends base_object
 		if(!$text)
 			return;
 
-		$ch = class_exists('Cache') ? new Cache() : NULL;
+		$ch = (class_exists('Cache') && !config('lcml_cache_disable')) ? new Cache() : NULL;
 		if($ch && $ch->get('base_object-lcml', $text) && 0)
 			return $ch->last();
 

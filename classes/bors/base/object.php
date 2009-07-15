@@ -2,36 +2,39 @@
 
 class base_object extends base_empty
 {
-	private $_loaded = false;
-	function loaded() { return $this->_loaded; }
-	function set_loaded($value = true) { return $this->_loaded = $value; }
+	var $data = array();
 
-	var $match;
-	function set_match($match) { return $this->match = $match;	}
+	function attr_preset() { return array(
+			'config_class' => '',
+			'access_engine' => '',
+			'url_engine' => 'url_calling',
+	); }
+
+//	function set_id($id) { return $this->data['id'] = $id; }
+//	function id() { return @$this->data['id']; }
+
+	private $__loaded = false;
+	function loaded() { return $this->__loaded; }
+	function set_loaded($value = true) { return $this->__loaded = $value; }
+
+	private $__match;
+	function set_match($match) { return $this->__match = $match; }
 
 	function parents($exact = false)
 	{
-		if($this->stb_parents)
-			return $this->stb_parents;
+		if($ps = $this->data['parents'])
+			return $ps;
 
 		if($exact)
-			return $this->stb_parents = array();
+			return $this->data['parents'] = array();
 
-		if(empty($this->match[2]))
-		{
-//			if(empty($this->match[1]))
-				$parent = dirname($this->called_url()).'/';
-//			else
-//				$parent = "http://{$this->match[1]}/";
-		}
+		if(empty($this->__match[2]))
+			$parent = dirname($this->called_url()).'/';
 		else
-			$parent = "http://{$this->match[1]}{$this->match[2]}";
+			$parent = "http://{$this->__match[1]}{$this->__match[2]}";
 
-		return $this->stb_parents = array($parent);
+		return $this->data['parents'] = array($parent);
 	}
-
-	var $stb_children = array();
-	var $stb_parents = array();
 
 	function rss_body()
 	{
@@ -89,6 +92,9 @@ class base_object extends base_empty
 	private $config;
 	function _configure()
 	{
+		foreach($this->attr_preset() as $attr => $val)
+			$this->attr[$attr] = $val;
+
 		if($config = $this->config_class())
 		{
 			$this->config = object_load($config, $this);
@@ -109,9 +115,9 @@ class base_object extends base_empty
 		{
 			$storage_engine = object_load($storage_engine, NULL, array('no_load_cache' => true));
 			if(!$storage_engine)
-				debug_exit("Can't load storage engine '{$this->storage_engine()}' in ".join(",<br/>\n", bors_dirs()));
+				debug_exit("Can't load storage engine '{$this->storage_engine()}' for class <b>{$this->class_name()}</b><br/>at {$this->class_file()}  in dirs:<br/>".join(",<br/>\n", bors_dirs()));
 			elseif($storage_engine->load($this) !== false || $this->can_be_empty())
-				$this->_loaded = true;
+				$this->__loaded = true;
 		}
 
 		if(!$this->config && ($config = $this->config_class()))
@@ -176,65 +182,27 @@ class base_object extends base_empty
 	function strict_auto_fields_check() { return config('strict_auto_fields_check'); }
 	function __call($method, $params)
 	{
-		if(preg_match('!^autofield!', $method))
-			return NULL;
-//			debug_exit(ec("Неопределённый метод $method в классе ".get_class($this)));
-
-		$field   = $method;
-		$setting = false;
+		// Это был вызов $obj->set_XXX($value, $db_up)
 		if(preg_match('!^set_(\w+)$!', $method, $match))
-		{
-			$field   = $match[1];
-			$setting = true;
-		}
+			return $this->set($match[1], $params[0], $params[1]);
 
-		if(preg_match('!^field_(\w+)_storage$!', $method, $match))
-		{
-			if($field = $this->autofield($match[1]))
-				return $field;
+		// Проверяем нет ли уже загруженного значения данных объекта
+		if(array_key_exists($method, $this->data))
+			return $this->data[$method];
 
-			debug_trace();
-			exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
-		}
+		// Проверяем нет ли уже загруженного значения атрибута (временных несохраняемых данных) объекта
+		if(array_key_exists($method, $this->attr))
+			return $this->attr[$method];
 
-		$field_storage = "field_{$field}_storage";
+		// Проверяем автоматические объекты.
+		$auto_objs = $this->auto_objects();
+		if($f = @$auto_objs[$method])
+			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+				return $this->attr[$method] = object_load($m[1], $this->$m[2]());
 
-		if(!$setting)
-		{
-			$auto_objs = $this->auto_objects();
-			if($f = @$auto_objs[$field])
-				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
-					return $this->set($field, object_load($m[1], $this->$m[2]()), false);
-		}
+		if($this->strict_auto_fields_check())
+			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."</b>'<br/>at {$this->class_file()}");
 
-		//TODO: сделать более жёсткой проверку на setting
-		if(!$setting && $this->strict_auto_fields_check()
-			&& !method_exists($this, $field_storage)
-			&& empty($params[2]) // При установке из ORM Без проверки на тип!
-			&& !$this->autofield($field)
-			&& @$_SERVER['SVCNAME'] != 'tomcat-6' && !property_exists($this, "stb_{$field}")
-		)
-		{
-			if(@$_SERVER['SVCNAME'] != 'tomcat-6')
-				debug_trace();
-			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '".get_class($this)."'");
-		}
-
-		if($setting)
-			return $this->set($field, $params[0], $params[1]);
-		else
-			return $this->get_property($field);
-	}
-
-	function get_property($name)
-	{
-		$p="stb_{$name}";
-		if(!$this->strict_auto_fields_check()
-				|| @$_SERVER['SVCNAME'] == 'tomcat-6' 
-				|| property_exists($this, $p))
-			return @$this->$p;
-
-		debug_exit("Try to get undefined properties ".get_class($this).".$name");
 		return NULL;
 	}
 
@@ -265,9 +233,7 @@ class base_object extends base_empty
 
 	function set($field, $value, $db_update)
 	{
-		$field_name = "stb_$field";
-
-		if($db_update && @$this->$field_name !== $value)
+		if($db_update && @$this->data[$field] !== $value)
 		{
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();
@@ -279,27 +245,11 @@ class base_object extends base_empty
 //			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
 //				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
 
-			$this->changed_fields[$field] = $field_name;
+			$this->changed_fields[$field] = true;
 			bors()->add_changed_object($this);
 		}
 
-		return $this->$field_name = $value;
-	}
-
-	function fset($field, $value, $db_update)
-	{
-		$field_name = "stb_$field";
-
-		if($db_update && @$this->$field_name != $value)
-		{
-			if(config('mutex_lock_enable'))
-				$this->__mutex_lock();
-
-			$this->changed_fields[$field] = $field_name;
-			bors()->add_changed_object($this);
-		}
-
-		return $this->$field_name = $value;
+		return $this->data[$field] = $value;
 	}
 
 	function render_engine() { return config('render_engine', false); }
@@ -308,51 +258,43 @@ class base_object extends base_empty
 	function template_vars() { return 'body source me me_id'; }
 	function template_local_vars() { return 'create_time description id modify_time nav_name title'; }
 
-	var $stb_create_time = NULL;
-	function set_create_time($unix_time, $db_update) { $this->set("create_time", intval($unix_time), $db_update); }
+	function set_create_time($unix_time, $db_update) { return $this->set('create_time', intval($unix_time), $db_update); }
 	function create_time($exactly = false)
 	{
-		if($exactly || $this->stb_create_time)
-			return $this->stb_create_time;
+		if($exactly || !empty($this->data['create_time']))
+			return @$this->data['create_time'];
 
-		if($this->stb_modify_time)
-			return $this->stb_modify_time;
+		if(!empty($this->data['modify_time']))
+			return $this->data['modify_time'];
 
 		return time();
 	}
 
-	var $stb_modify_time = NULL;
-	function set_modify_time($unix_time, $db_update) { $this->set("modify_time", $unix_time, $db_update); }
+	function set_modify_time($unix_time, $db_update) { return $this->set('modify_time', $unix_time, $db_update); }
 	function modify_time($exactly = false)
 	{
-		if($exactly || $this->stb_modify_time)
-			return $this->stb_modify_time;
+		if($exactly || !empty($this->data['modify_time']))
+			return @$this->data['modify_time'];
 
 		return time();
 	}
 
-	var $stb_title = '';
-	function title() { return $this->stb_title; }
-	function set_title($new_title, $db_update) { $this->set("title", $new_title, $db_update); }
+	function title() { return @$this->data['title']; }
+	function set_title($new_title, $db_update) { return $this->set('title', $new_title, $db_update); }
 
-	var $stb_keywords_string = '';
+	function description() { return @$this->data['description']; }
+	function set_description($description, $db_update) { return $this->set('description', $description, $db_update); }
 
-	var $stb_description = NULL;
-	function set_description($description, $db_update) { $this->set("description", $description, $db_update); }
-	function description() { return $this->stb_description; }
+	function nav_name() { return @$this->data['nav_name'] ? $this->data['nav_name'] : $this->title(); }
+	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 
-	var $stb_nav_name = NULL;
-	function set_nav_name($nav_name, $db_update) { return $this->set("nav_name", $nav_name, $db_update); }
-	function nav_name() { return !empty($this->stb_nav_name) ? $this->stb_nav_name : $this->title(); }
-
-	var $stb_template = NULL;
-	function set_template($template, $db_update) { $this->set("template", $template, $db_update); }
-	function template() { return $this->stb_template ? $this->stb_template : config('default_template'); }
+	function template() { return @$this->data['template'] ? $this->data['template'] : config('default_template'); }
+	function set_template($template, $db_update) { $this->set('template', $template, $db_update); }
 
 	function parents_string() { return join("\n", $this->parents());  }
 	function set_parents_string($string, $dbup) { $this->set_parents(array_filter(explode("\n", $string)), $dbup); return $string;  }
 
-	function children_string() { return join("\n", $this->children());  }
+	function children_string() { return ($cs = $this->children()) ? join("\n", $cs) : '';  }
 	function set_children_string($string, $dbup) { $this->set_children(array_filter(explode("\n", $string)), $dbup); return $string;  }
 
 	function template_data_fill()
@@ -366,7 +308,7 @@ class base_object extends base_empty
 			{
 				if(is_numeric($property))
 					$property = $field;
-		
+
 				$this->add_local_template_data($property, $this->$property());
 			}
 		}
@@ -416,7 +358,7 @@ class base_object extends base_empty
 	function imaged_admin_link($title = NULL)
 	{
 		if($title === NULL)
-			$title = ec('Администрировать ').strtolower($this->class_title_rp());
+			$title = ec('Администрировать ').bors_lower($this->class_title_rp());
 		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
@@ -424,7 +366,7 @@ class base_object extends base_empty
 	function imaged_edit_url($title = NULL)
 	{
 		if($title === NULL)
-			$title = ec('Редактировать ').strtolower($this->class_title_rp());
+			$title = ec('Редактировать ').bors_lower($this->class_title_rp());
 		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
@@ -440,7 +382,7 @@ class base_object extends base_empty
 	function imaged_delete_url($title = NULL, $text = '')
 	{
 		if($title == 'del')
-			$title = ec('Удалить ').strtolower($this->class_title_vp());
+			$title = ec('Удалить ').bors_lower($this->class_title_vp());
 
 		if($text === NULL)
 			$text = $title;
@@ -465,7 +407,7 @@ class base_object extends base_empty
 
 	function admin_delete_link()
 	{
-		return $this->imaged_delete_url(NULL, 'Удалить '.strtolower($this->class_title_vp()));
+		return $this->imaged_delete_url(NULL, 'Удалить '.bors_lower($this->class_title_vp()));
 	}
 
 	// true if break
@@ -532,11 +474,7 @@ class base_object extends base_empty
 				foreach($array as $key => $val)
 				{
 					$method = "set_$key";
-					if(method_exists($this, $method) 
-							|| $this->autofield($key) 
-							|| $this->has_smart_field($key)
-					)
-						$this->$method($val, $db_update_flag);
+					$this->$method($val, $db_update_flag);
 				}
 			}
 		}
@@ -610,48 +548,10 @@ class base_object extends base_empty
 	function data_provider() { return NULL; }
 	function data_providers() { return array(); }
 
-	var $_autofields;
-	function autofield($field)
-	{
-		if(method_exists($this, $method = "field_{$field}_storage"))
-			return $this->$method();
-
-		if(empty($this->_autofields))
-		{
-			$_autofields = array();
-
-			foreach(explode(' ', $this->autofields()) as $f)
-			{
-				$id	  = 'id';
-				if(preg_match('!^(\w+)\((\w+)\)(.*?)$!', $f, $match))
-				{
-					$f  = $match[1].$match[3];
-					$id = $match[2];
-				}
-
-				$name = $f;
-				if(preg_match('!^(\w+)\->(\w+)$!', $f, $match))
-				{
-					$f    = $match[1];
-					$name = $match[2];
-				}
-				$this->_autofields[$name] = "{$f}({$id})";
-			}
-		}
-
-		if($res = @$this->_autofields[$field])
-			return $res;
-
-		return NULL;
-	}
-
 	function fields() { return array(); }
 	function auto_objects() { return array(); }
 
 	function storage() { return object_load($this->storage_engine()); }
-
-	var $stb_access_engine = NULL;
-	var $stb_config_class = NULL;
 
 	function access()
 	{
@@ -682,22 +582,16 @@ class base_object extends base_empty
 			return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); 
 	}
 
-	var $_called_url;
-	function set_called_url($url) { return $this->_called_url = $url; }
-	function called_url() { return $this->_called_url; }
-	
-	var $stb_url_engine = 'url_calling';
-	private $_url_engine = false;
+	function set_called_url($url) { return $this->attr['called_url'] = $url; }
+	function called_url() { return $this->attr['called_url']; }
+
 	function url($page = NULL)
 	{
-		if(!$this->_url_engine || !$this->_url_engine->id())
-		{
-			$this->_url_engine = object_load($this->url_engine(), $this);
-			if(!$this->_url_engine)
+		if(empty($this->attr['_url_engine_object'])/* || !$this->_url_engine->id() ?? */)
+			if(!($this->attr['_url_engine_object'] = object_load($this->url_engine(), $this)))
 				debug_exit("Can't load url engine {$this->url_engine()} for class {$this}");
-		}
-		
-		return $this->_url_engine->url($page);
+
+		return $this->attr['_url_engine_object']->url($page);
 	}
 
 	function internal_uri()
@@ -717,7 +611,6 @@ class base_object extends base_empty
 	// Применимо только при cache_static === true
 	function cache_static_recreate() { return false; }
 	function cache_static_can_be_dropped() { return true; }
-//	var $stb_cache_static = 0;
 
 	function cache_groups() { return ''; }
 	function cache_groups_parent() { return ''; }
@@ -750,8 +643,11 @@ class base_object extends base_empty
 	function main_table(){ return $this->main_table_storage(); }
 	function main_table_storage(){ return $this->class_name(); }
 	function main_table_fields() { return array(); }
-	function title_field() { $this->field_title_storage(); }
-	function field_title_storage() { $f=$this->main_table_fields(); return @$f['title'].'(id)'; }
+	function title_field()
+	{
+		$f = $this->main_table_fields();
+		return ($ft = @$f['title']) ? $ft : 'title';
+	}
 
 	function set_checkboxes($check_list, $db_up)
 	{
@@ -760,7 +656,7 @@ class base_object extends base_empty
 			if(method_exists($this, $method = 'set_'.$name))
 				$this->$method(empty($_GET[$name]) ? 0 : 1, $db_up);
 			else
-				$this->fset($name, empty($_GET[$name]) ? 0 : 1, $db_up);
+				$this->set($name, empty($_GET[$name]) ? 0 : 1, $db_up);
 		}
 	}
 
@@ -774,7 +670,7 @@ class base_object extends base_empty
 	private $args = array();
 	function set_args($args) { return $this->args = $args; }
 	function _set_arg($name, $value) { return $this->args[$name] = $value; }
-	function args($name=false, $def = NULL) { return $name ? (isset($this->args[$name]) ? $this->args[$name] : $def) : $this->args; }
+	function args($name=false, $def = NULL) { return $name ? (array_key_exists($name, $this->args) ? $this->args[$name] : $def) : $this->args; }
 
 	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }
 	function set_was_cleaned($value) { return $GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()] = $value; }
@@ -862,11 +758,6 @@ class base_object extends base_empty
 	function pre_set() { }
 	function post_set() { }
 	function on_new_instance() { }
-
-	var $stb_sort_order;
-//	private $sort_order = 0;
-//	function sort_order() { return $this->sort_order; }
-//	function set_sort_order($value) { return $this->sort_order = $value; }
 
 	function static_get_cache() { return false; }
 
@@ -963,6 +854,7 @@ class base_object extends base_empty
 	{
 		$use_static = config('cache_static') 
 			&& ($recreate || ($can_use_static && $this->cache_static() > 0));
+
 		$file = $this->static_file();
 		$fe = file_exists($file);
 		$fs = $fe && filesize($file) > 2000;
@@ -985,13 +877,12 @@ class base_object extends base_empty
 				$this->output_charset(),
 			), $this->cs_u2i(config('temporary_file_contents')))), 120);
 
-
 		$content = $this->direct_content();
 
 		if($this->internal_charset() != $this->output_charset())
 			$content = $this->cs_i2o($content);
 
-		if(!$content)
+		if(empty($content))
 		{
 			cache_static::drop($this);
 			return '';

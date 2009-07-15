@@ -203,15 +203,19 @@ function url_parse($url)
 
     function translite_uri_simple($uri)
     {
-//        $uri = strtolower($uri);
-
         $uri = to_translit($uri);
+        $uri = strtolower($uri);
+		$uri = preg_replace('/\W/', '-', $uri);
+		$uri = preg_replace('/\-+/', '-', $uri);
+		$uri = trim($uri, '-');
+		
+		return $uri;
 
         $uri = strtr($uri, array(
-        '"' => "~", 
-        '`' => "~",
-        ';' => ".",
-        "'" => "~",
+        '"' => '~', 
+        '`' => '~',
+        ';' => '.',
+        "'" => '~',
         '#' => '-N',
         '&' => '-and-',
         '+' => '-plus-',
@@ -286,4 +290,12 @@ function curl_redir_exec($ch,$debug="")
         $curl_loops=0;
         return $debbbb;
     }
+}
+
+function normalize_url($url)
+{
+	$url = preg_replace('!http://(www|win)\.!', 'http://', $url);
+	$url = preg_replace('!\?PHPSESSID=[0-9a-f]+&!', '?', $url);
+	$url = preg_replace('!#\w+$!', '', $url);
+	return $url;
 }

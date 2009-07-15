@@ -56,69 +56,74 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 	if(!$dbh)
 		$dbh = &new driver_mysql(config('bors_core_db'));
 
+	if(empty($args['order']))
+		$order = 'ORDER BY sort_order, object_id';
+	else
+		$order = 'ORDER BY '.$args['order'];
+
+	if(empty($args['limit']))
+		$limit = '';
+	else
+		$limit = "LIMIT ".intval($args['limit']);
+
+	$where_to = $where_from = array();
+
 	if($to_class)
 	{
-		$to_class_where = bors_cross_where_cond('to_class', $to_class);
-		$from_class_where = bors_cross_where_cond('from_class', $to_class);
-	}
-	else
-	{
-		$to_class_where = '';
-		$from_class_where = '';
+		if(!is_numeric($to_class))
+			$to_class = class_name_to_id($to_class);
+
+		$where_to['to_class'] = $to_class;
+		$where_from['from_class'] = $to_class;
 	}
 
-	$result = array();
-	$limit = empty($args['limit']) ? '' : 'LIMIT '.addslashes($args['limit']);
-	$order = empty($args['sort_order']) ? 'ORDER BY `sort_order`, to_id' : addslashes(mysql_order_compile($args['sort_order']));
+	$where_to['from_class'] = $object->class_id();
+	$where_to['from_id'] = $object->id();
+	$where_from['to_class'] = $object->class_id();
+	$where_from['to_id'] = $object->id();
 
-	$dbh->query("SELECT to_class as class_id, to_id as object_id, sort_order, type_id FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} $order $limit");
+	$where_from = mysql_where_compile($where_from);
+	$where_to   = mysql_where_compile($where_to  );
+
+	$arr = $dbh->get_array("
+		(SELECT to_class as class_id, to_id as object_id, sort_order, type_id FROM bors_cross $where_to)
+		UNION
+		(SELECT from_class as class_id, from_id as object_id, sort_order, type_id FROM bors_cross $where_from)
+		$order
+		$limit
+	");
+
+//	$arr = $dbh->select_array('bors_cross', 'to_class as class_id, to_id as object_id, sort_order, type_id', $where_to);
+//	$arr = array_merge($arr, $dbh->select_array('bors_cross', 'from_class as class_id, from_id as object_id, sort_order, type_id', $where_from));
+
+	$inits = array();
+	foreach($arr as $x)
+		@$inits[$x['class_id']][] = $x['object_id'];
+
+	foreach($inits as $class_id => $ids)
+		$objs[$class_id] = objects_array($class_id, array('id IN' => $ids, 'by_id' => true));
 
 	$object_iu = $object->internal_uri();
-	while($row = $dbh->fetch_row())
-		if($x = bors_cross_object_init($row))
-		{
-			$x_iu = $x->internal_uri();
-			if($x_iu < $object_iu)
-			{
-				$bors_cross_types_map[$x_iu][$object_iu] = $row['type_id'];
-				$bors_cross_sort_orders[$x_iu][$object_iu] = $row['sort_order'];
-			}
-			else
-			{
-				$bors_cross_types_map[$object_iu][$x_iu] = $row['type_id'];
-				$bors_cross_sort_orders[$object_iu][$x_iu] = $row['sort_order'];
-			}
-			$result[] = $x;
-		}
-		else
-		{
-			bors_remove_cross_pair($row['class_id'], $row['object_id'], $object->class_id(), $object->id());
-			debug_hidden_log('cross-errors', "Empty cross ".print_r($row, true)." with {$object} [class_id = {$object->class_id()}]");
-		}
-		
-	$dbh->query("SELECT from_class as class_id, from_id as object_id, sort_order, type_id FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} $order $limit");
+	$result = array();
 
-	while($row = $dbh->fetch_row())
-		if($x = bors_cross_object_init($row))
+	foreach($arr as $x)
+	{
+		$x = $objs[$x['class_id']][$x['object_id']];
+/*
+		$x_iu = $x->internal_uri();
+		if($x_iu < $object_iu)
 		{
-			$x_iu = $x->internal_uri();
-			if($x_iu < $object_iu)
-			{
-				$bors_cross_types_map[$x_iu][$object_iu] = $row['type_id'];
-				$bors_cross_sort_orders[$x_iu][$object_iu] = $row['sort_order'];
-			}
-			else
-			{
-				$bors_cross_types_map[$object_iu][$x_iu] = $row['type_id'];
-				$bors_cross_sort_orders[$object_iu][$x_iu] = $row['sort_order'];
-			}
-			$result[] = $x;
+			$bors_cross_types_map[$x_iu][$object_iu] = $row['type_id'];
+			$bors_cross_sort_orders[$x_iu][$object_iu] = $row['sort_order'];
 		}
 		else
 		{
-			debug_hidden_log('cross-errors', "Empty cross ".print_r($row, true)." with {$object} [class_id = {$object->class_id()}]");
-			bors_remove_cross_pair($row['class_id'], $row['object_id'], $object->class_id(), $object->id());
+			$bors_cross_types_map[$object_iu][$x_iu] = $row['type_id'];
+			$bors_cross_sort_orders[$object_iu][$x_iu] = $row['sort_order'];
 		}
+*/
+		$result[] = $x;
+	}
 
 	return $result;
 }

@@ -2,13 +2,22 @@
 
 function lcml_sharp($txt, &$mask)
 {
+/*
+		if(debug_is_balancer())
+		{
+			echo ">>>>>>>>>>>><xmp>\n";
+			echo "text=".str_replace("\n", ' ', $txt)."\n";
+			echo "mask=".str_replace("\n", '@', $mask)."\n";
+			echo "</xmp>\n";
+		}
+*/
         $array = explode("\n", $txt);
 		
 		$pos = 0;
 		foreach($array as $s)
 		{
-			$l = strlen($s);
-			$mask_array[] = substr($mask, $pos, $l+1); //str_repeat('.', strlen($s));
+			$l = bors_strlen($s);
+			$mask_array[] = substr($mask, $pos, $l + 1); // Маска на 1 длиннее строки, т.к. запоминается старое значение переноса.
 			$pos += $l + 1;
 		}
 
@@ -23,9 +32,7 @@ function lcml_sharp($txt, &$mask)
         {
             $s = @$array[$i];
 
-//			$out .= "test $i: >=$s<=".print_r($array,true)."|".print_r($mask_array,true);
-
-            if(preg_match("!^#(\w+)(\s*)(.*?)$!" ,$s,$m)) // Открывающийся или одиночный тэг
+            if(preg_match("!^#(\w+)(\s*)(.*?)$!" , $s, $m)) // Открывающийся или одиночный тэг
             {
                 if(function_exists("lsp_$m[1]"))
                 {
@@ -49,7 +56,7 @@ function lcml_sharp($txt, &$mask)
                 {
                     $func = "lst_$m[1]";
                     $array[$i] = $func(trim($m[3]));
-					$mask_array[$i] = str_repeat('X', strlen($array[$i]));
+					$mask_array[$i] = str_repeat('X', bors_strlen($array[$i])+1);
                     $changed = 1;
                     continue;
                 }
@@ -61,12 +68,9 @@ function lcml_sharp($txt, &$mask)
                 if(!$in_pair)
                 {
                     $func = "lsp_$tag";
-//					echo "start=".($start+1).", len=".($i-$start-1);
 					
-                    $txt = $func(join("\n",array_slice($array,$start+1,$i-$start-1)),$params);
+                    $txt = $func(join("\n",array_slice($array,$start+1,$i-$start-1)), $params);
                     $txt = explode("\n",$txt);
-
-//					print_r($txt);
 
                     $left       = array_slice($array, 0, $start);
                     $mask_left  = array_slice($mask_array, 0, $start);
@@ -77,8 +81,7 @@ function lcml_sharp($txt, &$mask)
 
 					for($j=0, $size=sizeof($txt); $j<$size; $j++)
 					{
-//						echo " <xmp>=>$txt[$j]<=</xmp> ".strlen($txt[$j]);
-						$mask_txt[$j] = str_repeat('X', strlen($txt[$j]));
+						$mask_txt[$j] = str_repeat('X', bors_strlen($txt[$j])+1);
 					}
 
 //					exit(print_r($mask_txt, true)."s=$start, i=$i\n");
@@ -108,16 +111,22 @@ function lcml_sharp($txt, &$mask)
         
         $txt  = join("\n", $array);
         $mask = join("",  $mask_array);
+/*
+		if(debug_is_balancer())
+		{
+			echo "<xmp>\n";
+			echo "text=".str_replace("\n", ' ', $txt)."\n";
+			echo "mask=".str_replace("\n", '@', $mask)."\n";
+			echo "</xmp>\n";
+		}
+*/
+		if($changed)
+            $txt = lcml_sharp($txt, $mask);
 
-//        if($changed)
-//		{
-//            $txt = lcml_sharp($txt);
-//    	}
-		
 /*        if(!isset($GLOBALS['forum_tag_found'] && !$GLOBALS['forum_tag_found']))
             $txt.="\n<?\$id=\"$::page_data{forum_id}\";\$page=\"$::page\";include(\"/home/airbase/html/inc/show/forum-comments.phtml\");?>\n";
 */        
-        return /*"<xmp>$out</xmp>".*/$txt;
+        return $txt;
 }
 
 function lcml_sharp_getset($txt)

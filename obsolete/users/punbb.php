@@ -246,7 +246,7 @@
 	
 		function cookie_hash()
 		{
-			return sha1(strtolower($this->data('salt')) . $this->data('password'));
+			return sha1(bors_lower($this->data('salt')) . $this->data('password'));
 		}
 
 		function cookie_hash_update($expired = -1)
@@ -296,7 +296,7 @@
 
 	    function check_password($password, $handle_errors = true)
     	{
-			$sha_password = sha1(strtolower($this->data('name')) . $password);
+			$sha_password = sha1(bors_lower($this->data('name')) . $password);
 			$user_sha_password = $this->data('password');
 	
 			if(!$handle_errors)

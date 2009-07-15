@@ -4,12 +4,6 @@ class base_page_db extends base_page
 {
 	function can_be_empty() { return false; }
 
-	function parents()
-	{
-//		echo "match=".print_r($this->match, true)."<br />\n";
-		return array("http://{$this->match[1]}{$this->match[2]}");
-	}
-
 	function id_field() { return 'id'; }
 
 	function new_instance() { bors_object_new_instance_db($this); }

@@ -61,6 +61,16 @@ function bors_field_array_extract($objects_array, $field)
 	return $result;
 }
 
+function bors_fields_array_extract($objects_array, $fields_array)
+{
+	$result = array();
+	foreach($objects_array as $x)
+		foreach($fields_array as $field)
+			$result[$field][] = $x->$field();
+
+	return $result;
+}
+
 function objects_delete($class, $args = array())
 {
 	if(is_numeric($class))

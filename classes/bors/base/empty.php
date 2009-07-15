@@ -18,7 +18,7 @@ class base_empty extends base_null
 	function get($name, $default = NULL)
 	{
 		if(method_exists($this, $name))
-			return $this->name();
+			return $this->$name();
 
 		if(array_key_exists($name, $this->data))
 			return $this->data[$name];

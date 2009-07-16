@@ -9,7 +9,7 @@
 	<th>user agent</th>
 </tr>
 {foreach from=$max_cpu_by_user item="x"}
-<tr><td>{$x.user_ip}</td>
+<tr><td>{if $can_see_ip}{$x.user_ip}{else}xxx.xxx.xxx.xxx{/if}</td>
 	<td>{$x.user_id}</td>
 	<td>{$x.cnt}</td>
 	<td>{$x.su|round:2}</td>
@@ -32,6 +32,30 @@
 	<td>{$x.cnt}</td>
 	<td>{$x.su|round:2}</td>
 	<td>{math equation="time / total * 100" time=$x.su total=$total_time assign="perc"}{$perc|round:2}</td>
+</tr>
+{/foreach}
+</table>
+
+<h2>Загрузка комбинированная</h2>
+<table class="btab w100p">
+<tr><th>user ip</th>
+	<th>user id</th>
+	<th>class name</th>
+	<th>всего обращений</th>
+	<th>потрачено секунд</th>
+	<th>%</th>
+	<th>бот</th>
+	<th>user agent</th>
+</tr>
+{foreach from=$max_cpu_by_combine item="x"}
+<tr><td>{if $can_see_ip}{$x.user_ip}{else}xxx.xxx.xxx.xxx{/if}</td>
+	<td>{$x.user_id}</td>
+	<td>{$x.class_name}</td>
+	<td>{$x.cnt}</td>
+	<td>{$x.su|round:2}</td>
+	<td>{math equation="time / total * 100" time=$x.su total=$total_time assign="perc"}{$perc|round:2}</td>
+	<td>{$x.is_bot}</td>
+	<td>{$x.user_agent}</td>
 </tr>
 {/foreach}
 </table>

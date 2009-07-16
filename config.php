@@ -92,6 +92,7 @@ require_once('inc/global-data.php');
 require_once('inc/locales.php');
 require_once('inc/system.php');
 require_once('inc/datetime.php');
+require_once('inc/clients.php');
 require_once('obsolete/DataBase.php');
 require_once('obsolete/DataBaseHTS.php');
 
@@ -204,3 +205,4 @@ if(get_magic_quotes_gpc() && $_POST)
 	ungpc_array($_POST);
 
 bors_init();
+bors_client_analyze();

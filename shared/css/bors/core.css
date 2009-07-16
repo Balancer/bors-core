@@ -2,15 +2,16 @@
 
 .code {
 	margin-top: 0;
+	padding: 4px;
 }
 
 ol.code {
-	padding-left: 30px;
+	padding-left: 40px;
 }
 
 .code-head {
 	margin-bottom: 0;
 	font-weight: bold;
-	padding-left: 30px;
+	padding-left: 40px;
 	font-size: 0.9em;
 }

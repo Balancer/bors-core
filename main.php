@@ -19,24 +19,6 @@
 		exit("Do not user direct bors-call!");
 	}
 
-	global $client;
-	$client['is_bot'] = false;
-	foreach(array(
-			'Nigma' => 'Nigma',
-			'yahoo' => 'Yahoo',
-			'rambler' => 'Rambler',
-			'google' => 'Google',
-			'yandex' => 'Yandex',
-			'Yanga' => 'Yanga',
-		) as $pattern => $bot)
-	{
-		if(preg_match("!".$pattern."!i", @$_SERVER['HTTP_USER_AGENT']))
-		{
-			$client['is_bot'] = $bot;
-			break;
-		}
-	}
-
     $GLOBALS['stat']['start_microtime'] = microtime(true);
     $GLOBALS['stat']['start_time'] = time();
 
@@ -46,7 +28,7 @@
 
     require_once('config.php');
 
-	if($client['is_bot'] && config('bot_lavg_limit'))
+	if(bors()->client()->is_bot() && config('bot_lavg_limit'))
 	{
 		$cache = &new BorsMemCache();
 		if(!($load_avg = $cache->get('system-load-average')))
@@ -69,7 +51,7 @@
 
 	if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect_trap'))
 	{
-		if($client['is_bot'])
+		if(bors()->client()->is_bot())
 			if(config('404_page_url'))
 				return go(config('404_page_url'), true);
 			
@@ -175,7 +157,7 @@
 			'access_time' => $GLOBALS['stat']['start_time'],
 			'operation_time' =>  str_replace(',', '.', microtime(true) - $GLOBALS['stat']['start_microtime']),
 			'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
-			'is_bot' => $client['is_bot'],
+			'is_bot' => bors()->client()->is_bot(),
 		);
 
 		if($object)

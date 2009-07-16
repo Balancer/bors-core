@@ -13,15 +13,13 @@ class cache_smart extends cache_base
 		if(config('cache_disabled'))
 			return $this->last = $default;
 
+		debug_count_inc('smart_cache_gets_total');
 		if($memcache = config('memcached_instance'))
 		{
-//			$memcache = &new Memcache;
-//			$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
 
-			@$GLOBALS['bors_stat_smart_cache_gets_total']++;
 			if($x = @$memcache->get('phpmv3'.$this->last_hmd))
 			{
-				@$GLOBALS['bors_stat_smart_cache_gets_memcached_hits']++;
+				debug_count_inc('smart_cache_gets_memcached_hits');
 				return $this->last = $x;
 			}
 		}
@@ -66,15 +64,16 @@ class cache_smart extends cache_base
 			return $this->last = $value;
 
 		// Если время хранения отрицательное - используется только memcached, при его наличии.
-	
 		if($memcache = config('memcached_instance'))
 		{
-//			$memcache = &new Memcache;
-//			$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
-			@$memcache->set('phpmv3'.$this->last_hmd, $value, true, abs($time_to_expire));
+			if($time_to_expire < 0)
+			{
+				$memcache->set('phpmv3'.$this->last_hmd, $value, MEMCACHE_COMPRESSED, abs($time_to_expire));
+				return $this->last = $value;
+			}
 		}
-		else
-			$time_to_expire = abs($time_to_expire);
+
+		$time_to_expire = abs($time_to_expire);
 
 		$do_time = microtime(true) - $this->start_time;
 		if($do_time < 0.01 && $time_to_expire > 0)

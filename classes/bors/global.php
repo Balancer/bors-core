@@ -25,6 +25,11 @@ class bors_global extends base_empty
 		return ($user = $this->user()) ? $user->id() : NULL;
 	}
 
+	function user_title()
+	{
+		return ($user = $this->user()) ? $user->title() : NULL;
+	}
+
 	function set_main_object(&$obj) { return $this->main_object = &$obj; }
 	function &main_object() { return $this->main_object; }
 
@@ -47,11 +52,13 @@ class bors_global extends base_empty
 
 			$obj->cache_clean();
 
-			if(!($storage = $obj->storage_engine()))
-				$storage = 'storage_db_mysql_smart';
+			$storage_class = $obj->storage_engine();
+
+			if(!$storage_class)
+				$storage_class = 'storage_db_mysql_smart';
 //				debug_exit('Not defined storage engine for '.$obj->class_name());
 
-			$storage = object_load($storage);
+			$storage = object_load($storage_class);
 
 			$storage->save($obj);
 			save_cached_object($obj);

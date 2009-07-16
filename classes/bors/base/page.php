@@ -43,6 +43,8 @@ class base_page extends base_object
 		return '<div class="'.$css.'">'.$before.ec('<ul><li>Страницы:</li>').$pages.'</ul>'.$after.'</div>';
 	}
 
+	function reverse_pages() { return false; }
+
 	function pages_links_nul($css='pages_select', $text = NULL, $delim = '', $show_current = true, $use_items_numeration = false)
 	{
 		if($this->total_pages() < 2)
@@ -52,11 +54,16 @@ class base_page extends base_object
 			$text = ec('Страницы:');
 
 		include_once('inc/design/page_split.php');
-		return '<div class="'.$css.'">'.$text.join($delim, pages_show(
-			$this, $this->total_pages(), $this->items_around_page(),
+		
+		$pages = pages_show($this, $this->total_pages(), $this->items_around_page(),
 			$show_current, 'current_page', 'select_page',
 			$use_items_numeration, $this->items_per_page(), $this->total_items()
-		)).'</div>';
+		);
+
+		if($this->reverse_pages())
+			$pages = array_reverse($pages);
+
+		return '<div class="'.$css.'">'.$text.join($delim, $pages).'</div>';
 	}
 
 	function getsort($t, $def = false)

@@ -171,3 +171,15 @@ function bors_set_server_var($name, $value, $keep_alive = -1)
 	$sv->set_expire_time($keep_alive > 0 ? time() + $keep_alive : 365*86400, true);
 	$sv->store();
 }
+
+function bors_stop_bots()
+{
+	if(bors()->client()->is_bot())
+	{
+		@header("HTTP/1.0 404 Not Found");
+		debug_hidden_log('bot_stopped', 'stop_bots');
+		return go('http://balancer.ru/forum/', true);
+	}
+
+	return false;
+}

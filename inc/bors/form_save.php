@@ -8,7 +8,7 @@
 
 function bors_form_save(&$obj)
 {
-//	echo $obj; print_d($_GET); exit();
+//	if(debug_is_balancer()) { echo $obj; print_d($_GET); exit(); }
 
 	if(!empty($_GET['act']))
 	{
@@ -26,7 +26,7 @@ function bors_form_save(&$obj)
 		}
 	}
 
-//	print_d($_GET); exit();
+//	if(debug_is_balancer()) { print_d($_GET); exit(); }
 
 	if(!empty($_GET['class_name']) && $_GET['class_name'] != 'NULL')
 	{
@@ -130,7 +130,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		if(empty($data[$field]))
 			return;
 	
-//	echo "Store object $class_name($id); ".print_d($data, true)."<br/>"; debug_exit('stop0');
+//	if(debug_is_balancer()) { echo "Store object $class_name($id); ".print_d($data, true)."<br/>"; debug_exit('stop0'); }
 	if($id)
 	{
 		$object = object_load($class_name, $id);
@@ -144,7 +144,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if(!$object)
 		return bors_message(ec("Не могу сохранить объект ")."{$class_name}({$id})");
 
-//	echo "Initial id: {$object->id()}<br />"; bors_exit();
+//	if(debug_is_balancer()) { echo "Initial id: {$object->id()}<br />"; bors_exit(); }
 
 	if($first)
 	{
@@ -163,6 +163,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		else
 			$method = '_'.addslashes($data['subaction']);
 
+//		echo "? - $object->$method()";
 		if(method_exists($object, $method = 'on_action'.$method))
 			if($object->$method($data))
 				return true;

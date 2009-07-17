@@ -12,6 +12,7 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 
 	if(file_exists($file_out))
 	{
+		config_set('bors-image-lasterror', ec('Файл не существует'));
 		bors_thread_unlock('image_file_scale');
 		return false;
 	}
@@ -25,16 +26,20 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 
 	if(!$data || !$data[0])
 	{
+		config_set('bors-image-lasterror', ec('Не могу определить размер файла'));
 		debug_hidden_log('image-error', "Can't get width for image {$file_in} (tr resize to {$file_out}($width, $height, $opts); WxH = ".@$data[0].'x'.@$data[1]);
 		bors_thread_unlock('image_file_scale');
 		return false;
 	}
 
-	if($data[0] > config('images_resize_max_width')
+	if(($data[0] > config('images_resize_max_width')
 		|| $data[1] > config('images_resize_max_height')
 		|| $data[0]*$data[1] > config('images_resize_max_area')
-	)
+	) && (filesize($file_in) > config('images_resize_filesize_enabled')))
 	{
+		config_set('bors-image-lasterror', ec('Слишком большой (').($data[0].'x'.$data[1].'='.sprintf('%.1f',$data[0]*$data[1]/1024/1024)).ec("Мпкс) файл.
+Предел для генерации превью ").config('images_resize_max_width')."x".config('images_resize_max_height').ec("
+или ").sprintf('%.1f',config('images_resize_max_area')/1024/1024).ec('Мпкс'));
 		debug_hidden_log('image-error', "Image {$file_in} too big to resize to 
 {$file_out}
 geo = ($width, $height, $opts)

@@ -20,6 +20,13 @@ function bors_bot_detect($user_agent)
 			'Nutch'	=> 'Nutch',			// gh-index-bot/Nutch-1.0 (GH Web Search.; lucene.apache.org; gh_email at someplace dot com)
 			'Gigabot' => 'Gigabot',		// Gigabot/3.0 (http://www.gigablast.com/spider.html)
 			'Exabot' => 'Exabot',		// Mozilla/5.0 (compatible; Exabot-Images/3.0; +http://www.exabot.com/go/robot)
+			'MLBot'	=> 'MLBot',			// MLBot (www.metadatalabs.com/mlbot)
+			'Twiceler' => 'Twiceler',	// Mozilla/5.0 (Twiceler-0.9 http://www.cuil.com/twiceler/robot.html)
+			'Yeti' => 'Yeti',			// Yeti/1.0 (NHN Corp.; http://help.naver.com/robots/)
+			'YoudaoBot' => 'YoudaoBot',	// Mozilla/5.0 (compatible; YoudaoBot/1.0; http://www.youdao.com/help/webmaster/spider/; )
+			'robotgenius' => 'robotgenius', // robotgenius (http://robotgenius.net)
+			'LexxeBot' => 'LexxeBot',	// LexxeBot/1.0 (lexxebot@lexxe.com)
+			'Snapbot' => 'Snapbot',		// Snapbot/1.0 (Snap Shots, +http://www.snap.com)
 		) as $pattern => $bot)
 	{
 		if(preg_match("!".$pattern."!i", $user_agent))
@@ -27,7 +34,10 @@ function bors_bot_detect($user_agent)
 	}
 
 	if(preg_match("/bot|crowler/i", $user_agent))
+	{
 		debug_hidden_log('_need_append_data', 'unknown bot detectd');
+		return 'Unknown bot';
+	}
 
 	return false;
 }

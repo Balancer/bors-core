@@ -6,7 +6,8 @@
 	function bors_object_show($obj)
 	{
 		$page = $obj->set_page($obj->args('page'));
-//		echo "Bors class=".get_class($obj); exit();
+
+//		if(debug_is_balancer()) echo "Bors class=".get_class($obj); exit();
 		if(!$obj)
 			return false;
 

@@ -4,8 +4,8 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 {
 //	debug_timing_start('template_smarty_assign');
 
-		if(preg_match('/^[\w\.\-]+$/', $assign_template))
-			$assign_template = 'xfile:'.$assign_template;
+//		if(preg_match('/^[\w\.\-]+$/', $assign_template))
+//			$assign_template = 'xfile:'.$assign_template;
 
 		unset($GLOBALS['module_data']);
 
@@ -28,7 +28,6 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		if(!file_exists($smarty->cache_dir))
 			@mkpath($smarty->cache_dir, 0775);
 
-
 		$caching = !is_null($uri)
 				&& @$data['caching'] !== false
 				&& @$GLOBALS['cms']['templates_cache_disabled'] !== true
@@ -42,7 +41,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		$smarty->cache_lifetime = 86400*7;
 //		print_r($smarty->secure_dir); exit();
 
-//		echo "<xmp>"; print_r(debug_backtrace()); echo "</xmp>";
+//		if(debug_is_balancer()) { echo "<xmp>"; print_r(debug_backtrace()); echo "</xmp>"; }
 		$caller  = array_shift(debug_backtrace());
 //		echo $caller2['file']."<br />";
 		$caller_path = dirname($caller['file']);
@@ -70,7 +69,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 			else			
 				foreach(bors_dirs() as $dir)
 				{
-//					echo "Check ".'xfile:'.secure_path($dir.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template)."<br/>";
+//					echo "Check ".'xfile:'.secure_path($dir.' --- /templates/ --- '.config('default_template').$module_relative_path.'/'.$assign_template)."<br/>";
 					if($smarty->template_exists($tpl = 'xfile:'.secure_path($dir.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template)))
 						$template_uri = $tpl;
 					elseif($smarty->template_exists($tpl = 'xfile:'.$dir.$module_relative_path.'/'.$assign_template))

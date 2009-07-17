@@ -205,6 +205,7 @@ function url_parse($url)
     {
         $uri = to_translit($uri);
         $uri = strtolower($uri);
+		$uri = str_replace("'", '', $uri);
 		$uri = preg_replace('/\W/', '-', $uri);
 		$uri = preg_replace('/\-+/', '-', $uri);
 		$uri = trim($uri, '-');

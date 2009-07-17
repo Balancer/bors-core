@@ -134,7 +134,7 @@ function get_browser_info($user_agent)
 		$os = 'YangaBot';
 	}
 
-	if(preg_match('/'.preg_quote('Opera/9.64 (; U; ru) Presto/2.1.1!', '/').'/', $user_agent))
+	if(preg_match('!Opera/\d+\.\d+ \(; U; \w+\) Presto/[\d\.]+!', $user_agent))
 	{
 		$browser = 'Opera';
 		$os = 'Unknown';

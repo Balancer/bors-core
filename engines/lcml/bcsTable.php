@@ -110,12 +110,14 @@
                 $out .= "<tr>";
                 for($c=0; $c < $this->cols-1; $c+=@$this->col_spans[$r][$c] > 1 ? $this->col_spans[$r][$c] : 1)
                 {
-					if(@$this->row_spans[$r][$c] < 0)
-						continue;
+
+//	Убрано из-за	http://balancer.ru/2007/12/10/post-1361199.html
+//					if(@$this->row_spans[$r][$c] < 0)
+//						continue;
 						
 					$data = @$this->data[$r][$c];
-						if($data == '')
-							$data = '&nbsp;';
+					if($data == '')
+						$data = '&nbsp;';
 							
                     $tx = !empty($this->heads[$r][$c]) ? 'th' : 'td';
 					$colspan = @$this->col_spans[$r][$c] > 1 ? " colSpan=\"".$this->col_spans[$r][$c]."\"" : "";

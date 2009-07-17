@@ -525,11 +525,17 @@ function object_init($class_name, $object_id, $args = array())
 	return $obj;
 }
 
-function bors_objects_preload($objects, $field, $preload_class)
+function bors_objects_preload($objects, $field, $preload_class, $store_field = NULL)
 {
 	$ids = array();
 	foreach($objects as $x)
 		$ids[$x->$field()] = 1;
 
-	return objects_array($preload_class, array('id IN' => array_keys($ids)));
+	$targets = objects_array($preload_class, array('id IN' => array_keys($ids), 'by_id' => !!$store_field));
+
+	if($store_field)
+		foreach($objects as $x)
+			$x->set_attr($store_field, @$targets[$x->$field()]);
+
+	return $targets;
 }

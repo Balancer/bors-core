@@ -50,6 +50,9 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 		$smarty->assign("my_name", $me->title());
 	}
 
+	debug_timing_stop('template_smarty_bors');
+	debug_timing_start('template_smarty_bors_fill');
+
 	foreach(explode(' ', $obj->template_vars()) as $var)
 		$smarty->assign($var, $obj->$var());
 
@@ -58,6 +61,9 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 
 	foreach($obj->local_template_data_array() as $var => $value)
 		$smarty->assign($var, $value);
+
+	debug_timing_stop('template_smarty_bors_fill');
+	debug_timing_start('template_smarty_bors');
 
 	$template = smarty_template($template ? $template : $obj->template());
 	if(!$smarty->template_exists($template))
@@ -91,7 +97,11 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 			$smarty->assign($var, $value);
 	}
 
+	debug_timing_stop('template_smarty_bors');
+	debug_timing_start('template_smarty_bors_fetch');
 	$out = $smarty->fetch($template);
+	debug_timing_stop('template_smarty_bors_fetch');
+	debug_timing_start('template_smarty_bors');
 
 	$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripq('$1'))", $out);
 

@@ -2,7 +2,7 @@
 
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 {
-//	debug_timing_start('template_smarty_assign');
+	debug_timing_start('template_smarty_assign');
 
 //		if(preg_match('/^[\w\.\-]+$/', $assign_template))
 //			$assign_template = 'xfile:'.$assign_template;
@@ -183,13 +183,16 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
             foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
        	        $smarty->assign($key, $value);
 
-		foreach(split(' ', 'host_name main_host_uri') as $key)
+		foreach(explode(' ', 'host_name main_host_uri') as $key)
 			$smarty->assign($key, @$GLOBALS['cms'][$key]);
+
+	debug_timing_stop('template_smarty_assign');
+	debug_timing_start('template_smarty_assign_fill');
 
 		if($obj = bors()->main_object())
 		{
 			$smarty->assign('bors_main_object', $obj);
-			foreach(split(' ', $obj->template_local_vars()) as $var)
+			foreach(explode(' ', $obj->template_local_vars()) as $var)
 				$smarty->assign($var, $obj->$var());
 
 			$smarty->assign("this", $obj);
@@ -208,17 +211,23 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 				$smarty->assign($var, $value);
 		}
 
-		if(preg_match('!^/!', $template_uri))
-			if(file_exists($template_uri))
-				$template_uri = "xfile:".$template_uri;
-			else
-				$template_uri = "hts:http://{$_SERVER['HTTP_HOST']}$template_uri";
+	debug_timing_stop('template_smarty_assign_fill');
+	debug_timing_start('template_smarty_assign');
 
-		if(!$caching)
-			$smarty->clear_cache($template_uri);
+	if(preg_match('!^/!', $template_uri))
+	{
+		if(file_exists($template_uri))
+			$template_uri = "xfile:".$template_uri;
+		else
+			$template_uri = "hts:http://{$_SERVER['HTTP_HOST']}$template_uri";
+	}
 
-		$result = $smarty->fetch($template_uri);
+	if(!$caching)
+		$smarty->clear_cache($template_uri);
 
-//	debug_timing_stop('template_smarty_assign');
+	debug_timing_stop('template_smarty_assign');
+	debug_timing_start('template_smarty_assign_fetch');
+	$result = $smarty->fetch($template_uri);
+	debug_timing_stop('template_smarty_assign_fetch');
 	return $result;
 }

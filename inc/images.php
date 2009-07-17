@@ -12,7 +12,6 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 
 	if(file_exists($file_out))
 	{
-		config_set('bors-image-lasterror', ec('Файл не существует'));
 		bors_thread_unlock('image_file_scale');
 		return false;
 	}
@@ -20,6 +19,15 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 	if(config('pics_base_safemodded'))
 	{
 		$file_in = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_in);
+	}
+	else
+	{
+		if(!file_exists($file_in))
+		{
+			config_set('bors-image-lasterror', ec('Файл не существует'));
+			bors_thread_unlock('image_file_scale');
+			return false;
+		}
 	}
 
 	$data = getimagesize($file_in);
@@ -46,18 +54,21 @@ geo = ($width, $height, $opts)
 Source WxH= ".$data[0].'x'.$data[1].'='.($data[0]*$data[1])."
 Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."=".config('images_resize_max_area')
 );
+		bors_image_resize_error_return(config('bors-image-lasterror'), $file_out, $width, $height);
+
 		bors_thread_unlock('image_file_scale');
 		return false;
 	}
 
-//	echo "image_file_scale($file_in, $file_out, $width, $height, $opts)<br/>\n"; exit();
+//	if(debug_is_balancer()) { echo "image_file_scale($file_in, $file_out, $width, $height, $opts)<br/>\n"; exit(); }
 
 	$img =& Image_Transform::factory(config('image_transform_engine'));
 
 	if(PEAR::isError($img))
 	{
+		config_set('bors-image-lasterror', ec("Ошибка PEAR:\n").$img->getMessage());
 		bors_thread_unlock('image_file_scale');
-		return $img;
+		return false;
 	}
 
 	$img->load($file_in);
@@ -112,4 +123,18 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 	@chmod($file_out, 0664);
 	bors_thread_unlock('image_file_scale');
 	return $img->isError();
+}
+
+function bors_image_resize_error_return($message, $file_out, $width, $height)
+{
+	require_once('inc/bors/bors_images.php');
+	$image = bors_image_message(ec("Ошибка изменения размера изображения:\n").$message, array(
+		'width' => $width ? $width : 300,
+		'height' => $height ? $height: 100,
+	));
+	mkpath(dirname($file_out), 0777);
+	file_put_contents($file_out, $image);
+	@chmod($file_out, 0664);
+	bors_thread_unlock('image_file_scale');
+	return false;
 }

@@ -120,12 +120,11 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 //		$x = call_user_func(array($class, 'has_smart_field'), array($field)); // array($r_db, $r_table, $r_id_field, $r_db_field);
 			$table	 = @$x[1];
 			if(empty($table))
-				$class->main_table();
+				$table = $class->main_table();
 //		echo "$class: $table, {$x[1]}<br/>";
 			$fields	 = array_smart_expand($class->main_table_fields());
 		}
 	}
-
 
 	if(empty($field))
 		return $table;
@@ -147,8 +146,7 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 {
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
-	//TODO: мистика. Разобраться с ошибкой в http://balancer.ru/support/2009/07/t67868--Novaya-vozmozhnost~-v-driver_mysql.2967.html при чистых \w+
-	$join = preg_replace('!([a-z]\w+)\.([a-z]\w+)!e', 'bors_class_field_to_db("$1", "$2")', $join);
+	$join = preg_replace('!(\w+)\.(\w+)!e', 'bors_class_field_to_db("$1", "$2")', $join);
 	if($class_name)
 		$join = preg_replace('!^(\w+)(\s*(=|>|<))!e', 'bors_class_field_to_db("'.$class_name.'", "$1", '.($was_joined ? 1 : 0).')."$2"', $join);
 	return $join;

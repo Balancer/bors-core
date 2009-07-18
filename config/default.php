@@ -1,10 +1,13 @@
 <?php
 
+config_set('admin_config_class', 'bors_admin_config');
+
 // Если не ноль, то боты, при превышении LoadAverage данной величины, получают сообщение о временной недоступности сервиса
 config_set('bot_lavg_limit', 0);
 config_set('cache_dir', '/tmp/bors-cache');
 
 config_set('debug_class_load_trace', true);
+config_set('debug_hidden_log_dir', realpath($_SERVER['DOCUMENT_ROOT'].'/logs'));
 
 config_set('smarty_path', 'smarty-2.6.24');
 config_set('main_bors_db', 'BORS');
@@ -24,6 +27,8 @@ config_set('images_resize_max_width', 2048);
 config_set('images_resize_max_height', 2048);
 config_set('images_resize_max_area', 5000000);
 config_set('images_resize_filesize_enabled', 1048576);
+
+config_set('image_transform_engine', 'GD');
 
 // Кодировки
 config_set('internal_charset', 'utf-8');		// Внутренняя кодировка фреймворка, обычно равна системной

@@ -53,18 +53,17 @@ function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 
 function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }
 
-ini_set('session.use_trans_sid', false);
-//@session_start();
-
 foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 if(file_exists($file = "{$base_dir}/config-pre.php"))
 	include_once($file);
 
 require_once('config/default.php');
-config_set('admin_config_class', 'bors_admin_config');
-config_set('debug_hidden_log_dir', $_SERVER['DOCUMENT_ROOT'].'/logs');
 
-config_set('image_transform_engine', 'GD');
+if(config('system.use_sessions'))
+{
+	ini_set('session.use_trans_sid', false);
+	@session_start();
+}
 
 $host = @$_SERVER['HTTP_HOST'];
 

@@ -65,7 +65,7 @@ function bors_hypher($string)
 	return $result;
 }
 
-if(function_exists('mb_strtolower')) 
+if(function_exists('mb_strtolower') && config('internal_encoding') == 'utf-8')
 {
 	eval('function bors_upper($str) { return mb_strtoupper($str); }');
 	eval('function bors_lower($str) { return mb_strtolower($str); }');

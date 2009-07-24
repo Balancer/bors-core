@@ -176,7 +176,8 @@ function class_load($class, $id = NULL, $args=array())
 
 function class_load_by_url($url, $args)
 {
-//	echo "Load $url<br />\n";
+//	if(debug_is_balancer())
+//		echo "Load $url<br />\n";
 
 	if($obj = class_load_by_vhosts_url($url, $args))
 		return $obj;
@@ -207,7 +208,7 @@ function class_load_by_local_url($url, $args)
 		$url_pattern = trim($match[1]);
 		$class_path  = trim($match[2]);
 
-//		echo "Initial url=$url, pair=$pair<br/>\n";
+//		if(debug_is_balancer()) echo "Initial url=$url, pair=$pair<br/>\n";
 
 		$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
 		if(preg_match('!\?!', $url_pattern) && !empty($url_data['query']))
@@ -218,7 +219,7 @@ function class_load_by_local_url($url, $args)
 //		if(debug_is_balancer() && strpos($pair, 'balancer.ru'))	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
 		if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
 		{
-//			echo "<b>Ok - $class_path</b><br />";
+//			if(debug_is_balancer()) echo "<b>Ok - $class_path</b><br />";
 
 			$id = NULL;
 			$page = NULL;
@@ -310,7 +311,9 @@ function class_load_by_local_url($url, $args)
 
 function class_load_by_vhosts_url($url)
 {
-		$data = @parse_url($url);
+	$data = @parse_url($url);
+
+//	if(debug_is_balancer()) { echo "Load $url<br />\n"; print_d($data); }
 		
 		if(!$data || empty($data['host']))
 		{
@@ -324,7 +327,7 @@ function class_load_by_vhosts_url($url)
 		if(!empty($obj))
 			return $obj;
 			
-//		print_d($data); print_d($bors_data['vhosts']);
+//		if(debug_is_balancer()) { print_d($data); print_d($bors_data['vhosts']); }
 
 		if(empty($bors_data['vhosts'][$data['host']]))
 			return NULL;
@@ -347,7 +350,7 @@ function class_load_by_vhosts_url($url)
 			else
 				$check_url = $url;
 
-//			echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$!<br />\n";
+//			if(debug_is_balancer()) echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$!<br />\n";
 			if(preg_match('!^\s*http://!', $url_pattern))
 				$prefix = '';
 			else
@@ -415,7 +418,7 @@ function class_load_by_vhosts_url($url)
 //				print_d(bors_dirs());
 				if($obj = object_init($class_path, $id, $args))
 				{
-//					if(debug_is_balancer()) echo "init $obj<br/>";
+//					if(debug_is_balancer()) echo "init $obj.<br />Save to bors_data['classes_by_uri'][$url] = $obj<br/>";
 					$bors_data['classes_by_uri'][$url] = $obj;
 					
 					if($redirect)

@@ -33,6 +33,7 @@ $map = array(
 //	'(.*/)\?edit => bors_admin_edit_smart(1)',
 	'(.*/)\?prop  => bors_admin_property(1)',
 	'(.*/)\?new  => bors_admin_append_child(1)',
+	'(.*)\?cdrop  => bors_admin_tools_clean(1)',
 
 	'/_bors/ => bors_admin_main',
 	'/_bors/admin/ => bors_admin_main',

@@ -7,27 +7,31 @@
         return "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=$width height=$height><param name=movie value=$url><param name=play value=true><param name=loop value=true><param name=quality value=high><embed src=$url width=$width height=$height play=true loop=true quality=high></embed></object>";
     }
 
-	function lt_param($params)
+	function lt_param(&$params)
 	{
+		$params['skip_around_cr'] = true;
 		if(preg_match('!&amp;!', $params['value']))
 			$params['value'] = html_entity_decode($params['value']);
 		return "<param ".make_enabled_params($params, 'name value')." />";
 	}
 
-	function lp_embed($inner, $params)
+	function lp_embed($inner, &$params)
 	{
-		return "<embed ".make_enabled_params($params, 'src type wmode width height scale salign style allowfullscreen allowsriptaccess flashvars').">".lcml($inner)."</embed>";
+		$params['skip_around_cr'] = true;
+		return "<embed ".make_enabled_params($params, 'menu pluginspage src type wmode width height scale salign style allowfullscreen allowsriptaccess flashvars').">".lcml_h($inner)."</embed>";
 	}
 
-	function lp_object($inner, $params)
+	function lp_object($inner, &$params)
 	{
+		$params['skip_around_cr'] = true;
 		if(preg_match('!&amp;!', $params['codebase']))
 			$params['codebase'] = html_entity_decode(@$params['codebase']);
-		return "<object ".make_enabled_params($params, 'codebase data width height type').">".lcml($inner)."</object>";
+		return "<br/><object ".make_enabled_params($params, 'classid codebase data width height type').">".lcml_h($inner)."</object><br/>";
 	}
 
-	function lp_td($inner, $params)
+	function lp_td($inner, &$params)
 	{
+		$params['skip_around_cr'] = true;
 		return "<td ".make_enabled_params($params, 'class style').">".lcml($inner, array('only_tags' => true))."</td>";
 	}
 

@@ -211,4 +211,16 @@ class bors_admin_engine extends base_empty
 		return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/logout-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 	}
 
+	function imaged_set_default_link($item, $title = NULL, $popup = NULL)
+	{
+		if(is_null($title))
+			$title = ec('Сделать изображением по умолчанию');
+		if(is_null($popup))
+			$popup = ec('Сделать изображением по умолчанию');
+
+		if($title)
+			$title = "&nbsp;$title";
+		
+		return "<a href=\"".$this->object()->setdefaultfor_url($item)."\"><img src=\"/_bors/i/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$popup\"/>{$title}</a>";
+	}
 }

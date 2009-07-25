@@ -14,5 +14,8 @@
 {/foreach}
 <tr><th>&nbsp;</th><th>{submit value="Сохранить"}</th></tr>
 </table>
+{foreach from=$smarty.get item="v" key="k"}
+{hidden name=$k value=$v}
+{/foreach}
 {go value=$referer}
 {/form}

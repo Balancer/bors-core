@@ -102,6 +102,9 @@ function array_smart_expand(&$array)
 
 function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 {
+	if(!$class)
+		return $field;
+
 	if(is_object($class))
 	{
 		$table	 = $class->main_table();
@@ -147,10 +150,11 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 {
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
 	$join = preg_replace('!(\w+)\.(\w+)!e', 'bors_class_field_to_db("$1", "$2")', $join);
-	$join = preg_replace('!(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
+	$join = preg_replace('!^(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
 
 	if($class_name)
 		$join = preg_replace('!^(\w+)(\s*(=|>|<))!e', 'bors_class_field_to_db("'.$class_name.'", "$1", '.($was_joined ? 1 : 0).')."$2"', $join);
+
 	return $join;
 }
 

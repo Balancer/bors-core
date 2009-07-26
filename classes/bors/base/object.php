@@ -567,6 +567,9 @@ class base_object extends base_empty
 	function new_url()  { return '/_bors/admin/new-smart/?object='.urlencode($this->internal_uri()); }
 	function admin_parent_url()
 	{
+		if(!preg_match('/'.preg_quote($this->admin_url(),'/').'/', bors()->main_object()->url()))
+			return bors()->main_object()->url();
+	
 		if($o = object_load($this->admin_url(true)))
 			if($p = $o->parents())
 				return $p[0];
@@ -583,7 +586,7 @@ class base_object extends base_empty
 	}
 
 	function set_called_url($url) { return $this->attr['called_url'] = $url; }
-	function called_url() { return $this->attr['called_url']; }
+	function called_url() { return @$this->attr['called_url']; }
 
 	function url($page = NULL)
 	{

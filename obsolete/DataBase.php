@@ -6,12 +6,16 @@ require_once('inc/texts.php');
 
 class DataBase extends base_object
 {
-	var $dbh;
-	var $result;
-	var $row;
-	var $db_name;
-	var $x1, $x2, $x3;
-	var $start_time;
+	private $dbh;
+	private $result;
+	private $row;
+	private $db_name;
+	private $x1, $x2, $x3;
+	private $start_time;
+
+	private $ics;
+	private $dcs;
+	private $need_encode;
 
 	function reconnect()
 	{
@@ -76,6 +80,10 @@ class DataBase extends base_object
 
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
 	{
+		$this->ics = config('internal_charset');
+		$this->dcs = config('db_charset');
+		$this->need_encode = ($this->ics != $this->dcs);
+
 		$this->db_name = $base;
 			
 		if(!$base)
@@ -126,11 +134,8 @@ class DataBase extends base_object
 
 		debug_count_inc('mysql_queries');
 
-		$ics = config('internal_charset');
-		$dcs = config('db_charset');
-
-		if($ics != $dcs)
-			$query = iconv($ics, $dcs.'//IGNORE', $query);
+		if($this->need_encode)
+			$query = iconv($this->ics, $this->dcs.'//IGNORE', $query);
 
 		$qstart = microtime(true);
 			
@@ -180,9 +185,6 @@ class DataBase extends base_object
 
 	function fetch()
 	{
-		$ics = config('internal_charset');
-		$dcs = config('db_charset');
-
 		if(!$this->result)
 			return false;
 
@@ -195,8 +197,8 @@ class DataBase extends base_object
 			{
 				foreach($row as $s)
 				{
-					if($ics != $dcs)
-						$s = iconv($dcs, $ics.'//IGNORE', $s);
+					if($this->need_encode)
+						$s = iconv($this->dcs, $this->ics.'//IGNORE', $s);
 					$row = $s;
 				}
 			}
@@ -204,8 +206,8 @@ class DataBase extends base_object
 			{
 				foreach($row as $k => $v)
 				{
-					if($ics != $dcs)
-						$v = iconv($dcs, $ics.'//IGNORE', $v);
+					if($this->need_encode)
+						$v = iconv($this->dcs, $this->ics.'//IGNORE', $v);
 					$row[$k] = $v;
 				}
 			}
@@ -216,15 +218,15 @@ class DataBase extends base_object
 		if(sizeof($row)==1)
 			foreach($row as $s)
 			{
-				if($ics != $dcs)
-					$s = iconv($dcs, $ics.'//IGNORE', $s);
+				if($this->need_encode)
+					$s = iconv($this->dcs, $this->ics.'//IGNORE', $s);
 				$row = quote_fix($s);
 			}
 		else
 			foreach($row as $k => $v)
 			{
-				if($ics != $dcs)
-					$v = iconv($dcs, $ics.'//IGNORE', $v);
+				if($this->need_encode)
+					$v = iconv($this->dcs, $this->ics.'//IGNORE', $v);
 				$row[$k] = quote_fix($v);
 			}
 			

@@ -106,22 +106,24 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 	$object_iu = $object->internal_uri();
 	$result = array();
 
-	foreach($arr as $x)
+	foreach($arr as $r)
 	{
-		$x = $objs[$x['class_id']][$x['object_id']];
-/*
-		$x_iu = $x->internal_uri();
+		$x = $objs[$r['class_id']][$r['object_id']];
+/*		$x_iu = $x->internal_uri();
+
 		if($x_iu < $object_iu)
 		{
-			$bors_cross_types_map[$x_iu][$object_iu] = $row['type_id'];
-			$bors_cross_sort_orders[$x_iu][$object_iu] = $row['sort_order'];
+			$bors_cross_types_map[$x_iu][$object_iu] = $r['type_id'];
+			$bors_cross_sort_orders[$x_iu][$object_iu] = $r['sort_order'];
 		}
 		else
 		{
-			$bors_cross_types_map[$object_iu][$x_iu] = $row['type_id'];
-			$bors_cross_sort_orders[$object_iu][$x_iu] = $row['sort_order'];
+			$bors_cross_types_map[$object_iu][$x_iu] = $r['type_id'];
+			$bors_cross_sort_orders[$object_iu][$x_iu] = $r['sort_order'];
 		}
 */
+		$x->set_sort_order($r['sort_order'], false);
+
 		$result[] = $x;
 	}
 

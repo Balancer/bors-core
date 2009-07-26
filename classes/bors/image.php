@@ -198,7 +198,8 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		parent::delete();
 	}
 
-	function class_title() { return ec('изображение'); }
+	function class_title() { return ec('Изображение'); }
+	function class_title_vp() { return ec('изображение'); }
 
 	function description_or_title()
 	{

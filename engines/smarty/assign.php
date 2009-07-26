@@ -2,6 +2,8 @@
 
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 {
+	debug_hidden_log('_000-assign', $assign_template);
+
 	debug_timing_start('template_smarty_assign');
 
 //		if(preg_match('/^[\w\.\-]+$/', $assign_template))
@@ -117,10 +119,10 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 //			$template_uri = "xfile:{$GLOBALS['cms']['base_dir']}/templates/$assign_template";
 
 		require_once('bors_smarty_common.php');
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = smarty_template($assign_template, $caller_path);
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = smarty_template($assign_template, $caller_path);
 		
-		if(!$template_uri)
+		if(!$smarty->template_exists($template_uri))
 			debug_exit('Not found template '.$assign_template);
 
 		if(!$smarty->template_exists($template_uri))

@@ -14,12 +14,7 @@ function object_load($class, $object_id=NULL, $args=array())
 		$class = class_id_to_name($class);
 
 	if(config('debug_trace_object_load'))
-	{
-		static $load_counter = 0;
-		echo "Load {$class}({$object_id}, ".serialize($args).")<br />\n";
-		if($load_counter++ > config('debug_object_load_limit'))
-			debug_exit('Object load limit exceed.');
-	}
+		debug_hidden_log('objects_load', "$class($object_id)", config('debug_trace_object_load_trace'));
 
 	if(!$class)
 		return;

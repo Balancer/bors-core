@@ -70,11 +70,8 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 
 	if($to_class)
 	{
-		if(!is_numeric($to_class))
-			$to_class = class_name_to_id($to_class);
-
-		$where_to['to_class'] = $to_class;
-		$where_from['from_class'] = $to_class;
+		bors_cross_where_cond('to_class', $to_class, $where_to);
+		bors_cross_where_cond('from_class', $to_class, $where_from);
 	}
 
 	$where_to['from_class'] = $object->class_id();
@@ -166,18 +163,18 @@ function bors_cross_sort_order($x1, $x2)
 	return intval(@$bors_cross_sort_orders[$x1_iu][$x2_iu]);
 }
 
-function bors_cross_where_cond($field, $cond)
+function bors_cross_where_cond($field, $cond, &$where)
 {
 	$yes = array();
 	$no  = array();
 
-	foreach(split(',', $cond) as $c)
+	foreach(explode(',', $cond) as $c)
 		if(preg_match('!^\-(.+)$!', $c, $m))
 			$no[] = is_numeric($m[1]) ? $m[1] : class_name_to_id($m[1]);
 		else
 			$yes[] = is_numeric($c) ? $c : class_name_to_id($c);
 	
-	$where = array();
+//	$where = array();
 	if($yes)
 		$where[] = $field . (count($yes) > 1 ? ' IN ('.join(',', $yes).')' : '='.$yes[0]);
 	if($no)

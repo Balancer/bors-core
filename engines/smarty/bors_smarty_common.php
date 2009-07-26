@@ -31,5 +31,5 @@ function smarty_template($template_name, $callers_dir = NULL)
 			return 'xfile:'.$file;
 	}
 
-	return config('default_template', BORS_CORE.'/templates/default/index.html');
+	return false; // config('default_template', BORS_CORE.'/templates/default/index.html');
 }

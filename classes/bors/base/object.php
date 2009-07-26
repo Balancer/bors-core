@@ -822,7 +822,7 @@ class base_object extends base_empty
 	function files_charset() { return config('files_charset', 'utf-8'); }
 	function db_charset() { return config('db_charset', 'utf-8'); }
 
-	function cs_f2i($str) { return iconv($this->files_charset(), $this->internal_charset().'//IGNORE', $str); }
+	function cs_f2i($str) { return $this->files_charset() != $this->internal_charset() ? iconv($this->files_charset(), $this->internal_charset().'//IGNORE', $str) : $str; }
 	function cs_d2i($str) { return iconv($this->db_charset(), $this->internal_charset().'//IGNORE', $str); }
 	function cs_i2d($str, $f='') { return iconv($this->internal_charset(), $this->db_charset().'//IGNORE', $str); }
 	function cs_i2o($str)

@@ -51,6 +51,12 @@ function stripq($text) { return str_replace('\\"', '"', $text); }
 
 function bors_hypher($string)
 {
+	if(is_global_key('hypher-cache', $string))
+		return global_key('hypher-cache', $string);
+
+	if(preg_match('/^[a-zA-Z0-9\-\/ ]*$/', $string))
+		return set_global_key('hypher-cache', $string, $string);
+
 	global $bors_3rd_glob_hypher;
 	if(empty($bors_3rd_glob_hypher))
 	{
@@ -62,7 +68,7 @@ function bors_hypher($string)
 	ini_set('mbstring.internal_encoding', 'windows-1251');
 	$result = iconv('windows-1251', 'utf-8', hypher($bors_3rd_glob_hypher, iconv('utf-8', 'windows-1251//IGNORE', $string)));
 	ini_set('mbstring.internal_encoding', $mb_enc);
-	return $result;
+	return set_global_key('hypher-cache', $string, $result);
 }
 
 if(function_exists('mb_strtolower') && config('internal_encoding') == 'utf-8')

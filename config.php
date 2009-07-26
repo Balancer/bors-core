@@ -192,7 +192,7 @@ function bors_include($file, $warn = false, $once = false)
 	if(!$warn)
 		return;
 
-	$message = "Can't load {$file}";
+	$message = "Can't bors_include({$file})";
 
 	if($warn == 2)
 		return bors_exit($message);

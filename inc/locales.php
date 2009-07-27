@@ -12,7 +12,7 @@ function ec($txt)
 	if($charset == 'utf-8')
 		return $txt;
 
-	return iconv('utf-8', $charset.'//IGNORE', $txt);
+	return iconv('utf-8', $charset.'//TRANSLIT', $txt);
 }
 
 function dc($txt, $charset_from = NULL, $charset_to = NULL)

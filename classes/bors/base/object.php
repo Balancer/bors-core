@@ -29,7 +29,7 @@ class base_object extends base_empty
 			return $this->data['parents'] = array();
 
 		if(empty($this->__match[2]))
-			$parent = dirname($this->called_url()).'/';
+			$parent = secure_path(dirname($this->called_url()).'/');
 		else
 			$parent = "http://{$this->__match[1]}{$this->__match[2]}";
 

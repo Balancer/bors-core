@@ -46,8 +46,7 @@ class auto_object_php extends base_object
 		return $this->object = $object;
 	}
 
-	function content()
-	{
-		return $this->object()->content();
-	}
+	function content() { return $this->object()->content(); }
+	function create_time($exactly = false) { return $this->object()->create_time($exactly); }
+	function modify_time($exactly = false) { return $this->object()->modify_time($exactly); }
 }

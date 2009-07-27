@@ -42,6 +42,18 @@
 		if($processed === true)
 			return true;
 
+		// [HTTP_IF_MODIFIED_SINCE] => Mon, 27 Jul 2009 19:03:37 GMT
+		// [If-Modified-Since] => Mon, 27 Jul 2009 19:03:37 GMT
+		if(!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']))
+		{
+			$check_date = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+			if($check_date >= $obj->modify_time())
+			{
+				@header('HTTP/1.1 304 Not Modified');
+				return bors_exit();
+			}
+		}
+
 		$called_url = preg_replace('/\?.*$/', '', $obj->called_url());
 		$target_url = preg_replace('/\?.*$/', '', $obj->url($page));
 		if($obj->called_url() && !preg_match('!'.preg_quote($target_url).'$!', $called_url))

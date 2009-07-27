@@ -62,8 +62,11 @@ function bors_form_save(&$obj)
 		if(!empty($_GET['checkboxes']))
 		{
 			foreach(explode(',', $_GET['checkboxes']) as $cbn)
+			{
+				$cbn = str_replace('[]', '', $cbn);
 				if(empty($_GET[$cbn]))
 					$_GET[$cbn] = 0;
+			}
 
 			unset($_GET['checkboxes']);
 		}

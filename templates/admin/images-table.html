@@ -1,0 +1,51 @@
+{*
+	$item - главный объект
+	$upload_dir - относительный путь загрузки, напр. /uploads/projects/
+	$list - список картинок
+	$link_type - тип связывания, parent или cross
+*}
+<div class="clear">&nbsp;</div>
+
+<h2>Изображения</h2>
+
+{foreach from=$list item="i"}
+{assign var="order" value=$i->sort_order()}
+{/foreach}
+
+<h3>Добавить изображения:</h3>
+<table class="btab">
+<tr><th width="50%">Описание</th><th>Файл</th><th>Лимит отдаваемого разрешения</th><th>Порядок сортировки</th></tr>
+{form class="bors_admin_image_append" action="target"}
+<tr><td>{input name="image_title[]" class="w100p"}</td><td>{file name="image[]"}</td><td>{dropdown name="image_limit[]" list="bors_image_sizes"}</td><td>{input name="sort_order[]" value=$order+10 size="4"}</td></tr>
+<tr><td>{input name="image_title[]" class="w100p"}</td><td>{file name="image[]"}</td><td>{dropdown name="image_limit[]" list="bors_image_sizes"}</td><td>{input name="sort_order[]" value=$order+20 size="4"}</td></tr>
+<tr><td>{input name="image_title[]" class="w100p"}</td><td>{file name="image[]"}</td><td>{dropdown name="image_limit[]" list="bors_image_sizes"}</td><td>{input name="sort_order[]" value=$order+30 size="4"}</td></tr>
+<tr><td>{input name="image_title[]" class="w100p"}</td><td>{file name="image[]"}</td><td>{dropdown name="image_limit[]" list="bors_image_sizes"}</td><td>{input name="sort_order[]" value=$order+40 size="4"}</td></tr>
+</td></tr>
+<tr><td colSpan="4">{submit value="Загрузить"}</td></tr>
+{hidden name="object_to_link" value=$item|get:internal_uri}
+{hidden name="link_type" value=$link_type}
+{hidden name="upload_dir" value=$upload_dir}
+{/form}
+</table>
+
+{if $list}
+<h3>Связанные изображения:</h3>
+{*assign var="order" value="0"*}
+<table class="btab w100p">
+<tr><th>Изображение</th><th>Описание</th><th>Операции</th></tr>
+{foreach from=$list item="i"}{if $i}
+<tr{if $item->default_image_id() == $i->id()} class="is_default"{/if}>
+<td><a href="{$i->url()}">{$i->thumbnail("128x96(up,crop)")|get:html_code}</a></td>
+<td><a href="{$i->url()}">{$i->description_or_title()}</a></td>
+<td class="nobr">
+	{$i->admin()->imaged_edit_link('редактировать')}<br/>
+	{$i->admin()->imaged_set_default_link($item, 'по умолчанию')}<br/>
+	<form action="/admin/tools/set-sort-order/?child=bors_image://{$i->id()}{if $link_type=='cross'}&parent={$item|get:internal_uri}{/if}" method="post" style="display: inline"><input name="sort_order" value="{$i->sort_order()}" title="Порядок сортировки" size="5" style="width: auto !important;"/>&nbsp;Сортировка</form><br/>
+	{if $i->cross_objects()|@count < 2}{$i->admin()->imaged_delete_link('удалить')}<br/>{/if}
+</td>
+</tr>
+{/if}{/foreach}
+</table>
+{/if}
+
+<div class="clear">&nbsp;</div>

@@ -27,7 +27,7 @@ class auto_object_php extends base_object
 		
 		if(!($object = object_load($class_base.'_'.$class_path, $this->id())))
 		{
-			$class_path .= '_main';
+			$class_path = $class_path ? $class_path . '_main' : 'main';
 			$object = object_load($class_base.'_'.$class_path, $this->id());
 		}
 
@@ -40,7 +40,7 @@ class auto_object_php extends base_object
 			$object->set_called_url($this->id());
 			bors()->set_main_object($object);
 			if(!$object->parents(true))
-				$object->set_parents(array(dirname($path).'/'), false);
+				$object->set_parents(array(secure_path(dirname($path).'/')), false);
 		}
 		
 		return $this->object = $object;

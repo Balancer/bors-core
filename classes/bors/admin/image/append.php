@@ -35,7 +35,9 @@ class bors_admin_image_append extends base_object
 
 		$sort_order = (intval(($sort_order-1)/10)+1)*10;
 
-		$img = object_new('bors_image');
+		$image_class = defval($get, 'image_class', 'bors_image');
+
+		$img = object_new($image_class);
 		$img->new_instance();
 		$img->upload(array(
 			'tmp_name' => $tmp_file,
@@ -52,7 +54,7 @@ class bors_admin_image_append extends base_object
 		switch(@$get['link_type'])
 		{
 			case 'cross':
-				bors_add_cross($obj->class_name(), $obj->id(), 'bors_image', $img->id(), $sort_order);
+				bors_add_cross($obj->extends_class(), $obj->id(), $image_class, $img->id(), $sort_order);
 				break;
 			case 'parent':
 				$img->set_parent_class_id($obj->class_id(), true);

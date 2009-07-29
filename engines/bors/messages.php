@@ -52,6 +52,9 @@ function bors_message($text, $params=array())
 		'this' => $page,
 	);
 
+	if(!preg_match('/^xfile:/', $template))
+		$template = "xfile:$template";
+
 	$message = template_assign_data($template, $data);
 
 //	show_page(@$GLOBALS['main_uri']);

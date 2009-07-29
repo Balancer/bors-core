@@ -200,6 +200,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 	function class_title() { return ec('Изображение'); }
 	function class_title_vp() { return ec('изображение'); }
+	function class_title_rp() { return ec('изображения'); }
 
 	function description_or_title()
 	{

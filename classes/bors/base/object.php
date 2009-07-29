@@ -200,8 +200,8 @@ class base_object extends base_empty
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
 				return $this->attr[$method] = object_load($m[1], $this->$m[2]());
 
-		if($this->strict_auto_fields_check())
-			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."</b>'<br/>at {$this->class_file()}");
+		if($this->id() && $this->strict_auto_fields_check())
+			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>at {$this->class_file()}");
 
 		return NULL;
 	}
@@ -530,6 +530,7 @@ class base_object extends base_empty
 		$storage = object_load($storage);
 
 		$storage->save($this);
+		$this->__update_relations();
 		save_cached_object($this);
 
 		if(config('search_autoindex') && $this->auto_search_index())
@@ -541,6 +542,28 @@ class base_object extends base_empty
 		}
 
 		bors()->drop_changed_object($this->internal_uri());
+	}
+
+	private function __update_relations()
+	{
+		if($rels = $this->_relations())
+		{
+			foreach($rels as $field => $class)
+			{
+				if(preg_match('/^(\w+)$/', trim($class), $m))
+					$rel_obj = object_load($m[1], $this->$field());
+				elseif(preg_match('/^(\w+)\((\w+)\)$/', trim($class), $m))
+					$rel_obj = objects_first($m[1], array($m[2] => $this->$field()));
+				else
+					exit("Unknown format: '$class'");
+
+				if(!$rel_obj)
+					exit("Unknown relation object '$class'");
+
+				$rel_obj->set_modify_time($this->modify_time(), true);
+				$rel_obj->set_last_editor_id(@$this->data['last_editor_id'], true);
+			}
+		}		
 	}
 
 	function replace_on_new_instance() { return false; }
@@ -760,7 +783,11 @@ class base_object extends base_empty
 
 	function pre_set() { }
 	function post_set() { }
-	function on_new_instance() { }
+
+	function on_new_instance()
+	{
+		$this->__update_relations();
+	}
 
 	function static_get_cache() { return false; }
 
@@ -940,4 +967,6 @@ class base_object extends base_empty
 	function link_time2() { return NULL; }
 
 	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
+
+	function _relations() { return array(); }
 }

@@ -41,8 +41,12 @@ function bors_message($text, $params=array())
 	require_once('engines/smarty/assign.php');
 	$body = template_assign_data("xfile:messages.html", $data);
 
+	$data['url_engine'] = 'url_calling';
+
 	$page = new base_page(NULL);
 	$page->set_fields($data, false);
+
+	$page->set_parents(array(@$_SERVER['REQUEST_URI']), false);
 
 	$data = array(
 		'title' => $title,

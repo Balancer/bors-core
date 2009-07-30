@@ -22,7 +22,10 @@ class bors_tools_delete extends base_page
 			return bors_message(ec('Не найден объект ').$this->id());
 
 		if(!$obj->access()->can_delete())
-			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_url());
+			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_url()."
+				<!-- class_name = ".get_class($obj)."
+				access = {$obj->access()}
+				-->");
 
 		return false;
 	}

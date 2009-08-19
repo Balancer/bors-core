@@ -119,9 +119,11 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 			$bors_cross_sort_orders[$object_iu][$x_iu] = $r['sort_order'];
 		}
 */
-		$x->set_sort_order($r['sort_order'], false);
-
-		$result[] = $x;
+		if($x) //TODO: поставить ловушку
+		{
+			$x->set_sort_order($r['sort_order'], false);
+			$result[] = $x;
+		}
 	}
 
 	return $result;

@@ -27,6 +27,7 @@ function bors_bot_detect($user_agent)
 			'robotgenius' => 'robotgenius', // robotgenius (http://robotgenius.net)
 			'LexxeBot' => 'LexxeBot',	// LexxeBot/1.0 (lexxebot@lexxe.com)
 			'Snapbot' => 'Snapbot',		// Snapbot/1.0 (Snap Shots, +http://www.snap.com)
+			'MJ12bot' => 'Majestic12Bot',	// Mozilla/5.0 (compatible; MJ12bot/v1.2.5; http://www.majestic12.co.uk/bot.php?+)
 		) as $pattern => $bot)
 	{
 		if(preg_match("!".$pattern."!i", $user_agent))

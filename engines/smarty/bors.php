@@ -4,8 +4,6 @@ require_once("bors_smarty_common.php");
 
 function template_assign_bors_object($obj, $template = NULL, $global = false)
 {
-	debug_hidden_log('_000-bors', $template);
-
 	debug_timing_start('template_smarty_bors');
 
 	require_once(config('smarty_path').'/Smarty.class.php');

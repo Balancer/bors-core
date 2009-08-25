@@ -56,7 +56,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	$id = call_user_func(array($class, 'id_prepare'), $id, $class);
 	$object = &object_new($class, $id);
 
-	$object->set_owner_id(bors()->user_id(), true);
+	$object->set_owner_id(defval($data, 'owner_id', bors()->user_id()), true);
 	$object->set_last_editor_id(bors()->user_id(), true);
 
 	if(!$object->set_fields($data, true, NULL, $need_check_data) && $need_check_data)
@@ -85,7 +85,7 @@ function bors_object_new_instance_db(&$object)
 	if(!$object->modify_time(true))
 		$object->set_modify_time(time(), true);
 
-	$object->set_owner_id(bors()->user_id(), true);
+//	$object->set_owner_id(bors()->user_id(), true);
 	$object->set_last_editor_id(bors()->user_id(), true);
 
 	$object->storage()->create($object);

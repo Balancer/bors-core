@@ -561,7 +561,7 @@ class base_object extends base_empty
 					exit("Unknown relation object '$class'");
 
 				$rel_obj->set_modify_time($this->modify_time(), true);
-				$rel_obj->set_last_editor_id(@$this->data['last_editor_id'], true);
+//				$rel_obj->set_last_editor_id(@$this->data['last_editor_id'], true);
 			}
 		}		
 	}

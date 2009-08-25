@@ -114,6 +114,12 @@ function bors_form_save(&$obj)
 			if($_GET['go'] == "newpage_admin")
 				return go($form->admin_url(1));
 
+			if($_GET['go'] == "newpage_edit_parent")
+			{
+				$p = object_load($form->edit_url(1))->parents();
+				return go($p[0]);
+			}
+
 			if($form)
 			{
 				$_GET['go'] = str_replace('%OBJECT_ID%', $form->id(), $_GET['go']);

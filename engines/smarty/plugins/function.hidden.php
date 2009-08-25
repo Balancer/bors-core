@@ -14,7 +14,7 @@
 		
 		echo "<input type=\"hidden\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
 
-		foreach(split(' ', 'class style maxlength size') as $p)
+		foreach(explode(' ', 'class style maxlength size') as $p)
 			if(!empty($$p))
 				echo " $p=\"{$$p}\"";
 

@@ -46,7 +46,7 @@ class bors_admin_image_append extends base_object
 
 		$img->set_title($obj->title(), true);
 		$img->set_description(@$get['image_title'], true);
-		$img->set_author_name(bors()->user()->title(), true);
+		$img->set_author_name(defval($get, 'author_name', bors()->user()->title()), true);
 		$img->set_resolution_limit(@$get['image_limit'], true);
 		$img->set_image_type(@$get['image_type'], true);
 		$img->set_original_filename($data['name'], true);

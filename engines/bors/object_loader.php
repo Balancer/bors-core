@@ -236,7 +236,7 @@ function class_load_by_local_url($url, $args)
 			if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $class_path, $m))	
 			{
 				$args = array();
-				foreach(split(',', $m[3]) as $pair)
+				foreach(explode(',', $m[3]) as $pair)
 				{
 					if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
 					{
@@ -248,14 +248,14 @@ function class_load_by_local_url($url, $args)
 				}
 
 				$class_path = $m[1];
-				$id = $match[$m[2]+1];
+				$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+1];
 
 				$page = $args;
 			}
 			elseif(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $class_path, $m))	
 			{
 				$class_path = $m[1];
-				$id = $match[$m[2]+1];
+				$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+1];
 				$page = @$match[$m[3]+1];
 			}
 			elseif(preg_match("!^(.+)\((\w+)\)$!", $class_path, $class_match))	

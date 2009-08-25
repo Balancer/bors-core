@@ -48,7 +48,7 @@
 
 		// [HTTP_IF_MODIFIED_SINCE] => Mon, 27 Jul 2009 19:03:37 GMT
 		// [If-Modified-Since] => Mon, 27 Jul 2009 19:03:37 GMT
-		if(!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']))
+		if(!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && config('ims_enabled'))
 		{
 			$check_date = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 			if($check_date >= $obj->modify_time())

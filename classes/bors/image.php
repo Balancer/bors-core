@@ -111,7 +111,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		{
 			$this->set_width(intval($x[0]), $db_update);
 			$this->set_height(intval($x[1]), $db_update);
-			$this->set_size(intval(filesize($this->file_name_with_path())), $db_update);
+			$this->set_size(intval(@filesize($this->file_name_with_path())), $db_update);
 			$this->set_mime_type($x['mime'], $db_update);
 //			echo "o=".$this->original_filename();
 //			echo "ext=".preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename());

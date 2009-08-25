@@ -162,7 +162,7 @@ Target   = {$this->file_name_with_path()}\n
 		return $err == NULL;
 	}
 
-	function fullsized_url() { return "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>"; }
+	function fullsized_url() { return $this->original? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : NULL; }
 
 	function alt() { return $this->original ? $this->original->alt() : ""; }
 

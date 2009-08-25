@@ -6,8 +6,8 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 
 	debug_timing_start('template_smarty_assign');
 
-//		if(preg_match('/^[\w\.\-]+$/', $assign_template))
-//			$assign_template = 'xfile:'.$assign_template;
+	if(preg_match('/^[\w\.\-]+\.\w+$/', $assign_template))
+		$assign_template = 'xfile:'.$assign_template;
 
 		unset($GLOBALS['module_data']);
 

@@ -1,0 +1,14 @@
+body {
+	background-color: #eee;
+	color: #555;
+	font-family: Verdana;
+	font-size: 10pt;
+}
+
+a {
+	color: #000;
+}
+
+a:visited {
+	color: #666;
+}

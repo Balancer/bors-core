@@ -21,3 +21,7 @@ pre {
 	white-space: pre-wrap;       /* css-3 */
 	font-family: monospace !important;
 }
+
+img {
+	border: none;
+}

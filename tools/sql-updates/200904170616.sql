@@ -1,3 +1,6 @@
+ALTER TABLE `bors_cross` ADD `create_time` INT NULL;
+ALTER TABLE `bors_cross` ADD `modify_time` INT NULL;
+
 ALTER TABLE `bors_cross` ADD `target_create_time` INT NULL AFTER `modify_time` ,
 ADD `target_modify_time` INT NULL AFTER `target_create_time` ,
 ADD `target_time1` INT NULL AFTER `target_modify_time` ,

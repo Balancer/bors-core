@@ -19,14 +19,14 @@
 		exit("Do not user direct bors-call!");
 	}
 
-    $GLOBALS['stat']['start_microtime'] = microtime(true);
-    $GLOBALS['stat']['start_time'] = time();
+	$GLOBALS['stat']['start_microtime'] = microtime(true);
+	$GLOBALS['stat']['start_time'] = time();
 
-    error_reporting(E_ALL);
-    ini_set('display_errors', 'On');
-    ini_set('log_errors', 'On');
+	error_reporting(E_ALL);
+	ini_set('display_errors', 'On');
+	ini_set('log_errors', 'On');
 
-    require_once('config.php');
+	require_once('config.php');
 
 	if(bors()->client()->is_bot() && config('bot_lavg_limit'))
 	{

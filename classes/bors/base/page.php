@@ -170,7 +170,6 @@ class base_page extends base_object
 
 		$this->template_data_fill();
 		require_once('engines/smarty/assign.php');
-		debug_hidden_log('assign', "assign to ".$this->body_template()."<br/>");
 		return template_assign_data($this->body_template(), $data);
 	}
 

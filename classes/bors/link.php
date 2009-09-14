@@ -134,10 +134,6 @@ class bors_link extends base_object_db
 			$result[] = $x;
 		}
 
-//		print_d($params);
-//		echo "links size = ".count($links).", ids size=".count($ids).", result size=".count($result)."<br/>";
-//		return array();
-
 		return $result;
 	}
 

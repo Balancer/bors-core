@@ -66,15 +66,15 @@ function url_truncate($url, $max_length)
 
 function url_parse($url)
 {
-	if(preg_match('!^/!', $url))
-		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
+//	if(preg_match('!^/!', $url))
+//		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
 
 	$data = parse_url($url);
 
 	if(empty ($data['host']))
 		$data['host'] = @$_SERVER['HTTP_HOST'];
 
-	if(preg_match("!^".@$_SERVER['HTTP_HOST']."$!", $data['host']))
+	if(preg_match("!^".preg_quote(@$_SERVER['HTTP_HOST'])."$!", $data['host']))
 		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
 
 	$host = $data['host'].(empty($data['port']) ? '' : ':'.$data['port']);
@@ -90,13 +90,16 @@ function url_parse($url)
 		$data['root'] = $root;
 
 	//TODO: а вот это теперь, наверное, можно будет снести благодаря {if(empty($vhost_data) && $host == $_SERVER['HTTP_HOST'])} ...
-	if(empty($data['root']) && file_exists($_SERVER['DOCUMENT_ROOT'].$data['path']))
-		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
+//	if(empty($data['root']) && file_exists($_SERVER['DOCUMENT_ROOT'].$data['path']))
+//		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
+
+	if(preg_match('!^'.preg_quote($root, '!').'(/.+)$!', $data['path'], $m))
+		$data['path'] = $m[1];
 
 	$data['local_path'] = NULL;
-	if($data['local'] = !empty ($data['root']))
+	if($data['local'] = !empty($data['root']))
 	{
-		$relative_path = preg_replace('!^http://'.preg_quote($host).'!', '', $url);
+//		$relative_path = preg_replace('!^http://'.preg_quote($host, '!').'!', '', $url);
 /*		if($relative_path[0] != '/')
 		{
 			$base_relative_path = preg_replace('!^http://'.preg_quote($host).'!', '', bors()->main_object()->url());
@@ -107,7 +110,9 @@ function url_parse($url)
 					$data['local_path'] = $lp;
 		}
 		else
-*/			$data['local_path'] = $data['root'].$relative_path;
+*/
+//			$data['local_path'] = $data['root'].$relative_path;
+			$data['local_path'] = $data['root'].$data['path'];
 	}
 
 	//TODO: грязный хак

@@ -11,9 +11,13 @@ function bors_vhosts()
 	return array_keys($GLOBALS['bors_data']['vhosts']);
 }
 
-function bors_vhost_data($host)
+function bors_vhost_data($host, $key = NULL, $def = NULL)
 {
-	return @$GLOBALS['bors_data']['vhosts'][$host];
+	$data = @$GLOBALS['bors_data']['vhosts'][$host];
+	if($key)
+		return defval($data, $key, $def);
+	
+	return $data;
 }
 
 function register_vhost($host, $documents_root=NULL, $bors_local=NULL)

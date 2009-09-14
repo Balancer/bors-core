@@ -3,7 +3,10 @@
 require_once('inc/urls.php');
 
 function lt_img($params) 
-{ 
+{
+	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
+		return lt_img_bors($params);
+
 	$url = bors()->main_object() ? bors()->main_object()->url() : NULL;
 	require_once('inc/airbase/images.php');
 	$data = airbase_image_data($file, $url);
@@ -258,3 +261,58 @@ __EOT__;
 			}
 		}
 	}
+
+function lt_img_bors($params)
+{
+	$uri = $params['url'];
+	$image = object_load($uri);
+	if(!$image)
+		return "Unknown image {$uri}";
+
+	if(!($size = defval($params, 'size')))
+		$size = '200x';
+
+	$classes = array();
+	$around_div_classes = array();
+	switch(@$params['align'])
+	{
+		case 'left':
+			$classes[] = 'float-left';
+			break;
+		case 'right':
+			$classes[] = 'float-right';
+			break;
+		case 'center':
+			$around_div_classes[] = 'center';
+			break;
+	}
+
+	if(@$params['border_class'])
+		$classes[] = $params['border_class'];
+
+	$append = array();
+	$around_beg = array();
+	$around_end = array();
+
+	if($classes)
+		$append[] = "class=\"".join(' ', $classes)."\"";
+
+	if($around_div_classes)
+	{
+		$around_beg[] = "<div class=\"".join(' ', $around_div_classes)."\">";
+		$around_end[] = "</div>";
+	}
+
+	if($popup = @$params['popup'])
+	{
+		$around_beg[] = "<a href=\"/images/{$image->id()}/popup-{$popup}/\" 
+			onClick=\"popupWin = window.open(this.href, 'image', 'width=1020,height=620,top=0'); popupWin.focus(); return false;\"
+			target=\"_blank\">";
+		$around_end[] = "</a>";
+	}
+
+	global $lt_img_bors_parsed;
+	$lt_img_bors_parsed[$uri] = true;
+
+	return join('', $around_beg).$image->thumbnail($size)->html_code(join(' ', $append)).join('', array_reverse($around_end));
+}

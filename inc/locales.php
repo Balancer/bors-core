@@ -52,6 +52,6 @@ function u_lower($text)
 {
 	if(($ics = config('internal_charset')) != ($scs = config('system_charset')))
 		return iconv($scs, $ics.'//IGNORE', strtolower(iconv($ics, $scs.'//IGNORE', $text)));
-	
+
 	else return strtolower($text);
 }

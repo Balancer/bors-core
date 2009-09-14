@@ -10,9 +10,6 @@ class base_object extends base_empty
 			'url_engine' => 'url_calling',
 	); }
 
-//	function set_id($id) { return $this->data['id'] = $id; }
-//	function id() { return @$this->data['id']; }
-
 	private $__loaded = false;
 	function loaded() { return $this->__loaded; }
 	function set_loaded($value = true) { return $this->__loaded = $value; }
@@ -279,7 +276,7 @@ class base_object extends base_empty
 		return time();
 	}
 
-	function title() { return @$this->data['title']; }
+	function title() { return defval($this->data, 'title', $this->class_name()); }
 	function set_title($new_title, $db_update) { return $this->set('title', $new_title, $db_update); }
 
 	function description() { return @$this->data['description']; }
@@ -610,6 +607,7 @@ class base_object extends base_empty
 
 	function set_called_url($url) { return $this->attr['called_url'] = $url; }
 	function called_url() { return @$this->attr['called_url']; }
+	function _auto_redirect() { return true; }
 
 	function url($page = NULL)
 	{

@@ -4,8 +4,6 @@ require_once("bors_smarty_common.php");
 
 function template_assign_bors_object($obj, $template = NULL, $global = false)
 {
-	debug_hidden_log('_000-bors', $template);
-
 	debug_timing_start('template_smarty_bors');
 
 	require_once(config('smarty_path').'/Smarty.class.php');
@@ -13,6 +11,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	require('smarty-register.php');
 
 	$smarty->compile_dir = secure_path(config('cache_dir').'/smarty-templates_c/');
+//	$smarty->use_sub_dirs = true;
 	$smarty->plugins_dir = array();
 	foreach(bors_dirs() as $dir)
 		$smarty->plugins_dir[] = $dir.'/engines/smarty/plugins';

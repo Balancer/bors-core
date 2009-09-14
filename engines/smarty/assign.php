@@ -2,8 +2,6 @@
 
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 {
-	debug_hidden_log('_000-assign', $assign_template);
-
 	debug_timing_start('template_smarty_assign');
 
 	if(preg_match('/^[\w\.\-]+\.\w+$/', $assign_template))

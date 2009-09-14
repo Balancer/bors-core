@@ -79,13 +79,20 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 	$where_from['to_class'] = $object->class_id();
 	$where_from['to_id'] = $object->id();
 
+	if(!empty($args['type_id']))
+	{
+		$where_to['type_id'] = $args['type_id'];
+		$where_from['type_id'] = $args['type_id'];
+	}
+
 	$where_from = mysql_where_compile($where_from);
 	$where_to   = mysql_where_compile($where_to  );
 
+
 	$arr = $dbh->get_array("
-		(SELECT to_class as class_id, to_id as object_id, sort_order, type_id FROM bors_cross $where_to)
+		(SELECT to_class as class_id, to_id as object_id, sort_order, type_id, owner_id, was_moderated, target_create_time  FROM bors_cross $where_to)
 		UNION
-		(SELECT from_class as class_id, from_id as object_id, sort_order, type_id FROM bors_cross $where_from)
+		(SELECT from_class as class_id, from_id as object_id, sort_order, type_id, owner_id, was_moderated, target_create_time  FROM bors_cross $where_from)
 		$order
 		$limit
 	");
@@ -97,28 +104,41 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 	foreach($arr as $x)
 		@$inits[$x['class_id']][] = $x['object_id'];
 
+//	print_d($inits);
+//	exit();
+
 	foreach($inits as $class_id => $ids)
 		$objs[$class_id] = objects_array($class_id, array('id IN' => $ids, 'by_id' => true));
-
+	
 	$object_iu = $object->internal_uri();
 	$result = array();
 
 	foreach($arr as $r)
 	{
-		$x = $objs[$r['class_id']][$r['object_id']];
-/*		$x_iu = $x->internal_uri();
+		$x = @$objs[$r['class_id']][$r['object_id']];
+		if(empty($x))
+		{
+			debug_hidden_log('cross-errors', "Cross {$object->internal_uri()} to unknown object ".print_r($r, true));
+			bors_remove_cross_pair($r['class_id'], $r['object_id'], $object->class_id(), $object->id(), $dbh);
+			continue;
+		}
+
+		$x_iu = $x->internal_uri();
+
+		if($r['owner_id'] < 0 && !$r['was_moderated'])
+			$r['type_id'] = -$r['type_id'];
 
 		if($x_iu < $object_iu)
 		{
 			$bors_cross_types_map[$x_iu][$object_iu] = $r['type_id'];
-			$bors_cross_sort_orders[$x_iu][$object_iu] = $r['sort_order'];
+//			$bors_cross_sort_orders[$x_iu][$object_iu] = $r['sort_order'];
 		}
 		else
 		{
 			$bors_cross_types_map[$object_iu][$x_iu] = $r['type_id'];
-			$bors_cross_sort_orders[$object_iu][$x_iu] = $r['sort_order'];
+//			$bors_cross_sort_orders[$object_iu][$x_iu] = $r['sort_order'];
 		}
-*/
+
 		$x->set_sort_order($r['sort_order'], false);
 
 		$result[] = $x;
@@ -129,6 +149,9 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 
 function bors_cross_type_id($x1, $x2)
 {
+	debug_hidden_log('__obsolete_need_rewrite', 'Call bors_cross_type_id!');
+	return 0;
+
 	global $bors_cross_types_map;
 	$x1_iu = $x1->internal_uri();
 	$x2_iu = $x2->internal_uri();

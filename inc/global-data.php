@@ -30,3 +30,9 @@
 		if(!empty($GLOBALS['HTS_GLOBAL_DATA'][md5($type)][md5($key)]))
 	        unset($GLOBALS['HTS_GLOBAL_DATA'][md5($type)][md5($key)]);
     }
+
+function global_keys_clean()
+{
+	unset($GLOBALS['bors_data']['global']);
+	unset($GLOBALS['HTS_GLOBAL_DATA']);
+}

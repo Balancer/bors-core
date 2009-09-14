@@ -19,6 +19,7 @@ class bors_image extends base_object_db
 			'image_type',
 			'create_time',
 			'modify_time',
+			'full_file_name',
 			'relative_path',
 			'file_name',
 			'original_filename',
@@ -47,6 +48,8 @@ function image_type() { return @$this->data['image_type']; }
 function set_image_type($v, $dbup) { return $this->set('image_type', $v, $dbup); }
 function relative_path() { return @$this->data['relative_path']; }
 function set_relative_path($v, $dbup) { return $this->set('relative_path', $v, $dbup); }
+function full_file_name() { return @$this->data['full_file_name']; }
+function set_full_file_name($v, $dbup) { return $this->set('full_file_name', $v, $dbup); }
 function file_name() { return @$this->data['file_name']; }
 function set_file_name($v, $dbup) { return $this->set('file_name', $v, $dbup); }
 function original_filename() { return @$this->data['original_filename']; }
@@ -70,7 +73,18 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 	function file_name_with_path() { return $this->image_dir().$this->file_name(); }
 
-	function image_dir() { return secure_path(config('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$this->relative_path().'/'); }
+	// Редкое исключение: возвращаем путь с '/' на конце. (зачем?)
+	function image_dir()
+	{
+		if($ffn = $this->full_file_name())
+			return dirname($ffn).'/';
+		
+		$rel_path = $this->relative_path().'/';
+//		if($rel_path[0] == '/')
+//			return $_SERVER['DOCUMENT_ROOT'].$rel_path;
+
+		return secure_path(config('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$rel_path);
+	}
 
 	function url() { return secure_path(config('pics_base_url').'/'.$this->relative_path().'/'.$this->file_name()); }
 
@@ -167,26 +181,35 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		return $this;
 	}
 
-	function register_file($path)
+	// Регистрация файла по абсолютному или относительному к DOCUMENTS_ROOT пути.
+	// Возвращает объект изображения.
+	function register_file($file, $new_instance = true, $exists_check = true)
 	{
-/*		if(!file_exists($path))
-		{
-			$data = url_parse($path);
-			$path = $data['local_path'];
-		}
-*/
-		$this->set_original_filename(basename($path), true);
+		if(@$this)
+			$img = $this;
+		else
+			$img = object_new('bors_image');
+	
+		$data = url_parse($file);
 
-		$this->set_relative_path(dirname($path), true);
-		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), true);
-		$this->set_file_name($this->original_filename(), true);
+		if($exists_check && $img2 = objects_first('bors_image', array('full_file_name' => $data['local_path'])))
+			return $img2;
 
-		@chmod($this->image_dir(), 0775);
-		@chmod($this->file_name_with_path(), 0664);
+		$img->set_original_filename(basename($file), true);
+		$img->set_relative_path(dirname($file), true);
+		$img->set_full_file_name($data['local_path'], true);
+		$img->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $img->original_filename()), true);
+		$img->set_file_name($img->original_filename(), true);
 
-		$this->recalculate(true);
+		@chmod($img->image_dir(), 0775);
+		@chmod($img->file_name_with_path(), 0664);
 
-		return $this;
+		$img->recalculate(true);
+
+		if($new_instance)
+			$img->new_instance();
+
+		return $img;
 	}
 
 	function cross_objects() { return bors_get_cross_objs($this); }

@@ -8,7 +8,7 @@ class storage_db_mysql_smart extends base_null
 			return false;
 
 		$oid = addslashes(isset($args['object_id']) ? $args['object_id'] : $object->id());
-		$by_id = !empty($args['by_id']);
+		$by_id = @$args['by_id'];
 
 		$result = array();
 
@@ -193,6 +193,7 @@ class storage_db_mysql_smart extends base_null
 				  $stdbms_cache[$dbhash]['select'] = $select;
 				  $stdbms_cache[$dbhash]['from'] = $from;
 				  $stdbms_cache[$dbhash]['where'] = $where;
+				  $stdbms_cache[$dbhash]['id_field'] = @$id_field;
 				}
 			}
 			else
@@ -200,10 +201,14 @@ class storage_db_mysql_smart extends base_null
 			  $select = $stdbms_cache[$dbhash]['select'];
 			  $from = $stdbms_cache[$dbhash]['from'];
 			  $where = $stdbms_cache[$dbhash]['where'];
+			  $id_field = $stdbms_cache[$dbhash]['id_field'];
 			}
 			
 			$from  = str_replace('%MySqlStorageOID%', $oid, $from);
 			$where = str_replace('%MySqlStorageOID%', $oid, $where);
+
+			if($by_id && !preg_match('/^[a-z_]+$/', $by_id))
+				$by_id = $id_field;
 
 			if($only_count)
 			{
@@ -251,7 +256,7 @@ class storage_db_mysql_smart extends base_null
 				{
 					if($object->loaded()) // метод может переопределяться для проверки данных
 						if($by_id)
-							$result[$object->id()] = $object;
+							$result[$object->$by_id()] = $object;
 						else
 							$result[] = $object;
 

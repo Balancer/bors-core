@@ -14,6 +14,7 @@ class bors_image_thumb extends bors_image
 	{
 		return array(
 			'id',
+			'full_file_name',
 			'relative_path',
 			'file_name',
 			'original_filename',
@@ -51,7 +52,7 @@ class bors_image_thumb extends bors_image
 			return $this->set_loaded(false);
 
 //		if(debug_is_balancer())
-//			debug_hidden_log('2', "width={$this->width()} && fe({$this->file_name_with_path()})=".file_exists($this->file_name_with_path()));
+		debug_hidden_log('2', "width={$this->width()} && fe({$this->file_name_with_path()})=".file_exists($this->file_name_with_path()));
 
 		//TODO: сделать вариант, совместимый с safe_mod!
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')

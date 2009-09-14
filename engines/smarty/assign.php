@@ -14,6 +14,8 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		require('smarty-register.php');
 
 		$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
+//		$smarty->use_sub_dirs = true;
+		$smarty->compile_id = defval($data, 'compile_id');
 
 		$smarty->plugins_dir = array();
 		foreach(bors_dirs() as $dir)

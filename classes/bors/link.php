@@ -62,6 +62,9 @@ class bors_link extends base_object_db
 		$link->set_from($from, true);
 		$link->set_target($to, true);
 
+		if(empty($params['owner_id']))
+			$params['owner_id'] = bors()->user_id();
+
 		foreach($params as $k => $v)
 			$link->{"set_$k"}($v, true);
 
@@ -69,22 +72,49 @@ class bors_link extends base_object_db
 		$link->store();
 	}
 
-	static function links_from_object($object, $params = array())
+	private static function _target_class_parse(&$params)
 	{
+		if(!is_array($params))
+			$params = array('target_class' => $params);
+
+		if(empty($params['target_class']))
+		{
+			unset($params['target_class']); // На случай, если подсунули пустую строку
+			return;
+		}
+
+		$target_classes = array();
+		foreach(explode(',', $params['target_class']) as $tc)
+			$target_classes[] = class_name_to_id(trim($tc));
+
+		unset($params['target_class']);
+		if(count($target_classes) == 1)
+			$params['target_class_id'] = $target_classes[0];
+		else
+			$params['target_class_id IN'] = $target_classes;
+	}
+
+	// Возвращает список ссылок (не самих объектов!) от данного объекта
+	static function links($object, $params = array())
+	{
+		self::_target_class_parse($params);
+
 		if(empty($params['order']))
 			$params['order'] = 'sort_order';
-		
+
 		$params['from_class'] = $object->class_id();
 		$params['from_id']    = $object->id();
-		
+
 		return objects_array('bors_link', $params);
 	}
 
-	static function objects_linked_from_object($object, $params = array())
+	// Возвращает список объектов, на которые ссылается данный объект.
+	static function objects($object, $params = array())
 	{
 		$result = array();
 		$objs = array();
-		$links = self::links_from_object($object, $params);
+
+		$links = bors_link::links($object, $params);
 
 		foreach($links as $link)
 			$objs[$link->target_class_id()][$link->target_object_id()] = 1;
@@ -96,22 +126,31 @@ class bors_link extends base_object_db
 		{
 			$x = $link->target();
 			$x->_set_arg('is_special', $link->type_id() == 3);
+			if($link->owner_id() < 0)
+				$x->set_link_type_id(-$link->type_id(), false);
+			else
+				$x->set_link_type_id($link->type_id(), false);
+			$x->set_link_type_abs_id($link->type_id(), false);
 			$result[] = $x;
 		}
-		
+
+//		print_d($params);
+//		echo "links size = ".count($links).", ids size=".count($ids).", result size=".count($result)."<br/>";
+//		return array();
+
 		return $result;
 	}
 
-	static function have_links_to($object, $target_class_name = '')
+	static function links_count($object, $where = array())
 	{
-		$where = array(
-			'from_class' => $object->class_id(),
-			'from_id' => $object->id(),
-			'type_id<>' => 4,
-		);
-		
-		if($target_class_name)
-			$where['to_class'] = class_name_to_id($target_class_name);
+		if(!is_array($where))
+			$where = array('target_class' => $where);
+
+		self::_target_class_parse($where);
+
+		$where['from_class'] = $object->class_id();
+		$where['from_id'] = $object->id();
+		$where['type_id<>'] = 4;
 
 		return objects_count('bors_link', $where);
 	}

@@ -127,20 +127,24 @@ function save_cached_object(&$object, $delete = false)
 
 function class_internal_uri_load($uri)
 {
-		if(!preg_match("!^(\w+)://(.*)$!", $uri, $m))
-			return NULL;
+	if(!preg_match("!^(\w+)://(.*)$!", $uri, $m))
+		return NULL;
 
-		$class_name = $m[1];
+	$class_name = $m[1];
 
+	if(substr($m[2],-1) == '/' && preg_match('!^(\d+)/$!', $m[2], $mm))
+		$id = $mm[1];
+	else
 		$id = $m[2];
-		$page = NULL;
-		if(preg_match("!^(.+),(\d+)$!", $id, $m))
-		{
-			$id = $m[1];
-			$page = $m[2];
-		}
 
-		return object_init($class_name, $id, array('page'=>$page));
+	$page = NULL;
+	if(preg_match("!^(.+),(\d+)$!", $id, $m))
+	{
+		$id = $m[1];
+		$page = $m[2];
+	}
+
+	return object_init($class_name, $id, array('page'=>$page));
 }
 
 function class_load($class, $id = NULL, $args=array())

@@ -245,7 +245,8 @@ function debug_timing_start($category)
 
 	if($current['start'])
 	{
-		debug_hidden_log('__debug_error', ec("Вторичный вызов незавершённой функции debug_timing_start('$category')."));
+		//TODO: need best method
+//		debug_hidden_log('__debug_error', ec("Вторичный вызов незавершённой функции debug_timing_start('$category')."));
 		return;
 	}
 

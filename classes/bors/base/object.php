@@ -620,7 +620,7 @@ class base_object extends base_empty
 
 	function internal_uri()
 	{
-		if(preg_match("!^http://!", $this->id()))
+		if(@preg_match("!^http://!", $this->id()))
 			return $this->id();
 
 		return  $this->class_name().'://'.$this->id().'/'; 

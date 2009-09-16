@@ -69,7 +69,9 @@ function url_parse($url)
 //	if(preg_match('!^/!', $url))
 //		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
 
-	$data = parse_url($url);
+	$data = @parse_url($url);
+	if(empty($data['path']))
+		$data['path'] = $url;
 
 	if(empty ($data['host']))
 		$data['host'] = @$_SERVER['HTTP_HOST'];

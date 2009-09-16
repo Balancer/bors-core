@@ -3,6 +3,9 @@
 
 	function get_flag($ip)
 	{
+		if(!$ip)
+			return "";
+	
 		include_once("3part/geoip/geoip.inc");
 		include_once("3part/geoip/geoipcity.inc");
 		

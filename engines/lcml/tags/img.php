@@ -84,7 +84,8 @@ function lt_img($params)
 
 //				exit($path);
 
-				if(!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
+				//TODO: не утягиваем, пока нет места на винте.
+				if(false)//!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
 				{
 					require_once('HTTP/Request.php');
 					$req =& new HTTP_Request($params['url'], array(
@@ -260,6 +261,7 @@ __EOT__;
 				return $out;
 			}
 		}
+		return "<a href=\"{$params['url']}\">{$params['url']}</a>";
 	}
 
 function lt_img_bors($params)

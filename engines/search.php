@@ -212,8 +212,8 @@ function bors_search_get_word_id($word, $db = NULL)
 	$original = $word;
 	$word = $Stemmer->stem_word($word);
 			
-	if(strlen($word) > 16)
-		$word = substr($word, 0, 16);
+	if(bors_strlen($word) > 16)
+		$word = bors_substr($word, 0, 16);
 
 	if(!empty($GLOBALS['bors_search_get_word_id_cache'][$word]))
 		return $GLOBALS['bors_search_get_word_id_cache'][$word];

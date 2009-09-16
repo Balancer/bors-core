@@ -164,9 +164,10 @@ class bors_tools_search_result extends bors_tools_search
 			$this->_data['posts'] = array();
 			if($post_ids)
 				$x = objects_array('forum_post', array('id IN' => $post_ids, 'by_id' => true));
+
 			foreach($post_ids as $id)
 				$this->_data['posts'][$id] = $x[$id];
-				
+
 			$this->_data['topics'] = array();
 			if($topic_ids)
 			{
@@ -178,7 +179,7 @@ class bors_tools_search_result extends bors_tools_search
 			$posts = &$this->_data['posts'];
 
 			$docs = array();
-			
+
 			$loop = 0;
 			foreach($posts as $pid => $p)
 				$docs[$loop++] = strip_tags($p->source());

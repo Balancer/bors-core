@@ -181,7 +181,7 @@ class storage_db_mysql_smart extends base_null
 					else
 						$sel = "$main_tab.{$ids[$main_tab]}";
 				}
-				
+
 				if($sel)
 					$select[] = $sel.' AS id';
 			  }
@@ -203,12 +203,12 @@ class storage_db_mysql_smart extends base_null
 			  $where = $stdbms_cache[$dbhash]['where'];
 			  $id_field = $stdbms_cache[$dbhash]['id_field'];
 			}
-			
+
 			$from  = str_replace('%MySqlStorageOID%', $oid, $from);
 			$where = str_replace('%MySqlStorageOID%', $oid, $where);
 
 			if($by_id && !preg_match('/^[a-z_]+$/', $by_id))
-				$by_id = $id_field;
+				$by_id = 'id';
 
 			if($only_count)
 			{

@@ -4,10 +4,10 @@ function get_browser_info($user_agent)
 {
 	$os = '';
 	$ov = '';
-	if(preg_match('!Linux!', $user_agent))
-		$os = 'Linux';
-	elseif(preg_match('!FreeBSD!', $user_agent))
+	if(preg_match('!FreeBSD!', $user_agent))
 		$os = 'FreeBSD';
+	elseif(preg_match('!Linux!', $user_agent))
+		$os = 'Linux';
 	elseif(preg_match('!Windows CE; PPC!', $user_agent))
 		$os = 'PocketPC';
 	elseif(preg_match('!iPhone!', $user_agent))

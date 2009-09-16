@@ -22,29 +22,26 @@ function sklon($n, $s1, $s2=NULL, $s5=NULL) // 1 нож 2 ножа 5 ножей
 
 function truncate($string, $length = 80, $etc = '...', $break_words = false, $middle = false)
 {
-    if ($length == 0)
+    if($length == 0)
         return '';
 
-    if(bors_strlen($string) > $length)
+    if(bors_strlen($string) <= $length)
+        return $string;
+
+	$length -= min($length, bors_strlen($etc));
+	if(!$break_words && !$middle)
 	{
-        $length -= min($length, bors_strlen($etc));
-        if (!$break_words && !$middle)
-		{
-            $string = preg_replace('/\s+?(\S+)?$/', '', bors_substr($string, 0, $length+1));
-        }
-        if(!$middle)
-		{
-            return bors_substr($string, 0, $length) . $etc;
-        }
-		else
-		{
-            return bors_substr($string, 0, $length/2) . $etc . bors_substr($string, -$length/2);
-        }
-    }
+		$string = preg_replace('/\s+?(\S+)?$/', '', bors_substr($string, 0, $length+1));
+	}
+
+	if(!$middle)
+	{
+   		return bors_substr($string, 0, $length) . $etc;
+	}
 	else
 	{
-        return $string;
-    }
+	    return bors_substr($string, 0, $length/2) . $etc . bors_substr($string, -$length/2);
+	}
 }
 
 function stripq($text) { return str_replace('\\"', '"', $text); }
@@ -71,7 +68,7 @@ function bors_hypher($string)
 	return set_global_key('hypher-cache', $string, $result);
 }
 
-if(function_exists('mb_strtolower') && config('internal_encoding') == 'utf-8')
+if(function_exists('mb_strtolower') && config('internal_charset') == 'utf-8')
 {
 	eval('function bors_upper($str) { return mb_strtoupper($str); }');
 	eval('function bors_lower($str) { return mb_strtolower($str); }');

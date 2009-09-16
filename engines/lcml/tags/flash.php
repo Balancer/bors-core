@@ -35,6 +35,12 @@
 		return "<td ".make_enabled_params($params, 'class style').">".lcml($inner, array('only_tags' => true))."</td>";
 	}
 
+	function lp_th($inner, &$params)
+	{
+		$params['skip_around_cr'] = true;
+		return "<th ".make_enabled_params($params, 'align bgcolor').">".lcml($inner, array('only_tags' => true))."</th>";
+	}
+
 	function lp_span($inner, $params)
 	{
 		return "<span ".make_enabled_params($params, 'style').">".lcml($inner)."</span>";

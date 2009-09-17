@@ -82,7 +82,7 @@ function quote_fix($text)
 	return $text;
 }
 
-function bors_text_clear($text, $morfology = true)
+function bors_text_clear($text, $morfology = true, $spacer = ' ')
 {
 	$text = preg_replace('/&\w+;/', ' ', $text);
 	$text = preg_replace('/&#\d+;/', ' ', $text);
@@ -105,5 +105,10 @@ function bors_text_clear($text, $morfology = true)
 			$words[] = $Stemmer->stem_word($word);
 		$result = join(' ', $words);
 	}
-	return ' '.$result.' ';
+
+	$result = ' '.$result.' ';
+	if($spacer != ' ')
+		$result = str_replace(' ', $spacer, $result);
+
+	return $result;
 }

@@ -138,7 +138,7 @@ class DataBase extends base_object
 			$query = iconv($this->ics, $this->dcs.'//IGNORE', $query);
 
 		$qstart = microtime(true);
-			
+
 		debug_timing_start('mysql_query_main');
 		$this->result = !empty($query) ? @mysql_query($query,$this->dbh) : false;
 		debug_timing_stop('mysql_query_main');
@@ -147,20 +147,23 @@ class DataBase extends base_object
 
 		if($qtime > config('debug_mysql_slow', 5))
 			debug_hidden_log('mysql-slow', "Slow query [{$qtime}s]: ".$query);
-			
-		if(config('debug_mysql_queries_log'))
-			debug_hidden_log('mysql-queries', "[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query);
-			
+
+		if($cdmql = config('debug_mysql_queries_log'))
+			debug_hidden_log(
+				'mysql-queries', 
+				"[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query,
+				is_numeric($cdmql) ? $cdmql : false);
+
 		if($this->result)
 		{
 			$this->last_query_time = microtime(true);
-			
+
 			if(preg_match("!^SELECT!", $query))
 				return mysql_num_rows($this->result);
 			else
 				return $this->result;
 		}
-		
+
 		if(!$ignore_error)
 		{
 			echo debug_trace();

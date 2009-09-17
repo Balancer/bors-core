@@ -208,7 +208,7 @@ class base_page extends base_object
 
 	function pre_show()
 	{
-		@header('Content-Type: text/html; charset='.config('output_charset', config('default_character_set', 'utf-8')));
+		@header('Content-Type: text/html; charset='.config('output_charset', config('internal_charset', 'utf-8')));
 		@header('Content-Language: '.config('page_lang', 'ru'));
 
 		if(!$this->browser_title())

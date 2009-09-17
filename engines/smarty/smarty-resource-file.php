@@ -30,11 +30,15 @@
 
         return false;
     }
-    
+
     function smarty_resource_file_get_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
     {
+    	static $cache;
+    	if(!empty($cache[$tpl_name]))
+			return ($tpl_timestamp = $cache[$tpl_name]) > 0;
+
 		$found = false;
-	
+
 		if(file_exists($tpl_name))
 		{
 			$tpl_timestamp = filemtime($tpl_name);
@@ -47,18 +51,21 @@
 			$found = true;
 		}
 
+		$find_tpl = '/templates/'.$tpl_name;
+		$default_template_dir = '/templates/'.dirname(config('default_template')).'/'.$tpl_name;
+
 		if(!$found)
 		{
 			foreach(bors_dirs() as $dir)
 			{
-				if(file_exists($fn = $dir.'/templates/'.$tpl_name))
+				if(file_exists($fn = $dir.$find_tpl))
 				{
 					$tpl_timestamp = filemtime($fn);
 					$found = true;
 					break;
 				}
 
-				if(file_exists($fn = $dir.'/templates/'.dirname(config('default_template')).'/'.$tpl_name))
+				if(file_exists($fn = $dir.$default_template_dir))
 				{
 					$tpl_timestamp = filemtime($fn);
 					$found = true;
@@ -66,12 +73,14 @@
 				}
 			}
 		}
-		
+
 		if(!$found)
 			return false;
 
 		if(config('templates_cache_disabled'))
 			$tpl_timestamp = time();
+
+		$cache[$tpl_name] = $tpl_timestamp;
 
         return true;
     }

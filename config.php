@@ -85,8 +85,8 @@ if(defined('BORS_APPEND'))
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEPARATOR, array_unique($includes)));
 
-require_once('classes/inc/BorsMemCache.php');
 require_once('inc/debug.php');
+require_once('classes/inc/BorsMemCache.php');
 require_once('inc/global-data.php');
 require_once('inc/locales.php');
 require_once('inc/system.php');
@@ -119,8 +119,10 @@ $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
 
 function bors_init()
 {
-	ini_set('default_charset', config('default_character_set'));
+	ini_set('default_charset', config('internal_charset'));
 	setlocale(LC_ALL, config('locale'));
+
+	require_once('engines/bors/generated.php');
 
 	if(config('memcached'))
 	{

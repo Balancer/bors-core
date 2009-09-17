@@ -5,7 +5,7 @@ function bors_message($text, $params=array())
 	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
-	$ocs = config('output_charset', config('default_character_set', 'utf-8'));
+	$ocs = config('output_charset', config('internal_charset', 'utf-8'));
 	$ics = config('internal_charset', 'utf-8');
 
 	@header('Content-Type: text/html; charset='.$ocs);
@@ -87,10 +87,10 @@ function bors_message_tpl($template, $obj, $params)
 {
 	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-	
-	$ocs = config('output_charset', config('default_character_set', 'utf-8'));
+
+	$ocs = config('output_charset', config('internal_charset', 'utf-8'));
 	$ics = config('internal_charset', 'utf-8');
-	
+
 	@header('Content-Type: text/html; charset='.$ocs);
 	@header('Content-Language: '.config('page_lang', 'ru'));
 
@@ -100,10 +100,10 @@ function bors_message_tpl($template, $obj, $params)
 	$title = defval($params, 'title', ec('Ошибка!'));
 	$timeout = defval($params, 'timeout', -1);
 	$global_template = defval($params, 'template', config('default_template'));
-	
+
 	$params['this'] = &$obj;
 	$params['template_dir'] = $obj->class_dir();
-	
+
 	$body = template_assign_data($template, $params);
 
 	$params['title'] = $title;

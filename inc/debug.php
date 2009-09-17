@@ -134,7 +134,7 @@ function debug($message,$comment='',$level=3)
 	@fclose($fh);
 }
 
-function debug_trace($skip = 0, $html = NULL)
+function debug_trace($skip = 0, $html = NULL, $level = -1)
 {
 	$MAXSTRLEN = 128;
 
@@ -150,6 +150,9 @@ function debug_trace($skip = 0, $html = NULL)
 
 	for($i = 0; $i <= $skip; $i++)
 		array_shift($traceArr);
+
+	if(is_numeric($level) && $level > 0)
+		$traceArr = array_slice($traceArr, 0, $level);
 
 	$tabs = 0; //sizeof($traceArr)-1;
 	for($pos=0, $stop=sizeof($traceArr); $pos<$stop; $pos++)
@@ -314,7 +317,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true)
 	. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
 	. (!empty($_SERVER['HTTP_USER_AGENT']) ? "user agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"
 //	. (bors()->user_id() ? 'user = '.bors()->user()->title() . '[' .bors()->user_id()."]\n": '')
-	. debug_trace(0, false)
+	. debug_trace(1, false, $trace)
 	. "\n---------------------------\n\n";
 
 

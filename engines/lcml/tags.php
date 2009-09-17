@@ -115,7 +115,7 @@
 
     function find_next_open_tag($txt, $pos)
     {
-//    	echo "find tags in ".substr(str_replace("\n", '\n', $txt), $pos, 80)."\n";
+//    	echo "<b>find tags in ".substr(str_replace("\n", '\n', $txt), $pos, 80)."</b><br/>\n";
 
     	$strlen = bors_strlen($txt);
 //        while($pos < $strlen && ($pos = next_open_brace($txt, $pos)) !== false)
@@ -124,6 +124,7 @@
 			$pos_open  = bors_strpos($txt, '[', $pos+1); // Следующий открывающийся тэг
 //            $pos_open  = next_open_brace ($txt, $pos+1); // Следующий открывающийся тэг
             $pos_close = bors_strpos($txt, ']', $pos+1); // Ближайший закрывающий знак
+//            echo "$pos, $pos_close = ".bors_substr($txt, $pos, $pos_close - $pos + 1)."<Br/>";
 //            $pos_close = next_close_brace($txt, $pos+1); // Ближайший закрывающий знак
             $in = 0;
             $end = 0;
@@ -174,9 +175,6 @@
 //                    $pos_open  = strpos($txt, '[', $pos_open +1);
                     $pos_open  = next_open_brace ($txt, $pos_open +1);
                     $pos_close = bors_strpos($txt, ']', $pos_close+1);
-//                    $pos_close = next_close_brace($txt, $pos_close+1);
-//					$in++;
-//					echo "3: new in=$in\n"; echopos($pos_open, 'pos_open'); echopos($pos_close, 'pos_close');
                 }
             }
 
@@ -187,7 +185,8 @@
                 $end = $strlen;
 
             // Вырезаем целиком найденный тэг, без квадратных скобок
-            $tag = bors_substr($txt, $pos+1, $end-$pos-1);
+			$tag = bors_substr($txt, $pos+1, $end-$pos-1);
+//			echo "Cuted tag '$tag'<br/>";
 
             preg_match("!^([^\s\|]*)\s*(.*?)$!s", $tag, $m); // func, params
 			//      $next_pos, $next_end, $next_tag, $next_func

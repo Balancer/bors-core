@@ -54,7 +54,7 @@
 		if(bors()->client()->is_bot())
 			if(config('404_page_url'))
 				return go(config('404_page_url'), true);
-			
+
 		header('Status: 503 Service Temporarily Unavailable');
 		header('Retry-After: 3600');
 

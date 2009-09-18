@@ -546,3 +546,20 @@ function bors_objects_preload($objects, $field, $preload_class, $store_field = N
 
 	return $targets;
 }
+
+function bors_objects_targets_preload($objects, $target_class_field = 'target_class_name', $target_id_field = 'target_object_id', $store_field = 'target')
+{
+	$ids = array();
+	foreach($objects as $x)
+		@$ids[$x->$target_class_field()][$x->$target_id_field()] = true;
+
+	$targets = array();
+	foreach($ids as $target_class => $oids)
+		$targets[$target_class] = objects_array($target_class, array('id IN' => array_keys($oids), 'by_id' => !!$store_field));
+
+	if($store_field)
+		foreach($objects as $x)
+			$x->set_attr($store_field, @$targets[$x->$target_class_field()][$x->$target_id_field()]);
+
+	return $targets;
+}

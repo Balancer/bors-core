@@ -34,7 +34,7 @@ class storage_db_mysql_smart extends base_null
 			if(empty($stdbms_cache[$dbhash]))
 			{
 			  $is_one_table = (count($tables) == 1) && !preg_match('!JOIN!i', $common_where);
-			
+
 			  foreach($tables as $table_name => $fields)
 			  {
 				if(strpos($table_name, '(') && preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m)) // table(id)

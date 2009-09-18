@@ -15,9 +15,9 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	$smarty->plugins_dir = array();
 	foreach(bors_dirs() as $dir)
 		$smarty->plugins_dir[] = $dir.'/engines/smarty/plugins';
-	
+
 	$smarty->plugins_dir[] = 'plugins';
-	
+
 	$smarty->cache_dir   = secure_path(config('cache_dir').'/smarty-cache/');
 
 	if(!@file_exists($smarty->compile_dir))
@@ -28,7 +28,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	@chmod($smarty->cache_dir, 0777);
 
 	$caching = !$obj->is_cache_disabled() && config('templates_cache_disabled') !== true;
-			
+
 	$smarty->caching = false;// $caching;
 	$smarty->compile_check = true; 
 	$smarty->php_handling = SMARTY_PHP_QUOTE; //SMARTY_PHP_PASSTHRU;
@@ -75,10 +75,10 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 		debug_timing_stop('template_smarty_bors');
 		return "Not existing template {$template} for $obj<br />";
 	}
-		
+
 	$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 	$smarty->assign("page_template", $template);
-		
+
 	if(!empty($GLOBALS['cms']['templates']['data']))
 		foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
 		{

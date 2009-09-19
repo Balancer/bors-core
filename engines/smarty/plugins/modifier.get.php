@@ -2,10 +2,16 @@
 function smarty_modifier_get($object, $field, $param1 = false, $param2 = false)
 {
 	if(!$object)
-		return "get <b>$field</b> for NULL object";
+	{
+		debug_hidden_log('__data_error', "get $field for NULL object");
+		return '';
+	}
 
 	if(!is_object($object))
-		return "get <b>$field</b> error: '{$object}' is not object";
+	{
+		debug_hidden_log('__data_error', "get $field error: '{$object}' is not object");
+		return '';
+	}
 
 	$params = array();
 	if($param1 !== false)

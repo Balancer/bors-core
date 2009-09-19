@@ -2,7 +2,10 @@
 function smarty_modifier_get_array($array, $idx)
 {
 	if(!is_array($array))
-		return "get <b>$idx</b> error: '{$array}' is not array";
+	{
+		debug_hidden_log('__data_error', "get $idx error: '{$array}' is not array";
+		return '';
+	}
 
 	return @$array[$idx];
 }

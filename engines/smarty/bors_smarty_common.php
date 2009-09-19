@@ -7,9 +7,12 @@ function smarty_template($template_name, $callers_dir = NULL)
 	if(preg_match('!xfile:!', $template_name))
 		return $template_name;
 
+	if(preg_match('!bors:!', $template_name))
+		return $template_name;
+
 	if(!$template_name)
 		$template_name = 'default';
-	
+
 	if(preg_match("!^\w+$!", $template_name))
 		$template_name .= "/index.html";
 

@@ -276,7 +276,7 @@ class base_object extends base_empty
 		return time();
 	}
 
-	function title() { return defval($this->data, 'title', $this->class_name()); }
+	function title($exact = false) { return defval($this->data, 'title', $exact ? NULL : $this->class_name()); }
 	function set_title($new_title, $db_update) { return $this->set('title', $new_title, $db_update); }
 
 	function description() { return @$this->data['description']; }

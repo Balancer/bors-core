@@ -61,6 +61,9 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 
 		$template_uri = $assign_template;
 
+//	if(debug_is_balancer())
+//		debug_hidden_log('00test', $assign_template);
+
 		if($module_relative_path)
 		{
 			$assign_template_pure = str_replace('xfile:', '', $assign_template);

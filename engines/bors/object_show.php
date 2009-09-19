@@ -7,7 +7,7 @@
 	{
 		$page = $obj->set_page($obj->args('page'));
 
-//		if(debug_is_balancer()) echo "Bors class=".get_class($obj); exit();
+//		if(debug_is_balancer()) { echo "Bors class=".get_class($obj); exit('>'.time()); }
 		if(!$obj)
 			return false;
 

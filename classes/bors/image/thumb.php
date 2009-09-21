@@ -168,6 +168,6 @@ Target   = {$this->file_name_with_path()}\n
 	function alt() { return $this->original ? $this->original->alt() : ""; }
 
 	function url() { return secure_path(config('pics_base_url').$this->relative_path().'/'.$this->file_name()); }
-	
+
 	function replace_on_new_instance() { return true; }
 }

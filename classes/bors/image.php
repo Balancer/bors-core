@@ -78,7 +78,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 	{
 		if($ffn = $this->full_file_name())
 			return dirname($ffn).'/';
-		
+
 		$rel_path = $this->relative_path().'/';
 //		if($rel_path[0] == '/')
 //			return $_SERVER['DOCUMENT_ROOT'].$rel_path;
@@ -183,13 +183,10 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 	// Регистрация файла по абсолютному или относительному к DOCUMENTS_ROOT пути.
 	// Возвращает объект изображения.
-	function register_file($file, $new_instance = true, $exists_check = true)
+	static function register_file($file, $new_instance = true, $exists_check = true)
 	{
-		if(@$this)
-			$img = $this;
-		else
-			$img = object_new('bors_image');
-	
+		$img = object_new('bors_image');
+
 		$data = url_parse($file);
 
 		if($exists_check && $img2 = objects_first('bors_image', array('full_file_name' => $data['local_path'])))

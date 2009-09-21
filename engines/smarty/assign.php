@@ -4,9 +4,6 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 {
 	debug_timing_start('template_smarty_assign');
 
-	if(preg_match('/^[\w\.\-]+\.\w+$/', $assign_template))
-		$assign_template = 'xfile:'.$assign_template;
-
 		unset($GLOBALS['module_data']);
 
 		require_once(config('smarty_path').'/Smarty.class.php');
@@ -48,95 +45,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 //		echo $caller2['file']."<br />";
 		$caller_path = dirname($caller['file']);
 
-		$module_relative_path = NULL;
-		foreach(bors_dirs() as $dir)
-		{
-			$path = preg_replace('!^'.preg_quote($dir).'!', '', $caller_path);
-			if($path != $caller_path)
-			{
-				$module_relative_path = $path;
-				break;
-			}
-		}
-
-		$template_uri = $assign_template;
-
-//	if(debug_is_balancer())
-//		debug_hidden_log('00test', $assign_template);
-
-		if($module_relative_path)
-		{
-			$assign_template_pure = str_replace('xfile:', '', $assign_template);
-//			echo 'xfile:'.BORS_SITE.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template;
-			if($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template_pure))
-				$template_uri = $tpl;
-			elseif($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.$module_relative_path.'/'.$assign_template_pure))
-				$template_uri = $tpl;
-			else
-				foreach(bors_dirs() as $dir)
-				{
-//					echo "Check ".'xfile:'.secure_path($dir.' --- /templates/ --- '.config('default_template').$module_relative_path.'/'.$assign_template)."<br/>";
-					if($smarty->template_exists($tpl = 'xfile:'.secure_path($dir.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template_pure)))
-						$template_uri = $tpl;
-					elseif($smarty->template_exists($tpl = 'xfile:'.$dir.$module_relative_path.'/'.$assign_template_pure))
-						$template_uri = $tpl;
-				}
-		}
-
-//		$caller_local_tpln = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".$hts->get_data($GLOBALS['main_uri'], 'template', '', true)."/", $caller_path)."/";
-//		echo $caller_local_main = 'xfile:'.BORS_HOST.'/templates/', $caller_path."/";
-//		$caller_local_tpl = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".@$GLOBALS['page_data']['template']."/", $caller_path)."/";
-//		$caller_cms_main   = "xfile:{$GLOBALS['cms']['base_dir']}".preg_replace("!^.+?/cms/!", "/", $caller_path)."/";
-		$caller_default_template = BORS_CORE.'/templates/'.$module_relative_path;
-
-//		if($uri == NULL)
-//			$uri = "$caller_path/$assign_template";
-
-/*		if(preg_match("!^[\w\-]+\.[\w\-]+$!", $assign_template))
-		{
-			$assign_template_local = "xfile:{$GLOBALS['cms']['local_dir']}/templates/modules/".$assign_template;
-			$assign_template_base = "xfile:$caller_path/$assign_template";
-		}
-*/
-		$smarty->template_dir = $caller_path;
-		if(!empty($data['template_dir']) && $data['template_dir'] != 'caller')
-			$smarty->template_dir = $data['template_dir'];
-
-		$smarty->secure_dir += array($caller_path, $caller_default_template);
-
-//		$template_uri = @$caller_local_tpln.$assign_template;
-//		if(!$smarty->template_exists($template_uri))
-//				$template_uri = $caller_local_tpl.$assign_template;
-//		if(!$smarty->template_exists($template_uri))
-//			$template_uri = $caller_local_main.$assign_template;
-//		if(!$smarty->template_exists($template_uri))
-//			echo $template_uri = BORS_HOST."/templates/$module_relative_path/$assign_template";
-//		if(!$smarty->template_exists($template_uri))
-//			$template_uri = $caller_cms_main.$assign_template;
-//		if(!$smarty->template_exists($template_uri))
-//			$template_uri = "xfile:".$caller_default_template.$assign_template;
-//		if(!$smarty->template_exists($template_uri))
-//			$template_uri = "xfile:$caller_path/".$assign_template;
-//		if(!$smarty->template_exists($template_uri))
-//			$template_uri = "xfile:".$assign_template;
-//		if(!$smarty->template_exists($template_uri))
-//			$template_uri = "xfile:{$GLOBALS['cms']['base_dir']}/templates/$assign_template";
-
-		require_once('bors_smarty_common.php');
-//		if(!$smarty->template_exists($template_uri))
-//			$template_uri = smarty_template($assign_template, $caller_path);
-
-		if(!$smarty->template_exists($template_uri))
-			debug_exit('Not found template '.$assign_template);
-
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = $assign_template;
-
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = config('default_template');
-
-		if(!$smarty->template_exists($template_uri))
-			$template_uri = smarty_template($template_uri);
+		$template_uri = __template_assign_data_get_template($assign_template, $caller_path, $smarty);
 
 		$modify_time = empty($data['modify_time']) ? time() : $data['modify_time'];
 		$modify_time = max(@$data['compile_time'], $modify_time);
@@ -236,4 +145,121 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 	$result = $smarty->fetch($template_uri);
 	debug_timing_stop('template_smarty_assign_fetch');
 	return $result;
+}
+
+/*
+	Допустимые форматы имён шаблонов:
+	aviaport/common.html 	-> BORS_LOCAL/templates/aviaport/common.html
+	blue_spring				-> BORS_SITE/templates/blue_spring/index.html
+	page.html				-> classes/projest/page.html
+	navleft.html			-> BORS_SITE/templates/Mesh/modules/design/navleft.html
+*/
+
+function __template_assign_data_get_template($assign_template, $caller_path, $smarty)
+{
+	$wo_xfile_prefix = str_replace('xfile:', '', $assign_template);
+
+	$module_relative_path = NULL;
+	foreach(bors_dirs() as $dir)
+	{
+		if(file_exists($fn = "{$dir}/templates/$assign_template/index.html"))
+			return "xfile:$fn";
+
+		if(file_exists($fn = "{$dir}/templates/$wo_xfile_prefix/index.html"))
+			return "xfile:$fn";
+
+		$path = preg_replace('!^'.preg_quote($dir).'!', '', $caller_path);
+		if($path != $caller_path)
+		{
+			$module_relative_path = $path;
+			break;
+		}
+	}
+
+	if(preg_match('/^[\w\.\-]+\.\w+$/', $assign_template))
+		$assign_template = 'xfile:'.$assign_template;
+
+
+	$template_uri = $assign_template;
+
+//	if(debug_is_balancer())
+//		debug_hidden_log('00test', $assign_template);
+
+	if($module_relative_path)
+	{
+			$assign_template_pure = str_replace('xfile:', '', $assign_template);
+//			echo 'xfile:'.BORS_SITE.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template;
+			if($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template_pure))
+				$template_uri = $tpl;
+			elseif($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.$module_relative_path.'/'.$assign_template_pure))
+				$template_uri = $tpl;
+			else
+				foreach(bors_dirs() as $dir)
+				{
+//					echo "Check ".'xfile:'.secure_path($dir.' --- /templates/ --- '.config('default_template').$module_relative_path.'/'.$assign_template)."<br/>";
+					if($smarty->template_exists($tpl = 'xfile:'.secure_path($dir.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template_pure)))
+						$template_uri = $tpl;
+					elseif($smarty->template_exists($tpl = 'xfile:'.$dir.$module_relative_path.'/'.$assign_template_pure))
+						$template_uri = $tpl;
+				}
+	}
+
+//		$caller_local_tpln = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".$hts->get_data($GLOBALS['main_uri'], 'template', '', true)."/", $caller_path)."/";
+//		echo $caller_local_main = 'xfile:'.BORS_HOST.'/templates/', $caller_path."/";
+//		$caller_local_tpl = "xfile:{$GLOBALS['cms']['local_dir']}".preg_replace("!^.+?/cms/!", "/templates/".@$GLOBALS['page_data']['template']."/", $caller_path)."/";
+//		$caller_cms_main   = "xfile:{$GLOBALS['cms']['base_dir']}".preg_replace("!^.+?/cms/!", "/", $caller_path)."/";
+		$caller_default_template = BORS_CORE.'/templates/'.$module_relative_path;
+
+//		if($uri == NULL)
+//			$uri = "$caller_path/$assign_template";
+
+/*		if(preg_match("!^[\w\-]+\.[\w\-]+$!", $assign_template))
+		{
+			$assign_template_local = "xfile:{$GLOBALS['cms']['local_dir']}/templates/modules/".$assign_template;
+			$assign_template_base = "xfile:$caller_path/$assign_template";
+		}
+*/
+
+		$smarty->template_dir = $caller_path;
+		if(!empty($data['template_dir']) && $data['template_dir'] != 'caller')
+			$smarty->template_dir = $data['template_dir'];
+
+		$smarty->secure_dir += array($caller_path, $caller_default_template);
+
+//		$template_uri = @$caller_local_tpln.$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//				$template_uri = $caller_local_tpl.$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = $caller_local_main.$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			echo $template_uri = BORS_HOST."/templates/$module_relative_path/$assign_template";
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = $caller_cms_main.$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = "xfile:".$caller_default_template.$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = "xfile:$caller_path/".$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = "xfile:".$assign_template;
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = "xfile:{$GLOBALS['cms']['base_dir']}/templates/$assign_template";
+
+		require_once('bors_smarty_common.php');
+
+//		if(!$smarty->template_exists($template_uri))
+//			$template_uri = smarty_template($assign_template, $caller_path);
+
+		if(!$smarty->template_exists($template_uri))
+			debug_exit('Not found template '.$assign_template);
+
+		if(!$smarty->template_exists($template_uri))
+			$template_uri = $assign_template;
+
+		if(!$smarty->template_exists($template_uri))
+			$template_uri = config('default_template');
+
+		if(!$smarty->template_exists($template_uri))
+			$template_uri = smarty_template($template_uri);
+
+		return $template_uri;
 }

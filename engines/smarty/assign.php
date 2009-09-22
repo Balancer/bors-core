@@ -44,7 +44,6 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		$caller  = array_shift(debug_backtrace());
 //		echo $caller2['file']."<br />";
 		$caller_path = dirname($caller['file']);
-
 		$template_uri = __template_assign_data_get_template($assign_template, $caller_path, $smarty);
 
 		$modify_time = empty($data['modify_time']) ? time() : $data['modify_time'];

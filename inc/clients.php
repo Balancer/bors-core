@@ -8,6 +8,8 @@ function bors_bot_detect($user_agent)
 			'rambler' => 'Rambler',
 			'google' => 'Googlebot',	// Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
 			'yandex' => 'Yandex',
+			'YaDirectBot' => 'YandexDirect',	// YaDirectBot/1.0
+			'TurnitinBot' => 'TurnitinBot', // TurnitinBot/2.1 (http://www.turnitin.com/robot/crawlerinfo.html)
 			'Yanga' => 'Yanga',
 			'Begun Robot Crawler' => 'Begun Robot Crawler',
 			'msnbot' => 'MSN', 			// msnbot/2.0b (+http://search.msn.com/msnbot.htm)

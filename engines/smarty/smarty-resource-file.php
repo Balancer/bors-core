@@ -13,6 +13,12 @@
 			return true;
 		}
 
+		if(file_exists($fn = str_replace('xfile:', '', $smarty->get_template_vars('template_dirname'))."/".$tpl_name))
+		{
+			$tpl_source = ec(file_get_contents($fn));
+			return true;
+		}
+
 		if(file_exists($fn = $smarty->template_dir."/".$tpl_name))
 		{
 			$tpl_source = ec(file_get_contents($fn));
@@ -42,6 +48,12 @@
 		if(file_exists($tpl_name))
 		{
 			$tpl_timestamp = filemtime($tpl_name);
+			$found = true;
+		}
+
+		if(!$found && file_exists($fn = str_replace('xfile:', '', $smarty->get_template_vars('template_dirname'))."/".$tpl_name))
+		{
+			$tpl_timestamp = filemtime($fn);
 			$found = true;
 		}
 

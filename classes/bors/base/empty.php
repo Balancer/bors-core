@@ -25,7 +25,7 @@ class base_empty extends base_null
 
 		if(array_key_exists($name, $this->attr))
 			return $this->attr[$name];
-			
+
 		return $default;
 	}
 

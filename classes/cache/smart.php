@@ -5,25 +5,28 @@ class cache_smart extends cache_base
 	private $dbh;
 	private $create_time;
 	private $expire_time;
-        
+
 	function get($type, $key, $uri='', $default=NULL)
 	{
 		$this->init($type, $key, $uri);
-		
+
 		if(config('cache_disabled'))
 			return $this->last = $default;
 
 		debug_count_inc('smart_cache_gets_total');
+
+		if($x = global_key('cache', $this->last_hmd))
+			return $this->last = $x;
+
 		if($memcache = config('memcached_instance'))
 		{
-
 			if($x = @$memcache->get('phpmv3'.$this->last_hmd))
 			{
 				debug_count_inc('smart_cache_gets_memcached_hits');
 				return $this->last = $x;
 			}
 		}
-				
+
 		$dbh = new driver_mysql(config('cache_database'));
 		$row = $dbh->select('cache', '*', array('raw hmd' => $this->last_hmd));
 		$dbh->close(); $dbh = NULL;
@@ -53,24 +56,34 @@ class cache_smart extends cache_base
 			));
 			$dbh->close(); 
 			$dbh = NULL;
-		}	
-			
+
+			if($memcache = config('memcached_instance'))
+			{
+				$memcache->set('phpmv3'.$this->last_hmd, $this->last, MEMCACHE_COMPRESSED, $this->expire_time - time()+1);
+				debug_count_inc('smart_cache_gets_memcached_updates');
+			}
+		}
+
 		return ($this->last ? $this->last : $default);
 	}
 
 	function set($value, $time_to_expire = 86400, $infinite = false)
 	{
+//		echo "cd = ".config('cache_disabled')."<br/>";
 		if(config('cache_disabled'))
 			return $this->last = $value;
 
+		set_global_key('cache', $this->last_hmd, $value);
 		// Если время хранения отрицательное - используется только memcached, при его наличии.
 		if($memcache = config('memcached_instance'))
 		{
+	//		if(debug_is_balancer())
+	//			echo "Set memc {$this->last_hmd} = $value";
+			$memcache->set('phpmv3'.$this->last_hmd, $value, MEMCACHE_COMPRESSED, abs($time_to_expire));
+			debug_count_inc('smart_cache_gets_memcached_stores');
+
 			if($time_to_expire < 0)
-			{
-				$memcache->set('phpmv3'.$this->last_hmd, $value, MEMCACHE_COMPRESSED, abs($time_to_expire));
 				return $this->last = $value;
-			}
 		}
 
 		$time_to_expire = abs($time_to_expire);
@@ -78,7 +91,7 @@ class cache_smart extends cache_base
 		$do_time = microtime(true) - $this->start_time;
 		if($do_time < 0.01 && $time_to_expire > 0)
 			debug_hidden_log('cache-not-needed', $do_time);
-		
+
 		if($time_to_expire > 0 && $do_time > 0.02)
 		{
 			$dbh = &new driver_mysql(config('cache_database'));
@@ -97,7 +110,7 @@ class cache_smart extends cache_base
 			));
 			$dbh->close(); $dbh = NULL;
 		}
-			
+
 		return $this->last = $value;
 	}
 }

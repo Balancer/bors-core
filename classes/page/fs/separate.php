@@ -6,6 +6,8 @@ class page_fs_separate extends base_page
 	function can_be_empty()		{ return false; }
 	function can_cached()		{ return false; }
 
+	function cache_static()		{ return config('page_fs_separate_cache_static'); }
+
 	function attr_preset()
 	{
 		return array_merge(parent::attr_preset(), array(

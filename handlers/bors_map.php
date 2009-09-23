@@ -11,9 +11,9 @@ $map = array(
 	'/user/cookie\-hash\-update\.bas\?(\w+) => user_cookieHashUpdate(1)',
 	'/actions/do\-logout/ => common_do_logout',
 
-	'.*/\?login => bors_admin_users_login',
-	'(.*/)\?new => bors_admin_append_new(1)',
-	'.*/\?logout => common_do_logout',
+	'.*\?login => bors_admin_users_login',
+	'(.*)\?new => bors_admin_append_new(1)',
+	'.*\?logout => common_do_logout',
 
 	'.*/\d{4}/\d{1,2}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
 	'.*/\d{4}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',

@@ -94,6 +94,15 @@ class bors_lcml
 
 	function parse($text, $params = array())
 	{
+		if($this->_params['level'] == 1 && !config('lcml_cache_disable') && strlen($text) > 100)
+		{
+			$cache = new Cache();
+			if($cache->get('lcml-cache', $text))
+				return $cache->last();
+		}
+		else
+			$cache = NULL;
+
 		$text = str_replace("\r", '', $text);
 
 		$GLOBALS['lcml']['params'] = $this->_params;
@@ -108,7 +117,7 @@ class bors_lcml
 		$text = lcml_tags($text, $mask);
 
 		if($this->p('only_tags'))
-			return $text;
+			return $cache ? $cache->set($text, 86400) : $text;
 
 		if(config('lcml_sharp_markup'))
 		{
@@ -157,7 +166,7 @@ class bors_lcml
 		if($this->_params['level'] == 1)
 			$text = $this->functions_do(bors_lcml::$data['post_whole_functions'], $text);
 
-		return $text;
+		return $cache ? $cache->set($text, 86400) : $text;
 	}
 }
 

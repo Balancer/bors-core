@@ -887,7 +887,7 @@ class base_object extends base_empty
 		$fe = file_exists($file);
 		$fs = $fe && filesize($file) > 2000;
 
-//		echo "if($use_static && $file && $fe && !$recreate)".time();
+//		echo "cache_static=".config('cache_static').", can_use_static=$can_use_static, this->cache_static()={$this->cache_static()}, if($use_static && $file && $fe && !$recreate)".time();
 		if($use_static && $file && $fe && !$recreate)
 			return file_get_contents($this->static_file());
 

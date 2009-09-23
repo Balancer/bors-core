@@ -106,6 +106,10 @@ class storage_fs_separate extends base_null
 		$success = true;
 		foreach($object->changed_fields as $field => $dummy)
 		{
+			//TODO: Заглушка для скипания левых полей редактора.
+			if(!in_array($field, explode(' ', 'cr_type create_time description last_editor_id modify_time nav_name owner_id parents source title')))
+				continue;
+
 			$data = $object->$field();
 			if(is_array($data))
 			{
@@ -116,8 +120,13 @@ class storage_fs_separate extends base_null
 				$file = secure_path("{$base}/{$pfx}{$field}.txt");
 
 			mkpath(dirname($file), 0777);
-			@file_put_contents($file, $data);
-			@chmod($file, 0666);
+			if($data)
+			{
+				@file_put_contents($file, $data);
+				@chmod($file, 0666);
+			}
+			else
+				unlink($file);
 		}
 
 		return $success;

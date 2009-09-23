@@ -59,6 +59,8 @@ function lcml_smilies_list($dir)
 		config_set('cache_disabled', false);
         $cache = &new Cache();
 
+//		echo "Get ".get_class($cache)."<br/>";
+
         if($cache->get('smilies-'.config('lcml_smiles_cache_tag'), $dir))
 		{
 //			if(is_array($cache->last()))
@@ -75,11 +77,12 @@ function lcml_smilies_list($dir)
 
 		$list = lcml_smilies_load($dir);
 
-		$cache->set($list, 30*86400);
+//		echo "Set $cache<br/>";
+		$cache->set($list, -30*86400);
 		config_set('cache_disabled', $save);
 		return $list;
 }
-	
+
 function lcml_smilies_load($dir)
 {
         $list = array();

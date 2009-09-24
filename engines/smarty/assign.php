@@ -13,6 +13,11 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
 //		$smarty->use_sub_dirs = true;
 		$smarty->compile_id = defval($data, 'compile_id');
+		if(strlen($smarty->compile_id) > 128)
+		{
+			debug_hidden_log('need-attention', 'too long compile id: '.$smarty->compile_id);
+			$smarty->compile_id = substr($smarty->compile_id, 0, 128);
+		}
 
 		$smarty->plugins_dir = array();
 		foreach(bors_dirs() as $dir)

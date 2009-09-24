@@ -29,6 +29,7 @@ function bors_bot_detect($user_agent)
 			'robotgenius' => 'robotgenius', // robotgenius (http://robotgenius.net)
 			'LexxeBot' => 'LexxeBot',	// LexxeBot/1.0 (lexxebot@lexxe.com)
 			'Snapbot' => 'Snapbot',		// Snapbot/1.0 (Snap Shots, +http://www.snap.com)
+			'Mail.Ru' => 'Mail.Ru',		// Mail.Ru/1.0
 		) as $pattern => $bot)
 	{
 		if(preg_match("!".$pattern."!i", $user_agent))

@@ -12,6 +12,9 @@ function ec($txt)
 	if($charset == 'utf-8')
 		return $txt;
 
+	if($charset == 'koi8-r')
+		$txt = str_replace(array('«','»'), array('&laquo;','&raquo;'), $txt);
+
 	return iconv('utf-8', $charset.'//TRANSLIT', $txt);
 }
 
@@ -27,7 +30,7 @@ function dc($txt, $charset_from = NULL, $charset_to = NULL)
 		return $txt;
 
 	if($charset_to == 'koi8-r')
-		echo $txt = str_replace(array('«','»'), array('&laquo;','&raquo;'), $txt);
+		$txt = str_replace(array('«','»'), array('&laquo;','&raquo;'), $txt);
 
 	return iconv($charset_from, $charset_to, $txt);
 }

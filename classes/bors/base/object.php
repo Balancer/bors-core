@@ -203,11 +203,8 @@ class base_object extends base_empty
 		return NULL;
 	}
 
-	function preParseProcess() { return false; }
-	function preShowProcess() { return false; }
-
-	function pre_parse($get = array()) { return $this->preParseProcess($get); }
-	function pre_show($get = array()) { return $this->preShowProcess($get); }
+	function pre_parse() { return false; }
+	function pre_show() { return false; }
 
 	private $__mutex;
 	private function __mutex_lock()

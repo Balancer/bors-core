@@ -3,7 +3,6 @@
 class base_empty extends base_null
 {
 	private $_id;
-	private $_initial_id = NULL;
 
 	var $attr = array();
 

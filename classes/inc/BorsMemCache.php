@@ -8,14 +8,11 @@ class BorsMemCache
 	function get($key, $default = NULL)
 	{
 		$this->last_key = $key;
-	
+
 		if(!($memcache = config('memcached_instance')))
 			return $this->last_value = $default;
 
-//		$memcache = &new Memcache();
-//		$memcache->connect(config('memcached')) or debug_exit('Could not connect memcache');
-				
-		if($x = @$memcache->get($key))
+		if($x = $memcache->get($key))
 			return $this->last_value = $x;
 
 		return $this->last_value = $default;
@@ -28,15 +25,11 @@ class BorsMemCache
 		if(!($memcache = config('memcached_instance')))
 			return $this->last_value = $value;
 
-//		$memcache = &new Memcache();
-//		$memcache->connect(config('memcached')) or debug_exit('Could not connect memcache');
-				
-		if($value = NULL || $timeout == 0)
+		if($value == NULL || $timeout == 0)
 			@$memcache->delete($this->last_key);
 		else
-			@$memcache->set($this->last_key, $value, true, $timeout);
-
+			$memcache->set($this->last_key, $value, 0, $timeout);
 	}
-	
+
 	function last() { return $this->last_value; }
 }

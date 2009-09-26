@@ -33,6 +33,13 @@ function class_include($class_name)
 			$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
 			return $file_name;
 		}
+
+		if(file_exists($file_name = "{$dir}/classes/inc/$class_name.php"))
+		{
+			require_once($file_name);
+			$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
+			return $file_name;
+		}
 	}
 
 	if(class_exists($class_name))

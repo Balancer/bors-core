@@ -19,7 +19,7 @@ class base_object extends base_empty
 
 	function parents($exact = false)
 	{
-		if($ps = @$this->data['parents'])
+		if(($ps = @$this->data['parents']))
 			return $ps;
 
 		if($exact)
@@ -35,10 +35,10 @@ class base_object extends base_empty
 
 	function rss_body()
 	{
-		if($body = $this->description())
+		if(($body = $this->description()))
 			return $this->lcml($body);
 
-		if($body = $this->source())
+		if(($body = $this->source()))
 			return $this->lcml($body);
 
 		return $this->body();
@@ -92,7 +92,7 @@ class base_object extends base_empty
 		foreach($this->attr_preset() as $attr => $val)
 			$this->attr[$attr] = $val;
 
-		if($config = $this->config_class())
+		if(($config = $this->config_class()))
 		{
 			$this->config = object_load($config, $this);
 			//TODO: workaround странной ошибки на страницах вида http://balancer.ru/user/29251/aliases.html
@@ -108,7 +108,7 @@ class base_object extends base_empty
 		if(!$data_load)
 			return false;
 
-		if($storage_engine = $this->storage_engine())
+		if(($storage_engine = $this->storage_engine()))
 		{
 			$storage_engine = object_load($storage_engine, NULL, array('no_load_cache' => true));
 			if(!$storage_engine)
@@ -124,7 +124,7 @@ class base_object extends base_empty
 				debug_exit("Can't load config ".$this->config_class());
 		}
 
-		if($data_provider = $this->data_provider())
+		if(($data_provider = $this->data_provider()))
 			object_load($data_provider, $this)->fill();
 
 		return false;
@@ -193,7 +193,7 @@ class base_object extends base_empty
 
 		// Проверяем автоматические объекты.
 		$auto_objs = $this->auto_objects();
-		if($f = @$auto_objs[$method])
+		if(($f = @$auto_objs[$method]))
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
 				return $this->attr[$method] = object_load($m[1], $this->$m[2]());
 
@@ -543,7 +543,7 @@ class base_object extends base_empty
 
 	private function __update_relations()
 	{
-		if($rels = $this->_relations())
+		if(($rels = $this->_relations()))
 		{
 			foreach($rels as $field => $class)
 			{
@@ -590,8 +590,8 @@ class base_object extends base_empty
 		if(!preg_match('/'.preg_quote($this->admin_url(),'/').'/', bors()->main_object()->url()))
 			return bors()->main_object()->url();
 	
-		if($o = object_load($this->admin_url(true)))
-			if($p = $o->parents())
+		if(($o = object_load($this->admin_url(true))))
+			if(($p = $o->parents()))
 				return $p[0];
 
 		return @$_SERVER['HTTP_REFERER'];
@@ -599,7 +599,7 @@ class base_object extends base_empty
 
 	function delete_url()
 	{
-		if($x = $this->has_smart_field('is_deleted')) //array($r_db, $r_table, $r_id_field, $r_db_field
+		if(($x = $this->has_smart_field('is_deleted'))) //array($r_db, $r_table, $r_id_field, $r_db_field
 			return '/admin/mark/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); 
 		else
 			return '/admin/delete/?object='.$this->internal_uri().'&ref='.$this->admin_parent_url(); 
@@ -820,7 +820,7 @@ class base_object extends base_empty
 
 	function direct_content()
 	{
-		if($render_engine = $this->render_engine())
+		if(($render_engine = $this->render_engine()))
 		{
 			if($render_engine == 'self')
 				$re = $this;

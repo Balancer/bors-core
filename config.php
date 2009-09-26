@@ -1,7 +1,7 @@
 <?php
 
 if(!defined('BORS_CORE'))
-	exit('You must define BORS_CORE path!');
+	define('BORS_CORE', dirname(__FILE__));
 
 if(!defined('BORS_LOCAL'))
 	define('BORS_LOCAL', dirname(BORS_CORE).'/bors-local');
@@ -54,8 +54,8 @@ function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }
 
 foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
-if(file_exists($file = "{$base_dir}/config-pre.php"))
-	include_once($file);
+	if(file_exists($file = "{$base_dir}/config-pre.php"))
+		include_once($file);
 
 require_once('config/default.php');
 
@@ -92,11 +92,6 @@ require_once('inc/locales.php');
 require_once('inc/system.php');
 require_once('inc/datetime.php');
 require_once('inc/clients.php');
-require_once('obsolete/DataBase.php');
-require_once('obsolete/DataBaseHTS.php');
-
-if(file_exists(BORS_CORE.'/config/local.php'))
-	include_once(BORS_CORE.'/config/local.php');
 
 if(file_exists(BORS_LOCAL.'/config.php'))
 	include_once(BORS_LOCAL.'/config.php');
@@ -119,16 +114,18 @@ $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
 
 function bors_init()
 {
-	ini_set('default_charset', config('internal_charset'));
-	setlocale(LC_ALL, config('locale'));
+	if(config('internal_charset'))
+		ini_set('default_charset', config('internal_charset'));
+	if(config('locale'))
+		setlocale(LC_ALL, config('locale'));
 
 	require_once('engines/bors/generated.php');
 
 	if(config('memcached'))
 	{
-		$memcache = &new Memcache;
+		$memcache = new Memcache;
 		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
-		config_set_ref('memcached_instance', $memcache);
+		config_set('memcached_instance', $memcache);
 	}
 
 	require_once('engines/bors.php');
@@ -158,7 +155,7 @@ function bors_dirs($skip_config = false, $host = NULL)
 	if(!$skip_config && defined('BORS_APPEND'))
 		$data = array_merge($data, explode(' ', BORS_APPEND));
 
-	$data = array_merge($data, array(
+	foreach(array(
 		BORS_SITE,
 		BORS_HOST,
 		BORS_LOCAL.$vhost,
@@ -166,7 +163,9 @@ function bors_dirs($skip_config = false, $host = NULL)
 		BORS_EXT,
 		BORS_CORE,
 		BORS_3RD_PARTY,
-	));
+	) as $dir)
+		if(is_dir($dir))
+			$data[] = $dir;
 
 	return $dirs[$skip_config] = array_unique(array_filter($data));
 }

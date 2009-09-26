@@ -19,6 +19,15 @@ class bors_lcml
 	function p($key, $def = NULL) { return empty($this->_params[$key]) ? $def : $this->_params[$key]; }
 	function set_p($key, $value) { $this->_params[$key] = $value; return $this; }
 
+	private static function memcache()
+	{
+		static $mch = NULL;
+		if($mch)
+			return $mch;
+
+		return $mch = new BorsMemCache();
+	}
+
 	static function init()
 	{
 		if(!empty(bors_lcml::$data))
@@ -51,16 +60,21 @@ class bors_lcml
         if(!is_dir($dir))
 			return;
 
-        $files = array();
+		$files = self::memcache()->get('lcml_actions:'.$dir);
+		if(!$files)
+		{
+	        $files = array();
 
-        if($dh = opendir($dir)) 
-            while(($file = readdir($dh)) !== false)
-                if(is_file($dir.'/'.$file))
-                    $files[] = $file;
+    	    if($dh = opendir($dir)) 
+        	    while(($file = readdir($dh)) !== false)
+            	    if(is_file($dir.'/'.$file))
+                	    $files[] = $file;
 
-        closedir($dh);
+	        closedir($dh);
 
-        sort($files);
+			sort($files);
+			self::memcache()->set($files);
+		}
 
         foreach($files as $file) 
         {
@@ -94,7 +108,11 @@ class bors_lcml
 
 	function parse($text, $params = array())
 	{
-		if($this->_params['level'] == 1 && !config('lcml_cache_disable') && strlen($text) > 100)
+		$text = str_replace("\r", '', $text);
+		if(!trim($text))
+			return '';
+
+		if($this->_params['level'] == 1 && !config('lcml_cache_disable'))
 		{
 			$cache = new Cache();
 			if($cache->get('lcml-cache', $text))
@@ -103,7 +121,6 @@ class bors_lcml
 		else
 			$cache = NULL;
 
-		$text = str_replace("\r", '', $text);
 
 		$GLOBALS['lcml']['params'] = $this->_params;
 		$GLOBALS['lcml']['params']['html_disable'] = $this->p('html_disable');

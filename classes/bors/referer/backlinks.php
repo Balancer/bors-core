@@ -3,7 +3,7 @@
 class bors_referer_backlinks extends base_page
 {
 	function title() { return ec('Внешние ссылки на ').$this->object()->class_name_vp().' '.$this->objecet()->title(); }
-	function object() { return load_attr('object', object_load($this->id()); }
+	function object() { return $this->__havec('object') ? $this->__lastc() : $this->__setc(object_load($this->id())); }
 	function local_data()
 	{
 		return array(

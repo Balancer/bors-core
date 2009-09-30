@@ -20,5 +20,5 @@ class bors_referer_search extends base_object_db
 	}
 	function replace_on_new_instance() { return true; }
 
-	function object() { return $this->load_attr('object', object_load($this->target_class_name(), $this->target_object_id())); }
+	function object() { return $this->__havec('object') ? $this->__lastc() : $this->__setc(object_load($this->target_class_name(), $this->target_object_id())); }
 }

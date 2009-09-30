@@ -4,20 +4,20 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 {
 	debug_timing_start('template_smarty_assign');
 
-		unset($GLOBALS['module_data']);
+	unset($GLOBALS['module_data']);
 
-		require_once(config('smarty_path').'/Smarty.class.php');
-		$smarty = &new Smarty;
-		require('smarty-register.php');
+	require_once(config('smarty_path').'/Smarty.class.php');
+	$smarty = &new Smarty;
+	require('smarty-register.php');
 
-		$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
-//		$smarty->use_sub_dirs = true;
-		$smarty->compile_id = defval($data, 'compile_id');
-		if(strlen($smarty->compile_id) > 128)
-		{
-			debug_hidden_log('need-attention', 'too long compile id: '.$smarty->compile_id);
-			$smarty->compile_id = substr($smarty->compile_id, 0, 128);
-		}
+	$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
+//	$smarty->use_sub_dirs = true;
+	$smarty->compile_id = defval($data, 'compile_id');
+	if(strlen($smarty->compile_id) > 128)
+	{
+		debug_hidden_log('need-attention', 'too long compile id: '.$smarty->compile_id);
+		$smarty->compile_id = substr($smarty->compile_id, 0, 128);
+	}
 
 		$smarty->plugins_dir = array();
 		foreach(bors_dirs() as $dir)
@@ -156,7 +156,6 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 
 function __template_assign_data_get_template($assign_template, $smarty, $data)
 {
-
 	$wo_xfile_prefix = str_replace('xfile:', '', $assign_template);
 
 	$caller_path = NULL;

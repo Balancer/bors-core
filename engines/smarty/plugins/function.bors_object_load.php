@@ -19,8 +19,8 @@ function smarty_function_bors_object_load($params, &$smarty)
        	return;
     }
 
-	if(isset($params['page']) && count($params) == 1)
-		$params = $params['page'];
+//	if(isset($params['page']) && count($params) == 1)
+//		$params = $params['page'];
 //	elseif(empty($params)) //TODO: wtf??
 //		$params = 1;
 

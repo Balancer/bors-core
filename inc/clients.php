@@ -30,6 +30,7 @@ function bors_bot_detect($user_agent)
 			'LexxeBot' => 'LexxeBot',	// LexxeBot/1.0 (lexxebot@lexxe.com)
 			'Snapbot' => 'Snapbot',		// Snapbot/1.0 (Snap Shots, +http://www.snap.com)
 			'Mail.Ru' => 'Mail.Ru',		// Mail.Ru/1.0
+			'NaverBot' => 'NaverBot',	//Mozilla/4.0 (compatible; NaverBot/1.0; http://help.naver.com/customer_webtxt_02.jsp)
 		) as $pattern => $bot)
 	{
 		if(preg_match("!".$pattern."!i", $user_agent))

@@ -189,7 +189,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 			$img = $this;
 		else
 			$img = object_new('bors_image');
-	
+
 		$data = url_parse($file);
 
 		if($exists_check && $img2 = objects_first('bors_image', array('full_file_name' => $data['local_path'])))

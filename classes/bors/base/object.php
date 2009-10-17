@@ -197,7 +197,7 @@ class base_object extends base_empty
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
 				return $this->attr[$method] = object_load($m[1], $this->$m[2]());
 
-		if($this->id() && $this->strict_auto_fields_check())
+		if($this->strict_auto_fields_check())
 			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>at {$this->class_file()}");
 
 		return NULL;

@@ -45,12 +45,18 @@ class base_empty extends base_null
 
 	function attr($attr, $def = NULL) { return array_key_exists($attr, $this->attr) ? $this->attr[$attr] : $def; }
 	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
+
+	private $__last_cache_key;
+	function __havec($attr) { return array_key_exists($this->__last_cache_key = $attr, $this->attr); }
+	function __lastc() { return $this->attr[$this->__last_cache_key]; }
+	function __setc($value) { return $this->attr[$this->__last_cache_key] = $value; }
+
 	function load_attr($attr, $init)
 	{
 		if(array_key_exists($attr, $this->attr))
 			return $this->attr[$attr];
 
+		debug_hidden_log('__need-to-rewrite-ugly-code', 'load-attr: '.$attr);
 		return $this->attr[$attr] = $init;
 	}
-
 }

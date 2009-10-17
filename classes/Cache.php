@@ -2,8 +2,6 @@
 
 require_once('engines/bors.php');
 
-if(config('cache_engine'))
-{
-	eval('class Cache extends '.config('cache_engine').'{}');
-	eval('class bors_cache extends '.config('cache_engine').'{}');
-}
+$ce = config('cache_engine', 'bors_cache_base');
+eval('class Cache extends '.$ce.'{}');
+eval('class bors_cache extends '.$ce.'{}');

@@ -264,7 +264,7 @@ function debug_timing_stop($category)
 
 	if(empty($current['start']))
 	{
-		debug_hidden_log('__debug_error', ec("Вызов неактивированной функции debug_timing_stop('$category')."));
+//		debug_hidden_log('__debug_error', ec("Вызов неактивированной функции debug_timing_stop('$category')."));
 		return;
 	}
 

@@ -85,14 +85,14 @@ class DataBase extends base_object
 		$this->need_encode = ($this->ics != $this->dcs);
 
 		$this->db_name = $base;
-			
+
 		if(!$base)
 			debug_exit('Error: try to DataBase construct without database name');
 
 		$this->x1 = $server;
 		$this->x2 = $login;
 		$this->x3 = $password;
-			
+
 		if(!$login)
 			$server   = config_mysql('server', $base);
 

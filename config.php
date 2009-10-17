@@ -92,6 +92,7 @@ require_once('inc/locales.php');
 require_once('inc/system.php');
 require_once('inc/datetime.php');
 require_once('inc/clients.php');
+require_once('engines/bors.php');
 
 if(file_exists(BORS_LOCAL.'/config.php'))
 	include_once(BORS_LOCAL.'/config.php');

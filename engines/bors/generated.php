@@ -17,6 +17,5 @@ else
 	eval('function bors_strlen($str) { return strlen($str); }');
 	eval('function bors_substr($str, $start, $length=NULL) { return is_null($length) ? substr($str, $start) : substr($str, $start, $length); }');
 	eval('function bors_strpos($str, $need, $start=NULL) { return is_null($start) ? strpos($str, $need) : strpos($str, $need, $start); }');
-	eval('function bors_strpos($str, $need, $start=NULL) { return is_null($start) ? strpos($str, $need) : strpos($str, $need, $start); }');
 	eval('function bors_ucfirst($str) { return ucfirst($string); }');
 }

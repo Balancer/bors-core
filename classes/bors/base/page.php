@@ -4,7 +4,7 @@ require_once('engines/lcml/main.php');
 
 class base_page extends base_object
 {
-	function render_engine() { return 'render_page'; }
+	function render_engine() { return config('render_engine', 'render_page'); }
 	function storage_engine() { return NULL; }
 	function can_be_empty() { return true; }
 

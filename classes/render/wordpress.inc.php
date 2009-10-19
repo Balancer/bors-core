@@ -16,9 +16,9 @@ function get_bloginfo($key)
 		case 'description':
 			return $wp_object->description();
 		case 'name':
-			return ($o=$wp_object->owner()) ? $o->title() : config('default_owner_name');
+			return ($o=$wp_object->get('owner')) ? $o->title() : config('default_owner_name');
 		case 'rss2_url':
-			return $wp_object->rss_url();
+			return $wp_object->get('rss_url');
 		case 'stylesheet_url':
 			return '/css/wordpress/'.$wp_object->template().'/style.css';
 		case 'url':

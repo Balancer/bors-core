@@ -3,7 +3,7 @@
 class page_fs_xml extends base_page
 {
 	function storage_engine() { return 'storage_fs_xml'; }
-	function render_engine(){ return 'render_page'; }
+	function render_engine() { return config('render_engine', 'render_page'); }
 	function body_engine()	{ return 'body_source'; }
 	function admin_engine()	{ return 'bors_admin_engine_page'; }
 

@@ -416,7 +416,7 @@ class storage_db_mysql_smart extends base_null
 		foreach($object->fields() as $db => $tables)
 		{
 //			echo "Database: $db; tables="; print_r($tables); echo "<br />\n";
-			$dbh = &new DataBase($db);
+			$dbh = new driver_mysql($db);
 
 			$data = array();
 

@@ -23,6 +23,8 @@ class bors_image_thumb extends bors_image
 			'size',
 			'extension',
 			'mime_type',
+			'create_time',
+			'modify_time',
 		);
 	}
 

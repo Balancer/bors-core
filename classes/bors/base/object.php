@@ -615,12 +615,13 @@ class base_object extends base_empty
 		return $this->attr['_url_engine_object']->url($page);
 	}
 
-	function internal_uri_ascii($limit = false)
+	function internal_uri_ascii($limit = false, $ignore_oversize = false)
 	{
 		$uri = $this->class_name().'__'.base64_encode($this->id());
 		if($limit && strlen($uri) > $limit)
 		{
-			debug_hidden_log('need-attention', 'too long ascii uri for '.$this->internal_uri());
+			if(!$ignore_oversize)
+				debug_hidden_log('need-attention', 'too long ascii uri for '.$this->internal_uri());
 			$uri = substr($uri, 0, $limit);
 		}
 

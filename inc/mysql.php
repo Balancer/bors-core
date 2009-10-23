@@ -143,13 +143,14 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 	if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
 		return $m[1].'('.($table ? $table.'.' : '') . $m[2] .')';
 	else
-		return ($table ? $table.'.' : '') . $f;
+		return (@$table ? $table.'.' : '') . $f;
 }
 
 function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 {
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
-	$join = preg_replace('!(\w+)\.(\w+)!e', 'bors_class_field_to_db("$1", "$2")', $join);
+	$join = preg_replace('!(\w+)\.(\w+)(\s*=|>|<)!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
+	$join = preg_replace('!(=\s*|>|<)(\w+)\.(\w+)!e', '"$1".bors_class_field_to_db("$2", "$3")', $join);
 	$join = preg_replace('!^(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
 
 	if($class_name)

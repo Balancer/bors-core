@@ -274,8 +274,8 @@
 				$this->id = global_key('user-id-cookie-hash', $user_hash_password);
 				return;
 			}
-			
-			$db = &new DataBase('punbb');
+
+			$db = &new driver_mysql('punbb');
 
 			$this->id = 1;
 			if($user_hash_password)

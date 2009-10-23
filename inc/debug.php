@@ -148,7 +148,7 @@ function debug_trace($skip = 0, $html = NULL, $level = -1)
 
 	$traceArr = debug_backtrace();
 
-	for($i = 0; $i <= $skip; $i++)
+	for($i = 1; $i <= $skip; $i++)
 		array_shift($traceArr);
 
 	if(is_numeric($level) && $level > 0)

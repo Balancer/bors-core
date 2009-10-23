@@ -15,6 +15,24 @@ if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 
 require_once('config.php');
 
+if(config('access_log') && config('overload_time'))
+{
+	$dbh = new driver_mysql('BORS');
+	$total = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
+		'user_ip' => $_SERVER['REMOTE_ADDR'],
+		'access_time>' => time() - 600,
+	));
+
+	if($total > 150)
+	{
+		debug_hidden_log('system_overload', $total);
+
+		header('Status: 503 Service Temporarily Unavailable');
+		header('Retry-After: 600');
+		exit("Service Temporarily Unavailable");
+	}
+}
+
 if(config('bors_version_show'))
 	header('X-Bors: v' .config('bors_version_show'));
 

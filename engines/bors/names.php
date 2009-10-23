@@ -10,7 +10,7 @@ function bors_class_names_load($reload = false)
 	$loaded = array();
 	$loaded[0] = array();
 	$loaded[1] = array();
-	$db = &new DataBase(config('main_bors_db'));
+	$db = &new driver_mysql(config('main_bors_db'));
 	foreach($db->get_array('SELECT * FROM bors_class_names') as $x)
 	{
 		$loaded[0][$x['id']] = $x['name'];

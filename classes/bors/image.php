@@ -20,6 +20,7 @@ class bors_image extends base_object_db
 			'create_time',
 			'modify_time',
 			'full_file_name',
+			'full_url',
 			'relative_path',
 			'file_name',
 			'original_filename',

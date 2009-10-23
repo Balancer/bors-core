@@ -14,9 +14,10 @@
 
 	if($_SERVER['REQUEST_URI'] == '/cms/main.php' || $_SERVER['REQUEST_URI'] == '/bors.php' || $_SERVER['REQUEST_URI'] == '/bors-loader.php')
 	{
+		@header("HTTP/1.0 404 Not Found");
 		@file_put_contents($file = config('debug_hidden_log_dir')."/main-php-referers.log", @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 		@chmod($file, 0666);
-		exit("Do not user direct bors-call!");
+		exit("Do not use direct bors-call!");
 	}
 
 	$GLOBALS['stat']['start_microtime'] = microtime(true);
@@ -168,7 +169,7 @@
 			$data['has_bors_url'] = 1;
 			$data['access_url'] = $object->url();
 		}
-		
+
 		$x = object_new_instance('bors_access_log', $data);
 		$x->store();
 	}

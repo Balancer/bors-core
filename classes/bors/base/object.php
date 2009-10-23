@@ -147,7 +147,7 @@ class base_object extends base_empty
 	function class_title_pp() { return ec('объекте ').get_class($this); }	// Предложный О ком? О чём?
 
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
-	
+
 	static function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
 
 	private $template_data = array();
@@ -285,7 +285,7 @@ class base_object extends base_empty
 	function nav_name() { return @$this->data['nav_name'] ? $this->data['nav_name'] : $this->title(); }
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 
-	function template() { return @$this->data['template'] ? $this->data['template'] : config('default_template'); }
+	function template() { return defval($this->data, 'template', defval($this->attr, 'template', config('default_template'))); }
 	function set_template($template, $db_update) { $this->set('template', $template, $db_update); }
 
 	function parents_string() { return join("\n", $this->parents());  }
@@ -560,7 +560,7 @@ class base_object extends base_empty
 				$rel_obj->set_modify_time($this->modify_time(), true);
 //				$rel_obj->set_last_editor_id(@$this->data['last_editor_id'], true);
 			}
-		}		
+		}
 	}
 
 	function replace_on_new_instance() { return false; }
@@ -589,7 +589,7 @@ class base_object extends base_empty
 	{
 		if(!preg_match('/'.preg_quote($this->admin_url(),'/').'/', bors()->main_object()->url()))
 			return bors()->main_object()->url();
-	
+
 		if($o = object_load($this->admin_url(true)))
 			if($p = $o->parents())
 				return $p[0];
@@ -655,7 +655,7 @@ class base_object extends base_empty
 	{
 		if(!$this->_dbh)
 			return;
-			
+
 		$this->_dbh->close(); 
 		$this->_dbh = NULL;
 
@@ -740,10 +740,10 @@ class base_object extends base_empty
 	{
 		if(!$this->visits_counting())
 			return;
-	
+
 		if($time === NULL)
 			$time = time();
-			
+
 		if(!$this->first_visit_time())
 			$this->set_first_visit_time($time, true);
 
@@ -762,7 +762,7 @@ class base_object extends base_empty
 
 //		return $data['local_path'];
 		return preg_match('!^(.+)/$!', $data['local_path'], $m) ? $m[1] : dirname($data['local_path']);
-	
+
 		//TODO: затычка!
 //		return $_SERVER['DOCUMENT_ROOT'].preg_replace('!^http://[^/]+!', '', $this->called_url());
 	}

@@ -7,7 +7,7 @@ class base_config extends base_empty
 //		echo "Config $object<br />\n";
 
 		parent::__construct($object);
-	
+
 //		print_d($this->config_data());
 		foreach($this->config_data() as $key => $value)
 			$object->set($key, $value, false);

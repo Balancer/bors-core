@@ -90,7 +90,7 @@ class bors_image_thumb extends bors_image
 		{
 			$file_orig_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_orig);
 			//TODO: ужасно, но пока только так.
-			$fsize_orig = strlen(file_get_contents($file_orig_r));
+			$fsize_orig = strlen(@file_get_contents($file_orig_r));
 		}
 		else
 		{

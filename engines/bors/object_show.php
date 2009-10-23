@@ -70,6 +70,8 @@
 
 			if(empty($GLOBALS['main_uri']))
 				$GLOBALS['main_uri'] = $obj->url();
+			else
+				debug_hidden_log('___222', "main uri already set to '{$GLOBALS['main_uri']}' while try set to '{$obj->url()}'");
 
 			$content = $obj->content();
 		}
@@ -94,14 +96,15 @@
 
 function bors_object_create($obj)
 {
-	$page = $obj->set_page($obj->args('page'));
 	if(!$obj)
 		return NULL;
+
+	$page = $obj->set_page($obj->args('page'));
 
 	$processed = $obj->pre_parse($_GET);
 	if($processed === true)
 		return NULL;
-			
+
 	$processed = $obj->pre_show();
 	if($processed === true)
 		return NULL;
@@ -111,13 +114,11 @@ function bors_object_create($obj)
 
 	if($processed === false)
 	{
-		bors()->set_main_object($obj);
+		bors()->set_main_object($obj, true);
+		$GLOBALS['main_uri'] = $obj->url($obj->page());
 
-		if(empty($GLOBALS['main_uri']))
-			$GLOBALS['main_uri'] = $obj->url();
-			
 		return $obj->content(true, true);
 	}
-	
+
 	return NULL;
 }

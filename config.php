@@ -7,10 +7,10 @@ if(!defined('BORS_LOCAL'))
 	define('BORS_LOCAL', dirname(BORS_CORE).'/bors-local');
 
 if(!defined('BORS_HOST'))
-	define('BORS_HOST', realpath($_SERVER['DOCUMENT_ROOT'].'/../bors-host'));
+	define('BORS_HOST', realpath(@$_SERVER['DOCUMENT_ROOT'].'/../bors-host'));
 
 if(!defined('BORS_SITE'))
-	define('BORS_SITE', realpath($_SERVER['DOCUMENT_ROOT'].'/../bors-site'));
+	define('BORS_SITE', realpath(@$_SERVER['DOCUMENT_ROOT'].'/../bors-site'));
 
 if(!defined('BORS_EXT'))
 	define('BORS_EXT', dirname(BORS_CORE).'/bors-ext');
@@ -117,6 +117,9 @@ function bors_init()
 {
 	if(config('internal_charset'))
 		ini_set('default_charset', config('internal_charset'));
+	else
+		config_set('internal_charset', ini_get('default_charset'));
+
 	if(config('locale'))
 		setlocale(LC_ALL, config('locale'));
 

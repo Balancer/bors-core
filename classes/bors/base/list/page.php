@@ -1,11 +1,11 @@
 <?php
 
-class base_list extends base_empty
+class base_list_page extends base_page
 {
 	function id_to_name($id)
 	{
 		$list = $this->named_list();
-		return $list[$id];
+		return @$list[$id];
 	}
 
 	function id_to_name_s($id)

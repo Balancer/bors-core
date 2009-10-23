@@ -101,7 +101,7 @@ function bors_object_create($obj)
 	$processed = $obj->pre_parse($_GET);
 	if($processed === true)
 		return NULL;
-			
+
 	$processed = $obj->pre_show();
 	if($processed === true)
 		return NULL;
@@ -115,9 +115,9 @@ function bors_object_create($obj)
 
 		if(empty($GLOBALS['main_uri']))
 			$GLOBALS['main_uri'] = $obj->url();
-			
+
 		return $obj->content(true, true);
 	}
-	
+
 	return NULL;
 }

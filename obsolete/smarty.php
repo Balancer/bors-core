@@ -225,7 +225,7 @@ function show_page($uri, $data = true)
 			if(!empty($GLOBALS['cms']['templates']['data']))
 	            foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
         	        $smarty->assign($key, $value);
-				
+
             $smarty->assign("views_average", sprintf("%.1f",86400*$views/($views_last-$views_first+1)));
             $smarty->assign("page_template", $template);
             $smarty->assign("page", $page);
@@ -237,7 +237,7 @@ function show_page($uri, $data = true)
 
 			if(!empty($GLOBALS['stat']['start_microtime']))
     	        $smarty->assign("make_time", sprintf("%.3f", microtime(true) - $GLOBALS['stat']['start_microtime']));
-			
+
 			$hts->set_data($page, 'cache_create_time', time());
 
 		    @header("X-Recompile3: Yes");

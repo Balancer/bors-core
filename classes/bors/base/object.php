@@ -978,4 +978,6 @@ class base_object extends base_empty
 	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
 
 	function _relations() { return array(); }
+
+	function print_properties() { print_d($this->data); }
 }

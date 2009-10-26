@@ -123,9 +123,8 @@ if($_SERVER['QUERY_STRING'])
 $res = false;
 if($object = object_load($uri))
 	$res = bors_object_show($object);
+
 /**********************************************************************************************************/
-
-
 
 if(config('access_log'))
 {
@@ -163,6 +162,7 @@ if($time > config('timing_limit'))
 	@chmod($file, 0666);
 }
 
+//if(debug_is_balancer()) { echo 'test: '.time()."<br/><xmp>res</xmp>"; bors_exit(); }
 if(config('debug_timing') && is_string($res))
 {
 	$deb = "<!--\n=== debug-info ===\n"

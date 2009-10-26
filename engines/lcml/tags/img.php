@@ -9,7 +9,7 @@ function lt_img($params)
 
 	$url = bors()->main_object() ? bors()->main_object()->url() : NULL;
 	require_once('inc/airbase/images.php');
-	$data = airbase_image_data($file, $url);
+	$data = airbase_image_data($params['url'], $url);
 
 	if(!$data['local'])
 		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.

@@ -5,6 +5,15 @@ class bors_admin_engine extends base_empty
 	function object() { return $this->id(); }
 	function real_object() { return method_exists($this->object(), 'object') ? $this->object()->object() : $this->object(); }
 
+	function url($page = NULL)
+	{
+		$url = $this->edit_url();
+		if($page && $page != 1)
+			$url .= "$page/";
+
+		return $url;
+	}
+
 	function edit_url()
 	{
 		if(method_exists($obj = $this->real_object(), 'edit_url'))
@@ -220,7 +229,12 @@ class bors_admin_engine extends base_empty
 
 		if($title)
 			$title = "&nbsp;$title";
-		
+
 		return "<a href=\"".$this->object()->setdefaultfor_url($item)."\"><img src=\"/_bors/i/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$popup\"/>{$title}</a>";
+	}
+
+	function edit_links()
+	{
+		return "/admin/edit/crosslinks/?object={$this->real_object()->internal_uri()}&edit_class={$this->real_object()->admin()->url()}";
 	}
 }

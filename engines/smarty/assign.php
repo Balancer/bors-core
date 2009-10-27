@@ -116,7 +116,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		{
 			$obj = $data['this'];
 
-			foreach(split(' ', $obj->template_local_vars()) as $var)
+			foreach(explode(' ', $obj->template_local_vars()) as $var)
 				$smarty->assign($var, $obj->$var());
 
 			$smarty->assign("this", $obj);

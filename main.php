@@ -185,7 +185,7 @@ if(config('debug_timing') && is_string($res))
 	$deb .= "Total time: $time sec.\n";
 	$deb .= "-->\n";
 
-	$res = str_replace('</body>', $deb.'</body>', $res);
+	$res = str_ireplace('</body>', $deb.'</body>', $res);
 }
 
 if($res === true || $res == 1)

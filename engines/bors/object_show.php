@@ -114,6 +114,7 @@ function bors_object_create($obj)
 	if($processed === false)
 	{
 		bors()->set_main_object($obj, true);
+		unset($GLOBALS['cms']['templates']);
 		$GLOBALS['main_uri'] = $obj->url($obj->page());
 
 		return $obj->content(true, true);

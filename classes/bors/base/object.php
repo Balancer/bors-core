@@ -617,7 +617,10 @@ class base_object extends base_empty
 
 	function internal_uri_ascii($limit = false, $ignore_oversize = false)
 	{
-		$uri = $this->class_name().'__'.base64_encode($this->id());
+		if(is_object($id = $this->id()))
+			$id = $this->id()->internal_uri_ascii();
+
+		$uri = $this->class_name().'__'.base64_encode($id);
 		if($limit && strlen($uri) > $limit)
 		{
 			if(!$ignore_oversize)

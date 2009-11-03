@@ -17,13 +17,13 @@ require_once('config.php');
 
 if(config('access_log') && config('overload_time'))
 {
-	$dbh = new driver_mysql('BORS');
+	$dbh = new driver_mysql(config('main_bors_db'));
 	$total = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
 		'user_ip' => $_SERVER['REMOTE_ADDR'],
 		'access_time>' => time() - 600,
 	));
 
-	if($total > 150)
+	if($total > config('overload_time'))
 	{
 		debug_hidden_log('system_overload', $total);
 

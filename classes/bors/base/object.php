@@ -428,7 +428,7 @@ class base_object extends base_empty
 						.'-'.intval(@$array["{$var}_day"])
 						.' '.intval(@$array["{$var}_hour"])
 						.':'.intval(@$array["{$var}_minute"])
-						.':'.intval(@$array["{$var}_seconds"]).(@$array["{$var}_year"] >= 1970 ? ' +0200' : ' +0400'));
+						.':'.intval(@$array["{$var}_seconds"]).(@$array["{$var}_year"] >= 1970 ? ' +0300' : ' +0400')); //TODO: мегакостыль!
 /*					echo intval(@$array["{$var}_year"])
 						.'-'.intval(@$array["{$var}_month"])
 						.'-'.intval(@$array["{$var}_day"])

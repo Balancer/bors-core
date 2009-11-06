@@ -140,9 +140,9 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		$smarty->clear_cache($template_uri);
 
 	debug_timing_stop('template_smarty_assign');
-	debug_timing_start('template_smarty_assign_fetch');
+//	debug_timing_start('template_smarty_assign_fetch');
 	$result = $smarty->fetch($template_uri);
-	debug_timing_stop('template_smarty_assign_fetch');
+//	debug_timing_stop('template_smarty_assign_fetch');
 	return $result;
 }
 

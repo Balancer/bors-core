@@ -31,6 +31,7 @@ function bors_bot_detect($user_agent)
 			'Snapbot' => 'Snapbot',		// Snapbot/1.0 (Snap Shots, +http://www.snap.com)
 			'Mail.Ru' => 'Mail.Ru',		// Mail.Ru/1.0
 			'NaverBot' => 'NaverBot',	//Mozilla/4.0 (compatible; NaverBot/1.0; http://help.naver.com/customer_webtxt_02.jsp)
+			'MJ12bot' => 'Majestic12Bot',	// Mozilla/5.0 (compatible; MJ12bot/v1.2.5; http://www.majestic12.co.uk/bot.php?+)
 		) as $pattern => $bot)
 	{
 		if(preg_match("!".$pattern."!i", $user_agent))

@@ -87,7 +87,14 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		return secure_path(config('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$rel_path);
 	}
 
-	function url() { return secure_path(config('pics_base_url').'/'.$this->relative_path().'/'.$this->file_name()); }
+	function url()
+	{
+		$fn = $this->file_name();
+		if(preg_match('/\.$/', $fn))
+			$fn .= 'jpg';
+
+		return secure_path(config('pics_base_url').'/'.$this->relative_path().'/'.$fn);
+	}
 
 	function wxh()
 	{

@@ -3,7 +3,7 @@
 require_once('Mail.php'); 
 require_once('Mail/mime.php'); 
 
-function send_mail($to, $subject, $text, $html = NULL, $from = NULL)
+function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = array())
 {
 	$mime = &new Mail_mime("\r\n");
 
@@ -13,7 +13,7 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL)
 	{
 		if(!preg_match('!<body!', $html))
 			$html = "<html><body>{$html}</body></html>";
-			
+
 		$mime->setHTMLBody($html);
 	}
 
@@ -27,13 +27,13 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL)
 		'head_encoding' => 'base64',
 		'text_encoding' => '8bit',
 		'html_encoding' => '8bit',
-	)); 
+	));
 
-	$hdrs = $mime->headers(array( 
+	$hdrs = $mime->headers(array_merge($headers, array(
 		'From'		=> $from,
 		'Subject'	=> $subject,
 		'To'		=> $to,
-	)); 
+	)));
 
 	$mail = &Mail::factory(config('mail_transport', 'mail'), config('mail_transport_parameters', NULL));
 	$mail->send($to, $hdrs, $body);

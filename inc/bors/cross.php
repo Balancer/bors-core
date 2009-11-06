@@ -105,7 +105,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 
 	foreach($arr as $r)
 	{
-		$x = $objs[$r['class_id']][$r['object_id']];
+		$x = @$objs[$r['class_id']][$r['object_id']];
 /*		$x_iu = $x->internal_uri();
 
 		if($x_iu < $object_iu)

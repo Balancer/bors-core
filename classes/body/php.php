@@ -12,13 +12,12 @@ class body_php extends base_null
 
 		debug_timing_start('body_php_body-'.$object->class_name());
 
+		$object->template_data_fill();
+
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$$var = $object->$var();
-		
-		foreach($object->local_template_data_array() as $var => $value)
-			$$var = $value;
 
-		foreach($object->local_data() as $var => $value)
+		foreach($object->local_template_data_array() as $var => $value)
 			$$var = $value;
 
 		$self = $object;
@@ -30,7 +29,7 @@ class body_php extends base_null
 		error_reporting($err_rep_save);
 		$result = ob_get_contents();
 		ob_end_clean();
-		
+
 		debug_timing_stop('body_php_body-'.$object->class_name());
 		return $result;
 	}

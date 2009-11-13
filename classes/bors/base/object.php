@@ -151,7 +151,14 @@ class base_object extends base_empty
 	static function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
 
 	private $template_data = array();
-	function add_local_template_data($var_name, $value) { return $this->template_data[$var_name] = $value; }
+	function add_local_template_data($var_name, $value)
+	{
+		if(strpos($var_name, '['))
+			return $this->add_template_data_array($var_name, $value);
+		else
+			return $this->template_data[$var_name] = $value;
+	}
+
 	function local_data() { return $this->local_template_data_set(); }
 	function global_data() { return $this->global_template_data_set(); }
 	function local_template_data_set() { return array(); }
@@ -307,11 +314,11 @@ class base_object extends base_empty
 			}
 		}
 
-		foreach($this->local_data() as $key => $value)
-			$this->add_local_template_data($key, $value);
-
 		foreach($this->global_data() as $key => $value)
 			$this->add_global_template_data($key, $value);
+
+		foreach($this->local_data() as $key => $value)
+			$this->add_local_template_data($key, $value);
 
 		static $called = false; //TODO: в будущем снести вторые вызовы.
 		if($called)

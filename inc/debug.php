@@ -242,7 +242,7 @@ function debug_timing_start($category)
 {
 	global $bors_debug_timing;
 	if(empty($bors_debug_timing[$category]))
-	$bors_debug_timing[$category] = array('start' => NULL, 'calls'=>0, 'total'=>0);
+		$bors_debug_timing[$category] = array('start' => NULL, 'calls'=>0, 'total'=>0);
 
 	$current = &$bors_debug_timing[$category];
 

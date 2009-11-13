@@ -26,6 +26,9 @@ function defval($data, $name, $default=NULL)
 	return $default;
 }
 
+if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])
+	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_REAL_IP'];
+
 function nospace($str) { return str_replace(' ', '', $str); }
 
 function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }

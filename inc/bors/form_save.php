@@ -8,8 +8,6 @@
 
 function bors_form_save(&$obj)
 {
-//	if(debug_is_balancer()) { echo $obj; print_d($_GET); exit(); }
-
 	if(!empty($_GET['act']))
 	{
 		if(!$obj->access())

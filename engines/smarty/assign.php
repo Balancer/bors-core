@@ -160,6 +160,7 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 
 	$caller_path = NULL;
 	$trace = debug_backtrace();
+
 	for($i=1, $stop=count($trace); $i<$stop; $i++)
 	{
 		$php_file_dir = dirname($trace[$i]['file']).'/';

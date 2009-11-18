@@ -6,23 +6,6 @@ class base_page_paged extends base_page
 	function order() { return '-create_time'; }
 	function group() { return false; }
 
-	function body_template()
-	{
-		$current_class = get_class($this);
-		$class_files = $GLOBALS['bors_data']['class_included'];
-		$ext = $this->body_template_ext();
-
-		while($current_class)
-		{
-			$template_file = preg_replace("!\.php$!", "$1.$ext", $class_files[$current_class]);
-			if(file_exists($template_file))
-				break;
-			$current_class = get_parent_class($current_class);
-		}
-
-		return "xfile:{$template_file}";
-	}
-
 	private function _where($where = array())
 	{
 		$where = array_merge($this->where(), $where);

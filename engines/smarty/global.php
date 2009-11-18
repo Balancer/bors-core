@@ -24,7 +24,10 @@ function templates_jquery()
 	base_object::add_template_data_array('js_include', '/_bors/js/jquery.js');
 	base_object::add_template_data('jquery_has_added', true);
 }
+
 function templates_jquery_plugin($name) { base_object::add_template_data_array('js_include', '/_bors3rdp/jquery/plugins/'.$name); }
+
+function templates_jquery_plugin_css($css) { base_page::merge_template_data_array('css_list', array($css)); }
 
 function do_php($code)
 {

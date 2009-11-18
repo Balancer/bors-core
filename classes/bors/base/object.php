@@ -204,6 +204,12 @@ class base_object extends base_empty
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
 				return $this->attr[$method] = object_load($m[1], $this->$m[2]());
 
+		// Автоматические целевые объекты (имя класса задаётся)
+		$auto_targs = $this->auto_targets();
+		if(($f = @$auto_targs[$method]))
+			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+				return $this->attr[$method] = object_load($this->$m[1](), $this->$m[2]());
+
 		if($this->strict_auto_fields_check())
 			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>at {$this->class_file()}");
 
@@ -574,6 +580,7 @@ class base_object extends base_empty
 
 	function fields() { return array(); }
 	function auto_objects() { return array(); }
+	function auto_targets() { return array(); }
 
 	function storage() { return object_load($this->storage_engine()); }
 

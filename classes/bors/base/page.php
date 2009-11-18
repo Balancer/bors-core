@@ -182,19 +182,19 @@ class base_page extends base_object
 
 	function body_template()
 	{
-		if($cf = $this->class_file())
-		{
-			$ext = $this->body_template_ext();
-			$tf = preg_replace("!\.php$!", "$1.$ext", $cf);
-			if(!file_exists($tf))
-				$tf = preg_replace("!\.php$!", "$1.$ext", __FILE__);
+		$current_class = get_class($this);
+		$class_files = $GLOBALS['bors_data']['class_included'];
+		$ext = $this->body_template_ext();
 
-			return "xfile:{$tf}";
-		}
-		else
+		while($current_class)
 		{
-			return 'main.html';
+			$template_file = preg_replace("!\.php$!", "$1.$ext", $class_files[$current_class]);
+			if(file_exists($template_file))
+				break;
+			$current_class = get_parent_class($current_class);
 		}
+
+		return "xfile:{$template_file}";
 	}
 
 	function nav_name()
@@ -286,5 +286,10 @@ class base_page extends base_object
 			ec('Текст:') => 'source|textarea=20',
 			ec('Тип перевода строк:') => 'cr_type|dropdown=common_list_crTypes',
 		);
+	}
+
+	function merge_template_data_array($key, $merge_values)
+	{
+		$this->add_template_data($key, @array_merge($this->template_data($key), $merge_values));
 	}
 }

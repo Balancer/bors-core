@@ -10,4 +10,4 @@
 	}
 
 for($i=1; $i<=6; $i++)
-	eval("function lp_h{$i}(\$text, &\$params) { \$params['skip_around_cr'] = true; return \"<h{$i} class=\\\"html\\\">\".lcml(\$text).\"</h{$i}>\"; }");
+	eval("function lp_h{$i}(\$text, &\$params) { \$params['skip_around_cr'] = true; return \"\n<h{$i} class=\\\"html\\\">\".lcml(\$text).\"</h{$i}>\n\"; }");

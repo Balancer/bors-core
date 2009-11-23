@@ -9,6 +9,12 @@ function lp_pre($text, &$params)
 	return "\n<pre>$text</pre>\n";
 }
 
+function lp_xmp($text, &$params)
+{
+	$params['skip_around_cr'] = true;
+	return "\n<xmp>$text</xmp>\n";
+}
+
 function lp_cr_as_br($text) { return preg_replace("!\n!", " <br>\n", $text); }
 
 function lp_p($text, $params)

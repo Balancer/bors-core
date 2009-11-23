@@ -29,12 +29,21 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 		'html_encoding' => '8bit',
 	));
 
+	if(preg_match('/^(.*?) <(.*)>$/', $from, $m))
+	{
+		$from = $m[2];
+//		exit($from);
+	}
+
 	$hdrs = $mime->headers(array_merge($headers, array(
 		'From'		=> $from,
 		'Subject'	=> $subject,
 		'To'		=> $to,
 	)));
 
+//	print_d($hdrs); exit();
+
 	$mail = &Mail::factory(config('mail_transport', 'mail'), config('mail_transport_parameters', NULL));
 	$mail->send($to, $hdrs, $body);
+//	echo "to=$to, body=$body"; var_dump($hdrs); exit();
 }

@@ -13,9 +13,9 @@
                     $files[] = $file;
         }
         closedir($dh);
-        
+
 //		echo "[$txt] $dir<br/>\n";
-		
+
         sort($files);
 
 		$functions = array();
@@ -29,7 +29,7 @@
                 include_once("$dir/$file");
 
                 $fn = "lcml_".substr($file, 3, -4);
-                
+
                 if(function_exists($fn))
 					$functions[] = $fn;
             }

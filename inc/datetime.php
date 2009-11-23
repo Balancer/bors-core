@@ -26,7 +26,7 @@ function is_today($time)
 	global $now;
 	if($now - $time < 86400 && strftime("%d", $time) == strftime("%d", $now))
 		return true;
-		
+
 	//FIXME: разобраться, wtf?
 	if(preg_match("!\d{4}/\d{1,2}/\d{1,2}/$!", @$GLOBALS['main_uri']))
 		return true;
@@ -37,13 +37,13 @@ function is_today($time)
 function news_time($time)
 {
 	global $now;
-		
+
 	if(is_today($time))
 		return strftime("%H:%M",$time);
-	
+
 	if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d", $now-86400))
 		return ec("Вчера, ").strftime("%H:%M",$time);
-		
+
 	return strftime("%d.%m.%Y %H:%M",$time);
 }
 
@@ -52,10 +52,10 @@ function airbase_time($time)
 	global $now;
 	if(is_today($time))
 		return ec(strftime("сегодня, %H:%M",$time));
-	
+
 	if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d",$now-86400))
 		return ec("вчера, ").strftime("%H:%M",$time);
-	
+
 	return strftime("%Y-%m-%d",$time);
 }
 
@@ -63,11 +63,11 @@ function smart_time($time, $human_readable = true)
 {
 	global $now;
 	if(is_today($time))
-		return ec(strftime("сегодня, %H:%M",$time));
-	
+		return ec(strftime("сегодня,&nbsp;%H:%M",$time));
+
 	if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d",$now-86400))
-		return ec("вчера, ").strftime("%H:%M",$time);
-	
+		return ec("вчера,&nbsp;").strftime("%H:%M",$time);
+
 	return $human_readable ? full_hdate($time) : strftime("%d.%m.%Y",$time);
 }
 
@@ -75,10 +75,10 @@ function news_short_time($time)
 {
 	if(is_today($time))
 		return strftime("%H:%M", $time);
-	
+
 	if($GLOBALS['now'] - $time < 2*86400 && strftime("%d",$time) == strftime("%d", $GLOBALS['now']-86400))
 		return ec("Вчера");
-		
+
 	return strftime("%d.%m.%Y", $time);
 }
 
@@ -105,7 +105,7 @@ function make_input_time($field_name, &$data)
 		$$key = intval(@$data[$name]);
 		unset($data[$name]);
 	}
-	
+
 	if(!$day)
 		$day = 1;
 
@@ -153,7 +153,7 @@ function bors_form_parse_time(&$array)
 
 		unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"]);
 	}
-	
+
 	unset($array['time_vars']);
 }
 
@@ -208,6 +208,6 @@ function smart_interval($interval, $parts = 2)
 	for($i=0; $i<count($res); $i++)
 		if(!empty($res[$i]))
 			break;
-	
+
 	return join(' ', array_slice($res, $i, $parts));
 }

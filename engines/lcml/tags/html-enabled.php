@@ -1,5 +1,5 @@
 <?php
-    foreach(explode(" ","b big i s strong sub sup small u xmp") as $tag)
+    foreach(explode(" ","b big i s strong sub sup small u") as $tag)
 		eval("function lp_$tag(\$txt){return '<$tag>'.lcml(\$txt).'</$tag>';}");
 
     foreach(explode(" ","br hr") as $tag)

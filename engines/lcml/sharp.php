@@ -5,19 +5,19 @@ function lcml_sharp($txt, &$mask)
 /*
 		if(debug_is_balancer())
 		{
-			echo ">>>>>>>>>>>><xmp>\n";
-			echo "text=".str_replace("\n", ' ', $txt)."\n";
+			echo "<xmp>>>>>>>>>>>>>\n";
+			echo "text=".str_replace("\n", '@', $txt)."\n";
 			echo "mask=".str_replace("\n", '@', $mask)."\n";
 			echo "</xmp>\n";
 		}
 */
         $array = explode("\n", $txt);
-		
+
 		$pos = 0;
 		foreach($array as $s)
 		{
 			$l = bors_strlen($s);
-			$mask_array[] = substr($mask, $pos, $l + 1); // Маска на 1 длиннее строки, т.к. запоминается старое значение переноса.
+			$m = $mask_array[] = substr($mask, $pos, $l + 1); // Маска на 1 длиннее строки, т.к. запоминается старое значение переноса.
 			$pos += $l + 1;
 		}
 
@@ -68,7 +68,7 @@ function lcml_sharp($txt, &$mask)
                 if(!$in_pair)
                 {
                     $func = "lsp_$tag";
-					
+
                     $txt = $func(join("\n",array_slice($array,$start+1,$i-$start-1)), $params);
                     $txt = explode("\n",$txt);
 

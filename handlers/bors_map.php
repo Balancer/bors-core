@@ -23,6 +23,7 @@ $map = array(
 	'.* => base_page_hts(url)',
 	'.* => auto_object_php(url)',
 	'.* => bors_page_fs_markdown(url)',
+	'.* => bors_page_fs_htsu(url)',
 	'(/_bors/admin/)\?object=([^&]+).* => bors_admin_main(1)',
 	'/admin/delete/\?object=([^&]+).* => bors_tools_delete(1)',
 	'/admin/mark/delete/\?object=([^&]+).* => bors_admin_mark_delete(1)',

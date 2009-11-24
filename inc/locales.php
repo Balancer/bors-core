@@ -30,7 +30,7 @@ function dc($txt, $charset_from = NULL, $charset_to = NULL)
 		return $txt;
 
 	if($charset_to == 'koi8-r' || $charset_to == 'cp866')
-		$txt = str_replace(array('«','»'), array('&laquo;','&raquo;'), $txt);
+		$txt = str_replace(array('«','»','©'), array('&laquo;','&raquo;', '&copy;'), $txt);
 
 	return iconv($charset_from, $charset_to.'//IGNORE', $txt);
 }

@@ -39,3 +39,5 @@ config_set('db_charset', 'utf-8');				// Кодировка БД
 config_set('locale', 'ru_RU.UTF-8');
 
 config_set('3rdp_xmlrpc_path', 'xmlrpc-2.2.2');
+
+@include_once(BORS_3RD_PARTY.'/config.php');

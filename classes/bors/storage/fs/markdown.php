@@ -33,7 +33,7 @@ class bors_storage_fs_markdown extends base_null
 
 		$object->set_markup('bors_markup_markdown', false);
 
-		$content = file_get_contents($file);
+		$content = $object->cs_f2i(file_get_contents($file));
 		if(preg_match('/(^|\n)(.+)\n(=+)\n/s', $content, $m))
 			$object->set_title($m[2], false);
 

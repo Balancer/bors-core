@@ -11,7 +11,7 @@ class bors_page_fs_markdown extends base_page
 	function pre_show()
 	{
 		config_set('cache_disabled', true);
-		return false;
+		return parent::pre_show();
 	}
 
 //	function cache_static() { return rand(10*86400, 30*86400); }

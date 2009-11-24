@@ -22,6 +22,8 @@ class bors_page_fs_markdown extends base_page
 		$this->add_template_data('skip_page_admin', true);
 	}
 
+	function browser_title() { return $this->title(); }
+
 	function body()
 	{
 		require_once(config('markdown_include'));

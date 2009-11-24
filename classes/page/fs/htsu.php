@@ -10,7 +10,7 @@ class bors_page_fs_htsu extends base_page
 	function storage_engine() { return 'storage_fs_htsu'; }
 
 	private $parents = array();
-	function parents() { return $this->parents; }
+	function parents() { return $this->parents ? $this->parents : parent::parents(); }
 	function set_parents($arr, $dbup) { return $this->parents = &$arr; }
 
 	function init()

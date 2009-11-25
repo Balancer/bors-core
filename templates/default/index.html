@@ -6,7 +6,7 @@
 	<link rel="SHORTCUT ICON" href="/favicon.ico" />
 	<script type="text/javascript" src="/_bors/js/cfuncs.js"></script>
 	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
-	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/color-gray.css" />
+	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/color-default.css" />
 {if $header}{foreach from=$header item="h"}
 {$h}
 {/foreach}{/if}
@@ -19,15 +19,20 @@
 </head>
 
 <body>
-<p><small>{module class="nav_top" id=$this}</small></p>
-<div style="font-style:italic; margin-right: 0; display: block; float: right; width: 40%; text-align: justify">{$description|lcml_bbh}</div>
-<div class="clear">&nbsp;</div>
-{if not $skip_page_title}<h1>{$title}</h1>{/if}
-{if not $skip_page_admin}{include file="xfile:default/inc/admin-tools.html"}{/if}
+<div class="outer">
+ <p><small>{module class="nav_top" id=$this}</small></p>
+ <div style="font-style:italic; margin-right: 0; display: block; float: right; width: 40%; text-align: justify">{$description|lcml_bbh}</div>
+ <div class="clear">&nbsp;</div>
+ {if not $skip_page_title}<h1>{$title}</h1>{/if}
+ <div class="container">
+  {if not $skip_page_admin}{include file="xfile:default/inc/admin-tools.html"}{/if}
+  {$body}
+  {if not $skip_page_admin}{include file="xfile:default/inc/admin-tools.html"}{/if}
+ </div>
+ <div class="sidebar">
+ </div>
+</div>
 
-{$body}
-
-{if not $skip_page_admin}{include file="xfile:default/inc/admin-tools.html"}{/if}
 <!--
 class = {$this->class_name()}
 class_file = {$this->class_file()}

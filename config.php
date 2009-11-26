@@ -163,8 +163,8 @@ function bors_dirs($skip_config = false, $host = NULL)
 		$data = array_merge($data, explode(' ', BORS_APPEND));
 
 	foreach(array(
-		BORS_SITE,
 		BORS_HOST,
+		BORS_SITE,
 		BORS_LOCAL.$vhost,
 		BORS_LOCAL,
 		BORS_EXT,

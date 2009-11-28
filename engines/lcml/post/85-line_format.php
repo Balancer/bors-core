@@ -42,7 +42,7 @@
                 $txt = preg_split("!\n{2,}!", $txt);
 
 				if(sizeof($txt) > 1)
-					$txt = join("</p>\n\n<p>", $txt);
+					$txt = '<p>'.join("</p>\n\n<p>", $txt).'</p>';
 				else
 					$txt = $txt[0];
                 break;

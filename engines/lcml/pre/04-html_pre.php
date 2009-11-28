@@ -2,8 +2,10 @@
 
 function lcml_html_pre($txt)
 {
+//	$txt = preg_replace('!<br\s*/>!', "\n", $txt);
 	if(config('lcml_html_nonmutable'))
 	    return $txt;
+
 
 //	$txt = "html_disable = {$GLOBALS['lcml']['params']['html_disable']} - $txt";
 

@@ -181,6 +181,8 @@ class DataBase extends base_object
 		return false;
 	}
 
+	function link() { return $this->dbh; }
+
 	function free()
 	{
 		@mysql_free_result($this->result);

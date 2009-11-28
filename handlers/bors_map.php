@@ -44,6 +44,8 @@ $map = array(
 	'/_bors/admin/visibility\?act=(show|hide)&object=([^&]*) => bors_admin_visibility(2)',
 	'/_bors/admin/reports/ => bors_admin_reports_main',
 	'/_bors/admin/reports/load/ => bors_admin_reports_load',
+	'/sitemap-index.xml => bors_system_sitemap_index',
+	'/sitemap-(\w+)-(\d+).xml => bors_system_sitemap_map(1,2)',
 	'/_bors/users/do\-login\.bas => bors_admin_users_login',
 	'/_bors/users/do\-logout\.bas => bors_admin_users_logout',
 

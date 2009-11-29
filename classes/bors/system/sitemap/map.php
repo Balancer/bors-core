@@ -25,7 +25,7 @@ class bors_system_sitemap_map extends bors_page
 				elseif($now - $time < 86400*30)
 					$freq = 'weekly';
 				else
-					$freq = 'montly';
+					$freq = 'monthly';
 
 			for($p=1, $total = $x->total_pages(); $p<=$total; $p++)
 			{

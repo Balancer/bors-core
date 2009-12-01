@@ -23,6 +23,18 @@ function object_load($class, $object_id=NULL, $args=array())
 //	if(!is_object($object_id))
 //		$object_id = trim($object_id, "\n\r ");
 
+	if(is_null($object_id) && preg_match('/^(\w+)__(\w+)$/', $class, $m))
+	{
+		$class = $m[1];
+		$object_id = $m[2];
+		if(!is_numeric($m[2]))
+		{
+			if($object_id[0] == 'x')
+				$object_id = substr($object_id, 1);
+			$object_id = base64_decode($object_id);
+		}
+	}
+
 	return class_load($class, $object_id, $args);
 }
 

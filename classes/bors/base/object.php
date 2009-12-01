@@ -634,7 +634,11 @@ class base_object extends base_empty
 		if(is_object($id = $this->id()))
 			$id = $this->id()->internal_uri_ascii();
 
-		$uri = $this->class_name().'__'.base64_encode($id);
+		if(is_numeric($id))
+			$uri = $this->class_name().'__'.$id;
+		else
+			$uri = $this->class_name().'__x'.base64_encode($id);
+
 		if($limit && strlen($uri) > $limit)
 		{
 			if(!$ignore_oversize)
@@ -921,7 +925,7 @@ class base_object extends base_empty
 		$fe = file_exists($file);
 		$fs = $fe && filesize($file) > 2000;
 
-//		echo "cache_static=".config('cache_static').", can_use_static=$can_use_static, this->cache_static()={$this->cache_static()}, if($use_static && $file && $fe && !$recreate)".time();
+//		if(debug_is_balancer()) echo "cache_static=".config('cache_static').", can_use_static=$can_use_static, this->cache_static()={$this->cache_static()}, if($use_static && $file && $fe && !$recreate)".time();
 		if($use_static && $file && $fe && !$recreate)
 			return file_get_contents($this->static_file());
 

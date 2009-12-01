@@ -17,13 +17,6 @@ $map = array(
 
 	'.*/\d{4}/\d{1,2}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
 	'.*/\d{4}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
-	'.* => page_fs_xml(url)',
-	'.* => page_fs_separate(url)',
-//	'.* => page_db(url)',
-	'.* => base_page_hts(url)',
-	'.* => auto_object_php(url)',
-	'.* => bors_page_fs_markdown(url)',
-	'.* => bors_page_fs_htsu(url)',
 	'(/_bors/admin/)\?object=([^&]+).* => bors_admin_main(1)',
 	'/admin/delete/\?object=([^&]+).* => bors_tools_delete(1)',
 	'/admin/mark/delete/\?object=([^&]+).* => bors_admin_mark_delete(1)',
@@ -44,6 +37,10 @@ $map = array(
 	'/_bors/admin/visibility\?act=(show|hide)&object=([^&]*) => bors_admin_visibility(2)',
 	'/_bors/admin/reports/ => bors_admin_reports_main',
 	'/_bors/admin/reports/load/ => bors_admin_reports_load',
+
+	'(/_bors/)igo\?o=(.+) => bors_system_go_internal(2)',
+	'(/_bors/)ugo\?u=(.+) => bors_system_go_url(2)',
+
 	'/sitemap-index.xml => bors_system_sitemap_index',
 	'/sitemap-(\w+)-(\d+).xml => bors_system_sitemap_map(1,2)',
 	'/_bors/users/do\-login\.bas => bors_admin_users_login',
@@ -67,4 +64,12 @@ $map = array(
 	'/admin/logout/ => bors_admin_logout',
 
 	'/admin/image/append => bors_admin_image_append',
+
+	'.* => page_fs_xml(url)',
+	'.* => page_fs_separate(url)',
+//	'.* => page_db(url)',
+	'.* => base_page_hts(url)',
+	'.* => auto_object_php(url)',
+	'.* => bors_page_fs_markdown(url)',
+	'.* => bors_page_fs_htsu(url)',
 );

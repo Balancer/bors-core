@@ -45,12 +45,18 @@ class bors_global extends base_empty
 		if(empty($this->changed_objects))
 			return;
 
-		foreach($this->changed_objects as $name => $obj)
+		foreach($this->changed_objects as $name => $x)
 		{
+			$obj = $x;
 			if(!$obj->id() || empty($obj->changed_fields))
 				continue;
 
 			$obj->cache_clean();
+			if($obj != $x)
+			{
+				debug_hidden_log('__workaround', "strange object cache clean error: {$x} -> {$obj}");
+				$obj = $x;
+			}
 
 			$storage_class = $obj->storage_engine();
 

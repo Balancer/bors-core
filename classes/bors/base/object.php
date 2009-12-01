@@ -733,7 +733,6 @@ class base_object extends base_empty
 
 		$this->set_was_cleaned(true);
 
-
 		if($this->cache_static() > 0 && $this->cache_static_can_be_dropped())
 			cache_static::drop($this);
 
@@ -755,6 +754,7 @@ class base_object extends base_empty
 			$clean_object = $this;
 
 		$this->cache_clean_self();
+
 		foreach($this->cache_children() as $child_cache)
 			if($child_cache)
 				$child_cache->cache_clean_self($clean_object);

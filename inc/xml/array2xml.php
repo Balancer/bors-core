@@ -12,7 +12,7 @@ function array2xml($data, $rootNodeName = 'data', $xml=null, $input_charset = 'u
 	// loop through the data passed in.
 	foreach($data as $key => $value)
 	{
-		if($input_charset != 'utf-8')
+		if($input_charset != 'utf-8' && !is_array($value))
 			$value = iconv($input_charset, 'utf-8', $value);
 
 		// no numeric keys in our xml please!

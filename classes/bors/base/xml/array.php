@@ -8,8 +8,14 @@ class base_xml_array extends base_page
 	function render($obj)
 	{
 		header("Content-Type: application/xml; charset=utf-8");
-		require_once('inc/xml/array2xml.php');
-		return array2xml($obj->local_data(), 'data', NULL, $obj->internal_charset());
+#		require_once('inc/xml/array2xml.php');
+#		return array2xml($obj->local_data(), 'data', NULL, $obj->internal_charset());
+		require_once("class.array2xml2array.php");
+
+		$array2XML = new CArray2xml2array();
+
+		$array2XML->setArray(array('data' => $obj->local_data()));
+		return $array2XML->array2xml('data');
 	}
 
 	//TODO: Реализовать статическое кеширование файлов, отличных от index.html / text/html

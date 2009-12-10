@@ -77,6 +77,7 @@ class storage_fs_htsu extends base_null
 		$this->hts = $hts;
 
 		$this->ext('title');
+		$this->ext('nav_name');
 
 //    	$this->ext('copyr','copyright');
 //    	$this->ext('author');

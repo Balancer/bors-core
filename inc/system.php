@@ -25,7 +25,7 @@ function ungpc_array(&$array)
 	function new_id($engine, $local_id = NULL, $uri = NULL)
 	{
 		debug_exit("new_id($engine)");
-	
+
 		$db = &new DataBase('HTS');
 
 		$local_id	= $local_id	? ", local_id = ".intval($local_id) : "";
@@ -33,10 +33,10 @@ function ungpc_array(&$array)
 
 		$db->query("INSERT INTO `global_ids` SET `engine` = '".addslashes($engine)."'$local_id$uri");
 		$new_id = intval($db->last_id());
-		
+
 		if(!$new_id)
 			exit("Ошибка получения global id");
-			
+
 		return $new_id;
 	}
 
@@ -69,3 +69,22 @@ function ungpc_array(&$array)
 		$res = $db->get("SELECT engine, local_id FROM global_ids WHERE id = ".intval($id));
 		return array($res['engine'], $res['local_id']);
 	}
+
+function __session_init()
+{
+	static $session_started = false;
+	if(!$session_started)
+		@session_start();
+}
+
+function session_var($name, $def = NULL, $set = false)
+{
+	__session_init();
+	return defval($_SESSION, $name, $def, $set);
+}
+
+function set_session_var($name, $value)
+{
+	__session_init();
+	return$_SESSION[$name] = $value;
+}

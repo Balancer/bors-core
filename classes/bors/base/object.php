@@ -798,6 +798,18 @@ class base_object extends base_empty
 //		return $_SERVER['DOCUMENT_ROOT'].preg_replace('!^http://[^/]+!', '', $this->called_url());
 	}
 
+	function document_root()
+	{
+		$data = url_parse($this->called_url());
+		return $data['root'];
+	}
+
+	function host()
+	{
+		$data = url_parse($this->called_url());
+		return $data['host'];
+	}
+
 	private $class_file;
 	private $class_filemtime;
 	function set_class_file($file_name)
@@ -858,7 +870,7 @@ class base_object extends base_empty
 
 	function static_file()
 	{
-		$path = $this->url($this->page());
+		$path = $this->url($this->args('page'));
 		$data = url_parse($path);
 
 		$file = @$data['local_path'];

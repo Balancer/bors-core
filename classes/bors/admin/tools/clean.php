@@ -5,7 +5,7 @@ class bors_admin_tools_clean extends base_page
 	function config_class() { return config('admin_config_class'); }
 
 	function parents() { return array($this->id()); }
-	
+
 	function title() { return ec('очистка кеша'); }
 
 	//TODO: временный костыль, чтобы не грузился при повторных запросах объекта этот же самый класс.

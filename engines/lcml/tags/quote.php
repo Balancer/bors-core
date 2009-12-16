@@ -1,5 +1,7 @@
 <?php
 
+function lp_q($txt, $params) { return lp_quote($txt, $params); }
+
 function lp_quote($txt, $params)
 {
 	if(empty($params['description']))

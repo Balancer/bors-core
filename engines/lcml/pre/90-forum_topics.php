@@ -1,9 +1,9 @@
-<?
+<?php
     function lcml_forum_topics($txt)
     {
     	if(!config('lcml_balancer'))
     		return $txt;
-    
+
         //http://forums.airbase.ru/index.php?showtopic=3353
         //http://forums.airbase.ru/index.php?act=ST&f=3&t=25525
         //http://www.airbase.ru/forums/index.php?act=ST&f=3&t=5830&st=105
@@ -49,26 +49,11 @@
         return $post ? $post->titled_url() : 'Unknown posting '.$post_id;
     }
 
-    function lcml_forum_topics_post($topic,$post)
+    function lcml_forum_topics_post($topic, $post)
     {
-        $dbh = @mysql_connect("localhost", "forum", "localforum") or die (__FILE__.':'.__LINE__." Could not connect");
-        mysql_select_db("forums_airbase_ru") or die (__FILE__.':'.__LINE__." Could not select database");
-        mysql_query ("SET CHARACTER SET utf8");
+    	$post = object_load('balancer_board_post', $post);
 
-        $q="SELECT t.title,t.tid,p.author_name,p.post_date FROM ib_posts p LEFT JOIN ib_topics t ON (t.tid=p.topic_id) WHERE p.pid=$post";
-        $query = mysql_query ($q) or  die(__FILE__.':'.__LINE__." Query '$q' failed, error ".mysql_errno().": ".mysql_error()."<BR>");
-        $res = mysql_fetch_array($query);
-        
-        mysql_close();
-
-        $url="http://forums.airbase.ru/index.php?showtopic=$topic&view=findpost&p=$post";
-
-        if($res['title'])
-            $title=chop($res['title'])." <font size=\"1\">(".$res['author_name'].", ".strftime("%d.%m.%y %H:%M",$res['post_date']).")</font>";
-        else
-            $title=$url;
-        
-        return "<a href=\"$url\">$title</a>";
+        return "<a href=\"{$post->url_in_topic()}\">{$post->title()}</a>";
     }
 
     function lcml_forum_topics_page($forum,$topic,$start)

@@ -56,17 +56,17 @@ class cache_static extends base_object_db
 		$object_id = $object->id();
 //		if($object_id && !is_numeric($object_id))
 //			return;
-	
+
 		$file = $object->static_file();
 		if(!$file) // TODO: отловить
 			return;
-		
+
 		//TODO: отловить кеш-запись постов при добавлении нового сообщения. (class_id = 1)
-		
+
 		bors()->changed_save();
-		
+
 		$cache = new cache_static($file);
-		
+
 		$cache->set_object_uri($object->url($object->page()), true);
 		$cache->set_original_uri($object->called_url(), true);
 		$cache->set_class_id_db($object->class_id(), true);
@@ -100,6 +100,6 @@ class cache_static extends base_object_db
 		if(!file_exists($file))
 			debug_hidden_log('filesystem', "Can't create static file for {$object}: {$file}");
 	}
-	
+
 	function replace_on_new_instance() { return true; }
 }

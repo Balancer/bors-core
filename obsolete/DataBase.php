@@ -166,6 +166,8 @@ class DataBase extends base_object
 
 		if(!$ignore_error)
 		{
+			if(($err_msg_header = config('error_message_header')))
+				echo $err_msg_header;
 			echo debug_trace();
 			bors_exit("MySQL Error: driver class=".get_class($this)."<br>\n"
 				."now=".date('r')."<br>\n"

@@ -27,7 +27,8 @@ class storage_fs_htsu extends base_null
 	private function __find($object)
 	{
 		$dir = $object->dir();
-		$rel = secure_path(str_replace($_SERVER['DOCUMENT_ROOT'], '/', $dir));
+		$root = $object->document_root();
+		$rel = secure_path(str_replace($root, '/', $dir));
 
 		if(file_exists($file = "{$dir}/index.htsu"))
 			return $file;
@@ -35,18 +36,30 @@ class storage_fs_htsu extends base_null
 		if(file_exists($file = "{$dir}.htsu"))
 			return $file;
 
-		foreach(bors_dirs() as $d)
+		if($object->host() == $_SERVER['HTTP_HOST'])
 		{
-			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}.htsu")))
+			foreach(bors_dirs() as $d)
+			{
+				if(file_exists($file = secure_path("{$d}/data/fs/{$rel}.htsu")))
+					return $file;
+
+				if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.htsu")))
+					return $file;
+
+				if(file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}.htsu")))
+					return $file;
+
+				if(file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}/index.htsu")))
+					return $file;
+			}
+		}
+		else
+		{
+			$data = bors_vhost_data($object->host());
+			if(file_exists($file = "{$data['bors_site']}/data/fs/{$rel}index.htsu"))
 				return $file;
 
-			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.htsu")))
-				return $file;
-
-			if(file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}.htsu")))
-				return $file;
-
-			if(file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}/index.htsu")))
+			if(file_exists($file = "{$data['bors_site']}/data/fs{$rel}.htsu"))
 				return $file;
 		}
 
@@ -77,6 +90,7 @@ class storage_fs_htsu extends base_null
 		$this->hts = $hts;
 
 		$this->ext('title');
+		$object->set_parents(explode(' ', $this->ext('parents', '-')), false);
 		$this->ext('nav_name');
 
 //    	$this->ext('copyr','copyright');

@@ -1,6 +1,6 @@
 <?php
 
-function class_include($class_name)
+function class_include($class_name, &$args = array())
 {
 	if($file_name = @$GLOBALS['bors_data']['class_included'][$class_name])
 		return $file_name;
@@ -45,6 +45,28 @@ function class_include($class_name)
 	if(class_exists($class_name))
 		return class_include(get_parent_class($class_name));
 
+//	echo "Can't find $class_name<br/>";
+
+	if(empty($args['host']))
+		return false;
+
+	$data = bors_vhost_data($args['host']);
+	if(file_exists($file_name = "{$data['bors_site']}/classes/{$class_path}{$class_file}.php"))
+	{
+		require_once($file_name);
+		$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
+		$args['need_check_to_public_load'] = true;
+		return $file_name;
+	}
+
+	if(file_exists($file_name = "{$data['bors_site']}/classes/bors/{$class_path}{$class_file}.php"))
+	{
+		require_once($file_name);
+		$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
+		$args['need_check_to_public_load'] = true;
+		return $file_name;
+	}
+
 	return false;
 }
 
@@ -58,7 +80,7 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 
 	if(is_object($id) || @$args['no_load_cache'])
 		return $obj;
-	
+
 	if(!empty($GLOBALS['bors_data']['cached_objects4'][$class_name][$id]))
 	{
 		$obj = &$GLOBALS['bors_data']['cached_objects4'][$class_name][$id];
@@ -76,7 +98,7 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 	}
 
 //	echo "Try load $class_name($id) from memcached<br />";
-		
+
 	if($memcache = config('memcached_instance'))
 	{
 		if($x = @$memcache->get('bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id))
@@ -171,7 +193,7 @@ function class_load($class, $id = NULL, $args=array())
 		{
 			if(preg_match('!^(.+)#(.+)$!', $class, $m))
 				$class = $m[1];
-	
+
 			if($obj = class_load_by_url($class, $args))
 				return $obj;
 
@@ -324,132 +346,133 @@ function class_load_by_vhosts_url($url)
 {
 	$data = @parse_url($url);
 
-//	if(debug_is_balancer()) { echo "Load $url<br />\n"; print_d($data); }
-		
-		if(!$data || empty($data['host']))
+//	echo "Load $url<br />\n"; print_d($data);
+
+	if(!$data || empty($data['host']))
+	{
+		debug_hidden_log('class-loader-errors', ec("Ошибка. Попытка загрузить класс из URL неверного формата: ").$url);
+		return NULL;
+	}
+
+	global $bors_data;
+
+	$obj = @$bors_data['classes_by_uri'][$url];
+	if(!empty($obj))
+		return $obj;
+
+//	print_d($data); print_d($bors_data['vhosts']);
+
+	if(empty($bors_data['vhosts'][$data['host']]))
+		return NULL;
+
+	$host_data = $bors_data['vhosts'][$data['host']];
+
+	$url = $data['scheme'].'://'.$data['host'].$data['path'];
+	$query = @$data['query'];
+
+	foreach($host_data['bors_map'] as $pair)
+	{
+		if(!preg_match('!^(.*)\s*=>\s*(.+)$!', $pair, $match))
+			exit(ec("Ошибка формата bors_map[{$data['host']}]: {$pair}"));
+
+		$url_pattern = trim($match[1]);
+		$class_path  = trim($match[2]);
+
+		if(preg_match("!\\\\\?!", $url_pattern))
+			$check_url = $url."?".$query;
+		else
+			$check_url = $url;
+
+//		echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$!<br />\n";
+		if(preg_match('!^\s*http://!', $url_pattern))
+			$prefix = '';
+		else
+			$prefix = 'http://('.preg_quote($data['host']).')';
+//		echo "^{$prefix}{$url_pattern}\$ == $check_url?<br />\n";
+		if(preg_match("!^{$prefix}{$url_pattern}$!i", $check_url, $match))
 		{
-			debug_hidden_log('class-loader-errors', ec("Ошибка. Попытка загрузить класс из URL неверного формата: ").$url);
-			return NULL;
-		}
-		
-		global $bors_data;
-		
-		$obj = @$bors_data['classes_by_uri'][$url];
-		if(!empty($obj))
-			return $obj;
-			
-//		if(debug_is_balancer()) { print_d($data); print_d($bors_data['vhosts']); }
+//			echo "Found: $class_path for  $check_url<br />";
 
-		if(empty($bors_data['vhosts'][$data['host']]))
-			return NULL;
-
-		$host_data = $bors_data['vhosts'][$data['host']];
-
-		$url = $data['scheme'].'://'.$data['host'].$data['path'];
-		$query = @$data['query'];
-		
-		foreach($host_data['bors_map'] as $pair)
-		{
-			if(!preg_match('!^(.*)\s*=>\s*(.+)$!', $pair, $match))
-				exit(ec("Ошибка формата bors_map[{$data['host']}]: {$pair}"));
-			
-			$url_pattern = trim($match[1]);
-			$class_path  = trim($match[2]);
-
-			if(preg_match("!\\\\\?!", $url_pattern))
-				$check_url = $url."?".$query;
-			else
-				$check_url = $url;
-
-//			if(debug_is_balancer()) echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$!<br />\n";
-			if(preg_match('!^\s*http://!', $url_pattern))
-				$prefix = '';
-			else
-				$prefix = 'http://('.preg_quote($data['host']).')';
-//			if(debug_is_balancer()) echo "^{$prefix}{$url_pattern}\$ == $check_url?<br />\n";
-			if(preg_match("!^{$prefix}{$url_pattern}$!i", $check_url, $match))
+			if(preg_match("!^redirect:(.+)$!", $class_path, $m))
 			{
-//				if(debug_is_balancer()) echo "Found: $class_path for  $check_url<br />";
-			
-				if(preg_match("!^redirect:(.+)$!", $class_path, $m))
-				{
-					$class_path = $m[1];
-					$redirect = true;
-				}
-				else
-					$redirect = false;
-			
-				$id = NULL;
-				$page = NULL;
+				$class_path = $m[1];
+				$redirect = true;
+			}
+			else
+				$redirect = false;
 
-				// Формат вида aviaport_image_thumb(3,geometry=2)
-				if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $class_path, $m))	
-				{
-					$args = array();
-					foreach(split(',', $m[3]) as $pair)
-						if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
-							$args[$mm[1]] = $match[$mm[2]+1];
+			$id = NULL;
+			$page = NULL;
 
-					$class_path = $m[1];
-					$id = $match[$m[2]+1];
-					
-					$page = $args;
-				}
-				if(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $class_path, $m))	
-				{
-					$class_path = $m[1];
-					$id = $match[$m[2]+1];
-					$page = @$match[$m[3]+1];
-				}
-				elseif(preg_match("!^(.+)\((\d+)\)$!", $class_path, $class_match))	
-				{
-					$class_path = $class_match[1];
-					$id = $match[$class_match[2]+1];
-				}
+			// Формат вида aviaport_image_thumb(3,geometry=2)
+			if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $class_path, $m))	
+			{
+				$args = array();
+				foreach(explode(',', $m[3]) as $pair)
+					if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
+						$args[$mm[1]] = $match[$mm[2]+1];
 
-				if(preg_match("!^(.+)/([^/]+)$!", $class_path, $m))
-					$class = $m[2];
-				else
-					$class = $class_path;
+				$class_path = $m[1];
+				$id = $match[$m[2]+1];
 
-//				if(debug_is_balancer()) echo "$class_path($id) - $url<br/>";
-				
-				$args = array(	
-						'local_path' => $host_data['bors_local'],
-						'match' => empty($match[2]) ? NULL : $match,
-						'called_url' => $url,
-				);
-				
-				if(is_array($page))
-					$args = array_merge($args, $page);
-				else
-					$args['page'] = $page;
+				$page = $args;
+			}
+			if(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $class_path, $m))	
+			{
+				$class_path = $m[1];
+				$id = $match[$m[2]+1];
+				$page = @$match[$m[3]+1];
+			}
+			elseif(preg_match("!^(.+)\((\d+)\)$!", $class_path, $class_match))	
+			{
+				$class_path = $class_match[1];
+				$id = $match[$class_match[2]+1];
+			}
 
-//				if(debug_is_balancer()) echo "Try to object_init($class_path, $id, $args) <br/>";
-//				print_d(bors_dirs());
-				if($obj = object_init($class_path, $id, $args))
+			if(preg_match("!^(.+)/([^/]+)$!", $class_path, $m))
+				$class = $m[2];
+			else
+				$class = $class_path;
+
+//			echo "$class_path($id) - $url<br/>";
+
+			$args = array(
+					'local_path' => $host_data['bors_local'],
+					'match' => empty($match[2]) ? NULL : $match,
+					'called_url' => $url,
+			);
+
+			if(is_array($page))
+				$args = array_merge($args, $page);
+			else
+				$args['page'] = $page;
+
+//			echo "Try to object_init($class_path, $id, $args) <br/>";
+//			print_d(bors_dirs());
+			$args['host'] = $data['host'];
+			if($obj = object_init($class_path, $id, $args))
+			{
+//				echo "init $obj.<br />Save to bors_data['classes_by_uri'][$url] = $obj<br/>";
+				$bors_data['classes_by_uri'][$url] = $obj;
+
+				if($redirect)
 				{
-//					if(debug_is_balancer()) echo "init $obj.<br />Save to bors_data['classes_by_uri'][$url] = $obj<br/>";
-					$bors_data['classes_by_uri'][$url] = $obj;
-					
-					if($redirect)
+					if(!config('do_not_exit'))
 					{
-						if(!config('do_not_exit'))
-						{
-							echo "Redirect by $url_pattern";
-							go($obj->url($page), true);
-							exit("Redirect");
-						}
-						else
-							return object_load($obj->url($page));
+						echo "Redirect by $url_pattern";
+						go($obj->url($page), true);
+						exit("Redirect");
 					}
-
-					return $obj;
+					else
+						return object_load($obj->url($page));
 				}
+
+				return $obj;
 			}
 		}
+	}
 
-		return NULL;
+	return NULL;
 }
 
 function object_init($class_name, $object_id, $args = array())
@@ -466,7 +489,7 @@ function object_init($class_name, $object_id, $args = array())
 	if($object_id === 'NULL')
 		$object_id = NULL;
 
-	if(!($class_file = class_include($class_name, defval($args, 'local_path'))))
+	if(!($class_file = class_include($class_name, $args)))
 		return $obj;
 
 	$found = 0;
@@ -514,6 +537,13 @@ function object_init($class_name, $object_id, $args = array())
 
 	if(/*($object_id || $url) && */!$obj->can_be_empty() && !$obj->loaded())
 		return NULL;
+
+	if(!empty($args['need_check_to_public_load']))
+	{
+		unset($args['need_check_to_public_load']);
+		if(!$obj->can_public_load())
+			return NULL;
+	}
 
 	if($found != 1 && $obj->can_cached())
 		save_cached_object($obj);

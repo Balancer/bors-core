@@ -18,10 +18,13 @@ if(!defined('BORS_EXT'))
 if(!defined('BORS_3RD_PARTY'))
 	define('BORS_3RD_PARTY', dirname(BORS_CORE).'/bors-third-party');
 
-function defval($data, $name, $default=NULL)
+function defval(&$data, $name, $default=NULL, $set = false)
 {
 	if($data && array_key_exists($name, $data))
 		return $data[$name];
+
+	if($set)
+		$data[$name] = $default;
 
 	return $default;
 }

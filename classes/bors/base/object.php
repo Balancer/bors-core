@@ -339,6 +339,8 @@ class base_object extends base_empty
 	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
 	function titled_link() { return $this->titled_url(); }
 
+	function titled_target_link() { return $this->target()->titled_link(); }
+
 	function titled_url_ex($title=NULL, $append=NULL, $url_append='')
 	{
 		if($title===NULL)

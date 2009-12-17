@@ -541,7 +541,7 @@ function object_init($class_name, $object_id, $args = array())
 	if(!empty($args['need_check_to_public_load']))
 	{
 		unset($args['need_check_to_public_load']);
-		if(!$obj->can_public_load())
+		if(!method_exists($obj, 'can_public_load') || !$obj->can_public_load())
 			return NULL;
 	}
 

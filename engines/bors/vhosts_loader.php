@@ -20,15 +20,20 @@ function bors_vhost_data($host, $key = NULL, $def = NULL)
 	return $data;
 }
 
-function register_vhost($host, $documents_root=NULL, $bors_local=NULL)
+function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 {
 	global $bors_data;
 
 	if(empty($documents_root))
 		$documents_root = '/var/www/'.$host.'/htdocs';
 
-	if(empty($bors_local))
-		$bors_local = dirname($documents_root).'/bors-host';
+	if(empty($bors_host))
+	{
+		$bors_host = dirname($documents_root).'/bors-host';
+		$bors_site = dirname($documents_root).'/bors-site';
+	}
+	else
+		$bors_site = $bors_host;
 
 	$map = array();
 
@@ -41,15 +46,18 @@ function register_vhost($host, $documents_root=NULL, $bors_local=NULL)
 
 	$map2 = $map;
 
-	if(file_exists($file = $bors_local.'/handlers/bors_map.php'))
+	if(file_exists($file = $bors_site.'/handlers/bors_map.php'))
+		include($file);
+
+	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
 		include($file);
 
 //	echo "$host: <xmp>"; print_r($map); echo "</xmp>";
 
 	$bors_data['vhosts'][$host] = array(
 		'bors_map' => array_merge($map2, $map),
-		'bors_local' => $bors_local,
-		'bors_site' => $bors_local,
+		'bors_local' => $bors_host,
+		'bors_site' => $bors_site,
 		'document_root' => $documents_root,
 	);
 }

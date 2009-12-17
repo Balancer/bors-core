@@ -90,7 +90,16 @@ class storage_fs_htsu extends base_null
 		$this->hts = $hts;
 
 		$this->ext('title');
-		$object->set_parents(explode(' ', $this->ext('parents', '-')), false);
+
+		$parents = explode(' ', $this->ext('parents', '-'));
+		if(empty($parents[0]))
+		{
+			$data = url_parse($object->url());
+			$parents = array(dirname($data['path']).'/');
+		}
+
+		$object->set_parents($parents, false);
+
 		$this->ext('nav_name');
 
 //    	$this->ext('copyr','copyright');

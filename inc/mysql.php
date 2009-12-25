@@ -10,7 +10,7 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 
 	if(empty($conditions_array))
 		return '';
-	
+
 	$where = array();
 	foreach($conditions_array as $field_cond => $value)
 	{
@@ -39,12 +39,12 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 			$w = $m[1] . '=' . $value;
 		else
 			$w = $field_cond . '\'' . addslashes($value) . '\'';
-		
-//		echo "$w => ".mysql_bors_join_parse($w)."<br/>";
+
+//		echo "$w => mysql_bors_join_parse($w, $class, $was_joined) = ".mysql_bors_join_parse($w, $class, $was_joined)."<br/>\n";
 		if($w)
 			$where[] = mysql_bors_join_parse($w, $class, $was_joined);
 	}
-	
+
 	return 'WHERE '.join(' AND ', $where);
 }
 
@@ -52,7 +52,7 @@ function mysql_order_compile($order_list)
 {
 //	if(isset($order_list['order']))
 //		$order_list = $order_list['order'];
-		
+
 	if(empty($order_list))
 		return '';
 
@@ -77,11 +77,11 @@ function mysql_limits_compile($args)
 
 	if(empty($args['page']) && empty($args['per_page']))
 		return "";
-		
+
 	$page = intval(@$args['page']);
 	$per_page = @$args['per_page'];
 	$start = (max($page,1)-1)*intval($per_page);
-	
+
 	return 'LIMIT '.$start.','.$per_page;
 }
 
@@ -172,7 +172,7 @@ function mysql_args_compile($args, $class='')
 		}
 		else
 			$join[] = 'INNER JOIN '.mysql_bors_join_parse($args['inner_join']);
-		
+
 		unset($args['inner_join']);
 	}
 
@@ -185,7 +185,7 @@ function mysql_args_compile($args, $class='')
 		}
 		else
 			$join[] = 'LEFT JOIN '.mysql_bors_join_parse($args['left_join']);
-		
+
 		unset($args['left_join']);
 	}
 
@@ -226,12 +226,12 @@ function mysql_args_compile($args, $class='')
 		$having= "HAVING {$args['having']}";
 		unset($args['having']);
 	}
-	
+
 	if(empty($args['where']))
 		$where = mysql_where_compile($args, $class, $join);
 	else
 		$where = mysql_where_compile($args['where']);
-	
+
 	return "{$join} {$use_index} {$where} {$group} {$having} {$order} {$limit}";
 }
 
@@ -239,7 +239,7 @@ function make_id_field($table, $id_field, $oid = '%MySqlStorageOID%')
 {
 	if($table)
 		$table = "{$table}.";
-	
+
 	if(strpos($id_field, '=') === false)
 		return "{$table}{$id_field} = '".addslashes($oid)."'";
 

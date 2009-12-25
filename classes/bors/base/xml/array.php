@@ -8,6 +8,8 @@ class base_xml_array extends base_page
 	function render($obj)
 	{
 		header("Content-Type: application/xml; charset=utf-8");
+		header("Status: 200 OK");
+		header("HTTP/1.1 200 OK");
 #		require_once('inc/xml/array2xml.php');
 #		return array2xml($obj->local_data(), 'data', NULL, $obj->internal_charset());
 		require_once("class.array2xml2array.php");

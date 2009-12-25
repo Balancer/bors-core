@@ -42,16 +42,16 @@
     {
 		$original_url = $url;
 		$anchor = "";
-	
+
 		if(preg_match("!^(.+)#(.+?)$!", $url, $m))
 		{
 			$url = $m[1];
 			$anchor = $m[2];
 		}
-		
+
 		$pure_url = $url;
 		$query = "";
-	
+
 		if(preg_match("!^(.+?)\?(.+)$!", $url, $m))
 		{
 			$pure_url = $m[1];
@@ -91,10 +91,10 @@
 			CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
 			CURLOPT_RETURNTRANSFER => true,
 		));
-		
+
         if(preg_match("!lenta\.ru!", $url))
 			curl_setopt($ch, CURLOPT_PROXY, 'home.balancer.ru:3128');
-		
+
 		require_once('inc/urls.php');
 
 		$data = trim(curl_exec($ch));
@@ -102,7 +102,7 @@
 
 		$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 //		echo "<xmp>"; print_r($data); echo "</xmp>";
-		
+
         if(preg_match("!charset=(\S+)!i", $content_type, $m))
             $charset = $m[1];
         else
@@ -112,6 +112,8 @@
 
         if(preg_match("!<meta http\-equiv=\"Content\-Type\"[^>]+charset=(.+?)\"!i", $data, $m))
             $charset = $m[1];
+		elseif(preg_match("!<meta[^>]+charset=(.+?)\"!i", $data, $m))
+            $charset = $m[1];
 
         if(!$charset)
 			$charset = $GLOBALS['lcml_request_charset_default'];
@@ -119,7 +121,7 @@
         if(preg_match("!<title>(.+?)</title>!is",$data,$m)) //@file_get_contents($url)
         {
             if($charset)
-                $m[1] = iconv($charset,'utf-8//IGNORE', $m[1]);
+                $m[1] = iconv($charset, config('internal_charset').'//IGNORE', $m[1]);
 
             return "<a href=\"{$original_url}\" class=\"external\">".bors_substr(trim(preg_replace("!\s+!"," ",str_replace("\n"," ",strip_tags($m[1])))),0,256)."</a>";
         }

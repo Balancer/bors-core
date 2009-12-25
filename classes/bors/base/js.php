@@ -13,7 +13,7 @@ class base_js extends base_page
 		echo $this->content();
 		return true;
 	}
-	
+
 	function direct_content()
 	{
 		return str2js(parent::direct_content());

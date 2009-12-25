@@ -14,9 +14,9 @@ class common_do_login extends base_page
 			debug_hidden_log('Ошибка передачи параметров в класс логина');
 			return bors_message('Ошибка передачи параметров. Возможно, сбой в настройке сервера. Администрация извещена о проблеме.');
 		}
-	
+
 		require_once('obsolete/users.php');
-		
+
 		$this->referer = isset($_GET['redirect_url']) ? $_GET['redirect_url'] : @$_SERVER['HTTP_REFERER'];
 
 		$me = bors_user::do_login(@$_GET['req_username'], @$_GET['req_password'], false);
@@ -26,9 +26,9 @@ class common_do_login extends base_page
 			$this->error = $me;
 			return false;
 		}
-		
+
 		return go(($this->referer && !preg_match('!login!', $this->referer)) ? $this->referer : '/');
 	}
-	
+
 	function can_cache() { return false; }
 }

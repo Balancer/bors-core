@@ -10,6 +10,9 @@ function bors_form_save(&$obj)
 {
 	if(!empty($_GET['act']))
 	{
+		if(method_exists($obj, 'action_target'))
+			$obj = $obj->action_target();
+
 		if(!$obj->access())
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($obj)."; access_engine=".$obj->access_engine());
 

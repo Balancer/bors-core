@@ -5,6 +5,14 @@ require_once('Mail/mime.php');
 
 function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = array())
 {
+	// По умолчанию всю почту шлём в UTF-8. Но можем указать, если что, в параметрах.
+	$charset = defval($headers, 'charset', config('mail_charset', 'utf-8'));
+	unset($headers['charset']);
+
+	// Перекодируем всё из системной кодировки в целевую.
+	foreach(explode(' ', 'to subject text html from') as $x)
+		$$x = dc($$x, NULL, $charset);
+
 	$mime = &new Mail_mime("\r\n");
 
 	$mime->setTXTBody($text); 
@@ -21,9 +29,9 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 		$from = config('mail_sender_default', 'noreplay@localhost');
 
 	$body = $mime->get(array(
-		'head_charset' => 'utf-8',
-		'html_charset' => 'utf-8',
-		'text_charset' => 'utf-8',
+		'head_charset' => $charset,
+		'html_charset' => $charset,
+		'text_charset' => $charset,
 		'head_encoding' => 'base64',
 		'text_encoding' => '8bit',
 		'html_encoding' => '8bit',

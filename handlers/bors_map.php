@@ -60,8 +60,8 @@ $map = array(
 	'/_bors/admin/\?object=([^&]+).* => bors_admin_main(1)',
 	'/admin/edit/\?object=([^&]+).* => bors_admin_edit(1)',
 	'/admin/clean/\?object=([^&]+).* => bors_admin_tools_clean(1)',
-	'/admin/login/ => bors_admin_login',
-	'/admin/logout/ => bors_admin_logout',
+//	'/admin/login/ => bors_admin_login',
+//	'/admin/logout/ => bors_admin_logout',
 
 	'/admin/image/append => bors_admin_image_append',
 

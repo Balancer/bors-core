@@ -12,7 +12,7 @@ class auto_object_php extends base_object
 	{
 		if($this->object !== false)
 			return $this->object;
-		
+
 		$data = url_parse($this->id());
 		$path = $data['path'];
 		$page = 1;
@@ -21,10 +21,10 @@ class auto_object_php extends base_object
 			$path = $m[1];
 			$page = $m[2];
 		}
-		
+
 		$class_path = str_replace('/', '_', trim($path, '/'));
 		$class_base = config('classes_auto_base', 'auto_php');
-		
+
 		if(!($object = object_load($class_base.'_'.$class_path, $this->id())))
 		{
 			$class_path = $class_path ? $class_path . '_main' : 'main';
@@ -42,11 +42,13 @@ class auto_object_php extends base_object
 			if(!$object->parents(true))
 				$object->set_parents(array(secure_path(dirname($path).'/')), false);
 		}
-		
+
 		return $this->object = $object;
 	}
 
 	function content() { return $this->object()->content(); }
 	function create_time($exactly = false) { return $this->object()->create_time($exactly); }
 	function modify_time($exactly = false) { return $this->object()->modify_time($exactly); }
+
+	function action_target() { return $this->object(); }
 }

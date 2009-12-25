@@ -11,7 +11,11 @@ class bors_global extends base_empty
 	{
 		if($this->user === false)
 		{
-			$this->user = object_load(config('user_class'), -1);
+			$uc = config('user_class');
+			if(!$uc)
+				debug_hidden_log('__critical', 'Not defined user_class', true, array('dont_show_user' => true));
+
+			$this->user = object_load($uc, -1);
 
 			if($this->user)
 				$this->user->set_last_visit_time(time(), true); // global $now тут не прокатит, т.к. может вызываться до инициализации конфигов.

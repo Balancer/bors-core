@@ -161,7 +161,7 @@ class base_object extends base_empty
 
 	function local_data() { return $this->local_template_data_set(); }
 	function global_data() { return $this->global_template_data_set(); }
-	function local_template_data_set() { return array(); }
+	function local_template_data_set() { return array('me' => bors()->user()); }
 	function local_template_data_array() { return $this->template_data; }
 
 	function set_template_data($data, $db_up)
@@ -595,7 +595,7 @@ class base_object extends base_empty
 		return object_load($access, $this);
 	}
 
-	function edit_url()  { return '/_bors/admin/edit-smart/?object='.urlencode($this->internal_uri()); }
+	function edit_url()  { return '/_bors/admin/edit-smart/?object='.$this->internal_uri_ascii(); }
 	function admin_url($exact = false) { return $exact ? NULL : '/_bors/admin/?object='.urlencode($this->internal_uri()); }
 	function new_url()  { return '/_bors/admin/new-smart/?object='.urlencode($this->internal_uri()); }
 	function admin_parent_url()

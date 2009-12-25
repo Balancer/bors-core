@@ -38,9 +38,10 @@ if(config('bors_version_show'))
 
 if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 {
+//	print_d($_SERVER);
 	@file_put_contents($file = config('debug_hidden_log_dir')."/main-php-referers.log", @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
-	exit("Do not user direct bors-call!");
+	exit("Do not use direct bors-call!\n");
 }
 
 if(bors()->client()->is_bot() && config('bot_lavg_limit'))
@@ -84,6 +85,7 @@ if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect
 
 	exit("Service Temporarily Unavailable");
 }
+
 
 if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY_STRING']))
 {
@@ -184,6 +186,9 @@ if(config('debug_timing') && is_string($res))
 	$deb .= debug_timing_info_all();
 	$deb .= "Total time: $time sec.\n";
 	$deb .= "-->\n";
+
+	if(function_exists('debug_is_balancer') && debug_is_balancer())
+		debug_hidden_log('debug_timing', $deb, false);
 
 	$res = str_ireplace('</body>', $deb.'</body>', $res);
 }

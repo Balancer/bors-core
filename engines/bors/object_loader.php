@@ -247,7 +247,7 @@ function class_load_by_local_url($url, $args)
 		if(preg_match('!\?!', $url_pattern) && !empty($url_data['query']))
 			$check_url .= '?'.$url_data['query'];
 
-//		if(debug_is_balancer())	echo "pair=$pair<br />\n";
+//		echo "pair=$pair<br />\n";
 //		if(debug_is_balancer())	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
 //		if(debug_is_balancer() && strpos($pair, 'balancer.ru'))	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
 		if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
@@ -378,7 +378,7 @@ function class_load_by_vhosts_url($url)
 		$url_pattern = trim($match[1]);
 		$class_path  = trim($match[2]);
 
-		if(preg_match("!\\\\\?!", $url_pattern))
+		if(strpos($url_pattern, '?') !== false)
 			$check_url = $url."?".$query;
 		else
 			$check_url = $url;
@@ -388,7 +388,7 @@ function class_load_by_vhosts_url($url)
 			$prefix = '';
 		else
 			$prefix = 'http://('.preg_quote($data['host']).')';
-//		echo "^{$prefix}{$url_pattern}\$ == $check_url?<br />\n";
+//		echo "^{$prefix}{$url_pattern}\$ == $check_url<br />\n";
 		if(preg_match("!^{$prefix}{$url_pattern}$!i", $check_url, $match))
 		{
 //			echo "Found: $class_path for  $check_url<br />";
@@ -514,7 +514,7 @@ function object_init($class_name, $object_id, $args = array())
 	if(!$obj)
 	{
 		$found = 0;
-		$obj = &new $class_name($object_id);
+		$obj = new $class_name($object_id);
 		$obj->set_class_file($class_file);
 	}
 

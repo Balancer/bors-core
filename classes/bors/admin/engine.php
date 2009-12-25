@@ -19,7 +19,7 @@ class bors_admin_engine extends base_empty
 		if(method_exists($obj = $this->real_object(), 'edit_url'))
 			return $obj->edit_url();
 
-		return '/_bors/admin/edit-smart/?object='.urlencode($obj->internal_uri());
+		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
 	}
 
 	function delete_url()

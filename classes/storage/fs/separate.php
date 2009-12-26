@@ -21,6 +21,12 @@ class storage_fs_separate extends base_null
 		{
 			foreach(bors_dirs(true) as $base)
 			{
+				if(file_exists(($dir = "{$base}/data/fs{$path}").'title.txt'))
+				{
+					$found = true;
+					break;
+				}
+
 				if(file_exists(($dir = "{$base}/data/fs-separate{$path}").'title.txt'))
 				{
 					$found = true;

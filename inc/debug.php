@@ -13,7 +13,8 @@ function debug_exit($message)
 	echo debug_trace();
 	debug_hidden_log('debug_exit', $message);
 
-	$message .= "<br/>\nmain_object->class_file=".bors()->main_object()->class_file();
+	if(bors()->main_object())
+		$message .= "<br/>\nmain_object->class_file=".bors()->main_object()->class_file();
 
 	exit($message);
 }

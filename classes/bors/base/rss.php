@@ -4,7 +4,7 @@ class base_rss extends base_page
 {
 	function render_engine() { return 'base_rss'; }
 	function output_charset() { return 'utf-8'; }
-	
+
 	function rss_strip() { return 1024;}
 	function rss_source_url() { return '/xxx/';}
 	function rss_title() { return $this->title(); }
@@ -36,22 +36,22 @@ class base_rss extends base_page
 		    $item = &new FeedItem();
 	    	$item->title = $o->rss_title();
 		    $item->link = $o->url();
-			
+
 			$item->description = $obj->rss_body($o, $obj->rss_strip());
 			$item->date = intval($o->create_time());
 			$item->source = $obj->rss_source_url();
 			$owner = $o->owner();
 			if($owner)
 				$item->author = $owner->title();
-							     
+
 			$rss->addItem($item); 
-		} 
-								
+		}
+
 		$result = $rss->createFeed("RSS2.0");
 		header("Content-Type: ".$rss->contentType."; charset=".$rss->encoding);
 		return $result;
 	}
-	
+
 	function rss_body($object, $strip = 0)
 	{
 		if($this->body_template())
@@ -70,7 +70,7 @@ class base_rss extends base_page
 
 		return $html;
 	}
-	
+
 	//TODO: Реализовать статическое кеширование файлов, отличных от index.html / text/html
 	function cache_static() { return 0; }
 	function index_file() { return 'index.xml'; }

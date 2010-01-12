@@ -35,6 +35,9 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 		'head_encoding' => 'base64',
 		'text_encoding' => '8bit',
 		'html_encoding' => '8bit',
+//		'head_encoding' => 'quoted-printable',
+//		'text_encoding' => 'quoted-printable',
+//		'html_encoding' => 'quoted-printable',
 	));
 
 	if(preg_match('/^(.*?) <(.*)>$/', $from, $m))

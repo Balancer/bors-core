@@ -281,7 +281,7 @@ function class_load_by_local_url($url, $args)
 				}
 
 				$class_path = $m[1];
-				$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+1];
+				$id = ($m[2] == 'NULL') ? NULL : $match[$m[2]+1];
 
 				$page = $args;
 			}
@@ -409,11 +409,18 @@ function class_load_by_vhosts_url($url)
 			{
 				$args = array();
 				foreach(explode(',', $m[3]) as $pair)
+				{
 					if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
-						$args[$mm[1]] = $match[$mm[2]+1];
+					{
+						if(is_numeric($mm[2]))
+							$args[$mm[1]] = $match[$mm[2]+1];
+						else
+							$args[$mm[1]] = $mm[2];
+					}
+				}
 
 				$class_path = $m[1];
-				$id = $match[$m[2]+1];
+				$id = ($m[2] == 'NULL') ? NULL : $match[$m[2]+1];
 
 				$page = $args;
 			}

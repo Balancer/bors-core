@@ -904,7 +904,9 @@ class base_object extends base_empty
 	}
 
 	function cs_d2i($str) { return iconv($this->db_charset(), $this->internal_charset().'//IGNORE', $str); }
+
 	function cs_i2d($str, $f='') { return iconv($this->internal_charset(), $this->db_charset().'//IGNORE', $str); }
+
 	function cs_i2o($str)
 	{
 		if(preg_match('/koi8|cp866/i', $out_cs = $this->output_charset()))
@@ -917,6 +919,7 @@ class base_object extends base_empty
 
 		return iconv($this->internal_charset(), $out_cs.'//IGNORE', $str);
 	}
+
 	function cs_u2i($str) // utf-8 to internal
 	{
 		if(preg_match('/koi8|cp866/i', $ics = $this->internal_charset()))

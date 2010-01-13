@@ -13,7 +13,7 @@ function ec($txt)
 		return $txt;
 
 	if($charset == 'koi8-r')
-		$txt = str_replace(array('«','»'), array('&laquo;','&raquo;'), $txt);
+		$txt = str_replace(array('«','»','–'), array('&laquo;','&raquo;','&mdash;'), $txt);
 
 	return iconv('utf-8', $charset.'//TRANSLIT', $txt);
 }
@@ -30,8 +30,10 @@ function dc($txt, $charset_from = NULL, $charset_to = NULL)
 		return $txt;
 
 	if($charset_to == 'koi8-r' || $charset_to == 'cp866')
-		$txt = str_replace(array('«','»','„','“','©', '–'), array('&laquo;','&raquo;','&bdquo;','&ldquo;','&copy;','&mdash;'), 
-$txt);
+		$txt = str_replace(
+			array('«','»','„','“','©', '–'),
+			array('&laquo;','&raquo;','&bdquo;','&ldquo;','&copy;','&mdash;'),
+			$txt);
 
 	$txt = iconv($charset_from, $charset_to.'//IGNORE', $txt);
 //	if($charset_to == 'utf-8' || $charset_to == 'windows-1251')

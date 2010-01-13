@@ -117,8 +117,14 @@ function bors_form_save(&$obj)
 
 			if($_GET['go'] == "newpage_edit_parent")
 			{
-				$p = object_load($form->edit_url(1))->parents();
-				return go($p[0]);
+				$p = object_load($form->edit_url(1));
+				if($p)
+				{
+					$p = $p->parents();
+					return go($p[0]);
+				}
+
+				return go($form->url(1));
 			}
 
 			if($form)

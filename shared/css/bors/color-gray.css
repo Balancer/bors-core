@@ -24,6 +24,22 @@ table.btab {
 	border-collapse:	collapse;
 }
 
+table.btab caption {
+	color: #ccc;
+	border-right: 1px solid #999;
+	border-top: 1px solid #999;
+	border-left: 1px solid #999;
+	padding: 2px;
+	margin: 0;
+	background-color: #999;
+	text-align: left;
+	color: white;
+	font-size: 1.0em; 
+	font-weight: bold; 
+}
+
+table.btab caption a {color: #fff;}
+
 table.btab td, table.btab th {
 	padding: 5px;
 	border-bottom: 1px solid #ccc;

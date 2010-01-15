@@ -346,7 +346,7 @@ function class_load_by_vhosts_url($url)
 {
 	$data = @parse_url($url);
 
-//	echo "Load $url<br />\n"; print_d($data);
+//	if(debug_is_balancer()) { echo "Load $url<br />\n"; print_d($data); }
 
 	if(!$data || empty($data['host']))
 	{
@@ -360,14 +360,14 @@ function class_load_by_vhosts_url($url)
 	if(!empty($obj))
 		return $obj;
 
-//	print_d($data); print_d($bors_data['vhosts']);
+//	if(debug_is_balancer()) { var_dump($data); print_d($bors_data['vhosts']); }
 
 	if(empty($bors_data['vhosts'][$data['host']]))
 		return NULL;
 
 	$host_data = $bors_data['vhosts'][$data['host']];
 
-	$url = $data['scheme'].'://'.$data['host'].$data['path'];
+	$url_noq = $data['scheme'].'://'.$data['host'].$data['path'];
 	$query = @$data['query'];
 
 	foreach($host_data['bors_map'] as $pair)
@@ -379,16 +379,16 @@ function class_load_by_vhosts_url($url)
 		$class_path  = trim($match[2]);
 
 		if(strpos($url_pattern, '?') !== false)
-			$check_url = $url."?".$query;
+			$check_url = $url_noq."?".$query;
 		else
-			$check_url = $url;
+			$check_url = $url_noq;
 
-//		echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$!<br />\n";
+//		echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$ (q=$query)!<br />\n";
 		if(preg_match('!^\s*http://!', $url_pattern))
 			$prefix = '';
 		else
 			$prefix = 'http://('.preg_quote($data['host']).')';
-//		echo "^{$prefix}{$url_pattern}\$ == $check_url<br />\n";
+//		if(debug_is_balancer()) { echo "^{$prefix}{$url_pattern}\$ == $check_url<br />\n"; }
 		if(preg_match("!^{$prefix}{$url_pattern}$!i", $check_url, $match))
 		{
 //			echo "Found: $class_path for  $check_url<br />";

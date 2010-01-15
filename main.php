@@ -115,9 +115,6 @@ if($_SERVER['QUERY_STRING'] == 'del')
 	$_GET['act'] = 'del';
 }
 
-if($_SERVER['QUERY_STRING'] == 'fromlist') //TODO: АвиаПортовская заглушка
-	$_SERVER['QUERY_STRING'] = '';
-
 if($_SERVER['QUERY_STRING'])
 	$uri .= '?'.$_SERVER['QUERY_STRING'];
 

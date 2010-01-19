@@ -110,10 +110,13 @@
 
 		curl_close($ch);
 
-        if(preg_match("!<meta http\-equiv=\"Content\-Type\"[^>]+charset=(.+?)\"!i", $data, $m))
-            $charset = $m[1];
-		elseif(preg_match("!<meta[^>]+charset=(.+?)\"!i", $data, $m))
-            $charset = $m[1];
+		if(empty($charset))
+		{
+	        if(preg_match("!<meta http\-equiv=\"Content\-Type\"[^>]+charset=(.+?)\"!i", $data, $m))
+    	        $charset = $m[1];
+			elseif(preg_match("!<meta[^>]+charset=(.+?)\"!i", $data, $m))
+    	        $charset = $m[1];
+		}
 
         if(!$charset)
 			$charset = $GLOBALS['lcml_request_charset_default'];
@@ -123,7 +126,11 @@
             if($charset)
                 $m[1] = iconv($charset, config('internal_charset').'//IGNORE', $m[1]);
 
-            return "<a href=\"{$original_url}\" class=\"external\">".bors_substr(trim(preg_replace("!\s+!"," ",str_replace("\n"," ",strip_tags($m[1])))),0,256)."</a>";
+			$new_url = bors_substr(trim(preg_replace("!\s+!"," ",str_replace("\n"," ",strip_tags($m[1])))),0,256);
+			if(!$new_url)
+				$new_url = $url;
+
+            return "<a href=\"{$original_url}\" class=\"external\">{$new_url}</a>";
         }
 
         return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";

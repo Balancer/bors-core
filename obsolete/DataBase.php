@@ -54,8 +54,12 @@ class DataBase extends base_object
 		} while(!$this->dbh && config('mysql_try_reconnect') && $loop++ < config('mysql_try_reconnect'));
 
 		if(!$this->dbh)
-			debug_exit("mysql_connect({$server}, {$login}) to DB '{$db_name} => {$real_db}' failed ".mysql_errno().": ".mysql_error()."<br />");
+		{
+			if(($err_msg_header = config('error_message_header')))
+				echo $err_msg_header;
 
+			debug_exit("mysql_connect({$server}, {$login}) to DB '{$db_name} => {$real_db}' failed ".mysql_errno().": ".mysql_error()."<br />");
+		}
 		set_global_key("DataBaseHandler:{$server}", $db_name, $this->dbh);
 		set_global_key("DataBaseStartTime:{$server}", $db_name, $this->start_time = time());
 

@@ -1,7 +1,7 @@
 <?php
 
 require_once('../config.php');
-	
+
 require_once(BORS_CORE.'/config.php');
 
 if(!config('access_log'))

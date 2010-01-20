@@ -49,6 +49,18 @@ class bors_admin_engine extends base_empty
 		return '/_bors/admin/property?object='.urlencode($obj->internal_uri());
 	}
 
+	function imaged_titled_link()
+	{
+		$obj = $this->real_object();
+		return $obj->titled_url().'&nbsp;'.$obj->imaged_admin_link('');
+	}
+
+	function imaged_nav_named_link()
+	{
+		$obj = $this->real_object();
+		return $obj->nav_named_url().'&nbsp;'.$obj->imaged_admin_link('');
+	}
+
 	function imaged_edit_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
 	{
 		$obj = $this->real_object();

@@ -11,7 +11,6 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 	require('smarty-register.php');
 
 	$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
-//	$smarty->use_sub_dirs = true;
 	$smarty->compile_id = defval($data, 'compile_id');
 	if(strlen($smarty->compile_id) > 128)
 	{
@@ -100,8 +99,8 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		foreach(explode(' ', 'host_name main_host_uri') as $key)
 			$smarty->assign($key, @$GLOBALS['cms'][$key]);
 
-	debug_timing_stop('template_smarty_assign');
-	debug_timing_start('template_smarty_assign_fill');
+		debug_timing_stop('template_smarty_assign');
+		debug_timing_start('template_smarty_assign_fill');
 
 		if($obj = bors()->main_object())
 		{
@@ -174,6 +173,7 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 	$module_relative_path = NULL;
 	foreach(bors_dirs() as $dir)
 	{
+		$dir = realpath($dir);
 		if(file_exists($fn = "{$dir}/templates/$assign_template/index.html"))
 			return "xfile:$fn";
 

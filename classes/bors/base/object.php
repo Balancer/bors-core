@@ -368,7 +368,7 @@ class base_object extends base_empty
 	{
 		if($title === NULL)
 			$title = ec('Администрировать ').bors_lower($this->class_title_rp());
-		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/bors-shared/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
+		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/_bors/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
 	function imaged_edit_link($title = NULL) { return $this->imaged_edit_url($title); }

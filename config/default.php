@@ -11,7 +11,7 @@ config_set('debug_hidden_log_dir', realpath($_SERVER['DOCUMENT_ROOT'].'/logs'));
 
 config_set('default_template', 'default/index.html');
 
-config_set('smarty_path', 'smarty-2.6.24');
+config_set('smarty_path', 'smarty-2.6.26');
 config_set('main_bors_db', 'BORS');
 config_set('bors_core_db', 'BORS');
 

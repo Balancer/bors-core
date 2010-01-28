@@ -4,10 +4,12 @@ function smarty_function_input($params, &$smarty)
 {
 		extract($params);
 
+		$value = NULL;
 		if(!isset($value))
 		{
 			$obj = $smarty->get_template_vars('current_form_class');
-			$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($obj?$obj->$name():NULL)) : '';
+			if($obj && $obj->id())
+				$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($obj?$obj->$name():NULL)) : '';
 		}
 
 		if(!isset($value) && isset($def))

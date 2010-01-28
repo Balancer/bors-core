@@ -10,7 +10,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	$smarty = &new Smarty;
 	require('smarty-register.php');
 
-	$smarty->compile_dir = secure_path(config('cache_dir').'/smarty-templates_c/');
+	$smarty->compile_dir = secure_path(config('cache_dir').'/smarty-templates_c_'.config('internal_charset').'/');
 //	$smarty->use_sub_dirs = true;
 	$smarty->plugins_dir = array();
 	foreach(bors_dirs() as $dir)

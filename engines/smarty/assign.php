@@ -10,7 +10,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 	$smarty = &new Smarty;
 	require('smarty-register.php');
 
-	$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
+	$smarty->compile_dir = secure_path(config('cache_dir').'/smarty-templates_c_'.config('internal_charset').'/');
 	$smarty->compile_id = defval($data, 'compile_id');
 	if(strlen($smarty->compile_id) > 128)
 	{

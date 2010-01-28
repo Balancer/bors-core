@@ -3,7 +3,7 @@
 class base_db_list extends base_object
 {
 	function storage_engine() { return ''; }
-	
+
 	var $_id_field;
 	var $_title_field;
 	var $_dbh;
@@ -12,13 +12,13 @@ class base_db_list extends base_object
 	function __construct($id)
 	{
 		parent::__construct($id);
-	
+
 		$item_class = $this->item_class();
 		$item_class = &new $item_class(NULL); //object_load($this->item_class(), NULL);
 
 		if(!$item_class)
 			debug_exit("Error: can not class '{$this->item_class()}' init");
-		
+
 		if(method_exists($item_class, 'fields'))
 			@list($db, $table, $id_field, $title_field) = $item_class->has_smart_field('title');
 
@@ -75,7 +75,7 @@ class base_db_list extends base_object
 			$limit = "LIMIT {$this->limit()}";
 		else
 			$limit = "";
-		
+
 		$join = "";
 		if($jj = $this->left_join())
 			foreach($jj as $j)
@@ -83,7 +83,7 @@ class base_db_list extends base_object
 
 		if($jj = $this->inner_join())
 			foreach($jj as $j)
-				$join .= "INNER JOIN {$j} ";
+				$join .= 'INNER JOIN '.mysql_bors_join_parse($j).' ';
 
 		if($this->group())
 			$group = "GROUP BY ".$this->group();

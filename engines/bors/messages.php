@@ -56,7 +56,7 @@ function bors_message($text, $params=array())
 		'this' => $page,
 	);
 
-	if(!preg_match('/^xfile:/', $template))
+	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 		$template = "xfile:$template";
 
 	$message = template_assign_data($template, $data);

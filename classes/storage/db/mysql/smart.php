@@ -210,9 +210,13 @@ class storage_db_mysql_smart extends base_null
 			if($by_id && !preg_match('/^[a-z_]+$/', $by_id))
 				$by_id = 'id';
 
+			$q = $from.' '.$where;
+			if(preg_match('/^(.*FROM.*) (LEFT JOIN.*) (USE INDEX.*) (WHERE.*)$/', $q, $m))
+				$q = "{$m[1]} {$m[3]} {$m[2]} $m[4]";
+
 			if($only_count)
 			{
-				$cnt = intval($dbh->get('SELECT COUNT(*) '.$from.' '.$where, false));
+				$cnt = intval($dbh->get('SELECT COUNT(*) '.$q, false));
 				$dbh->close();
 				return $cnt;
 			}
@@ -221,7 +225,7 @@ class storage_db_mysql_smart extends base_null
 				if(!$select)
 					return NULL;
 
-				$dbh->query('SELECT '.join(',', $select).' '.$from.' '.$where, false);
+				$dbh->query('SELECT '.join(',', $select).' '.$q, false);
 			}
 
 			$was_loaded = false;

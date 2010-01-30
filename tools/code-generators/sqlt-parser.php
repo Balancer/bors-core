@@ -160,9 +160,6 @@ $sql = "CREATE TABLE IF NOT EXISTS `$table_name` (
 	if(!$class_name)
 		$class_name = 'generated_'.$table_name;
 
-	if(!$admin_class_name)
-		$admin_class_name = 'admin_'.$class_name;
-
 	$admin_path = str_replace('_','/',$class_name);
 
 $php = "<?php\n\nclass $class_name extends base_object_db
@@ -184,7 +181,8 @@ $php = "<?php\n\nclass $class_name extends base_object_db
 	file_put_contents(str_replace('.sqlt', '.sql', $sqlt_file), $sql);
 	file_put_contents(str_replace('.sqlt', '.php', $sqlt_file), $php);
 
-
+if($admin_class_name)
+{
 // Генерация админ-класса
 $php = "<?php\n\nclass $admin_class_name extends $class_name
 {
@@ -326,6 +324,8 @@ class {$admin_class_name}s_config extends aviaport_admin_config
 
 	echo "\t'/{$admin_path}s/new/ => {$admin_class_name}s_edit',\n";
 	echo "\t'(/{$admin_path}s/)(\d+)/ => {$admin_class_name}s_edit(2)',\n";
+
+} // Конец генерации админки
 
 	echo "Done!\n";
 }

@@ -11,8 +11,8 @@ function lt_img($params)
 	require_once('inc/airbase/images.php');
 	$data = airbase_image_data($params['url'], $url);
 
-	if(!$data['local'])
-		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.
+//	if(!$data['local'])
+//		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.
 
 	if(empty($params['size']))
 		$params['size'] = '468x468';
@@ -67,7 +67,7 @@ function lt_img($params)
 			if(!$data['local'])
 			{
 				$path = config('sites_store_path')."/{$data['host']}{$data['path']}";
-			
+
 				if(preg_match("!/$!",$path))
 					$path .= "index";
 
@@ -84,8 +84,7 @@ function lt_img($params)
 
 //				exit($path);
 
-				//TODO: не утягиваем, пока нет места на винте.
-				if(false)//!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
+				if(!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
 				{
 					require_once('HTTP/Request.php');
 					$req =& new HTTP_Request($params['url'], array(
@@ -93,9 +92,9 @@ function lt_img($params)
 						'maxRedirects' => 3,
 						'timeout' => 10,
 					));
-					
+
 //					exit("down {$params['url']}");
-						
+
 					$req->addHeader('Content-Encoding', 'gzip');
 					$req->addHeader('Referer', $params['url']);
 
@@ -127,7 +126,7 @@ function lt_img($params)
 					fwrite($fh, $data);
 					fclose($fh);
 					@chmod($path, 0664);
-					
+
 //					$cmd = "wget --header=\"Referer: $uri\" -O \"$path\" \"".html_entity_decode($uri, ENT_COMPAT, 'UTF-8')."\"";
 //					return "cmd:$cmd=<br />\n";
 //					system($cmd);

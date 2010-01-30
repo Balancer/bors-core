@@ -42,15 +42,14 @@
 
         if(!empty($params['width']))
             $tab->table_width($params['width']);
-            
-//        if(!empty($params['noborder']))
-//            echo $params['noborder'];
-            
+
+		$delim = defval($params, 'delim', ';');
+
         foreach(explode("\n", $txt) as $s)
         {
             if($s = trim($s))
             {
-                foreach(csv_explode($s, ';') as $d)
+                foreach(csv_explode($s, $delim) as $d)
                 {
                     if(preg_match("!^\*(.+)$!", $d, $m))
                     {
@@ -86,7 +85,7 @@
                         $d = '&nbsp;';
 					elseif($lcml_parse_cells and !preg_match('!^[\w,\-\+\.]+$!', $d))
 						$d = lcml($d);
-					
+
                     $tab->append($d);
                 }
                 $tab->new_row();

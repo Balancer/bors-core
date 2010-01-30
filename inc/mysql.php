@@ -233,7 +233,7 @@ function mysql_args_compile($args, $class='')
 	else
 		$where = mysql_where_compile($args['where']);
 
-	return "{$join} {$use_index} {$where} {$group} {$having} {$order} {$limit}";
+	return "{$use_index} {$join} {$where} {$group} {$having} {$order} {$limit}";
 }
 
 function make_id_field($table, $id_field, $oid = '%MySqlStorageOID%')

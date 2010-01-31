@@ -1,13 +1,13 @@
 <?php
 
-include_once('../config.php');
+include_once(realpath(dirname(__FILE__).'/../config-local.php'));
 include_once(BORS_CORE.'/config.php');
 
 main($argv);
 
 function main($argv)
 {
-	$class_name = $argv[2];
+	$class_name = $argv[1];
 
 //	$class_file = secure_path(class_include($argv[1]));
 //	$src = file_get_contents($class_file);

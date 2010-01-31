@@ -44,7 +44,7 @@ class base_image extends base_object
 		move_uploaded_file($data['tmp_name'], $this->file_name_with_path());
 
 		$this->recalculate(true);
-		
+
 		return $this;
 	}
 
@@ -63,10 +63,10 @@ class base_image extends base_object
 	{
 		if($desc = $this->description())
 			return $desc;
-		
+
 		if($title = $this->title())
 			return $title;
-		
+
 		return ec('[без имени]');
 	}
 
@@ -74,10 +74,10 @@ class base_image extends base_object
 	{
 		if($alt = $this->alt())
 			return $alt;
-		
+
 		if($desc = $this->description())
 			return $desc;
-		
+
 		return '';
 	}
 }

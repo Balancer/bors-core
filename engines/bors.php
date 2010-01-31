@@ -41,7 +41,7 @@ function object_load($class, $object_id=NULL, $args=array())
 
 function &object_new($class, $id = NULL)
 {
-    $obj = &new $class($id);
+    $obj = new $class($id);
 
 	if($id !== NULL)
 	{

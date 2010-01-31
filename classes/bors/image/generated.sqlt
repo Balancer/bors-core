@@ -1,0 +1,23 @@
+bors_image_generated:
+	int		id++!
+	string	hash_id!				// Для извлечения уже имеющихся изображений
+
+	string	generator_class_name	// Класс-генератор картинок
+	text	generator_data			// данные для генерации
+	text	description				// Описание изображения
+
+	string	base_name				// имя файла изображения
+	string	image_url				// ссылка на изображение
+	string	dir						// каталог с изображением
+	int		width					// каталог с изображением
+	int		height
+
+	int		visits					// Число генераций
+	int		first_visit_time		// Первое обращение
+	int		last_visit_time			// Последнее обращение
+
+	int		create_time!			// Дата создания записи
+	int		modify_time!			// Дата модификации записи
+	int		owner_id NULL!			// Автор записи
+	int		last_editor_id NULL!	// Последний редактор записи
+

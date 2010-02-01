@@ -1,9 +1,10 @@
 <?php
     require_once("config.php");
+    require_once("obsolete/DataBaseHTS.php");
 
     function smarty_function_load_data($params, &$smarty)
     {
-//		print_r($params);
+//		print_r($params); return '';
 	
         $hts = &new DataBaseHTS;
 		

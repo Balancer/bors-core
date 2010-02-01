@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS `bors_image_generated` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`hash_id` VARCHAR(255) NOT NULL COMMENT 'Для извлечения уже имеющихся изображений',
+	`generator_class_name` VARCHAR(255) NOT NULL COMMENT 'Класс-генератор картинок',
+	`generator_data` TEXT NOT NULL COMMENT 'данные для генерации',
+	`description` TEXT NOT NULL COMMENT 'описание изображения',
+	`base_name` VARCHAR(255) NOT NULL COMMENT 'имя файла изображения',
+	`image_url` VARCHAR(255) NOT NULL COMMENT 'ссылка на изображение',
+	`dir` VARCHAR(255) NOT NULL COMMENT 'каталог с изображением',
+	`width` INT NOT NULL COMMENT 'каталог с изображением',
+	`height` INT NOT NULL,
+	`visits` INT NOT NULL COMMENT 'Число генераций',
+	`first_visit_time` INT NOT NULL COMMENT 'Первое обращение',
+	`last_visit_time` INT NOT NULL COMMENT 'Последнее обращение',
+	`create_time` INT NOT NULL COMMENT 'Дата создания записи',
+	`modify_time` INT NOT NULL COMMENT 'Дата модификации записи',
+	`owner_id` INT NULL COMMENT 'Автор записи',
+	`last_editor_id` INT NULL COMMENT 'Последний редактор записи',
+
+	PRIMARY KEY (`id`),
+	KEY `hash_id` (`hash_id`),
+	KEY `create_time` (`create_time`),
+	KEY `modify_time` (`modify_time`),
+	KEY `owner_id` (`owner_id`),
+	KEY `last_editor_id` (`last_editor_id`)
+)

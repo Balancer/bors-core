@@ -45,6 +45,7 @@ class base_object extends base_empty
 	}
 
 	function rss_title() { return $this->title(); }
+	function rss_url() { return $this->url(); }
 
 	function has_smart_field($test_property)
 	{

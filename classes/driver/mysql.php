@@ -29,7 +29,7 @@ class driver_mysql extends DataBase
 			$table = $where_map['table'];
 			unset($where_map['table']);
 		}
-	
+
 		return $this->get("SELECT $field FROM $table ".mysql_args_compile($where_map));
 	}
 

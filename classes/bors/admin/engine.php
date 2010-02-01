@@ -52,13 +52,13 @@ class bors_admin_engine extends base_empty
 	function imaged_titled_link()
 	{
 		$obj = $this->real_object();
-		return $obj->titled_url().'&nbsp;'.$obj->imaged_admin_link('');
+		return "<a href=\"{$obj->admin()->url()}\">{$obj->title()}</a>&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
 	}
 
 	function imaged_nav_named_link()
 	{
 		$obj = $this->real_object();
-		return $obj->nav_named_url().'&nbsp;'.$obj->imaged_admin_link('');
+		return "<a href=\"{$obj->admin()->url()}\">{$obj->nav_name()}</a>&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
 	}
 
 	function imaged_edit_link($title = NULL, $popup = NULL, $unlink_in_admin = true)

@@ -145,7 +145,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if($field = @$data['multiple_check_field'])
 		if(empty($data[$field]))
 			return;
-	
+
 //	if(debug_is_balancer()) { echo "Store object $class_name($id); ".print_d($data, true)."<br/>"; debug_exit('stop0'); }
 	if($id)
 	{

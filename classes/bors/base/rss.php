@@ -32,10 +32,10 @@ class base_rss extends base_page
 		// get your news items from somewhere, e.g. your database: 
 
 		foreach($obj->rss_items() as $o)
-		{	
+		{
 		    $item = &new FeedItem();
 	    	$item->title = $o->rss_title();
-		    $item->link = $o->url();
+		    $item->link = $o->rss_url();
 
 			$item->description = $obj->rss_body($o, $obj->rss_strip());
 			$item->date = intval($o->create_time());

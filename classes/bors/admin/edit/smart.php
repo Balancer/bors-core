@@ -38,9 +38,34 @@ class bors_admin_edit_smart extends base_page
 	{
 		templates_noindex();
 
+		$fields = array();
+		$args = array();
+		foreach($this->object()->editor_fields_list() as $field_title => $x)
+		{
+			$field_name = $x;
+
+			$type = 'input';
+			if(preg_match('/^(\w+)\|(.+)$/', $field_name, $m))
+			{
+				$field_name = $m[1];
+				$type = $m[2];
+			}
+
+			if(preg_match('/^(\w+)\((.+)\)$/', $type, $m))
+			{
+				$type = $m[1];
+				foreach(explode(',', $m[2]) as $pair)
+					if(preg_match('/^(\w+)=(.+)$/', $pair, $mm))
+						$args[$mm[1]] = $mm[2];
+			}
+
+			$fields[$field_title] = array('origin' => $x, 'type' => $type, 'args' => $args);
+		}
+
 		return array(
 			'object' => $this->object(),
-			'fields' => $this->fields(),
+			'fields' => $fields,
+//			'fields' => $this->fields(),
 			'referer' => ($ref = bors()->referer()) ? $ref : 'newpage_admin',
 		);
 	}

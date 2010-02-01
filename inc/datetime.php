@@ -2,10 +2,7 @@
 
 require_once('inc/strings.php');
 
-function full_time($time)
-{
-	return strftime("%d.%m.%Y %H:%M",$time);
-}
+function full_time($time) { return $time ? strftime("%d.%m.%Y %H:%M",$time) : '-'; }
 
 function short_time($time)
 {

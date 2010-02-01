@@ -3,7 +3,7 @@
 function smarty_function_input_date($params, &$smarty)
 {
 	include_once('inc/datetime.php');
-	
+
 	extract($params);
 
 	if(!isset($value))
@@ -17,9 +17,9 @@ function smarty_function_input_date($params, &$smarty)
 	$date = $value; // $obj ? $obj->$name() : NULL;
 	if(!$date && !empty($def))
 		$date = $def;
-	
+
 	$can_drop = @$can_drop;
-	
+
 	if(!$date)
 		$date = $can_drop ? 0 : $GLOBALS['now'];
 
@@ -44,7 +44,7 @@ function smarty_function_input_date($params, &$smarty)
 		else
 			list($yea, $mon, $day) = explode('-', $date);
 	}
-	
+
 	if(empty($year_min))
 		$year_min = strftime('%Y') - 20; 
 
@@ -63,7 +63,7 @@ function smarty_function_input_date($params, &$smarty)
 	for($i = 1; $i<=12; $i++)
 		echo "<option value=\"$i\"".($i==$mon?' selected="true"':'').">".month_name_rp($i)."</option>";
 	echo "</select>\n";
-	
+
 	echo "<select name=\"{$name}_year\">\n";
 	if($can_drop || !$yea)
 		echo "<option value=\"0\">----</option>\n";
@@ -74,7 +74,7 @@ function smarty_function_input_date($params, &$smarty)
 	if(!empty($time))
 	{
 		echo "&nbsp;";
-		
+
 		echo "<select name=\"{$name}_hour\">\n";
 		if($can_drop)
 			echo "<option value=\"0\">--</option>\n";

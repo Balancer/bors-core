@@ -13,6 +13,8 @@ class base_page extends base_object
 	function class_title_dp()	{ return ec('странице'); }
 	function class_title_vp()	{ return ec('страницу'); }
 
+	function page_title()		{ return $this->title(); }
+
 	function source() { return @$this->data['source']; }
 	function set_source($source, $db_update) { return $this->set('source', $source, $db_update); }
 

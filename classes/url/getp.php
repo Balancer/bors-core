@@ -16,7 +16,10 @@ class url_getp extends url_base
 
 		$pars = array();
 		foreach($get as $k => $v)
-			$pars[] = urlencode($k).'='.urlencode($v);
+			if(is_array($v))
+				$pars[] = urlencode($k).'='.urlencode(join(',', $v));
+			else
+				$pars[] = urlencode($k).'='.urlencode($v);
 
 		if($pars)
 			return $url.'?'.join('&', $pars);

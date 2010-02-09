@@ -105,6 +105,13 @@ class bors_link extends base_object_db
 		$params['from_class'] = $object->class_id();
 		$params['from_id']    = $object->id();
 
+		if(!empty($params['to']))
+		{
+			$params['to_class'] = $params['to']->class_id();
+			$params['to_id']    = $params['to']->id();
+			unset($params['to']);
+		}
+
 		return objects_array('bors_link', $params);
 	}
 
@@ -126,11 +133,13 @@ class bors_link extends base_object_db
 		{
 			$x = $link->target();
 			$x->_set_arg('is_special', $link->type_id() == 3);
+			$x->set_link_type_abs_id($link->type_id(), false);
+
 			if($link->owner_id() < 0)
 				$x->set_link_type_id(-$link->type_id(), false);
 			else
 				$x->set_link_type_id($link->type_id(), false);
-			$x->set_link_type_abs_id($link->type_id(), false);
+
 			$result[] = $x;
 		}
 

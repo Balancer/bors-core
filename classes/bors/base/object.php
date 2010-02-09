@@ -892,6 +892,7 @@ class base_object extends base_empty
 	function use_temporary_static_file() { return true; }
 
 	function internal_charset() { return config('internal_charset', 'utf-8'); }
+	function input_charset() { return config('input_charset', $this->output_charset()); }
 	function output_charset() { return config('output_charset', 'utf-8'); }
 	function files_charset() { return config('files_charset', 'utf-8'); }
 	function db_charset() { return config('db_charset', 'utf-8'); }
@@ -907,6 +908,9 @@ class base_object extends base_empty
 	function cs_d2i($str) { return iconv($this->db_charset(), $this->internal_charset().'//IGNORE', $str); }
 
 	function cs_i2d($str, $f='') { return iconv($this->internal_charset(), $this->db_charset().'//IGNORE', $str); }
+
+	// Input to internal
+	function cs_i2i($str) { return iconv($this->input_charset(), $this->internal_charset().'//IGNORE', $str); }
 
 	function cs_i2o($str)
 	{

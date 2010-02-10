@@ -621,6 +621,7 @@ class base_object extends base_empty
 
 	function set_called_url($url) { return $this->attr['called_url'] = $url; }
 	function called_url() { return @$this->attr['called_url']; }
+	function called_url_no_get() { return preg_replace('/\?.+$/', '', @$this->attr['called_url']); }
 	function _auto_redirect() { return true; }
 
 	function url($page = NULL)

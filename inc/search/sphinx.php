@@ -12,7 +12,7 @@ function bors_search_sphinx($query, $params = array())
 	$host = config('search_sphinx_host', 'localhost');
 	$port = config('search_sphinx_port', 9312);
 
-	$index = defval($params, 'where', '*');
+	$indexes = defval($params, 'indexes', '*');
 
 	$filtervals = array();
 	$distinct = "";
@@ -31,7 +31,9 @@ function bors_search_sphinx($query, $params = array())
 	else
 		$cl->SetMatchMode (SPH_MATCH_ALL);
 
-	$cl->SetLimits(defval($params, 'page', 1)-1, defval($params, 'per_page', 50));
+	$page = defval($params, 'page', 1)-1;
+	$per_page = defval($params, 'per_page', 50);
+	$cl->SetLimits($page * $per_page, $per_page, 5000);
 
 //	$cl->SetMaxQueryTime(bors()->user() ? 10000 : 3000);
 
@@ -55,10 +57,10 @@ function bors_search_sphinx($query, $params = array())
 	switch(defval($params, 'sort_order'))
 	{
 		case 'c':
-			$cl->SetSortMode (SPH_SORT_ATTR_DESC, 'create_time' );
+			$cl->SetSortMode(SPH_SORT_ATTR_DESC, 'create_time');
 			break;
 		case 'co':
-			$cl->SetSortMode (SPH_SORT_ATTR_ASC, 'create_time' );
+			$cl->SetSortMode(SPH_SORT_ATTR_ASC, 'create_time');
 			break;
 		case 'r':
 			$cl->SetSortMode(SPH_SORT_RELEVANCE);
@@ -68,14 +70,17 @@ function bors_search_sphinx($query, $params = array())
 			break;
 	}
 
+//	echo $cl->GetSortMode();
+
 	$cl->SetRankingMode($ranker);
 	$cl->SetArrayResult(true);
-	$res = $cl->Query(dc($query), $index);
+	$res = $cl->Query(dc($query), $indexes);
 
 	$data = array();
 
 	$data['q'] = $query;
 	$data['res'] = &$res;
+	$data['total'] = $res['total'];
 
 	if($res === false)
 		$data['error'] = $cl->GetLastError();
@@ -91,7 +96,7 @@ function bors_search_sphinx($query, $params = array())
 
 		foreach($res['matches'] as $x)
 		{
-			$object = object_load($x['attrs']['class_id'], $x['id']);
+			$object = object_load($x['attrs']['class_id'], $x['attrs']['object_id']);
 			$objects[] = $object;
 		}
 

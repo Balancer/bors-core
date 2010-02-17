@@ -2,6 +2,7 @@
     function lcml_tags($txt, &$mask)
     {
 		$taglist = config('lcml_tags_enabled');
+		$taglist_disabled = config('lcml_tags_disabled');
 
         $end = 0;
 		$next_end = -1;
@@ -18,6 +19,7 @@
                 if(empty($GLOBALS['cms']['config']['disable']["lp_$func"]) 
 					&& function_exists("lp_$func")
 					&& (!$taglist || in_array($func, $taglist))
+					&& ($taglist_disabled || !in_array($func, $taglist_disabled))
 				)
                 {
                     $opened   = 0; // число открытых тэгов данного типа
@@ -81,6 +83,7 @@
                 if(empty($GLOBALS['cms']['config']['disable']["lt_$func"])
 					&& function_exists("lt_$func")
 					&& (!$taglist || in_array($func, $taglist))
+					&& (!$taglist_disabled || !in_array($func, $taglist_disabled))
 					)
                 {
 					$func = "lt_$func";

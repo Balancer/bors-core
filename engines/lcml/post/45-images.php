@@ -1,8 +1,7 @@
 <?
 	function lcml_images($txt)
 	{
-		$taglist = config('lcml_tags_enabled');
-		if($taglist && empty($taglist['img']))
+		if(lcml_tag_disabled('img'))
 			return $txt;
 
 		$n=50;

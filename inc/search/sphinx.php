@@ -17,13 +17,20 @@ function bors_search_sphinx($query, $params = array())
 	$filtervals = array();
 	$distinct = "";
 
-	$ranker = SPH_RANK_PROXIMITY_BM25;
+	static $instance = false;
 
-	$cl = new SphinxClient();
+	if(!$instance || empty($params['persistent_instance']))
+		$cl = $instance = new SphinxClient();
+	else
+		$cl = $instance;
+
 	$cl->SetServer($host, $port);
 	$cl->SetConnectTimeout(1);
 
-	if($weights = defval($params, 'weights'))
+	if($weights = defval($params, 'field_weights'))
+		$cl->SetFieldWeights($weights);
+
+	if($weights = defval($params, 'index_weights'))
 		$cl->SetIndexWeights($weights);
 
 	if($is_exact = defval($params, 'exactly'))
@@ -72,9 +79,13 @@ function bors_search_sphinx($query, $params = array())
 
 //	echo $cl->GetSortMode();
 
+	$ranker = SPH_RANK_PROXIMITY_BM25;
+
 	$cl->SetRankingMode($ranker);
 	$cl->SetArrayResult(true);
 	$res = $cl->Query(dc($query), $indexes);
+
+//	print_d($res);
 
 	$data = array();
 
@@ -93,12 +104,15 @@ function bors_search_sphinx($query, $params = array())
 			return false;
 
 		$objects = array();
+		$target_classes = defval($params, 'target_classes', array());
 
 		foreach($res['matches'] as $x)
-		{
-			$object = object_load($x['attrs']['class_id'], $x['attrs']['object_id']);
-			$objects[] = $object;
-		}
+			if(($object = object_load($x['attrs']['class_id'], $x['attrs']['object_id'])))
+				if(!$target_classes || in_array($object->class_name(), $target_classes))
+					$objects[] = $object;
+
+		if(defval($params, 'only_objects'))
+			return $objects;
 
 		$docs = array();
 		$loop = 0;
@@ -115,7 +129,7 @@ function bors_search_sphinx($query, $params = array())
 				'before_match'		=> '<b>',
 				'after_match'		=> '</b>',
 				'chunk_separator'	=> ' ... ',
-				'limit'				=> 300,
+				'limit'				=> 500,
 				'around'			=> 5,
 			);
 

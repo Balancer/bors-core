@@ -112,7 +112,7 @@ class bors_lcml
 		if(!trim($text))
 			return '';
 
-		if(0 && $this->_params['level'] == 1 && !config('lcml_cache_disable') && config('cache_engine'))
+		if($this->_params['level'] == 1 && !config('lcml_cache_disable') && config('cache_engine'))
 		{
 			$cache = new Cache();
 			if($cache->get('lcml-cache', $text))
@@ -265,4 +265,15 @@ function lcml_smart($string)
 	config_set('lcml_tags_enabled', $se);
 	config_set('lcml_tags_disabled', $sd);
 	return $result;
+}
+
+function lcml_tag_disabled($tag)
+{
+	if(@in_array('img', $enabled = config('lcml_tags_enabled')))
+		return false;
+
+	if(@in_array('img', config('lcml_tags_disabled')))
+		return true;
+
+	return empty($enabled);
 }

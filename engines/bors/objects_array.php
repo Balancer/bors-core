@@ -21,7 +21,11 @@ function objects_array($class, $args = array())
 
 	$init = &new $class(NULL);
 
-	return $init->storage()->load($init, $where, false, $cargs);
+	if($s = $init->storage())
+		return $s->load($init, $where, false, $cargs);
+
+	debug_hidden_log('__fatal_objects_error', 'Try to load objects array without storage');
+	return array();
 }
 
 function objects_first($class, $args = array())

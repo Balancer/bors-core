@@ -72,9 +72,9 @@ function set_last_editor_id($v, $dbup) { return $this->set('last_editor_id', $v,
 
 	function html_code()
 	{
+		$params = unserialize($this->id());
 //		if(!($g = $this->generator()))
 		{
-			$params = unserialize($this->id());
 			$g = object_new($params['class_name'], $params);
 
 			$x = object_new_instance('bors_image_generated', array(
@@ -86,7 +86,7 @@ function set_last_editor_id($v, $dbup) { return $this->set('last_editor_id', $v,
 				'dir' => $g->dir(),
 				'width' => $g->width(),
 				'height' => $g->height(),
-				'description' => $g->description(),
+				'description' => $description = $g->description(),
 			));
 
 			mkpath($g->dir());
@@ -108,14 +108,18 @@ function set_last_editor_id($v, $dbup) { return $this->set('last_editor_id', $v,
 			{
 				$w = $g->width();
 				$h = $g->height();
+				$description = $g->description();
 			}
 
 			file_put_contents($g->file_path(), $image);
 		}
-//		else
-//			$x = $this;
 
 
-		return "<img src=\"{$x->url()}\" width=\"{$w}\" height=\"{$h}\" /><br/>{$x->description()}";
+		if(!empty($params['show_description']))
+			$description = "<br/>{$description}<div class=\"clear\">&nbsp;</div>";
+		else
+			$description = '';
+
+		return "<img src=\"{$x->url()}\" width=\"{$w}\" height=\"{$h}\" />{$description}";
 	}
 }

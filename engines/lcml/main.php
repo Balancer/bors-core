@@ -60,7 +60,7 @@ class bors_lcml
         if(!is_dir($dir))
 			return;
 
-		$files = self::memcache()->get('lcml_actions:'.$dir);
+		$files = self::memcache()->get('lcml_actions_'.$_SERVER['HTTP_HOST'].'_3:'.$dir);
 		if(!$files)
 		{
 	        $files = array();

@@ -36,7 +36,8 @@ function lp_csv_stat($txt, $params)
 		'width' => $width,
 		'height' => $height,
 		'data' => $data,
-		'crop' => defval_ne($params, 'crop', NULL),
+		'crop' => defval($params, 'crop'),
+		'show_description' => defval($params, 'show_description'),
 	)));
 
 	return $image->html_code();

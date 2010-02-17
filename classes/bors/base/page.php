@@ -294,4 +294,6 @@ class base_page extends base_object
 	{
 		$this->add_template_data($key, @array_merge($this->template_data($key), $merge_values));
 	}
+
+	function keywords_linked() { return ''; }
 }

@@ -1,9 +1,10 @@
-<?
+<?php
+
     function ext_load($dir, $txt=NULL, $mask=false)
     {
         if(!is_dir($dir))
 			return $txt;
-        
+
         $files = array();
 
         if($dh = opendir($dir)) 

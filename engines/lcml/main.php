@@ -112,7 +112,8 @@ class bors_lcml
 		if(!trim($text))
 			return '';
 
-		if(0 && $this->_params['level'] == 1 && !config('lcml_cache_disable') && config('cache_engine'))
+//		echo "if({$this->_params['level']} == 1 && !".config('lcml_cache_disable')." && ".config('cache_engine').")<br/>";
+		if($this->_params['level'] == 1 && !config('lcml_cache_disable') && config('cache_engine'))
 		{
 			$cache = new Cache();
 			if($cache->get('lcml-cache', $text))

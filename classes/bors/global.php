@@ -55,7 +55,7 @@ class bors_global extends base_empty
 			if(!$obj->id() || empty($obj->changed_fields))
 				continue;
 
-			$obj->cache_clean();
+//			$obj->cache_clean();
 			if($obj != $x)
 			{
 				debug_hidden_log('__workaround', "strange object cache clean error: {$x} -> {$obj}");

@@ -528,8 +528,8 @@ class base_object extends base_empty
 
 		include_once('engines/search.php');
 
-		if($cache_clean)
-			$this->cache_clean();
+//		if($cache_clean)
+//			$this->cache_clean();
 
 		if(!($storage = $this->storage_engine()))
 		{

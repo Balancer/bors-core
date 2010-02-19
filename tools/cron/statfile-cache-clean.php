@@ -13,7 +13,7 @@ bors_init();
 	if(!bors_thread_lock('statfile-cache-clean', 1200))
 		exit("Locked\n");
 
-	$db = &new DataBase('CACHE');
+	$db = new driver_mysql(config('cache_database'));
 
 	foreach($db->get_array("SELECT file, recreate, class_id, object_id, original_uri FROM cached_files WHERE expire_time BETWEEN 0 AND ".time()) as $x)
 	{

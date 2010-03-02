@@ -3,7 +3,11 @@
 function smarty_function_php_include($params, &$smarty)
 {
 	ob_start();
+//	$cwd = getcwd();
+//	echo "Load {$params['file']}<br/>";
+//	@chdir(dirname(@$params['file']));
 	include(@$params['file']);
+//	@chdir(dirname($cwd));
 	$result = ob_get_contents();
 	ob_clean();
 	if(($cs = config('smarty_php_include_charset', 'utf-8')) != 'utf-8')

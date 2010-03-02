@@ -33,11 +33,13 @@ class base_rss extends base_page
 
 		foreach($obj->rss_items() as $o)
 		{
-		    $item = &new FeedItem();
-	    	$item->title = $o->rss_title();
+		    $item = new FeedItem();
+	    	$item->title = $obj->item_rss_title($o);
 		    $item->link = $o->rss_url();
 
-			$item->description = $obj->rss_body($o, $obj->rss_strip());
+//			$item->description = $obj->rss_body($o, $obj->rss_strip());
+			if(($desc = $obj->item_rss_body($o, $obj)))
+				$item->description = $desc;
 			$item->date = intval($o->create_time());
 			$item->source = $obj->rss_source_url();
 			$owner = $o->owner();
@@ -51,6 +53,9 @@ class base_rss extends base_page
 		header("Content-Type: ".$rss->contentType."; charset=".$rss->encoding);
 		return $result;
 	}
+
+	function item_rss_title($item) { return $item->rss_title(); }
+	function item_rss_body($item, $rss) { return $rss->rss_body($item, $rss->rss_strip()); }
 
 	function rss_body($object, $strip = 0)
 	{

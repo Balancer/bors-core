@@ -40,7 +40,7 @@ class bors_tools_delete extends base_page
 			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_url());
 
 		$obj->delete();
-		return go($_GET['ref']);
+		return go(urldecode($_GET['ref']));
 	}
 
 	function ref()

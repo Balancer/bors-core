@@ -96,6 +96,8 @@ $includes = array(
 
 if(defined('BORS_APPEND'))
 	$includes = array_merge($includes, explode(' ', BORS_APPEND));
+if(defined('INCLUDES_APPEND'))
+	$includes = array_merge($includes, explode(' ', INCLUDES_APPEND));
 
 if(defined('INCLUDES_APPEND'))
 	$includes = array_merge($includes, explode(' ', INCLUDES_APPEND));

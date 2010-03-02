@@ -225,6 +225,12 @@ class storage_db_mysql_smart extends base_null
 				if(!$select)
 					return NULL;
 
+				if(preg_match("/^(.+WHERE )additional_fields='(.+?)' AND (.+)$/", $q, $m))
+				{
+					$select = array_merge($select, explode(',', $m[2]));
+					$q = $m[1].$m[3];
+				}
+
 				$dbh->query('SELECT '.join(',', $select).' '.$q, false);
 			}
 

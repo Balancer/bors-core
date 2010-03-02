@@ -89,8 +89,8 @@ function lt_img($params)
 					require_once('HTTP/Request.php');
 					$req =& new HTTP_Request($params['url'], array(
 						'allowRedirects' => true,
-						'maxRedirects' => 3,
-						'timeout' => 10,
+						'maxRedirects' => 2,
+						'timeout' => 3,
 					));
 
 //					exit("down {$params['url']}");
@@ -117,8 +117,8 @@ function lt_img($params)
 
 					$content_type = $req->getResponseHeader('Content-Type');
 					if(!preg_match("!image!",$content_type))
-						return $params['url'];
 //						return lcml("Non-image content type ('$content_type') image ={$uri}= error.");
+						return lcml_urls_title($params['url']); // Это не картинка
 
 					require_once('inc/filesystem.php');
 					mkpath(dirname($path), 0775);
@@ -137,9 +137,9 @@ function lt_img($params)
 					$remote = $uri;
 					$uri = str_replace(config('sites_store_path'), config('sites_store_uri'), $path);
 					$data['local'] = true;
-					
+
 					$db = &new driver_mysql(config('main_bors_db'));
-					
+
 					$id = intval($db->select('images', 'id', array('original_url=' => $remote)));
 					if(!$id)
 					{

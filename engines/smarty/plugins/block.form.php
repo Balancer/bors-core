@@ -37,7 +37,7 @@
 		if(!isset($uri))
 		{
 			if($main_obj)
-				$uri = $main_obj->url();
+				$uri = $main_obj->called_url();
 			else
 				$uri = NULL;
 
@@ -99,7 +99,7 @@
 
 		if(($cbs = base_object::template_data('form_checkboxes')) && empty($no_auto_checkboxes))
 			echo "<input type=\"hidden\" name=\"checkboxes\" value=\"".join(',', array_unique(array_filter($cbs)))."\" />\n";
-		if($vcbs = base_object::template_data('form_checkboxes_list') && empty($no_auto_checkboxes))
+		if(($vcbs = base_object::template_data('form_checkboxes_list')) && empty($no_auto_checkboxes))
 			echo "<input type=\"hidden\" name=\"checkboxes_list\" value=\"".join(',', array_unique(array_filter($vcbs)))."\" />\n";
 		if($tmv = base_object::template_data('form_time_vars'))
 			echo "<input type=\"hidden\" name=\"time_vars\" value=\"".join(',', array_unique(array_filter($tmv)))."\" />\n";

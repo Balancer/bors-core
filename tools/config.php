@@ -1,7 +1,7 @@
 <?php
 
 $argv = $_SERVER['argv'];
-if(empty($argv[1]))
+if(1 || empty($argv[1]))
 	require_once('config-local.php');
 else
 	foreach(explode(',', $argv[1]) as $pair)

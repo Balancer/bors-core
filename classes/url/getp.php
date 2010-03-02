@@ -18,11 +18,11 @@ class url_getp extends url_base
 		$skip_keys = explode(',', $obj->get('url_skip_keys'));
 		$use_keys = explode(',', $obj->get('url_use_keys'));
 
-		if($use_keys)
+		if($use_keys && $use_keys[0])
 		{
 			foreach($use_keys as $k)
 			{
-				if($k == 'p')
+				if(!$k || $k == 'p')
 					continue;
 
 				if(preg_match('/^(\w+)\[\]$/', $k, $m))
@@ -44,13 +44,14 @@ class url_getp extends url_base
 		else
 			foreach($get as $k => $v)
 			{
-				if(in_array($k, $skip_keys))
+				if(!$k || in_array($k, $skip_keys))
 					continue;
 
 				if(is_array($v))
 					$pars[] = urlencode($k).'='.urlencode(join(',', $v));
 				else
 					$pars[] = urlencode($k).'='.urlencode($v);
+
 			}
 
 		if($pars)

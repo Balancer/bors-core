@@ -18,6 +18,9 @@ class bors_storage_fs_markdown extends base_null
 			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}.mdml")))
 				return $file;
 
+			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/main.mdml")))
+				return $file;
+
 			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.mdml")))
 				return $file;
 

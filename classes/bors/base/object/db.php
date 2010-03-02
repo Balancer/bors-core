@@ -67,4 +67,7 @@ class base_object_db extends base_object
 		if($this->id())
 			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
 	}
+
+	static function objects_array($where) { return objects_array($where); }
+	static function objects_first($where) { return objects_first($where); }
 }

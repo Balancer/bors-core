@@ -28,9 +28,9 @@ class bors_admin_engine extends base_empty
 			return $obj->delete_url();
 
 		if($obj->has_smart_field('is_deleted'))
-			return '/_bors/admin/mark/delete/?object='.$obj->internal_uri().'&ref='.$obj->admin_parent_url(); 
+			return '/_bors/admin/mark/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin_parent_url());
 		else
-			return '/_bors/admin/delete/?object='.$obj->internal_uri().'&ref='.$obj->admin_parent_url(); 
+			return '/_bors/admin/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin_parent_url());
 	}
 
 	function append_child_url()
@@ -185,7 +185,11 @@ class bors_admin_engine extends base_empty
 		if(is_null($popup))
 			$popup = $title;
 
-		if(!bors()->main_object() || $unlink_in_admin && preg_match('!'.preg_quote($obj->admin()->delete_url(), '!').'!', bors()->main_object()->url()))
+		if(!bors()->main_object() || 
+			($unlink_in_admin 
+				&& preg_match('!'.preg_quote($obj->admin()->delete_url(), '!').'!', 
+					bors()->main_object()->url()))
+		)
 			$url = '';
 
 		if($url)
@@ -248,5 +252,18 @@ class bors_admin_engine extends base_empty
 	function edit_links()
 	{
 		return "/admin/edit/crosslinks/?object={$this->real_object()->internal_uri()}&edit_class={$this->real_object()->admin()->url()}";
+	}
+
+	function urls($type)
+	{
+		switch($type)
+		{
+			case 'links':
+				return config('admin_host_url')."/_bors/admin/edit/crosslinks/?object={$this->real_object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
+			case 'synonyms':
+				return config('admin_host_url')."/_bors/admin/edit/synonyms/?object={$this->real_object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
+		}
+
+		return '';
 	}
 }

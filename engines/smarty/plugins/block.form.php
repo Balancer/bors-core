@@ -37,7 +37,7 @@
 		if(!isset($uri))
 		{
 			if($main_obj)
-				$uri = $main_obj->url();
+				$uri = $main_obj->called_url();
 			else
 				$uri = NULL;
 

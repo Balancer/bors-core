@@ -82,6 +82,8 @@ function quote_fix($text)
 	return $text;
 }
 
+require_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
+
 function bors_text_clear($text, $morfology = true, $spacer = ' ')
 {
 	$text = preg_replace('/&\w+;/', ' ', $text);
@@ -91,18 +93,22 @@ function bors_text_clear($text, $morfology = true, $spacer = ' ')
 		array(' ',' ',' '),
 		$text);
 	$text = preg_replace("![\x01-/ :-@ [-` {-~]!x", ' ', $text);
-	$result = trim(strtolower(preg_replace('/\s{2,}/', ' ', $text)));
-	if(false && $morfology)
+	$result = trim(bors_lower(preg_replace('/\s{2,}/', ' ', $text)));
+	if($morfology)
 	{
-		require_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
 		static $Stemmer = false;
+		static $cache = array();
 
 		if(!$Stemmer)
 			$Stemmer = new Lingua_Stem_Ru();
 
 		$words = array();
 		foreach(explode(' ', $result) as $word)
-			$words[] = $Stemmer->stem_word($word);
+			if(array_key_exists($word, $cache))
+				$words[] = $cache[$word];
+			else
+				$words[] = $cache[$word] = $Stemmer->stem_word($word);
+
 		$result = join(' ', $words);
 	}
 

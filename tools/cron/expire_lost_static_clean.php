@@ -1,7 +1,7 @@
 <?php
 
 require_once('../config.php');
-	
+
 require_once(BORS_CORE.'/config.php');
 require_once('inc/filesystem.php');
 
@@ -21,7 +21,7 @@ function do_clean($file)
 {
 	if(filemtime($file) > $GLOBALS['now'] - 86400)
 		return;
-		
+
 	$content = @file_get_contents($file);
 	if(!$content)
 		return;
@@ -31,10 +31,10 @@ function do_clean($file)
 
 	if(empty($m[1]))
 		return;
-	
+
 	if(!($t = strtotime($m[1])))
 		return;
-	
+
 	if($t+600 > $GLOBALS['now'])
 	{
 //		echo "[{$m[1]}] save $file\n";

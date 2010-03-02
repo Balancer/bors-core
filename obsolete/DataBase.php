@@ -128,7 +128,7 @@ class DataBase extends base_object
 	}
 
 	var $last_query_time;
-	function query($query, $ignore_error=false)
+	function query($query, $ignore_error=false, $reenter = false)
 	{
 		if(!$query)
 			return;
@@ -170,6 +170,12 @@ class DataBase extends base_object
 
 		if(!$ignore_error)
 		{
+			if(!$reenter && config('mysql_autorepair', true) && preg_match('/REPLACE (\w+) /i', $query, $m))
+			{
+				$this->query('REPAIR TABLE '.$m[1], true, true);
+				return $this->query($query, $ignore_error, true);
+			}
+
 			if(($err_msg_header = config('error_message_header')))
 				echo $err_msg_header;
 			echo debug_trace();

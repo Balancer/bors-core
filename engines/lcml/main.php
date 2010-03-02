@@ -60,7 +60,7 @@ class bors_lcml
         if(!is_dir($dir))
 			return;
 
-		$files = self::memcache()->get('lcml_actions:'.$dir);
+		$files = self::memcache()->get('lcml_actions_'.$_SERVER['HTTP_HOST'].'_3:'.$dir);
 		if(!$files)
 		{
 	        $files = array();
@@ -112,7 +112,6 @@ class bors_lcml
 		if(!trim($text))
 			return '';
 
-//		echo "if({$this->_params['level']} == 1 && !".config('lcml_cache_disable')." && ".config('cache_engine').")<br/>";
 		if($this->_params['level'] == 1 && !config('lcml_cache_disable') && config('cache_engine'))
 		{
 			$cache = new Cache();
@@ -266,4 +265,15 @@ function lcml_smart($string)
 	config_set('lcml_tags_enabled', $se);
 	config_set('lcml_tags_disabled', $sd);
 	return $result;
+}
+
+function lcml_tag_disabled($tag)
+{
+	if(@in_array('img', $enabled = config('lcml_tags_enabled')))
+		return false;
+
+	if(@in_array('img', config('lcml_tags_disabled')))
+		return true;
+
+	return empty($enabled);
 }

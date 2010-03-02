@@ -1,13 +1,14 @@
-<? 
-	function smarty_function_submit($params, &$smarty)
-	{
-		extract($params);
-		
-		echo "<input type=\"submit\" value=\"".addslashes($value)."\"";
+<?php
 
-		foreach(split(' ', 'class style') as $p)
-			if(!empty($$p))
-				echo " $p=\"{$$p}\"";
+function smarty_function_submit($params, &$smarty)
+{
+	extract($params);
 
-		echo " />";
-	}
+	echo "<input type=\"submit\" value=\"".addslashes($value)."\"";
+
+	foreach(explode(' ', 'class style onClick') as $p)
+		if(!empty($$p))
+			echo " $p=\"{$$p}\"";
+
+	echo " />";
+}

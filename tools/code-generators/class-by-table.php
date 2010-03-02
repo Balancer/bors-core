@@ -7,12 +7,12 @@ main($argv);
 
 function main($argv)
 {
-	if(empty($argv[2]))
+	if(empty($argv[1]))
 		exit("Use {$argv[0]} table [db] [host]\n");
 
-	$table = $argv[2];
-	$db    = empty($argv[3]) ? config('main_bors_db') : $argv[3];
-//	$host  = empty($argv[4]) ? 'localhost' : $argv[4];
+	$table = $argv[1];
+	$db    = empty($argv[2]) ? config('main_bors_db') : $argv[2];
+//	$host  = empty($argv[3]) ? 'localhost' : $argv[3];
 
 	$dbh = new driver_mysql($db);
 

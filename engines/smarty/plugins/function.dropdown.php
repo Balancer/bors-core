@@ -41,7 +41,7 @@ function smarty_function_dropdown($params, &$smarty)
 		}
 		elseif(preg_match("!^\w+$!", $list))
 		{
-			$list = &new $list(@$args);
+			$list =&new $list(@$args);
 			$list = $list->named_list();
 		}
 		else
@@ -49,7 +49,10 @@ function smarty_function_dropdown($params, &$smarty)
 			eval('$list='.$list);
 		}
 	}
-	
+
+
+
+//	echo "===="; var_dump($obj->$name());
 	if(empty($get))
 		$current = preg_match('!^\w+$!', $name) ? (isset($value)?$value:($obj?$obj->$name():NULL)) : 0;
 	else

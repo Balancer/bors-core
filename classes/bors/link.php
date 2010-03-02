@@ -148,6 +148,9 @@ class bors_link extends base_object_db
 
 	static function links_count($object, $where = array())
 	{
+//		if(!$object)
+//			return 0;
+
 		if(!is_array($where))
 			$where = array('target_class' => $where);
 
@@ -158,5 +161,13 @@ class bors_link extends base_object_db
 		$where['type_id<>'] = 4;
 
 		return objects_count('bors_link', $where);
+	}
+
+	static function drop_auto($object)
+	{
+		$dbh = new driver_mysql('WWW');
+		$tc = $object->class_id();
+		$ti = $object->id();
+		$dbh->delete(self::main_table(), array("owner_id < 0 AND ((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
 	}
 }

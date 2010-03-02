@@ -20,7 +20,7 @@ class base_object_db extends base_object
 	}
 
 	function id_field() { $fields = $this->main_table_fields(); return empty($fields['id']) ? 'id' : $fields['id']; }
-	
+
 	function new_instance() { bors_object_new_instance_db($this); }
 
 	function select($field, $where_map) { return $this->db()->select($this->main_table(), $field, $where_map); }
@@ -67,4 +67,7 @@ class base_object_db extends base_object
 		if($this->id())
 			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
 	}
+
+	static function objects_array($where) { return objects_array($where); }
+	static function objects_first($where) { return objects_first($where); }
 }

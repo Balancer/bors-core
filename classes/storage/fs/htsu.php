@@ -43,6 +43,9 @@ class storage_fs_htsu extends base_null
 				if(file_exists($file = secure_path("{$d}/data/fs/{$rel}.htsu")))
 					return $file;
 
+				if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/main.htsu")))
+					return $file;
+
 				if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.htsu")))
 					return $file;
 
@@ -56,6 +59,9 @@ class storage_fs_htsu extends base_null
 		else
 		{
 			$data = bors_vhost_data($object->host());
+			if(file_exists($file = "{$data['bors_site']}/data/fs/{$rel}main.htsu"))
+				return $file;
+
 			if(file_exists($file = "{$data['bors_site']}/data/fs/{$rel}index.htsu"))
 				return $file;
 
@@ -95,7 +101,10 @@ class storage_fs_htsu extends base_null
 		if(empty($parents[0]))
 		{
 			$data = url_parse($object->url());
-			$parents = array(dirname($data['path']).'/');
+			if(($pd = dirname($data['path'])) != '/')
+				$parents = array($pd.'/');
+			else
+				$parents = array('/');
 		}
 
 		$object->set_parents($parents, false);

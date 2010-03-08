@@ -30,6 +30,14 @@ class storage_fs_htsu extends base_null
 		$root = $object->document_root();
 		$rel = secure_path(str_replace($root, '/', $dir));
 
+		if(($ut = config('url_truncate')))
+		{
+			if(!preg_match("!/$ut(/|$)!", $rel))
+				return false;
+
+			$rel = preg_replace("!/$ut(/|$)!", '', $rel);
+		}
+
 		if(file_exists($file = "{$dir}/index.htsu"))
 			return $file;
 

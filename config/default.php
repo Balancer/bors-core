@@ -33,6 +33,7 @@ config_set('images_resize_max_area', 5000000);
 config_set('images_resize_filesize_enabled', 1048576);
 
 config_set('image_transform_engine', 'GD');
+config_set('url_truncate', false);
 
 // Кодировки
 config_set('internal_charset', 'utf-8');		// Внутренняя кодировка фреймворка, обычно равна системной

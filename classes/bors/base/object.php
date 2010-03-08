@@ -619,8 +619,8 @@ class base_object extends base_empty
 	function url($page = NULL)
 	{
 		if(empty($this->attr['_url_engine_object'])/* || !$this->_url_engine->id() ?? */)
-			if(!($this->attr['_url_engine_object'] = object_load($this->url_engine(), $this)))
-				debug_exit("Can't load url engine {$this->url_engine()} for class {$this}");
+			if(!($this->attr['_url_engine_object'] = object_load($this->get('url_engine'), $this)))
+				debug_exit("Can't load url engine '{$this->get('url_engine')}' for class {$this}");
 
 		return $this->attr['_url_engine_object']->url($page);
 	}

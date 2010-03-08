@@ -273,7 +273,7 @@ class DataBase extends base_object
 
 		foreach($row as $s)
 			$row = quote_fix($s);
-			
+
 		return $row;
 	}
 
@@ -318,7 +318,7 @@ class DataBase extends base_object
 	function loop($func, $query)
 	{
 		$this->query($query);
-			
+
 		while(($row = $this->fetch()) !== false)
 			$func($row);
 
@@ -338,9 +338,9 @@ class DataBase extends base_object
 
 		$res=array();
 		//			$found = false;
-			
+
 		$this->query($query, $ignore_error);
-			
+
 		while(($row = $this->fetch()) !== false)
 			$res[]=$row;
 
@@ -354,19 +354,29 @@ class DataBase extends base_object
 
 	function make_string_values($array, $with_keys = true)
 	{
-		$keys=array();
-		$values=array();
-		foreach($array as $k => $v)
-		{
-			$this->normkeyval($k, $v);
-			$keys[] = $k;
-			$values[] = $v;
-		}
-			
+		$values = array();
 		if($with_keys)
-		return " (".join(",", $keys).") VALUES (".join(",", $values).") ";
+		{
+			$keys = array();
+			foreach($array as $k => $v)
+			{
+				$this->normkeyval($k, $v);
+				$keys[] = $k;
+				$values[] = $v;
+			}
+
+			return " (".join(",", $keys).") VALUES (".join(",", $values).") ";
+		}
 		else
-		return " (".join(",", $values).") ";
+		{
+			foreach($array as $k => $v)
+			{
+				$this->normkeyval($k, $v);
+				$values[] = $v;
+			}
+
+			return " (".join(",", $values).") ";
+		}
 	}
 
 	function make_string_set($array)
@@ -383,46 +393,45 @@ class DataBase extends base_object
 
 	function normkeyval(&$key, &$value)
 	{
-		//			if(preg_match("!^\s+(.+)$!", $key, $m))
-		//				$key = $m[1];
-
-		//			if(preg_match("!^(.+)\s+$!", $key, $m))
-		//				$key = $m[1];
-
-		if(preg_match('!^int (.+)$!', $key, $m) && is_numeric($value))
+		if($key[0] == 'i' && preg_match('!^int (.+)$!', $key, $m))
 		{
-			$key = preg_match('!^`!', $m[1]) ? $m[1] : '`'.$m[1].'`';
+			$key = ($m[1][0] == '`') ? $m[1] : '`'.$m[1].'`';
 			return;
 		}
 
-		@list($type, $key) = split(' ', $key);
-		if(empty($key))
+		if(preg_match('/^(\S)+ (.+)$/', $key, $m))
 		{
-			$key = $type;
-			$type = 'default';
+			$type = $m[1];
+			$key = $m[2];
+		}
+		else
+		{
+			$value = "'".mysql_real_escape_string($value, $this->dbh)."'";
+
+			if($key[0] != '`')
+				$key = "`$key`";
+
+			return;
 		}
 
 		if($value === NULL)
-		$value = "NULL";
+			$value = "NULL";
 		else
-		switch($type)
 		{
-			case 'raw':
-				break;
-				//					case 'int':
-				//						if(!preg_match('!^0x[\da-fA-F]+$!', $value))
-				//							if(!preg_match('!^\d+$!', $value))
-				//								$value = intval($value);
-				//						break;
-			case 'float':
-				$value = str_replace(',', '.', floatval($value));
-				break;
-			default:
-				$value = "'".addslashes($value)."'"; // mysql_real_escape_string
+			switch($type)
+			{
+				case 'raw':
+					break;
+				case 'float':
+					$value = str_replace(',', '.', floatval($value));
+					break;
+				default:
+					$value = "'".mysql_real_escape_string($value, $this->dbh)."'";
+			}
 		}
-			
-		if(!preg_match('!^`!', $key))
-		$key = "`$key`";
+
+		if($key[0] != '`')
+			$key = "`$key`";
 	}
 
 	function insert($table, $fields, $ignore_error = false)
@@ -447,15 +456,15 @@ class DataBase extends base_object
 	function multi_insert_add($table, $fields)
 	{
 		if(empty($this->insert_buffer[$table]))
-		$this->insert_buffer[$table][] = $this->make_string_values($fields);
+			$this->insert_buffer[$table][] = $this->make_string_values($fields);
 		else
-		$this->insert_buffer[$table][] = $this->make_string_values($fields, false);
+			$this->insert_buffer[$table][] = $this->make_string_values($fields, false);
 	}
 
 	function multi_insert_do($table)
 	{
 		if(!empty($this->insert_buffer[$table]))
-		$this->query("INSERT INTO $table ".join(",", $this->insert_buffer[$table]));
+			$this->query("INSERT INTO $table ".join(",", $this->insert_buffer[$table]));
 
 		unset($this->insert_buffer[$table]);
 	}

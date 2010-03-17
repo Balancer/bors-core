@@ -17,12 +17,28 @@ function objects_array($class, $args = array())
 		$cargs['by_id'] = true;
 	unset($args['by_id']);
 
+	if(($preload = @$args['preload']))
+	{
+		unset($args['preload']);
+		$preload = explode(',', $preload);
+	}
+
 	$where = mysql_args_compile($args, $class);
 
 	$init = &new $class(NULL);
 
 	if($s = $init->storage())
-		return $s->load($init, $where, false, $cargs);
+	{
+		$objects = $s->load($init, $where, false, $cargs);
+		if($preload)
+		{
+			foreach($preload as $x)
+				if(preg_match('/^(\w+)\((\w+)\)$/', $x, $m))
+					bors_objects_preload($objects, $m[2], $m[1]);
+		}
+
+		return $objects;
+	}
 
 	debug_hidden_log('__fatal_objects_error', 'Try to load objects array without storage');
 	return array();
@@ -43,7 +59,7 @@ function objects_count($class, $args = array())
 
 	if(is_object($class))
 		$init = $class;
-	else	
+	else
 		$init = new $class(NULL);
 
 	$where = mysql_args_compile($args, $class);

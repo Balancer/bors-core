@@ -6,6 +6,7 @@ function smarty_function_php_include($params, &$smarty)
 //	$cwd = getcwd();
 //	echo "Load {$params['file']}<br/>";
 //	@chdir(dirname(@$params['file']));
+//	var_dump($smarty);
 	include(@$params['file']);
 //	@chdir(dirname($cwd));
 	$result = ob_get_contents();

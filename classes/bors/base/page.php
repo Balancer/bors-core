@@ -201,7 +201,7 @@ class base_page extends base_object
 
 	function nav_name()
 	{
-		if($nav = parent::nav_name())
+		if(($nav = parent::nav_name()))
 			return $nav;
 
 		return $this->id() ? $this->class_title() : '';

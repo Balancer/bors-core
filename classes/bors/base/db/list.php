@@ -28,7 +28,7 @@ class base_db_list extends base_object
 		if(empty($db))
 			$db = $item_class->main_db();
 
-		$this->_dbh = &new DataBase($db);
+		$this->_dbh = new driver_mysql($db);
 
 		if(!empty($title_field))
 		{
@@ -126,4 +126,6 @@ class base_db_list extends base_object
 	function group() { return false; }
 	function name_as_id() { return false; }
 	function limit() { return -1; }
+
+//	function item_class() { return $this->main_class(); } //TODO: заменить item_class() на main_class()
 }

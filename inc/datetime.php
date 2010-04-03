@@ -4,10 +4,10 @@ require_once('inc/strings.php');
 
 function full_time($time) { return $time ? strftime("%d.%m.%Y %H:%M",$time) : '-'; }
 
-function short_time($time)
+function short_time($time, $def = '')
 {
 	if(!$time)
-		return '';
+		return $def;
 
 	global $now;
 	$time = intval($time);

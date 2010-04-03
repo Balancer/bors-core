@@ -48,7 +48,7 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 	return 'WHERE '.join(' AND ', $where);
 }
 
-function mysql_order_compile($order_list)
+function mysql_order_compile($order_list, $class_name = false)
 {
 //	if(isset($order_list['order']))
 //		$order_list = $order_list['order'];
@@ -56,7 +56,7 @@ function mysql_order_compile($order_list)
 	if(empty($order_list))
 		return '';
 
-	$order_list = mysql_bors_join_parse($order_list);
+	$order_list = mysql_bors_join_parse($order_list, $class_name);
 
 	$order = array();
 	foreach(explode(',', $order_list) as $o)
@@ -157,7 +157,11 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 	$join = preg_replace('!^(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
 
 	if($class_name)
+	{
+//		echo "$join / $class_name";
 		$join = preg_replace('!^(\w+)(\s*(=|>|<))!e', 'bors_class_field_to_db("'.$class_name.'", "$1", '.($was_joined ? 1 : 0).')."$2"', $join);
+		$join = preg_replace('!^(\w+)$!e', 'bors_class_field_to_db("'.$class_name.'", "$1", '.($was_joined ? 1 : 0).')."$2"', $join);
+	}
 
 	return $join;
 }
@@ -201,7 +205,7 @@ function mysql_args_compile($args, $class='')
 	$order = "";
 	if(!empty($args['order']))
 	{
-		$order = mysql_order_compile($args['order']);
+		$order = mysql_order_compile($args['order'], $class);
 
 		unset($args['order']);
 	}

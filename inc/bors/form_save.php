@@ -235,10 +235,11 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		else
 			return debug_exit(ec('Пустой id нового объекта ').$object->class_name().ec('. Возможно нужно использовать function replace_on_new_instance() { return true; }'));
 	}
-	
+
 //	echo "Final id: {$object->id()}<br />";
 
 //	bors()->changed_save();
-	
+
+	set_session_var('success_message', ec('Данные успешно сохранены'));
 	return $object;
 }

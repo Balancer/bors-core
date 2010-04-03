@@ -35,7 +35,7 @@ class base_rss extends base_page
 		{
 		    $item = new FeedItem();
 	    	$item->title = $obj->item_rss_title($o);
-		    $item->link = $o->rss_url();
+		    $item->link = $obj->item_rss_url($o);
 
 //			$item->description = $obj->rss_body($o, $obj->rss_strip());
 			if(($desc = $obj->item_rss_body($o, $obj)))
@@ -56,6 +56,7 @@ class base_rss extends base_page
 
 	function item_rss_title($item) { return $item->rss_title(); }
 	function item_rss_body($item, $rss) { return $rss->rss_body($item, $rss->rss_strip()); }
+	function item_rss_url($item) { return $item->url(); }
 
 	function rss_body($object, $strip = 0)
 	{

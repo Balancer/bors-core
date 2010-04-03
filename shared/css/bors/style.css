@@ -25,3 +25,10 @@ pre {
 img {
 	border: none;
 }
+
+div.green_box {
+	margin: 4px 0;
+	padding: 4px 8px;
+	background-color: #dfd;
+	border: 1px solid #8f8;
+}

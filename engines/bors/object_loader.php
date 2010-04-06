@@ -218,6 +218,97 @@ function class_load_by_url($url, $args)
 	return class_load_by_local_url($url, $args);
 }
 
+function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match)
+{
+	$id = NULL;
+	$page = NULL;
+
+	if(preg_match("!^redirect:(.+)$!", $check_class, $m))
+	{
+		$check_class = $m[1];
+		$redirect = true;
+	}
+	else
+		$redirect = false;
+
+	$args = array(
+		'match' => $match,
+		'called_url' => $url
+	);
+
+	// Формат вида aviaport_image_thumb(3,geometry=2)
+	if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $check_class, $m))
+	{
+		foreach(explode(',', $m[3]) as $pair)
+		{
+			if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
+			{
+				// Если число, то это номер группировки URL,
+				// если строка - то она присваивается непосредственно.
+				if(is_numeric($mm[2]))
+					$args[$mm[1]] = $match[$mm[2]+1];
+				else
+					$args[$mm[1]] = $mm[2];
+			}
+		}
+
+		$check_class = $m[1];
+		$id = ($m[2] == 'NULL') ? NULL : $match[$m[2]+1];
+
+		$page = $args;
+	}
+	elseif(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $check_class, $m))
+	{
+		$check_class = $m[1];
+		$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+1];
+		$page = @$match[$m[3]+1];
+	}
+	elseif(preg_match("!^(.+)\((\w+)\)$!", $check_class, $class_match))
+	{
+		$check_class = $class_match[1];
+		switch($class_match[2])
+		{
+			case 'url':
+				$id = $url;
+				break;
+			default:
+				$id = is_numeric($class_match[2]) ? $match[$class_match[2]+1] : $class_match[2];
+				break;
+		}
+	}
+
+	if(preg_match("!^(.+)/([^/]+)$!", $check_class, $m))
+		$class = $m[2];
+	else
+		$class = $check_class;
+
+	if(is_array($page))
+		$args = array_merge($args, $page);
+	else
+		$args['page'] = $page;
+
+//	echo "object_init($check_class, $id)<br />";
+	if(($obj = object_init($check_class, $id, $args))
+		&& ($obj->can_be_empty() || $obj->loaded())
+	)
+	{
+		if($redirect)
+		{
+			if(!config('do_not_exit'))
+			{
+				echo "Redirect by $url_pattern";
+				go($obj->url($page), true);
+				bors_exit("Redirect");
+			}
+			else
+				return object_load($obj->url($page));
+		}
+		return $obj;
+	}
+
+	return NULL;
+}
+
 function class_load_by_local_url($url, $args)
 {
 	$obj = @$GLOBALS['bors_data']['classes_by_uri'][$url];
@@ -252,7 +343,7 @@ function class_load_by_local_url($url, $args)
 //		if(debug_is_balancer() && strpos($pair, 'balancer.ru'))	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
 		if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
 		{
-//			if(debug_is_balancer()) echo "<b>Ok - $class_path</b><br />";
+//			echo "<b>Ok - $class_path</b><br />";
 
 			$id = NULL;
 			$page = NULL;
@@ -500,7 +591,7 @@ function object_init($class_name, $object_id, $args = array())
 		return $obj;
 
 	$found = 0;
-	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name);
+	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name, $args);
 	if(is_object($object_id) && !is_object($original_id))
 	{
 		$obj = $object_id;

@@ -152,7 +152,7 @@ function bors_search_sphinx($query, $params = array())
 			$exc = $cl->BuildExcerpts($docs, 'news', dc($query), $opts);
 
 			if (!$exc)
-				echo $data['error'] = $cl->GetLastError();
+				$data['error'] = $cl->GetLastError();
 			else
 			{
 				$loop = 0;

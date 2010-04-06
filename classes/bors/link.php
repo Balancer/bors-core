@@ -131,7 +131,14 @@ class bors_link extends base_object_db
 
 		foreach($links as $link)
 		{
-			$x = $link->target();
+			if(!($x = $link->target()))
+			{
+				if(config('bors_link.lost_auto_delete'))
+					$link->delete();
+
+				continue;
+			}
+
 			$x->_set_arg('is_special', $link->type_id() == 3);
 			$x->set_link_type_abs_id($link->type_id(), false);
 
@@ -158,7 +165,7 @@ class bors_link extends base_object_db
 
 		$where['from_class'] = $object->class_id();
 		$where['from_id'] = $object->id();
-		$where['type_id<>'] = 4;
+		$where[] = '(type_id IS NULL OR type_id<>4)';
 
 		return objects_count('bors_link', $where);
 	}
@@ -169,5 +176,13 @@ class bors_link extends base_object_db
 		$tc = $object->class_id();
 		$ti = $object->id();
 		$dbh->delete(self::main_table(), array("owner_id < 0 AND ((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
+	}
+
+	static function drop_all($object)
+	{
+		$dbh = new driver_mysql(config('main_bors_db'));
+		$tc = $object->class_id();
+		$ti = $object->id();
+		$dbh->delete(self::main_table(), array("((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
 	}
 }

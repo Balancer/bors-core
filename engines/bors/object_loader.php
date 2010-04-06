@@ -344,86 +344,9 @@ function class_load_by_local_url($url, $args)
 		if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
 		{
 //			echo "<b>Ok - $class_path</b><br />";
-
-			$id = NULL;
-			$page = NULL;
-
-			if(preg_match("!^redirect:(.+)$!", $class_path, $m))
+			if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $match)))
 			{
-				$class_path = $m[1];
-				$redirect = true;
-			}
-			else
-				$redirect = false;
-
-			// Формат вида aviaport_image_thumb(3,geometry=2)
-			if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $class_path, $m))	
-			{
-				$args = array();
-				foreach(explode(',', $m[3]) as $pair)
-				{
-					if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
-					{
-						if(is_numeric($mm[2]))
-							$args[$mm[1]] = $match[$mm[2]+1];
-						else
-							$args[$mm[1]] = $mm[2];
-					}
-				}
-
-				$class_path = $m[1];
-				$id = ($m[2] == 'NULL') ? NULL : $match[$m[2]+1];
-
-				$page = $args;
-			}
-			elseif(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $class_path, $m))	
-			{
-				$class_path = $m[1];
-				$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+1];
-				$page = @$match[$m[3]+1];
-			}
-			elseif(preg_match("!^(.+)\((\w+)\)$!", $class_path, $class_match))	
-			{
-				$class_path = $class_match[1];
-				switch($class_match[2])
-				{
-					case 'url':
-						$id = $url;
-						break;
-					default:
-						$id = $match[$class_match[2]+1];
-						break;
-				}
-			}
-
-			$args = array('match'=>$match, 'called_url'=>$url);
-
-			if(preg_match("!^(.+)/([^/]+)$!", $class_path, $m))
-				$class = $m[2];
-			else
-				$class = $class_path;
-
-			if(is_array($page))
-				$args = array_merge($args, $page);
-			else
-				$args['page'] = $page;
-
-//			echo "object_init($class_path, $id)<br />";
-			if(($obj = object_init($class_path, $id, $args))
-				&& ($obj->can_be_empty() || $obj->loaded())
-			)
-			{
-				if($redirect)
-				{
-					if(!config('do_not_exit'))
-					{
-						echo "Redirect by $url_pattern";
-						go($obj->url($page), true);
-						bors_exit("Redirect");
-					}
-					else
-						return object_load($obj->url($page));
-				}
+//				echo "Found $obj";
 				return $obj;
 			}
 		}

@@ -10,6 +10,8 @@ class bors_image_thumb extends bors_image
 
 	private $geo_width, $geo_height, $geo_opts, $geometry, $original;
 
+	function image_class() { return 'bors_image'; }
+
 	function main_table_fields()
 	{
 		return array(
@@ -33,7 +35,8 @@ class bors_image_thumb extends bors_image
 		if(is_numeric($this->id()) && $this->args('geometry'))
 			$this->set_id($this->id().','.$this->args('geometry'));
 
-		parent::init();
+		if(config('cache_database'))
+			parent::init();
 
 		if(preg_match('!^(\d+),((\d*)x(\d*))$!', $this->id(), $m))
 		{
@@ -60,7 +63,7 @@ class bors_image_thumb extends bors_image
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_loaded(true);
 
-		$this->original = object_load('bors_image', $id);
+		$this->original = object_load($this->image_class(), $id);
 
 		if(!$this->original)
 			return $this->set_loaded(false);
@@ -69,14 +72,16 @@ class bors_image_thumb extends bors_image
 
 		$new_path = secure_path('/cache/'.$this->original->relative_path().'/'.$this->geometry);
 
-		$this->new_instance();
+		$caching = config('cache_database') ? true : false;
+		if($caching)
+			$this->new_instance();
 
-		$this->set_relative_path($new_path, true);
+		$this->set_relative_path($new_path, $caching);
 
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
-			$this->set($key, $this->original->$key(), true);
+			$this->set($key, $this->original->$key(), $caching);
 
-		$this->set_file_name($this->original->file_name(), true);
+		$this->set_file_name($this->original->file_name(), $caching);
 
 		$file_orig  = $this->original->file_name_with_path();
 		$file_thumb = $this->file_name_with_path();
@@ -126,15 +131,15 @@ class bors_image_thumb extends bors_image
 		}
 
 //		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
-		$this->set_size($fsize_thumb, true);
+		$this->set_size($fsize_thumb, $caching);
 
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
 			debug_hidden_log('image-error', 'Cannot get image width');
 
-		$this->set_width($img_data[0], true);
-		$this->set_height($img_data[1], true);
-		$this->set_mime_type($img_data['mime'], true);
+		$this->set_width($img_data[0], $caching);
+		$this->set_height($img_data[1], $caching);
+		$this->set_mime_type($img_data['mime'], $caching);
 
 //		echo "{$this}: {$this->wxh()}<br />\n";
 		$this->set_loaded(true);

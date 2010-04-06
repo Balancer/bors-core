@@ -32,3 +32,10 @@ div.green_box {
 	background-color: #dfd;
 	border: 1px solid #8f8;
 }
+
+div.red_box {
+	margin: 4px 0;
+	padding: 4px 8px;
+	background-color: #fdd;
+	border: 1px solid #f88;
+}

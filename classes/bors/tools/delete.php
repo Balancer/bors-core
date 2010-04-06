@@ -3,6 +3,7 @@
 class bors_tools_delete extends base_page
 {
 	function config_class() { return config('admin_config_class'); }
+	function access() { return $this->object()->access(); }
 
 	function parents()
 	{
@@ -20,6 +21,12 @@ class bors_tools_delete extends base_page
 		$obj = $this->object();
 		if(!$obj)
 			return bors_message(ec('Не найден объект ').$this->id());
+
+		if(!method_exists($obj->access(), 'can_delete'))
+			return bors_message(ec('Не определён доступ на удаление ').$obj->class_title_rp().' '.$obj->titled_url()."
+				<!-- class_name = ".get_class($obj)."
+				access = {$obj->access()}
+				-->");
 
 		if(!$obj->access()->can_delete())
 			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_url()."

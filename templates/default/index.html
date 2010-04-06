@@ -8,6 +8,11 @@
 	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
 	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/color-gray.css" />
 	<link rel="stylesheet" type="text/css" href="/css/admin.css" />
+
+{if $css_list}{foreach item=css from=$css_list}
+<style type="text/css" media="all">@import url("{$css}");</style>
+{/foreach}{/if}
+
 {if $use_jQuery}<script type="text/javascript" src="/_bors3rdp/jquery/jquery.js"></script>{/if}
 {if $header}{foreach from=$header item="h"}
 {$h}

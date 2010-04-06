@@ -99,7 +99,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 	function wxh()
 	{
 		if($this->width() == 0 || $this->height() == 0)
-			$this->recalculate(true);
+			$this->recalculate(config('cache_database') ? true : false);
 
 		$w = $this->width() ? "width=\"{$this->width()}\"" : "";
 		$h = $this->height() ? "height=\"{$this->height()}\"" : "";
@@ -112,7 +112,8 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		return "<img src=\"{$this->url()}\" {$this->wxh()} $append />";
 	}
 
-	function thumbnail($geometry) { return object_load('bors_image_thumb', $this->id().','.$geometry); }
+	function thumbnail_class() { return 'bors_image_thumb'; }
+	function thumbnail($geometry) { return object_load($this->thumbnail_class(), $this->id().','.$geometry); }
 
 	function init()
 	{
@@ -175,11 +176,19 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 		$this->set_original_filename($data['name'], true);
 
-		$this->set_relative_path(secure_path($dir.'/'.$this->id()%100), true);
+		if(config('image_upload_skip_subdirs'))
+			$this->set_relative_path(secure_path($dir), true);
+		else
+			$this->set_relative_path(secure_path($dir.'/'.$this->id()%100), true);
+
 		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), true);
 		$this->set_file_name($this->id().'.'.$this->extension(), true);
 
 		mkpath($this->image_dir(), 0777);
+		if(!file_exists($this->image_dir()))
+			debug_exit("Can't create dir '{$this->image_dir()}'<br/>");
+		if(!is_writable($this->image_dir()))
+			debug_exit("Can't write dir '{$this->image_dir()}'<br/>");
 		if(!move_uploaded_file($file, $this->file_name_with_path()))
 			debug_exit("Can't load image {$data['name']}<br/>");
 		@chmod($this->file_name_with_path(), 0664);

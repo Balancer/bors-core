@@ -209,16 +209,16 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		if($exists_check && $img2 = objects_first('bors_image', array('full_file_name' => $data['local_path'])))
 			return $img2;
 
-		$img->set_original_filename(basename($file), true);
-		$img->set_relative_path(dirname($file), true);
-		$img->set_full_file_name($data['local_path'], true);
-		$img->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $img->original_filename()), true);
-		$img->set_file_name($img->original_filename(), true);
+		$img->set_original_filename(basename($file), $new_instance);
+		$img->set_relative_path(dirname($file), $new_instance);
+		$img->set_full_file_name($data['local_path'], $new_instance);
+		$img->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $img->original_filename()), $new_instance);
+		$img->set_file_name($img->original_filename(), $new_instance);
 
 		@chmod($img->image_dir(), 0775);
 		@chmod($img->file_name_with_path(), 0664);
 
-		$img->recalculate(true);
+		$img->recalculate($new_instance);
 
 		if($new_instance)
 			$img->new_instance();

@@ -13,10 +13,7 @@ class bors_admin_users_login extends base_page
 			$this->referer = '/';
 
 		if(empty($data['login']))
-		{
-			set_session_var('error_message', ec('Вы не указали логин'));
-			return go($this->referer);
-		}
+			return false;
 
 		if(empty($data['password']))
 		{

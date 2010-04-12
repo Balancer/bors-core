@@ -69,4 +69,6 @@ class bors_admin_image_append extends base_object
 
 	function object() { return empty($_GET['object_to_link']) ? NULL : object_load($_GET['object_to_link']); }
 	function pre_show() { return go_ref($this->object()->admin_url()); }
+
+	function admin_url() { return $this->object()->admin_url(); }
 }

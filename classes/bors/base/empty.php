@@ -14,9 +14,9 @@ class base_empty extends base_null
 		$this->set_id($this->initial_id = $id);
 	}
 
-	function get($name, $default = NULL)
+	function get($name, $default = NULL, $skip_methods = false)
 	{
-		if(method_exists($this, $name))
+		if(method_exists($this, $name) && !$skip_methods)
 			return $this->$name();
 
 		if(array_key_exists($name, $this->data))

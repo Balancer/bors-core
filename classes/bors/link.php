@@ -180,6 +180,9 @@ class bors_link extends base_object_db
 
 	static function drop_all($object)
 	{
+		if(!$object->id())
+			return;
+
 		$dbh = new driver_mysql(config('main_bors_db'));
 		$tc = $object->class_id();
 		$ti = $object->id();

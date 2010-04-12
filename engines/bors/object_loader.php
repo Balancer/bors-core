@@ -19,7 +19,7 @@ function class_include($class_name, &$args = array())
 
 	foreach(bors_dirs() as $dir)
 	{
-//		echo "check {$dir}/classes/{$class_path}{$class_file}.php<br/>";
+//		echo "check {$dir}/classes/{$class_path}{$class_file}.php  <br/>\n";
 		if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.php"))
 		{
 			require_once($file_name);

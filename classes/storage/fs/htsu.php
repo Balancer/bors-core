@@ -96,6 +96,7 @@ class storage_fs_htsu extends base_null
 		$this->hts = $hts;
 
 		$this->ext('title');
+		$this->ext('page_title');
 
 		$parents = explode(' ', $this->ext('parents', '-'));
 		if(empty($parents[0]))

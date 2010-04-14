@@ -362,7 +362,7 @@ class base_object extends base_empty
 	{
 		if($title === NULL)
 			$title = $this->title() ? $this->title() : '---';
-		return '<a href="'.$this->edit_url($this->page()).'">'.$title.'</a>';
+		return '<a href="'.$this->admin_url($this->page()).'">'.$title.'</a>';
 	}
 
 	function imaged_admin_link($title = NULL)
@@ -377,7 +377,7 @@ class base_object extends base_empty
 	{
 		if($title === NULL)
 			$title = ec('Редактировать ').bors_lower($this->class_title_rp());
-		return "<a href=\"{$this->edit_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
+		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
 	function titled_new_link($title = NULL)

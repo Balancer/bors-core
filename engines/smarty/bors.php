@@ -13,7 +13,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	$smarty->compile_dir = secure_path(config('cache_dir').'/smarty-templates_c_'.config('internal_charset').'/');
 //	$smarty->use_sub_dirs = true;
 	$smarty->plugins_dir = array();
-	foreach(bors_dirs() as $dir)
+	foreach(bors_dirs(true) as $dir)
 		$smarty->plugins_dir[] = $dir.'/engines/smarty/plugins';
 
 	$smarty->plugins_dir[] = 'plugins';

@@ -25,7 +25,7 @@
 			return true;
 		}
 
-		foreach(bors_dirs() as $dir)
+		foreach(bors_dirs(true) as $dir)
 		{
 			if(file_exists($fn = $dir.'/templates/'.$tpl_name))
 			{
@@ -68,7 +68,7 @@
 
 		if(!$found)
 		{
-			foreach(bors_dirs() as $dir)
+			foreach(bors_dirs(true) as $dir)
 			{
 				if(file_exists($fn = $dir.$find_tpl))
 				{

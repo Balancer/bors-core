@@ -33,7 +33,7 @@ class bors_admin_users_login extends base_page
 			return go($this->referer);
 		}
 
-		set_session_var('success_message', ec('Добро пожаловать, '.$me->title()));
+		set_session_var('success_message', ec('Вы успешно аутентифицированы, ').$me->title().'!');
 		return go($this->referer);
 	}
 

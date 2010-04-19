@@ -70,7 +70,7 @@ function show_page($uri, $data = true)
 		$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
 
 		$smarty->plugins_dir = array();
-		foreach(bors_dirs() as $dir)
+		foreach(bors_dirs(true) as $dir)
 			$smarty->plugins_dir[] = $dir.'/engines/smarty/plugins';
 	
 		$smarty->plugins_dir[] = 'plugins';

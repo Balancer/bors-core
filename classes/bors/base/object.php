@@ -5,7 +5,7 @@ class base_object extends base_empty
 	var $data = array();
 
 	function attr_preset() { return array(
-			'config_class' => '',
+			'config_class' => config('config_class'),
 			'access_engine' => '',
 			'url_engine' => 'url_calling',
 	); }
@@ -324,8 +324,9 @@ class base_object extends base_empty
 		foreach($this->global_data() as $key => $value)
 			$this->add_global_template_data($key, $value);
 
-		foreach($this->local_data() as $key => $value)
-			$this->add_local_template_data($key, $value);
+		if(($data = $this->local_data()))
+			foreach($data as $key => $value)
+				$this->add_local_template_data($key, $value);
 
 		static $called = false; //TODO: в будущем снести вторые вызовы.
 		if($called)

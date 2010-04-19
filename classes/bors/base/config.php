@@ -26,6 +26,17 @@ class base_config extends base_empty
 	}
 
 	function config_data() { return array(); }
-	function template_data() { return array(); }
 	function template_data_array() { return array(); }
+
+	function template_data()
+	{
+		$data = array(
+			'success_message' => session_var('success_message'),
+			'error_message' => session_var('error_message'),
+		);
+
+		set_session_var('success_message', NULL);
+		set_session_var('error_message', NULL);
+		return $data;
+	}
 }

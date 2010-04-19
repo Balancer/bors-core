@@ -27,7 +27,7 @@ class render_php extends base_null
 			$$var = $value;
 
 		$tpl_file = false;
-		foreach(bors_dirs() as $dir)
+		foreach(bors_dirs(true) as $dir)
 			if(file_exists($tpl_file = $dir.'/templates/'.$object->template()))
 				break;
 		

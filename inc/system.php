@@ -86,5 +86,12 @@ function session_var($name, $def = NULL, $set = false)
 function set_session_var($name, $value)
 {
 	__session_init();
-	return$_SESSION[$name] = $value;
+	return $_SESSION[$name] = $value;
+}
+
+function clean_all_session_vars()
+{
+	__session_init();
+	foreach($_SESSION as $key => $value)
+		unset($_SESSION[$key]);
 }

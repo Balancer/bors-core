@@ -64,3 +64,37 @@
 
 		return go($def);
 	}
+
+function go_reload()
+{
+	return go($_SERVER['REQUEST_URI']);
+}
+
+function go_message($message, $params = array())
+{
+	$error		= defval($params, 'error', true);
+	$go			= defval($params, 'go', $_SERVER['REQUEST_URI']);
+	$permanent	= defval($params, 'permanent', false);
+	if($error)
+	{
+		set_session_var('error_message', $message);
+	}
+	else
+	{
+		set_session_var('success_message', $message);
+	}
+
+	if(($ef = defval($params, 'error_fields')))
+		set_session_var('error_fields', $ef);
+
+	if(defval($params, 'ref'))
+		return go_ref($go, $permament);
+	else
+		return go($go, $permament);
+}
+
+function go_ref_message($message, $params = array())
+{
+	$params['ref'] = true;
+	return go_message($message, $params);
+}

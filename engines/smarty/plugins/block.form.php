@@ -71,12 +71,61 @@ function smarty_block_form($params, $content, &$smarty)
 
 		base_object::add_template_data('form_checkboxes', array());
 
+		if(!empty($fields))
+		{
+			echo "<table class=\"btab\">";
+			$labels = array();
+			foreach(explode(',', $fields) as $f)
+			{
+				$type  = call_user_func(array($form, '__field_type' ), $f);
+				$title = call_user_func(array($form, '__field_title'), $f);
+				if(!$title)
+					$title = $f;
+
+				if($type != 'bool')
+					echo "<tr><th>{$title}</th><td>";
+
+				$data = array(
+					'name' => $f,
+					'value'=>$form->$f(),
+					'class' => 'w100p',
+				);
+				switch($type)
+				{
+					case 'string':
+						require_once('function.input.php');
+						smarty_function_input($data, $smarty);
+						break;
+					case 'text':
+						require_once('function.textarea.php');
+						smarty_function_textarea($data, $smarty);
+						break;
+					case 'bool':
+						$data['label'] = $title;
+						$labels[$f] = $data;
+				}
+				echo "</td></tr>\n";
+			}
+			if($labels)
+			{
+				echo "<tr><th>Метки</th><td>";
+				require_once('function.checkbox.php');
+				foreach($labels as $name => $data)
+					smarty_function_checkbox($data, $smarty);
+				echo "</td></tr>\n";
+			}
+		}
+
 		return;
 	}
 
 	echo $content;
 
 	// === Закрытие формы ===
+
+	if(!empty($fields))
+		echo "</table>";
+
 	if(isset($uri) && $uri != 'NULL')
 		echo "<input type=\"hidden\" name=\"uri\" value=\"$uri\" />\n";
 	if(isset($ref) && $ref != 'NULL')

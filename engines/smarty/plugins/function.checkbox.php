@@ -35,9 +35,11 @@ function smarty_function_checkbox($params, &$smarty)
 
 		if(empty($delim))
 			$delim = '&nbsp;';
+		if(empty($br))
+			$br = "<br/>\n";
 
 		if($label)
-			echo "{$delim}{$label}</label>";
+			echo "{$delim}{$label}</label>{$br}";
 
 		echo "\n";
 }

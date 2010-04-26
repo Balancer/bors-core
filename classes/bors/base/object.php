@@ -1025,4 +1025,33 @@ class base_object extends base_empty
 	function _relations() { return array(); }
 
 	function print_properties() { print_d($this->data); }
+
+	function __field_type($field_name)
+	{
+		$fields = $this->fields();
+		$desc = @$fields[$field_name];
+		if(!$desc)
+			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
+
+		if($type = @$desc['type'])
+			return $type;
+
+		if(preg_match('/_id$/', $field_name))
+			return 'int';
+
+		if(preg_match('/^is_/', $field_name))
+			return 'bool';
+
+		return 'string';
+	}
+
+	function __field_title($field_name)
+	{
+		$fields = $this->fields();
+		$desc = @$fields[$field_name];
+		if(!$desc)
+			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
+
+		return defval($desc, 'title', $field_name);
+	}
 }

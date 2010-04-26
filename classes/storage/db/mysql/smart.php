@@ -62,7 +62,7 @@ class storage_db_mysql_smart extends base_null
 				}
 				else
 					$join = ' LEFT JOIN `';
-					
+
 				foreach($fields as $property => $field)
 				{
 					if(is_numeric($property))
@@ -70,7 +70,7 @@ class storage_db_mysql_smart extends base_null
 
 					if($property == 'id')
 						$main_id_name = $def_id = $field;
-					
+
 /*					// Если у нас после поля идёт его описание.
 					// 
 					if(preg_match('!^(\S+)\s+(.+)$!', $field, $m))
@@ -78,7 +78,12 @@ class storage_db_mysql_smart extends base_null
 						$field = $m[1];
 						$object->set_property_description($property, $m[2]);
 					}
-*/					
+*/
+
+					if(is_array($field))
+					{
+						$field = defval($field, 'field', $property);
+					}
 
 					// Выделяем имя функции постобработки, передаваемом в виде
 					// 'WWW.News.Header(ID)|html_entity_decode($str)'
@@ -346,6 +351,11 @@ class storage_db_mysql_smart extends base_null
 
 					$value = $object->$property();
 
+					if(is_array($field))
+					{
+						$field = defval($field, 'field', $property);
+					}
+
 					// Выделяем имя функции постобработки, передаваемом в виде
 					// 'WWW.News.Header(ID)|html_entity_decode($str)'
 					// --------------------^^^^^^^^^^^^^^^^^^^^^^^^^-
@@ -453,6 +463,11 @@ class storage_db_mysql_smart extends base_null
 						continue;
 
 					$value = isset($data[$property]) ? $data[$property] : $object->$property();
+
+					if(is_array($field))
+					{
+						$field = defval($field, 'field', $property);
+					}
 
 					// Выделяем имя функции постобработки, передаваемом в виде
 					// 'WWW.News.Header(ID)|html_entity_decode($str)'

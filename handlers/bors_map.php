@@ -23,6 +23,7 @@ $map = array(
 	'.*/\d{4}/\d{1,2}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
 	'.*/\d{4}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
 	'(/_bors/admin/)\?object=([^&]+).* => bors_admin_main(1)',
+	'/_bors/admin/edit\-smart/\?object=([^&]+).* => bors_admin_edit_smart(1)',
 	'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
 	'(.*/)\?edit => bors_admin_edit_page(1)',

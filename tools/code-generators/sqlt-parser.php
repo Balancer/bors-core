@@ -178,8 +178,8 @@ $php = "<?php\n\nclass $class_name extends base_object_db
 }
 ";
 
-	file_put_contents(str_replace('.sqlt', '.sql', $sqlt_file), $sql);
-	file_put_contents(str_replace('.sqlt', '.php', $sqlt_file), $php);
+	file_put_contents(str_replace('.sqlt', '.sql', $sqlt_file), $sql, FILE_APPEND);
+	file_put_contents(str_replace('.sqlt', '.php', $sqlt_file), $php, FILE_APPEND);
 
 if($admin_class_name)
 {
@@ -215,7 +215,7 @@ $php = "<?php\n\nclass $admin_class_name extends $class_name
 }
 ";
 
-	file_put_contents(str_replace('.sqlt', '.admin.php', $sqlt_file), $php);
+	file_put_contents(str_replace('.sqlt', '.admin.php', $sqlt_file), $php, FILE_APPEND);
 
 // Генерация общей админки
 $php = "<?php
@@ -233,7 +233,7 @@ class {$admin_class_name}s_main extends aviaport_admin_paged
 }
 ";
 
-	file_put_contents(str_replace('.sqlt', '.admin.main.php', $sqlt_file), $php);
+	file_put_contents(str_replace('.sqlt', '.admin.main.php', $sqlt_file), $php, FILE_APPEND);
 
 // Генерация HTML общей админки
 $html = "{\$this->pages_links_nul()}
@@ -257,7 +257,7 @@ $html = "{\$this->pages_links_nul()}
 {\$this->pages_links_nul()}
 ";
 
-	file_put_contents(str_replace('.sqlt', '.admin.main.html', $sqlt_file), $html);
+	file_put_contents(str_replace('.sqlt', '.admin.main.html', $sqlt_file), $html, FILE_APPEND);
 
 $php = "<?php
 
@@ -270,7 +270,7 @@ class {$admin_class_name}s_edit extends aviaport_admin_page
 }
 ";
 
-	file_put_contents(str_replace('.sqlt', '.admin.edit.php', $sqlt_file), $php);
+	file_put_contents(str_replace('.sqlt', '.admin.edit.php', $sqlt_file), $php, FILE_APPEND);
 
 $html = "{form class=$admin_class_name id=\$this->id()}
 
@@ -287,7 +287,7 @@ $html .= "<tr><td colSpan=\"2\">{submit value=\"Сохранить\" style=\"wid
 {/form}
 ";
 
-	file_put_contents(str_replace('.sqlt', '.admin.edit.html', $sqlt_file), $html);
+	file_put_contents(str_replace('.sqlt', '.admin.edit.html', $sqlt_file), $html, FILE_APPEND);
 
 $html = "<div class=\"side-menu\">
 
@@ -305,7 +305,7 @@ ID:<input type=\"text\" name=\"id\" size=\"4\" />
 </div>
 ";
 
-	file_put_contents(str_replace('.sqlt', ".right-menu.$class_name.html", $sqlt_file), $html);
+	file_put_contents(str_replace('.sqlt', ".right-menu.$class_name.html", $sqlt_file), $html, FILE_APPEND);
 
 $php = "<?php
 
@@ -320,7 +320,7 @@ class {$admin_class_name}s_config extends aviaport_admin_config
 }
 ";
 
-	file_put_contents(str_replace('.sqlt', '.config.php', $sqlt_file), $php);
+	file_put_contents(str_replace('.sqlt', '.config.php', $sqlt_file), $php, FILE_APPEND);
 
 	echo "\t'/{$admin_path}s/new/ => {$admin_class_name}s_edit',\n";
 	echo "\t'(/{$admin_path}s/)(\d+)/ => {$admin_class_name}s_edit(2)',\n";

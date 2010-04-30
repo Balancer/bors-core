@@ -7,17 +7,17 @@ class bors_admin_engine extends base_empty
 
 	function url($page = NULL)
 	{
-		$url = $this->edit_url();
+		$url = $this->admin_url();
 		if($page && $page != 1)
 			$url .= "$page/";
 
 		return $url;
 	}
 
-	function edit_url()
+	function admin_url()
 	{
-		if(method_exists($obj = $this->real_object(), 'edit_url'))
-			return $obj->edit_url();
+		if(method_exists($obj = $this->real_object(), 'admin_url'))
+			return $obj->admin_url();
 
 		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
 	}
@@ -77,12 +77,12 @@ class bors_admin_engine extends base_empty
 				.ec(' «').$obj->title().ec('»');
 
 		$x = $title ? '&nbsp;' : '';
-		$url = $this->edit_url();
+		$url = $this->admin_url();
 
 		if(is_null($popup))
 			$popup = $title;
 
-		if(!bors()->main_object() || $unlink_in_admin && preg_match('!'.preg_quote($obj->admin()->edit_url(), '!').'!', bors()->main_object()->url()))
+		if(!bors()->main_object() || $unlink_in_admin && preg_match('!'.preg_quote($obj->admin()->admin_url(), '!').'!', bors()->main_object()->url()))
 			$url = '';
 
 		if($url)

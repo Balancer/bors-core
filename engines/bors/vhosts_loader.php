@@ -71,8 +71,9 @@ function bors_url_map($map_array)
 	$bors_map = array_merge($bors_map, $map_array);
 }
 
-function bors_url_map_include($base_path, $base_class)
+function bors_url_submap($map)
 {
+	$GLOBALS['bors_url_submap_map'] = $map;
 }
 
 function borsmaps_load()

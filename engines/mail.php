@@ -41,10 +41,7 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 	));
 
 	if(preg_match('/^(.*?) <(.*)>$/', $from, $m))
-	{
 		$from = $m[2];
-//		exit($from);
-	}
 
 	$hdrs = $mime->headers(array_merge($headers, array(
 		'From'		=> $from,

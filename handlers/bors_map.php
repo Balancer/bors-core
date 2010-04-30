@@ -64,6 +64,7 @@ $map = array(
 //	'.* => page_db(url)',
 	'.* => base_page_hts(url)',
 	'.* => auto_object_php(url)',
+	'.* => bors_page_fs_bbh(url)',
 	'.* => bors_page_fs_markdown(url)',
 	'.* => bors_page_fs_htsu(url)',
 );

@@ -218,8 +218,9 @@ function class_load_by_url($url, $args)
 	return class_load_by_local_url($url, $args);
 }
 
-function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match)
+function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match, $url_pattern, $skip)
 {
+//	echo "$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<hr/>\n";
 	$id = NULL;
 	$page = NULL;
 
@@ -246,34 +247,63 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 				// Если число, то это номер группировки URL,
 				// если строка - то она присваивается непосредственно.
 				if(is_numeric($mm[2]))
-					$args[$mm[1]] = $match[$mm[2]+1];
+					$args[$mm[1]] = $match[$mm[2]+$skip];
 				else
 					$args[$mm[1]] = $mm[2];
 			}
 		}
 
 		$check_class = $m[1];
-		$id = ($m[2] == 'NULL') ? NULL : $match[$m[2]+1];
+		$id = ($m[2] == 'NULL') ? NULL : $match[$m[2]+$skip];
 
 		$page = $args;
 	}
 	elseif(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $check_class, $m))
 	{
 		$check_class = $m[1];
-		$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+1];
-		$page = @$match[$m[3]+1];
+		$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+$skip];
+		$page = @$match[$m[3]+$skip];
 	}
 	elseif(preg_match("!^(.+)\((\w+)\)$!", $check_class, $class_match))
 	{
 		$check_class = $class_match[1];
+
 		switch($class_match[2])
 		{
 			case 'url':
 				$id = $url;
 				break;
 			default:
-				$id = is_numeric($class_match[2]) ? $match[$class_match[2]+1] : $class_match[2];
+				$id = is_numeric($class_match[2]) ? $match[$class_match[2]+$skip] : $class_match[2];
 				break;
+		}
+
+		if($check_class == 'include')
+		{
+			// Подгрузка блока расширений карты привязок URL.
+			$class_base = $id;
+			require_once($map_file = 'classes/'.str_replace('_', '/', $class_base).'/bors_map.php');
+			foreach($GLOBALS['bors_url_submap_map'] as $pair)
+			{
+				if(!preg_match('!^(.*)\s*=>\s*(.+)$!', $pair, $m))
+					exit(ec("Ошибка формата bors_url_submap [$map_file]: '{$pair}'"));
+
+				$url_subpattern = $match[2].trim($m[1]);
+				$class_path = trim($m[2]);
+				if($class_path[0] == '_')
+					$class_path  = $class_base.$class_path;
+
+				$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
+				if(preg_match('!\?!', $url_subpattern) && !empty($url_data['query']))
+					$check_url .= '?'.$url_data['query'];
+
+//				echo "<small>Check $url_subpattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_subpattern}\$! to {$check_url}</small><br />\n";
+				if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_subpattern$!i", $check_url, $submatch))
+					if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $submatch, $url_subpattern, 3)))
+						return $obj;
+			}
+
+			return NULL;
 		}
 	}
 
@@ -344,7 +374,7 @@ function class_load_by_local_url($url, $args)
 		if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
 		{
 //			echo "<b>Ok - $class_path</b><br />";
-			if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $match)))
+			if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $match, $url_pattern, 1)))
 			{
 //				echo "Found $obj";
 				return $obj;

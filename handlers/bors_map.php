@@ -1,8 +1,7 @@
 <?php
 
 bors_url_map(array(
-	'/_bors/admin/ => bors_admin_main',
-	'(/_bors/admin/).* => include(bors_admin)',
+	'(/_bors/admin)(/.*) => include(bors_admin)',
 ));
 
 $map = array(

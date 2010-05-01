@@ -1,8 +1,7 @@
 <?php
 
 bors_url_map(array(
-	'/_bors/admin/ => bors_admin_main',
-	'(/_bors/admin/).* => include(bors_admin)',
+	'(/_bors/admin)(/.*) => include(bors_admin)',
 ));
 
 $map = array(
@@ -65,6 +64,7 @@ $map = array(
 //	'.* => page_db(url)',
 	'.* => base_page_hts(url)',
 	'.* => auto_object_php(url)',
+	'.* => bors_page_fs_bbh(url)',
 	'.* => bors_page_fs_markdown(url)',
 	'.* => bors_page_fs_htsu(url)',
 );

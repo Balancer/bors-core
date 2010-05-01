@@ -89,8 +89,10 @@ class cache_smart extends cache_base
 		$time_to_expire = abs($time_to_expire);
 
 		$do_time = microtime(true) - $this->start_time;
-		if($do_time < 0.01 && $time_to_expire > 0)
-			debug_hidden_log('cache-not-needed', $do_time);
+
+//TODO: сделать настройку отключения. А то мусорит в логах
+//		if($do_time < 0.01 && $time_to_expire > 0)
+//			debug_hidden_log('cache-not-needed', $do_time);
 
 		if($time_to_expire > 0 && $do_time > 0.02)
 		{

@@ -42,7 +42,7 @@ class base_rss extends base_page
 				$item->description = $desc;
 			$item->date = intval($o->create_time());
 			$item->source = $obj->rss_source_url();
-			$owner = $o->owner();
+			$owner = $o->get('owner');
 			if($owner)
 				$item->author = $owner->title();
 

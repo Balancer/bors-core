@@ -21,6 +21,7 @@ function main($sqlt_file)
 	$class_titles	= false;
 
 	$class_fields = array();
+	$class_field_names = array();
 	$class_auto_objects = array();
 
 	$map = array(
@@ -202,12 +203,24 @@ function main($sqlt_file)
 
 				$class_field_params_s = array();
 				foreach($class_field_params as $k => $v)
-					$class_field_params_s[] = "'$k' => '".addslashes($v)."'";
+				{
+					$v = addslashes($v);
+					if(preg_match('/^[\w - ~]+$/', $v))
+						$v = "'$v'";
+					else
+						$v = "ec('$v')";
+					$class_field_params_s[] = "'$k' => $v";
+				}
 
-				$class_fields[] = "'$name' => array(".join(", ", $class_field_params_s)."),";
+				$class_field_names[] = "'$name' => array(".join(", ", $class_field_params_s)."),";
 			}
 			else
-				$class_fields[] = "'$name',";
+				$class_field_names[] = "'$name',";
+
+			if(empty($class_field_params['title']))
+				$class_field_params['title'] = $name;
+
+			$class_fields[$name] = $class_field_params;
 
 			continue;
 		}
@@ -259,7 +272,7 @@ $php = "<?php\n\nclass $class_name extends base_object_db
 	function main_table_fields()
 	{
 		return array(
-			".join("\n\t\t\t", $class_fields)."
+			".join("\n\t\t\t", $class_field_names)."
 		);
 	}
 	$auto_objects_code
@@ -366,8 +379,8 @@ $html = "{form class=$admin_class_name id=\$this->id()}
 <table class=\"btab w100p\">
 ";
 
-foreach($edit_fields as $f => $c)
-	$html .= "<tr><th>{$c}:</th><td>{input name=\"$f\" class=\"w100p\"}</td></tr>\n";
+foreach($class_fields as $f => $x)
+	$html .= "<tr><th>{$x['title']}:</th><td>{input name=\"$f\" class=\"w100p\"}</td></tr>\n";
 
 $html .= "<tr><td colSpan=\"2\">{submit value=\"Сохранить\" style=\"width: 100px;\"}</td></tr>
 </table>

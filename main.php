@@ -152,8 +152,7 @@ if(config('access_log'))
 
 bors()->changed_save();
 
-list($usec, $sec) = explode(" ",microtime());
-$time = ((float)$usec + (float)$sec) - $GLOBALS['stat']['start_microtime'];
+$time = microtime(true) - $GLOBALS['stat']['start_microtime'];
 
 if($time > config('timing_limit'))
 {
@@ -175,6 +174,9 @@ if(config('debug_timing') && is_string($res))
 			$deb .= "cache static expire = ". date('r', time()+$cs)."\n";
 			$deb .= "class_template = {$object->template()}\n";
 	}
+
+	$deb .= "\n=== debug vars: ===\n";
+	$deb .= debug_vars_info();
 
 	$deb .= "\n=== debug counting: ===\n";
 	$deb .= debug_count_info_all();

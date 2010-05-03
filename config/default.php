@@ -17,6 +17,8 @@ config_set('bors_core_db', 'BORS');
 
 config_set('bors_version_show', '2');
 
+config_set('storage_db_sqlite_main', BORS_SITE.'/data/main.sqlite');
+
 config_set('lcml_sharp_markup', false);
 config_set('lcml.code.engines_order', 'lcml_tag_code_geshi');
 config_set('lcml.code.geshi.base_dir', 'geshi-1.0.8.4');
@@ -31,6 +33,7 @@ config_set('images_resize_max_area', 5000000);
 config_set('images_resize_filesize_enabled', 1048576);
 
 config_set('image_transform_engine', 'GD');
+config_set('url_truncate', false);
 
 // Кодировки
 config_set('internal_charset', 'utf-8');		// Внутренняя кодировка фреймворка, обычно равна системной

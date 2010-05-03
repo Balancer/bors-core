@@ -51,6 +51,9 @@
 <div class="top-nav">{module class="nav_top" id=$this}</div>
 {if not $skip_page_title}<h1>{$title}</h1>{/if}
 
+{if $error_message  }<div class="red_box">{$error_message    }</div>{/if}
+{if $success_message}<div class="green_box">{$success_message}</div>{/if}
+
 {$body}
 
 <div class="right-menu">

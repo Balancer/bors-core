@@ -6,6 +6,9 @@ class bors_user_flat extends bors_user_base
 	function can_be_empty() { return false; }
 	function loaded() { return $this->cookie_hash(); }
 
+	static function _user_id_cookie_name() { return 'bors_user_flat_id'; }
+	static function _user_hash_cookie_name() { return 'bors_user_flat_hash'; }
+
 	static function id_prepare($id)
 	{
 		if($id == -1)
@@ -40,7 +43,7 @@ class bors_user_flat extends bors_user_base
 	static function id_by_cookie($cookie_hash = NULL)
 	{
 		if(is_null($cookie_hash))
-			$cookie_hash = @$_COOKIE['cookie_hash'];
+			$cookie_hash = @$_COOKIE[self::_user_hash_cookie_name()];
 
 		if(!$cookie_hash)
 			return false;
@@ -66,7 +69,7 @@ class bors_user_flat extends bors_user_base
 
 	static function do_logout()
 	{
-		foreach(array('user_id', 'cookie_hash', 'is_admin') as $k)
+		foreach(array(self::_user_id_cookie_name(), self::_user_hash_cookie_name(), 'is_admin') as $k)
 		{
 			SetCookie($k, NULL, 0, "/", '.'.$_SERVER['HTTP_HOST']);
 			SetCookie($k, NULL, 0, "/", $_SERVER['HTTP_HOST']);
@@ -96,8 +99,8 @@ class bors_user_flat extends bors_user_base
 			$expired = time()+86400*365;
 
 		foreach(array(
-			'user_id' => $this->id(), 
-			'cookie_hash' => $this->cookie_hash(), 
+			self::_user_id_cookie_name() => $this->id(),
+			self::_user_hash_cookie_name() => $this->cookie_hash(),
 			'is_admin' => $this->is_admin()
 		) as $k => $v)
 		{

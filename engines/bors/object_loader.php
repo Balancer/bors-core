@@ -19,7 +19,7 @@ function class_include($class_name, &$args = array())
 
 	foreach(bors_dirs() as $dir)
 	{
-//		echo "check {$dir}/classes/{$class_path}{$class_file}.php<br/>";
+//		echo "check {$dir}/classes/{$class_path}{$class_file}.php  <br/>\n";
 		if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.php"))
 		{
 			require_once($file_name);
@@ -218,6 +218,127 @@ function class_load_by_url($url, $args)
 	return class_load_by_local_url($url, $args);
 }
 
+function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match, $url_pattern, $skip)
+{
+//	echo "$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<hr/>\n";
+	$id = NULL;
+	$page = NULL;
+
+	if(preg_match("!^redirect:(.+)$!", $check_class, $m))
+	{
+		$check_class = $m[1];
+		$redirect = true;
+	}
+	else
+		$redirect = false;
+
+	$args = array(
+		'match' => $match,
+		'called_url' => $url
+	);
+
+	// Формат вида aviaport_image_thumb(3,geometry=2)
+	if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $check_class, $m))
+	{
+		foreach(explode(',', $m[3]) as $pair)
+		{
+			if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
+			{
+				// Если число, то это номер группировки URL,
+				// если строка - то она присваивается непосредственно.
+				if(is_numeric($mm[2]))
+					$args[$mm[1]] = $match[$mm[2]+$skip];
+				else
+					$args[$mm[1]] = $mm[2];
+			}
+		}
+
+		$check_class = $m[1];
+		$id = ($m[2] == 'NULL') ? NULL : $match[$m[2]+$skip];
+
+		$page = $args;
+	}
+	elseif(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $check_class, $m))
+	{
+		$check_class = $m[1];
+		$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+$skip];
+		$page = @$match[$m[3]+$skip];
+	}
+	elseif(preg_match("!^(.+)\((\w+)\)$!", $check_class, $class_match))
+	{
+		$check_class = $class_match[1];
+
+		switch($class_match[2])
+		{
+			case 'url':
+				$id = $url;
+				break;
+			default:
+				$id = is_numeric($class_match[2]) ? $match[$class_match[2]+$skip] : $class_match[2];
+				break;
+		}
+
+		if($check_class == 'include')
+		{
+			// Подгрузка блока расширений карты привязок URL.
+			$class_base = $id;
+			require_once($map_file = 'classes/'.str_replace('_', '/', $class_base).'/bors_map.php');
+			foreach($GLOBALS['bors_url_submap_map'] as $pair)
+			{
+				if(!preg_match('!^(.*)\s*=>\s*(.+)$!', $pair, $m))
+					exit(ec("Ошибка формата bors_url_submap [$map_file]: '{$pair}'"));
+
+				$url_subpattern = $match[2].trim($m[1]);
+				$class_path = trim($m[2]);
+				if($class_path[0] == '_')
+					$class_path  = $class_base.$class_path;
+
+				$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
+				if(preg_match('!\?!', $url_subpattern) && !empty($url_data['query']))
+					$check_url .= '?'.$url_data['query'];
+
+//				echo "<small>Check $url_subpattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_subpattern}\$! to {$check_url}</small><br />\n";
+				if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_subpattern$!i", $check_url, $submatch))
+					if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $submatch, $url_subpattern, 3)))
+						return $obj;
+			}
+
+			return NULL;
+		}
+	}
+
+	if(preg_match("!^(.+)/([^/]+)$!", $check_class, $m))
+		$class = $m[2];
+	else
+		$class = $check_class;
+
+	if(is_array($page))
+		$args = array_merge($args, $page);
+	else
+		$args['page'] = $page;
+
+//	echo "object_init($check_class, $id)<br />";
+	if(($obj = object_init($check_class, $id, $args))
+		&& ($obj->can_be_empty() || $obj->loaded())
+	)
+	{
+		if($redirect)
+		{
+			if(!config('do_not_exit'))
+			{
+				echo "Redirect by $url_pattern";
+				go($obj->url($page), true);
+				bors_exit("Redirect");
+			}
+			else
+				return object_load($obj->url($page));
+		}
+		return $obj;
+	}
+
+	return NULL;
+}
+
 function class_load_by_local_url($url, $args)
 {
 	$obj = @$GLOBALS['bors_data']['classes_by_uri'][$url];
@@ -252,87 +373,10 @@ function class_load_by_local_url($url, $args)
 //		if(debug_is_balancer() && strpos($pair, 'balancer.ru'))	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
 		if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
 		{
-//			if(debug_is_balancer()) echo "<b>Ok - $class_path</b><br />";
-
-			$id = NULL;
-			$page = NULL;
-
-			if(preg_match("!^redirect:(.+)$!", $class_path, $m))
+//			echo "<b>Ok - $class_path</b><br />";
+			if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $match, $url_pattern, 1)))
 			{
-				$class_path = $m[1];
-				$redirect = true;
-			}
-			else
-				$redirect = false;
-
-			// Формат вида aviaport_image_thumb(3,geometry=2)
-			if(preg_match("!^(.+) \( (\d+|NULL)( , [^)]+=[^)]+ )+ \)$!x", $class_path, $m))	
-			{
-				$args = array();
-				foreach(explode(',', $m[3]) as $pair)
-				{
-					if(preg_match('!^(\w+)=(.+)$!', $pair, $mm))
-					{
-						if(is_numeric($mm[2]))
-							$args[$mm[1]] = $match[$mm[2]+1];
-						else
-							$args[$mm[1]] = $mm[2];
-					}
-				}
-
-				$class_path = $m[1];
-				$id = ($m[2] == 'NULL') ? NULL : $match[$m[2]+1];
-
-				$page = $args;
-			}
-			elseif(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $class_path, $m))	
-			{
-				$class_path = $m[1];
-				$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+1];
-				$page = @$match[$m[3]+1];
-			}
-			elseif(preg_match("!^(.+)\((\w+)\)$!", $class_path, $class_match))	
-			{
-				$class_path = $class_match[1];
-				switch($class_match[2])
-				{
-					case 'url':
-						$id = $url;
-						break;
-					default:
-						$id = $match[$class_match[2]+1];
-						break;
-				}
-			}
-
-			$args = array('match'=>$match, 'called_url'=>$url);
-
-			if(preg_match("!^(.+)/([^/]+)$!", $class_path, $m))
-				$class = $m[2];
-			else
-				$class = $class_path;
-
-			if(is_array($page))
-				$args = array_merge($args, $page);
-			else
-				$args['page'] = $page;
-
-//			echo "object_init($class_path, $id)<br />";
-			if(($obj = object_init($class_path, $id, $args))
-				&& ($obj->can_be_empty() || $obj->loaded())
-			)
-			{
-				if($redirect)
-				{
-					if(!config('do_not_exit'))
-					{
-						echo "Redirect by $url_pattern";
-						go($obj->url($page), true);
-						bors_exit("Redirect");
-					}
-					else
-						return object_load($obj->url($page));
-				}
+//				echo "Found $obj";
 				return $obj;
 			}
 		}
@@ -500,7 +544,7 @@ function object_init($class_name, $object_id, $args = array())
 		return $obj;
 
 	$found = 0;
-	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name);
+	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name, $args);
 	if(is_object($object_id) && !is_object($original_id))
 	{
 		$obj = $object_id;

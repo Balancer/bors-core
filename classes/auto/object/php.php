@@ -15,6 +15,9 @@ class auto_object_php extends base_object
 
 		$data = url_parse($this->id());
 		$path = $data['path'];
+		if(($ut = config('url_truncate')))
+			$path = preg_replace("!/$ut/!", '/', $path);
+
 		$page = 1;
 		if(preg_match('!^(.+/)(\d+)\.html$!', $path, $m))
 		{
@@ -25,7 +28,16 @@ class auto_object_php extends base_object
 		$class_path = str_replace('/', '_', trim($path, '/'));
 		$class_base = config('classes_auto_base', 'auto_php');
 
-		if(!($object = object_load($class_base.'_'.$class_path, $this->id())))
+		if(preg_match('!^(.+)_(\d+)$!', $class_path, $m))
+		{
+			$class_path = bors_unplural($m[1]);
+			$object_id = $m[2];
+		}
+		else
+			$object_id = $this->id();
+
+
+		if(!($object = object_load($class_base.'_'.$class_path, $object_id)))
 		{
 			$class_path = $class_path ? $class_path . '_main' : 'main';
 			$object = object_load($class_base.'_'.$class_path, $this->id());

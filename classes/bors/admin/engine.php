@@ -55,6 +55,12 @@ class bors_admin_engine extends base_empty
 		return "<a href=\"{$obj->admin()->url()}\">{$obj->title()}</a>&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
 	}
 
+	function titled_link()
+	{
+		$obj = $this->real_object();
+		return "<a href=\"{$obj->admin()->url()}\">{$obj->title()}</a>\n";
+	}
+
 	function imaged_nav_named_link()
 	{
 		$obj = $this->real_object();

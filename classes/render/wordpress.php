@@ -13,7 +13,7 @@ class render_wordpress extends base_null
 		}
 
 		$tpl_file = false;
-		foreach(bors_dirs() as $dir)
+		foreach(bors_dirs(true) as $dir)
 			if(file_exists($tpl_file = $dir.'/templates/wordpress/'.$object->template().'/index.php'))
 				break;
 

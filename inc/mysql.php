@@ -132,10 +132,14 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 	if(empty($field))
 		return $table;
 
-	$f = $field;
-	if(!empty($fields[$field]))
-		if(preg_match('!^(.+)\|.+!', $f = $fields[$field], $m))
-			$f = $m[1];
+	if(!($f = @$fields[$field]))
+		$f = $field;
+
+	if(is_array($f))
+		$f = defval($f, 'field', $field);
+
+	if(preg_match('!^(.+)\|.+!', $f, $m))
+		$f = $m[1];
 
 	if(!$was_joined && $table == $class->main_table())
 		$table = '';

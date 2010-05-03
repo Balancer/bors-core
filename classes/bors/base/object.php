@@ -61,7 +61,7 @@ class base_object extends base_empty
 				if(preg_match('!^(\w+)\((\w+)\)$!', $table, $m))
 				{
 					$table = $m[1];
-					$id_field = $m[2];
+					$r_id_field = $m[2];
 				}
 
 				foreach($fields as $property => $db_field)
@@ -694,7 +694,20 @@ class base_object extends base_empty
 	function main_db() { return $this->main_db_storage(); }
 	function main_db_storage() { return config('main_bors_db'); }
 	function main_table(){ return $this->main_table_storage(); }
-	function main_table_storage(){ return $this->class_name(); }
+
+	function main_table_storage()
+	{
+		if($this->main_table_fields())
+		{
+			$f = $this->fields();
+			return @$f[0][0];
+		}
+
+		// Тут не нужно переделывать на выброс исключения. Или, если переделать - проконтролировать
+		// корректную обработку в inc/mysql.php bors_class_field_to_db().
+		return NULL;
+	}
+
 	function main_table_fields() { return array(); }
 	function title_field()
 	{

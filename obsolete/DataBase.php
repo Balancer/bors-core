@@ -406,7 +406,7 @@ class DataBase extends base_object
 		}
 		else
 		{
-			$value = "'".mysql_real_escape_string($value, $this->dbh)."'";
+			$value = is_null($value) ? "NULL" : "'".mysql_real_escape_string($value, $this->dbh)."'";
 
 			if($key[0] != '`')
 				$key = "`$key`";
@@ -491,9 +491,9 @@ class DataBase extends base_object
 		$n = $this->query("SELECT * FROM `".addslashes($table)."` WHERE $where");
 
 		if(!$append && $n>0)
-		$res = $this->query("UPDATE `".addslashes($table)."` ".$this->make_string_set($fields)." WHERE $where");
+			$res = $this->query("UPDATE `".addslashes($table)."` ".$this->make_string_set($fields)." WHERE $where");
 		else
-		$res = $this->query("REPLACE INTO `".addslashes($table)."` ".$this->make_string_values($fields));
+			$res = $this->query("REPLACE INTO `".addslashes($table)."` ".$this->make_string_values($fields));
 
 		if($res === false)
 		{

@@ -415,7 +415,7 @@ class storage_db_mysql_smart extends base_null
 					else
 						$set["{$field}"] = $value;
 				}
-				
+
 				// Закончили сбор обновляемых полей. Обновляем таблицу.
 				if($id_field)
 					$dbh->update($table_name, array($id_field => $oid), $set);

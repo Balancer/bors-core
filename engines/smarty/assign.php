@@ -19,7 +19,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 	}
 
 		$smarty->plugins_dir = array();
-		foreach(bors_dirs() as $dir)
+		foreach(bors_dirs(true) as $dir)
 			$smarty->plugins_dir[] = $dir.'/engines/smarty/plugins';
 
 		$smarty->plugins_dir[] = 'plugins';
@@ -171,7 +171,7 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 	}
 
 	$module_relative_path = NULL;
-	foreach(bors_dirs() as $dir)
+	foreach(bors_dirs(true) as $dir)
 	{
 		$dir = realpath($dir);
 		if(file_exists($fn = "{$dir}/templates/$assign_template/index.html"))
@@ -202,7 +202,7 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 			elseif($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.$module_relative_path.'/'.$assign_template_pure))
 				$template_uri = $tpl;
 			else
-				foreach(bors_dirs() as $dir)
+				foreach(bors_dirs(true) as $dir)
 				{
 //					echo "Check ".'xfile:'.secure_path($dir.' --- /templates/ --- '.config('default_template').$module_relative_path.'/'.$assign_template)."<br/>";
 					if($smarty->template_exists($tpl = 'xfile:'.secure_path($dir.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template_pure)))

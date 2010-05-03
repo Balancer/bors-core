@@ -1,5 +1,9 @@
 <?php
 
+bors_url_map(array(
+	'(/_bors/admin)(/.*) => include(bors_admin)',
+));
+
 $map = array(
 	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
 	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
@@ -18,10 +22,7 @@ $map = array(
 	'.*/\d{4}/\d{1,2}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
 	'.*/\d{4}/\d{1,2}/topic\-(\d+)\-rss\.xml => forum_topic_rss(1)',
 	'(/_bors/admin/)\?object=([^&]+).* => bors_admin_main(1)',
-	'/_bors/admin/delete/\?object=([^&]+).* => bors_tools_delete(1)',
-	'/_bors/admin/mark/delete/\?object=([^&]+).* => bors_admin_mark_delete(1)',
 	'/_bors/admin/edit\-smart/\?object=([^&]+).* => bors_admin_edit_smart(1)',
-	'/_bors/admin/edit\-smart/ => bors_admin_edit_smart',
 	'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
 	'(.*/)\?edit => bors_admin_edit_page(1)',
@@ -30,13 +31,6 @@ $map = array(
 	'(.*/)\?new  => bors_admin_append_child(1)',
 	'(.*)\?cdrop  => bors_admin_tools_clean(1)',
 
-	'/_bors/admin/ => bors_admin_main',
-	'/_bors/admin/append/child\?object=([^&]*) => bors_admin_append_child(1)',
-	'/_bors/admin/edit/page\?object=([^&]+) => bors_admin_edit_page(1)',
-	'/_bors/admin/property\?object=([^&]*) => bors_admin_property(1)',
-	'/_bors/admin/visibility\?act=(show|hide)&object=([^&]*) => bors_admin_visibility(2)',
-	'/_bors/admin/reports/ => bors_admin_reports_main',
-	'/_bors/admin/reports/load/ => bors_admin_reports_load',
 
 	'(/_bors/)igo\?o=(.+) => bors_system_go_internal(2)',
 	'(/_bors/)ugo\?u=(.+) => bors_system_go_url(2)',
@@ -70,6 +64,7 @@ $map = array(
 //	'.* => page_db(url)',
 	'.* => base_page_hts(url)',
 	'.* => auto_object_php(url)',
+	'.* => bors_page_fs_bbh(url)',
 	'.* => bors_page_fs_markdown(url)',
 	'.* => bors_page_fs_htsu(url)',
 );

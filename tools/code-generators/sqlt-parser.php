@@ -11,7 +11,7 @@ function main($sqlt_file)
 		exit("Файл $sqlt_file не найден!\n");
 
 	$table_name = NULL;
-	$fields		= array();
+	$sql_fields	= array();
 	$methods	= array();
 	$keys		= array();
 	$class_name	= false;
@@ -20,7 +20,9 @@ function main($sqlt_file)
 	$class_title	= false;
 	$class_titles	= false;
 
-	$edit_fields = array();
+	$class_fields = array();
+	$class_field_names = array();
+	$class_auto_objects = array();
 
 	$map = array(
 		'string'	=>	'VARCHAR(255)',
@@ -29,10 +31,13 @@ function main($sqlt_file)
 		'uint'		=>	'INT UNSIGNED',
 		'bool'		=>	'TINYINT(1) UNSIGNED',
 		'float'		=>	'FLOAT',
+		'enum'		=>	'ENUM(%)',
 	);
 
 	foreach(file($sqlt_file) as $s)
 	{
+		$arg = false;
+		$skip_class_type = false;
 		$s = trim($s);
 		if(!$s)
 			continue;
@@ -61,13 +66,20 @@ function main($sqlt_file)
 			continue;
 		}
 
-		if(preg_match('!^(.+?)\s*//\s*(.+)$!', $s, $m))
+		// Комментарии
+		$field_title = false;
+		$comment = false;
+		if(preg_match('!^(.+?)\s*//\s*(.+?)\s* \-\- \s*(.+?)\s*$!', $s, $m))
 		{
-			$comment = $m[2];
 			$s = $m[1];
+			$field_title = $m[2];
+			$comment = $m[3];
 		}
-		else
-			$comment = false;
+		elseif(preg_match('!^(.+?)\s*//\s*(.+?)\s*$!', $s, $m))
+		{
+			$s = $m[1];
+			$field_title = $m[2];
+		}
 
 		if(preg_match('/^(\w+):$/', $s, $m))
 		{
@@ -106,9 +118,49 @@ function main($sqlt_file)
 		else
 			$is_autoinc = false;
 
+		if(preg_match('/^(\w+)\(((\w+)\[\S+?\])\)$/', $s, $m))
+		{
+			$class_auto_objects[$m[1]] = $m[3];
+			$s = $m[2];
+		}
+		elseif(preg_match('/^(\w+)\((\w+)\)$/', $s, $m))
+		{
+			$class_auto_objects[$m[1]] = $m[2];
+			$s = $m[2];
+		}
+
+		if(preg_match('/^(\w+)\[(\S+)\]$/', $s, $m))
+		{
+			$s = "enum {$m[1]}";
+			$arg = array();
+			foreach(explode(',', $m[2]) as $v)
+				$arg[] = $v[1] == "'" ? $v : "'".addslashes($v)."'";
+			$arg = join(', ', $arg);
+		}
+
+		if(preg_match('/^\w+_id$/', $s))
+			$s = $skip_class_type = "int $s";
+
+		if(preg_match('/^is_\w+$/', $s))
+			$s = $skip_class_type = "bool $s";
+
+		if(preg_match('/^\w+_date$/', $s))
+			$s = $skip_class_type = "date $s";
+
+		if(preg_match('/^\w+$/', $s))
+			$s = $skip_class_type = "string $s";
+
+		if(preg_match('/^int\s+id$/', $s))
+			$skip_class_type = true;
+
 		if(preg_match('/^(\w+)\s+(\w+)$/', $s, $m))
 		{
-			$type = $map[strtolower($m[1])];
+			$field_type = strtolower($m[1]);
+			$type = $map[$field_type];
+
+			if($arg)
+				$type = str_replace("%", $arg, $type);
+
 			$name = $m[2];
 			if($is_index && $is_autoinc)
 				$keys[] = 'PRIMARY KEY (`'.$name.'`)';
@@ -125,13 +177,50 @@ function main($sqlt_file)
 			if($is_autoinc)
 				$f .= ' AUTO_INCREMENT';
 
-			if($comment)
-				$f .= " COMMENT '".addslashes($comment)."'";
+			$sql_comment = array();
+			$sql_comment[] = $field_title;
+			$sql_comment[] = $comment;
 
-			$fields[] = $f;
+			if($sql_comment)
+				$f .= " COMMENT '".addslashes(join('. ', $sql_comment))."'";
+
+			$sql_fields[] = $f;
 			$names[] = $name;
 
-			$edit_fields[$name] = $comment ? $comment : $name;
+			$class_field = '';
+			$class_field_params = array();
+			if($field_title)
+				$class_field_params['title'] = $field_title;
+			if($field_type && !$skip_class_type)
+				$class_field_params['type'] = $field_type;
+			if($comment)
+				$class_field_params['comment'] = $comment;
+
+			if($class_field_params)
+			{
+				if(empty($class_field_params['title']))
+					$class_field_params['title'] = $field_title;
+
+				$class_field_params_s = array();
+				foreach($class_field_params as $k => $v)
+				{
+					$v = addslashes($v);
+					if(preg_match('/^[\w - ~]+$/', $v))
+						$v = "'$v'";
+					else
+						$v = "ec('$v')";
+					$class_field_params_s[] = "'$k' => $v";
+				}
+
+				$class_field_names[] = "'$name' => array(".join(", ", $class_field_params_s)."),";
+			}
+			else
+				$class_field_names[] = "'$name',";
+
+			if(empty($class_field_params['title']))
+				$class_field_params['title'] = $name;
+
+			$class_fields[$name] = $class_field_params;
 
 			continue;
 		}
@@ -141,11 +230,11 @@ function main($sqlt_file)
 
 //	echo "$table_name\n";
 //	print_r($keys);
-//	print_r($fields);
+//	print_r($sql_fields);
 //	print_r($names);
 
 $sql = "CREATE TABLE IF NOT EXISTS `$table_name` (
-	".join(",\n\t", $fields).",
+	".join(",\n\t", $sql_fields).",
 
 	".join(",\n\t", $keys)."
 )
@@ -162,6 +251,19 @@ $sql = "CREATE TABLE IF NOT EXISTS `$table_name` (
 
 	$admin_path = str_replace('_','/',$class_name);
 
+	$auto_objects_code = "";
+	if($class_auto_objects)
+	{
+		$auto_objects_code = "function auto_objects()\n\t{\n\t\treturn array(\n";
+		foreach($class_auto_objects as $class_name => $field_name)
+		{
+			if(preg_match('/^(\w+)_id$/', $field_name, $m))
+				$auto_objects_code .= "\t\t\t'$m[1]' => '$class_name($field_name)',\n";
+			else
+				echo "Unknown auto_objects pair: $class_name => $field_name\n";
+		}
+	}
+
 $php = "<?php\n\nclass $class_name extends base_object_db
 {
 	function title() { return ec('$class_title'); }
@@ -170,10 +272,10 @@ $php = "<?php\n\nclass $class_name extends base_object_db
 	function main_table_fields()
 	{
 		return array(
-			'".join("',\n\t\t\t'", $names)."',
+			".join("\n\t\t\t", $class_field_names)."
 		);
 	}
-
+	$auto_objects_code
 	function url() { return config('main_host_url').'/{$admin_path}/'.\$this->id().'/'; }
 }
 ";
@@ -277,8 +379,8 @@ $html = "{form class=$admin_class_name id=\$this->id()}
 <table class=\"btab w100p\">
 ";
 
-foreach($edit_fields as $f => $c)
-	$html .= "<tr><th>{$c}:</th><td>{input name=\"$f\" class=\"w100p\"}</td></tr>\n";
+foreach($class_fields as $f => $x)
+	$html .= "<tr><th>{$x['title']}:</th><td>{input name=\"$f\" class=\"w100p\"}</td></tr>\n";
 
 $html .= "<tr><td colSpan=\"2\">{submit value=\"Сохранить\" style=\"width: 100px;\"}</td></tr>
 </table>

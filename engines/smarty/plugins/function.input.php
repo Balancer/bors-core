@@ -13,6 +13,11 @@ function smarty_function_input($params, &$smarty)
 				$value = NULL;
 		}
 
+		if(!isset($value))
+			$value = session_var("form_value_{$name}");
+
+		set_session_var("form_value_{$name}", NULL);
+
 		if(!isset($value) && isset($def))
 			$value = $def;
 
@@ -21,6 +26,14 @@ function smarty_function_input($params, &$smarty)
 
 		if(!empty($do_not_show_zero) && $value == 0)
 			$value = '';
+
+		if(in_array($name, explode(',', session_var('error_fields'))))
+		{
+			if(empty($class))
+				$class = "error";
+			else
+				$class .= " error";
+		}
 
 		echo "<input type=\"text\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
 

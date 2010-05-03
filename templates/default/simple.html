@@ -1,92 +1,81 @@
-<html>
-<head><title>{$title}</title></head>
-<style>{literal}
-body {
-	font-size: 9pt;
-	font-family: Verdana;
-}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>{$browser_title}</title>
+	<meta http-equiv="content-type" content="text/html; charset={$this->output_charset()}" />
+	<link rel="SHORTCUT ICON" href="/favicon.ico" />
+	<script type="text/javascript" src="/_bors/js/cfuncs.js"></script>
+	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
+	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/color-gray.css" />
+	<link rel="stylesheet" type="text/css" href="/css/admin.css" />
 
-table.btab { 
-	margin: 8px 0px 4px 0px; 
-	border-left: 1px solid #9bd;
-	border-top: 1px solid #9bd;
-	padding: 0;
-	border-collapse: collapse;
-}
+{if $css_list}{foreach item=css from=$css_list}
+<style type="text/css" media="all">@import url("{$css}");</style>
+{/foreach}{/if}
 
-table.btab td { background: white; }
+{if $use_jQuery}<script type="text/javascript" src="/_bors3rdp/jquery/jquery.js"></script>{/if}
+{if $header}{foreach from=$header item="h"}
+{$h}
+{/foreach}{/if}
+{if $meta}{foreach key=key item=value from=$meta}
+<meta name="{$key}" content="{$value|htmlspecialchars}" />
+{/foreach}{/if}
+{foreach item=s from=$head_append}
+{$s}
+{/foreach}
+</head>
 
-.btab td, .btab th 
-{
-	border-right: 1px solid #9bd;
-	border-bottom: 1px solid #9bd;
-	padding: 2px;
-	margin: 0;
-}
-
-.btab caption {
-	color: #def;
-	background-color: #358;
-}
-
-.btab th {
-	color: #358;
-	background-color: #def;
-}
-
-.w100p { width: 98%; }
-
-div.clear {
-	height: 0px;
-	clear: both;
-}
-
-div.pages_select a {
-	margin: 0 3px;
-	padding: 1px 2px;
-	border: 1px solid #358;
-	text-decoration: none;
-}
-
-div.pages_select a.current_page {
-	background-color: #358;
-	color: white;
-}
-
-div.pages_select a.select_page {
-}
-
-img {
-	border: none;
-}
-
-{/literal}</style>
 <body>
-<small>{module class="nav_top" id=$this}</small>
-<div align="right">{$description}</div>
-<h1>{$title}</h1>
+
+{if $template_top_menu}
+<div class="header">
+<ul class="top-tabs">
+{foreach from=$template_top_menu item="t" key="d"}
+{if $d|regex_match:'^\w+$'}
+{assign var="url" value='/'|cat:$d|cat:'/'}
+<li{if $main_uri|regex_match:$url} class="selected"{/if}><a href="{$url}">{$t}</a></li>
+{else}{if $d}
+<li><a href="{$d}">{$t}</a></li>
+{else}
+<li{if $main_uri|regex_match:'^http://[^/]+/$'} class="selected"{/if}><a href="/">{$t}</a></li>
+{/if}{/if}
+{/foreach}
+</ul>
+</div>
+{/if}
+
+
+<div class="body">
+<div style="font-style:italic; margin-right: 0; display: block; float: right; width: 40%; text-align: justify">{$description|lcml_bbh}</div>
+<div class="clear">&nbsp;</div>
+<div class="top-nav">{module class="nav_top" id=$this}</div>
+{if not $skip_page_title}<h1>{$title}</h1>{/if}
+
+{if $error_message  }<div class="red_box">{$error_message    }</div>{/if}
+{if $success_message}<div class="green_box">{$success_message}</div>{/if}
 
 {$body}
 
-{if $access}
-<hr />
-<small><center> 
-	edit <a href="{$main_uri}?edit">page</a> | 
-	<a href="{$main_uri}?edit-data">data</a> |
-	<a href="{$main_uri}?nav_edit">navigation</a>
-</center></small>
+<div class="right-menu">
+{if $right_menu}
+<!-- right menu = {$right_menu} -->
+	{include file=$right_menu}
 {/if}
-</body>
+</div>
+
+<div class="clear">&nbsp;</div>
+
+</div>
+
+{if $bottom_counters}{include file=$bottom_counters}{/if}
 
 <!--
-=== debug-info ===
-{if $this}class = {$this->class_name()}{/if} 
-template[3] = {$template}
-make_time = {$make_time} 
-template = {$page_template} 
-created = {$now|strftime:"%d.%m.%Y %H:%M"} 
-{if $this}{math assign=exp equation="x+y" x=$this->cache_static() y=$now}static expire = {$exp|strftime:"%d.%m.%Y %H:%M"} 
-{/if} 
+class = {$this->class_name()}
+class_file = {$this->class_file()}
+{if $this->cache_static()}
+static expire = {$this->cache_static_expire()|date:'r'}
+{/if}
+class_template = {$this->template()}
 -->
-
+</body>
 </html>

@@ -5,7 +5,7 @@ class base_object extends base_empty
 	var $data = array();
 
 	function attr_preset() { return array(
-			'config_class' => '',
+			'config_class' => config('config_class'),
 			'access_engine' => '',
 			'url_engine' => 'url_calling',
 	); }
@@ -324,8 +324,9 @@ class base_object extends base_empty
 		foreach($this->global_data() as $key => $value)
 			$this->add_global_template_data($key, $value);
 
-		foreach($this->local_data() as $key => $value)
-			$this->add_local_template_data($key, $value);
+		if(($data = $this->local_data()))
+			foreach($data as $key => $value)
+				$this->add_local_template_data($key, $value);
 
 		static $called = false; //TODO: в будущем снести вторые вызовы.
 		if($called)
@@ -528,8 +529,8 @@ class base_object extends base_empty
 
 		include_once('engines/search.php');
 
-		if($cache_clean)
-			$this->cache_clean();
+//		if($cache_clean)
+//			$this->cache_clean();
 
 		if(!($storage = $this->storage_engine()))
 		{
@@ -620,8 +621,8 @@ class base_object extends base_empty
 	function url($page = NULL)
 	{
 		if(empty($this->attr['_url_engine_object'])/* || !$this->_url_engine->id() ?? */)
-			if(!($this->attr['_url_engine_object'] = object_load($this->url_engine(), $this)))
-				debug_exit("Can't load url engine {$this->url_engine()} for class {$this}");
+			if(!($this->attr['_url_engine_object'] = object_load($this->get('url_engine'), $this)))
+				debug_exit("Can't load url engine '{$this->get('url_engine')}' for class {$this}");
 
 		return $this->attr['_url_engine_object']->url($page);
 	}
@@ -1024,4 +1025,33 @@ class base_object extends base_empty
 	function _relations() { return array(); }
 
 	function print_properties() { print_d($this->data); }
+
+	function __field_type($field_name)
+	{
+		$fields = $this->fields();
+		$desc = @$fields[$field_name];
+		if(!$desc)
+			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
+
+		if($type = @$desc['type'])
+			return $type;
+
+		if(preg_match('/_id$/', $field_name))
+			return 'int';
+
+		if(preg_match('/^is_/', $field_name))
+			return 'bool';
+
+		return 'string';
+	}
+
+	function __field_title($field_name)
+	{
+		$fields = $this->fields();
+		$desc = @$fields[$field_name];
+		if(!$desc)
+			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
+
+		return defval($desc, 'title', $field_name);
+	}
 }

@@ -65,6 +65,17 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 @include_once("config/vhosts.php");
 require_once("inc/filesystem.php");
 
+function bors_url_map($map_array)
+{
+	global $bors_map;
+	$bors_map = array_merge($bors_map, $map_array);
+}
+
+function bors_url_submap($map)
+{
+	$GLOBALS['bors_url_submap_map'] = $map;
+}
+
 function borsmaps_load()
 {
 	global $bors_map;
@@ -74,7 +85,10 @@ function borsmaps_load()
 	foreach(bors_dirs(true) as $dir)
 	{
 		$map = array();
-		if(file_exists($file = secure_path("{$dir}/handlers/bors_map.php")))
+		if(file_exists($file = secure_path("{$dir}/url_map.php")))
+			include($file);
+		//TODO: перенести в проектах handlers/bors_map в url_map, тут пока остаётся для совместимости
+		elseif(file_exists($file = secure_path("{$dir}/handlers/bors_map.php")))
 			include($file);
 		$bors_map = array_merge($bors_map, $map);
 	}

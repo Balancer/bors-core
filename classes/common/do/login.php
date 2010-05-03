@@ -1,11 +1,8 @@
 <?php
-
+vldfn
 class common_do_login extends base_page
 {
 	function title() { return ec('Авторизация.'); }
-//	function template() { return 'forum/common.html'; }
-
-	var $error;
 
 	function pre_parse()
 	{
@@ -22,10 +19,7 @@ class common_do_login extends base_page
 		$me = bors_user::do_login(@$_GET['req_username'], @$_GET['req_password'], false);
 
 		if(!is_object($me))
-		{
-			$this->error = $me;
-			return false;
-		}
+			set_session_var('error_message', $me);
 
 		return go(($this->referer && !preg_match('!login!', $this->referer)) ? $this->referer : '/');
 	}

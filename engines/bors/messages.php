@@ -77,6 +77,8 @@ function bors_message($text, $params=array())
 			$redir = user_data('level') > 3 ? "/admin/news/" : "/";
 	}
 
+	clean_all_session_vars();
+
 	if($redir && $timeout >= 0)
 		return go($redir, false, $timeout);
 
@@ -121,9 +123,11 @@ function bors_message_tpl($template, $obj, $params)
 		else
 			$redir = user_data('level') > 3 ? "/admin/news/" : "/";
 	}
-		
+
+	clean_all_session_vars();
+
 	if($redir && $timeout >= 0)
 		go($redir, false, $timeout);
-		
+
 	return true;
 }

@@ -67,3 +67,20 @@ function bors_hypher($string)
 	ini_set('mbstring.internal_encoding', $mb_enc);
 	return set_global_key('hypher-cache', $string, $result);
 }
+
+function bors_plural($s)
+{
+	if(preg_match('/s$/', $s))
+		return $s.'es';
+
+	return $s.'s';
+}
+
+function bors_unplural($s)
+{
+	if(preg_match('/^(.+s)es$/', $s, $m))
+		return $m[1];
+	if(preg_match('/^(.+)s$/', $s, $m))
+		return $m[1];
+	return $s;
+}

@@ -20,7 +20,7 @@ class render_quicky extends base_null
 
 		$tpl->compile_dir = config('cache_dir').'/smarty-templates_c/';
 //		$tpl->plugins_dir = array();
-//		foreach(bors_dirs() as $dir)
+//		foreach(bors_dirs(true) as $dir)
 //			$tpl->plugins_dir[] = $dir.'/engines/smarty/plugins';
 
 		$tpl->plugins_dir[] = 'plugins';
@@ -43,7 +43,7 @@ class xfile_wrapper
 	
 		$path = preg_replace('!^xfile://!', '', $path);
 		
-		foreach(bors_dirs() as $dir)
+		foreach(bors_dirs(true) as $dir)
 			if(file_exists($file = "$dir/templates/$path"))
 				return $this->_file = $file;
 		

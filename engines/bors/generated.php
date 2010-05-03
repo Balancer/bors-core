@@ -19,3 +19,5 @@ else
 	eval('function bors_strpos($str, $need, $start=NULL) { return is_null($start) ? strpos($str, $need) : strpos($str, $need, $start); }');
 	eval('function bors_ucfirst($str) { return ucfirst($string); }');
 }
+
+eval('class bors_log extends '.config('log.class', 'bors_log_stub').' { } ');

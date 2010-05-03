@@ -38,6 +38,8 @@ class storage_fs_separate extends base_null
 		if(!$found)
 			return $object->set_loaded(false);
 
+		debug_log_var('fs.separate.dir', $dir);
+
 		// По дефолту в separate разрешён HTML и все BB-тэги.
 		$object->set_html_disable(false, false);
 		$object->set_lcml_tags_enabled(NULL, false);

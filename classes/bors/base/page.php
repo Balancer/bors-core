@@ -40,7 +40,7 @@ class base_page extends base_object
 		if($this->total_pages() < 2)
 			return '';
 
-		include_once("inc/design/page_split.php");
+        include_once("inc/design/page_split.php");
 		$pages = '<li>'.join('</li><li>', pages_show($this, $this->total_pages(), $this->items_around_page())).'</li>';
 		return '<div class="'.$css.'">'.$before.ec('<ul><li>Страницы:</li>').$pages.'</ul>'.$after.'</div>';
 	}

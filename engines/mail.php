@@ -41,7 +41,8 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 	));
 
 	if(preg_match('/^(.*?) <(.*)>$/', $from, $m))
-		$from = $m[2];
+		if(!preg_match('/^\w+$/', $m[1]))
+			$from = "=?$charset?B?".base64_encode($m[1])."?= <{$m[2]}>";
 
 	$hdrs = $mime->headers(array_merge($headers, array(
 		'From'		=> $from,

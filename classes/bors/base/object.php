@@ -618,6 +618,11 @@ class base_object extends base_empty
 	function called_url_no_get() { return preg_replace('/\?.+$/', '', @$this->attr['called_url']); }
 	function _auto_redirect() { return true; }
 
+	/**
+	 * Возвращает ссылку на текущий объект для использования на сайте.
+	 * @param  $page - опциональный параметр номера страницы при многостраничной разбивке объекта при выводе
+	 * @return Строка со ссылкой
+	 */
 	function url($page = NULL)
 	{
 		if(empty($this->attr['_url_engine_object'])/* || !$this->_url_engine->id() ?? */)

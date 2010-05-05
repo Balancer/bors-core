@@ -128,7 +128,7 @@ class storage_db_mysql_smart extends base_null
 					if(empty($added[$table_name.'-'.$id_field]))
 					{
 						$added[$table_name.'-'.$id_field] = true;
-						
+
 						if($is_one_table)
 						{
 							$current_tab = '';
@@ -143,7 +143,7 @@ class storage_db_mysql_smart extends base_null
 								$main_tab = $current_tab;
 							$current_tab_prefix = "{$current_tab}.";
 						}
-						
+
 						if(empty($from))
 						{
 							$from = ($is_one_table || "`{$table_name}`" == $current_tab) ? "FROM `{$table_name}`" : "FROM `{$table_name}` AS {$current_tab}";

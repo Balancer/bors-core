@@ -50,11 +50,12 @@ function smarty_function_dropdown($params, &$smarty)
 		}
 	}
 
+	$have_null = in_array(NULL, $list);
+	$strict = defval($params, 'strict', $have_null);
+	$is_int = defval($params, 'is_int');
 
-
-//	echo "===="; var_dump($obj->$name());
 	if(empty($get))
-		$current = preg_match('!^\w+$!', $name) ? (isset($value)?$value:($obj?$obj->$name():NULL)) : 0;
+		$current = preg_match('!^\w+$!', $name) ? (isset($value) ? $value : ($obj ? $obj->$name() : NULL)) : 0;
 	else
 		$current = $obj->$get();
 
@@ -64,9 +65,13 @@ function smarty_function_dropdown($params, &$smarty)
 	if(!is_array($current))
 		$current = array($current);
 
+	if($is_int)
+		for($i=0; $i<count($current); $i++)
+			$current[$i] = ($have_null && is_null($current[$i])) ?  NULL : intval($current[$i]);
+
 	foreach($list as $id => $iname)
 		if($id !== 'default')
-			echo "<option value=\"$id\"".(in_array($id, $current) ? " selected=\"selected\"" : "").">$iname</option>\n";
+			echo "<option value=\"$id\"".(in_array($id, $current, $strict) ? " selected=\"selected\"" : "").">$iname</option>\n";
 
 	echo "</select>";
 }

@@ -100,6 +100,12 @@ function smarty_block_form($params, $content, &$smarty)
 						require_once('function.textarea.php');
 						smarty_function_textarea($data, $smarty);
 						break;
+					case '3state':
+						$data['list'] = ec('array("NULL"=>"", 1=>"Да", 0=>"Нет");');
+						$data['is_int'] = true;
+						require_once('function.dropdown.php');
+						smarty_function_dropdown($data, $smarty);
+						break;
 					case 'bool':
 						$data['label'] = $title;
 						$labels[$f] = $data;

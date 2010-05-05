@@ -260,6 +260,8 @@ class base_object extends base_empty
 		return $this->data[$field] = $value;
 	}
 
+	function have_data() { return !empty($this->data); }
+
 	function render_engine() { return config('render_engine', false); }
 
 	function is_cache_disabled() { return true; }
@@ -518,6 +520,8 @@ class base_object extends base_empty
 	}
 
 	function check_value_conditions() { return array(); }
+
+	function save($cache_clean = true) { return $this->store($cache_clean); }
 
 	function store($cache_clean = true)
 	{

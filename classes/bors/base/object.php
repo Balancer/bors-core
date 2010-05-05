@@ -702,15 +702,15 @@ class base_object extends base_empty
 
 	function main_table_storage()
 	{
-		if($this->main_table_fields())
+/*		if($this->main_table_fields())
 		{
 			$f = $this->fields();
 			return @$f[0][0];
 		}
-
+*/
 		// Тут не нужно переделывать на выброс исключения. Или, если переделать - проконтролировать
 		// корректную обработку в inc/mysql.php bors_class_field_to_db().
-		return NULL;
+		return $this->class_name();
 	}
 
 	function main_table_fields() { return array(); }

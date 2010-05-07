@@ -541,6 +541,92 @@ class storage_db_mysql_smart extends base_null
 
 		$object->changed_fields = array();
 	}
+
+	static function create_table($class_name)
+	{
+		$map = array(
+			'string'	=>	'VARCHAR(255)',
+			'text'		=>	'TEXT',
+			'int'		=>	'INT',
+			'uint'		=>	'INT UNSIGNED',
+			'bool'		=>	'TINYINT(1) UNSIGNED',
+			'float'		=>	'FLOAT',
+			'enum'		=>	'ENUM(%)',
+		);
+
+		$db_fields = array();
+
+		$class = new $class_name(NULL);
+
+		foreach($class->fields() as $db_name => $tables)
+		{
+			foreach($tables as $table_name => $fields)
+			{
+				$object_fields = array_smart_expand($fields);
+				$db_fields = array();
+				$primary = false;
+
+				foreach($object_fields as $property => $field)
+				{
+					if(!is_array($field))
+						$field = array('name' => $field);
+
+					if(empty($field['name']))
+						$field['name'] = $property;
+
+					if(empty($field['type']))
+					{
+						if(preg_match('/^\w+_id$/', $property) || $property == 'id')
+							$field['type'] = 'int';
+						elseif(preg_match('/^is_\w+$/', $property))
+							$field['type'] = 'bool';
+						elseif(preg_match('/^\w+_date$/', $property))
+							$field['type'] = 'date';
+						elseif(preg_match('/^\w+$/', $property))
+							$field['type'] = 'string';
+						else
+							bors_throw(ec('Неизвестное поле ').$property);
+					}
+					$db_field = '`'.$field['name'].'` '.$map[$field['type']];
+					if($property == 'id')
+					{
+						$db_field .= ' AUTO_INCREMENT';
+						$primary = $field['name'];
+					}
+
+					$db_fields[] = $db_field;
+				}
+
+				if(empty($primary))
+					return bors_throw(ec("Не найден первичный индекс для ").print_r($object_fields, true));
+
+				$db_fields[] = "PRIMARY KEY (`$primary`)";
+
+				$query = "CREATE TABLE IF NOT EXISTS `$table_name` (".join(', ', $db_fields).");";
+
+				$db = new driver_mysql($db_name);
+				$db->query($query);
+//		$db->close();
+			}
+		}
+	}
+
+	static function drop_table($class_name)
+	{
+		if(!config('can-drop-tables'))
+			return bors_throw(ec('Удаление таблиц запрещено'));
+
+		$class = new $class_name(NULL);
+		foreach($class->fields() as $db_name => $tables)
+		{
+			foreach($tables as $table_name => $fields)
+			{
+				$db = new driver_mysql($db_name);
+				$db->query("DROP TABLE IF EXISTS $table_name");
+//				$db->close();
+			}
+		}
+	}
 }
 
 global $back_functions;

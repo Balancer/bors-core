@@ -1,7 +1,7 @@
 <?php
 
 #define('BORS_SITE', dirname(__FILE__));
-require_once 'config-host.php';
+require_once 'host-setup.php';
 require_once BORS_CORE.'/config.php';
 
 require_once config('phpunit_include').'/Framework.php';

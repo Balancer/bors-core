@@ -582,7 +582,6 @@ class base_object extends base_empty
 	function data_provider() { return NULL; }
 	function data_providers() { return array(); }
 
-	function fields() { return array(); }
 	function auto_objects() { return array(); }
 	function auto_targets() { return array(); }
 
@@ -696,24 +695,15 @@ class base_object extends base_empty
 		return array_keys(get_object_vars($this));
 	}
 
+	function fields() { return array(config('main_bors_db') => array()); }
+
 	function main_db() { return $this->main_db_storage(); }
-	function main_db_storage() { return config('main_bors_db'); }
-	function main_table(){ return $this->main_table_storage(); }
+	function main_db_storage() { return array_shift(array_keys($this->fields())); }
+	function main_table() { return $this->main_table_storage(); }
 
-	function main_table_storage()
-	{
-		if($this->main_table_fields())
-		{
-			$f = $this->fields();
-			return @$f[0][0];
-		}
+	function main_table_storage() { return array_shift(array_keys(array_shift($this->fields()))); }
+	function main_table_fields() { return array_shift(array_shift($this->fields())); }
 
-		// Тут не нужно переделывать на выброс исключения. Или, если переделать - проконтролировать
-		// корректную обработку в inc/mysql.php bors_class_field_to_db().
-		return NULL;
-	}
-
-	function main_table_fields() { return array(); }
 	function title_field()
 	{
 		$f = $this->main_table_fields();

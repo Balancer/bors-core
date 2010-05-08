@@ -150,7 +150,7 @@ class base_page extends base_object
 		//TODO: Вычистить все _queries.
 		if($qlist = $this->_queries())
 		{
-			$db = new DataBase($this->main_db());
+			$db = new DataBase($this->db_name());
 
 			foreach($qlist as $qname => $q)
 			{

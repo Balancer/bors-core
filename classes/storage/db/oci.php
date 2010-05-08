@@ -8,11 +8,11 @@ class storage_db_oci extends storage_db
 		
 		$result = array();
 
-		foreach($object->fields() as $db => $tables)
+		foreach($object->fields_map_db() as $db => $tables)
 		{
 			if(empty($db))
 			{
-				print_d($object->fields());
+				print_d($object->fields_map_db());
 				debug_exit("Empty db for {$object->class_name()}");
 			}
 

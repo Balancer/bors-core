@@ -11,7 +11,7 @@ class body_lcmlbbh extends base_null
 		//TODO: Вычистить все _queries.
 		if($qlist = $obj->_queries())
 		{
-			$db = new DataBase($obj->main_db());
+			$db = new DataBase($obj->db_name());
 
 			foreach($qlist as $qname => $q)
 			{

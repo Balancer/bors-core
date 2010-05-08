@@ -26,7 +26,7 @@ class base_db_list extends base_object
 			$title_field = $tf;
 
 		if(empty($db))
-			$db = $item_class->main_db();
+			$db = $item_class->db_name();
 
 		$this->_dbh = new driver_mysql($db);
 
@@ -45,7 +45,7 @@ class base_db_list extends base_object
 		{
 			$this->_title_field = $m[1];
 			$this->_id_field = $m[2];
-			$this->_table = $item_class->main_table();
+			$this->_table = $item_class->table_name();
 		}
 		elseif(preg_match('!^(\w+)\.(\w+)\((\w+)\)(\|.+)?$!', $item_class->title_field(), $m))
 		{

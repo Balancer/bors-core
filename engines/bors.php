@@ -86,7 +86,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 
 function bors_object_new_instance_db(&$object)
 {
-	$tab = $object->main_table();
+	$tab = $object->table_name();
 	if(!$tab)
 		debug_exit("Try to get new db instance with empty main table");
 
@@ -106,7 +106,7 @@ function bors_object_new_instance_db(&$object)
 
 function bors_db_fields_init($obj)
 {
-	foreach($obj->fields() as $db => $tables)
+	foreach($obj->fields_map_db() as $db => $tables)
 		foreach($tables as $tables => $fields)
 			foreach($fields as $property => $db_field)
 				$obj->data[is_numeric($property) ? $db_field : $property] = NULL;

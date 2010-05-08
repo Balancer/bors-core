@@ -19,27 +19,28 @@ class base_object_db extends base_object
 //			bors_db_fields_init($this);
 	}
 
-	function id_field() { $fields = $this->main_table_fields(); return empty($fields['id']) ? 'id' : $fields['id']; }
+	function fields_map_db() { return $this->fields(); }
+
+	function fields() { return array($this->db_name(config('main_bors_db')) => array($this->table_name() => $this->fields_map())); }
+
+	function db_name($default = NULL) { return $this->main_db($default); }
+	function main_db($default = NULL) { return $this->main_db_storage($default); }
+	function main_db_storage($default = NULL) { return $default ? $default : array_shift(array_keys($this->fields_map_db())); }
+
+	function table_name() { return $this->main_table(); }
+	function main_table() { return $this->main_table_storage(); }
+	function main_table_storage() { return array_shift(array_keys(array_shift($this->fields_map_db()))); }
 
 	function new_instance() { bors_object_new_instance_db($this); }
 
-	function select($field, $where_map) { return $this->db()->select($this->main_table(), $field, $where_map); }
-	function select_array($field, $where_map) { return $this->db()->select_array($this->main_table(), $field, $where_map); }
+	function select($field, $where_map) { return $this->db()->select($this->table_name(), $field, $where_map); }
+	function select_array($field, $where_map) { return $this->db()->select_array($this->table_name(), $field, $where_map); }
 
-//	function fields() { return array($this->main_db() => $this->main_db_fields()); }
-/*
-	function main_db_fields()
-	{
-		return array(
-			$this->main_table() => $this->main_table_fields(),
-		);
-	}
-*/
 	function main_id_field()
 	{
-		$f = $this->fields();
-		$f = $f[$this->main_db()];
-		$f = $f[$this->main_table()];
+		$f = $this->fields_map_db();
+		$f = $f[$this->db_name()];
+		$f = $f[$this->table_name()];
 		if($fid = @$f['id'])
 			return $fid;
 		if($f[0] == 'id')
@@ -50,7 +51,7 @@ class base_object_db extends base_object
 
 	function delete($remove_cross = true)
 	{
-		$tab = $this->main_table();
+		$tab = $this->table_name();
 		if(!$tab)
 			debug_exit("Try to delete empty main table in class ".__FILE__.":".__LINE__);
 

@@ -54,7 +54,7 @@ class base_object extends base_empty
 		$r_id_field = NULL;
 		$r_db_field = NULL;
 
-		foreach($this->fields() as $db => $tables)
+		foreach($this->fields_map_db() as $db => $tables)
 		{
 			foreach($tables as $table => $fields)
 			{
@@ -320,7 +320,7 @@ class base_object extends base_empty
 
 		if($this->auto_assign_all_fields())
 		{
-			foreach($this->main_table_fields() as $property => $field)
+			foreach($this->fields_map() as $property => $field)
 			{
 				if(is_numeric($property))
 					$property = $field;
@@ -687,7 +687,7 @@ class base_object extends base_empty
 	function db($database_name = NULL)
 	{
 		if($this->_dbh === NULL)
-			$this->_dbh = &new driver_mysql($database_name ? $database_name : $this->main_db());
+			$this->_dbh = &new driver_mysql($database_name ? $database_name : $this->db_name());
 
 		return $this->_dbh;
 	}
@@ -703,23 +703,11 @@ class base_object extends base_empty
 		return array_keys(get_object_vars($this));
 	}
 
-	function fields() { return array( $this->main_db() => $this->main_db_fields()); }
-	function main_db_fields() { return array($this->main_table() => $this->main_table_fields()); }
+	function fields_map() { return $this->main_table_fields(); }
+	function main_table_fields() { return array('id'); }
 
-	function main_db() { return $this->main_db_storage(); }
-	function main_db_storage() { return config('main_bors_db'); }
-	function main_table() { return $this->main_table_storage(); }
-
-//	function main_table_storage() { return array_shift(array_keys(array_shift($this->fields()))); }
-	function main_table_storage() { return $this->class_name(); }
-
-//	function main_table_fields() { return array_shift(array_shift($this->fields())); }
-
-	function title_field()
-	{
-		$f = $this->main_table_fields();
-		return ($ft = @$f['title']) ? $ft : 'title';
-	}
+	function id_field()    { return defval($this->fields_map(), 'id',    'id'   ); }
+	function title_field() { return defval($this->fields_map(), 'title', 'title'); }
 
 	function set_checkboxes($check_list, $db_up)
 	{
@@ -1047,10 +1035,8 @@ class base_object extends base_empty
 
 	function __field_type($field_name)
 	{
-		$fields = $this->fields();
+		$fields = $this->fields_map();
 		$desc = @$fields[$field_name];
-		if(!$desc)
-			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
 
 		if($type = @$desc['type'])
 			return $type;
@@ -1066,10 +1052,8 @@ class base_object extends base_empty
 
 	function __field_title($field_name)
 	{
-		$fields = $this->fields();
+		$fields = $this->fields_map();
 		$desc = @$fields[$field_name];
-		if(!$desc)
-			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
 
 		return defval($desc, 'title', $field_name);
 	}

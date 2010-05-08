@@ -4,8 +4,8 @@ function bors_named_list_db($class_name, $zero_item = NULL, $where = array())
 {
 	$obj = object_new($class_name);
 
-	$items_db = $obj->main_db();
-	$items_tab = $obj->main_table();
+	$items_db = $obj->db_name();
+	$items_tab = $obj->table_name();
 	$db = new driver_mysql($items_db);
 
 
@@ -30,8 +30,8 @@ function bors_named_list_db_field_distinct($class_name, $field='title', $zero_it
 {
 	$obj = object_new($class_name);
 
-	$items_db = $obj->main_db();
-	$items_tab = $obj->main_table();
+	$items_db = $obj->db_name();
+	$items_tab = $obj->table_name();
 	$db = new driver_mysql($items_db);
 
 
@@ -53,8 +53,8 @@ function bors_named_hierarchic_list_db($class_name, $zero_item = NULL)
 {
 	$obj = object_new($class_name);
 
-	$items_db = $obj->main_db();
-	$items_tab = $obj->main_table();
+	$items_db = $obj->db_name();
+	$items_tab = $obj->table_name();
 	$db = new driver_mysql($items_db);
 
 	$res = array();

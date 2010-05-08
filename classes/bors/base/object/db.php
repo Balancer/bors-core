@@ -33,14 +33,14 @@ class base_object_db extends base_object
 
 	function new_instance() { bors_object_new_instance_db($this); }
 
-	function select($field, $where_map) { return $this->db()->select($this->main_table(), $field, $where_map); }
-	function select_array($field, $where_map) { return $this->db()->select_array($this->main_table(), $field, $where_map); }
+	function select($field, $where_map) { return $this->db()->select($this->table_name(), $field, $where_map); }
+	function select_array($field, $where_map) { return $this->db()->select_array($this->table_name(), $field, $where_map); }
 
 	function main_id_field()
 	{
-		$f = $this->fields();
-		$f = $f[$this->main_db()];
-		$f = $f[$this->main_table()];
+		$f = $this->fields_map_db();
+		$f = $f[$this->db_name()];
+		$f = $f[$this->table_name()];
 		if($fid = @$f['id'])
 			return $fid;
 		if($f[0] == 'id')
@@ -51,7 +51,7 @@ class base_object_db extends base_object
 
 	function delete($remove_cross = true)
 	{
-		$tab = $this->main_table();
+		$tab = $this->table_name();
 		if(!$tab)
 			debug_exit("Try to delete empty main table in class ".__FILE__.":".__LINE__);
 

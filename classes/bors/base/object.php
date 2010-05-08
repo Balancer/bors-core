@@ -290,6 +290,9 @@ class base_object extends base_empty
 	function title($exact = false) { return defval($this->data, 'title', $exact ? NULL : $this->class_name()); }
 	function set_title($new_title, $db_update) { return $this->set('title', $new_title, $db_update); }
 
+	function debug_title() { return "'{$this->title()}' {$this->class_name()}({$this->id()})"; }
+	function debug_title_dc() { return dc("'{$this->title()}' {$this->class_name()}({$this->id()})"); }
+
 	function description() { return @$this->data['description']; }
 	function set_description($description, $db_update) { return $this->set('description', $description, $db_update); }
 
@@ -333,8 +336,13 @@ class base_object extends base_empty
 			$this->add_global_template_data($key, $value);
 
 		if(($data = $this->local_data()))
-			foreach($data as $key => $value)
-				$this->add_local_template_data($key, $value);
+		{
+			if(!is_array($data)) //TODO: снести после отлавливания
+				debug_hidden_log('__data_error', 'Not array local_data: '.print_r($data, true));
+			else
+				foreach($data as $key => $value)
+					$this->add_local_template_data($key, $value);
+		}
 
 		static $called = false; //TODO: в будущем снести вторые вызовы.
 		if($called)

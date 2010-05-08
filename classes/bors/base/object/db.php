@@ -20,7 +20,6 @@ class base_object_db extends base_object
 	}
 
 	function fields_map_db() { return $this->fields(); }
-
 	function fields() { return array($this->db_name(config('main_bors_db')) => array($this->table_name() => $this->fields_map())); }
 
 	function db_name($default = NULL) { return $this->main_db($default); }

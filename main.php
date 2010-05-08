@@ -210,7 +210,7 @@ if(empty($title))
 if(config('404_logging'))
 {
 	if(!empty($_SERVER['HTTP_REFERER'])
-			|| strpos($uri, '.files/'))
+			|| strpos($uri, 'files/'))
 		$fname_404 = '404-filtered.log';
 	else
 		$fname_404 = '404-other.log';

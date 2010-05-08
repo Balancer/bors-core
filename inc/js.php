@@ -28,7 +28,7 @@ if(!function_exists('json_decode'))
 
 if(!function_exists('json_encode'))
 {
-	function json_decode($json)
+	function json_encode($json)
 	{
 	}
 }

@@ -687,7 +687,7 @@ class base_object extends base_empty
 	function db($database_name = NULL)
 	{
 		if($this->_dbh === NULL)
-			$this->_dbh = &new driver_mysql($database_name ? $database_name : $this->db_name());
+			$this->_dbh = new driver_mysql($database_name ? $database_name : $this->get('db_name', config('main_bors_db')));
 
 		return $this->_dbh;
 	}

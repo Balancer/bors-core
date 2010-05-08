@@ -312,7 +312,7 @@ class base_object extends base_empty
 
 		if($this->auto_assign_all_fields())
 		{
-			foreach($this->main_table_fields() as $property => $field)
+			foreach($this->fields_map() as $property => $field)
 			{
 				if(is_numeric($property))
 					$property = $field;
@@ -695,20 +695,11 @@ class base_object extends base_empty
 		return array_keys(get_object_vars($this));
 	}
 
-	function fields() { return array(config('main_bors_db') => array()); }
+	function fields_map() { return $this->main_table_fields(); }
+	function main_table_fields() { return array('id'); }
 
-	function main_db() { return $this->main_db_storage(); }
-	function main_db_storage() { return array_shift(array_keys($this->fields())); }
-	function main_table() { return $this->main_table_storage(); }
-
-	function main_table_storage() { return array_shift(array_keys(array_shift($this->fields()))); }
-	function main_table_fields() { return array_shift(array_shift($this->fields())); }
-
-	function title_field()
-	{
-		$f = $this->main_table_fields();
-		return ($ft = @$f['title']) ? $ft : 'title';
-	}
+	function id_field()    { return defval($this->fields_map(), 'id',    'id'   ); }
+	function title_field() { return defval($this->fields_map(), 'title', 'title'); }
 
 	function set_checkboxes($check_list, $db_up)
 	{

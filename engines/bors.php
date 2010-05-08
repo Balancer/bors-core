@@ -106,7 +106,7 @@ function bors_object_new_instance_db(&$object)
 
 function bors_db_fields_init($obj)
 {
-	foreach($obj->fields() as $db => $tables)
+	foreach($obj->fields_map_db() as $db => $tables)
 		foreach($tables as $tables => $fields)
 			foreach($fields as $property => $db_field)
 				$obj->data[is_numeric($property) ? $db_field : $property] = NULL;

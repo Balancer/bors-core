@@ -108,7 +108,7 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 	if(is_object($class))
 	{
 		$table	 = $class->main_table();
-		$fields	 = array_smart_expand($class->main_table_fields());
+		$fields	 = array_smart_expand($class->fields_map());
 	}
 	else
 	{
@@ -126,7 +126,7 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 				$table = $class->main_table();
 
 //			echo "$class: $table, {$x[1]}<br/>";
-			$fields	 = array_smart_expand($class->main_table_fields());
+			$fields	 = array_smart_expand($class->fields_map());
 		}
 	}
 

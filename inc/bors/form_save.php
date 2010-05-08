@@ -16,7 +16,7 @@ function bors_form_save(&$obj)
 		if(!$obj->access())
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($obj)."; access_engine=".$obj->access_engine());
 
-		if(!$obj->access()->can_action($_GET['act']))
+		if(!$obj->access()->can_action($_GET['act'], $_GET))
 			return bors_message(ec("[1] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).", method=can_action)"));
 
 		if(method_exists($obj, $method = "on_action_{$_GET['act']}"))
@@ -171,7 +171,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		if(!$object->access())
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($object)."; access_engine=".$object->access_engine());
 
-		if(!$object->access()->can_action($data))
+		if(!$object->access()->can_action(@$data['act'], $data))
 			return bors_message(ec("[2] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($object).", access=".($object->access_engine())."/".get_class($object->access()).", method=can_action)"));
 
 		if(empty($data['subaction']))
@@ -242,4 +242,35 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 	set_session_var('success_message', ec('Данные успешно сохранены'));
 	return $object;
+}
+
+function bors_form_errors($data, $conditions = array())
+{
+	foreach($data as $field => $value)
+		set_session_var("form_value_{$field}", $value);
+
+	foreach($conditions as $error_condition => $fail_message)
+	{
+		$error_cond = trim($error_condition);
+		if(preg_match('/^!(\w+)$/', $error_cond, $m))
+		{
+			$fields     = array($m[1]);
+			$error_cond = empty($data[$m[1]]);
+		}
+		elseif(preg_match('/^(\w+)\s*!=\s*(\w+)$/', $error_cond, $m))
+		{
+			$fields     = array($m[1], $m[2]);
+			$error_cond = @$data[$m[1]] != @$data[$m[2]];
+		}
+		else
+			throw new Exception("Unknown check_form_data condition string: '$error_condition' => '$fail_message'");
+
+		if($error_cond)
+		{
+			set_session_var('error_fields', join(',', $fields));
+			return $fail_message;
+		}
+	}
+
+	return NULL;
 }

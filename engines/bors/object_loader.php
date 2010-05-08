@@ -220,7 +220,9 @@ function class_load_by_url($url, $args)
 
 function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match, $url_pattern, $skip)
 {
-//	echo "$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<hr/>\n";
+//	if(config('debug_mode'))
+//		echo "$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<hr/>\n";
+
 	$id = NULL;
 	$page = NULL;
 
@@ -362,11 +364,11 @@ function class_load_by_local_url($url, $args)
 		$url_pattern = trim($match[1]);
 		$class_path  = trim($match[2]);
 
-//		if(debug_is_balancer()) echo "Initial url=$url, pair=$pair<br/>\n";
-
 		$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
-		if(preg_match('!\?!', $url_pattern) && !empty($url_data['query']))
+		if(strpos($url_pattern, '\\?') && !empty($url_data['query']))
 			$check_url .= '?'.$url_data['query'];
+
+//		if(debug_is_balancer()) echo "<small>Initial url=$url, pair=$pair, check_url='$check_url'</small><br/>\n";
 
 //		echo "pair=$pair<br />\n";
 //		if(debug_is_balancer())	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";

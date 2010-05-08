@@ -206,7 +206,15 @@ if(empty($title))
 
 if(config('404_logging'))
 {
-	@file_put_contents($file = config('debug_hidden_log_dir')."/404.log", "$uri <= ".@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
+	if(!empty($_SERVER['HTTP_REFERER'])
+			|| strpos($uri, '.files/'))
+		$fname_404 = '404-filtered.log';
+	else
+		$fname_404 = '404-other.log';
+
+	@file_put_contents($file = config('debug_hidden_log_dir')."/{$fname_404}", "$uri <= ".@$_SERVER['HTTP_REFERER'] 
+		. " ; IP=".@$_SERVER['REMOTE_ADDR']
+		. "; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
 }
 

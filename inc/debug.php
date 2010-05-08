@@ -19,27 +19,27 @@ function debug_exit($message)
 	exit($message);
 }
 
-function debug_in_console() { return empty($_SERVER['HTTP_HOST']); }
+function debug_in_console() { return defined('STDIN'); }
 
 function debug_xmp($text, $string = false)
 {
-	if(!empty($_SERVER['HTTP_HOST']))
-	$out = "<xmp>{$text}</xmp>\n";
+	if(debug_in_console())
+		$out = $text;
 	else
-	$out = $text;
+		$out = "<xmp>{$text}</xmp>\n";
 
 	if(!$string)
-	echo $out;
+		echo $out;
 
 	return $out;
 }
 
 function debug_pre($text)
 {
-	if(!empty($_SERVER['HTTP_HOST']))
-	echo "<xmp>{$text}</xmp>\n";
+	if(debug_in_console())
+		echo $text;
 	else
-	echo $text;
+		echo "<xmp>{$text}</xmp>\n";
 }
 
 function print_d($data, $string=false) { return debug_xmp(print_r($data, true), $string); }
@@ -70,10 +70,10 @@ function echolog($message, $level=3)
 {
 	$log_level = max(config('log_level'), @$_GET['log_level']);
 	if(!$log_level)
-	$log_level = 2;
+		$log_level = 2;
 
 	if(!$log_level)
-	return;
+		return;
 
 	if($log_level >= $level)
 	{
@@ -95,23 +95,23 @@ function echolog($message, $level=3)
 		{
 			if($level<3)
 			{
-				if(!empty($_SERVER['HTTP_HOST']))
-				echo '<span style="color: red;">';
+				if(debug_in_console())
+					echo "=== ";
 				else
-				echo "=== ";
+					echo '<span style="color: red;">';
 			}
 
-			if(!empty($_SERVER['HTTP_HOST']))
-			echo "<span style=\"font-size: 8pt;\">".substr($message,0,2048).(strlen($message)>2048?"...":"")."</span><br />\n";
+			if(debug_in_console())
+				echo substr($message,0,2048).(strlen($message)>2048?"...":"")."\n";
 			else
-			echo substr($message,0,2048).(strlen($message)>2048?"...":"")."\n";
+				echo "<span style=\"font-size: 8pt;\">".substr($message,0,2048).(strlen($message)>2048?"...":"")."</span><br />\n";
 
 			if($level<3)
 			{
-				if(!empty($_SERVER['HTTP_HOST']))
-				echo "</span>\n";
+				if(debug_in_console())
+					echo " ===\n";
 				else
-				echo " ===\n";
+					echo "</span>\n";
 			}
 		}
 		if($level==1)
@@ -143,7 +143,7 @@ function debug_trace($skip = 0, $html = NULL, $level = -1)
 	$MAXSTRLEN = 128;
 
 	if(is_null($html))
-		$html = !empty($_SERVER['HTTP_HOST']);
+		$html = !debug_in_console();
 
 	if($html)
 		$s = '<pre align="left">';

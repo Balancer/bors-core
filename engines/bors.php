@@ -192,3 +192,8 @@ function bors_stop_bots()
 
 	return false;
 }
+
+function bors_throw($message)
+{
+	throw new Exception($message);
+}

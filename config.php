@@ -17,3 +17,5 @@ function bors_unit_test_up()
 }
 
 require_once('config-host.php');
+
+config_set('main_bors_db', config('unit-test.mysql.db'));

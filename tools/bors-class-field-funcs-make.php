@@ -13,7 +13,7 @@ function main($argv)
 //	$src = file_get_contents($class_file);
 
 	$cls = new $class_name(NULL);
-	foreach($cls->main_table_fields() as $property => $db_field)
+	foreach($cls->fields_map() as $property => $db_field)
 	{
 		if(is_numeric($property))
 			$property = $db_field;

@@ -86,7 +86,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 
 function bors_object_new_instance_db(&$object)
 {
-	$tab = $object->main_table();
+	$tab = $object->table_name();
 	if(!$tab)
 		debug_exit("Try to get new db instance with empty main table");
 

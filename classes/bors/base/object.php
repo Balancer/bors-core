@@ -54,7 +54,7 @@ class base_object extends base_empty
 		$r_id_field = NULL;
 		$r_db_field = NULL;
 
-		foreach($this->fields() as $db => $tables)
+		foreach($this->fields_map_db() as $db => $tables)
 		{
 			foreach($tables as $table => $fields)
 			{
@@ -679,7 +679,7 @@ class base_object extends base_empty
 	function db($database_name = NULL)
 	{
 		if($this->_dbh === NULL)
-			$this->_dbh = &new driver_mysql($database_name ? $database_name : $this->main_db());
+			$this->_dbh = &new driver_mysql($database_name ? $database_name : $this->db_name());
 
 		return $this->_dbh;
 	}
@@ -1027,10 +1027,8 @@ class base_object extends base_empty
 
 	function __field_type($field_name)
 	{
-		$fields = $this->fields();
+		$fields = $this->fields_map();
 		$desc = @$fields[$field_name];
-		if(!$desc)
-			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
 
 		if($type = @$desc['type'])
 			return $type;
@@ -1046,10 +1044,8 @@ class base_object extends base_empty
 
 	function __field_title($field_name)
 	{
-		$fields = $this->fields();
+		$fields = $this->fields_map();
 		$desc = @$fields[$field_name];
-		if(!$desc)
-			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
 
 		return defval($desc, 'title', $field_name);
 	}

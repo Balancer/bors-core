@@ -20,7 +20,7 @@ class storage_db_mysql_smart extends base_null
 
 		$need_convert = $object->db_charset() != $object->internal_charset();
 
-		foreach($object->fields() as $db => $tables)
+		foreach($object->fields_map_db() as $db => $tables)
 		{
 			$tab_count = 0;
 			$select = array();
@@ -315,7 +315,7 @@ class storage_db_mysql_smart extends base_null
 
 //		$need_convert = $object->db_charset() != $object->internal_charset();
 
-		foreach($object->fields() as $db => $tables)
+		foreach($object->fields_map_db() as $db => $tables)
 		{
 			$dbh = &new driver_mysql($db);
 
@@ -435,7 +435,7 @@ class storage_db_mysql_smart extends base_null
 
 //		$need_convert = $object->db_charset() != $object->internal_charset();
 
-		foreach($object->fields() as $db => $tables)
+		foreach($object->fields_map_db() as $db => $tables)
 		{
 //			echo "Database: $db; tables="; print_r($tables); echo "<br />\n";
 			$dbh = new driver_mysql($db);
@@ -558,7 +558,7 @@ class storage_db_mysql_smart extends base_null
 
 		$class = new $class_name(NULL);
 
-		foreach($class->fields() as $db_name => $tables)
+		foreach($class->fields_map_db() as $db_name => $tables)
 		{
 			foreach($tables as $table_name => $fields)
 			{
@@ -617,7 +617,7 @@ class storage_db_mysql_smart extends base_null
 			return bors_throw(ec('Удаление таблиц запрещено'));
 
 		$class = new $class_name(NULL);
-		foreach($class->fields() as $db_name => $tables)
+		foreach($class->fields_map_db() as $db_name => $tables)
 		{
 			foreach($tables as $table_name => $fields)
 			{

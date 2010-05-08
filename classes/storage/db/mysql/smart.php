@@ -15,10 +15,12 @@ class storage_db_mysql_smart extends base_null
 		global $stdbms_cache;
 
 //		echo "Load $object (".$GLOBALS['bors_data']['class_included'][get_class($object)].")<br/>";
+//		print_d($object->fields());
 
 		$hash = md5(join('!', array($object->class_name(), $common_where, $only_count)));
 
 		$need_convert = $object->db_charset() != $object->internal_charset();
+
 
 		foreach($object->fields() as $db => $tables)
 		{

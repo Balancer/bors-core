@@ -703,14 +703,17 @@ class base_object extends base_empty
 		return array_keys(get_object_vars($this));
 	}
 
-	function fields() { return array(config('main_bors_db') => array()); }
+	function fields() { return array( $this->main_db() => $this->main_db_fields()); }
+	function main_db_fields() { return array($this->main_table() => $this->main_table_fields()); }
 
 	function main_db() { return $this->main_db_storage(); }
-	function main_db_storage() { return array_shift(array_keys($this->fields())); }
+	function main_db_storage() { return config('main_bors_db'); }
 	function main_table() { return $this->main_table_storage(); }
 
-	function main_table_storage() { return array_shift(array_keys(array_shift($this->fields()))); }
-	function main_table_fields() { return array_shift(array_shift($this->fields())); }
+//	function main_table_storage() { return array_shift(array_keys(array_shift($this->fields()))); }
+	function main_table_storage() { return $this->class_name(); }
+
+//	function main_table_fields() { return array_shift(array_shift($this->fields())); }
 
 	function title_field()
 	{

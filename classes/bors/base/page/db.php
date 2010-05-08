@@ -46,15 +46,15 @@ class base_page_db extends base_page
 
 	function storage_engine() { return 'storage_db_mysql_smart'; }
 
-	function fields() { return array($this->main_db() => $this->main_db_fields()); }
-
+//	function fields() { return array($this->main_db() => $this->main_db_fields()); }
+/*
 	function main_db_fields()
 	{
 		return array(
 			$this->main_table() => $this->main_table_fields(),
 		);
 	}
-
+*/
 	function fields_first() { return NULL; }
 
 	function select($field, $where_map) { return $this->db()->select($this->main_table(), $field, $where_map); }

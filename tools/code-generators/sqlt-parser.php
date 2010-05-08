@@ -181,7 +181,7 @@ function main($sqlt_file)
 			$sql_comment[] = $field_title;
 			$sql_comment[] = $comment;
 
-			if($sql_comment)
+			if($sql_comment && $sql_comment[0])
 				$f .= " COMMENT '".addslashes(join('. ', $sql_comment))."'";
 
 			$sql_fields[] = $f;

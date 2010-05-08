@@ -293,7 +293,15 @@ class base_object extends base_empty
 	function description() { return @$this->data['description']; }
 	function set_description($description, $db_update) { return $this->set('description', $description, $db_update); }
 
-	function nav_name() { return @$this->data['nav_name'] ? $this->data['nav_name'] : $this->title(); }
+	function nav_name()
+	{
+		return @$this->data['nav_name'] ? 
+			$this->data['nav_name'] 
+			: $this->get('nav_name_lower', config('nav_name_lower')) ? 
+				bors_lower($this->title()) 
+				: $this->title();
+	}
+
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 
 	function template() { return defval($this->data, 'template', defval($this->attr, 'template', config('default_template'))); }

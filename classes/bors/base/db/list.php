@@ -40,7 +40,7 @@ class base_db_list extends base_object
 			$this->_table = $table;
 			return;
 		}
-		
+
 		if(preg_match('!^(\w+)\((\w+)\)(\|.+)?$!', $item_class->title_field(), $m))
 		{
 			$this->_title_field = $m[1];
@@ -61,7 +61,7 @@ class base_db_list extends base_object
 	{
 		if(!$this->_dbh)
 			$this->__construct();
-	
+
 		$list = $this->zero_item() === false ? array() : array(0 => $this->zero_item());
 
 		$where = "";

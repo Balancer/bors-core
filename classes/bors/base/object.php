@@ -582,7 +582,6 @@ class base_object extends base_empty
 	function data_provider() { return NULL; }
 	function data_providers() { return array(); }
 
-	function fields() { return array(); }
 	function auto_objects() { return array(); }
 	function auto_targets() { return array(); }
 
@@ -696,29 +695,11 @@ class base_object extends base_empty
 		return array_keys(get_object_vars($this));
 	}
 
-	function main_db() { return $this->main_db_storage(); }
-	function main_db_storage() { return config('main_bors_db'); }
-	function main_table(){ return $this->main_table_storage(); }
+	function fields_map() { return $this->main_table_fields(); }
+	function main_table_fields() { return array('id'); }
 
-	function main_table_storage()
-	{
-/*		if($this->main_table_fields())
-		{
-			$f = $this->fields();
-			return @$f[0][0];
-		}
-*/
-		// Тут не нужно переделывать на выброс исключения. Или, если переделать - проконтролировать
-		// корректную обработку в inc/mysql.php bors_class_field_to_db().
-		return $this->class_name();
-	}
-
-	function main_table_fields() { return array(); }
-	function title_field()
-	{
-		$f = $this->main_table_fields();
-		return ($ft = @$f['title']) ? $ft : 'title';
-	}
+	function id_field()    { return defval($this->fields_map(), 'id',    'id'   ); }
+	function title_field() { return defval($this->fields_map(), 'title', 'title'); }
 
 	function set_checkboxes($check_list, $db_up)
 	{

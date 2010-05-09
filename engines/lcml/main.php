@@ -269,11 +269,12 @@ function lcml_smart($string)
 
 function lcml_tag_disabled($tag)
 {
+
 	if(@in_array('img', $enabled = config('lcml_tags_enabled')))
 		return false;
 
 	if(@in_array('img', config('lcml_tags_disabled')))
 		return true;
 
-	return empty($enabled);
+	return !empty($enabled);
 }

@@ -41,3 +41,8 @@ div.red_box {
 }
 
 .s { text-decoration: line-through; }
+
+img.flag {
+	vertical-align: middle;
+	margin-right: 2px;
+}

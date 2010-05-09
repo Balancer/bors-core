@@ -33,7 +33,10 @@ function get_browser_info($user_agent)
 	elseif(preg_match('!J2ME!', $user_agent))
 		$os = 'J2ME';
 	elseif(preg_match('!Windows NT 6.0!', $user_agent))
-		$os = 'WindowsVista';
+	{
+		$os = 'Windows';
+		$ov = 'Vista';
+	}
 	elseif(preg_match('!Windows NT 5.(1|2)!', $user_agent))
 	{
 		$os = 'Windows';
@@ -178,6 +181,7 @@ function get_browser_info($user_agent)
 	{
 		$browser = 'EntirewebBot';
 		$os = '';
+		$ov = '';
 		$is_bot = true;
 	}
 
@@ -217,13 +221,11 @@ function bors_browser_images($ua)
 	list($os, $browser, $osver, $bver, $is_bot) = get_browser_info($ua);
 
 	$short = array();
-	if($os) $short[] = "os=$os";
-	if($osver) $short[] = "ov=$osver";
-	if($browser) $short[] = "b=$browser";
-	if($bver) $short[] = "bv=$bver";
+	if($os || $osver) $short[] = trim("$os $osver");
+	if($browser || $bver) $short[] = trim("$browser $bver");
 	if($is_bot) $short[] = "bot";
 
-	$title = htmlspecialchars($ua." [".join(',', $short)."]");
+	$title = htmlspecialchars(join(', ', array_unique($short))." [{$ua}]");
 
 	$info = array();
 

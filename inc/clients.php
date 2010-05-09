@@ -52,3 +52,15 @@ function bors_client_analyze()
 	global $client;
 	$client['is_bot'] = bors_bot_detect(@$_SERVER['HTTP_USER_AGENT']);
 }
+
+function bors_client_info_short($ip, $ua = '')
+{
+	$info = array();
+
+	include_once('inc/clients/geoip-place.php');
+	include_once('inc/browsers.php');
+	if(function_exists('geoip_flag'))
+		$info[] = geoip_flag($ip);
+
+	return join('', $info).bors_browser_images($ua);
+}

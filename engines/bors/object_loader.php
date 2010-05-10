@@ -111,6 +111,7 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 
 			if($x->can_cached() && !$updated)
 			{
+				debug_count_inc('memcached loads');
 //				$GLOBALS['bors_data']['cached_objects4'][get_class($x)][$x->id()] = $x;
 				$found = 2;
 				return $x;
@@ -126,9 +127,12 @@ function delete_cached_object($object) { return save_cached_object($object, true
 
 function delete_cached_object_by_id($class_name, $object_id)
 {
-	$memcache = config('memcached_instance');
-	$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$object_id;
-	@$memcache->delete($hash);
+	if(($memcache = config('memcached_instance')))
+	{
+		$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$object_id;
+		$memcache->delete($hash);
+	}
+
 	unset($GLOBALS['bors_data']['cached_objects4'][$class_name][$object_id]);
 }
 
@@ -142,10 +146,12 @@ function save_cached_object(&$object, $delete = false)
 		$hash = 'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
 
 		if($delete)
-			@$memcache->delete($hash);
+			$memcache->delete($hash);
 		else
-			@$memcache->set($hash, $object, true, rand(600, 1200));
-
+		{
+			$memcache->set($hash, $object, 0, rand(600, 1200));
+			debug_count_inc('memcached stores');
+		}
 	}
 
 	if($delete)
@@ -569,6 +575,9 @@ function object_init($class_name, $object_id, $args = array())
 		$found = 0;
 		$obj = new $class_name($object_id);
 		$obj->set_class_file($class_file);
+
+		if(config('debug_objects_create_counting_details'))
+			debug_count_inc('init object '.$class_name);
 	}
 
 	unset($args['local_path']);

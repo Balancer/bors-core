@@ -338,7 +338,7 @@ class base_object extends base_empty
 		if(($data = $this->local_data()))
 		{
 			if(!is_array($data)) //TODO: снести после отлавливания
-				debug_hidden_log('__data_error', 'Not array local_data: '.print_r($data, true));
+				debug_hidden_log('__data_error', 'Not array local_data: '.print_r($data, true).' for '.$this->debug_title_dc());
 			else
 				foreach($data as $key => $value)
 					$this->add_local_template_data($key, $value);

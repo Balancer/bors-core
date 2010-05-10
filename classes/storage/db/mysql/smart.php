@@ -279,7 +279,7 @@ class storage_db_mysql_smart extends base_null
 							$result[] = $object;
 
 					$class = get_class($object);
-					$object = &new $class(NULL);
+					$object = new $class(NULL);
 				}
 			}
 

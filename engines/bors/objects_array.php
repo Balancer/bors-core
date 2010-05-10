@@ -30,6 +30,10 @@ function objects_array($class, $args = array())
 	if($s = $init->storage())
 	{
 		$objects = $s->load($init, $where, false, $cargs);
+
+		if(config('debug_objects_create_counting_details'))
+			debug_count_inc('init object '.$class, count($objects));
+
 		if($preload)
 		{
 			foreach($preload as $x)
@@ -49,6 +53,8 @@ function objects_first($class, $args = array())
 	if(empty($args['limit']))
 		$args['limit'] = 1;
 	$objs = objects_array($class, $args);
+	if(config('debug_objects_create_counting_details'))
+		debug_count_inc('init object '.$class, count($objs));
 	return $objs ? $objs[0] : NULL;
 }
 

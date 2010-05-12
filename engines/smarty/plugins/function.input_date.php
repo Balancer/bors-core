@@ -50,18 +50,30 @@ function smarty_function_input_date($params, &$smarty)
 
 	$year_min = max(1902, $year_min);// Минимальная корректная UNIXTIME дата - декабрь 1901-го.
 
-	echo "<select name=\"{$name}_day\">\n";
-	if($can_drop || !$day)
-		echo "<option value=\"0\">--</option>\n";
-	for($i = 1; $i<=31; $i++)
-		echo "<option".($i==$day?' selected="true"':'').">$i</option>"; //  value=\"$i\"
-	echo "</select>\n";
+	if(empty($params['show_only']))
+		$shown = array('y','m','d','h','i','s');
+	else
+		$shown = explode(',', $params['show_only']);
+
+	if(in_array('d', $shown))
+	{
+		echo "<select name=\"{$name}_day\">\n";
+		if($can_drop || !$day)
+			echo "<option value=\"0\">--</option>\n";
+		for($i = 1; $i<=31; $i++)
+			echo "<option".($i==$day?' selected="true"':'').">$i</option>"; //  value=\"$i\"
+		echo "</select>\n";
+
+		$shown_days = true;
+	}
+	else
+		$shown_days = false;
 
 	echo "<select name=\"{$name}_month\">\n";
 	if($can_drop || !$mon)
 		echo "<option value=\"0\">-----</option>\n";
 	for($i = 1; $i<=12; $i++)
-		echo "<option value=\"$i\"".($i==$mon?' selected="true"':'').">".month_name_rp($i)."</option>";
+		echo "<option value=\"$i\"".($i==$mon?' selected="true"':'').">".($shown_days ? month_name_rp($i) : month_name($i))."</option>";
 	echo "</select>\n";
 
 	echo "<select name=\"{$name}_year\">\n";

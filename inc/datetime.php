@@ -115,7 +115,7 @@ function make_input_time($field_name, &$data)
 	return $data[$field_name] = strtotime("{$year}-{$month}-{$day} $hour:$min:$sec");
 }
 
-function bors_form_parse_time(&$array)
+function bors_form_parse_time(&$array, $integer = false)
 {
 	//TODO: заюзать make_input_time? (funcs/datetime.php)
 	if(empty($array['time_vars']))
@@ -123,6 +123,7 @@ function bors_form_parse_time(&$array)
 
 	foreach(explode(',', $array['time_vars']) as $var)
 	{
+		// Полный формат данных: YYYY-MM-DD. Если нет - то ниже.
 		if(@$array["{$var}_month"] && @$array["{$var}_day"] && @$array["{$var}_year"])
 		{
 			$array[$var] = strtotime(intval(@$array["{$var}_year"])
@@ -143,7 +144,25 @@ function bors_form_parse_time(&$array)
 			// mktime (@$array["{$var}_hour"], @$array["{$var}_minute"], @$array["{$var}_second"], @$array["{$var}_month"], @$array["{$var}_day"], @$array["{$var}_year"]);
 		}
 		else // Не полный формат даты, например, 2009-0-0 - пишем как строку.
-			$array[$var] = intval(@$array["{$var}_year"]).'-'.intval(@$array["{$var}_month"]).'-'.intval(@$array["{$var}_day"]);
+		{
+			if($integer) // или как число вида YYYY0000
+			{
+				if(@$array["{$var}_year"])
+				{
+					$d = sprintf('%04d', @$array["{$var}_year"]);
+					if(array_key_exists("{$var}_month", $array))
+						$d .= sprintf('%02d', $array["{$var}_month"]);
+					if(array_key_exists("{$var}_day", $array))
+						$d .= sprintf('%02d', $array["{$var}_day"]);
+
+					$array[$var] = intval($d);
+				}
+				else
+					$array[$var] = NULL;
+			}
+			else
+				$array[$var] = intval(@$array["{$var}_year"]).'-'.intval(@$array["{$var}_month"]).'-'.intval(@$array["{$var}_day"]);
+		}
 
 		if(empty($array["{$var}_month"]) && empty($array["{$var}_day"]) && empty($array["{$var}_year"]))
 			$array[$var] = NULL;
@@ -167,9 +186,25 @@ function date_format_mysql($time) { return $time ? strftime('\'%Y-%m-%d\'', $tim
 
 function date_day_begin($time) { return strtotime(date('Y-m-d', $time)); }
 
-function part_date($date)
+function part_date($date, $int = false)
 {
-	if(is_numeric($date))
+	$year = $month = $day = 0;
+	if($int)
+	{
+		$year = substr($date, 0, 4);
+		$date = substr($date, 4);
+		if($date)
+		{
+			$month = substr($date, 0, 2);
+			$date = substr($date, 2);
+		}
+		if($date)
+		{
+			$day = substr($date, 0, 2);
+			$date = substr($date, 2);
+		}
+	}
+	elseif(is_numeric($date))
 		list($year, $month, $day) = explode('-', date('Y-m-d', $date));
 	else
 		list($year, $month, $day) = explode('-', $date);

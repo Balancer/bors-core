@@ -89,6 +89,13 @@ function set_session_var($name, $value)
 	return $_SESSION[$name] = $value;
 }
 
+function set_session_message($message, $params = array())
+{
+	set_session_var('error_message', $message);
+	if(($fields = $params['error_fields']))
+		set_session_var('error_fields', $fields);
+}
+
 function clean_all_session_vars()
 {
 	__session_init();

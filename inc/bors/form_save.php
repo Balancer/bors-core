@@ -34,6 +34,7 @@ function bors_form_save(&$obj)
 		$objects_common_data = array();
 		$objects_data = array();
 
+		$files_as_array = true;
 		foreach($_FILES as $name => $params)
 		{
 			foreach($params as $key => $value)
@@ -48,11 +49,14 @@ function bors_form_save(&$obj)
 				}
 				else
 				{
+					$files_as_array = false;
 					$objects_common_data['uploaded_file'][$key] = $value;
-					$objects_data['uploaded_file']['upload_name'] = $name;
 					$objects_common_data['uploaded_file']['upload_name'] = $name;
 				}
 			}
+
+			if(!$files_as_array)
+				$objects_data[]['uploaded_file'] = $objects_common_data['uploaded_file'];
 		}
 
 		if(empty($_GET['checkboxes_list']))
@@ -92,7 +96,7 @@ function bors_form_save(&$obj)
 			foreach($objects_data as $idx => $data)
 			{
 				$last = (++$count == $total);
-				$data = array_merge($data, $objects_common_data);
+				$data = array_merge($objects_common_data, $data);
 				$result = bors_form_save_object($data['class_name'], @$data['id'], $data, $first, $last);
 				if($result === true || is_object($result))
 					$form = $result;
@@ -146,7 +150,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		if(empty($data[$field]))
 			return;
 
-//	if(debug_is_balancer()) { echo "Store object $class_name($id); ".print_d($data, true)."<br/>"; debug_exit('stop0'); }
+//	if(debug_is_balancer()) { echo "Store object $class_name($id); ".print_d($data, true)."<br/>"; }
 	if($id)
 	{
 		$object = object_load($class_name, $id);
@@ -240,7 +244,9 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 //	bors()->changed_save();
 
-	set_session_var('success_message', ec('Данные успешно сохранены'));
+//TODO: разобраться, чтобы не спамило
+//	set_session_var('success_message', ec('Данные успешно сохранены: '.print_r(bors()->changed_objects(), true)));
+
 	return $object;
 }
 

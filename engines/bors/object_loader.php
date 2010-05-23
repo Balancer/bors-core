@@ -130,7 +130,7 @@ function delete_cached_object_by_id($class_name, $object_id)
 	if(($memcache = config('memcached_instance')))
 	{
 		$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$object_id;
-		$memcache->delete($hash);
+		@$memcache->delete($hash);
 	}
 
 	unset($GLOBALS['bors_data']['cached_objects4'][$class_name][$object_id]);

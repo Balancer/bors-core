@@ -232,7 +232,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 		$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));
 
-	if(!$object->id())
+	if(!$object->id() && !(method_exists($object, 'skip_save') && $object->skip_save())) //TODO: костыль для bors_admin_image_append
 	{
 		if($x = $object->empty_id_handler())
 			return $x;

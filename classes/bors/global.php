@@ -72,7 +72,9 @@ class bors_global extends base_empty
 
 			$storage = object_load($storage_class);
 
-			$storage->save($obj);
+			if(!(method_exists($obj, 'skip_save') && $obj->skip_save())) //TODO: костыль для bors_admin_image_append
+				$storage->save($obj);
+
 			save_cached_object($obj);
 			$this->drop_changed_object($obj);
 

@@ -30,8 +30,10 @@ function bors_bot_detect($user_agent)
 			'LexxeBot' => 'LexxeBot',	// LexxeBot/1.0 (lexxebot@lexxe.com)
 			'Snapbot' => 'Snapbot',		// Snapbot/1.0 (Snap Shots, +http://www.snap.com)
 			'Mail.Ru' => 'Mail.Ru',		// Mail.Ru/1.0
-			'NaverBot' => 'NaverBot',	//Mozilla/4.0 (compatible; NaverBot/1.0; http://help.naver.com/customer_webtxt_02.jsp)
+			'NaverBot' => 'NaverBot',	// Mozilla/4.0 (compatible; NaverBot/1.0; http://help.naver.com/customer_webtxt_02.jsp)
 			'MJ12bot' => 'Majestic12Bot',	// Mozilla/5.0 (compatible; MJ12bot/v1.2.5; http://www.majestic12.co.uk/bot.php?+)
+			'SurveyBot' => 'SurveyBot',	// 64.246.165.190, Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.13) Gecko/2009073022 Firefox/3.5.2 (.NET CLR 3.5.30729) SurveyBot/2.3 (DomainTools)
+			'Falconsbot' => 'Falconsbot',	// 219.219.127.4, Mozilla/5.0 (compatible; Falconsbot; +http://ws.nju.edu.cn/falcons/)
 		) as $pattern => $bot)
 	{
 		if(preg_match("!".$pattern."!i", $user_agent))

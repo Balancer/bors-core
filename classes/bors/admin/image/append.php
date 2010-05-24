@@ -9,6 +9,7 @@ class bors_admin_image_append extends base_object
 	function auto_search_index() { return false; }
 
 	function new_instance() { $this->set_id(true); }
+	function skip_save() { return true; }
 
 	function upload_image_file(&$data, &$get)
 	{
@@ -25,19 +26,20 @@ class bors_admin_image_append extends base_object
 
 		$sort_order = intval($get['sort_order']);
 
+		$image_class = defval($get, 'image_class', 'bors_image');
+
+		$img = object_new($image_class);
+
 		if(!$sort_order)
 		{
-			$cross_order = $this->db()->select('bors_cross', 'MAX(`sort_order`)', array('from_class=' => $obj->class_id(), 'from_id=' => $obj->id()));
-			$parent_order = $this->db()->select('bors_images', 'MAX(`sort_order`)', array('parent_class_id=' => $obj->class_id(), 'parent_object_id=' => $obj->id()));
+			$cross_order = $img->db()->select('bors_cross', 'MAX(`sort_order`)', array('from_class=' => $obj->class_id(), 'from_id=' => $obj->id()));
+			$parent_order = $img->db()->select('bors_images', 'MAX(`sort_order`)', array('parent_class_id=' => $obj->class_id(), 'parent_object_id=' => $obj->id()));
 
 			$sort_order = max($cross_order, $parent_order);
 		}
 
 		$sort_order = (intval(($sort_order-1)/10)+1)*10;
 
-		$image_class = defval($get, 'image_class', 'bors_image');
-
-		$img = object_new($image_class);
 		$img->new_instance();
 		$img->upload(array(
 			'tmp_name' => $tmp_file,

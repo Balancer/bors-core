@@ -23,8 +23,6 @@ function lp_picasa($id, $params)
 		else
 			$title = "";
 
-//		echo "<xmp>$content</xmp>";
-
 		$thumb_url = preg_replace('!/s\d+/!', "/s$width/", $thumb_url);
 
 		return "<a href=\"$url\"><img src=\"$thumb_url\" />" . ($title ? "<br/>\n$title" : "")."</a>";

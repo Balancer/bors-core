@@ -22,6 +22,7 @@ config_set('storage_db_sqlite_main', BORS_SITE.'/data/main.sqlite');
 config_set('lcml_sharp_markup', false);
 config_set('lcml.code.engines_order', 'lcml_tag_code_geshi');
 config_set('lcml.code.geshi.base_dir', 'geshi-1.0.8.4');
+config_set('lcml.request.charset_default', 'WINDOWS-1251');
 config_set('temporary_file_contents', file_get_contents(dirname(__FILE__).'/../resources/temporary.html'));
 
 // Максимальные ширина, высота и площадь картинки для обработки

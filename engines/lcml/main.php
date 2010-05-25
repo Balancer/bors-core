@@ -278,3 +278,24 @@ function lcml_tag_disabled($tag)
 
 	return !empty($enabled);
 }
+
+function html2bb($text, $url)
+{
+	$text = preg_replace("!<font color=\"(blue)\">(.+?)</font>!is", "[$1]$2[/$1]", $text);
+	$text = preg_replace("!<p>(.+?)</p>!is", "\n$1\n", $text);
+	$text = preg_replace("!<p [^>]+>(.+?)</p>!is", "\n$1\n", $text);
+	$text = preg_replace("!<br\s*/?>!", "\n", $text);
+	$text = preg_replace("!\n{2,}!", "\n\n", $text);
+
+	$text = preg_replace("!(<a [^>]*href=\")(/.+?)(\"[^>]*?>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
+
+	return trim($text);
+}
+
+function url_relative_join($url_main, $url_rel)
+{
+	if($url_rel[0] == '/')
+		return preg_replace('!^(http://[^/]+).+?$!', '$1', $url_main).$url_rel;
+
+	return $url_main . $url_rel;
+}

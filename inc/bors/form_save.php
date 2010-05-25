@@ -258,7 +258,14 @@ function bors_form_errors($data, $conditions = array())
 	foreach($conditions as $error_condition => $fail_message)
 	{
 		$error_cond = trim($error_condition);
-		if(preg_match('/^!(\w+)$/', $error_cond, $m))
+
+		if(is_array($fail_message))
+		{
+			$fields = array($fail_message[0]);
+			$error_cond = $fail_message[1];
+			$fail_message = $fail_message[2];
+		}
+		elseif(preg_match('/^!(\w+)$/', $error_cond, $m))
 		{
 			$fields     = array($m[1]);
 			$error_cond = empty($data[$m[1]]);

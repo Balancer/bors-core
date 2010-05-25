@@ -16,6 +16,8 @@ function smarty_function_input($params, &$smarty)
 		if(!isset($value))
 			$value = session_var("form_value_{$name}");
 
+//		echo "===$value===".session_var("form_value_{$name}");
+
 		set_session_var("form_value_{$name}", NULL);
 
 		if(!isset($value) && isset($def))

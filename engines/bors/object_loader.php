@@ -146,7 +146,7 @@ function save_cached_object(&$object, $delete = false)
 		$hash = 'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
 
 		if($delete)
-			$memcache->delete($hash);
+			@$memcache->delete($hash); //TODO: нужен фикс вместо маскировки: http://balancer.ru/_bors/igo?o=forum_post__2171516
 		else
 		{
 			$memcache->set($hash, $object, 0, rand(600, 1200));

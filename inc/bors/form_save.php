@@ -232,7 +232,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 		$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));
 
-	if(!$object->id())
+	if(!$object->id() && !(method_exists($object, 'skip_save') && $object->skip_save())) //TODO: костыль для bors_admin_image_append
 	{
 		if($x = $object->empty_id_handler())
 			return $x;
@@ -258,7 +258,14 @@ function bors_form_errors($data, $conditions = array())
 	foreach($conditions as $error_condition => $fail_message)
 	{
 		$error_cond = trim($error_condition);
-		if(preg_match('/^!(\w+)$/', $error_cond, $m))
+
+		if(is_array($fail_message))
+		{
+			$fields = array($fail_message[0]);
+			$error_cond = $fail_message[1];
+			$fail_message = $fail_message[2];
+		}
+		elseif(preg_match('/^!(\w+)$/', $error_cond, $m))
 		{
 			$fields     = array($m[1]);
 			$error_cond = empty($data[$m[1]]);

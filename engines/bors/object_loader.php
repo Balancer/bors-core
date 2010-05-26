@@ -227,7 +227,7 @@ function class_load_by_url($url, $args)
 function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match, $url_pattern, $skip)
 {
 //	if(config('debug_mode'))
-//		echo "$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<hr/>\n";
+//		echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
 
 	$id = NULL;
 	$page = NULL;
@@ -275,7 +275,14 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	elseif(preg_match("!^(.+)\((\w+)\)$!", $check_class, $class_match))
 	{
 		$check_class = $class_match[1];
-//		echo "match="; var_dump($match); echo "class_match="; var_dump($class_match);
+/*
+		if(config('debug_mode'))
+		{
+			echo "skip=$skip, url_pattern=$url_pattern<br/>\n";
+			print_d($class_match);
+			print_d($match);
+		}
+*/
 		switch($class_match[2])
 		{
 			case 'url':
@@ -430,7 +437,7 @@ function class_load_by_vhosts_url($url)
 		$url_pattern = trim($match[1]);
 		$class_path  = trim($match[2]);
 
-		if(strpos($url_pattern, '?') !== false)
+		if(strpos($url_pattern, '\\?') !== false)
 			$check_url = $url_noq."?".$query;
 		else
 			$check_url = $url_noq;

@@ -64,15 +64,19 @@ class bors_global extends base_empty
 				$obj = $x;
 			}
 
-			$storage_class = $obj->storage_engine();
-
-			if(!$storage_class)
-				$storage_class = 'storage_db_mysql_smart';
+			if(($storage_class = $obj->storage_engine()))
+			{
+//			if(!$storage_class)
+//				$storage_class = 'storage_db_mysql_smart';
 //				debug_exit('Not defined storage engine for '.$obj->class_name());
 
-			$storage = object_load($storage_class);
+				$storage = object_load($storage_class);
 
-			$storage->save($obj);
+				//TODO: уже можно снести проверку в следующей строке?
+				if(!(method_exists($obj, 'skip_save') && $obj->skip_save())) //TODO: костыль для bors_admin_image_append
+					$storage->save($obj);
+			}
+
 			save_cached_object($obj);
 			$this->drop_changed_object($obj);
 

@@ -275,7 +275,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	elseif(preg_match("!^(.+)\((\w+)\)$!", $check_class, $class_match))
 	{
 		$check_class = $class_match[1];
-
+//		echo "match="; var_dump($match); echo "class_match="; var_dump($class_match);
 		switch($class_match[2])
 		{
 			case 'url':
@@ -307,7 +307,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 
 //				echo "<small>Check $url_subpattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_subpattern}\$! to {$check_url}</small><br />\n";
 				if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_subpattern$!i", $check_url, $submatch))
-					if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $submatch, $url_subpattern, 3)))
+					if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $submatch, $url_subpattern, 1)))
 						return $obj;
 			}
 

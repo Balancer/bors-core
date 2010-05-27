@@ -197,3 +197,23 @@ function bors_throw($message)
 {
 	throw new Exception($message);
 }
+
+/**
+	Возвращает результат применения метода get() к объекту, если он существует.
+	$def = NULL - в противном случае.
+*/
+function object_property($object, $property, $def = NULL)
+{
+	if(is_object($object))
+	{
+		if(preg_match('/^\w+$/', $property))
+			return $object->get($property, $def);
+		else
+		{
+			eval("\$x = \$object->{$property};");
+			return $x;
+		}
+	}
+
+	return $def;
+}

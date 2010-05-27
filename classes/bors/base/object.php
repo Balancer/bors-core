@@ -141,7 +141,7 @@ class base_object extends base_empty
 	}
 
 	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
-	function class_title_rp() { return ec('объекта ').get_class($this); }	// РодительныйГенитивКого? Чего?
+	function class_title_rp() { return ec('объекта ').get_class($this); }	// РодительныйГенитив Кого? Чего?
 	function class_title_dp() { return ec('объекту ').get_class($this); }	// Дательный Кому? Чему?
 	function class_title_vp() { return ec('объект ').get_class($this); }	// Винительный Кого? Что?
 	function class_title_tp() { return ec('объектом ').get_class($this); }	// Творительный Кем? Чем?
@@ -437,12 +437,23 @@ class base_object extends base_empty
 		return $this->imaged_delete_url(NULL, 'Удалить '.bors_lower($this->class_title_vp()));
 	}
 
+	function form_errors() { return array(); }
+
 	// true if break
-	function check_data(&$data)
+	function check_data($data)
 	{
-		foreach($data as $key => $val)
-			if(!$this->check_value($key, $val))
-				return true;
+		echo "Check ".get_class($this).": ".print_r($this->form_errors(), true);
+		if(($conditions = $this->form_errors()))
+		{
+			if(($err = bors_form_errors($data, $conditions)))
+				return go_ref_message($err);
+		}
+		else
+		{
+			foreach($data as $key => $val)
+				if(!$this->check_value($key, $val))
+					return true;
+		}
 
 		return false;
 	}

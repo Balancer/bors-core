@@ -14,6 +14,14 @@ function smarty_function_textarea($params, &$smarty)
 		if(empty($cols))
 			$cols = 50;
 
+		if(in_array($name, explode(',', session_var('error_fields'))))
+		{
+			if(empty($class))
+				$class = "error";
+			else
+				$class .= " error";
+		}
+
 		echo "<textarea name=\"$name\"";
 		foreach(split(' ', 'class id style rows cols') as $p)
 			if(!empty($$p))

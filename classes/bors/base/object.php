@@ -442,8 +442,7 @@ class base_object extends base_empty
 	// true if break
 	function check_data($data)
 	{
-		echo "Check ".get_class($this).": ".print_r($this->form_errors(), true);
-		if(($conditions = $this->form_errors()))
+		if(($conditions = $this->form_errors($data)))
 		{
 			if(($err = bors_form_errors($data, $conditions)))
 				return go_ref_message($err);

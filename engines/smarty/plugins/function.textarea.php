@@ -8,6 +8,11 @@ function smarty_function_textarea($params, &$smarty)
 		if(!isset($value))
 			$value = $obj ? $obj->$name() : NULL;
 
+		if(!isset($value))
+			$value = session_var("form_value_{$name}");
+
+		set_session_var("form_value_{$name}", NULL);
+
 		if(empty($rows))
 			$rows = 7;
 

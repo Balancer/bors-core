@@ -10,9 +10,9 @@ class base_object extends base_empty
 			'url_engine' => 'url_calling',
 	); }
 
-	private $__loaded = false;
-	function loaded() { return $this->__loaded; }
-	function set_loaded($value = true) { return $this->__loaded = $value; }
+	var $___loaded = false;
+	function loaded() { return $this->___loaded; }
+	function set_loaded($value = true) { return $this->___loaded = $value; }
 
 	private $__match;
 	function set_match($match) { return $this->__match = $match; }
@@ -131,13 +131,12 @@ class base_object extends base_empty
 		return false;
 	}
 
-	private $_class_id;
 	function class_id()
 	{
-		if(empty($this->_class_id))
-			$this->_class_id = class_name_to_id($this);
+		if($this->__havefc())
+			return $this->__lastc();
 
-		return $this->_class_id;
+		return $this->__setc(class_name_to_id($this));
 	}
 
 	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
@@ -719,16 +718,7 @@ class base_object extends base_empty
 			$this->_dbh = NULL;
 		}
 
-		$a = get_object_vars($this);
-		$a = array_keys($a);
-//		if(method_exists(parent, '__sleep'))
-//		{
-//			$p = parent::__sleep();
-//			array_push($a, $p);
-//		};
-
-//		return array();
-		return $a;
+		return parent::__sleep();
 	}
 
 	function fields_map() { return $this->main_table_fields(); }
@@ -755,10 +745,11 @@ class base_object extends base_empty
 				$this->{'set_'.$name}(array(), $db_up);
 	}
 
-	private $args = array();
-	function set_args($args) { return $this->args = $args; }
-	function _set_arg($name, $value) { return $this->args[$name] = $value; }
-	function args($name=false, $def = NULL) { return $name ? (array_key_exists($name, $this->args) ? $this->args[$name] : $def) : $this->args; }
+	var $___args = array();
+	function set_args($args) { return $this->___args = $args; }
+	function _set_arg($name, $value) { return $this->___args[$name] = $value; }
+	function args($name=false, $def = NULL) { return $name ? (array_key_exists($name, $this->___args) ? $this->___args[$name] : $def) : $this->___args; }
+	function arg($name, $def = NULL) { return array_key_exists($name, $this->___args) ? $this->___args[$name] : $def; }
 
 	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }
 	function set_was_cleaned($value) { return $GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()] = $value; }
@@ -873,13 +864,12 @@ class base_object extends base_empty
 
 	function extends_class() { return $this->class_name(); }
 
-	private $extends_class_id;
 	function extends_class_id()
 	{
-		if(empty($this->extends_class_id))
-			$this->extends_class_id = class_name_to_id($this->extends_class());
+		if($this->__havefc())
+			return $this->__lastc();
 
-		return $this->extends_class_id;
+		return $this->__setc(class_name_to_id($this->extends_class()));
 	}
 
 	function direct_content()
@@ -1045,9 +1035,12 @@ class base_object extends base_empty
 
 	function default_page() { return 1; }
 
-	private $_page;
-	function page() { return $this->_page; }
-	function set_page($page) { return $this->_page = $page ? $page : $this->default_page(); }
+//	var $___page;
+//	function page() { return $this->___page; }
+//	function set_page($page) { return $this->___page = $page ? $page : $this->default_page(); }
+
+	function page() { return $this->attr('page'); }
+	function set_page($page) { return $this->set_attr('page', $page ? $page : $this->default_page()); }
 
 	function empty_id_handler() { return NULL; }
 	function auto_assign_all_fields() { return false; }

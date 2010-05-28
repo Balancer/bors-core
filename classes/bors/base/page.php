@@ -83,13 +83,12 @@ class base_page extends base_object
 		return "s={$t}" . ($r ? '&r=1' : '');
 	}
 
-	private $_total_pages = false;
 	function total_pages()
 	{
-		if($this->_total_pages === false)
-			$this->_total_pages = ($total = $this->total_items()) >= 0 ? intval(($total - 1)/$this->items_per_page()) + 1 : 1;
+		if($this->__havefc())
+			return $this->__lastc();
 
-		return $this->_total_pages;
+		return $this->__setc(($total = $this->total_items()) >= 0 ? intval(($total - 1)/$this->items_per_page()) + 1 : 1);
 	}
 
 	function items_per_page() { return 25; }

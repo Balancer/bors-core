@@ -412,7 +412,7 @@ function class_load_by_vhosts_url($url)
 
 	if(!$data || empty($data['host']))
 	{
-		debug_hidden_log('class-loader-errors', ec("Ошибка. Попытка загрузить класс из URL неверного формата: ").$url);
+		debug_hidden_log('class-loader-errors', ec("Error. Try to load class for incorrect URL format: ").$url);
 		return NULL;
 	}
 

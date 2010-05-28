@@ -563,7 +563,7 @@ function object_init($class_name, $object_id, $args = array())
 		return $obj;
 
 	$found = 0;
-	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name, $args);
+	$object_id = call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name, $args);
 	if(is_object($object_id) && !is_object($original_id))
 	{
 		$obj = $object_id;

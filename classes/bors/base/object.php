@@ -711,18 +711,25 @@ class base_object extends base_empty
 	}
 
 //TODO: разобраться с "__loaded" returned as member variable from __sleep() but does not exist 
-/*
+
 	public function __sleep()
 	{
-		if(!$this->_dbh)
-			return array_keys(get_object_vars($this));
+		if($this->_dbh)
+		{
+			$this->_dbh->close(); 
+			$this->_dbh = NULL;
+		}
 
-		$this->_dbh->close(); 
-		$this->_dbh = NULL;
+		$a = array_keys(get_object_vars($this));
+		if(method_exists(parent, '__sleep'))
+		{
+			$p = parent::__sleep();
+			array_push($a, $p);
+		};
 
-		return array_keys(get_object_vars($this));
+		return $a;
 	}
-*/
+
 	function fields_map() { return $this->main_table_fields(); }
 	function main_table_fields() { return array('id'); }
 

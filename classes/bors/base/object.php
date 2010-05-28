@@ -710,8 +710,7 @@ class base_object extends base_empty
 		return $this->_dbh;
 	}
 
-//TODO: разобраться с "__loaded" returned as member variable from __sleep() but does not exist 
-
+	//TODO: разобраться с сериализацией приватных данных
 	public function __sleep()
 	{
 		if($this->_dbh)
@@ -720,13 +719,15 @@ class base_object extends base_empty
 			$this->_dbh = NULL;
 		}
 
-		$a = array_keys(get_object_vars($this));
-		if(method_exists(parent, '__sleep'))
-		{
-			$p = parent::__sleep();
-			array_push($a, $p);
-		};
+		$a = get_object_vars($this);
+		$a = array_keys($a);
+//		if(method_exists(parent, '__sleep'))
+//		{
+//			$p = parent::__sleep();
+//			array_push($a, $p);
+//		};
 
+//		return array();
 		return $a;
 	}
 

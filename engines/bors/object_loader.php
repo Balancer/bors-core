@@ -101,7 +101,7 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 
 	if($memcache = config('memcached_instance'))
 	{
-		if($x = @$memcache->get('bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id))
+		if($x = unserialize(@$memcache->get('bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id)))
 		{
 			$updated = false;
 			if(config('object_loader_filemtime_check'))
@@ -149,7 +149,8 @@ function save_cached_object(&$object, $delete = false)
 			@$memcache->delete($hash); //TODO: нужен фикс вместо маскировки: http://balancer.ru/_bors/igo?o=forum_post__2171516
 		else
 		{
-			$memcache->set($hash, $object, 0, rand(600, 1200));
+			// Маскируем @serialize() для избежание NOTICE о сериализации приватных данных
+			$memcache->set($hash, @serialize($object), 0, rand(600, 1200));
 			debug_count_inc('memcached stores');
 		}
 	}

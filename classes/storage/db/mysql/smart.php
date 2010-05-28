@@ -57,7 +57,7 @@ class storage_db_mysql_smart extends base_null
 					$table_name = $m[1];
 					$on = "{$m[2]}.$def_id = $main_tab.{$m[3]}";
 				}
-				
+
 				if(preg_match('!^inner\s+(.+?)$!', $table_name, $m))
 				{
 					$table_name = $m[1];
@@ -129,7 +129,7 @@ class storage_db_mysql_smart extends base_null
 					if(empty($added[$table_name.'-'.$id_field]))
 					{
 						$added[$table_name.'-'.$id_field] = true;
-						
+
 						if($is_one_table)
 						{
 							$current_tab = '';
@@ -144,7 +144,7 @@ class storage_db_mysql_smart extends base_null
 								$main_tab = $current_tab;
 							$current_tab_prefix = "{$current_tab}.";
 						}
-						
+
 						if(empty($from))
 						{
 							$from = ($is_one_table || "`{$table_name}`" == $current_tab) ? "FROM `{$table_name}`" : "FROM `{$table_name}` AS {$current_tab}";
@@ -268,7 +268,7 @@ class storage_db_mysql_smart extends base_null
 				}
 
 				$object->set_loaded($was_loaded);
-				save_cached_object($object);
+				save_cached_object($object, false, !$common_where);
 
 				if($common_where)
 				{

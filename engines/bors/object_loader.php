@@ -45,8 +45,6 @@ function class_include($class_name, &$args = array())
 	if(class_exists($class_name))
 		return class_include(get_parent_class($class_name));
 
-//	echo "Can't find $class_name<br/>";
-
 	if(empty($args['host']))
 		return false;
 
@@ -97,22 +95,19 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 		}
 	}
 
-//	echo "Try load $class_name($id) from memcached<br />";
-
-	if($memcache = config('memcached_instance'))
+	if(($memcache = config('memcached_instance')) && call_user_func(array($class_name, 'can_cached')))
 	{
-		if($x = unserialize(@$memcache->get('bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id)))
+		debug_count_inc('memcached checks');
+		$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id;
+		if($x = unserialize($memcache->get($hash)))
 		{
 			$updated = false;
 			if(config('object_loader_filemtime_check'))
 				$updated = !method_exists($x, 'class_filemtime') || filemtime($x->real_class_file()) > $x->class_filemtime();
 
-//			echo "Found in memcache <b>{$x->class_name()}</b>('{$x->id()}'); can_cached={$x->can_cached()}; updated = $updated (me=".method_exists($obj, 'class_filemtime')."; ".filemtime($x->real_class_file()).' > '.$x->class_filemtime().")<br />";
-
 			if($x->can_cached() && !$updated)
 			{
 				debug_count_inc('memcached loads');
-//				$GLOBALS['bors_data']['cached_objects4'][get_class($x)][$x->id()] = $x;
 				$found = 2;
 				return $x;
 			}
@@ -136,22 +131,29 @@ function delete_cached_object_by_id($class_name, $object_id)
 	unset($GLOBALS['bors_data']['cached_objects4'][$class_name][$object_id]);
 }
 
-function save_cached_object(&$object, $delete = false)
+function save_cached_object(&$object, $delete = false, $use_memcache = true)
 {
 	if(!method_exists($object, 'id') || is_object($object->id()))
 		return;
 
-	if(($memcache = config('memcached_instance')) && $object->can_cached())
+	if($use_memcache && ($memcache = config('memcached_instance')) && $object->can_cached())
 	{
 		$hash = 'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
 
 		if($delete)
-			@$memcache->delete($hash); //TODO: нужен фикс вместо маскировки: http://balancer.ru/_bors/igo?o=forum_post__2171516
+			$memcache->delete($hash); //TODO: нужен фикс вместо маскировки: http://balancer.ru/_bors/igo?o=forum_post__2171516
 		else
 		{
 			// Маскируем @serialize() для избежание NOTICE о сериализации приватных данных
 			$memcache->set($hash, @serialize($object), 0, rand(600, 1200));
 			debug_count_inc('memcached stores');
+			if(!array_pop($memcache->getExtendedStats()))
+			{
+				debug_hidden_log('__memcache_errors', "Store error for $object");
+				debug_count_inc('memcached store fails');
+			}
+			else
+				debug_count_inc('memcached store success');
 		}
 	}
 
@@ -546,7 +548,8 @@ function object_init($class_name, $object_id, $args = array())
 {
 //	if(config('debug_class_search_track'))
 //	if(debug_is_balancer())
-//		echo "<small>object_init($class_name, $object_id,...)</small><br/>\n";
+//	if(@call_user_func(array($class_name, 'can_cached')))
+//		echo "<small>object_init($class_name, $object_id, ".print_r($args, true).")</small><br/>\n";
 
 	// В этом методе нельзя использовать debug_test()!!!
 
@@ -570,6 +573,7 @@ function object_init($class_name, $object_id, $args = array())
 	elseif(empty($args['no_load_cache']))
 	{
 		$obj = &load_cached_object($class_name, $object_id, $args, $found);
+//		echo "cache loaded: $obj<br/>\n";
 		if($obj && ($obj->id() != $object_id))
 		{
 			$found = 0;

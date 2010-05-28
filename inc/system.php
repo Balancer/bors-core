@@ -102,3 +102,9 @@ function clean_all_session_vars()
 	foreach($_SESSION as $key => $value)
 		unset($_SESSION[$key]);
 }
+
+function calling_function_name()
+{
+	$backtrace = debug_backtrace();
+	return $backtrace[2]['function'];
+}

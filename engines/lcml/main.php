@@ -288,6 +288,7 @@ function html2bb($text, $url)
 	$text = preg_replace("!\n{2,}!", "\n\n", $text);
 
 	$text = preg_replace("!(<a [^>]*href=\")(/.+?)(\"[^>]*?>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
+	$text = preg_replace("!(<a [^>]*href=)([^\"']\S+)( [^>]+>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
 
 	return trim($text);
 }

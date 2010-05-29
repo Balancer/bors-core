@@ -448,8 +448,8 @@ class base_object extends base_empty
 		}
 		else
 		{
-			foreach($data as $key => $val)
-				if(!$this->check_value($key, $val))
+			foreach($this->check_value_conditions() as $key => $assert)
+				if(!$this->check_value($key, @$data[$key], $assert))
 					return true;
 		}
 
@@ -518,11 +518,14 @@ class base_object extends base_empty
 		return true;
 	}
 
-	function check_value($field, $value)
+	function check_value($field, $value, $assert=NULL)
 	{
-		$cond = $this->check_value_conditions();
-		if(!($assert = @$cond[$field]))
-			return true;
+		if(!$assert)
+		{
+			$cond = $this->check_value_conditions();
+			if(!($assert = @$cond[$field]))
+				return true;
+		}
 
 		if(preg_match('!^(.+)\|(.+?)$!', $assert, $m))
 		{

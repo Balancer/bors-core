@@ -271,8 +271,8 @@ class base_page extends base_object
 	function check_value_conditions()
 	{
 		return array_merge(parent::check_value_conditions(), array(
-			'title'	=> ec("!=''|Заголовок ".$this->class_title_rp()." должен быть указан"),
-			'source'=> ec("!=''|Текст ".$this->class_title_rp()." должен быть задан"),
+//			'title'	=> ec("!=''|Заголовок ".$this->class_title_rp()." должен быть указан"),
+//			'source'=> ec("!=''|Текст ".$this->class_title_rp()." должен быть задан"),
 		));
 	}
 

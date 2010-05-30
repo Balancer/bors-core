@@ -21,7 +21,7 @@ class bors_admin_users_login extends base_page
 			return go($this->referer);
 		}
 
-		$me = bors_user::do_login($data['login'], $data['password']);
+		$me = bors_user::do_login($data['login'], $data['password'], false);
 
 		if(!is_object($me))
 		{

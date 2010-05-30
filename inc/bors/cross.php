@@ -54,7 +54,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 	}
 
 	if(!$dbh)
-		$dbh = &new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(config('bors_core_db'));
 
 	if(empty($args['order']))
 		$order = 'ORDER BY sort_order, object_id';
@@ -102,14 +102,11 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 
 	$inits = array();
 	foreach($arr as $x)
-		@$inits[$x['class_id']][] = $x['object_id'];
-
-//	print_d($inits);
-//	exit();
+		@$inits[$x['class_id']][$x['object_id']] = $x['object_id'];
 
 	foreach($inits as $class_id => $ids)
-		$objs[$class_id] = objects_array($class_id, array('id IN' => $ids, 'by_id' => true));
-	
+		$objs[$class_id] = objects_array($class_id, array('id IN' => array_keys($ids), 'by_id' => true));
+
 	$object_iu = $object->internal_uri();
 	$result = array();
 
@@ -141,10 +138,10 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 
 		$x->set_sort_order($r['sort_order'], false);
 
-		$result[] = $x;
+		$result[$x->internal_uri()] = $x;
 	}
 
-	return $result;
+	return array_values($result);
 }
 
 function bors_cross_type_id($x1, $x2)
@@ -212,7 +209,7 @@ function bors_cross_where_cond($field, $cond, &$where)
 function bors_add_cross_obj($from, $to, $order=0, $dbh = NULL)
 {
 	if(!$dbh)
-		$dbh = &new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(config('bors_core_db'));
 
 	if($from->class_id() > $to->class_id())
 		list($from, $to) = array($to, $from);

@@ -5,7 +5,9 @@
 	$link_type - тип связывания, parent или cross
 	$skip_limits - не выводить колонку ограничений
 	$upload_images_count = 4 - сколько изображений предлагать к аплоаду
+	$image_class = 'bors_image' - класс изображения
 *}
+{defval var="image_class" value="bors_image"}
 <div class="clear">&nbsp;</div>
 
 <h2>Изображения</h2>
@@ -49,7 +51,7 @@
 <td class="nobr">
 	{$i->admin()->imaged_edit_link('редактировать')}<br/>
 	{$i->admin()->imaged_set_default_link($item, 'по умолчанию')}<br/>
-	<form action="/admin/tools/set-sort-order/?child=bors_image://{$i->id()}{if $link_type=='cross'}&parent={$item|get:internal_uri}{/if}" method="post" style="display: inline"><input name="sort_order" value="{$i->sort_order()}" title="Порядок сортировки" size="5" style="width: auto !important;"/>&nbsp;Сортировка</form><br/>
+	<form action="/admin/tools/set-sort-order/?child={$image_class}://{$i->id()}{if $link_type=='cross'}&parent={$item|get:internal_uri}{/if}" method="post" style="display: inline"><input name="sort_order" value="{$i->sort_order()}" title="Порядок сортировки" size="5" style="width: auto !important;"/>&nbsp;Сортировка</form><br/>
 	{if $i->cross_objects()|@count < 2}{$i->admin()->imaged_delete_link('удалить')}<br/>{/if}
 </td>
 </tr>

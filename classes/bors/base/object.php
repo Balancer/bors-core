@@ -425,7 +425,7 @@ class base_object extends base_empty
 		if($title === NULL)
 			$title = ec('Сделать выбранным по умолчанию');
 
-		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/_bors/i/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
+		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/_bors/i/set-default-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
 	}
 
 	function admin_engine() { return config('admin_engine', 'bors_admin_engine'); }

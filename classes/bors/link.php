@@ -56,6 +56,14 @@ class bors_link extends base_object_db
 		self::link_object_to($obj2, $obj1, $params);
 	}
 
+	static function link($class1, $id1, $class2, $id2, $params = array())
+	{
+		$obj1 = object_load($class1, $id1);
+		$obj2 = object_load($class2, $id2);
+		self::link_object_to($obj1, $obj2, $params);
+		self::link_object_to($obj2, $obj1, $params);
+	}
+
 	static function link_object_to($from, $to, $params = array())
 	{
 		$link = object_new('bors_link');

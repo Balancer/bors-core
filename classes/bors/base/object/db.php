@@ -71,4 +71,11 @@ class base_object_db extends base_object
 
 	static function objects_array($where) { return objects_array($where); }
 	static function objects_first($where) { return objects_first($where); }
+
+	static function truncate($class_name)
+	{
+		$cls = new $class_name;
+		$dbh = new driver_mysql($cls->db_name());
+		$dbh->delete($cls->table_name(), array());
+	}
 }

@@ -15,12 +15,13 @@ class storage_db_mysql_smart extends base_null
 		global $stdbms_cache;
 
 //		echo "Load $object (".$GLOBALS['bors_data']['class_included'][get_class($object)].")<br/>";
+//		print_d($object->fields());
 
 		$hash = md5(join('!', array($object->class_name(), $common_where, $only_count)));
 
 		$need_convert = $object->db_charset() != $object->internal_charset();
 
-		foreach($object->fields() as $db => $tables)
+		foreach($object->fields_map_db() as $db => $tables)
 		{
 			$tab_count = 0;
 			$select = array();
@@ -56,7 +57,7 @@ class storage_db_mysql_smart extends base_null
 					$table_name = $m[1];
 					$on = "{$m[2]}.$def_id = $main_tab.{$m[3]}";
 				}
-				
+
 				if(preg_match('!^inner\s+(.+?)$!', $table_name, $m))
 				{
 					$table_name = $m[1];
@@ -267,7 +268,7 @@ class storage_db_mysql_smart extends base_null
 				}
 
 				$object->set_loaded($was_loaded);
-				save_cached_object($object);
+				save_cached_object($object, false, !$common_where);
 
 				if($common_where)
 				{
@@ -278,7 +279,7 @@ class storage_db_mysql_smart extends base_null
 							$result[] = $object;
 
 					$class = get_class($object);
-					$object = &new $class(NULL);
+					$object = new $class(NULL);
 				}
 			}
 
@@ -315,7 +316,7 @@ class storage_db_mysql_smart extends base_null
 
 //		$need_convert = $object->db_charset() != $object->internal_charset();
 
-		foreach($object->fields() as $db => $tables)
+		foreach($object->fields_map_db() as $db => $tables)
 		{
 			$dbh = &new driver_mysql($db);
 
@@ -435,7 +436,7 @@ class storage_db_mysql_smart extends base_null
 
 //		$need_convert = $object->db_charset() != $object->internal_charset();
 
-		foreach($object->fields() as $db => $tables)
+		foreach($object->fields_map_db() as $db => $tables)
 		{
 //			echo "Database: $db; tables="; print_r($tables); echo "<br />\n";
 			$dbh = new driver_mysql($db);
@@ -540,6 +541,92 @@ class storage_db_mysql_smart extends base_null
 		}
 
 		$object->changed_fields = array();
+	}
+
+	static function create_table($class_name)
+	{
+		$map = array(
+			'string'	=>	'VARCHAR(255)',
+			'text'		=>	'TEXT',
+			'int'		=>	'INT',
+			'uint'		=>	'INT UNSIGNED',
+			'bool'		=>	'TINYINT(1) UNSIGNED',
+			'float'		=>	'FLOAT',
+			'enum'		=>	'ENUM(%)',
+		);
+
+		$db_fields = array();
+
+		$class = new $class_name(NULL);
+
+		foreach($class->fields_map_db() as $db_name => $tables)
+		{
+			foreach($tables as $table_name => $fields)
+			{
+				$object_fields = array_smart_expand($fields);
+				$db_fields = array();
+				$primary = false;
+
+				foreach($object_fields as $property => $field)
+				{
+					if(!is_array($field))
+						$field = array('name' => $field);
+
+					if(empty($field['name']))
+						$field['name'] = $property;
+
+					if(empty($field['type']))
+					{
+						if(preg_match('/^\w+_id$/', $property) || $property == 'id')
+							$field['type'] = 'int';
+						elseif(preg_match('/^is_\w+$/', $property))
+							$field['type'] = 'bool';
+						elseif(preg_match('/^\w+_date$/', $property))
+							$field['type'] = 'date';
+						elseif(preg_match('/^\w+$/', $property))
+							$field['type'] = 'string';
+						else
+							bors_throw(ec('Неизвестное поле ').$property);
+					}
+					$db_field = '`'.$field['name'].'` '.$map[$field['type']];
+					if($property == 'id')
+					{
+						$db_field .= ' AUTO_INCREMENT';
+						$primary = $field['name'];
+					}
+
+					$db_fields[] = $db_field;
+				}
+
+				if(empty($primary))
+					return bors_throw(ec("Не найден первичный индекс для ").print_r($object_fields, true));
+
+				$db_fields[] = "PRIMARY KEY (`$primary`)";
+
+				$query = "CREATE TABLE IF NOT EXISTS `$table_name` (".join(', ', $db_fields).");";
+
+				$db = new driver_mysql($db_name);
+				$db->query($query);
+//		$db->close();
+			}
+		}
+	}
+
+	static function drop_table($class_name)
+	{
+		if(!config('can-drop-tables'))
+			return bors_throw(ec('Удаление таблиц запрещено'));
+
+		$class = new $class_name(NULL);
+		foreach($class->fields_map_db() as $db_name => $tables)
+		{
+			foreach($tables as $table_name => $fields)
+			{
+				$db = new driver_mysql($db_name);
+				$db->query("DROP TABLE IF EXISTS $table_name");
+//				$db->close();
+			}
+		}
 	}
 }
 

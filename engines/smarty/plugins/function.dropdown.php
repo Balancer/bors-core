@@ -8,9 +8,17 @@ function smarty_function_dropdown($params, &$smarty)
 
 	$obj = $smarty->get_template_vars('current_form_class');
 
+	if(in_array($name, explode(',', session_var('error_fields'))))
+	{
+		if(empty($class))
+			$class = "error";
+		else
+			$class .= " error";
+	}
+
 	echo "<select";
 
-	foreach(explode(' ', 'size style multiple') as $p)
+	foreach(explode(' ', 'size style multiple class') as $p)
 		if(!empty($$p))
 			echo " $p=\"{$$p}\"";
 

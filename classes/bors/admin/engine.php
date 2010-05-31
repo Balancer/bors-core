@@ -252,7 +252,7 @@ class bors_admin_engine extends base_empty
 		if($title)
 			$title = "&nbsp;$title";
 
-		return "<a href=\"".$this->object()->setdefaultfor_url($item)."\"><img src=\"/_bors/i/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$popup\"/>{$title}</a>";
+		return "<a href=\"".$this->object()->setdefaultfor_url($item)."\"><img src=\"/_bors/i/set-default-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$popup\"/>{$title}</a>";
 	}
 
 	function edit_links()

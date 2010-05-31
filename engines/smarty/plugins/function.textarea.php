@@ -8,11 +8,24 @@ function smarty_function_textarea($params, &$smarty)
 		if(!isset($value))
 			$value = $obj ? $obj->$name() : NULL;
 
+		if(!isset($value))
+			$value = session_var("form_value_{$name}");
+
+		set_session_var("form_value_{$name}", NULL);
+
 		if(empty($rows))
 			$rows = 7;
 
 		if(empty($cols))
 			$cols = 50;
+
+		if(in_array($name, explode(',', session_var('error_fields'))))
+		{
+			if(empty($class))
+				$class = "error";
+			else
+				$class .= " error";
+		}
 
 		echo "<textarea name=\"$name\"";
 		foreach(split(' ', 'class id style rows cols') as $p)

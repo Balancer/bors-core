@@ -45,8 +45,6 @@ function class_include($class_name, &$args = array())
 	if(class_exists($class_name))
 		return class_include(get_parent_class($class_name));
 
-//	echo "Can't find $class_name<br/>";
-
 	if(empty($args['host']))
 		return false;
 
@@ -97,21 +95,19 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 		}
 	}
 
-//	echo "Try load $class_name($id) from memcached<br />";
-
-	if($memcache = config('memcached_instance'))
+	if(($memcache = config('memcached_instance')) && call_user_func(array($class_name, 'can_cached')))
 	{
-		if($x = @$memcache->get('bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id))
+		debug_count_inc('memcached checks');
+		$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id;
+		if($x = unserialize($memcache->get($hash)))
 		{
 			$updated = false;
 			if(config('object_loader_filemtime_check'))
 				$updated = !method_exists($x, 'class_filemtime') || filemtime($x->real_class_file()) > $x->class_filemtime();
 
-//			echo "Found in memcache <b>{$x->class_name()}</b>('{$x->id()}'); can_cached={$x->can_cached()}; updated = $updated (me=".method_exists($obj, 'class_filemtime')."; ".filemtime($x->real_class_file()).' > '.$x->class_filemtime().")<br />";
-
 			if($x->can_cached() && !$updated)
 			{
-//				$GLOBALS['bors_data']['cached_objects4'][get_class($x)][$x->id()] = $x;
+				debug_count_inc('memcached loads');
 				$found = 2;
 				return $x;
 			}
@@ -126,26 +122,39 @@ function delete_cached_object($object) { return save_cached_object($object, true
 
 function delete_cached_object_by_id($class_name, $object_id)
 {
-	$memcache = config('memcached_instance');
-	$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$object_id;
-	@$memcache->delete($hash);
+	if(($memcache = config('memcached_instance')))
+	{
+		$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$object_id;
+		@$memcache->delete($hash);
+	}
+
 	unset($GLOBALS['bors_data']['cached_objects4'][$class_name][$object_id]);
 }
 
-function save_cached_object(&$object, $delete = false)
+function save_cached_object(&$object, $delete = false, $use_memcache = true)
 {
 	if(!method_exists($object, 'id') || is_object($object->id()))
 		return;
 
-	if(($memcache = config('memcached_instance')) && $object->can_cached())
+	if($use_memcache && ($memcache = config('memcached_instance')) && $object->can_cached())
 	{
 		$hash = 'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
 
 		if($delete)
-			@$memcache->delete($hash);
+			$memcache->delete($hash); //TODO: нужен фикс вместо маскировки: http://balancer.ru/_bors/igo?o=forum_post__2171516
 		else
-			@$memcache->set($hash, $object, true, rand(600, 1200));
-
+		{
+			// Маскируем @serialize() для избежание NOTICE о сериализации приватных данных
+			$memcache->set($hash, @serialize($object), 0, rand(600, 1200));
+			debug_count_inc('memcached stores');
+			if(!array_pop($memcache->getExtendedStats()))
+			{
+				debug_hidden_log('__memcache_errors', "Store error for $object");
+				debug_count_inc('memcached store fails');
+			}
+			else
+				debug_count_inc('memcached store success');
+		}
 	}
 
 	if($delete)
@@ -221,7 +230,7 @@ function class_load_by_url($url, $args)
 function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match, $url_pattern, $skip)
 {
 //	if(config('debug_mode'))
-//		echo "$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<hr/>\n";
+//		echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
 
 	$id = NULL;
 	$page = NULL;
@@ -269,7 +278,14 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	elseif(preg_match("!^(.+)\((\w+)\)$!", $check_class, $class_match))
 	{
 		$check_class = $class_match[1];
-
+/*
+		if(config('debug_mode'))
+		{
+			echo "skip=$skip, url_pattern=$url_pattern<br/>\n";
+			print_d($class_match);
+			print_d($match);
+		}
+*/
 		switch($class_match[2])
 		{
 			case 'url':
@@ -301,7 +317,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 
 //				echo "<small>Check $url_subpattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_subpattern}\$! to {$check_url}</small><br />\n";
 				if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_subpattern$!i", $check_url, $submatch))
-					if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $submatch, $url_subpattern, 3)))
+					if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $submatch, $url_subpattern, 1)))
 						return $obj;
 			}
 
@@ -396,7 +412,7 @@ function class_load_by_vhosts_url($url)
 
 	if(!$data || empty($data['host']))
 	{
-		debug_hidden_log('class-loader-errors', ec("Ошибка. Попытка загрузить класс из URL неверного формата: ").$url);
+		debug_hidden_log('class-loader-errors', ec("Error. Try to load class for incorrect URL format: ").$url);
 		return NULL;
 	}
 
@@ -424,7 +440,7 @@ function class_load_by_vhosts_url($url)
 		$url_pattern = trim($match[1]);
 		$class_path  = trim($match[2]);
 
-		if(strpos($url_pattern, '?') !== false)
+		if(strpos($url_pattern, '\\?') !== false)
 			$check_url = $url_noq."?".$query;
 		else
 			$check_url = $url_noq;
@@ -532,7 +548,8 @@ function object_init($class_name, $object_id, $args = array())
 {
 //	if(config('debug_class_search_track'))
 //	if(debug_is_balancer())
-//		echo "<small>object_init($class_name, $object_id,...)</small><br/>\n";
+//	if(@call_user_func(array($class_name, 'can_cached')))
+//		echo "<small>object_init($class_name, $object_id, ".print_r($args, true).")</small><br/>\n";
 
 	// В этом методе нельзя использовать debug_test()!!!
 
@@ -546,7 +563,7 @@ function object_init($class_name, $object_id, $args = array())
 		return $obj;
 
 	$found = 0;
-	$object_id = @call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name, $args);
+	$object_id = call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name, $args);
 	if(is_object($object_id) && !is_object($original_id))
 	{
 		$obj = $object_id;
@@ -556,6 +573,7 @@ function object_init($class_name, $object_id, $args = array())
 	elseif(empty($args['no_load_cache']))
 	{
 		$obj = &load_cached_object($class_name, $object_id, $args, $found);
+//		echo "cache loaded: $obj<br/>\n";
 		if($obj && ($obj->id() != $object_id))
 		{
 			$found = 0;
@@ -569,6 +587,9 @@ function object_init($class_name, $object_id, $args = array())
 		$found = 0;
 		$obj = new $class_name($object_id);
 		$obj->set_class_file($class_file);
+
+		if(config('debug_objects_create_counting_details'))
+			debug_count_inc('init object '.$class_name);
 	}
 
 	unset($args['local_path']);

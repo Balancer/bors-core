@@ -107,8 +107,8 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 
 	if(is_object($class))
 	{
-		$table	 = $class->main_table();
-		$fields	 = array_smart_expand($class->main_table_fields());
+		$table	 = $class->table_name();
+		$fields	 = array_smart_expand($class->fields_map());
 	}
 	else
 	{
@@ -123,10 +123,10 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 				$table = $x[1];
 
 			if(empty($table))
-				$table = $class->main_table();
+				$table = $class->table_name();
 
 //			echo "$class: $table, {$x[1]}<br/>";
-			$fields	 = array_smart_expand($class->main_table_fields());
+			$fields	 = array_smart_expand($class->fields_map());
 		}
 	}
 
@@ -142,7 +142,7 @@ function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
 	if(preg_match('!^(.+)\|.+!', $f, $m))
 		$f = $m[1];
 
-	if(!$was_joined && $table == $class->main_table())
+	if(!$was_joined && $table == $class->table_name())
 		$table = '';
 
 	if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))

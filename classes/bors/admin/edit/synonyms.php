@@ -63,6 +63,7 @@ class bors_admin_edit_synonyms extends bors_admin_edit
 	{
 		$syn = object_load($data['obj']);
 		$syn->set_is_disabled(true, true);
+		$syn->set_is_auto(false, true);
 
 		return go_ref($this->url());
 	}
@@ -71,6 +72,7 @@ class bors_admin_edit_synonyms extends bors_admin_edit
 	{
 		$syn = object_load($data['obj']);
 		$syn->set_is_disabled(false, true);
+		$syn->set_is_auto(false, true);
 
 		return go_ref($this->url());
 	}

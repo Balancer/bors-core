@@ -1,5 +1,5 @@
 <?php
-vldfn
+
 class common_do_login extends base_page
 {
 	function title() { return ec('Авторизация.'); }

@@ -10,9 +10,9 @@ class base_object extends base_empty
 			'url_engine' => 'url_calling',
 	); }
 
-	private $__loaded = false;
-	function loaded() { return $this->__loaded; }
-	function set_loaded($value = true) { return $this->__loaded = $value; }
+	var $___loaded = false;
+	function loaded() { return $this->___loaded; }
+	function set_loaded($value = true) { return $this->___loaded = $value; }
 
 	private $__match;
 	function set_match($match) { return $this->__match = $match; }
@@ -54,7 +54,7 @@ class base_object extends base_empty
 		$r_id_field = NULL;
 		$r_db_field = NULL;
 
-		foreach($this->fields() as $db => $tables)
+		foreach($this->fields_map_db() as $db => $tables)
 		{
 			foreach($tables as $table => $fields)
 			{
@@ -131,17 +131,16 @@ class base_object extends base_empty
 		return false;
 	}
 
-	private $_class_id;
 	function class_id()
 	{
-		if(empty($this->_class_id))
-			$this->_class_id = class_name_to_id($this);
+		if($this->__havefc())
+			return $this->__lastc();
 
-		return $this->_class_id;
+		return $this->__setc(class_name_to_id($this));
 	}
 
 	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
-	function class_title_rp() { return ec('объекта ').get_class($this); }	// РодительныйГенитивКого? Чего?
+	function class_title_rp() { return ec('объекта ').get_class($this); }	// РодительныйГенитив Кого? Чего?
 	function class_title_dp() { return ec('объекту ').get_class($this); }	// Дательный Кому? Чему?
 	function class_title_vp() { return ec('объект ').get_class($this); }	// Винительный Кого? Что?
 	function class_title_tp() { return ec('объектом ').get_class($this); }	// Творительный Кем? Чем?
@@ -292,10 +291,21 @@ class base_object extends base_empty
 	function title($exact = false) { return defval($this->data, 'title', $exact ? NULL : $this->class_name()); }
 	function set_title($new_title, $db_update) { return $this->set('title', $new_title, $db_update); }
 
+	function debug_title() { return "'{$this->title()}' {$this->class_name()}({$this->id()})"; }
+	function debug_title_dc() { return dc("'{$this->title()}' {$this->class_name()}({$this->id()})"); }
+
 	function description() { return @$this->data['description']; }
 	function set_description($description, $db_update) { return $this->set('description', $description, $db_update); }
 
-	function nav_name() { return @$this->data['nav_name'] ? $this->data['nav_name'] : $this->title(); }
+	function nav_name()
+	{
+		return @$this->data['nav_name'] ? 
+			$this->data['nav_name'] 
+			: $this->get('nav_name_lower', config('nav_name_lower')) ? 
+				bors_lower($this->title()) 
+				: $this->title();
+	}
+
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 
 	function template() { return defval($this->data, 'template', defval($this->attr, 'template', config('default_template'))); }
@@ -314,7 +324,7 @@ class base_object extends base_empty
 
 		if($this->auto_assign_all_fields())
 		{
-			foreach($this->main_table_fields() as $property => $field)
+			foreach($this->fields_map() as $property => $field)
 			{
 				if(is_numeric($property))
 					$property = $field;
@@ -327,8 +337,13 @@ class base_object extends base_empty
 			$this->add_global_template_data($key, $value);
 
 		if(($data = $this->local_data()))
-			foreach($data as $key => $value)
-				$this->add_local_template_data($key, $value);
+		{
+			if(!is_array($data)) //TODO: снести после отлавливания
+				debug_hidden_log('__data_error', 'Not array local_data: '.print_r($data, true).' for '.$this->debug_title_dc());
+			else
+				foreach($data as $key => $value)
+					$this->add_local_template_data($key, $value);
+		}
 
 		static $called = false; //TODO: в будущем снести вторые вызовы.
 		if($called)
@@ -412,7 +427,7 @@ class base_object extends base_empty
 		if($title === NULL)
 			$title = ec('Сделать выбранным по умолчанию');
 
-		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/_bors/i/notice-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
+		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/_bors/i/set-default-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
 	}
 
 	function admin_engine() { return config('admin_engine', 'bors_admin_engine'); }
@@ -423,12 +438,22 @@ class base_object extends base_empty
 		return $this->imaged_delete_url(NULL, 'Удалить '.bors_lower($this->class_title_vp()));
 	}
 
+	function form_errors() { return array(); }
+
 	// true if break
-	function check_data(&$data)
+	function check_data($data)
 	{
-		foreach($data as $key => $val)
-			if(!$this->check_value($key, $val))
-				return true;
+		if(($conditions = $this->form_errors($data)))
+		{
+			if(($err = bors_form_errors($data, $conditions)))
+				return go_ref_message($err);
+		}
+		else
+		{
+			foreach($this->check_value_conditions() as $key => $assert)
+				if(!$this->check_value($key, @$data[$key], $assert))
+					return true;
+		}
 
 		return false;
 	}
@@ -495,11 +520,14 @@ class base_object extends base_empty
 		return true;
 	}
 
-	function check_value($field, $value)
+	function check_value($field, $value, $assert=NULL)
 	{
-		$cond = $this->check_value_conditions();
-		if(!($assert = @$cond[$field]))
-			return true;
+		if(!$assert)
+		{
+			$cond = $this->check_value_conditions();
+			if(!($assert = @$cond[$field]))
+				return true;
+		}
 
 		if(preg_match('!^(.+)\|(.+?)$!', $assert, $m))
 		{
@@ -586,7 +614,6 @@ class base_object extends base_empty
 	function data_provider() { return NULL; }
 	function data_providers() { return array(); }
 
-	function fields() { return array(); }
 	function auto_objects() { return array(); }
 	function auto_targets() { return array(); }
 
@@ -684,45 +711,28 @@ class base_object extends base_empty
 	function db($database_name = NULL)
 	{
 		if($this->_dbh === NULL)
-			$this->_dbh = &new driver_mysql($database_name ? $database_name : $this->main_db());
+			$this->_dbh = new driver_mysql($database_name ? $database_name : $this->get('db_name', config('main_bors_db')));
 
 		return $this->_dbh;
 	}
 
+	//TODO: разобраться с сериализацией приватных данных
 	public function __sleep()
 	{
-		if(!$this->_dbh)
-			return;
-
-		$this->_dbh->close(); 
-		$this->_dbh = NULL;
-
-		return array_keys(get_object_vars($this));
-	}
-
-	function main_db() { return $this->main_db_storage(); }
-	function main_db_storage() { return config('main_bors_db'); }
-	function main_table(){ return $this->main_table_storage(); }
-
-	function main_table_storage()
-	{
-/*		if($this->main_table_fields())
+		if($this->_dbh)
 		{
-			$f = $this->fields();
-			return @$f[0][0];
+			$this->_dbh->close(); 
+			$this->_dbh = NULL;
 		}
-*/
-		// Тут не нужно переделывать на выброс исключения. Или, если переделать - проконтролировать
-		// корректную обработку в inc/mysql.php bors_class_field_to_db().
-		return $this->class_name();
+
+		return parent::__sleep();
 	}
 
-	function main_table_fields() { return array(); }
-	function title_field()
-	{
-		$f = $this->main_table_fields();
-		return ($ft = @$f['title']) ? $ft : 'title';
-	}
+	function fields_map() { return $this->main_table_fields(); }
+	function main_table_fields() { return array('id'); }
+
+	function id_field()    { return defval($this->fields_map(), 'id',    'id'   ); }
+	function title_field() { return defval($this->fields_map(), 'title', 'title'); }
 
 	function set_checkboxes($check_list, $db_up)
 	{
@@ -742,10 +752,11 @@ class base_object extends base_empty
 				$this->{'set_'.$name}(array(), $db_up);
 	}
 
-	private $args = array();
-	function set_args($args) { return $this->args = $args; }
-	function _set_arg($name, $value) { return $this->args[$name] = $value; }
-	function args($name=false, $def = NULL) { return $name ? (array_key_exists($name, $this->args) ? $this->args[$name] : $def) : $this->args; }
+	var $___args = array();
+	function set_args($args) { return $this->___args = $args; }
+	function _set_arg($name, $value) { return $this->___args[$name] = $value; }
+	function args($name=false, $def = NULL) { return $name ? (array_key_exists($name, $this->___args) ? $this->___args[$name] : $def) : $this->___args; }
+	function arg($name, $def = NULL) { return array_key_exists($name, $this->___args) ? $this->___args[$name] : $def; }
 
 	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }
 	function set_was_cleaned($value) { return $GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()] = $value; }
@@ -860,13 +871,12 @@ class base_object extends base_empty
 
 	function extends_class() { return $this->class_name(); }
 
-	private $extends_class_id;
 	function extends_class_id()
 	{
-		if(empty($this->extends_class_id))
-			$this->extends_class_id = class_name_to_id($this->extends_class());
+		if($this->__havefc())
+			return $this->__lastc();
 
-		return $this->extends_class_id;
+		return $this->__setc(class_name_to_id($this->extends_class()));
 	}
 
 	function direct_content()
@@ -1032,9 +1042,12 @@ class base_object extends base_empty
 
 	function default_page() { return 1; }
 
-	private $_page;
-	function page() { return $this->_page; }
-	function set_page($page) { return $this->_page = $page ? $page : $this->default_page(); }
+//	var $___page;
+//	function page() { return $this->___page; }
+//	function set_page($page) { return $this->___page = $page ? $page : $this->default_page(); }
+
+	function page() { return $this->attr('page'); }
+	function set_page($page) { return $this->set_attr('page', $page ? $page : $this->default_page()); }
 
 	function empty_id_handler() { return NULL; }
 	function auto_assign_all_fields() { return false; }
@@ -1050,10 +1063,8 @@ class base_object extends base_empty
 
 	function __field_type($field_name)
 	{
-		$fields = $this->fields();
+		$fields = $this->fields_map();
 		$desc = @$fields[$field_name];
-		if(!$desc)
-			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
 
 		if($type = @$desc['type'])
 			return $type;
@@ -1069,10 +1080,8 @@ class base_object extends base_empty
 
 	function __field_title($field_name)
 	{
-		$fields = $this->fields();
+		$fields = $this->fields_map();
 		$desc = @$fields[$field_name];
-		if(!$desc)
-			$desc = @$fields[$this->main_db()][$this->main_table()][$field_name];
 
 		return defval($desc, 'title', $field_name);
 	}

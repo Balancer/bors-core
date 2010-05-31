@@ -399,7 +399,7 @@ class DataBase extends base_object
 			return;
 		}
 
-		if(preg_match('/^(\S)+ (.+)$/', $key, $m))
+		if(preg_match('/^(\S+) (.+?)$/', $key, $m))
 		{
 			$type = $m[1];
 			$key = $m[2];

@@ -2,12 +2,12 @@
 
 class base_empty extends base_null
 {
-	private $_id;
+	var $___id;
 
 	var $attr = array();
 
-	function id() { return $this->_id; }
-	function set_id($id) { return $this->_id = $id; }
+	function id() { return $this->___id; }
+	function set_id($id) { return $this->___id = $id; }
 
 	function __construct($id)
 	{
@@ -64,10 +64,12 @@ class base_empty extends base_null
 	function attr($attr, $def = NULL) { return array_key_exists($attr, $this->attr) ? $this->attr[$attr] : $def; }
 	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
 
-	private $__last_cache_key;
+	private $__last_cache_key; // идентификатор последнего проверяемого по havec значения
 	function __havec($attr) { return array_key_exists($this->__last_cache_key = $attr, $this->attr); }
 	function __lastc() { return $this->attr[$this->__last_cache_key]; }
 	function __setc($value) { return $this->attr[$this->__last_cache_key] = $value; }
+
+	function __havefc() { $attr = '_'.calling_function_name(); return array_key_exists($this->__last_cache_key = $attr, $this->attr); }
 
 	function load_attr($attr, $init)
 	{
@@ -77,4 +79,6 @@ class base_empty extends base_null
 		debug_hidden_log('__need-to-rewrite-ugly-code', 'load-attr: '.$attr);
 		return $this->attr[$attr] = $init;
 	}
+
+	public function __sleep() { return array_keys(get_object_vars($this)); }
 }

@@ -26,6 +26,13 @@ img {
 	border: none;
 }
 
+div.yellow_box {
+	margin: 4px 0;
+	padding: 4px 8px;
+	background-color: #ffd;
+	border: 1px solid #eec;
+}
+
 div.green_box {
 	margin: 4px 0;
 	padding: 4px 8px;
@@ -41,3 +48,8 @@ div.red_box {
 }
 
 .s { text-decoration: line-through; }
+
+img.flag {
+	vertical-align: middle;
+	margin-right: 2px;
+}

@@ -29,6 +29,16 @@ function defval(&$data, $name, $default=NULL, $set = false)
 	return $default;
 }
 
+function popval(&$data, $name, $default=NULL)
+{
+	if(!$data || !array_key_exists($name, $data))
+		return $default;
+
+	$ret = $data[$name];
+	unset($data[$name]);
+	return $ret;
+}
+
 function defval_ne(&$data, $name, $default=NULL)
 {
 	if(!empty($data[$name]))

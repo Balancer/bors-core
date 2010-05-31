@@ -10,7 +10,12 @@ class bors_admin_tools_setsortorder extends base_page
 		$parent = empty($_GET['parent']) ? NULL : object_load($_GET['parent']);
 
 		if($parent) // Если в параметрах указан parent, то это cross.
-			$parent->add_cross_object($child, $_GET['sort_order']);
+			bors_link::link_objects($parent, $child, array(
+				'sort_order' => @$_GET['sort_order'],
+				'replace' => true,
+				'type_id' => 5,
+			));
+//			$parent->add_cross_object($child, $_GET['sort_order']);
 		else
 			$child->set_sort_order($_GET['sort_order'], true);
 

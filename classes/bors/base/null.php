@@ -1,5 +1,7 @@
 <?php
 
+// В этом классе не должно быть ни одного свойства! Только методы!
+
 class base_null
 {
 	function can_be_empty() { return true; }

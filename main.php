@@ -93,10 +93,13 @@ if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY
 	{
 		@list($var, $val) = explode('=', $pair);
 		$var = urldecode($var);
-		if(preg_match('/^(\w+)\[\]$/', $var, $m))
-			$_GET[$m[1]][] = $_POST[$var][] = "$val";
-		else
-			$_GET[$var] = $_POST[$var] = "$val";
+		if(!isset($_POST[$var]))
+		{
+			if(preg_match('/^(\w+)\[\]$/', $var, $m))
+				$_GET[$m[1]][] = $_POST[$var][] = "$val";
+			else
+				$_GET[$var] = $_POST[$var] = "$val";
+		}
 	}
 }
 
@@ -207,7 +210,7 @@ if(empty($title))
 if(config('404_logging'))
 {
 	if(!empty($_SERVER['HTTP_REFERER'])
-			|| strpos($uri, '.files/'))
+			|| strpos($uri, 'files/'))
 		$fname_404 = '404-filtered.log';
 	else
 		$fname_404 = '404-other.log';

@@ -83,13 +83,12 @@ class base_page extends base_object
 		return "s={$t}" . ($r ? '&r=1' : '');
 	}
 
-	private $_total_pages = false;
 	function total_pages()
 	{
-		if($this->_total_pages === false)
-			$this->_total_pages = ($total = $this->total_items()) >= 0 ? intval(($total - 1)/$this->items_per_page()) + 1 : 1;
+		if($this->__havefc())
+			return $this->__lastc();
 
-		return $this->_total_pages;
+		return $this->__setc(($total = $this->total_items()) >= 0 ? intval(($total - 1)/$this->items_per_page()) + 1 : 1);
 	}
 
 	function items_per_page() { return 25; }
@@ -150,7 +149,8 @@ class base_page extends base_object
 		//TODO: Вычистить все _queries.
 		if($qlist = $this->_queries())
 		{
-			$db = new DataBase($this->main_db());
+			// Привязка к БД АвиаПорта, так как нигде в других проектах не используется и не должно использоваться.
+			$db = new driver_mysql(config('aviaport_db'));
 
 			foreach($qlist as $qname => $q)
 			{
@@ -172,7 +172,7 @@ class base_page extends base_object
 
 		$this->template_data_fill();
 		require_once('engines/smarty/assign.php');
-		$data['compile_id'] = $this->internal_uri_ascii(100, true).'-'.$this->internal_charset();
+		$data['compile_id'] = $this->class_name();
 		return template_assign_data($this->body_template(), $data);
 	}
 
@@ -271,16 +271,16 @@ class base_page extends base_object
 	function check_value_conditions()
 	{
 		return array_merge(parent::check_value_conditions(), array(
-			'title'	=> ec("!=''|Заголовок страницы должен быть указан"),
-			'source'=> ec("!=''|Текст страницы должен быть задан"),
+//			'title'	=> ec("!=''|Заголовок ".$this->class_title_rp()." должен быть указан"),
+//			'source'=> ec("!=''|Текст ".$this->class_title_rp()." должен быть задан"),
 		));
 	}
 
 	function editor_fields_list()
 	{
 		return array(
-			ec('Полный заголовок материала:') => 'title',
-			ec('Краткий заголовок материала:') => 'nav_name',
+			ec('Полный заголовок '.$this->class_title_rp().':') => 'title',
+			ec('Краткий заголовок '.$this->class_title_rp().':') => 'nav_name',
 			ec('Краткое описание:') => 'description|textarea=2',
 			ec('Текст:') => 'source|textarea=20',
 			ec('Тип перевода строк:') => 'cr_type|dropdown=common_list_crTypes',

@@ -3,7 +3,9 @@
 	$upload_dir - относительный путь загрузки, напр. /uploads/projects/
 	$list - список картинок
 	$link_type - тип связывания, parent или cross
+	$image_class = 'bors_image' - класс изображения
 *}
+{defval var="image_class" value="bors_image"}
 <div class="clear">&nbsp;</div>
 
 <h2>Изображения</h2>
@@ -39,7 +41,7 @@
 <small>{$i->description_or_title()|truncate:30}</small><br />
 {$i->imaged_edit_url()}
 {$i->imaged_set_default_url($item)}
-<form action="/admin/tools/set-sort-order/?child=bors_image://{$i->id()}{if $link_type=='cross'}&parent={$item|get:internal_uri}{/if}" method="post" style="display: inline"><input name="sort_order" value="{$i->sort_order()}" title="Порядок сортировки" size="4"/></form>
+<form action="/admin/tools/set-sort-order/?child={$image_class}://{$i->id()}{if $link_type=='cross'}&parent={$item|get:internal_uri}{/if}" method="post" style="display: inline"><input name="sort_order" value="{$i->sort_order()}" title="Порядок сортировки" size="4" style="width: auto !important;"/>&nbsp;Сортировка</form><br/>
 {$i->imaged_delete_url()}
 </div>
 {/if}

@@ -7,6 +7,14 @@ class auto_object_php extends base_object
 	function can_be_empty() { return false; }
 	function nav_name() { return $this->object()->nav_name(); }
 
+	function access()
+	{
+		if(($obj = $this->object()))
+			return $obj->access();
+
+		return parent::access();
+	}
+
 	private $object = false;
 	function object()
 	{

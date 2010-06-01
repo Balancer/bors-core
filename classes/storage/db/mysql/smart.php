@@ -635,4 +635,5 @@ $back_functions = array(
 	'html_entity_decode' => 'htmlspecialchars',
 	'UNIX_TIMESTAMP' => 'FROM_UNIXTIME',
 	'aviaport_old_denormalize' => 'aviaport_old_normalize',
+	'stripslashes' => 'addslashes',
 );

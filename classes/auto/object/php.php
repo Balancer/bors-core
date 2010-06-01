@@ -36,14 +36,13 @@ class auto_object_php extends base_object
 		else
 			$object_id = $this->id();
 
-
 		if(!($object = object_load($class_base.'_'.$class_path, $object_id)))
 		{
 			$class_path = $class_path ? $class_path . '_main' : 'main';
 			$object = object_load($class_base.'_'.$class_path, $this->id());
 		}
 
-		if(!method_exists($object, 'is_auto_url_mapped_class') || !$object->is_auto_url_mapped_class())
+		if(!config('classes_auto_full_enabled') && (!method_exists($object, 'is_auto_url_mapped_class') || !$object->is_auto_url_mapped_class()))
 			$object = NULL;
 
 		if($object)

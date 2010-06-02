@@ -1,10 +1,12 @@
 <?php
 
-require_once('fabpot-Twig-2009-11-18-36416cf/lib/Twig/Autoloader.php');
-require_once('fabpot-Twig-2009-11-18-36416cf/lib/Twig/ExtensionInterface.php');
-require_once('fabpot-Twig-2009-11-18-36416cf/lib/Twig/Extension.php');
-require_once('fabpot-Twig-2009-11-18-36416cf/lib/Twig/TokenParser.php');
-require_once('fabpot-Twig-2009-11-18-36416cf/lib/Twig/Node.php');
+$twig_inc = config('twig_include_dir');
+
+require_once($twig_inc.'/Autoloader.php');
+require_once($twig_inc.'/ExtensionInterface.php');
+require_once($twig_inc.'/Extension.php');
+require_once($twig_inc.'/TokenParser.php');
+require_once($twig_inc.'/Node.php');
 
 class bors_templates_twig extends bors_templates_abstract
 {

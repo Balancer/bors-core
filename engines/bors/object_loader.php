@@ -563,7 +563,10 @@ function object_init($class_name, $object_id, $args = array())
 		return $obj;
 
 	$found = 0;
-	$object_id = call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name, $args);
+
+	if(method_exists($class_name, 'id_prepare'))
+		$object_id = call_user_func(array($class_name, 'id_prepare'), $object_id, $class_name, $args);
+
 	if(is_object($object_id) && !is_object($original_id))
 	{
 		$obj = $object_id;
@@ -586,6 +589,9 @@ function object_init($class_name, $object_id, $args = array())
 	{
 		$found = 0;
 		$obj = new $class_name($object_id);
+		if(!method_exists($obj, 'set_class_file'))
+			return NULL;
+
 		$obj->set_class_file($class_file);
 
 		if(config('debug_objects_create_counting_details'))

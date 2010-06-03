@@ -167,8 +167,13 @@ div.right-menu {
 	width: 200px;
 	float: right;
 	padding: 10px;
+	font-size: 80%;
+	overflow: hidden;
 }
 
+div.right-menu ul {
+	padding-left: 20px;
+}
 
 /***************************************************/
 

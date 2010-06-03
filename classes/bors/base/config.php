@@ -32,10 +32,12 @@ class base_config extends base_empty
 	{
 		$data = array(
 			'success_message' => session_var('success_message'),
-			'error_message' => session_var('error_message'),
+			'notice_message'  => session_var('notice_message'),
+			'error_message'   => session_var('error_message'),
 		);
 
 		set_session_var('success_message', NULL);
+		set_session_var('notice_message', NULL);
 		set_session_var('error_message', NULL);
 		return $data;
 	}

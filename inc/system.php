@@ -91,9 +91,49 @@ function set_session_var($name, $value)
 
 function set_session_message($message, $params = array())
 {
-	set_session_var('error_message', $message);
+	$type = defval($params, 'type', 'error');
+	switch($type)
+	{
+		case 'success':
+			set_session_var('success_message', $message);
+			break;
+		case 'notice':
+			set_session_var('notice_message', $message);
+			break;
+		case 'error':
+		default:
+			set_session_var('error_message', $message);
+			break;
+	}
+
 	if(($fields = $params['error_fields']))
 		set_session_var('error_fields', $fields);
+}
+
+function session_message($params = array())
+{
+	$type = defval($params, 'type', 'error');
+	switch($type)
+	{
+		case 'success':
+			return session_var('success_message');
+		case 'notice':
+			return session_var('notice_message');
+			break;
+		case 'error':
+		default:
+			return session_var('error_message');
+	}
+
+	return NULL;
+}
+
+function add_session_message($message, $params = array())
+{
+	if(($prev_msg = session_message($params)))
+		$prev_msg .= "<br/>\n";
+
+	return set_session_message($prev_msg . $message, $params);
 }
 
 function clean_all_session_vars()

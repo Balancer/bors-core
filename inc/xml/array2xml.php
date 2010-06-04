@@ -1,5 +1,7 @@
 <?php
 
+require_once('../strings.php'); // нужно только для bors_unplural
+
 function array2xml($data, $root = NULL)
 {
 	$converter = new Array2XML();
@@ -8,101 +10,56 @@ function array2xml($data, $root = NULL)
 	return $converter->convert($data);
 }
 
-class Array2XML {
-
-   
-
+class Array2XML
+{
     private $writer;
-
     private $version = '1.0';
-
     private $encoding = 'UTF-8';
-
     private $rootName = 'root';
 
-   
-
- 
-
-    function __construct() {
-
+    function __construct()
+    {
 		$this->writer = new XMLWriter();
-
     }
 
-   
-
-    public function convert($data) {
-
+    public function convert($data)
+    {
         $this->writer->openMemory();
-
         $this->writer->startDocument($this->version, $this->encoding);
-
         $this->writer->startElement($this->rootName);
-
 		$this->writer->setIndent(true);
-        if (is_array($data)) {
 
+        if(is_array($data))
             $this->getXML($data);
 
-        }
-
         $this->writer->endElement();
-
         return $this->writer->outputMemory();
-
     }
 
-    public function setVersion($version) {
+    public function setVersion($version)   { $this->version = $version; }
+    public function setEncoding($encoding) { $this->encoding = $encoding; }
+    public function setRootName($rootName) { $this->rootName = $rootName; }
 
-        $this->version = $version;
-
-    }
-
-    public function setEncoding($encoding) {
-
-        $this->encoding = $encoding;
-
-    }
-
-    public function setRootName($rootName) {
-
-        $this->rootName = $rootName;
-
-    }
-
-    private function getXML($data) {
-
-        foreach ($data as $key => $val) {
-
-            if (is_numeric($key)) {
-
-                $key = 'key'.$key;
-
+    private function getXML($data, $parent = NULL)
+    {
+        foreach($data as $key => $val)
+        {
+            if(is_numeric($key))
+            {
+            	if($parent)
+	                $key = bors_unplural($parent);
+            	else
+	                $key = 'key'.$key;
             }
 
-            if (is_array($val)) {
-
+            if(is_array($val))
+            {
                 $this->writer->startElement($key);
-
-                $this->getXML($val);
-
+                $this->getXML($val, $key);
                 $this->writer->endElement();
-
             }
-
-            else {
-
+            else
                 $this->writer->writeElement($key, $val);
-
-            }
-
         }
-
-    }
-
+	}
 }
-
-//end of Array2XML.php
-
-

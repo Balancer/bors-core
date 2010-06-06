@@ -1,6 +1,6 @@
 <?php
 
-require_once('../strings.php'); // нужно только для bors_unplural
+require_once(dirname(__FILE__).'/../strings.php'); // нужно только для bors_unplural
 
 function array2xml($data, $root = NULL)
 {

@@ -34,6 +34,10 @@ class bors_tools_delete extends base_page
 				access = {$obj->access()}
 				-->");
 
+
+		if($obj->get('can_delete_immediately'))
+			return $this->on_action_delete();
+
 		return false;
 	}
 

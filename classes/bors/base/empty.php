@@ -43,6 +43,11 @@ class base_empty extends base_null
 					return $this->attr[$name] = object_load($this->$m[1](), $this->$m[2]());
 		}
 
+		// Проверяем одноимённые переменные (var $title = 'Сообщения')
+		// Поскольку нет автокодирования, то работает только с utf8!
+		if(property_exists($this, $name) && bors()->server()->is_utf8())
+			return $this->$name;
+
 		return $default;
 	}
 

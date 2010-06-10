@@ -110,4 +110,5 @@ class bors_global extends base_empty
 	function referer() { return empty($_GET['ref']) ? @$_SERVER['HTTP_REFERER'] : $_GET['ref']; }
 
 	function client() { return $this->__havec('client') ? $this->__lastc() : $this->__setc(object_load('bors_client')); }
+	function server() { return $this->__havec('server') ? $this->__lastc() : $this->__setc(object_load('bors_server')); }
 }

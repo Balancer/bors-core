@@ -130,6 +130,12 @@ function session_message($params = array())
 
 function add_session_message($message, $params = array())
 {
+	static $added = array();
+	if(!empty($added[md5($message)]))
+		return NULL;
+
+	$added[md5($message)] = true;
+
 	if(($prev_msg = session_message($params)))
 		$prev_msg .= "<br/>\n";
 

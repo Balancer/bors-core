@@ -11,5 +11,6 @@ function smarty_modifier_sklon($n, $s1, $s2=NULL, $s5=NULL) // 1 нож 2 нож
     if($n2>=10 && $n2<=19) return $s5;
     if($ns==1) return $s1;
     if($ns>=2&&$ns<=4) return $s2;
+
     return $s5;
 }

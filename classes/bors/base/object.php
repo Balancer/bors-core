@@ -451,7 +451,7 @@ class base_object extends base_empty
 		else
 		{
 			foreach($this->check_value_conditions() as $key => $assert)
-				if(!$this->check_value($key, @$data[$key], $assert))
+				if(!$this->check_value($key, defval($data, $key, $this->get($key)), $assert))
 					return true;
 		}
 

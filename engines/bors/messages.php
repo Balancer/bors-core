@@ -38,6 +38,8 @@ function bors_message($text, $params=array())
 	if(empty($data['this']))
 		$data['this'] = new base_page(NULL);
 
+	$data['debug_trace'] = debug_trace(0, false);
+
 	require_once('engines/smarty/assign.php');
 	$body = template_assign_data("xfile:messages.html", $data);
 

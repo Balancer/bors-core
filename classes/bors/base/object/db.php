@@ -74,7 +74,7 @@ class base_object_db extends base_object
 
 	static function truncate($class_name)
 	{
-		$cls = new $class_name;
+		$cls = new $class_name(NULL);
 		$dbh = new driver_mysql($cls->db_name());
 		$dbh->delete($cls->table_name(), array());
 	}

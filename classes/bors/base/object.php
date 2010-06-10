@@ -10,6 +10,10 @@ class base_object extends base_empty
 			'url_engine' => 'url_calling',
 	); }
 
+	function properties_preset() { return array(
+			'title' => $this->class_name(),
+	); }
+
 	var $___loaded = false;
 	function loaded() { return $this->___loaded; }
 	function set_loaded($value = true) { return $this->___loaded = $value; }
@@ -90,8 +94,13 @@ class base_object extends base_empty
 	private $config;
 	function _configure()
 	{
+		foreach($this->properties_preset() as $name => $val)
+			if(!property_exists($this, $name))
+				$this->$name = $val;
+
 		foreach($this->attr_preset() as $attr => $val)
-			$this->attr[$attr] = $val;
+			if(!array_key_exists($attr, $this->attr))
+				$this->attr[$attr] = $val;
 
 		if(($config = $this->config_class()))
 		{
@@ -210,6 +219,11 @@ class base_object extends base_empty
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
 				return $this->attr[$method] = object_load($this->$m[1](), $this->$m[2]());
 
+		// Проверяем одноимённые переменные (var $title = 'Сообщения')
+		// Поскольку нет автокодирования, то работает только с utf8!
+		if(property_exists($this, $method) && bors()->server()->is_utf8())
+			return $this->$method;
+
 		if($this->strict_auto_fields_check())
 			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>at {$this->class_file()}");
 
@@ -288,7 +302,7 @@ class base_object extends base_empty
 		return time();
 	}
 
-	function title($exact = false) { return defval($this->data, 'title', $exact ? NULL : $this->class_name()); }
+//	function title($exact = false) { return defval($this->data, 'title', $exact ? NULL : $this->class_name()); }
 	function set_title($new_title, $db_update) { return $this->set('title', $new_title, $db_update); }
 
 	function debug_title() { return "'{$this->title()}' {$this->class_name()}({$this->id()})"; }

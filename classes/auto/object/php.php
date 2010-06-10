@@ -50,7 +50,7 @@ class auto_object_php extends base_object
 			$object = object_load($class_base.'_'.$class_path, $this->id());
 		}
 
-		if(!config('classes_auto_full_enabled') && (!method_exists($object, 'is_auto_url_mapped_class') || !$object->is_auto_url_mapped_class()))
+		if(!config('classes_auto_full_enabled') && !object_property($object, 'is_auto_url_mapped_class'))
 			$object = NULL;
 
 		if($object)

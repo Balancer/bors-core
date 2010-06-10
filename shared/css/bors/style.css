@@ -53,3 +53,9 @@ img.flag {
 	vertical-align: middle;
 	margin-right: 2px;
 }
+
+div.float-half {
+	border: 1px solid red;
+	float: left;
+	width: 49%;
+}

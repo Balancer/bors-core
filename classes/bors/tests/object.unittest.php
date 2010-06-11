@@ -16,5 +16,8 @@ class bors_tests_object_unittest extends PHPUnit_Framework_TestCase
 
 		// Имя объекта по умолчанию - имя его класса
         $this->assertEquals($object->title(), 'bors_tests_object');
+
+		// Точное имя объекта
+        $this->assertNull($object->title(true));
     }
 }

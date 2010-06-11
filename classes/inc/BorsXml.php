@@ -5,7 +5,7 @@ class BorsXml
 	private $parser;
 	private $pointer;
 	var $dom = array();
-	
+
 	function __construct()
 	{
 		$this->pointer = &$this->dom;
@@ -35,6 +35,7 @@ class BorsXml
 
 	function cdata($parser, $cdata)
 	{
+		$cdata = trim($cdata);
 //		echo "Cdata '$cdata'<br />";
 		if(empty($this->pointer['cdata']))
 			$this->pointer['cdata'] = dc(html_entity_decode($cdata));

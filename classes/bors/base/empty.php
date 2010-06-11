@@ -14,7 +14,7 @@ class base_empty extends base_null
 		$this->set_id($this->initial_id = $id);
 	}
 
-	function get($name, $default = NULL, $skip_methods = false)
+	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
 		if(method_exists($this, $name) && !$skip_methods)
 			return $this->$name();
@@ -45,7 +45,7 @@ class base_empty extends base_null
 
 		// Проверяем одноимённые переменные (var $title = 'Сообщения')
 		// Поскольку нет автокодирования, то работает только с utf8!
-		if(property_exists($this, $name) && bors()->server()->is_utf8())
+		if(property_exists($this, $name) && bors()->server()->is_utf8() && !$skip_properties)
 			return $this->$name;
 
 		return $default;

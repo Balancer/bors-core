@@ -29,12 +29,12 @@ class bors_admin_users_login extends base_page
 				$me = ec('Ошибка аутентификации');
 
 			$this->error = $me;
-			set_session_var('error_message', $me);
-			return go($this->referer);
+//			set_session_var('error_message', $me);
+			return go_ref_message($me, array('go' => $this->referer, 'error_fields' => 'login,password'));
 		}
 
-		set_session_var('success_message', ec('Вы успешно аутентифицированы, ').$me->title().'!');
-		return go($this->referer);
+//		set_session_var('success_message', ec('Вы успешно аутентифицированы, ').$me->title().'!');
+		return go_ref_message(ec('Вы успешно аутентифицированы, ').$me->title().'!', array('go' => $this->referer, 'error' => false));
 	}
 
 	function can_cache() { return false; }

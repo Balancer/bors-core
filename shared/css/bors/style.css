@@ -55,7 +55,6 @@ img.flag {
 }
 
 div.float-half {
-	border: 1px solid red;
 	float: left;
-	width: 49%;
+	width: 48%;
 }

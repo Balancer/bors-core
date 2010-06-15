@@ -219,6 +219,11 @@ h1 {
 	margin: 0 0 10px 0;
 }
 
+h3 {
+	padding: 0;
+	margin: 0 0 2px 0;
+}
+
 code {
 	background-color: #f0f0f0;
 	border: 1px solid #e0e0e0;
@@ -228,4 +233,20 @@ code {
 input.error, textarea.error, select.error {
 	background-color: #ffcccc;
 	border: 4px solid red;
+}
+
+div.more {
+	margin-bottom: 10px;
+	background-color: #ddd;
+	border: 1px solid #ccc;
+	padding: 2px 4px;
+}
+
+div.separated_menu {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin: 10px 0 10px 0;
+	background-color: #ddd;
+	border: 1px solid #ccc;
+	padding: 4px 10px;
 }

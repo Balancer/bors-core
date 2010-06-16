@@ -51,6 +51,43 @@ class base_empty extends base_null
 		return $default;
 	}
 
+	function is_set($name, $skip_methods = false, $skip_properties = false)
+	{
+		if(method_exists($this, $name) && !$skip_methods)
+			return true;
+
+		if(array_key_exists($name, $this->data))
+			return true;
+
+		if(array_key_exists($name, $this->attr))
+			return true;
+
+		// Проверяем автоматические объекты.
+		if(method_exists($this, 'auto_objects'))
+		{
+			$auto_objs = $this->auto_objects();
+			if(($f = @$auto_objs[$name]))
+				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+					return true;
+		}
+
+		// Автоматические целевые объекты (имя класса задаётся)
+		if(method_exists($this, 'auto_targets'))
+		{
+			$auto_targs = $this->auto_targets();
+			if(($f = @$auto_targs[$name]))
+				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+					return true;
+		}
+
+		// Проверяем одноимённые переменные (var $title = 'Сообщения')
+		// Поскольку нет автокодирования, то работает только с utf8!
+		if(property_exists($this, $name) && bors()->server()->is_utf8() && !$skip_properties)
+			return true;
+
+		return false;
+	}
+
 	function attr_preset()
 	{
 		return array_merge(parent::attr_preset(), array(

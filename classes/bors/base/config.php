@@ -8,6 +8,10 @@ class base_config extends base_empty
 
 		foreach($this->config_data() as $key => $value)
 			$object->set($key, $value, false);
+
+		foreach($this->config_defaults() as $key => $value)
+			if(!$object->is_set($key))
+				$object->set($key, $value, false);
 	}
 
 	function template_init()
@@ -25,6 +29,7 @@ class base_config extends base_empty
 			$object->add_template_data_array($key, $value);
 	}
 
+	function config_defaults() { return array(); }
 	function config_data() { return array(); }
 	function template_data_array() { return array(); }
 

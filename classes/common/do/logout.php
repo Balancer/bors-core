@@ -12,12 +12,12 @@ class common_do_logout extends base_page
 		if($me = bors()->user())
 			$me->do_logout();
 
-//		echo "me = $me<br />";
-//		debug_trace();
-//		bors_exit();
+		$refo = object_load($referer);
+		if(!object_property($refo, 'is_public'))
+			$referer = NULL;
 
-		return go($referer && $referer != $this->url() ? $referer : '/');
+		return go(($referer && $referer != $this->url()) ? $referer : '/');
 	}
-	
+
 	function can_cache() { return false; }
 }

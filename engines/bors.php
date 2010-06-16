@@ -116,10 +116,12 @@ $GLOBALS['bors_global'] = NULL;
 function bors()
 {
 	if($GLOBALS['bors_global'] == NULL)
-		$GLOBALS['bors_global'] = &new bors_global(NULL);
+		$GLOBALS['bors_global'] = new bors_global(NULL);
 
 	return $GLOBALS['bors_global'];
 }
+
+function bors_clear() { $GLOBALS['bors_global'] = NULL; }
 
 function bors_exit($message = '')
 {

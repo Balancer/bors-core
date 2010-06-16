@@ -19,8 +19,16 @@ function bors_message($text, $params=array())
 
 	if(!$redir)
 	{
-		$link_text = defval($params, 'link_text', ec('вернуться на предыдущую страницу'));
-		$link_url = defval($params, 'link_url', 'javascript:history.go(-1)');
+		if(bors()->client()->referer())
+		{
+			$link_text = defval($params, 'link_text', ec('вернуться на предыдущую страницу'));
+			$link_url = defval($params, 'link_url', 'javascript:history.go(-1)');
+		}
+		else
+		{
+			$link_text = defval($params, 'link_text', ec('Перейти к началу сайта'));
+			$link_url = defval($params, 'link_url', '/');
+		}
 	}
 	elseif($redir !== true)
 	{

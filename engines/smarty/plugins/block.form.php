@@ -106,6 +106,11 @@ function smarty_block_form($params, $content, &$smarty)
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);
 						break;
+					case 'timestamp_date_droppable':
+						$data['can_drop'] = true;
+						require_once('function.input_date.php');
+						smarty_function_input_date($data, $smarty);
+						break;
 					case 'bool':
 						$data['label'] = $title;
 						$labels[$f] = $data;

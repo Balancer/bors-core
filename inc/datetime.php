@@ -184,7 +184,7 @@ function full_hdate($date, $show_year = true)
 function date_format_mysqltime($time) { return $time ? strftime('\'%Y-%m-%d %H:%M:%S\'', $time) : NULL; }
 function date_format_mysql($time) { return $time ? strftime('\'%Y-%m-%d\'', $time) : NULL; }
 
-function date_day_begin($time) { return strtotime(date('Y-m-d', $time)); }
+function date_day_begin($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time())); }
 function date_day_next($time) { return strtotime(date('Y-m-d', $time).' +1 day'); }
 
 function part_date($date, $int = false)

@@ -6,7 +6,7 @@ class bors_tests_xml_array2xmlwp_unittest extends PHPUnit_Framework_TestCase
     {
 		require_once('inc/xml/array2xml_wp.php');
 
-		for($i=1; $i<=1; $i++)
+		for($i=1; $i<=2; $i++)
 		{
 			$base = 'a2xwp'.sprintf('%02d', $i);
 			require_once(dirname(__FILE__)."/$base.php");

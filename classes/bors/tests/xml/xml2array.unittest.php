@@ -5,7 +5,7 @@ class bors_tests_xml_xml2array_unittest extends PHPUnit_Framework_TestCase
     public function test_xml2array()
     {
 		require_once('inc/xml/xml2array.php');
-		require_once('inc/php.php');
+//		require_once('inc/php.php');
 
 		for($i=1; $i<=1; $i++)
 		{

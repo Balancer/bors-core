@@ -9,6 +9,7 @@ bors_tests_object_db5
 bors_tests_page
 
 bors_tests_xml_array2xml
+bors_tests_xml_array2xmlwp
 bors_tests_xml_xml2array
 
 

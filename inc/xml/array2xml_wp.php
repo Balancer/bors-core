@@ -91,6 +91,8 @@ class Array2XMLWP
     	if(is_null($parent))
     		$parent = $this->rootName;
 
+		$cdata = NULL;
+
 		foreach($data as $key => $val)
 		{
             if(is_numeric($key))
@@ -99,26 +101,33 @@ class Array2XMLWP
 	                $key = bors_unplural($parent);
             	else
 	                $key = 'key'.$key;
+
+				$this->writer->startElement($key);
+                $this->getXML($val, $key);
+				$this->writer->endElement();
+
+				continue;
             }
 
             if(is_array($val))
             {
-                $this->writer->startElement($key);
                 $this->getXML($val, $key);
-                $this->writer->endElement();
             }
             else
             {
 				if($key == '_')
-				{
-					if(preg_match('/^[\w]+$/', $val))
-		                $this->writer->writeRaw($val);
-					else
-		                $this->writer->writeCData($val);
-				}
+					$cdata = $val;
 				else
 	                $this->writer->writeAttribute($key, $val);
 			}
         }
+
+		if($cdata)
+		{
+			if(preg_match('/^[\w]+$/', $cdata))
+                $this->writer->writeRaw($cdata);
+			else
+                $this->writer->writeCData($cdata);
+		}
 	}
 }

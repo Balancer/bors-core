@@ -35,11 +35,20 @@
 			debug_exit("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
 
 		if(!$access_object->can_read())
-			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас нет доступа к этому ресурсу
+		{
+			if(bors()->user())
+				$msg = ec("Извините, ").bors()->user()->title()
+					.ec(" у Вас нет доступа к этому ресурсу ")
+					."[<a href=\"/users/do-logout\">выйти</a>]";
+			else
+				$msg = ec("Извините, у Вас нет доступа к этому ресурсу");
+
+			return empty($GLOBALS['cms']['error_show']) ? bors_message($msg . "
 				<!-- access=$access_object
 				access_object=$access_object
 				class_file = ".(method_exists($access_object, 'class_file') ? $access_object->class_file() : 'none')."
-			-->")) : true;
+			-->") : true;
+		}
 
 		$processed = $obj->pre_show();
 		if($processed === true)

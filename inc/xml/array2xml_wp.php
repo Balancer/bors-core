@@ -118,7 +118,7 @@ class Array2XMLWP
 				if($key == '_')
 					$cdata = $val;
 				else
-	                $this->writer->writeAttribute($key, $val);
+					$this->writer->writeAttribute($key, $val);
 			}
         }
 

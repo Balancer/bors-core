@@ -149,7 +149,12 @@ function smarty_block_form($params, $content, &$smarty)
 		echo "<input type=\"hidden\" name=\"subaction\" value=\"$subaction\" />\n";
 
 	if(empty($class_name))
+	{
 		$class_name = $name;
+		$go = $uri;
+	}
+	else
+		$go = 'newpage_admin';
 
 	if(!empty($class_name) && $class_name != 'NULL' && $class_name != 'this')
 		echo "<input type=\"hidden\" name=\"class_name\" value=\"$class_name\" />\n";
@@ -165,7 +170,7 @@ function smarty_block_form($params, $content, &$smarty)
 		echo "<input type=\"hidden\" name=\"time_vars\" value=\"".join(',', array_unique(array_filter($tmv)))."\" />\n";
 
 	if(!base_object::template_data('form_have_go'))
-		echo "<input type=\"hidden\" name=\"go\" value=\"newpage_admin\" />\n";
+		echo "<input type=\"hidden\" name=\"go\" value=\"$go\" />\n";
 
 	echo "</form>\n";
 	base_object::add_template_data('form_checkboxes_list', NULL);

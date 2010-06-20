@@ -244,8 +244,10 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 //	bors()->changed_save();
 
-//TODO: разобраться, чтобы не спамило
-//	set_session_var('success_message', ec('Данные успешно сохранены: '.print_r(bors()->changed_objects(), true)));
+//TODO: разобраться, чтобы не спамило. Больше не спамит? Проверено на РПД/admin/users/56/
+	add_session_message(ec('Данные успешно сохранены')/*.print_r(bors()->changed_objects(), true)*/, array('type' => 'success'));
+//	echo session_message(array('type' => 'success'));
+//	exit( '?');
 
 	return $object;
 }

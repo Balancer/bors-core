@@ -187,6 +187,10 @@ function date_format_mysql($time) { return $time ? strftime('\'%Y-%m-%d\'', $tim
 function date_day_begin($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time())); }
 function date_day_next($time) { return strtotime(date('Y-m-d', $time).' +1 day'); }
 
+function date_today($time = 0)     { return strtotime(date('Y-m-d', $time ? $time : time())); }
+function date_yesterday($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' -1 day'); }
+function date_tomorrow ($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' +1 day'); }
+
 function part_date($date, $int = false)
 {
 	$year = $month = $day = 0;

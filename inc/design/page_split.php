@@ -1,4 +1,4 @@
-<?
+<?php
 	function pages_select($page, $current_page, $total_pages)
 	{
 		$pages = array();
@@ -8,7 +8,7 @@
 		if(!empty($_GET))
 			foreach($_GET as $key => $value)
 				$q .= ($q=="") ? "?$key=$value" : "&$key=$value";
-		
+
 		if($total_pages > 1)
 		{
 			$last = 0;
@@ -16,12 +16,12 @@
 			{
 				if(!check_page($i, $current_page, $total_pages))
 					continue;
-					
+
 				if($last != $i-1)
 					$pages[]=' ... ';
-				
+
 				$last = $i;
-				
+
 				if(is_object($page))
 					$p = $page->url($i);
 				else
@@ -30,11 +30,11 @@
 					if($i > 1)
 						$p .= "page$i/";
 				}
-				
+
 				$pages[] = "<a href=\"$p$q\" class=\"".(($i==$current_page)?'current_page':'select_page')."\">$i</a>";
 			}
 		}
-		
+
 		return $pages;
 	}
 
@@ -92,9 +92,9 @@
 
 //		for($i = $total_pages - intval($limit/2) + 1; $i <= $total_pages; $i++)
 //			$pages[] = get_page_link($obj, $i, $i==$current_page ? $current_page_class : $other_page_class, $q);
-		
+
 //		print_r($pages);
-		
+
 		return $pages;
 	}
 

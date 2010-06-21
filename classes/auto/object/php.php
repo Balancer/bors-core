@@ -60,6 +60,8 @@ class auto_object_php extends base_object
 			bors()->set_main_object($object);
 			if(!$object->parents(true))
 				$object->set_parents(array(secure_path(dirname($path).'/')), false);
+
+			debug_log_var('target_class_file', $object->class_file());
 		}
 
 		return $this->object = $object;

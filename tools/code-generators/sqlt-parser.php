@@ -102,6 +102,14 @@ function main($sqlt_file)
 		else
 			$is_index = false;
 
+		if(preg_match('/^(.+)latin1$/i', $s, $m))
+		{
+			$s = trim($m[1]);
+			$is_latin1 = true;
+		}
+		else
+			$is_latin1 = false;
+
 		if(preg_match('/^(.+)NULL$/', $s, $m))
 		{
 			$s = trim($m[1]);
@@ -168,6 +176,9 @@ function main($sqlt_file)
 				$keys[] = 'KEY `'.$name.'` (`'.$name.'`)';
 
 			$f = '`'.$name.'` '.$type;
+
+			if($is_latin1)
+				$f .= ' CHARACTER SET latin1 COLLATE latin1_general_ci';
 
 			if($is_null)
 				$f .= ' NULL';
@@ -264,9 +275,20 @@ $sql = "CREATE TABLE IF NOT EXISTS `$table_name` (
 		}
 	}
 
+if(in_array('target_class_name', $names))
+{
+	$ftargets = "\n\tfunction auto_targets()\n\t{\n\t\treturn array(\n\t\t\t'target' => 'target_class_name(target_object_id)',\n\t\t);\n\t}\n";
+	$ftitle = "\tfunction title() { return \$this->target()->class_name().ec(' «').\$this->target()->title().ec('»'); }";
+}
+else
+{
+	$ftargets = '';
+	$ftitle = "\tfunction title() { return ec('$class_title'); }";
+}
+
 $php = "<?php\n\nclass $class_name extends base_object_db
 {
-	function title() { return ec('$class_title'); }
+$ftitle
 	function nav_name() { return ec('".mb_strtolower($class_title)."'); }
 	function main_table() { return '$table_name'; }
 	function main_table_fields()
@@ -275,7 +297,8 @@ $php = "<?php\n\nclass $class_name extends base_object_db
 			".join("\n\t\t\t", $class_field_names)."
 		);
 	}
-	$auto_objects_code
+{$auto_objects_code}
+{$ftargets}
 	function url() { return config('main_host_url').'/{$admin_path}/'.\$this->id().'/'; }
 }
 ";

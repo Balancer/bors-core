@@ -1,5 +1,7 @@
 <?php
 
+//TODO: под снос после замены во всех использующих проектах. В пользу bors_user_favorite из BORS_EXT
+
 class bors_users_tools_favorites extends base_page
 {
 	function access() { return $this; }

@@ -70,4 +70,7 @@ class auto_object_php extends base_object
 	function modify_time($exactly = false) { return $this->object()->modify_time($exactly); }
 
 	function action_target() { return $this->object(); }
+
+	function pre_show() { return $this->object->pre_show(); }
+	function pre_parse() { return $this->object->pre_parse(); }
 }

@@ -19,3 +19,4 @@ function bors_unit_test_up()
 require_once('config-host.php');
 
 config_set('main_bors_db', config('unit-test.mysql.db'));
+config_set('bors_core_db', config('unit-test.mysql.db')); // Этим оперируют cross-методы

@@ -2,9 +2,6 @@
 
 function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 {
-//	if(isset($conditions_array['where']))
-//		$conditions_array = $conditions_array['where'];
-
 	if(isset($conditions_array['where']))
 		$conditions_array = $conditions_array['where'];
 
@@ -16,7 +13,6 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 	{
 
 		$value = str_replace('%ID%', '%MySqlStorageOID%', $value);
-//		echo "$field_cond  $value<br/>\n";
 
 		$w = false;
 		if(preg_match('! (NOT )?IN$!', $field_cond))
@@ -40,7 +36,6 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 		else
 			$w = $field_cond . '\'' . addslashes($value) . '\'';
 
-//		echo "$w => mysql_bors_join_parse($w, $class, $was_joined) = ".mysql_bors_join_parse($w, $class, $was_joined)."<br/>\n";
 		if($w)
 			$where[] = mysql_bors_join_parse($w, $class, $was_joined);
 	}
@@ -50,9 +45,6 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 
 function mysql_order_compile($order_list, $class_name = false)
 {
-//	if(isset($order_list['order']))
-//		$order_list = $order_list['order'];
-
 	if(empty($order_list))
 		return '';
 
@@ -100,55 +92,64 @@ function array_smart_expand(&$array)
 	return $result;
 }
 
-function bors_class_field_to_db($class, $field = NULL, $was_joined = true)
+function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 {
 	if(!$class)
-		return $field;
+		return $property;
 
-	if(is_object($class))
-	{
-		$table	 = $class->table_name();
-		$fields	 = array_smart_expand($class->fields_map());
-	}
-	else
+	if(!is_object($class))
 	{
 		if(!class_exists($class))
-			return $field ? $class.'.'.$field : $class;
+			return $property ? $class.'.'.$property : $class;
 
 		$class = new $class(NULL);
-
-		if(method_exists($class, 'has_smart_field'))
-		{
-			if(($x = $class->has_smart_field($field))) // array($r_db, $r_table, $r_id_field, $r_db_field);
-				$table = $x[1];
-
-			if(empty($table))
-				$table = $class->table_name();
-
-//			echo "$class: $table, {$x[1]}<br/>";
-			$fields	 = array_smart_expand($class->fields_map());
-		}
 	}
 
-	if(empty($field))
-		return $table;
+	$found = false;
+	foreach($class->fields_map_db() as $db => $tables)
+	{
+		foreach($tables as $table => $fields)
+		{
+			if(preg_match('!^(\w+)\((.+)\)$!', $table, $m))
+				$table = $m[1];
 
-	if(!($f = @$fields[$field]))
-		$f = $field;
+			if(($field = @$fields[$property]))
+			{
+				$found = true;
+				break;
+			}
 
-	if(is_array($f))
-		$f = defval($f, 'field', $field);
+			$fields	 = array_smart_expand($fields);
+			if(($field = @$fields[$property]))
+			{
+				$found = true;
+				break;
+			}
+		}
 
-	if(preg_match('!^(.+)\|.+!', $f, $m))
-		$f = $m[1];
+		if($found)
+			break;
+	}
+
+	if(!$field)
+		return $property;
+
+	if(is_array($field))
+	{
+		bors_lib_orm::field($property, $field);
+		$field = $field['name'];
+	}
+
+	if(preg_match('!^(.+)\|.+!', $field, $m))
+		$field = $m[1];
 
 	if(!$was_joined && $table == $class->table_name())
 		$table = '';
 
-	if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+	if(preg_match('/^(\w+)\((\w+)\)$/', $field, $m))
 		return $m[1].'('.($table ? $table.'.' : '') . $m[2] .')';
 	else
-		return (@$table ? $table.'.' : '') . $f;
+		return (@$table ? $table.'.' : '') . $field;
 }
 
 function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
@@ -160,6 +161,7 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 //	$join = preg_replace('!(ON )(\w+)\.(\w+)(\s+)!e', '"$1".bors_class_field_to_db("$2", "$3")."$4"', $join);
 	$join = preg_replace('!(=\s*|>|<)(\w+)\.(\w+)!e', '"$1".bors_class_field_to_db("$2", "$3")', $join);
 	$join = preg_replace('!^(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
+	$join = preg_replace('!(\w+)\s*(=|>|<)!e', 'bors_class_field_to_db("$class_name", "$1")."$2"', $join);
 
 	if($class_name)
 	{
@@ -252,8 +254,6 @@ function make_id_field($table, $id_field, $oid = '%MySqlStorageOID%')
 
 	if(strpos($id_field, '=') === false)
 		return "{$table}{$id_field} = '".addslashes($oid)."'";
-
-//	echo "make_id_field($table, $id_field, $oid)<br/>";
 
 	if(strpos($id_field, ' ') === false)
 	{

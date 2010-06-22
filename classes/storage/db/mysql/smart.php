@@ -2,6 +2,13 @@
 
 class storage_db_mysql_smart extends base_null
 {
+	private $_back_functions = array(
+		'html_entity_decode' => 'htmlspecialchars',
+		'UNIX_TIMESTAMP' => 'FROM_UNIXTIME',
+		'aviaport_old_denormalize' => 'aviaport_old_normalize',
+		'stripslashes' => 'addslashes',
+	);
+
 	function load(&$object, $common_where = NULL, $only_count = false, $args=array())
 	{
 		if(!($common_where || $only_count) && (!$object->id() || is_object($object->id())))
@@ -305,8 +312,6 @@ class storage_db_mysql_smart extends base_null
 
 	function save($object)
 	{
-		global $back_functions;
-
 //		echo "Save ".get_class($object)."({$object->id()})<br/>";
 
 		if(!$object->id() || is_object($object->id()) || empty($object->changed_fields))
@@ -366,7 +371,7 @@ class storage_db_mysql_smart extends base_null
 					if(preg_match('!^(.+)\|(.+)$!', $field, $m))
 					{
 						$field		= $m[1];
-						$value	= $back_functions[$m[2]]($value);
+						$value	= $this->_back_functions[$m[2]]($value);
 					}
 
 //					echo "=== p: $field =|= $php_func ===</br>";
@@ -379,13 +384,13 @@ class storage_db_mysql_smart extends base_null
 					if(preg_match('!^(\w+) \( ([\w\.]+\(.+\)) \)$!x', $field, $m))
 					{
 						$field		= $m[2];
-						$sql_func	= $back_functions[$m[1]];
+						$sql_func	= $this->_back_functions[$m[1]];
 					}
 
 					if(preg_match('!^(\w+) \( ([\w\.]+) \)$!x', $field, $m))
 					{
 						$field		= $m[2];
-						$sql_func	= $back_functions[$m[1]];
+						$sql_func	= $this->_back_functions[$m[1]];
 					}
 
 //					echo "=== s: $field sf: $sql_func ===</br>\n";
@@ -428,8 +433,6 @@ class storage_db_mysql_smart extends base_null
 
 	function create($object)
 	{
-		global $back_functions;
-
 		$oid = $object->id();
 		$data = array();
 		$replace = $object->replace_on_new_instance();
@@ -478,7 +481,7 @@ class storage_db_mysql_smart extends base_null
 					if(preg_match('!^(.+)\|(.+)$!', $field, $m))
 					{
 						$field		= $m[1];
-						$value	= $back_functions[$m[2]]($value);
+						$value	= $this->_back_functions[$m[2]]($value);
 					}
 
 //					echo "=== p: $field == $value ===</br>\n";
@@ -491,13 +494,13 @@ class storage_db_mysql_smart extends base_null
 					if(preg_match('!^(\w+) \( ([\w\.]+\(.+\)) \)$!x', $field, $m))
 					{
 						$field		= $m[2];
-						$sql_func	= $back_functions[$m[1]];
+						$sql_func	= $this->_back_functions[$m[1]];
 					}
 
 					if(preg_match('!^(\w+) \( ([\w\.]+) \)$!x', $field, $m))
 					{
 						$field		= $m[2];
-						$sql_func	= $back_functions[$m[1]];
+						$sql_func	= $this->_back_functions[$m[1]];
 					}
 
 //					echo "=== s: $field sf: $sql_func ===</br>";
@@ -567,6 +570,16 @@ class storage_db_mysql_smart extends base_null
 				$db_fields = array();
 				$primary = false;
 
+				if(preg_match('/^(\w+)\((.+)\)$/', $table_name, $m))
+				{
+					$table_name = $m[1];
+					$primary    = $m[2];
+
+					$field = bors_lib_orm::field($primary);
+					$db_field = '`'.$field['name'].'` '.$map[$field['type']];
+					$db_fields[$db_field] = $db_field;
+				}
+
 				foreach($object_fields as $property => $field)
 				{
 					if(!is_array($field))
@@ -595,7 +608,7 @@ class storage_db_mysql_smart extends base_null
 						$primary = $field['name'];
 					}
 
-					$db_fields[] = $db_field;
+					$db_fields[$db_field] = $db_field;
 				}
 
 				if(empty($primary))
@@ -603,7 +616,7 @@ class storage_db_mysql_smart extends base_null
 
 				$db_fields[] = "PRIMARY KEY (`$primary`)";
 
-				$query = "CREATE TABLE IF NOT EXISTS `$table_name` (".join(', ', $db_fields).");";
+				$query = "CREATE TABLE IF NOT EXISTS `$table_name` (".join(', ', array_values($db_fields)).");";
 
 				$db = new driver_mysql($db_name);
 				$db->query($query);
@@ -623,6 +636,9 @@ class storage_db_mysql_smart extends base_null
 			foreach($tables as $table_name => $fields)
 			{
 				$db = new driver_mysql($db_name);
+				if(preg_match('/^(\w+)\((\w+)\)$/', $table_name, $m))
+					$table_name = $m[1];
+
 				$db->query("DROP TABLE IF EXISTS $table_name");
 //				$db->close();
 			}
@@ -630,10 +646,3 @@ class storage_db_mysql_smart extends base_null
 	}
 }
 
-global $back_functions;
-$back_functions = array(
-	'html_entity_decode' => 'htmlspecialchars',
-	'UNIX_TIMESTAMP' => 'FROM_UNIXTIME',
-	'aviaport_old_denormalize' => 'aviaport_old_normalize',
-	'stripslashes' => 'addslashes',
-);

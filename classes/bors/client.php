@@ -15,4 +15,10 @@ class bors_client extends base_object
 
 		return $url;
 	}
+
+	function place()
+	{
+		require_once('inc/clients/geoip-place.php');
+		return geoip_place($this->ip());
+	}
 }

@@ -3,7 +3,7 @@
 require_once('Mail.php'); 
 require_once('Mail/mime.php'); 
 
-function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = array())
+function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = NULL)
 {
 	// По умолчанию всю почту шлём в UTF-8. Но можем указать, если что, в параметрах.
 	$charset = defval($headers, 'charset', config('mail_charset', 'utf-8'));
@@ -13,7 +13,7 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 	foreach(explode(' ', 'to subject text html from') as $x)
 		$$x = dc($$x, NULL, $charset);
 
-	$mime = &new Mail_mime("\r\n");
+	$mime = new Mail_mime("\r\n");
 
 	$mime->setTXTBody($text); 
 
@@ -43,6 +43,9 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 	if(preg_match('/^(.*?) <(.*)>$/', $from, $m))
 		if(!preg_match('/^\w+$/', $m[1]))
 			$from = "=?$charset?B?".base64_encode($m[1])."?= <{$m[2]}>";
+
+	if(!$headers)
+		$headers = array();
 
 	$hdrs = $mime->headers(array_merge($headers, array(
 		'From'		=> $from,

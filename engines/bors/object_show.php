@@ -22,7 +22,7 @@
 		if($processed === true)
 			return true;
 
-		if(!empty($_GET))
+		if(!empty($_GET) && !$obj->get('skip_auto_forms'))
 		{
 			require_once('inc/bors/form_save.php');
 			$processed = bors_form_save($obj);

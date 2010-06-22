@@ -36,7 +36,6 @@ class base_page extends base_object
 
 	function pages_links($css='pages_select', $before='', $after='')
 	{
-
 		if($this->total_pages() < 2)
 			return '';
 

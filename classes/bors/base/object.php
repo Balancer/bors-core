@@ -748,7 +748,17 @@ class base_object extends base_empty
 		return parent::__sleep();
 	}
 
-	function fields_map() { return $this->main_table_fields(); }
+	function fields_map($table = false)
+	{
+		if($table)
+		{
+			$fields = $this->main_table_fields();
+			return $fields[$table];
+		}
+
+		return $this->main_table_fields();
+	}
+
 	function main_table_fields() { return array('id'); }
 
 	function id_field()    { return defval($this->fields_map(), 'id',    'id'   ); }

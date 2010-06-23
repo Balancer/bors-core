@@ -7,7 +7,7 @@ class base_object extends base_empty
 	function attr_preset() { return array(
 			'config_class' => config('config_class'),
 			'access_engine' => '',
-			'url_engine' => 'url_calling',
+			'url_engine' => 'url_calling2',
 	); }
 
 	function properties_preset() { return array(
@@ -373,7 +373,16 @@ class base_object extends base_empty
 			$this->add_template_data($key, $value);
 	}
 
-	function titled_url() { return '<a href="'.$this->url($this->page())."\">{$this->title()}</a>"; }
+	function titled_url()
+	{
+		if(($target = $this->get('frame_target')))
+			$target = " target=\"{$target}\"";
+		else
+			$target = '';
+
+		return '<a href="'.$this->url($this->page())."\"{$target}>{$this->title()}</a>";
+	}
+
 	function titled_link() { return $this->titled_url(); }
 
 	function titled_target_link() { return $this->target()->titled_link(); }

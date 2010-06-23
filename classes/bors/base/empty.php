@@ -19,7 +19,7 @@ class base_empty extends base_null
 		if(method_exists($this, $name) && !$skip_methods)
 			return $this->$name();
 
-		if(array_key_exists($name, $this->data))
+		if(@array_key_exists($name, $this->data))
 			return $this->data[$name];
 
 		if(array_key_exists($name, $this->attr))

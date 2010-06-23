@@ -89,6 +89,14 @@ function set_session_var($name, $value)
 	return $_SESSION[$name] = $value;
 }
 
+function session_array_append($name, $value)
+{
+	__session_init();
+	$x = defval($_SESSION, $name, array());
+	$x[] = $value;
+	return $_SESSION[$name] = $x;
+}
+
 function set_session_message($message, $params = array())
 {
 	$type = defval($params, 'type', 'error');

@@ -8,6 +8,9 @@
 
 function bors_form_save(&$obj)
 {
+	if(($post_js = $_GET['javascript_post_append']))
+		session_array_append('javascript_post_append', $post_js);
+
 	if(!empty($_GET['act']))
 	{
 		if(method_exists($obj, 'action_target'))
@@ -26,8 +29,6 @@ function bors_form_save(&$obj)
 				return true;
 		}
 	}
-
-//	if(debug_is_balancer()) { print_d($_GET); exit(); }
 
 	if(!empty($_GET['class_name']) && $_GET['class_name'] != 'NULL')
 	{

@@ -307,3 +307,17 @@ function normalize_url($url)
 	$url = preg_replace('!#\w+$!', '', $url);
 	return $url;
 }
+
+function url_append_param($url, $param, $value)
+{
+	$param = urlencode($param);
+	if(strpos($url, $param.'=') !== false)
+		return $url;
+
+	if(strpos($url, '?') === false)
+		$url .= '?';
+	else
+		$url .= '&';
+
+	return $url."$param=".urlencode($value);
+}

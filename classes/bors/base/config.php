@@ -44,6 +44,16 @@ class base_config extends base_empty
 		set_session_var('success_message', NULL);
 		set_session_var('notice_message', NULL);
 		set_session_var('error_message', NULL);
+
+		if(($post_js = session_var('javascript_post_append')))
+		{
+//			print_d($post_js);
+			foreach($post_js as $js)
+				$this->id()->add_template_data_array('javascript', $js);
+
+			set_session_var('javascript_post_append', NULL);
+		}
+
 		return $data;
 	}
 }

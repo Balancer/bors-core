@@ -63,7 +63,7 @@ function smarty_block_form($params, $content, &$smarty)
 
 		echo "<form enctype=\"multipart/form-data\"";
 
-		foreach(explode(' ', 'action method name class style enctype') as $p)
+		foreach(explode(' ', 'action method name class style enctype onclick onsubmit target') as $p)
 			if(!empty($$p) && ($p != 'name' || $$p != 'NULL'))
 				echo " $p=\"{$$p}\"";
 

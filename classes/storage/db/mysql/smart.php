@@ -27,6 +27,7 @@ class storage_db_mysql_smart extends base_null
 		$hash = md5(join('!', array($object->class_name(), $common_where, $only_count)));
 
 		$need_convert = $object->db_charset() != $object->internal_charset();
+		$must_be_configured = $object->get('must_be_configured');
 
 		foreach($object->fields_map_db() as $db => $tables)
 		{
@@ -270,6 +271,9 @@ class storage_db_mysql_smart extends base_null
 //					$object->data[$name] = $value;
 					$object->{"set_$name"}($value, false, true);
 //					$object->set($name, "$value", false, true);
+
+					if($must_be_configured)
+						$object->_configure();
 
 					$was_loaded = true;
 				}

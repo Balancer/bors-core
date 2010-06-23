@@ -25,7 +25,7 @@ function objects_array($class, $args = array())
 
 	$where = mysql_args_compile($args, $class);
 
-	$init = &new $class(NULL);
+	$init = new $class(NULL);
 
 	if($s = $init->storage())
 	{

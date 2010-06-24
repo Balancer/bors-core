@@ -612,8 +612,13 @@ function object_init($class_name, $object_id, $args = array())
 
 	$obj->_configure();
 
-	if(!$obj->loaded())
-		$obj->init();
+	$loaded = $obj->loaded();
+
+	if(is_object($loaded))
+		$obj = $loaded;
+
+	if(!$loaded)
+		$loaded = $obj->init();
 
 	if(/*($object_id || $url) && */!$obj->can_be_empty() && !$obj->loaded())
 		return NULL;

@@ -33,6 +33,5 @@ class url_calling2 extends url_base
 			$url = url_append_param($url, 'inframe', 'yes');
 
 		return $url;
-//		debug_exit("Unknown calling url format: '{$url}' for {$this->id()->class_name()}({$this->id()->id()})");
 	}
 }

@@ -967,7 +967,7 @@ class base_object extends base_empty
 	{
 		if($this->files_charset() == $this->internal_charset())
 			return $str;
-//		return  iconv($this->files_charset(), $this->internal_charset().'//IGNORE', $str) : $str;
+
 		return  dc($str, $this->files_charset(), $this->internal_charset());
 	}
 
@@ -1013,7 +1013,6 @@ class base_object extends base_empty
 		$fe = file_exists($file);
 		$fs = $fe && filesize($file) > 2000;
 
-//		if(debug_is_balancer()) echo "cache_static=".config('cache_static').", can_use_static=$can_use_static, this->cache_static()={$this->cache_static()}, if($use_static && $file && $fe && !$recreate)".time();
 		if($use_static && $file && $fe && !$recreate)
 			return file_get_contents($this->static_file());
 
@@ -1080,10 +1079,6 @@ class base_object extends base_empty
 	}
 
 	function default_page() { return 1; }
-
-//	var $___page;
-//	function page() { return $this->___page; }
-//	function set_page($page) { return $this->___page = $page ? $page : $this->default_page(); }
 
 	function page() { return $this->attr('page'); }
 	function set_page($page) { return $this->set_attr('page', $page ? $page : $this->default_page()); }

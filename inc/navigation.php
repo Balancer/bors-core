@@ -71,13 +71,24 @@ function go_message($message, $params = array())
 	$go			= defval($params, 'go', $_SERVER['REQUEST_URI']);
 	$permanent	= defval($params, 'permanent', false);
 
-	if($error)
+	$type		= defval($params, 'type', NULL);
+	switch($type)
 	{
-		set_session_var('error_message', $message);
-	}
-	else
-	{
-		set_session_var('success_message', $message);
+		case 'success':
+			set_session_var('success_message', $message);
+			break;
+		case 'error':
+			set_session_var('error_message', $message);
+			break;
+		case 'notice':
+			set_session_var('notice_message', $message);
+			break;
+		default:
+			if($error)
+				set_session_var('error_message', $message);
+			else
+				set_session_var('success_message', $message);
+			break;
 	}
 
 	if(($ef = defval($params, 'error_fields')))

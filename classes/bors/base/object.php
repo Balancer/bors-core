@@ -5,13 +5,13 @@ class base_object extends base_empty
 	var $data = array();
 
 	function attr_preset() { return array(
-			'config_class' => config('config_class'),
-			'access_engine' => '',
-			'url_engine' => 'url_calling2',
 	); }
 
 	function properties_preset() { return array(
+			'config_class' => config('config_class'),
 			'title' => $this->class_name(),
+			'access_engine' => '',
+			'url_engine' => 'url_calling2',
 	); }
 
 	var $___loaded = false;
@@ -95,7 +95,7 @@ class base_object extends base_empty
 	function _configure()
 	{
 		foreach($this->properties_preset() as $name => $val)
-			if(!property_exists($this, $name))
+			if(!property_exists($this, $name) && !property_exists($this, "{$name}_ec"))
 				$this->$name = $val;
 
 		foreach($this->attr_preset() as $attr => $val)
@@ -219,10 +219,16 @@ class base_object extends base_empty
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
 				return $this->attr[$method] = object_load($this->$m[1](), $this->$m[2]());
 
-		// Проверяем одноимённые переменные (var $title = 'Сообщения')
-		// Поскольку нет автокодирования, то работает только с utf8!
-		if(property_exists($this, $method) && bors()->server()->is_utf8())
-			return $this->$method;
+		$name = $method;
+
+		// Проверяем одноимённые переменные (var $title = 'Files')
+		if(property_exists($this, $name))
+			return $this->set_attr($name, $this->$name);
+
+		// Проверяем одноимённые переменные, требующие перекодирования (var $title_ec = 'Сообщения')
+		$name_ec = "{$name}_ec";
+		if(property_exists($this, $name_ec))
+			return $this->set_attr($name, ec($this->$name_ec));
 
 		if($this->strict_auto_fields_check())
 			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>at {$this->class_file()}");

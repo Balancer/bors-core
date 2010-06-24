@@ -228,17 +228,17 @@ function part_date($date, $int = false)
 function smart_interval($interval, $parts = 2)
 {
 	$res = array();
-	$res[] = ($x = $interval % 60) ? $x.' секунд'.sklon($x,'а,ы,') : '';
+	$res[] = ($x = $interval % 60) ? $x.ec(' секунд').sklon($x,ec('а,ы,')) : '';
 	$interval = intval($interval/60);
-	$res[] = ($x = $interval % 60) ? $x.' минут'.sklon($x,'а,ы,') : '';
+	$res[] = ($x = $interval % 60) ? $x.ec(' минут').sklon($x,ec('а,ы,')) : '';
 	$interval = intval($interval/60);
-	$res[] = ($x = $interval % 24) ? $x.' час'.sklon($x,',а,ов') : '';
+	$res[] = ($x = $interval % 24) ? $x.ec(' час').sklon($x,ec(',а,ов')) : '';
 	$interval = intval($interval/24);
 
-	$res[] = ($x = $interval % 365) ? $x.' '.sklon($x,'день,дня,дней') : '';
+	$res[] = ($x = $interval % 365) ? $x.' '.sklon($x,ec('день,дня,дней')) : '';
 	$interval = intval($interval/365);
 
-	$res[] = ($x = $interval) ? $x.' '.sklon($x,'год,года,лет') : '';
+	$res[] = ($x = $interval) ? $x.' '.sklon($x, ec('год,года,лет')) : '';
 
 	$res = array_reverse($res);
 

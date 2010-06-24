@@ -43,12 +43,16 @@ class base_empty extends base_null
 					return $this->attr[$name] = object_load($this->$m[1](), $this->$m[2]());
 		}
 
-		// Проверяем одноимённые переменные (var $title = 'Сообщения')
-		// Поскольку нет автокодирования, то работает только с utf8!
-		if(property_exists($this, $name) && bors()->server()->is_utf8() && !$skip_properties)
-			return $this->$name;
+		// Проверяем одноимённые переменные (var $title = 'Files')
+		if(property_exists($this, $name) && !$skip_properties)
+			return $this->set_attr($name, $this->$name);
 
-		return $default;
+		// Проверяем одноимённые переменные, требующие перекодирования (var $title_ec = 'Сообщения')
+		$name_ec = "{$name}_ec";
+		if(property_exists($this, $name_ec) && !$skip_properties)
+			return $this->set_attr($name, ec($this->$name_ec));
+
+		return $this->set_attr($name, $default);
 	}
 
 	function is_set($name, $skip_methods = false, $skip_properties = false)
@@ -80,9 +84,13 @@ class base_empty extends base_null
 					return true;
 		}
 
-		// Проверяем одноимённые переменные (var $title = 'Сообщения')
-		// Поскольку нет автокодирования, то работает только с utf8!
-		if(property_exists($this, $name) && bors()->server()->is_utf8() && !$skip_properties)
+		// Проверяем одноимённые переменные (var $title = 'Files')
+		if(property_exists($this, $name) && !$skip_properties)
+			return true;
+
+		// Проверяем одноимённые переменные, требующие перекодирования (var $title_ec = 'Сообщения')
+		$name_ec = "{$name}_ec";
+		if(property_exists($this, $name_ec) && !$skip_properties)
 			return true;
 
 		return false;
@@ -125,7 +133,7 @@ class base_empty extends base_null
 
 	function __havefc()
 	{
-		$attr = '__'.calling_function_name();
+		$attr = '__cache_'.calling_function_name();
 		array_push($this->__last_cache_stack, $attr);
 		return array_key_exists($attr, $this->attr);
 	}
@@ -140,4 +148,16 @@ class base_empty extends base_null
 	}
 
 	public function __sleep() { return array_keys(get_object_vars($this)); }
+
+/*	Лежит с целью отладки
+	function __set($name, $value)
+	{
+		if($name == 'title' && $value == 'p1990_dealers_admin_files')
+		{
+			echo "Set $name to $value<br/>";
+			echo debug_trace();
+		}
+		return $this->$name = $value;
+	}
+*/
 }

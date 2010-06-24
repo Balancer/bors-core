@@ -64,6 +64,7 @@ class auto_object_php extends base_object
 				$object->set_parents(array(secure_path(dirname($path).'/')), false);
 
 			debug_log_var('target_class_file', $object->class_file());
+			debug_log_var('loader_class_file', $this->class_file());
 		}
 
 		return $this->object = $object;

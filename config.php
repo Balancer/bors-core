@@ -106,6 +106,7 @@ $includes = array(
 
 if(defined('BORS_APPEND'))
 	$includes = array_merge($includes, explode(' ', BORS_APPEND));
+
 if(defined('INCLUDES_APPEND'))
 	$includes = array_merge($includes, explode(' ', INCLUDES_APPEND));
 
@@ -177,6 +178,7 @@ function bors_init()
 function bors_dirs($skip_config = false, $host = NULL)
 {
 	static $dirs = NULL;
+
 	if(isset($dirs[$skip_config]))
 		return $dirs[$skip_config];
 

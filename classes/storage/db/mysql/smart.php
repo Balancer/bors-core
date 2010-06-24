@@ -327,7 +327,7 @@ class storage_db_mysql_smart extends base_null
 
 		foreach($object->fields_map_db() as $db => $tables)
 		{
-			$dbh = &new driver_mysql($db);
+			$dbh = new driver_mysql($db);
 
 			foreach($tables as $table_name => $fields)
 			{

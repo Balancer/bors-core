@@ -21,7 +21,7 @@ class BorsTests
 		return $suite; 
     }
 
-	function bors_class_test($class_name)
+	static function bors_class_test($class_name)
 	{
 //		var_dump(bors_dirs());
 //		echo "Inc $class_name\n";

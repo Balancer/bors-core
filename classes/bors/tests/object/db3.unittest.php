@@ -30,7 +30,7 @@ class bors_tests_object_db3_unittest extends PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		$se = call_user_func(array('bors_tests_object_db3', 'storage_engine'));
+		$se = @call_user_func(array('bors_tests_object_db3', 'storage_engine'));
 		$se = object_load($se);
 		$se->drop_table('bors_tests_object_db3');
 		$se->create_table('bors_tests_object_db3');

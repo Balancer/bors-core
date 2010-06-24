@@ -18,6 +18,6 @@ class bors_tests_object_unittest extends PHPUnit_Framework_TestCase
         $this->assertEquals($object->title(), 'bors_tests_object');
 
 		// Точное имя объекта
-        $this->assertNull($object->title(true));
+        $this->assertNull($object->title_true());
     }
 }

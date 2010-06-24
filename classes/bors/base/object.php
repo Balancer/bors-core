@@ -9,8 +9,8 @@ class base_object extends base_empty
 
 	function properties_preset() { return array(
 			'config_class' => config('config_class'),
-			'title' => $this->class_name(),
 			'access_engine' => '',
+			'title' => $this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
 			'url_engine' => 'url_calling2',
 	); }
 
@@ -308,10 +308,8 @@ class base_object extends base_empty
 		return time();
 	}
 
-	function title($exact = false, $recurse = false)
-	{
-		return $this->get('title', $exact ? @$this->data['title'] : $this->class_name(), true, $exact);
-	}
+	/** Истинный заголовок объекта. Метод или параметр объекта. */
+	function title_true() { return method_exists($this, 'title') ? $this->title() : @$this->data['title']; }
 
 	function set_title($new_title, $db_update) { return $this->set('title', $new_title, $db_update); }
 
@@ -763,16 +761,8 @@ class base_object extends base_empty
 		return parent::__sleep();
 	}
 
-	function fields_map($table = false)
-	{
-		if($table)
-		{
-			$fields = $this->main_table_fields();
-			return $fields[$table];
-		}
-
-		return $this->main_table_fields();
-	}
+	/** Вернуть карту полей объекта для главной таблицы (если их несколько) */
+	function fields_map() { return $this->main_table_fields(); }
 
 	function main_table_fields() { return array('id'); }
 

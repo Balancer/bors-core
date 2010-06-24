@@ -14,7 +14,7 @@ class bors_markup_markdown extends base_object
 	function set_source($source, $update)
 	{
 		parent::set_source($source, $update);
-//		if(!$this->title(true))
+//		if(!$this->title_true())
 		{
 			list($title, $text) = self::title_text_extract($source);
 			if($title)

@@ -119,7 +119,7 @@ class base_page extends base_object
 		if(!$this->cache_life_time())
 			return $this->cacheable_body();
 
-		$ch = &new Cache();
+		$ch = new Cache();
 
 		$drop_cache = $this->cache_life_time() || !empty($_GET['drop_cache']);
 

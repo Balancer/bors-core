@@ -3,7 +3,7 @@
 class auto_object_php extends base_object
 {
 	function init() { }
-	function loaded() { return is_object($this->object()); }
+	function loaded() { return $this->object(); }
 	function can_be_empty() { return false; }
 	function nav_name() { return $this->object()->nav_name(); }
 
@@ -56,6 +56,8 @@ class auto_object_php extends base_object
 		if($object)
 		{
 			$object->set_page($page);
+			$object->_set_arg('page', $page);
+
 			$object->set_called_url($this->id());
 			bors()->set_main_object($object);
 			if(!$object->parents(true))

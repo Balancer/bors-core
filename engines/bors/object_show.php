@@ -5,9 +5,8 @@
 	// Иначе - строку с результатом для вывода.
 	function bors_object_show($obj)
 	{
-		$page = $obj->set_page($obj->args('page'));
+		$page = $obj->set_page($obj->arg('page'));
 
-//		if(debug_is_balancer()) { echo "Bors class=".get_class($obj); exit('>'.time()); }
 		if(!$obj)
 			return false;
 

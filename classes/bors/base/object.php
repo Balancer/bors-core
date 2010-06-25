@@ -321,11 +321,10 @@ class base_object extends base_empty
 
 	function nav_name()
 	{
-		return @$this->data['nav_name'] ? 
-			$this->data['nav_name'] 
-			: $this->get('nav_name_lower', config('nav_name_lower')) ? 
-				bors_lower($this->title()) 
-				: $this->title();
+		if(($nav_name = $this->get('nav_name', NULL, true)))
+			return $nav_name;
+
+		return  $this->get('nav_name_lower', config('nav_name_lower')) ? bors_lower($this->title()) : $this->title();
 	}
 
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }

@@ -1,4 +1,5 @@
 <?php
+
 function smarty_block_form($params, $content, &$smarty)
 {
 	extract($params);
@@ -144,6 +145,9 @@ function smarty_block_form($params, $content, &$smarty)
 
 	if(!empty($act))
 		echo "<input type=\"hidden\" name=\"act\" value=\"$act\" />\n";
+
+	if(!empty($_GET['inframe']))
+		echo "<input type=\"hidden\" name=\"inframe\" value=\"yes\" />\n";
 
 	if(!empty($subaction))
 		echo "<input type=\"hidden\" name=\"subaction\" value=\"$subaction\" />\n";

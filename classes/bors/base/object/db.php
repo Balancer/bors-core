@@ -4,6 +4,8 @@ require_once('inc/bors/cross.php');
 
 class base_object_db extends base_object
 {
+	function can_cached() { return false; } //TODO: пока не разберусь, откуда глюки сохранения memcache
+
 	function storage_engine() { return 'storage_db_mysql_smart'; }
 	function db_driver() { return 'driver_mysql'; }
 	function can_be_empty() { return false; }

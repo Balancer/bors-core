@@ -8,7 +8,7 @@
 
 function bors_form_save(&$obj)
 {
-	if(($post_js = $_GET['javascript_post_append']))
+	if(($post_js = @$_GET['javascript_post_append']))
 		session_array_append('javascript_post_append', $post_js);
 
 	if(!empty($_GET['act']))

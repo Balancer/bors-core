@@ -50,7 +50,8 @@ class cache_static extends base_object_db
 			@unlink($object->static_file());
 	}
 
-	static function save($object, $content, $expire_time = false)
+	//TODO: можно делать static, если static будет у родителя. Или переименовать.
+	function save($object, $content, $expire_time = false)
 	{
 //		echo "Save static $object<Br/>";
 		$object_id = $object->id();

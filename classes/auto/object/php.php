@@ -15,11 +15,11 @@ class auto_object_php extends base_object
 		return parent::access();
 	}
 
-	private $object = false;
+	private $_object = false;
 	function object()
 	{
-		if($this->object !== false)
-			return $this->object;
+		if($this->_object !== false)
+			return $this->_object;
 
 		$data = url_parse($this->id());
 		$path = $data['path'];
@@ -67,7 +67,7 @@ class auto_object_php extends base_object
 			debug_log_var('loader_class_file', $this->class_file());
 		}
 
-		return $this->object = $object;
+		return $this->_object = $object;
 	}
 
 	function content() { return $this->object()->content(); }

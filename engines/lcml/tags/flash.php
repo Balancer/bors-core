@@ -71,5 +71,5 @@
 	function lt_html_img($params)
 	{
 		$params['src'] = preg_replace("!javascript!", "жабаскрипт", $params['src']);
-		return "<img ".make_enabled_params($params, 'src align style width height')." />";
+		return "<img ".make_enabled_params($params, 'src align style width height title')." />";
 	}

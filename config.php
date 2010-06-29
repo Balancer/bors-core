@@ -18,17 +18,35 @@ if(!defined('BORS_EXT'))
 if(!defined('BORS_3RD_PARTY'))
 	define('BORS_3RD_PARTY', dirname(BORS_CORE).'/bors-third-party');
 
-function defval(&$data, $name, $default=NULL, $set = false)
+/**
+ * Извлекает поле $name из массива $data, если оно есть.
+ * В противном случае возвращает $default. 
+ * Если установлено $must_be_set, то при отсутствии
+ * соответствующего элемента массива он создаётся в нём.
+ * @param array $data 
+ * @param string $name
+ * @param mixed $default
+ * @param bool $must_be_set
+ * @return mixed
+ */
+function defval(&$data, $name, $default=NULL, $must_be_set = false)
 {
 	if($data && array_key_exists($name, $data))
 		return $data[$name];
 
-	if($set)
+	if($must_be_set)
 		$data[$name] = $default;
 
 	return $default;
 }
 
+/**
+ * Аналогично defval(), но удаляет из массива данных извлечённое значение
+ * @param array $data
+ * @param string $name
+ * @param mixed $default
+ * @return mixed
+ */
 function popval(&$data, $name, $default=NULL)
 {
 	if(!$data || !array_key_exists($name, $data))
@@ -39,6 +57,13 @@ function popval(&$data, $name, $default=NULL)
 	return $ret;
 }
 
+/**
+ * Аналогично defval(), но читается только непустое значение.
+ * @param array $data
+ * @param string $name
+ * @param mixed $default
+ * @return mixed
+ */
 function defval_ne(&$data, $name, $default=NULL)
 {
 	if(!empty($data[$name]))
@@ -144,6 +169,9 @@ else
 
 $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
 
+/**
+ * Инициализация ядра системы
+*/
 function bors_init()
 {
 	if(config('internal_charset'))

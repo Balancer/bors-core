@@ -3,6 +3,9 @@
 
  * [Структура каталогов](structure/)
  * [Сторонние расширения](3rd-party/)
+ * [Связь с внешними ресурсами](connect/)
 
  * [Официальный сайт проекта](http://bors.balancer.ru/)
  * [Форум поддержки](http://balancer.ru/support/viewforum.php?id=60)
+
+ * [Закладки](bookmarks/)

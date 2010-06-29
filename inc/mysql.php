@@ -132,7 +132,12 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 	}
 
 	if(!$field)
+	{
+		if(!$property)
+			return $class->table_name();
+
 		return $property;
+	}
 
 	if(is_array($field))
 	{

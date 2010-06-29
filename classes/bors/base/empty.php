@@ -55,6 +55,44 @@ class base_empty extends base_null
 		return $this->set_attr($name, $default);
 	}
 
+	function get_data($name, $default = NULL)
+	{
+		if(array_key_exists($name, $this->attr))
+			return $this->attr[$name];
+
+		if(@array_key_exists($name, $this->data))
+			return $this->data[$name];
+
+		// Проверяем автоматические объекты.
+		if(method_exists($this, 'auto_objects'))
+		{
+			$auto_objs = $this->auto_objects();
+			if(($f = @$auto_objs[$name]))
+				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+					return $this->attr[$name] = object_load($m[1], $this->$m[2]());
+		}
+
+		// Автоматические целевые объекты (имя класса задаётся)
+		if(method_exists($this, 'auto_targets'))
+		{
+			$auto_targs = $this->auto_targets();
+			if(($f = @$auto_targs[$name]))
+				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+					return $this->attr[$name] = object_load($this->$m[1](), $this->$m[2]());
+		}
+
+		// Проверяем одноимённые переменные (var $title = 'Files')
+		if(property_exists($this, $name))
+			return $this->set_attr($name, $this->$name);
+
+		// Проверяем одноимённые переменные, требующие перекодирования (var $title_ec = 'Сообщения')
+		$name_ec = "{$name}_ec";
+		if(property_exists($this, $name_ec))
+			return $this->set_attr($name, ec($this->$name_ec));
+
+		return $this->set_attr($name, $default);
+	}
+
 	function is_set($name, $skip_methods = false, $skip_properties = false)
 	{
 		if(method_exists($this, $name) && !$skip_methods)

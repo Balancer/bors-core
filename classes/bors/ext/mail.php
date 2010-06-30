@@ -29,13 +29,13 @@ class bors_ext_mail extends bors_empty
 
 			if(is_array($mail))
 			{
-				$title = $mail[1];
-				$mail  = $mail[2];
+				$title = $mail[0];
+				$mail  = $mail[1];
 			}
 
 			$text = $mail;
-			if(bors_markup_markdown::title_extract($text))
-				$mail = bors_markup_markdown::factory($text);
+
+			$mail = bors_markup_markdown::factory($text);
 
 			if($title)
 				$mail->set_title($title, false);

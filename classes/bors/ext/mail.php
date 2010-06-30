@@ -16,6 +16,8 @@ class bors_ext_mail extends bors_empty
 
 		Если $mail - текст, то он считается текстом в автоматически пределяемой разметке:
 			- Если первые две строки - заголовок в markdown-разметке, то markdown
+
+		Если $mail - массив, то он считается массивом вида ($subject, $text)
 	*/
 	static function send($user, $mail, $from = NULL)
 	{
@@ -23,9 +25,20 @@ class bors_ext_mail extends bors_empty
 
 		if(!is_object($mail))
 		{
+			$title = NULL;
+
+			if(is_array($mail))
+			{
+				$title = $mail[1];
+				$mail  = $mail[2];
+			}
+
 			$text = $mail;
 			if(bors_markup_markdown::title_extract($text))
 				$mail = bors_markup_markdown::factory($text);
+
+			if($title)
+				$mail->set_title($title, false);
 
 			//TODO: ввести другие виды разметки
 		}

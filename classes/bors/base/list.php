@@ -28,4 +28,13 @@ class base_list extends base_empty
 
 	function zero_item() { return ec('Выберите:'); }
 	function named_list_zero() { return array_merge(array(0 => $this->zero_item()), $this->named_list()); }
+
+	static function make($class_name, $where = array())
+	{
+		$list = array(0 => '');
+		foreach(objects_array($class_name, $where) as $x)
+			$list[$x->id()] = $x->title();
+
+		return $list;
+	}
 }

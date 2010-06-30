@@ -76,10 +76,28 @@ function smarty_block_form($params, $content, &$smarty)
 		{
 			echo "<table class=\"btab\">";
 			$labels = array();
-			foreach(explode(',', $fields) as $f)
+			if(!is_array($fields))
+				$fields = explode(',', $fields);
+			foreach($fields as $f)
 			{
-				$type  = call_user_func(array($form, '__field_type' ), $f);
-				$title = call_user_func(array($form, '__field_title'), $f);
+				if(!is_array($f))
+				{
+					$type  = call_user_func(array($form, '__field_type' ), $f);
+					$title = call_user_func(array($form, '__field_title'), $f);
+				}
+				else
+				{
+					$type = $f['type'];
+					$title = $f['title'];
+					if(!empty($f['class']))
+					{
+						$type = 'dropdown';
+						$class = $f['class'];
+					}
+
+					$f = $f['name'];
+				}
+
 				if(!$title)
 					$title = $f;
 
@@ -91,6 +109,7 @@ function smarty_block_form($params, $content, &$smarty)
 					'value'=>$form->$f(),
 					'class' => 'w100p',
 				);
+
 				switch($type)
 				{
 					case 'string':
@@ -103,6 +122,12 @@ function smarty_block_form($params, $content, &$smarty)
 						break;
 					case '3state':
 						$data['list'] = ec('array("NULL"=>"", 1=>"Да", 0=>"Нет");');
+						$data['is_int'] = true;
+						require_once('function.dropdown.php');
+						smarty_function_dropdown($data, $smarty);
+						break;
+					case 'dropdown':
+						$data['list'] = base_list::make($class);
 						$data['is_int'] = true;
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);

@@ -62,11 +62,15 @@ class bors_admin_edit_smart extends base_page
 			$fields[$field_title] = array('origin' => $x, 'type' => $type, 'args' => $args);
 		}
 
+		$fields = bors_lib_orm::all_fields($this->object());
+//		var_dump($fields);
+
 		return array(
 			'object' => $this->object(),
-			'fields' => $fields,
+//			'fields' => $fields,
 //			'fields' => $this->fields_map_db(),
 			'referer' => ($ref = bors()->referer()) ? $ref : 'newpage_admin',
+			'auto_fields' => $fields,
 		);
 	}
 

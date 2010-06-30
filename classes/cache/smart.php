@@ -96,7 +96,7 @@ class cache_smart extends cache_base
 
 		if($time_to_expire > 0 && $do_time > 0.02)
 		{
-			$dbh = &new driver_mysql(config('cache_database'));
+			$dbh = new driver_mysql(config('cache_database'));
     		$dbh->replace('cache', array(
 				'int hmd'	=> $this->last_hmd,
 				'int type'	=> $this->last_type,

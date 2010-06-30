@@ -30,4 +30,18 @@ class bors_lib_orm
 
 		return $field;
 	}
+
+	static function all_fields($object, $only_editable = true)
+	{
+		$fields_array = array();
+		foreach($object->fields() as $db => $tables)
+			foreach($tables as $table => $fields)
+				foreach($fields as $property => $field)
+				{
+					$field = self::field($property, $field);
+					if($field['name'] != 'id')
+						$fields_array[] = $field;
+				}
+		return $fields_array;
+	}
 }

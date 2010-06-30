@@ -1,4 +1,4 @@
-{form action=$this->url() class=$object->class_name() id=$object->id()}
+{form action=$this->url() class=$object->class_name() id=$object->id() fields=$auto_fields}
 <table class="btab w100p">
 {foreach from=$fields key="title" item="x"}
 {assign var="desc" value=$x.origin}

@@ -28,7 +28,7 @@ class bors_admin_append_child extends base_page
 
 	function local_data()
 	{
-		templates_noindex();
+		template_noindex();
 
 		$base = $this->object()->url();
 		$idx = 1;

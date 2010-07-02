@@ -2,6 +2,7 @@
 
 bors_url_map(array(
 	'(/_bors/admin)(/.*) => include(bors_admin)',
+	'(/_bors/tools)(/.*) => include(bors_tools)',
 ));
 
 $map = array(

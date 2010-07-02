@@ -19,7 +19,7 @@ class bors_admin_append_new extends base_page
 
 	function local_data()
 	{
-		templates_noindex();
+		template_noindex();
 
 		return array(
 			'new_url' => $this->id(),

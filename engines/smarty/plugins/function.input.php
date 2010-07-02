@@ -29,17 +29,31 @@ function smarty_function_input($params, &$smarty)
 		if(!empty($do_not_show_zero) && $value == 0)
 			$value = '';
 
+		$class = empty($class) ? array() : explode(' ', $class);
+
 		if(in_array($name, explode(',', session_var('error_fields'))))
+			$class[] = "error";
+
+		// Если у нас используется валидация данных формы
+		if($smarty->get_template_vars('ajax_validate'))
 		{
-			if(empty($class))
-				$class = "error";
-			else
-				$class .= " error";
+			if(empty($id))
+			{
+				static $input_id = 0;
+				$id = 'input_id_'.($input_id++);
+			}
+
+			if(!empty($ajax_validator))
+				$class[] = 'validate['.$ajax_validator.']';
 		}
+
+//		class="validate[required,custom[noSpecialCaracters],length[5,20]]"
+
+		$class = join(' ', $class);
 
 		echo "<input type=\"text\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
 
-		foreach(explode(' ', 'class style maxlength size') as $p)
+		foreach(explode(' ', 'class id maxlength size style') as $p)
 			if(!empty($$p))
 				echo " $p=\"{$$p}\"";
 

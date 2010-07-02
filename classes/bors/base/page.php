@@ -288,7 +288,10 @@ class base_page extends base_object
 
 	function merge_template_data_array($key, $merge_values)
 	{
-		$this->add_template_data($key, @array_merge($this->template_data($key), $merge_values));
+		$prev = self::template_data($key);
+		if(!$prev)
+			$prev = array();
+		self::add_template_data($key, array_merge($prev, $merge_values));
 	}
 
 	function keywords_linked() { return ''; }

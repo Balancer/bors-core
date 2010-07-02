@@ -1,3 +1,12 @@
+big { font-size: 120%; }
+big.extra { font-size: 200%; }
+
+.big20 { font-size: 20pt; }
+
+form.big { margin: 20px; }
+form.big label { font-size: 20pt; }
+form.big input { font-size: 20pt; }
+
 .w100p { width: 98%; }
 .right { text-align: right; }
 small, .small { font-size: 0.8em !important; }

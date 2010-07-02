@@ -1,17 +1,22 @@
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-{$text}
+<br/>
+<br/>
+<big class="big20">{$text}</big>
 <br />
 <br />
 <br />
 <center>
-<a href="{$link_url|htmlspecialchars}">{$link_text}</a>
-</center>
 
 {if $login_form}
-<form method="post" action="/users/do-login">
-	<input type="hidden" name="redirect_url" value="{$login_referer}" />
-	<label class="conl"><strong>Имя</strong><br /><input type="text" name="req_username" size="16" maxlength="25" tabindex="1" /><br /></label>
-	<label class="conl"><strong>Пароль</strong><br /><input type="password" name="req_password" size="16" maxlength="16" tabindex="2" /><br /></label>
-	<p><input type="submit" name="login" value="Зайти" tabindex="3" /></p>
+<form method="post" action="/users/do-login" class="big">
+<table class="null big20">
+<tr><td>Имя:&nbsp;</td><td><input name="req_username" size="16" maxlength="25" tabindex="1" /></td></tr>
+<tr><td>Пароль:&nbsp;</td><td><input type="password" name="req_password" size="16" maxlength="16" tabindex="2" /></td></tr>
+<tr><td></td><td><input type="submit" name="login" value="Зайти" tabindex="3" /></td></tr>
+</table>
+<input type="hidden" name="redirect_url" value="{$login_referer}" />
 </form>
 {/if}
+
+<a href="{$link_url|htmlspecialchars}">{$link_text}</a>
+</center>

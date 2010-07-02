@@ -17,6 +17,8 @@ class bors_lib_orm
 		elseif(empty($field['name']))
 			$field['name'] = $property;
 
+		$field['property'] = $property;
+
 		if(preg_match('/^\w+_id$/', $property) || $property == 'id')
 			$field['type'] = 'int';
 		elseif(preg_match('/^is_\w+$/', $property))
@@ -42,6 +44,20 @@ class bors_lib_orm
 					if($field['name'] != 'id')
 						$fields_array[] = $field;
 				}
+		return $fields_array;
+	}
+
+	static function all_field_names($object)
+	{
+		$fields_array = array();
+		foreach($object->fields() as $db => $tables)
+			foreach($tables as $table => $fields)
+				foreach($fields as $property => $field)
+				{
+					$f = self::field($property, $field);
+					$fields_array[$f['property']] = $f['name'];
+				}
+
 		return $fields_array;
 	}
 }

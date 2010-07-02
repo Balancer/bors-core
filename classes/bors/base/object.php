@@ -199,13 +199,13 @@ class base_object extends base_empty
 		if(preg_match('!^set_(\w+)$!', $method, $match))
 			return $this->set($match[1], $params[0], $params[1]);
 
-		// Проверяем нет ли уже загруженного значения данных объекта
-		if(array_key_exists($method, $this->data))
-			return $this->data[$method];
-
 		// Проверяем нет ли уже загруженного значения атрибута (временных несохраняемых данных) объекта
 		if(array_key_exists($method, $this->attr))
 			return $this->attr[$method];
+
+		// Проверяем нет ли уже загруженного значения данных объекта
+		if(array_key_exists($method, $this->data))
+			return $this->data[$method];
 
 		// Проверяем автоматические объекты.
 		$auto_objs = $this->auto_objects();
@@ -265,12 +265,9 @@ class base_object extends base_empty
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();
 
-//			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
-//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
-
 			//TODO: продумать систему контроля типов.
-//			if(@$this->$field_name == $value && @$this->$field_name !== NULL && $value !== NULL)
-//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->$field_name).'; new type: '.gettype($value));
+			if(@$this->data[$field] == $value && @$this->data[$field] !== NULL && $value !== NULL)
+				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$field]).'; new type: '.gettype($value));
 
 			$this->changed_fields[$field] = true;
 			bors()->add_changed_object($this);
@@ -280,6 +277,7 @@ class base_object extends base_empty
 	}
 
 	function have_data() { return !empty($this->data); }
+	function has_changed() { return !empty($this->changed_fields); }
 
 	function render_engine() { return config('render_engine', false); }
 

@@ -3,7 +3,7 @@
 class bors_tools_search extends base_page
 {
 	function class_file() { return __FILE__; } // не удалять, шаблон в субклассах.
-	function template() { templates_noindex(); return 'forum/_header.html'; }
+	function template() { template_noindex(); return 'forum/_header.html'; }
 	
 	function parents()
 	{

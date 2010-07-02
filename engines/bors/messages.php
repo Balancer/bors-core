@@ -15,7 +15,7 @@ function bors_message($text, $params=array())
 	$title = defval($params, 'title', ec('Ошибка!'));
 	$nav_name = defval($params, 'nav_name', $title);
 	$timeout = defval($params, 'timeout', -1);
-	$template = defval($params, 'template', config('default_template'));
+	$template = defval($params, 'template', config('default_message_template', config('default_template')));
 
 	if(!$redir)
 	{
@@ -48,8 +48,38 @@ function bors_message($text, $params=array())
 
 	$data['debug_trace'] = debug_trace(0, false);
 
+	$body_template = "xfile:messages.html";
+	if(!empty($params['choises']))
+	{
+		$choises = array();
+		foreach($params['choises'] as $title => $target)
+		{
+			$c = array(
+				'title' => $title,
+				'target' => $target,
+			);
+			if(preg_match('/^\w+$/', $target))
+			{
+				$c['act'] = $target;
+				$c['class'] = $params['this']->class_name();
+				$c['go'] = $params['this']->url();
+			}
+			else
+			{
+				$c['act'] = '__go';
+				$c['class'] = 'NULL';
+				$c['go'] = $target;
+			}
+
+			$choises[] = $c;
+		}
+
+		$body_template = "xfile:messages-confirm.html";
+		$data['choises'] = $choises;
+	}
+
 	require_once('engines/smarty/assign.php');
-	$body = template_assign_data("xfile:messages.html", $data);
+	$body = template_assign_data($body_template, $data);
 
 	$data['url_engine'] = 'url_calling';
 

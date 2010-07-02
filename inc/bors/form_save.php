@@ -214,10 +214,10 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if($first)
 		$object->pre_set($data);
 
-	if(!$object->set_fields($data, true))
+	if(!$object->set_fields(array_intersect_key($data, bors_lib_orm::all_field_names($object, false)), true))
 		return true;
 
-	if($last)
+	if($last && $object->has_changed())
 	{
 		$object->set_modify_time(time(), true);
 		$object->set_last_editor_id(bors()->user_id(), true);
@@ -245,8 +245,9 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 //	bors()->changed_save();
 
-//TODO: разобраться, чтобы не спамило. Больше не спамит? Проверено на РПД/admin/users/56/
-	add_session_message(ec('Данные успешно сохранены')/*.print_r(bors()->changed_objects(), true)*/, array('type' => 'success'));
+	if($object->has_changed())
+		add_session_message(ec('Данные успешно сохранены')/*.print_r(bors()->changed_objects(), true)*/, array('type' => 'success'));
+
 //	echo session_message(array('type' => 'success'));
 //	exit( '?');
 

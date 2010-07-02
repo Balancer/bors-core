@@ -6,7 +6,7 @@ class bors_admin_edit_page extends bors_admin_base_page
 
 	function local_data()
 	{
-		templates_noindex();
+		template_noindex();
 
 		return array(
 			'object' => $this->object(),

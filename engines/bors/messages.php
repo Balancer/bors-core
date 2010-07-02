@@ -44,7 +44,7 @@ function bors_message($text, $params=array())
 		$data[$key] = @$params[$key];
 
 	if(empty($data['this']))
-		$data['this'] = new base_page(NULL);
+		$data['this'] = object_load('base_page', NULL);
 
 	$data['debug_trace'] = debug_trace(0, false);
 

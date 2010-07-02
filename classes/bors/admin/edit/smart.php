@@ -36,7 +36,7 @@ class bors_admin_edit_smart extends base_page
 
 	function local_data()
 	{
-		templates_noindex();
+		template_noindex();
 
 		$fields = array();
 		$args = array();

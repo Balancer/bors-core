@@ -125,7 +125,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 	function recalculate($db_update)
 	{
-//		debug_hidden_log('recalculate', "$this:\n".print_r($this->data, true));
+//		debug_hidden_log('recalculate', "$this:\nurl={$this->url()}\n".print_r($this->data, true));
 		$x = @getimagesize($this->url());
 		if(!$x)
 			$x = @getimagesize($this->file_name_with_path());

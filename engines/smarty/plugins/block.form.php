@@ -46,8 +46,23 @@ function smarty_block_form($params, $content, &$smarty)
 			$uri = $form->id();
 	}
 
+/*****************************************************************************************/
 	if($content == NULL) // Открытие формы
 	{
+
+		if(!empty($ajax_validate))
+		{
+			$form_id = 'form_'.md5(rand());
+
+			template_jquery();
+			template_jquery_plugin_css('formvalidator/css/validationEngine.jquery.css');
+			template_jquery_plugin('formvalidator/js/jquery.validationEngine-ru.js');
+			template_jquery_plugin('formvalidator/js/jquery.validationEngine.js');
+			template_js("jQuery(document).ready(function() { jQuery('#{$form_id}').validationEngine()})");
+
+			$smarty->assign('ajax_validate', $ajax_validate);
+		}
+
 		$class = @$css_class;
 
 		if(empty($method))
@@ -67,6 +82,9 @@ function smarty_block_form($params, $content, &$smarty)
 		foreach(explode(' ', 'action method name class style enctype onclick onsubmit target') as $p)
 			if(!empty($$p) && ($p != 'name' || $$p != 'NULL'))
 				echo " $p=\"{$$p}\"";
+
+		if(!empty($form_id))
+			echo " id=\"$form_id\"";
 
 		echo ">\n";
 

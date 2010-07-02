@@ -22,11 +22,10 @@ class bors_admin_edit_synonyms extends bors_admin_edit
 		);
 	}
 
-	function global_data()
+	function pre_show()
 	{
-		return array_merge(parent::global_data(), array(
-			'use_jQuery' => true,
-		));
+		template_jquery();
+		return parent::pre_show();
 	}
 
 	function on_action_add($data)

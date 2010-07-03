@@ -45,7 +45,7 @@ class bors_ext_mail extends bors_empty
 
 		send_mail(
 			self::make_recipient($user),
-			$mail->title() . ' ' . date('r'),
+			$mail->title(),
 			$mail->text(),
 			$mail->get('html'),
 			self::make_recipient($from),

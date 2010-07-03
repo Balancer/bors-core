@@ -34,7 +34,19 @@ class bors_markup_markdown extends base_object
 		return array(NULL, $text);
 	}
 
-	function html() { return self::parse($this->text()); }
+	function text()
+	{
+		$text = parent::text();
+		$text = preg_replace('/<(http:.+?)>/', '$1', $text);
+		return $text;
+	}
+
+	function html()
+	{
+		list($title, $text) = self::title_text_extract($this->source());
+
+		return self::parse($text);
+	}
 
 	static function parse($text)
 	{

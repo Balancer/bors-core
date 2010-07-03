@@ -266,8 +266,9 @@ class base_object extends base_empty
 				$this->__mutex_lock();
 
 			//TODO: продумать систему контроля типов.
-			if(@$this->data[$field] == $value && @$this->data[$field] !== NULL && $value !== NULL)
-				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$field]).'; new type: '.gettype($value));
+			//FIXME: чёрт, тут нельзя вызывать всяких user, пока в них лезут ошибки типов. Исправить и проверить все основные проекты.
+//			if(@$this->data[$field] == $value && @$this->data[$field] !== NULL && $value !== NULL)
+//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$field]).'; new type: '.gettype($value));
 
 			$this->changed_fields[$field] = true;
 			bors()->add_changed_object($this);

@@ -11,6 +11,9 @@ class bors_data_file extends bors_object
 	// Читаем содержимое файла из одного из data-каталогов в bors_dirs()
 	static function read($file)
 	{
+		if(file_exists($file) && is_readable($file))
+			return file_get_contents($file);
+
 		foreach(bors_dirs() as $dir)
 			if(file_exists($fn = $dir.'/data/'.$file) && is_readable($fn))
 				return file_get_contents($fn);

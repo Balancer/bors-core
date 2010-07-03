@@ -83,7 +83,8 @@ function do_php($code)
 
 function template_jquery_ui_tabs($id)
 {
-	template_css(array('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css'));
+//	template_css(array('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css'));
+	template_css(array('/_bors3rdp/jquery/jquery-ui.css'));
 	template_jquery();
 	template_js_include('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js');
 

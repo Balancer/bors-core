@@ -52,16 +52,16 @@ class base_empty extends base_null
 		if(property_exists($this, $name_ec) && !$skip_properties)
 			return $this->set_attr($name, ec($this->$name_ec));
 
-		return $this->set_attr($name, $default);
+		return $default;
 	}
 
-	function get_data($name, $default = NULL)
+	function get_data($name, $default = NULL, $auto_set = false)
 	{
-		if(array_key_exists($name, $this->attr))
-			return $this->attr[$name];
-
 		if(@array_key_exists($name, $this->data))
 			return $this->data[$name];
+
+		if(array_key_exists($name, $this->attr))
+			return $this->attr[$name];
 
 		// Проверяем автоматические объекты.
 		if(method_exists($this, 'auto_objects'))
@@ -90,7 +90,7 @@ class base_empty extends base_null
 		if(property_exists($this, $name_ec))
 			return $this->set_attr($name, ec($this->$name_ec));
 
-		return $this->set_attr($name, $default);
+		return $auto_set ? $this->set_attr($name, $default) : $default;
 	}
 
 	function is_set($name, $skip_methods = false, $skip_properties = false)

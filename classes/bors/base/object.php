@@ -260,7 +260,7 @@ class base_object extends base_empty
 
 	function set($field, $value, $db_update)
 	{
-		if($db_update && @$this->data[$field] !== $value)
+		if($db_update && @$this->data[$field] != $value) // TODO: если без контроля типов, то !=, иначе - !==
 		{
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();

@@ -9,8 +9,8 @@ foreach($links as $linkline)
 		else
 			echo $delim;
 
-		echo "<a href=\"{$obj->url()}\" title=\"".htmlspecialchars($obj->title())."\"";
-		if($nav_obj->url() == $obj->url())
+		echo "<a href=\"{$obj->url(1)}\" title=\"".htmlspecialchars($obj->title())."\"";
+		if($nav_obj->url(1) == $obj->url(1))
 			echo " class=\"nav_top_current\"";
 		echo ">{$obj->nav_name()}</a>";
 	}

@@ -1,7 +1,7 @@
 {foreach from=$links item=linkline}
 {foreach from=$linkline item=obj name=loop}
 {if not $smarty.foreach.loop.first}{$delim}{/if}
-<a href="{$obj->url()}" title="{$obj->title()|htmlspecialchars}"{if $nav_obj->url() == $obj->url()} class="nav_top_current"{/if}>{$obj->nav_name()}</a>
+<a href="{$obj->url(1)}" title="{$obj->title()|htmlspecialchars}"{if $nav_obj->url(1) == $obj->url(1)} class="nav_top_current"{/if}>{$obj->nav_name()}</a>
 {/foreach}
 <br />
 {/foreach}

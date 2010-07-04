@@ -32,6 +32,16 @@ function get_browser_info($user_agent)
 		$os = 'OS/2';
 	elseif(preg_match('!J2ME!', $user_agent))
 		$os = 'J2ME';
+	elseif(preg_match('!Tablet PC 1.7!', $user_agent))
+	{
+		$os = 'Windows';
+		$ov = 'XP Tablet PC Edition 2005';
+	}
+	elseif(preg_match('!Windows NT 6.1!', $user_agent))
+	{
+		$os = 'Windows';
+		$ov = 'Seven';
+	}
 	elseif(preg_match('!Windows NT 6.0!', $user_agent))
 	{
 		$os = 'Windows';

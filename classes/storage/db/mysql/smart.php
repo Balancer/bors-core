@@ -247,6 +247,7 @@ class storage_db_mysql_smart extends base_null
 					$q = $m[1].$m[3];
 				}
 
+//				echo 'SELECT '.join(',', $select).' '.$q;
 				$dbh->query('SELECT '.join(',', $select).' '.$q, false);
 			}
 
@@ -256,6 +257,7 @@ class storage_db_mysql_smart extends base_null
 //				print_d($row);
 				foreach($row as $name => $value)
 				{
+//					echo "row: $name => $value<br/>";
 					if($pos = strpos($name, '|'))
 					{
 						list($name, $fn) = explode('|', $name);
@@ -454,6 +456,7 @@ class storage_db_mysql_smart extends base_null
 			foreach($tables as $table_name => $fields)
 			{
 //				echo "Table: $table_name<br />\n";
+
 				if(preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m))
 				{
 					$table_name	= $m[1];
@@ -543,6 +546,7 @@ class storage_db_mysql_smart extends base_null
 				else
 					$dbh->insert_ignore($table_name, $tab_data);
 
+
 				if(empty($oid))
 					$object->set_id($oid = $dbh->last_id());
 			}
@@ -628,6 +632,7 @@ class storage_db_mysql_smart extends base_null
 //		$db->close();
 			}
 		}
+
 	}
 
 	static function drop_table($class_name)

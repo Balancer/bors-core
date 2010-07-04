@@ -116,6 +116,7 @@ class base_page extends base_object
 			return error_message(ec("У Вас недостаточный уровень доступа для этой страницы. Ваш уровень ").$me->get("level").ec(", требуется ").$this->need_access_level());
 		}
 
+
 		if(!$this->cache_life_time())
 			return $this->cacheable_body();
 
@@ -172,7 +173,8 @@ class base_page extends base_object
 		$this->template_data_fill();
 		require_once('engines/smarty/assign.php');
 		$data['compile_id'] = $this->class_name();
-		return template_assign_data($this->body_template(), $data);
+		$result = template_assign_data($this->body_template(), $data);
+		return $result;
 	}
 
 	function compiled_source() { return lcml($this->source()); }

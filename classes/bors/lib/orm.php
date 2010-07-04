@@ -50,6 +50,11 @@ class bors_lib_orm
 	static function all_field_names($object)
 	{
 		$fields_array = array();
+
+		foreach(get_class_methods($object->class_name()) as $name)
+			if(preg_match('/^set_(\w+)$/', $name, $m))
+				$fields_array[$m[1]] = $m[1];
+
 		foreach($object->fields() as $db => $tables)
 			foreach($tables as $table => $fields)
 				foreach($fields as $property => $field)

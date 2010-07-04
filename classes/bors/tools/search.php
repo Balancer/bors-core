@@ -4,7 +4,7 @@ class bors_tools_search extends base_page
 {
 	function class_file() { return __FILE__; } // не удалять, шаблон в субклассах.
 	function template() { template_noindex(); return 'forum/_header.html'; }
-	
+
 	function parents()
 	{
 		if(empty($_GET['t']))
@@ -12,7 +12,7 @@ class bors_tools_search extends base_page
 		else
 			return array(object_load('forum_topic', $_GET['t']));
 	}
-	
+
 	function title() { return ec('Поиск по форуму'); }
 	function nav_name() { return ec('поиск'); }
 	function total_items() { return 0; }

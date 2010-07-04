@@ -32,7 +32,10 @@
 <table class="btab w100p">
 <tr><th>Тема</th><th>Автор</th><th>Форум</th><th>Создано</th><th>Обновлено</th></tr>
 {foreach from=$topics item="t"}
-<tr><td>{$t->titled_url()}</td>
+<tr><td><b>{$t->titled_url()}</b>{if $t->get('description') or $t->get('keywords_string')}<small>
+	{if $t->get('description')}<br/>{$t->get('description')}{/if}
+	{if $t->get('keywords_string')}<br/><i>тэги: {$t->get('keywords_string')}</i>{/if}
+</small>{/if}</td>
 	<td>{$t->author_name()}</td>
 	<td>{$t->forum()|get:titled_url}</td>
 	<td>{$t->create_time()|airbase_time}</td>

@@ -165,8 +165,6 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if(!$object)
 		return bors_message(ec("Не могу сохранить объект ")."{$class_name}({$id})");
 
-//	if(debug_is_balancer()) { echo "Initial id: {$object->id()}<br />"; bors_exit(); }
-
 	if($first)
 	{
 		$processed = $object->pre_action($data);

@@ -124,7 +124,14 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 	function recalculate($db_update)
 	{
-//		debug_hidden_log('recalculate', "$this:\nurl={$this->url()}\n".print_r($this->data, true));
+		if(!$this->file_name())
+		{
+			debug_hidden_log("image-data-error", "empty file_name() on recalculate image url='{$this->url()}', this={$this}, data=".print_r($this->data, true));
+			return;
+		}
+
+		debug_timing_start('image_recalculate');
+		$start = microtime(true);
 		$x = @getimagesize($this->url());
 		if(!$x)
 			$x = @getimagesize($this->file_name_with_path());
@@ -140,6 +147,9 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 			$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), $db_update);
 			$this->store();
 		}
+		debug_timing_stop('image_recalculate');
+		if(($dura = (microtime(true) - $start)) > 0.5)
+			debug_hidden_log("recalculate", "time = $dura, url = {$this->url()}, this={$this}, data=".print_r($this->data, true));
 	}
 
 	function admin_url() { return config('admin_host_url').'/images/'.($this->id() ? $this->id() : '%OBJECT_ID%').'/'; }

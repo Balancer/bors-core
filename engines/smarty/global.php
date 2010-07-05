@@ -65,13 +65,13 @@ function template_js_include($js_link)
 	bors_page::add_template_data('template_js_include_'.$hash, true);
 }
 
-function template_css($css_list)
+function template_css($css)
 {
-	$hash = md5(print_r($css_list, true));
+	$hash = md5(print_r($css, true));
 	if(bors_page::template_data('template_css_'.$hash))
 		return;
 
-	bors_page::merge_template_data_array('css_list', $css_list);
+	bors_page::merge_template_data_array('css_list', array($css));
 	bors_page::add_template_data('template_css_'.$hash, true);
 }
 
@@ -83,8 +83,8 @@ function do_php($code)
 
 function template_jquery_ui_tabs($id)
 {
-//	template_css(array('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css'));
-	template_css(array('/_bors3rdp/jquery/jquery-ui.css'));
+//	template_css('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
+	template_css('/_bors3rdp/jquery/jquery-ui.css');
 	template_jquery();
 	template_js_include('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js');
 

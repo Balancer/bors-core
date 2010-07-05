@@ -4,24 +4,27 @@
 
 class bors_global extends base_empty
 {
-	private $user = false;
-	private $main_object = NULL;
+	var $__user = false; // Именно false, т.к. NULL - вполне допустимое значение.
+	var $__main_object = NULL;
 
 	function user()
 	{
-		if($this->user === false)
+		if($this->__user === false)
 		{
 			$uc = config('user_class');
 			if(!$uc)
+			{
 				debug_hidden_log('__critical', 'Not defined user_class', true, array('dont_show_user' => true));
+				return NULL;
+			}
 
-			$this->user = object_load($uc, -1);
+			$this->__user = object_load($uc, -1);
 
-			if($this->user)
-				$this->user->set_last_visit_time(time(), true); // global $now тут не прокатит, т.к. может вызываться до инициализации конфигов.
+			if($this->__user)
+				$this->__user->set_last_visit_time(time(), true); // global $now тут не прокатит, т.к. может вызываться до инициализации конфигов.
 		}
 
-		return $this->user;
+		return $this->__user;
 	}
 
 	function user_id()
@@ -34,8 +37,8 @@ class bors_global extends base_empty
 		return ($user = $this->user()) ? $user->title() : NULL;
 	}
 
-	function set_main_object($obj) { return $this->main_object = $obj; }
-	function main_object() { return $this->main_object; }
+	function set_main_object($obj) { return $this->__main_object = $obj; }
+	function main_object() { return $this->__main_object; }
 
 	private $changed_objects = array();
 

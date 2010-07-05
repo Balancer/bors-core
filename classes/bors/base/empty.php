@@ -153,7 +153,7 @@ class base_empty extends base_null
 	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
 
 //	private $__last_cache_key; // идентификатор последнего проверяемого по havec значения
-	private $__last_cache_stack = array(); // Для реентерабельности
+	var $__last_cache_stack = array(); // Для реентерабельности
 	function __havec($attr)
 	{
 		array_push($this->__last_cache_stack, $attr);

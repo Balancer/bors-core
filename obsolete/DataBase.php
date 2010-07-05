@@ -153,10 +153,17 @@ class DataBase extends base_object
 			debug_hidden_log('mysql-slow', "Slow query [{$qtime}s]: ".$query);
 
 		if($cdmql = config('debug_mysql_queries_log'))
+		{
+			if($cdmql == 'false')
+				$cdmql = false;
+
 			debug_hidden_log(
-				'mysql-queries', 
+				'mysql-queries',
 				"[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query,
-				is_numeric($cdmql) ? $cdmql : false);
+				$cdmql,
+				array('dont_show_user' => true)
+			);
+		}
 
 		if($this->result)
 		{

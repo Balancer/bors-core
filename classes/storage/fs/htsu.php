@@ -144,6 +144,8 @@ class storage_fs_htsu extends base_null
 	    $this->hts = preg_replace("!^\n+!",'',$this->hts);
     	$object->set_source(preg_replace("!\n+$!","",$this->hts), false);
 
+		debug_log_var('data_file', $file);
+
 		return $object->set_loaded(true);
 	}
 

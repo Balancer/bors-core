@@ -212,8 +212,16 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if($first)
 		$object->pre_set($data);
 
-	if(!$object->set_fields(array_intersect_key($data, bors_lib_orm::all_field_names($object, false)), true))
-		return true;
+	if(method_exists($object, 'skip_save') && $object->skip_save()) //TODO: костыль для bors_admin_image_append
+	{
+		if(!$object->set_fields($data, true))
+			return true;
+	}
+	else
+	{
+		if(!$object->set_fields(array_intersect_key($data, bors_lib_orm::all_field_names($object, false)), true))
+			return true;
+	}
 
 	if($last && $object->has_changed())
 	{

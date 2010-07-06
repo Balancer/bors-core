@@ -199,13 +199,13 @@ class base_object extends base_empty
 		if(preg_match('!^set_(\w+)$!', $method, $match))
 			return $this->set($match[1], $params[0], $params[1]);
 
-		// Проверяем нет ли уже загруженного значения атрибута (временных несохраняемых данных) объекта
-		if(array_key_exists($method, $this->attr))
-			return $this->attr[$method];
-
 		// Проверяем нет ли уже загруженного значения данных объекта
 		if(array_key_exists($method, $this->data))
 			return $this->data[$method];
+
+		// Проверяем нет ли уже загруженного значения атрибута (временных несохраняемых данных) объекта
+		if(array_key_exists($method, $this->attr))
+			return $this->attr[$method];
 
 		// Проверяем автоматические объекты.
 		$auto_objs = $this->auto_objects();
@@ -842,7 +842,7 @@ class base_object extends base_empty
 		if(!$this->first_visit_time())
 			$this->set_first_visit_time($time, true);
 
-		$this->set_visits($this->visits() + $inc, true);
+		$this->set_visits(intval($this->visits()) + intval($inc), true);
 		$this->set_last_visit_time($time, true);
 	}
 

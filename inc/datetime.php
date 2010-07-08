@@ -191,7 +191,7 @@ function date_today($time = 0)     { return strtotime(date('Y-m-d', $time ? $tim
 function date_yesterday($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' -1 day'); }
 function date_tomorrow ($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' +1 day'); }
 
-function part_date($date, $int = false)
+function part_date($date, $int = false, $on_empty_text = '')
 {
 	$year = $month = $day = 0;
 	if($int)
@@ -215,7 +215,7 @@ function part_date($date, $int = false)
 		list($year, $month, $day) = explode('-', $date);
 
 	if(!$year)
-		return '';
+		return $on_empty_text;
 
 	if(!$month)
 		return $year.ec(' г.');

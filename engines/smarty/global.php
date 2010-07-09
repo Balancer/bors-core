@@ -90,3 +90,8 @@ function template_jquery_ui_tabs($id)
 
 	template_js("jQuery(document).ready(function() { jQuery('$id').tabs(); });");
 }
+
+function template_description($text)
+{
+	bors_page::add_template_data_array('meta[description]', htmlspecialchars($text));
+}

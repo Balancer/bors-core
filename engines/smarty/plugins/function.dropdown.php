@@ -18,7 +18,7 @@ function smarty_function_dropdown($params, &$smarty)
 
 	echo "<select";
 
-	foreach(explode(' ', 'size style multiple class') as $p)
+	foreach(explode(' ', 'size style multiple class onchange') as $p)
 		if(!empty($$p))
 			echo " $p=\"{$$p}\"";
 

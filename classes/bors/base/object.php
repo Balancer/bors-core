@@ -528,6 +528,7 @@ class base_object extends base_empty
 		if($check_values && $this->check_data($array) === true)
 			return false;
 
+//		if(debug_is_balancer()) { echo "{$this}-><br/>"; var_dump($array); }
 		if($fields_list)
 		{
 			foreach(explode(' ', $fields_list) as $key)

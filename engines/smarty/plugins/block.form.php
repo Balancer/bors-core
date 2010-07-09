@@ -49,7 +49,6 @@ function smarty_block_form($params, $content, &$smarty)
 /*****************************************************************************************/
 	if($content == NULL) // Открытие формы
 	{
-
 		if(!empty($ajax_validate))
 		{
 			$form_id = 'form_'.md5(rand());

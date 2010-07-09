@@ -61,6 +61,16 @@ class bors_lib_orm
 				{
 					$f = self::field($property, $field);
 					$fields_array[$f['property']] = $f['name'];
+					if(preg_match('/_date$/', $f['property']))
+					{	//FIXME: Костыль для сохранения значений формата автодаты.
+						$fields_array[$f['property'].'_day'] = true;
+						$fields_array[$f['property'].'_month'] = true;
+						$fields_array[$f['property'].'_year'] = true;
+						$fields_array[$f['property'].'_hour'] = true;
+						$fields_array[$f['property'].'_minute'] = true;
+						$fields_array[$f['property'].'_seconds'] = true;
+						$fields_array['time_vars'] = true;
+					}
 				}
 
 		return $fields_array;

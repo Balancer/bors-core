@@ -18,7 +18,7 @@
 	function lp_embed($inner, &$params)
 	{
 		$params['skip_around_cr'] = true;
-		return "<embed ".make_enabled_params($params, 'menu pluginspage src type wmode width height scale salign style allowfullscreen allowsriptaccess flashvars').">".lcml_h($inner)."</embed>";
+		return "<embed ".make_enabled_params($params, 'allowscriptaccess bgcolor flashvars menu pluginspage quality src type wmode width height scale salign style allowfullscreen').">".lcml_h($inner)."</embed>";
 	}
 
 	function lp_object($inner, &$params)
@@ -26,7 +26,7 @@
 		$params['skip_around_cr'] = true;
 		if(preg_match('!&amp;!', $params['codebase']))
 			$params['codebase'] = html_entity_decode(@$params['codebase']);
-		return "<br/><object ".make_enabled_params($params, 'classid codebase data width height type').">".lcml_h($inner)."</object><br/>";
+		return "<br/><object ".make_enabled_params($params, 'classid codebase data width height type id').">".lcml_h($inner)."</object><br/>";
 	}
 
 	function lp_td($inner, &$params)

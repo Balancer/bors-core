@@ -151,7 +151,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		if(empty($data[$field]))
 			return;
 
-//	echo "Store object $class_name($id); ".print_d($data, true)."<br/>";
+//	if(debug_is_balancer()) echo "Store object $class_name($id); ".print_d($data, true)."<br/>";
 	if($id)
 	{
 		$object = object_load($class_name, $id);
@@ -212,6 +212,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if($first)
 		$object->pre_set($data);
 
+//	if(debug_is_balancer()) { var_dump($data); }
 	if(method_exists($object, 'skip_save') && $object->skip_save()) //TODO: костыль для bors_admin_image_append
 	{
 		if(!$object->set_fields($data, true))
@@ -219,7 +220,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	}
 	else
 	{
-		if(!$object->set_fields(array_intersect_key($data, bors_lib_orm::all_field_names($object, false)), true))
+		if(!$object->set_fields($data, true))//array_intersect_key($data, bors_lib_orm::all_field_names($object, false)), true))
 			return true;
 	}
 

@@ -209,9 +209,13 @@ if(empty($title))
 
 if(config('404_logging'))
 {
-	if(!empty($_SERVER['HTTP_REFERER'])
-			|| strpos($uri, 'files/'))
-		$fname_404 = '404-filtered.log';
+	if(!empty($_SERVER['HTTP_REFERER']) && strpos($uri, 'files/') === false)
+	{
+		if(preg_match('/aviaport/', $_SERVER['HTTP_REFERER']))
+			$fname_404 = '404-filtered-internal.log';
+		else
+			$fname_404 = '404-filtered-external.log';
+	}
 	else
 		$fname_404 = '404-other.log';
 

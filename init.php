@@ -111,7 +111,7 @@ foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 	if(file_exists($file = "{$base_dir}/config-pre.php"))
 		include_once($file);
 
-require_once('config.php');
+require_once(dirname(__FILE__).'/config.php');
 
 if(config('system.use_sessions'))
 {

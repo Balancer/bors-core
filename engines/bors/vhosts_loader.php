@@ -62,7 +62,6 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 	);
 }
 
-@include_once("config/vhosts.php");
 require_once("inc/filesystem.php");
 
 function bors_url_map($map_array)

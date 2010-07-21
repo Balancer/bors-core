@@ -1,4 +1,0 @@
-<?php
-
-register_vhost('192.168.1.3');
-								

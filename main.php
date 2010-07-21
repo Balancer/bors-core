@@ -13,7 +13,7 @@ if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 	$_SERVER['DOCUMENT_ROOT'] = $m[1];
 
-require_once('config.php');
+require_once('init.php');
 
 if(config('access_log') && config('overload_time'))
 {

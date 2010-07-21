@@ -1,4 +1,4 @@
-<?
+<?php
 	$punbb_db = 'punbb';
 
 	// db table get-field where-field

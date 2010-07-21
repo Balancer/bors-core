@@ -1,4 +1,4 @@
-<?
+<?php
     function lt_include_source($params)
     {
         $hts = new DataBaseHTS();

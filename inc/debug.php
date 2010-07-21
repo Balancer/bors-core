@@ -220,20 +220,20 @@ function debug_page_stat()
 {
 	?>
 <noindex>
-Новых mysql-соединений: <?echo $GLOBALS['global_db_new_connections'];?><br />
-Продолженных mysql-соединений: <?echo $GLOBALS['global_db_resume_connections'];?><br />
-Всего запросов <?echo debug_count('mysql_queries');?><br />
-Попадений в кеш данных: <?echo $GLOBALS['global_key_count_hit'];?><br />
-Промахов в кеш данных: <?echo $GLOBALS['global_key_count_miss'];?><br />
-Время генерации страницы: <?echo microtime(true) - $GLOBALS['stat']['start_microtime'];?>сек.<br />
-<?
+Новых mysql-соединений: <?php echo $GLOBALS['global_db_new_connections'];?><br />
+Продолженных mysql-соединений: <?php echo $GLOBALS['global_db_resume_connections'];?><br />
+Всего запросов <?php echo debug_count('mysql_queries');?><br />
+Попадений в кеш данных: <?php echo $GLOBALS['global_key_count_hit'];?><br />
+Промахов в кеш данных: <?php echo $GLOBALS['global_key_count_miss'];?><br />
+Время генерации страницы: <?php echo microtime(true) - $GLOBALS['stat']['start_microtime'];?>сек.<br />
+<?php
 if($GLOBALS['cms']['cache_copy'])
 	echo "Кешированная версия от ".strftime("%Y-%d-%m %H:%I", $GLOBALS['cms']['cache_copy']);
 else
 	echo "Перекомпилированная версия";
 ?><br />
 </noindex>
-<?
+<?php
 }
 
 
@@ -353,3 +353,4 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 
 	@file_put_contents("{$out_dir}/hidden-{$type}.log", $out, FILE_APPEND);
 }
+

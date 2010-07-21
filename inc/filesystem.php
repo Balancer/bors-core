@@ -1,4 +1,4 @@
-<?
+<?php
     function abs_path_from_relative($uri, $page)
     {
         if(preg_match("!^\w+://!", $uri))

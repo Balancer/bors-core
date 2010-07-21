@@ -1,4 +1,4 @@
-<?
+<?php
     function lcml_urls_post($txt)
     {
         $txt = preg_replace("!\[url=(.+?)\](.+?)\[/url\]!is", "<a href=\"$1\">$2</a>", $txt);

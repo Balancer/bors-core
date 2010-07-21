@@ -1,4 +1,4 @@
-<?
+<?php
     function lst_link($txt)
     {
         if(!trim($txt))

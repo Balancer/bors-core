@@ -1,4 +1,4 @@
-<?
+<?php
 	function lt_url($params) 
 	{ 
 		$url = $params['url'];

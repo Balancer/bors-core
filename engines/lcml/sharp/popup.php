@@ -1,4 +1,4 @@
-<?
+<?php
     function lst_popup($txt)
     {
         if(!trim($txt))

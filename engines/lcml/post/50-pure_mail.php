@@ -1,4 +1,4 @@
-<?
+<?php
     function lcml_pure_mail($txt)
     {
 		$mail_chars = 'a-zA-Z0-9\_\-\+\.';

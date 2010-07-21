@@ -1,4 +1,4 @@
-<?
+<?php
     function lt_popup($params)
     { 
         // [popup http://www.ru 400x300|Text]

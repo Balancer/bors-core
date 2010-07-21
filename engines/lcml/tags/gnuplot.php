@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_gnuplot($text,$params)
     {
 		global $wgScriptPath, $wgUploadPath, $wgUploadDirectory, $wgGnuplotSettings;

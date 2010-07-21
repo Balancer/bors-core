@@ -1,4 +1,4 @@
-<?  
+<?php
     require_once('error_log.php');
 
     class bcsTable

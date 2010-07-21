@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_php($txt,$params)
     {
         if(!check_lcml_access('usephp', true))

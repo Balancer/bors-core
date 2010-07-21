@@ -1,4 +1,4 @@
-<?
+<?php
     function smarty_modifier_strftime($time, $mask)
     {
 		if($time == 0)

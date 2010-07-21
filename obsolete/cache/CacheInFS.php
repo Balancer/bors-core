@@ -1,4 +1,4 @@
-<?
+<?php
 	$GLOBALS['bors']['config']['cache_in_fs_path'] = '/xxwww/sites/aviaport/tmp/fs-cache/';
 
 	// $_SERVER['DOCUMENT_ROOT']."/cache/fs/";

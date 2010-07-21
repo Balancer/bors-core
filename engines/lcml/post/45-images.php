@@ -1,4 +1,4 @@
-<?
+<?php
 	function lcml_images($txt)
 	{
 		if(lcml_tag_disabled('img'))

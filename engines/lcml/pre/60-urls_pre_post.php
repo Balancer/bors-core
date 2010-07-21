@@ -1,4 +1,4 @@
-<?
+<?php
     function lcml_urls_pre_post($txt)
     {
         $n=1000;

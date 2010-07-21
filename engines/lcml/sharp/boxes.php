@@ -1,4 +1,4 @@
-<?
+<?php
 /*    function lst_link($txt)
     {
         list($url,$img,$title,$text,$author,$time)=split("\|",$txt."||||||");

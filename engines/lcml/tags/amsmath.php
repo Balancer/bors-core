@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_amsmath($text,$params)
     {
 		global $wgScriptPath;

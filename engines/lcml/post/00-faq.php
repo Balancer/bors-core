@@ -1,4 +1,4 @@
-<?
+<?php
     function lcml_faq($txt)
     {
         $txt = preg_replace("!^Q:\s+!m", "<p/><b><i>Вопрос:</i></b> ", $txt);

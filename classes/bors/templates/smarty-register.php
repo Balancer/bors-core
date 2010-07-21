@@ -1,4 +1,4 @@
-<?
+<?php
     require_once("smarty-resource-file.php");
     require_once("smarty-resource-bors.php");
 

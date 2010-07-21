@@ -16,7 +16,7 @@ function bors_unit_test_up()
 	$dbh = new driver_mysql(config('unit-test.mysql.db'));
 }
 
-require_once('config-host.php');
-
 config_set('main_bors_db', config('unit-test.mysql.db'));
 config_set('bors_core_db', config('unit-test.mysql.db')); // Этим оперируют cross-методы
+
+@include_once(dirname(__FILE__).'/config-host.php');

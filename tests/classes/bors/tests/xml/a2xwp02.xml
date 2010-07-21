@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orders>
+ <order dealer_id="20">
+  <item_id amount="1" time="17.06.10">99691</item_id>
+ </order>
+</orders>

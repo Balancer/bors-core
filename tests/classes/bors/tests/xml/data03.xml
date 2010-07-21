@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+ <title>Test title</title>
+ <create_time>1275619883</create_time>
+ <parents>
+  <parent>/</parent>
+  <parent>/test/</parent>
+ </parents>
+</root>

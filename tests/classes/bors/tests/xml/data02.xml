@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+ <orders>
+  <order>
+   <dealer_id>11</dealer_id>
+   <item_id>111</item_id>
+  </order>
+  <order>
+   <dealer_id>22</dealer_id>
+   <item_id>222</item_id>
+  </order>
+ </orders>
+ <time>1275619883</time>
+</root>

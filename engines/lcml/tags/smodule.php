@@ -1,4 +1,4 @@
-<?
+<?php
     function lt_smodule($params)
     { 
         $ps = "";

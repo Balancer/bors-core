@@ -1,4 +1,4 @@
-<?
+<?php
 function from_translit($s)
 {
     $s=str_replace("shch",ec("щ"),$s);

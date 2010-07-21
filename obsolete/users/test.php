@@ -1,4 +1,4 @@
-<?
+<?php
     require_once('inc/global-data.php');
 
     function user_data($key,$user=NULL,$def='')

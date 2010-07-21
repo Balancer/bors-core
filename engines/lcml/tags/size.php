@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_size($txt,$params)
     {
 		$params['orig'] = trim($params['orig']);

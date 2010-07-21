@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_music($text, $params)
     {
 		global $wgScriptPath;

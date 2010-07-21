@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_chem($text,$params)
     {
 		global $wgScriptPath;

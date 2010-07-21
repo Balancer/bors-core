@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_snapback($txt)
     {
 		if(!empty($GLOBALS['lcml']['forum_type']))

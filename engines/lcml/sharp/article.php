@@ -1,4 +1,4 @@
-<?
+<?php
     function lsp_article($txt)
     {
         $a = lcml_sharp_getset($txt);

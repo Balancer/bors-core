@@ -1,4 +1,4 @@
-<?
+<?php
 
 @include_once('funcs/images/fill.php');
 

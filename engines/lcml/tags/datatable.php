@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_datatable($text, $iparams)
     {
 //		exit($GLOBALS['lcml']['params']['uri']);

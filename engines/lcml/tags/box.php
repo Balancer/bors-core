@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_box($txt,$params)
     {
 		if(!empty($params['description']))

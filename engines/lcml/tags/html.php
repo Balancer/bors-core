@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_html($txt,$params)
     {
 //        if(!check_lcml_access('usehtml'))

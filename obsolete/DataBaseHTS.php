@@ -1,4 +1,4 @@
-<?
+<?php
 	require_once ("DataBase.php");
 	require_once ("engines/bors.php");
 	require_once ("inc/global-data.php");

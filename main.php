@@ -46,7 +46,7 @@ if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 
 if(bors()->client()->is_bot() && config('bot_lavg_limit'))
 {
-	$cache = &new BorsMemCache();
+	$cache = new BorsMemCache();
 	if(!($load_avg = $cache->get('system-load-average')))
 	{
 		$uptime = explode(' ', exec('uptime'));

@@ -1,4 +1,4 @@
-<?
+<?php
     function lcml_pure_strip_url($url)
     {
             return strlen($url)>77?substr($url,0,50).' [ ... ] '.substr($url,-20):$url;

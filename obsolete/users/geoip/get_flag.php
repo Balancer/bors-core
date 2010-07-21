@@ -1,4 +1,4 @@
-<?
+<?php
 	include_once("{$_SERVER['DOCUMENT_ROOT']}/cms/config.php");
 
 	function get_flag($ip)

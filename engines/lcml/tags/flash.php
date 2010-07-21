@@ -1,4 +1,4 @@
-<?
+<?php
     function lp_flash($url,$params)
     {
         list($width,$height) = explode("x",(isset($params['size'])?$params['size']:"")."x");

@@ -1,4 +1,4 @@
-<?
+<?php
 function lp_tr($s)
 {
     $s=str_replace("&#39;","'",$s);

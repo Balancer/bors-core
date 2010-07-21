@@ -337,14 +337,6 @@ class storage_db_mysql_smart extends base_null
 				$set = array();
 				$id_field = false;
 
-				if(preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m))
-				{
-					$table_name	= $m[1];
-					$def_id		= $m[2];
-				}
-				else
-					$def_id		= 'id';
-
 				if(preg_match('!^inner\s+(.+?)$!', $table_name, $m))
 				{
 					$table_name = $m[1];
@@ -352,6 +344,14 @@ class storage_db_mysql_smart extends base_null
 				}
 				else
 					$join = ' LEFT JOIN `';
+
+				if(preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m))
+				{
+					$table_name	= $m[1];
+					$def_id		= $m[2];
+				}
+				else
+					$def_id		= 'id';
 
 				foreach($fields as $property => $field)
 				{

@@ -1,4 +1,4 @@
-<?
+<?php
     function lt_session($params)
     {
 		session_start();

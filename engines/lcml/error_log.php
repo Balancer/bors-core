@@ -1,7 +1,6 @@
-<?
-    function error_log_translate_warning($text)
-    {
-        print "$text\n";
-    }
-    
-?>
+<?php
+
+function error_log_translate_warning($text)
+{
+    print "$text\n";
+}

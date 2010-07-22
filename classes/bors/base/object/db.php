@@ -37,6 +37,8 @@ class base_object_db extends base_object
 	function select($field, $where_map) { return $this->db()->select($this->table_name(), $field, $where_map); }
 	function select_array($field, $where_map) { return $this->db()->select_array($this->table_name(), $field, $where_map); }
 
+	function table_fields() { return $this->fields_map(); }
+
 	function main_id_field()
 	{
 		$f = $this->fields_map_db();

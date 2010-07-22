@@ -15,7 +15,7 @@ if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 
 require_once(dirname(__FILE__).'/init.php');
 
-if(config('access_log') && config('overload_time'))
+if(config('access_log') && config('overload_time') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 {
 	$dbh = new driver_mysql(config('main_bors_db'));
 	$total = $dbh->select('bors_access_log', 'SUM(operation_time)', array(

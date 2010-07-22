@@ -2,8 +2,8 @@
 
 class common_author extends base_page_db
 {
-	function main_db(){ return config('main_bors_db'); }
-	function main_table() { return 'bors_authors'; }
+	function main_db(){ return 'common'; }
+	function main_table() { return 'authors'; }
 
 	function main_table_fields()
 	{

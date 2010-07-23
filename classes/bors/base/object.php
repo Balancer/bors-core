@@ -39,13 +39,18 @@ class base_object extends base_empty
 
 	function rss_body()
 	{
+		if($image = object_property($this, 'image'))
+ 			$image_html = "<p>".$image->thumbnail('300x300')->html_code() . "</p>\n";
+		else
+			$image_html = '';
+
 		if(($body = $this->description()))
-			return $this->lcml($body);
+			return $image_html . '<p>'.lcml_bbh($body).'</p>';
 
 		if(($body = $this->source()))
-			return $this->lcml($body);
+			return $image_html . '<p>'.lcml_bbh($body).'</p>';
 
-		return $this->body();
+		return $image_html . '<p>'.$this->body().'</p>';
 	}
 
 	function rss_title() { return $this->title(); }

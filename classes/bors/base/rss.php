@@ -10,47 +10,63 @@ class base_rss extends base_page
 	function rss_title() { return $this->title(); }
 	function rss_description() { return $this->description(); }
 
-	function render($obj)
+	function render($rss)
 	{
-		include("feedcreator.class.php"); 
+		require_once(config('feedcreator_include'));
 
-		$rss = &new UniversalFeedCreator(); 
-		$rss->useCached("RSS2.0", '/tmp/rss-'.md5($obj->url()).'.xml', config('rss_static_lifetime'));
-		$rss->encoding = 'utf-8'; 
-		$rss->title = $obj->rss_title();
-		$rss->description = $obj->rss_description();
-		$rss->link = $obj->rss_url();
-		$rss->syndicationURL = $obj->url(); 
+//		$type = "ATOM1.0";
+		$type = "RSS2.0";
+
+		$feed = new UniversalFeedCreator(); 
+		$feed->useCached($type, '/tmp/bors-rss-'.md5($rss->url()).'.xml', config('rss_static_lifetime'));
+		$feed->encoding = 'UTF-8';
+		$feed->title = $rss->rss_title();
+		$feed->description = $rss->rss_description();
+		$feed->link = $rss->main_url();
+		$feed->syndicationURL = $rss->url();
+
+//		$feed->descriptionTruncSize = 500;
+		$feed->descriptionHtmlSyndicated = true;
 
 /*		$image = new FeedImage(); 
 		$image->title = "dailyphp.net logo"; 
 		$image->url = "http://www.dailyphp.net/images/logo.gif"; 
 		$image->link = "http://www.dailyphp.net"; 
 		$image->description = "Feed provided by dailyphp.net. Click to visit."; 
-		$rss->image = $image; 
+		$feed->image = $image; 
 */
 		// get your news items from somewhere, e.g. your database: 
 
-		foreach($obj->rss_items() as $o)
+		foreach($rss->rss_items() as $o)
 		{
 		    $item = new FeedItem();
-	    	$item->title = $obj->item_rss_title($o);
-		    $item->link = $obj->item_rss_url($o);
+	    	$item->title = $rss->item_rss_title($o);
+		    $item->link = $rss->item_rss_url($o);
 
-//			$item->description = $obj->rss_body($o, $obj->rss_strip());
-			if(($desc = $obj->item_rss_body($o, $obj)))
+//			$item->description = $rss->rss_body($o, $rss->rss_strip());
+			if(($desc = $rss->item_rss_body($o, $rss)))
 				$item->description = $desc;
+			$item->descriptionHtmlSyndicated = true;
 			$item->date = intval($o->create_time());
-			$item->source = $obj->rss_source_url();
+			$item->source = $rss->rss_source_url();
 			$owner = $o->get('owner');
 			if($owner)
 				$item->author = $owner->title();
-
-			$rss->addItem($item); 
+/*
+			if($image = object_property($o, 'image'))
+			{
+	 			$item->enclosure = new EnclosureItem();
+	 			$thumb = $image->thumbnail('300x300');
+				$item->enclosure->url = $thumb->url();
+				$item->enclosure->length = $thumb->size();
+				$item->enclosure->type = $image->mime_type();
+			}
+*/
+			$feed->addItem($item); 
 		}
 
-		$result = $rss->createFeed("RSS2.0");
-		header("Content-Type: ".$rss->contentType."; charset=".$rss->encoding);
+		$result = $feed->createFeed($type);
+		header("Content-Type: ".$feed->contentType."; charset=".$feed->encoding);
 		return $result;
 	}
 
@@ -60,10 +76,10 @@ class base_rss extends base_page
 
 	function rss_body($object, $strip = 0)
 	{
-		if($this->body_template())
+		if(($tpl = $this->body_template()) && !preg_match('!/classes/bors/base/page.html$!', $tpl))
 		{
 			require_once('engines/smarty/assign.php');
-			return template_assign_data($this->body_template(), array('this' => $object));
+			return template_assign_data($tpl, array('this' => $object));
 		}
 
 		$html = $object->rss_body();

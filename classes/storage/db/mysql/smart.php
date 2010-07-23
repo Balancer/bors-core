@@ -643,9 +643,10 @@ class storage_db_mysql_smart extends base_null
 		$class = new $class_name(NULL);
 		foreach($class->fields_map_db() as $db_name => $tables)
 		{
+			$db = new driver_mysql($db_name);
+
 			foreach($tables as $table_name => $fields)
 			{
-				$db = new driver_mysql($db_name);
 				if(preg_match('/^(\w+)\((\w+)\)$/', $table_name, $m))
 					$table_name = $m[1];
 

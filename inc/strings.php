@@ -86,3 +86,12 @@ function bors_unplural($s)
 		return $m[1];
 	return $s;
 }
+
+function bors_str_cat($string1, $string2, $explode_delimiter = ',', $join_delimiter = ', ')
+{
+	$a1 = array_map('trim', explode($explode_delimiter, $string1));
+	$a2 = array_map('trim', explode($explode_delimiter, $string2));
+	$a = array_filter(array_merge($a1, $a2));
+	sort($a);
+	return join($join_delimiter, $a);
+}

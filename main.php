@@ -3,6 +3,8 @@
 $GLOBALS['stat']['start_microtime'] = microtime(true);
 $GLOBALS['stat']['start_time'] = time();
 
+// Если в запрашиваемом URL присутствуют параметры - переносим их в строку запроса
+// такая проблема всплывает на некоторых web-серверах.
 if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 {
 	$_SERVER['REQUEST_URI'] = $m[1];
@@ -10,11 +12,15 @@ if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 		$_SERVER['QUERY_STRING'] = $m[2];
 }
 
+// DOCUMENT_ROOT должен быть без слеша в конце.
 if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 	$_SERVER['DOCUMENT_ROOT'] = $m[1];
 
+// Инициализация фреймворка
 require_once(dirname(__FILE__).'/init.php');
 
+// Проверка на загрузку системы данным пользователем.
+// Если делает много тяжёлых запросов - просим подождать.
 if(config('access_log') && config('overload_time') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 {
 	$dbh = new driver_mysql(config('main_bors_db'));
@@ -33,9 +39,12 @@ if(config('access_log') && config('overload_time') && $_SERVER['REMOTE_ADDR'] !=
 	}
 }
 
+// Скажем, кто мы такие. Какой версии.
 if(config('bors_version_show'))
 	header('X-Bors: v' .config('bors_version_show'));
 
+// А такого не должно быть. Если лоадер вызывается непосредственно, нужно
+// разбираться, что это за фигня. Соответственно - в лог.
 if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 {
 //	print_d($_SERVER);
@@ -44,6 +53,8 @@ if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 	exit("Do not use direct bors-call!\n");
 }
 
+// Если это бот и включён лимит максимальной загрузки сервера
+// то проверяем. И если загрузка превышает допустимую - просим подождать
 if(bors()->client()->is_bot() && config('bot_lavg_limit'))
 {
 	$cache = new BorsMemCache();
@@ -65,6 +76,8 @@ if(bors()->client()->is_bot() && config('bot_lavg_limit'))
 	}
 }
 
+// Ловушка для ботов. Если сунется в /_bors/trap/* (например, где-то на странице скрытая ссылка туда)
+// то шлём его нафиг. Соответственно, /_bors/trap/ должен быть запрещённ в robots.txt
 if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect_trap'))
 {
 	if(bors()->client()->is_bot())
@@ -74,6 +87,7 @@ if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect
 	header('Status: 503 Service Temporarily Unavailable');
 	header('Retry-After: 3600');
 
+	//TODO: чёрт, надо сделать будет через hidden_log.
 	@file_put_contents($file = $_SERVER['DOCUMENT_ROOT']."/logs/load_trap.log", 
 		date('Y.m.d H:i:s ')
 			.$_SERVER['REQUEST_URI']
@@ -86,24 +100,19 @@ if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect
 	exit("Service Temporarily Unavailable");
 }
 
-
+// Если есть строка запроса, но пустой $_GET, то PHP чего-то не распарсил. Бывает на некоторых
+// режимах в некоторых серверах.
+//TODO: проверить по проектам, чтобы нигде не использовалось $GLOBALS['cms']['only_load'] и убрать.
 if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY_STRING']))
 {
-	foreach(split('[&\?]', $_SERVER['QUERY_STRING']) as $pair)
-	{
-		@list($var, $val) = explode('=', $pair);
-		$var = urldecode($var);
-		if(!isset($_POST[$var]))
-		{
-			if(preg_match('/^(\w+)\[\]$/', $var, $m))
-				$_GET[$m[1]][] = $_POST[$var][] = "$val";
-			else
-				$_GET[$var] = $_POST[$var] = "$val";
-		}
-	}
+	parse_str($_SERVER['QUERY_STRING'], $_GET);
+	$_POST = $_GET; // поскольку мы не знаем, что там и куда
 }
 
-$_GET = array_merge($_GET, $_POST);
+$_GET = array_merge($_GET, $_POST); // но, вообще, нужно с этим завязывать
+
+// Если кодировка вывода в браузер не та же, что внутренняя - то перекодируем
+// все входные данные во внутреннюю кодировку
 if(($ics = config('internal_charset')) != ($ocs = config('output_charset')))
 	$_GET = array_iconv($ocs, $ics, $_GET);
 
@@ -122,12 +131,13 @@ if($_SERVER['QUERY_STRING'])
 	$uri .= '?'.$_SERVER['QUERY_STRING'];
 
 /**********************************************************************************************************/
+// Собственно, самое главное. Грузим объект и показываем его.
 $res = false;
 if($object = object_load($uri))
 	$res = bors_object_show($object);
-
 /**********************************************************************************************************/
 
+// Записываем, если нужно, кто получал объект и сколько ушло времени на его получение.
 if(config('access_log'))
 {
 	$data = array(
@@ -155,15 +165,17 @@ if(config('access_log'))
 
 bors()->changed_save();
 
+// Общее время работы
 $time = microtime(true) - $GLOBALS['stat']['start_microtime'];
 
+// Если время работы превышает заданный лимит, то логгируем
 if($time > config('timing_limit'))
 {
 	@file_put_contents($file = config('timing_log'), $time . " [".$uri . "]: " . @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
 }
 
-//if(debug_is_balancer()) { echo 'test: '.time()."<br/><xmp>res</xmp>"; bors_exit(); }
+// Если показываем отладочную инфу, то описываем её в конец выводимой страницы комментарием.
 if(config('debug_timing') && is_string($res))
 {
 	$deb = "<!--\n=== debug-info ===\n"
@@ -195,17 +207,18 @@ if(config('debug_timing') && is_string($res))
 	$res = str_ireplace('</body>', $deb.'</body>', $res);
 }
 
+// Если объект всё, что нужно нарисовал сам, то больше нам делать нечего. Выход.
 if($res === true || $res == 1)
 	return;
 
+// Если объект вернул строку, то рисуем её и выходим.
 if($res)
 {
 	echo $res;
 	return;
 }
 
-if(empty($title))
-	$title='';
+// Если дошли до сюда, то мы ничего не нашли. Дальше - обработка 404-й ошибки.
 
 if(config('404_logging'))
 {

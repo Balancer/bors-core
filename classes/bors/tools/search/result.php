@@ -156,7 +156,7 @@ class bors_tools_search_result extends bors_tools_search
 			{
 				$x = &$res['matches'][$i];
 				if(empty($x['attrs']['class_name']))
-					$topic_ids[] = $x['id'];
+					$topic_ids[] = floor($x['id'] / 1000);
 				else
 					$post_ids[] = $x['id'];
 			}

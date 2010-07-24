@@ -32,7 +32,7 @@ class storage_db_mysql_smart extends base_null
 		foreach($object->fields_map_db() as $db => $tables)
 		{
 			$tab_count = 0;
-			$select = array();
+			$select = defval($args, 'select', array());
 			$from = '';
 			$where = $common_where;
 			$first_name = '';
@@ -227,6 +227,7 @@ class storage_db_mysql_smart extends base_null
 				$by_id = 'id';
 
 			$q = $from.' '.$where;
+
 			if(preg_match('/^(.*FROM.*) (LEFT JOIN.*) (USE INDEX.*) (WHERE.*)$/', $q, $m))
 				$q = "{$m[1]} {$m[3]} {$m[2]} $m[4]";
 
@@ -247,14 +248,14 @@ class storage_db_mysql_smart extends base_null
 					$q = $m[1].$m[3];
 				}
 
-//				echo 'SELECT '.join(',', $select).' '.$q;
+//				if(debug_in_console()) echo 'SELECT '.join(',', $select).' '.$q;
 				$dbh->query('SELECT '.join(',', $select).' '.$q, false);
 			}
 
 			$was_loaded = false;
 			while($row = $dbh->fetch_row())
 			{
-//				print_d($row);
+//				if(debug_in_console()) print_d($row);
 				foreach($row as $name => $value)
 				{
 //					echo "row: $name => $value<br/>";

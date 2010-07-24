@@ -1,7 +1,7 @@
 <?php
 
 include_once('../config.php');
-include_once(BORS_CORE.'/config.php');
+include_once(BORS_CORE.'/init.php');
 
 main($argv);
 

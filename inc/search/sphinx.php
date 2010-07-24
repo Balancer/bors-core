@@ -40,16 +40,20 @@ function bors_search_sphinx($query, $params = array())
 
 	$page = defval($params, 'page', 1)-1;
 	$per_page = defval($params, 'per_page', 50);
-	$cl->SetLimits($page * $per_page, $per_page, 5000);
+	$cl->SetLimits($page * $per_page, $per_page, config('search_sphinx_max_matches', 5000));
 
 //	$cl->SetMaxQueryTime(bors()->user() ? 10000 : 3000);
 
-//	$f = $this->f();
-//	if($f && $f[0])
-//		$cl->SetFilter('forum_id', $f);
-
-//	if($disabled = airbase_forum_forum::disabled_ids_list())
-//		$cl->SetFilter('forum_id', $disabled, true);
+	if($filter = defval($params, 'filter'))
+	{
+		foreach($filter as $name => $val)
+		{
+			if(preg_match('/^(\w+)<>$/', $name, $m))
+				$cl->SetFilter($m[1], $val, true);
+			else
+				$cl->SetFilter($name, $val);
+		}
+	}
 
 //	if($this->u())
 //	{
@@ -87,7 +91,7 @@ function bors_search_sphinx($query, $params = array())
 //	$cl->SetArrayResult(true);
 	$res = $cl->Query(dc($query), $indexes);
 
-//	print_d($res);
+//	var_dump($res);
 
 	$data = array();
 
@@ -96,7 +100,7 @@ function bors_search_sphinx($query, $params = array())
 	$data['total'] = $res['total'];
 
 	if($res === false)
-		$data['error'] = $cl->GetLastError();
+		echo $data['error'] = $cl->GetLastError();
 	else
 	{
 		if ( $cl->GetLastWarning() )

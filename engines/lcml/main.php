@@ -269,7 +269,6 @@ function lcml_smart($string)
 
 function lcml_tag_disabled($tag)
 {
-
 	if(@in_array('img', $enabled = config('lcml_tags_enabled')))
 		return false;
 
@@ -281,16 +280,53 @@ function lcml_tag_disabled($tag)
 
 function html2bb($text, $url)
 {
+	$text = preg_replace("!<(\w+)><(\w+)>(.+?)</\\1></\\2>!is", "<$1><$2>$3</$2></$1>", $text); // бывает и такой изврат: <b><i>..</b></i>
+
 	$text = preg_replace("!<font color=\"(blue)\">(.+?)</font>!is", "[$1]$2[/$1]", $text);
 	$text = preg_replace("!<p>(.+?)</p>!is", "\n$1\n", $text);
+	$text = preg_replace("!<i>(.+?)</i>!is", "[i]$1[/i]", $text);
+	$text = preg_replace("!<b>(.+?)</b>!is", "[b]$1[/b]", $text);
 	$text = preg_replace("!<p [^>]+>(.+?)</p>!is", "\n$1\n", $text);
+	$text = preg_replace("!<p>!i", "\n\n", $text);
 	$text = preg_replace("!<br\s*/?>!", "\n", $text);
 	$text = preg_replace("!\n{2,}!", "\n\n", $text);
 
 	$text = preg_replace("!(<a [^>]*href=\")(/.+?)(\"[^>]*?>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
 	$text = preg_replace("!(<a [^>]*href=)([^\"']\S+)( [^>]+>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
 
+	$text = preg_replace('!<div style="text-align: center">(.+?)</div>!is', '[center]$1[/center]', $text);
+
+	$text = preg_replace("!<a [^>]*href=\"([^\"]+)\"[^>]*>(.*?)</a>!is", '[url=$1]$2[/url]', $text);
+	$text = preg_replace('!(<img ([^>]+)>)!ise', 'lcmlbb_parse_img("$1");', $text);
+
+	$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+
+	$text = preg_replace('!<lj\-embed id="(\d+)" />!ise', "lcmlbb_lj_embed(\"$1\", '$url');", $text);
+	$text = str_replace('embed', 'xx', $text);
+
 	return trim($text);
+}
+
+function lcmlbb_lj_embed($id, $url)
+{
+	$html = bors_lib_http::get($url);
+//<iframe src="http://lj-toys.com/?auth_token=sessionless:1279962000:embedcontent:13110916%2685%26:ada38ef9ec102f7b5cd98ad58fd9fb097c6c4aa0&amp;moduleid=85&amp;preview=&amp;journalid=13110916" width="640" height="385" frameborder="0" class="lj_embedcontent" name="embed_13110916_85"></iframe>
+	if(!preg_match("!(<iframe src=\"[^\"]+?moduleid=$id.+?</iframe>)!is", $html, $m))
+		return ec("\n[i][red]Видеоролик со страницы [url]{$url}[/url] не удалось импортировать[/red][/i]\n");
+
+	return save_format($m[1]);
+}
+
+function lcmlbb_parse_img($tag)
+{
+	//alt="" width="158" height="240" border="0" src="http://pics.livejournal.com/idolomantis/pic/0003fg6a/s320x240"
+//	echo "img attrs = $tag\n";
+	$dom = new DOMDocument;
+	@$dom->loadHTML($tag);
+	$x = $dom->getElementsByTagName('img')->item(0);
+//	$x = $xs[0];
+//	echo "src=".$x->getAttribute('src')."\n";
+	return "[img]{$x->getAttribute('src')}[/img]";
 }
 
 function url_relative_join($url_main, $url_rel)

@@ -1004,6 +1004,8 @@ class base_object extends base_empty
 		return iconv('utf-8', $ics.'//IGNORE', $str);
 	}
 
+//	function __use_static() { return config('cache_static') && $this->cache_static() > 0; }
+
 	function content($can_use_static = true, $recreate = false)
 	{
 		$use_static = config('cache_static') 

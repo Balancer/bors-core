@@ -52,6 +52,8 @@ class base_rss extends base_page
 			$owner = $o->get('owner');
 			if($owner)
 				$item->author = $owner->title();
+
+			$item->category = object_property($o, 'keywords_string');
 /*
 			if($image = object_property($o, 'image'))
 			{

@@ -53,7 +53,7 @@ class base_rss extends base_page
 			if($owner)
 				$item->author = $owner->title();
 
-			$item->category = object_property($o, 'keywords_string');
+			$item->category = $rss->item_rss_keywords_string($o);
 /*
 			if($image = object_property($o, 'image'))
 			{
@@ -75,6 +75,7 @@ class base_rss extends base_page
 	function item_rss_title($item) { return $item->rss_title(); }
 	function item_rss_body($item, $rss) { return $rss->rss_body($item, $rss->rss_strip()); }
 	function item_rss_url($item) { return $item->url(); }
+	function item_rss_keywords_string($item) { return object_property($item, 'keywords_string'); }
 
 	function rss_body($object, $strip = 0)
 	{

@@ -35,12 +35,13 @@ class BorsXml
 
 	function cdata($parser, $cdata)
 	{
-		$cdata = trim($cdata);
-//		echo "Cdata '$cdata'<br />";
+//		$cdata = trim($cdata);
+//		if(preg_match('/новую концепцию для радарных/', $cdata))
+//			echo "cdata '$cdata'<br />\n";
 		if(empty($this->pointer['cdata']))
-			$this->pointer['cdata'] = dc(html_entity_decode($cdata));
+			$this->pointer['cdata'] = dc(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
 		else
-			$this->pointer['cdata'] .= dc(html_entity_decode($cdata));
+			$this->pointer['cdata'] .= dc(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
 	}
 
 	function tag_close($parser, $tag)

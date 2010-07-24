@@ -48,7 +48,7 @@ function http_get_content($url)
 		$query = $m[2];
 	}
 
-	if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt)$i/", $pure_url))
+	if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt)$/i", $pure_url))
 		return "";
 
 	$header = array();

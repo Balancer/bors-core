@@ -106,7 +106,8 @@ if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect
 if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY_STRING']))
 {
 	parse_str($_SERVER['QUERY_STRING'], $_GET);
-	$_POST = $_GET; // поскольку мы не знаем, что там и куда
+	if(empty($_POST))
+		$_POST = $_GET; // поскольку мы не знаем, что там и куда
 }
 
 $_GET = array_merge($_GET, $_POST); // но, вообще, нужно с этим завязывать

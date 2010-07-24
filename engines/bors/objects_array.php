@@ -17,6 +17,10 @@ function objects_array($class, $args = array())
 		$cargs['by_id'] = true;
 	unset($args['by_id']);
 
+	if(!empty($args['select']))
+		$cargs['select'] = $args['select'];
+	unset($args['select']);
+
 	if(($preload = @$args['preload']))
 	{
 		unset($args['preload']);

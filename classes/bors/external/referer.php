@@ -39,9 +39,6 @@ class bors_external_referer
 			if(preg_match($re, $target_url))
 				return;
 
-		echo "u=$target_url, ref=$referer\n";
-		print_d($url_data);
-
 		$data = array(
 			'target_class_name' => object_property($object, 'class_name'),
 			'target_object_id' => object_property($object, 'id'),
@@ -50,6 +47,7 @@ class bors_external_referer
 
 		if($q = bors_external_search::query_extract($referer))
 		{
+			echo '?';
 			// Это вход из поисковой системы
 			$data['query'] = $q;
 
@@ -73,6 +71,7 @@ class bors_external_referer
 		else
 		{
 			// Это переход по ссылке
+			echo '>';
 
 			$data['referer_normalized_url'] = $norm_referer;
 

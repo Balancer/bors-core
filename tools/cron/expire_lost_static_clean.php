@@ -2,7 +2,7 @@
 
 require_once('../config.php');
 
-require_once(BORS_CORE.'/config.php');
+require_once(BORS_CORE.'/init.php');
 require_once('inc/filesystem.php');
 
 main();

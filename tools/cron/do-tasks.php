@@ -1,7 +1,7 @@
 <?php
 
 require_once('../config.php');
-require_once(BORS_CORE.'/config.php');
+require_once(BORS_CORE.'/init.php');
 
 if(!config('bors_tasks_enabled'))
 	return;

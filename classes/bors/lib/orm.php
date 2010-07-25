@@ -13,7 +13,13 @@ class bors_lib_orm
 
 		// Если описание поля не массив, а строка
 		if(!is_array($field))
-			$field = array('name' => $field);
+		{
+			if(strpos($field, '|') !== false && preg_match('/^(\w+)\|(\w+)$/', $field, $m))
+			// Это запись вида 'property' => 'fiels|post_function'
+				$field = array('name' => $m[1], 'post_function' => $m[2]);
+			else // просто строка вида 'property' => 'field',
+				$field = array('name' => $field);
+		}
 		elseif(empty($field['name']))
 			$field['name'] = $property;
 
@@ -73,6 +79,18 @@ class bors_lib_orm
 					}
 				}
 
+		return $fields_array;
+	}
+
+	static function main_fields($object)
+	{
+		$fields_array = array();
+		foreach($object->table_fields() as $property => $field)
+		{
+			$field = self::field($property, $field);
+//			if($field['name'] != 'id')
+				$fields_array[] = $field;
+		}
 		return $fields_array;
 	}
 }

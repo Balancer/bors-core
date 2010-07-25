@@ -123,6 +123,9 @@ class base_object extends base_empty
 		if(!$data_load)
 			return false;
 
+		if(@$this->__loaded)
+			return true;
+
 		if(($storage_engine = $this->storage_engine()))
 		{
 			$storage_engine = object_load($storage_engine, NULL, array('no_load_cache' => true));

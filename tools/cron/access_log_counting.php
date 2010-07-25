@@ -3,7 +3,7 @@
 require_once('../config.php');
 include_once(BORS_CORE.'/init.php');
 
-$db = new driver_mysql('BORS');
+$db = new driver_mysql(config('bors_core_db'));
 $db->query('DELETE FROM bors_access_log WHERE access_time < UNIX_TIMESTAMP() - 3600');
 
 foreach(objects_array('bors_access_log', array('was_counted' => 0)) as $x)

@@ -125,17 +125,18 @@ function bors_clear() { $GLOBALS['bors_global'] = NULL; }
 
 function bors_exit($message = '')
 {
-	echo $message;
-
-	global $bors_exit_doing;
-	if(!empty($bors_exit_doing))
+	static $bors_exit_doing = false;
+	if($bors_exit_doing)
 		return true;
 
 	$bors_exit_doing = true;
+
+	echo $message;
+
 	if(config('cache_static'))
 		cache_static::drop(bors()->main_object());
+
 	bors()->changed_save();
-	$bors_exit_doing = false;
 
 	if(!config('do_not_exit'))
 		exit();

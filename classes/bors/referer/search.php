@@ -2,6 +2,8 @@
 
 class bors_referer_search extends base_object_db
 {
+	function main_table() { return 'bors_referer_search'; }
+
 	function main_table_fields()
 	{
 		return array(

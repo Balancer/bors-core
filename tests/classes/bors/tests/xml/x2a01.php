@@ -27,7 +27,7 @@ $data = array(
 					),
 					'description' => array(
 						0 => array(
-							'cdata' => '165км/ч...',
+							'cdata' => '165 км/ч...',
 						),
 					),
 					'comments' => array(

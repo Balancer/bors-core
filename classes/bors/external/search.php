@@ -40,6 +40,7 @@ class bors_external_search
 			'search.qip.ru' => 'query',
 			'search.ukr.net' => 'search_query',
 			'us.yhs.search.yahoo.com' => 'p',
+			'www.bing.com' => 'q',
 			'www.google.az' => 'q',
 			'www.google.ca' => 'q',
 			'www.google.com' => 'q',
@@ -49,12 +50,14 @@ class bors_external_search
 			'www.google.com.uk' => 'q',
 			'www.google.de' => 'q',
 			'www.google.gr' => 'q',
+			'www.google.kz' => 'q',
 			'www.google.lv' => 'q',
 			'www.google.md' => 'q',
 			'www.google.pl' => 'q',
 			'www.google.ru' => 'q',
 			'www.yandex.ru' => array('/text=([^&]+)/', $w1251_search),
 			'yandex.ru' => 'text',
+			'yandex.ua' => 'text',
 		);
 
 		$data = parse_url($url);

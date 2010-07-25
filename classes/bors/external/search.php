@@ -17,6 +17,7 @@ class bors_external_search
 			'google.ee' => 'q',
 			'google.it' => 'q',
 			'google.pt' => 'q',
+			'ie.search.msn.com' => 'q',
 			'images.yandex.ru' => 'text',
 			'images.google.cl' => $google_img,
 			'images.google.cn' => $google_img,

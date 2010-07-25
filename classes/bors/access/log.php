@@ -14,12 +14,17 @@ class bors_access_log extends base_object_db
 			'referer',
 			'object_class_name' => 'class_name',
 			'object_id',
+			'target_class_name' => 'class_name',
+			'target_object_id' => 'object_id',
 			'access_time',
 			'operation_time',
 			'has_bors',
 			'has_bors_url',
 			'user_agent',
 			'is_bot',
+			'was_counted',
 		);
 	}
+
+	function auto_targets()	{ return array('target' => 'target_class_name(target_object_id)'); }
 }

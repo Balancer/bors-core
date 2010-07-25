@@ -43,7 +43,9 @@ class bors_external_feed extends base_object_db
 
 			$pub_date = strtotime($pub_date);
 
-			$author_name = @$item['lj:poster'][0]['cdata'];
+			$author_name = @$item['author'][0]['cdata'];
+			if(!$author_name)
+				$author_name = @$item['lj:poster'][0]['cdata'];
 //			echo "author name = $author_name\n";
 
 			if(empty($guid))
@@ -61,7 +63,7 @@ class bors_external_feed extends base_object_db
 
 //			echo date('r', $pub_date)."\n";
 
-			$is_suspended = preg_match('!'.$this->skip_entry_content_regexp().'!', $description);
+			$is_suspended = $this->skip_entry_content_regexp() && preg_match('!'.$this->skip_entry_content_regexp().'!', $description);
 
 			if($entry && $pub_date <= $entry->pub_date())
 				continue;
@@ -116,8 +118,8 @@ class bors_external_feed extends base_object_db
 			if(!$is_suspended)
 				$entry->update_target();
 //			echo "update_target($forum_id, {$this->target_topic_id()});\n";
-			if(!$is_suspended)
-				return;
+//			if(!$is_suspended)
+//				return;
 		} // endforeach $items
 	}
 }

@@ -118,7 +118,7 @@ function objects_delete($class, $args = array())
 
 	$where = mysql_args_compile($args, $class);
 
-	$init = &new $class(NULL);
+	$init = new $class(NULL);
 
 	foreach($init->storage()->load($init, $where, false, $cargs) as $x)
 		$x->delete();

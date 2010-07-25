@@ -51,7 +51,9 @@ class bors_external_feeds_entry extends base_object_db
 			$text[] = "\n// Транслировано с [url]{$link}[/url]\n";
 
 		$text = str_replace("/\n{3,}/", "\n\n", join("\n", $text));
-		return "[b]{$this->title()}[/b]\n\n$text";
+//		if($this->feed()->post_as_topics())
+//		return "[b]{$this->title()}[/b]\n\n$text";
+		return $text;
 	}
 
 	function update_target()
@@ -94,6 +96,7 @@ class bors_external_feeds_entry extends base_object_db
 		$owner_name = $this->author_name() ? $this->author_name() : $feed->owner_name();
 
 		echo "update entry {$this->title()} [{$this->keywords_string()}]\n";
+				$forum->update_num_topics();
 		if($this->target_object_id())
 		{
 			$target = $this->target();
@@ -124,7 +127,7 @@ class bors_external_feeds_entry extends base_object_db
 			{
 				$topic = object_new_instance('balancer_board_topic', array(
 					'forum_id' => $forum_id,
-					'title'	=> $this->title(),
+					'title'	=> $this->title() ? $this->title() : ec('Без названия'),
 					'is_public' => true,
 					'owner_id'=> $owner_id,
 					'last_poster_name' => $owner_name,
@@ -132,6 +135,8 @@ class bors_external_feeds_entry extends base_object_db
 					'keywords_string' => $keywords,
 					'create_time' => $this->pub_date(),
 				));
+
+				$forum->update_num_topics();
 			}
 			else
 				$topic = object_load('balancer_board_topic', $topic_id);

@@ -99,4 +99,6 @@ class base_page_db extends base_page
 	function compiled_source() { return lcml($this->source()); }
 	static function objects_array($where) { return objects_array($where); }
 	static function objects_first($where) { return objects_first($where); }
+
+	function table_fields() { return $this->fields_map(); }
 }

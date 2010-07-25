@@ -1,0 +1,12 @@
+{$this->pages_links_nul()}
+
+<div class="blogs_list">
+{foreach from=$items item="x"}
+<div class="blog_record">
+<h3>{$x->titled_url()}</h3>
+<div class="blog_record_body">{$x->body(512)}</div>
+</div>
+{/foreach}
+</div>
+
+{$this->pages_links_nul()}

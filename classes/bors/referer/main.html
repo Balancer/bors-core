@@ -1,0 +1,43 @@
+<table class="btab">
+<caption>Топ {$searches|@count} поисковых запросов</caption>
+<tr>
+	<th>Запрос</th>
+	<th>Ссылка</th>
+	<th>Последняя поисковая машина</th>
+	<th>Всего запросов</th>
+</tr>
+{foreach from=$searches item="s"}
+<tr>
+	<td>{$s->query()}</td>
+	<td>{if $s->object()}
+			{$s->object()->titled_url()}
+		{else}
+			<a href="{$s->target_url()}">{$s->target_class_name()}://{$s->target_object_id()}</a>
+		{/if}
+	</td>
+	<td>{$s->search_engine()}</td>
+	<td>{$s->count()}</td>
+</tr>
+{/foreach}
+</table>
+
+<table class="btab">
+<caption>Топ {$links|@count} внешних ссылок</caption>
+<tr>
+	<th>Внешняя ссылка</th>
+	<th>Наша ссылка</th>
+	<th>Всего запросов</th>
+</tr>
+{foreach from=$links item="l"}
+<tr>
+	<td>{$l->referer_original_url()}</td>
+	<td>{if $l->object()}
+			{$l->object()->titled_url()}
+		{else}
+			<a href="{$l->target_url()}">{$l->target_class_name()}://{$l->target_object_id()}</a>
+		{/if}
+	</td>
+	<td>{$l->count()}</td>
+</tr>
+{/foreach}
+</table>

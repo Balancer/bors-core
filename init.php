@@ -274,4 +274,5 @@ if(get_magic_quotes_gpc() && $_POST)
 	ungpc_array($_POST);
 
 bors_init();
+register_shutdown_function('bors_exit');
 bors_client_analyze();

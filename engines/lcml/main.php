@@ -284,12 +284,19 @@ function html2bb($text, $url)
 
 	$text = preg_replace("!<font color=\"(blue)\">(.+?)</font>!is", "[$1]$2[/$1]", $text);
 	$text = preg_replace("!<p>(.+?)</p>!is", "\n$1\n", $text);
-	$text = preg_replace("!<i>(.+?)</i>!is", "[i]$1[/i]", $text);
-	$text = preg_replace("!<b>(.+?)</b>!is", "[b]$1[/b]", $text);
+
+	foreach(explode(' ', 'i b u ol ul li') as $tag)
+	{
+		$text = preg_replace("!<$tag>(.+?)</$tag>!is", "[$tag]$1[/$tag]", $text);
+		$text = preg_replace("!<$tag [^>]+>(.+?)</$tag>!is", "[$tag]$1[/$tag]", $text);
+	}
 	$text = preg_replace("!<p [^>]+>(.+?)</p>!is", "\n$1\n", $text);
 	$text = preg_replace("!<p>!i", "\n\n", $text);
+	$text = preg_replace("!<o:[^>]+>!i", "", $text);
+	$text = preg_replace("!</o:[^>]+>!i", "", $text);
+	$text = preg_replace("!<noindex>!i", "", $text);
+	$text = preg_replace("!</noindex>!i", "", $text);
 	$text = preg_replace("!<br\s*/?>!", "\n", $text);
-	$text = preg_replace("!\n{2,}!", "\n\n", $text);
 
 	$text = preg_replace("!(<a [^>]*href=\")(/.+?)(\"[^>]*?>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
 	$text = preg_replace("!(<a [^>]*href=)([^\"']\S+)( [^>]+>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
@@ -297,12 +304,16 @@ function html2bb($text, $url)
 	$text = preg_replace('!<div style="text-align: center">(.+?)</div>!is', '[center]$1[/center]', $text);
 
 	$text = preg_replace("!<a [^>]*href=\"([^\"]+)\"[^>]*>(.*?)</a>!is", '[url=$1]$2[/url]', $text);
-	$text = preg_replace('!(<img ([^>]+)>)!ise', 'lcmlbb_parse_img("$1");', $text);
+	$text = preg_replace('!(<img ([^>]+)>)!ise', 'lcmlbb_parse_img(stripslashes("$1"));', $text);
 
 	$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
 	$text = preg_replace('!<lj\-embed id="(\d+)" />!ise', "lcmlbb_lj_embed(\"$1\", '$url');", $text);
 	$text = str_replace('embed', 'xx', $text);
+
+	$text = preg_replace("/^\s+$/m", '', $text);
+
+	$text = preg_replace("!\n{2,}!", "\n\n", $text);
 
 	return trim($text);
 }

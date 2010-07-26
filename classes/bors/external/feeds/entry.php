@@ -69,6 +69,9 @@ class bors_external_feeds_entry extends base_object_db
 		if($this->target_object_id()) // Уже было запощено ранее.
 		{
 			$post = $this->target();
+			if(!$post)
+				return;
+
 			$post->set_owner_id($owner_id, true);
 			$post->set_author_name($owner_name, true);
 			$post->set_source($this->make_source(), true);

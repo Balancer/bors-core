@@ -31,6 +31,7 @@ function lcml_html_pre($txt)
 		$txt = preg_replace("!</tr!","</tabtr", $txt);
 
 		$txt = preg_replace("!<img src=(http://[^> ]+)>!","<html_img src=\"$1\">", $txt);
+//		$txt = preg_replace("!<img src=\"(http://[^\"]+)\"[^>]+>!","<html_img src=\"$1\">", $txt);
 		$txt = preg_replace("!<img !","<html_img ", $txt);
 		$txt = preg_replace("!<a !","<html_a ", $txt);
 		$txt = preg_replace("!</a>!","</html_a>", $txt);

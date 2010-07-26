@@ -11,6 +11,7 @@ class bors_external_feed extends base_object_db
 			'feed_url',
 			'append_keywords',
 			'post_as_topics',
+			'topics_auto_search',
 			'owner_name',
 			'owner_id',
 			'target_forum_id',
@@ -19,6 +20,8 @@ class bors_external_feed extends base_object_db
 			'is_suspended',
 			'id_extract_regexp',
 			'skip_entry_content_regexp',
+			'titles_in_posts',
+			'is_washeable',
 		);
 	}
 

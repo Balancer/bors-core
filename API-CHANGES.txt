@@ -10,6 +10,8 @@
 
 config/default.php теперь переносится в config.php
 
+Поиск по: for i in $(locate bors-loader.php|grep '/var/www/'); do echo $i; cat $i|grep config.php; done
+
 2010-07-05
 ----------
 Это только подготовка, из API ещё не снесено.

@@ -60,8 +60,9 @@ class bors_external_feed extends base_object_db
 				$feed_entry_id = $guid;
 
 			$entry = objects_first('bors_external_feeds_entry', array(
-				'feed_id' => $this->id(),
-				'entry_id' => $feed_entry_id,
+//				'feed_id' => $this->id(),
+//				'entry_id' => $feed_entry_id,
+				'entry_url' => $guid,
 			));
 
 //			echo date('r', $pub_date)."\n";

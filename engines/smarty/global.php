@@ -95,3 +95,20 @@ function template_description($text)
 {
 	bors_page::add_template_data_array('meta[description]', htmlspecialchars($text));
 }
+
+function template_jquery_markitup($id)
+{
+
+	template_jquery();
+	$base = config('jquery.markitup.base');
+
+	template_css("/_bors3rdp/jquery/plugins/$base/skins/simple/style.css");
+	template_css("/_bors3rdp/jquery/plugins/".config('jquery.markitup.sets.bbcode')."/style.css");
+
+	template_js_include("/_bors3rdp/jquery/plugins/$base/jquery.markitup.pack.js");
+	template_js_include("/_bors3rdp/jquery/plugins/".config('jquery.markitup.sets.bbcode')."/set.js");
+
+	template_js("jQuery(document).ready(function() { jQuery('$id').markItUp(mySettings); });");
+
+//	jQuery('#bbcode').height(300);
+}

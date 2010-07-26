@@ -1124,4 +1124,33 @@ class base_object extends base_empty
 
 		return defval($desc, 'title', $field_name);
 	}
+
+	function add_keyword($keyword, $up)
+	{
+		$keyword = trim($keyword);
+		$keywords = $this->keywords();
+		foreach($keywords as $kw)
+		{
+			$kw = trim($kw);
+			if(common_keyword::compare_eq($kw, $keyword))
+				return;
+		}
+
+		$keywords[] = $keyword;
+		$this->set_keywords($keywords, $up);
+	}
+
+	function remove_keyword($keyword, $up)
+	{
+		$keyword = trim($keyword);
+		$keywords = array();
+		foreach($this->keywords() as $kw)
+		{
+			$kw = trim($kw);
+			if(!common_keyword::compare_eq($kw, $keyword))
+				$keywords[] = $kw;
+		}
+
+		$this->set_keywords($keywords, $up);
+	}
 }

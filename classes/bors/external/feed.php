@@ -29,7 +29,13 @@ class bors_external_feed extends base_object_db
 	{
 		$xml = bors_lib_http::get($this->feed_url());
 		$data = bors_lib_xml::xml2array($xml);
-		$rss = $data['rss'][0];
+		$rss = @$data['rss'][0];
+		if(!$rss)
+		{
+			debug_hidden_log('rss_error', "Can't get rss {$this->feed_url()}");
+			return;
+		}
+
 		$channel = $rss['channel'][0];
 
 		$items = $channel['item'];

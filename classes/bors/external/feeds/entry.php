@@ -98,7 +98,7 @@ class bors_external_feeds_entry extends base_object_db
 
 		$topic->recalculate();
 
-		echo "Was created post {$post->debug_title()}\n";
+		echo "\tnew post {$post->debug_title()}\n";
 
 		$forum->update_num_topics();
 
@@ -112,7 +112,7 @@ class bors_external_feeds_entry extends base_object_db
 			'is_public' => true,
 		));
 
-		echo "Was created blog {$blog->debug_title()}\n";
+		echo "\tnew blog {$blog->debug_title()}\n";
 
 		$this->set_target_class_name($post->class_name(), true);
 		$this->set_target_object_id($post->id(), true);
@@ -180,7 +180,7 @@ class bors_external_feeds_entry extends base_object_db
 			'create_time' => $this->pub_date(),
 		));
 
-		echo "Was created topic {$topic->debug_title()}\n";
+		echo "\tnew topic {$topic->debug_title()}\n";
 
 		return $topic;
 	}

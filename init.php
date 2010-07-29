@@ -1,5 +1,8 @@
 <?php
 
+if(empty($GLOBALS['stat']['start_microtime']))
+	$GLOBALS['stat']['start_microtime'] = microtime(true);
+
 /*
 	Инициализация всех систем фреймворка.
 	После вызова этого файла можно использовать любой функционал.

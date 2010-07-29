@@ -657,7 +657,7 @@ class base_object extends base_empty
 	function auto_objects() { return array(); }
 	function auto_targets() { return array(); }
 
-	function storage() { return object_load($this->storage_engine()); }
+	function storage() { if($storage_class_name = $this->get('storage_engine')) return new $storage_class_name; else return NULL; }
 
 	function access()
 	{

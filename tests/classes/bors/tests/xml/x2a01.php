@@ -5,10 +5,8 @@
 $data = array(
 	'channel' => array(
 		0 => array(
-			'cdata' => '',
 			'item' => array(
 				0 => array(
-					'cdata' => '',
 					'guid' => array(
 						0 => array(
 							'isPermaLink' => 'true',
@@ -47,7 +45,6 @@ $data = array(
 					),
 				),
 				1 => array(
-					'cdata' => '',
 					'guid' => array(
 						0 => array(
 							'isPermaLink' => 'true',

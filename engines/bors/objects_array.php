@@ -27,13 +27,14 @@ function objects_array($class, $args = array())
 		$preload = explode(',', $preload);
 	}
 
-	$where = mysql_args_compile($args, $class);
-
 	$init = new $class(NULL);
 
 	if($s = $init->storage())
 	{
-		$objects = $s->load($init, $where, false, $cargs);
+		if(method_exists($s, 'load_array'))
+			$objects = $s->load_array($init, $args);
+		else
+			$objects = $s->load($init, mysql_args_compile($args, $class), false, $cargs);
 
 		if(config('debug_objects_create_counting_details'))
 			debug_count_inc('init object '.$class, count($objects));

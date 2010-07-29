@@ -6,6 +6,8 @@ class BorsXml
 	private $pointer;
 	var $dom = array();
 
+	private $in_tag = false;
+
 	function __construct()
 	{
 		$this->pointer = &$this->dom;
@@ -24,20 +26,22 @@ class BorsXml
 
 	function tag_open($parser, $tag, $attributes)
 	{
-//		echo "Open tag $tag, attr=".print_r($attributes, true)."<br />";
+		unset($this->pointer['cdata']);
+//		echo "Open tag $tag, attr=".print_r($attributes, true)."<br />\n";
 		$attributes['_tag'] = $tag;
 		$attributes['_parent'] = &$this->pointer;
 
 		$this->pointer[$tag][] = &$attributes;
 
 		$this->pointer = &$attributes;
+		$this->in_tag = true;
 	}
 
 	function cdata($parser, $cdata)
 	{
-//		$cdata = trim($cdata);
-//		if(preg_match('/новую концепцию для радарных/', $cdata))
-//			echo "cdata '$cdata'<br />\n";
+		if(!$this->in_tag)
+			return;
+
 		if(empty($this->pointer['cdata']))
 			$this->pointer['cdata'] = dc(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
 		else
@@ -46,7 +50,8 @@ class BorsXml
 
 	function tag_close($parser, $tag)
 	{
-//		echo "Close tag $tag<br />";
+		$this->in_tag = false;
+//		echo "Close tag $tag\n";
 		$parent = &$this->pointer['_parent'];
 		unset($this->pointer['_parent']);
 		unset($this->pointer['_tag']);

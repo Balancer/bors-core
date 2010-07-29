@@ -58,7 +58,7 @@ function http_get_content($url)
 
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => 5,
+		CURLOPT_TIMEOUT => 10,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 3,
 		CURLOPT_ENCODING => 'gzip,deflate',

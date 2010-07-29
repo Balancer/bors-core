@@ -29,7 +29,15 @@ class bors_external_feed extends base_object_db
 	{
 		$xml = bors_lib_http::get($this->feed_url());
 		$data = bors_lib_xml::xml2array($xml);
-		$rss = $data['rss'][0];
+		$rss = @$data['rss'][0];
+		if(!$rss)
+		{
+			echo "RSS {$this->feed_url()} not found\n";
+			print_d($xml);
+			debug_hidden_log('rss_error', "Can't get rss {$this->feed_url()}");
+			return;
+		}
+
 		$channel = $rss['channel'][0];
 
 		$items = $channel['item'];
@@ -60,8 +68,9 @@ class bors_external_feed extends base_object_db
 				$feed_entry_id = $guid;
 
 			$entry = objects_first('bors_external_feeds_entry', array(
-				'feed_id' => $this->id(),
-				'entry_id' => $feed_entry_id,
+//				'feed_id' => $this->id(),
+//				'entry_id' => $feed_entry_id,
+				'entry_url' => $guid,
 			));
 
 //			echo date('r', $pub_date)."\n";

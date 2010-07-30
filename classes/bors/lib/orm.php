@@ -61,7 +61,9 @@ class bors_lib_orm
 			if(preg_match('/^set_(\w+)$/', $name, $m))
 				$fields_array[$m[1]] = $m[1];
 
-		foreach($object->fields() as $db => $tables)
+//		print_r($object->fields_map_db());
+
+		foreach($object->fields_map_db() as $db => $tables)
 			foreach($tables as $table => $fields)
 				foreach($fields as $property => $field)
 				{

@@ -1,5 +1,7 @@
 <?php
 
+ini_set('display_errors', 1);
+
 include_once(realpath(dirname(__FILE__).'/../config-local.php'));
 include_once(BORS_CORE.'/config.php');
 

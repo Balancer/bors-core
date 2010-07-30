@@ -110,6 +110,8 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 	{
 		foreach($tables as $table => $fields)
 		{
+			if(preg_match('!^inner\s+(.+)$!i', $table, $m))
+				$table = $m[1];
 			if(preg_match('!^(\w+)\((.+)\)$!', $table, $m))
 				$table = $m[1];
 

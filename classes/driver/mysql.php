@@ -43,6 +43,7 @@ class driver_mysql extends DataBase implements Iterator
 	{
 		if(!is_array($where_map))
 			echo debug_trace();
+
 		if(!empty($where_map['table']))
 		{
 			$table = $where_map['table'];

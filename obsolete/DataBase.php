@@ -211,6 +211,7 @@ class DataBase extends base_object
 
 	function fetch()
 	{
+//		echo debug_trace();
 		if(!$this->result)
 			return $this->__current_value = false;
 

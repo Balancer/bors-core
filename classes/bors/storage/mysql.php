@@ -40,24 +40,11 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static function load_array($object, $where)
 	{
-		echo "load_array($object, $where)\n";
-		$select = array();
-		$post_functions = array();
-		foreach(bors_lib_orm::main_fields($object) as $f)
-		{
-			$x = $f['name'];
-			if($f['name'] != $f['property'])
-				$x .= ' AS '.$f['property'];
-
-			$select[] = $x;
-
-			if(!empty($f['post_function']))
-				$post_functions[$f['property']] = $f['post_function'];
-		}
-
+//		echo "load_array($object, $where)\n";
 		$dbh = new driver_mysql($object->db_name());
 
-		self::__join('left', $object, $select, $where, $post_functions);
+		list($select, $where) = self::__query_data_prepare($object, $where);
+//		var_dump($where);
 
 		$datas = $dbh->select_array($object->table_name(), join(',', $select), $where);
 		$objects = array();
@@ -90,9 +77,10 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$post_functions[$f['property']] = $f['post_function'];
 		}
 
-		self::__join('left', $object, $select, $where, $post_functions);
+		self::__join('inner', $object, $select, $where, $post_functions);
+		self::__join('left',  $object, $select, $where, $post_functions);
 
-		$dbh = new driver_mysql($object->db_name());
+//		$dbh = new driver_mysql($object->db_name());
 //		config_set('debug_mysql_queries_log', 'false');
 		return array($select, $where);
 	}
@@ -152,6 +140,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static private function __join($type, $object, &$select, &$where, &$post_functions)
 	{
+		$where['*class_name'] = $object->class_name();
+
 		$main_db = $object->db_name();
 		$main_table = $object->table_name();
 		$main_id_field = $object->id_field();
@@ -190,7 +180,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 						if(!empty($field['post_function']))
 							$post_functions[$field['property']] = $field['post_function'];
 					}
-
 				}
 			}
 		}

@@ -179,6 +179,12 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 
 function mysql_args_compile($args, $class='')
 {
+	if(!empty($args['*class_name']))
+	{
+		$class = $args['*class_name'];
+		unset($args['*class_name']);
+	}
+
 	$join = array();
 	if(!empty($args['inner_join']))
 	{

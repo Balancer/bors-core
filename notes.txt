@@ -56,3 +56,8 @@ APC/memcached/etc - performance
  * http://avnetlabs.com/php/php-framework-comparison-benchmarks
  * http://www.php.lt/benchmark/phpbench.php
 
+Итераторы
+---------
+ * http://jacobsantos.com/2006/general/patterns-for-php-iterator/
+ * http://articles.sitepoint.com/article/php5-standard-library
+ * http://www.devshed.com/c/a/PHP/Iterators-in-the-Simplest-Sense-Traversing-Data-Structures-in-PHP-5/3/

@@ -773,7 +773,12 @@ class base_object extends base_empty
 
 	function main_table_fields() { return array('id'); }
 
-	function id_field()    { return defval($this->fields_map(), 'id',    'id'   ); }
+	function id_field()
+	{
+		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
+		return defval($ff, 'id', 'id');
+	}
+
 	function title_field() { return defval($this->fields_map(), 'title', 'title'); }
 
 	function set_checkboxes($check_list, $db_up)

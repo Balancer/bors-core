@@ -657,7 +657,7 @@ class base_object extends base_empty
 	function auto_objects() { return array(); }
 	function auto_targets() { return array(); }
 
-	function storage() { return object_load($this->storage_engine()); }
+	function storage() { if($storage_class_name = $this->get('storage_engine')) return new $storage_class_name; else return NULL; }
 
 	function access()
 	{
@@ -773,7 +773,12 @@ class base_object extends base_empty
 
 	function main_table_fields() { return array('id'); }
 
-	function id_field()    { return defval($this->fields_map(), 'id',    'id'   ); }
+	function id_field()
+	{
+		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
+		return defval($ff, 'id', 'id');
+	}
+
 	function title_field() { return defval($this->fields_map(), 'title', 'title'); }
 
 	function set_checkboxes($check_list, $db_up)

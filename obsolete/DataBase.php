@@ -6,9 +6,9 @@ require_once('inc/texts.php');
 
 class DataBase extends base_object
 {
-	private $dbh;
-	private $result;
-	private $row;
+	protected $dbh;
+	protected $result;
+	protected $row;
 	private $db_name;
 	private $x1, $x2, $x3;
 	private $start_time;
@@ -207,13 +207,16 @@ class DataBase extends base_object
 		@mysql_free_result($this->result);
 	}
 
+	protected $__current_value;
+
 	function fetch()
 	{
+//		echo debug_trace();
 		if(!$this->result)
-			return false;
+			return $this->__current_value = false;
 
-		if(!($row = mysql_fetch_assoc($this->result)))
-			return false;
+		if(!($row = $this->row = mysql_fetch_assoc($this->result)))
+			return $this->__current_value = false;
 
 		if(empty($GLOBALS['bors_data']['config']['gpc']))
 		{
@@ -236,7 +239,7 @@ class DataBase extends base_object
 				}
 			}
 
-			return $row;
+			return $this->__current_value = $row;
 		}
 
 		if(sizeof($row)==1)
@@ -253,13 +256,13 @@ class DataBase extends base_object
 					$v = iconv($this->dcs, $this->ics.'//IGNORE', $v);
 				$row[$k] = quote_fix($v);
 			}
-			
-		return $row;
+
+		return $this->__current_value = $row;
 	}
 
 	function fetch_row()
 	{
-		return mysql_fetch_assoc($this->result);
+		return $this->row = mysql_fetch_assoc($this->result);
 	}
 
 	function fetch1()

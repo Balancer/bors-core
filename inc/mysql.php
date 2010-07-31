@@ -110,6 +110,8 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 	{
 		foreach($tables as $table => $fields)
 		{
+			if(preg_match('!^inner\s+(.+)$!i', $table, $m))
+				$table = $m[1];
 			if(preg_match('!^(\w+)\((.+)\)$!', $table, $m))
 				$table = $m[1];
 
@@ -179,6 +181,12 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 
 function mysql_args_compile($args, $class='')
 {
+	if(!empty($args['*class_name']))
+	{
+		$class = $args['*class_name'];
+		unset($args['*class_name']);
+	}
+
 	$join = array();
 	if(!empty($args['inner_join']))
 	{

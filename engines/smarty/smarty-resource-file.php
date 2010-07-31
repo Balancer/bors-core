@@ -32,6 +32,11 @@
 				$tpl_source = ec(file_get_contents($fn));
 				return true;
 			}
+			if(file_exists($fn = $dir.'/'.$tpl_name))
+			{
+				$tpl_source = ec(file_get_contents($fn));
+				return true;
+			}
 		}
 
         return false;
@@ -64,6 +69,7 @@
 		}
 
 		$find_tpl = '/templates/'.$tpl_name;
+		$find_classes_tpl = '/'.$tpl_name;
 		$default_template_dir = '/templates/'.dirname(config('default_template')).'/'.$tpl_name;
 
 		if(!$found)
@@ -71,6 +77,13 @@
 			foreach(bors_dirs(true) as $dir)
 			{
 				if(file_exists($fn = $dir.$find_tpl))
+				{
+					$tpl_timestamp = filemtime($fn);
+					$found = true;
+					break;
+				}
+
+				if(file_exists($fn = $dir.$find_classes_tpl))
 				{
 					$tpl_timestamp = filemtime($fn);
 					$found = true;

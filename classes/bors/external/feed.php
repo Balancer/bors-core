@@ -93,6 +93,17 @@ class bors_external_feed extends base_object_db
 						$tags[] = $t;
 				}
 			}
+			else
+			{
+				//TODO: пока жёсткий харкод. Нужно будет придумать общие настройки
+				if(stripos($title, 'Имхонет') !== false && strpos($description, 'Фильм:') !== false)
+				{
+					$tags[] = 'кино';
+					$tags[] = 'фильм';
+				}
+				if(preg_match('/Отзыв о фильме "(.+)" на Имхонет/', $title, $m))
+					$tags[] = $m[1];
+			}
 
 			$keywords_string = join(', ', $tags);
 

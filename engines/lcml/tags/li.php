@@ -5,8 +5,9 @@ function lt_li($text)
 	return "<li />";
 }
 
-function lp_li($text)
+function lp_li($text, &$param)
 {
+	$param['skip_around_cr'] = true;
 	return "<li>".lcml($text)."</li>";
 }
 
@@ -18,7 +19,7 @@ function lp_ul($text, &$param)
 		$type = "";
 
 	$param['skip_around_cr'] = true;
-	return "\n<ul$type>".lcml($text)."</ul>\n";
+	return save_format("\n<ul$type>".lcml(trim($text))."</ul>\n");
 }
 
 function lp_ol($text, $param)
@@ -28,7 +29,7 @@ function lp_ol($text, $param)
 	else
 		$type = "";
 
-	return "\n<ol$type>".lcml($text)."</ol>\n";
+	return save_format("\n<ol$type>".lcml($text)."</ol>\n");
 }
 
 require_once('inc/strings.php');

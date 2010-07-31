@@ -6,7 +6,12 @@ function smarty_function_php_include($params, &$smarty)
 //	$cwd = getcwd();
 //	echo "Load {$params['file']}<br/>";
 //	@chdir(dirname(@$params['file']));
-//	var_dump($smarty);
+//	echo ini_get('include_path');
+
+/*	$tpl = $smarty->get_template_vars('page_template');
+	if(preg_match('!^xfile:(.+)/[^/]+$!', $tpl, $m))
+		print_d($m);
+*/
 	include(@$params['file']);
 //	@chdir(dirname($cwd));
 	$result = ob_get_contents();

@@ -48,6 +48,14 @@ class storage_db_mysql_smart extends base_null
 
 			  foreach($tables as $table_name => $fields)
 			  {
+				if(preg_match('!^inner\s+(.+?)$!i', $table_name, $m))
+				{
+					$table_name = $m[1];
+					$join = ' INNER JOIN `';
+				}
+				else
+					$join = ' LEFT JOIN `';
+
 				if(strpos($table_name, '(') && preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m)) // table(id)
 				{
 					$table_name	= $m[1];
@@ -65,14 +73,6 @@ class storage_db_mysql_smart extends base_null
 					$table_name = $m[1];
 					$on = "{$m[2]}.$def_id = $main_tab.{$m[3]}";
 				}
-
-				if(preg_match('!^inner\s+(.+?)$!', $table_name, $m))
-				{
-					$table_name = $m[1];
-					$join = ' INNER JOIN `';
-				}
-				else
-					$join = ' LEFT JOIN `';
 
 				foreach($fields as $property => $field)
 				{

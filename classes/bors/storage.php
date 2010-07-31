@@ -1,5 +1,5 @@
 <?php
 
-class bors_storage implements Iterator
+class bors_storage extends base_null
 {
 }

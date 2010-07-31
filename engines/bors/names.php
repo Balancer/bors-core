@@ -36,6 +36,9 @@ function class_name_to_id($object)
 	if(!$class_name)
 		return NULL;
 
+	if(in_array($class_name, config('classes_skip', array())))
+		return NULL;
+
 	if(!config('main_bors_db'))
 		return $class_name;
 

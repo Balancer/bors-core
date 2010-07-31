@@ -5,7 +5,7 @@ class Xml
 	private $parser;
 	private $pointer;
 	var $dom = array();
-	
+
 	function __construct()
 	{
 		$this->pointer = &$this->dom;

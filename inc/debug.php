@@ -246,7 +246,7 @@ function debug_timing_start($category)
 {
 	global $bors_debug_timing;
 	if(empty($bors_debug_timing[$category]))
-		$bors_debug_timing[$category] = array('start' => NULL, 'calls'=>0, 'total'=>0);
+		$bors_debug_timing[$category] = array('start' => NULL, 'calls'=>0, 'total'=>0, 'mem_total' => 0);
 
 	$current = &$bors_debug_timing[$category];
 
@@ -257,8 +257,8 @@ function debug_timing_start($category)
 		return;
 	}
 
-	list($usec, $sec) = explode(" ",microtime());
-	$current['start'] = ((float)$usec + (float)$sec);
+	$current['start'] = microtime(true);
+	$current['mem'] = memory_get_usage();
 }
 
 function debug_timing_stop($category)
@@ -272,12 +272,14 @@ function debug_timing_stop($category)
 		return;
 	}
 
-	list($usec, $sec) = explode(" ",microtime());
-	$time = ((float)$usec + (float)$sec) - $current['start'];
+	$mem = memory_get_usage() - $current['mem'];
+	$time = microtime(true) - $current['start'];
 
 	$current['start'] = NULL;
+	$current['mem'] = NULL;
 	$current['calls']++;
 	$current['total'] += $time;
+	$current['mem_total'] += $mem;
 }
 
 function debug_timing_info_all()
@@ -288,7 +290,7 @@ function debug_timing_info_all()
 	$result = "";
 	ksort($bors_debug_timing);
 	foreach($bors_debug_timing as $section => $data)
-		$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls, ".sprintf('%.2f', $data['total']/$time * 100)."%]\n";
+		$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls, ".sprintf('%.2f', $data['total']/$time * 100)."%, {$data['mem_total']}]\n";
 
 	return $result;
 }

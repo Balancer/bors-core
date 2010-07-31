@@ -40,23 +40,11 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static function load_array($object, $where)
 	{
-		$select = array();
-		$post_functions = array();
-		foreach(bors_lib_orm::main_fields($object) as $f)
-		{
-			$x = $f['name'];
-			if($f['name'] != $f['property'])
-				$x .= ' AS '.$f['property'];
-
-			$select[] = $x;
-
-			if(!empty($f['post_function']))
-				$post_functions[$f['property']] = $f['post_function'];
-		}
-
+//		echo "load_array($object, $where)\n";
 		$dbh = new driver_mysql($object->db_name());
 
-		self::__join('left', $object, $select, $where, $post_functions);
+		list($select, $where) = self::__query_data_prepare($object, $where);
+//		var_dump($where);
 
 		$datas = $dbh->select_array($object->table_name(), join(',', $select), $where);
 		$objects = array();
@@ -73,49 +61,87 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		return $objects;
 	}
 
+	static private function __query_data_prepare($object, $where)
+	{
+		$select = array();
+		$post_functions = array();
+		foreach(bors_lib_orm::main_fields($object) as $f)
+		{
+			$x = $f['name'];
+			if($f['name'] != $f['property'])
+				$x .= " AS `{$f['property']}`";
+
+			$select[] = $x;
+
+			if(!empty($f['post_function']))
+				$post_functions[$f['property']] = $f['post_function'];
+		}
+
+		self::__join('inner', $object, $select, $where, $post_functions);
+		self::__join('left',  $object, $select, $where, $post_functions);
+
+//		$dbh = new driver_mysql($object->db_name());
+//		config_set('debug_mysql_queries_log', 'false');
+		return array($select, $where);
+	}
+
 	function save($object)
 	{
 //		print_d($object->changed_fields);
 	}
 
-    public function __construct($array)
+	private $data;
+	private $dbi;
+	private $object;
+	private $__class_name;
+
+	static function each($class_name, $where)
+	{
+		$object = new $class_name(NULL);
+		list($select, $where) = self::__query_data_prepare($object, $where);
+		$db_name = $object->db_name();
+		$table_name = $object->table_name();
+
+		$iterator = new bors_storage_mysql();
+		$iterator->object = $object;
+		$iterator->__class_name = $class_name;
+		$iterator->dbi = driver_mysql::factory($db_name)->each($table_name, join(',', $select), $where);
+		return $iterator;
+	}
+
+    public function key() { } // Not implemented
+
+    public function current() { return $this->object; }
+
+    public function next()
     {
-        if (is_array($array)) {
-            $this->var = $array;
-        }
+		$this->data = $this->dbi->next();
+		return $this->__init_object();
     }
 
-    public function rewind() {
-        echo "rewinding\n";
-        reset($this->var);
+    public function rewind()
+    {
+		$this->data = $this->dbi->rewind();
+		return $this->__init_object();
     }
 
-    public function current() {
-        $var = current($this->var);
-        echo "current: $var\n";
-        return $var;
-    }
+    public function valid() { return $this->data != false; }
 
-    public function key() {
-        $var = key($this->var);
-        echo "key: $var\n";
-        return $var;
-    }
-
-    public function next() {
-        $var = next($this->var);
-        echo "next: $var\n";
-        return $var;
-    }
-
-    public function valid() {
-        $var = $this->current() !== false;
-        echo "valid: {$var}\n";
-        return $var;
-    }
+	private function __init_object()
+	{
+		$data = $this->data;
+		$class_name = $this->__class_name;
+		$object = new $class_name($data['id']);
+//		$object->set_id($data['id']);
+		$object->data = $data;
+		$object->set_loaded(true);
+		return $this->object = $object;
+	}
 
 	static private function __join($type, $object, &$select, &$where, &$post_functions)
 	{
+		$where['*class_name'] = $object->class_name();
+
 		$main_db = $object->db_name();
 		$main_table = $object->table_name();
 		$main_id_field = $object->id_field();
@@ -154,7 +180,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 						if(!empty($field['post_function']))
 							$post_functions[$field['property']] = $field['post_function'];
 					}
-
 				}
 			}
 		}

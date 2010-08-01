@@ -2,7 +2,7 @@
 
 class bors_external_referer
 {
-	static function register($target_url, $referer, $object = false)
+	static function register($target_url, $referer, $object = false, $count = 1)
 	{
 		if(!$target_url || !$referer)
 			return;
@@ -26,8 +26,11 @@ class bors_external_referer
 		$url_data = parse_url($target_url);
 		$host = $url_data['host'];
 
+
 		$skip_ref_domains = config('ref_count_skip_domains', array());
 		$skip_target_domains = config('ref_count_skip_target_domains', array());
+
+		$skip_ref_domains = array_merge($skip_ref_domains, array('hghltd.yandex.net'));
 
 		if(in_array($host, $skip_target_domains))
 			return;
@@ -65,11 +68,27 @@ class bors_external_referer
 			$search->set_target_url($target_url, true);
 			$search->set_search_url($referer, true);
 
-			$search->set_count($search->count()+1, true);
+			$search->set_count($search->count() + $count, true);
 			$search->store();
 		}
 		else
 		{
+			if(preg_match('/(google|yandex|yahoo|mail\.ru|rambler)/', $host))
+			{
+				// Это неучтённый переход с поисковика
+				debug_hidden_log('referers-need-append-data', "Unknown referer {$referer}", false);
+				echo '_';
+				return;
+			}
+
+			if(preg_match('/(google|yandex|rambler)/', $referer))
+			{
+				// Это глюк
+				debug_hidden_log('referers-error', "Unknown {$host} referer: {$referer}", false);
+				echo 'E';
+				return;
+			}
+
 			// Это переход по ссылке
 			echo '>';
 
@@ -87,7 +106,7 @@ class bors_external_referer
 			$ref_obj->set_target_url($target_url, true);
 			$ref_obj->set_referer_original_url($referer, true);
 
-			$ref_obj->set_count($ref_obj->count()+1, true);
+			$ref_obj->set_count($ref_obj->count() + $count, true);
 			$ref_obj->store();
 		}
 	}
@@ -95,7 +114,7 @@ class bors_external_referer
 	static function normalize($url)
 	{
 		$url = preg_replace('!http://(www|win)\.!', 'http://', $url);
-		$url = preg_replace('!\?PHPSESSID=[0-9a-f]+&!', '?', $url);
+		$url = preg_replace('!\?(PHPSESSID|s)=[0-9a-f]+&!', '?', $url); // s=e54730cd723b3abe2d8a5e34a3d69008
 		$url = preg_replace('!#\w+$!', '', $url);
 		return $url;
 	}

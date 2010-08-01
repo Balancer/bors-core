@@ -51,7 +51,7 @@ function lcml_html_pre($txt)
 		}
 
 		// Строго парные тэги
-		foreach(explode(' ','em embed nobr') as $tag)
+		foreach(explode(' ','em embed nobr strike') as $tag)
 		{
 			$txt = preg_replace("!<$tag>(.*?)</$tag>!is","[$tag]$1[/$tag]", $txt);
 			$txt = preg_replace("!<$tag\s+([^>]+)>(.*?)</$tag>!is","[$tag $1]$2[/$tag]", $txt);

@@ -28,7 +28,7 @@ function http_get($url)
 	return $data;
 }
 
-function http_get_content($url)
+function http_get_content($url, $raw = false)
 {
 	$original_url = $url;
 	$anchor = "";
@@ -85,6 +85,9 @@ function http_get_content($url)
         $charset = '';
 
 	curl_close($ch);
+
+	if($raw)
+		return $data;
 
 	if(empty($charset))
 	{

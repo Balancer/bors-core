@@ -82,12 +82,42 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 //		$dbh = new driver_mysql($object->db_name());
 //		config_set('debug_mysql_queries_log', 'false');
-		return array($select, $where);
+		return array($select, $where, $post_functions);
+	}
+
+	static private function __update_data_prepare($object, $where)
+	{
+		$update = array();
+		foreach(bors_lib_orm::main_fields($object) as $f)
+		{
+			$x = $f['name'];
+
+//			Сюда сунуть обратное преобразование
+//			if(!empty($f['post_function']))
+//				$post_functions[$f['property']] = $f['post_function'];
+
+			if(array_key_exists($f['property'], $object->changed_fields))
+				$update[$f['name']] = $object->get($f['property']);
+		}
+
+//		self::__join('inner', $object, $select, $where, $post_functions);
+//		self::__join('left',  $object, $select, $where, $post_functions);
+
+//		$dbh = new driver_mysql($object->db_name());
+//		config_set('debug_mysql_queries_log', 'false');
+		return array($update, $where);
 	}
 
 	function save($object)
 	{
-//		print_d($object->changed_fields);
+//		var_dump($object->changed_fields);
+		$where = array('id' => $object->id());
+		list($update, $where) = self::__update_data_prepare($object, $where);
+
+//		var_dump($update);
+//		var_dump($where);
+		$dbh = new driver_mysql($object->db_name());
+		$dbh->update($object->table_name(), $where, $update);
 	}
 
 	private $data;

@@ -20,8 +20,10 @@ function main($argv)
 
 	echo "<?php\n\n";
 	echo "class {$table} extends base_object_db\n{\n";
-	echo "\tfunction main_table() { return '$table'; }\n";
-	echo "\tfunction main_table_fields()\n\t{\n\t\treturn array(\n";
+	echo "\tfunction storage_engine() { return 'bors_storage_mysql'; }\n";
+	echo "\tfunction db_name() { return '$db'; }\n";
+	echo "\tfunction table_name() { return '$table'; }\n";
+	echo "\tfunction table_fields()\n\t{\n\t\treturn array(\n";
 	foreach(explode("\n", $x['Create Table']) as $s)
 	{
 		if(preg_match('/^\s+`(\w+)`/', $s, $m))

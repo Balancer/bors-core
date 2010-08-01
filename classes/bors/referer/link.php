@@ -19,5 +19,8 @@ class bors_referer_link extends base_object_db
 			'comment',
 		);
 	}
+
 	function replace_on_new_instance() { return true; }
+
+	function auto_targets() { return array('target' => 'target_class_name(target_object_id)'); }
 }

@@ -285,7 +285,7 @@ function html2bb($text, $url)
 	$text = preg_replace("!<font color=\"(blue)\">(.+?)</font>!is", "[$1]$2[/$1]", $text);
 	$text = preg_replace("!<p>(.+?)</p>!is", "\n$1\n", $text);
 
-	foreach(explode(' ', 'i b u ol ul li') as $tag)
+	foreach(explode(' ', 'b em i li nobr ol u ul') as $tag)
 	{
 		$text = preg_replace("!<$tag>(.+?)</$tag>!is", "[$tag]$1[/$tag]", $text);
 		$text = preg_replace("!<$tag [^>]+>(.+?)</$tag>!is", "[$tag]$1[/$tag]", $text);

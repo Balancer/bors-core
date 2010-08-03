@@ -502,6 +502,7 @@ class base_object extends base_empty
 		//TODO: заюзать make_input_time? (funcs/datetime.php)
 		if(!empty($array['time_vars']))
 		{
+//			print_d($array);
 			foreach(explode(',', $array['time_vars']) as $var)
 			{
 				if(@$array["{$var}_month"] && @$array["{$var}_day"] && @$array["{$var}_year"])
@@ -511,7 +512,7 @@ class base_object extends base_empty
 						.'-'.intval(@$array["{$var}_day"])
 						.' '.intval(@$array["{$var}_hour"])
 						.':'.intval(@$array["{$var}_minute"])
-						.':'.intval(@$array["{$var}_seconds"]).(@$array["{$var}_year"] >= 1970 ? ' +0300' : ' +0400')); //TODO: мегакостыль!
+						.':'.intval(@$array["{$var}_seconds"])); // .(@$array["{$var}_year"] >= 1970 ? ' +0300' : ' +0400')); //TODO: мегакостыль!
 /*					echo intval(@$array["{$var}_year"])
 						.'-'.intval(@$array["{$var}_month"])
 						.'-'.intval(@$array["{$var}_day"])
@@ -519,8 +520,8 @@ class base_object extends base_empty
 						.':'.intval(@$array["{$var}_minute"])
 						.':'.intval(@$array["{$var}_seconds"])."\n";
 					echo $array[$var]."\n";
-					echo date("r", $array[$var]);
 */
+//					echo date("r", $array[$var]);
 					// mktime (@$array["{$var}_hour"], @$array["{$var}_minute"], @$array["{$var}_second"], @$array["{$var}_month"], @$array["{$var}_day"], @$array["{$var}_year"]);
 				}
 				else // Не полный формат даты, например, 2009-0-0 - пишем как строку.
@@ -531,6 +532,7 @@ class base_object extends base_empty
 
 				unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"]);
 			}
+//			exit();
 		}
 
 		if($check_values && $this->check_data($array) === true)

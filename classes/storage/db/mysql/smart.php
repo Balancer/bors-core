@@ -58,6 +58,8 @@ class storage_db_mysql_smart extends base_null
 					$table_name = $m[1];
 					$join = ' LEFT JOIN `';
 				}
+				else
+					$join = ' LEFT JOIN `';
 
 				if(strpos($table_name, '(') && preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m)) // table(id)
 				{
@@ -351,6 +353,8 @@ class storage_db_mysql_smart extends base_null
 					$table_name = $m[1];
 					$join = ' LEFT JOIN `';
 				}
+				else
+					$join = ' LEFT JOIN `';
 
 				if(preg_match('!^(\w+)\((\w+)\)$!', $table_name, $m))
 				{

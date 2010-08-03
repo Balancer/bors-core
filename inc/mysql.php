@@ -110,8 +110,9 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 	{
 		foreach($tables as $table => $fields)
 		{
-			if(preg_match('!^inner\s+(.+)$!i', $table, $m))
-				$table = $m[1];
+			if(preg_match('!^(inner|left)\s+(.+)$!i', $table, $m))
+				$table = $m[2];
+
 			if(preg_match('!^(\w+)\((.+)\)$!', $table, $m))
 				$table = $m[1];
 
@@ -187,6 +188,14 @@ function mysql_args_compile($args, $class='')
 		unset($args['*class_name']);
 	}
 
+	if(!empty($args['*set']))
+	{
+		$set = $args['*set'];
+		unset($args['*set']);
+	}
+	else
+		$set = '';
+
 	$join = array();
 	if(!empty($args['inner_join']))
 	{
@@ -257,7 +266,7 @@ function mysql_args_compile($args, $class='')
 	else
 		$where = mysql_where_compile($args['where']);
 
-	return "{$use_index} {$join} {$where} {$group} {$having} {$order} {$limit}";
+	return "{$use_index} {$join} {$set} {$where} {$group} {$having} {$order} {$limit}";
 }
 
 function make_id_field($table, $id_field, $oid = '%MySqlStorageOID%')

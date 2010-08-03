@@ -39,7 +39,7 @@ class driver_mysql extends DataBase implements Iterator
 		$this->query("DELETE FROM `".addslashes($table)."` ".mysql_where_compile($where));
 	}
 
-	function select_array($table, $field, $where_map)
+	function select_array($table, $field, $where_map, $class = NULL)
 	{
 		if(!is_array($where_map))
 			echo debug_trace();
@@ -50,12 +50,13 @@ class driver_mysql extends DataBase implements Iterator
 			unset($where_map['table']);
 		}
 
-		return $this->get_array("SELECT $field FROM $table ".mysql_args_compile($where_map), false);
+		return $this->get_array("SELECT $field FROM $table ".mysql_args_compile($where_map, $class), false);
 	}
 
 	function update($table, $where, $fields)
 	{
-		return $this->query("UPDATE `".addslashes($table)."` ".$this->make_string_set($fields)." ".mysql_where_compile($where));
+		$where['*set'] = $this->make_string_set($fields);
+		return $this->query("UPDATE `".addslashes($table)."` ".mysql_args_compile($where));
 	}
 
 /* $res = (new driver_mysql('BORS'))

@@ -84,6 +84,10 @@ class base_page_db extends base_page
 
 	function delete($remove_cross = true)
 	{
+		if(method_exists($this, 'on_delete_pre'))
+			if($this->on_delete_pre() === true)
+				return true;
+
 		$tab = $this->table_name();
 		if(!$tab)
 			debug_exit("Try to delete empty main table in class ".__FILE__.":".__LINE__);
@@ -98,6 +102,10 @@ class base_page_db extends base_page
 
 		if($this->id())
 			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
+
+		if(method_exists($this, 'on_delete_post'))
+			if($this->on_delete_post() === true)
+				return true;
 	}
 
 	function compiled_source() { return lcml($this->source()); }

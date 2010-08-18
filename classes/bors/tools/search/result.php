@@ -173,7 +173,8 @@ class bors_tools_search_result extends bors_tools_search
 			{
 				$x = objects_array('forum_topic', array('id IN' => $topic_ids, 'by_id' => true));
 				foreach($topic_ids as $id)
-					$this->_data['topics'][$id] = $x[$id];
+					if(!empty($x[$id]))
+						$this->_data['topics'][$id] = $x[$id];
 			}
 
 			$posts = &$this->_data['posts'];

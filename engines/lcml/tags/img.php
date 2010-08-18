@@ -98,8 +98,8 @@ function lt_img($params)
 					$req->addHeader('Content-Encoding', 'gzip');
 					$req->addHeader('Referer', $params['url']);
 
-//					if(preg_match("!(lenta\.ru|pisem\.net|biorobot\.net|compulenta\.ru|ferra\.ru|)!",$uri))
-//						$req->setProxy('home.balancer.ru', 3128);
+					if(preg_match("!(lenta\.ru|pisem\.net|biorobot\.net|compulenta\.ru|ferra\.ru|radikal.ru|postimage.org)!",$uri))
+						$req->setProxy('balancer.endofinternet.net', 3128);
 
 #					if(preg_match("!(ljplus\.ru)!",$uri))
 #						$req->setProxy('home.balancer.ru', 3128);

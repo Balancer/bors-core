@@ -15,9 +15,14 @@ function lcml_text($txt)
 	$txt = preg_replace("!^(//\s+.+)$!m","<small>$1 </small>",$txt);
 
 	$txt = preg_replace("!\^(\-?[\d\.]+)!","<sup>$1</sup>",$txt);
+	$txt = preg_replace("!_(\-?[\d\.]+)!","<sub>$1</sub>",$txt);
 
 	$txt = preg_replace("!<<!", "&laquo;", $txt);
 	$txt = preg_replace("!>>!", "&raquo;", $txt);
+	$txt = preg_replace("!&lt;&lt;!", "&laquo;", $txt);
+	$txt = preg_replace("!&gt;&gt;!", "&raquo;", $txt);
+
+	$txt = str_replace(' -- ', ' &mdash; ', $txt);
 
 	$txt = str_replace('[p]', '<p/>', $txt);
 

@@ -20,10 +20,11 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$where = array('`'.$object->id_field().'`=' => $object->id());
 
-		self::__join('left', $object, $select, $where, $post_functions);
+		$dummy = array();
+		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
+		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
 
 		$dbh = new driver_mysql($object->db_name());
-		config_set('debug_mysql_queries_log', 'false');
 		$data = $dbh->select($object->table_name(), join(',', $select), $where);
 
 		$object->data = $data;
@@ -46,7 +47,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		list($select, $where) = self::__query_data_prepare($object, $where);
 //		var_dump($where);
 
-		$datas = $dbh->select_array($object->table_name(), join(',', $select), $where);
+		$datas = $dbh->select_array($object->table_name(), join(',', $select), $where, $object->class_nam());
 		$objects = array();
 		$class_name = $object->class_name();
 		foreach($datas as $data)
@@ -69,7 +70,16 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		{
 			$x = $f['name'];
 			if($f['name'] != $f['property'])
+			{
+//				var_dump($where);
+//				echo "{$f['property']} -> {$f['name']}<br/>";
 				$x .= " AS `{$f['property']}`";
+				if(array_key_exists($f['property'], $where))
+				{
+					$where[$f['name']] = $where[$f['property']];
+					unset($where[$f['property']]);
+				}
+			}
 
 			$select[] = $x;
 
@@ -77,11 +87,11 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$post_functions[$f['property']] = $f['post_function'];
 		}
 
-		self::__join('inner', $object, $select, $where, $post_functions);
-		self::__join('left',  $object, $select, $where, $post_functions);
+		$dummy = array();
+		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
+		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
 
 //		$dbh = new driver_mysql($object->db_name());
-//		config_set('debug_mysql_queries_log', 'false');
 		return array($select, $where, $post_functions);
 	}
 
@@ -90,6 +100,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$update = array();
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
+//			echo "{$f['property']} => {$f['name']}: ".$object->get($f['property'])."<br/>\n";
 			$x = $f['name'];
 
 //			Сюда сунуть обратное преобразование
@@ -100,22 +111,23 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$update[$f['name']] = $object->get($f['property']);
 		}
 
-//		self::__join('inner', $object, $select, $where, $post_functions);
-//		self::__join('left',  $object, $select, $where, $post_functions);
+		$select = array(); // dummy
+		self::__join('inner', $object, $select, $where, $post_functions, $update);
+		self::__join('left',  $object, $select, $where, $post_functions, $update);
 
 //		$dbh = new driver_mysql($object->db_name());
-//		config_set('debug_mysql_queries_log', 'false');
 		return array($update, $where);
 	}
 
 	function save($object)
 	{
-//		var_dump($object->changed_fields);
-		$where = array('id' => $object->id());
+//		print_d($object->changed_fields);
+		$where = array($object->id_field() => $object->id());
 		list($update, $where) = self::__update_data_prepare($object, $where);
 
-//		var_dump($update);
-//		var_dump($where);
+		if(!$update)
+			return;
+//		print_d($update); print_d($where); exit();
 		$dbh = new driver_mysql($object->db_name());
 		$dbh->update($object->table_name(), $where, $update);
 	}
@@ -168,7 +180,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		return $this->object = $object;
 	}
 
-	static private function __join($type, $object, &$select, &$where, &$post_functions)
+	static private function __join($type, $object, &$select, &$where, &$post_functions, &$update)
 	{
 		$where['*class_name'] = $object->class_name();
 
@@ -209,9 +221,24 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 						if(!empty($field['post_function']))
 							$post_functions[$field['property']] = $field['post_function'];
+
+//						echo "{$field['property']} => {$field['name']}: ".$object->get($field['property'])."<br/>\n";
+						if(array_key_exists($field['property'], $object->changed_fields))
+							$update[$field['name']] = $object->get($field['property']);
 					}
 				}
 			}
 		}
+	}
+
+	function create($object)
+	{
+		list($data, $where) = self::__update_data_prepare($object, $where);
+
+		if(!$data)
+			return;
+
+		$dbh = new driver_mysql($object->db_name());
+		$dbh->insert($object->table_name(), $data);
 	}
 }

@@ -53,6 +53,11 @@ class storage_db_mysql_smart extends base_null
 					$table_name = $m[1];
 					$join = ' INNER JOIN `';
 				}
+				elseif(preg_match('!^left\s+(.+?)$!i', $table_name, $m))
+				{
+					$table_name = $m[1];
+					$join = ' LEFT JOIN `';
+				}
 				else
 					$join = ' LEFT JOIN `';
 
@@ -342,6 +347,11 @@ class storage_db_mysql_smart extends base_null
 				{
 					$table_name = $m[1];
 					$join = ' INNER JOIN `';
+				}
+				elseif(preg_match('!^left\s+(.+?)$!', $table_name, $m))
+				{
+					$table_name = $m[1];
+					$join = ' LEFT JOIN `';
 				}
 				else
 					$join = ' LEFT JOIN `';

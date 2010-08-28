@@ -98,6 +98,13 @@
 		$last_modify = @gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
 		@header('Last-Modified: '.$last_modify);
 
+		if($obj->cache_static())
+		{
+			@header('Expires: '.@gmdate('D, d M Y H:i:s', $obj->cache_static() + time()).' GMT');
+			@header('Cache-Control: max-age='.$obj->cache_static());
+			@header('ETag: "'.md5($obj->internal_uri()).'"');
+		}
+
 		return $content;
 	}
 

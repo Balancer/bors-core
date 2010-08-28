@@ -37,13 +37,13 @@ function geoip_flag($ip)
 
 /**
 	Возвращает массив информации о клиенте по его IP:
-	@return array($country_code, $country_name, $city_name)
+	@return array($country_code, $country_name, $city_name, $city_object)
 */
 
 function geoip_info($ip)
 {
 	if(!$ip)
-		return array('','','');
+		return array('','','', NULL);
 
 	require_once(BORS_3RD_PARTY."/geoip/geoip.inc");
 	require_once(BORS_3RD_PARTY."/geoip/geoipcity.inc");
@@ -53,6 +53,7 @@ function geoip_info($ip)
 		0;//return $ch->last();
 
 	$cc = '';
+	$city_object = NULL;
 	if(file_exists(($gf = BORS_3RD_PARTY."/geoip/GeoIPCity.dat")))
 	{
 		$gi = geoip_open($gf, GEOIP_STANDARD);
@@ -62,6 +63,7 @@ function geoip_info($ip)
 		$cn = $record->country_name;
 		$cin = $record->city;
 		geoip_close($gi);
+		$city_object = $record;
 	}
 
 	if(!$cc && file_exists(($gf = BORS_3RD_PARTY."/geoip/GeoLiteCity.dat")))
@@ -73,6 +75,7 @@ function geoip_info($ip)
 		$cn = $record->country_name;
 		$cin = $record->city;
 		geoip_close($gi);
+		$city_object = $record;
 	}
 
 	if(!$cc && file_exists(($gf = "/usr/share/GeoIP/GeoIP.dat")))
@@ -95,5 +98,5 @@ function geoip_info($ip)
 
 	$cin = iconv('ISO-8859-1', 'utf-8', $cin);
 
-	return $ch->set(array($cc, $cn, $cin), -3600);
+	return $ch->set(array($cc, $cn, $cin, $city_object), -3600);
 }

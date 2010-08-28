@@ -97,6 +97,7 @@ function smarty_block_form($params, $content, &$smarty)
 				$fields = explode(',', $fields);
 			foreach($fields as $f)
 			{
+				$field = $f;
 				if(!is_array($f))
 				{
 					$type  = call_user_func(array($form, '__field_type' ), $f);
@@ -130,10 +131,12 @@ function smarty_block_form($params, $content, &$smarty)
 				switch($type)
 				{
 					case 'string':
+					case 'input':
 						require_once('function.input.php');
 						smarty_function_input($data, $smarty);
 						break;
 					case 'text':
+					case 'textarea':
 						require_once('function.textarea.php');
 						smarty_function_textarea($data, $smarty);
 						break;
@@ -144,7 +147,7 @@ function smarty_block_form($params, $content, &$smarty)
 						smarty_function_dropdown($data, $smarty);
 						break;
 					case 'dropdown':
-						$data['list'] = base_list::make($class);
+						$data['list'] = !array_key_exists('named_list', $field) ? base_list::make($class) : call_user_func(array($field['named_list'], 'named_list'));
 						$data['is_int'] = true;
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);

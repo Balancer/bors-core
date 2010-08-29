@@ -100,9 +100,11 @@
 
 		if($obj->cache_static())
 		{
-			@header('Expires: '.@gmdate('D, d M Y H:i:s', $obj->cache_static() + time()).' GMT');
-			@header('Cache-Control: max-age='.$obj->cache_static());
-			@header('ETag: "'.md5($obj->internal_uri()).'"');
+//			Так... С этим не так всё просто. Пример: темы топиков. Они кешируются и игнорируют изменения
+//			Видимо, нужно вводить отдельный параметр.
+//			@header('Expires: '.@gmdate('D, d M Y H:i:s', $obj->cache_static() + time()).' GMT');
+//			@header('Cache-Control: max-age='.$obj->cache_static());
+			@header('ETag: "'.md5($obj->internal_uri().$obj->modify_time()).'"');
 		}
 
 		return $content;

@@ -115,6 +115,7 @@ class DataBase extends base_object
 			{
 				echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 				bors_exit();
+//				$this->reconnect();
 			}
 		}
 		else

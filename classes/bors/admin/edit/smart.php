@@ -68,6 +68,9 @@ class bors_admin_edit_smart extends base_page
 					case 'dropdown':
 						$data['named_list'] = $m[2];
 						break;
+					case 'image':
+						$data['geometry'] = $m[2];
+						break;
 				}
 			}
 

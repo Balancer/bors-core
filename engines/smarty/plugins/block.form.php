@@ -95,38 +95,38 @@ function smarty_block_form($params, $content, &$smarty)
 			$labels = array();
 			if(!is_array($fields))
 				$fields = explode(',', $fields);
-			foreach($fields as $f)
+
+			foreach($fields as $title => $data)
 			{
-				$field = $f;
-				if(!is_array($f))
+				if(!is_array($data))
 				{
-					$type  = call_user_func(array($form, '__field_type' ), $f);
-					$title = call_user_func(array($form, '__field_title'), $f);
+					$type  = call_user_func(array($form, '__field_type' ), $data);
+					$title = call_user_func(array($form, '__field_title'), $data);
+					$property_name = $data;
 				}
 				else
 				{
-					$type = $f['type'];
-					$title = $f['title'];
-					if(!empty($f['class']))
+					$type = $data['type'];
+					$title = $data['title'];
+					if(!empty($data['class']))
 					{
 						$type = 'dropdown';
-						$class = $f['class'];
+						$class = $data['class'];
 					}
 
-					$f = $f['name'];
+					$property_name = $data['name'];
 				}
 
 				if(!$title)
-					$title = $f;
+					$title = $property_name;
 
 				if($type != 'bool')
 					echo "<tr><th>{$title}</th><td>";
 
-				$data = array(
-					'name' => $f,
-					'value'=>$form->$f(),
-					'class' => 'w100p',
-				);
+//				$data['name' => $property_name,
+				$data['value'] = $form->$property_name();
+				$data['class'] = 'w100p';
+//				);
 
 				switch($type)
 				{
@@ -156,6 +156,10 @@ function smarty_block_form($params, $content, &$smarty)
 						$data['can_drop'] = true;
 						require_once('function.input_date.php');
 						smarty_function_input_date($data, $smarty);
+						break;
+					case 'image':
+						$image = object_load('bors_image', $data['value']);
+						echo $image->thumbnail($data['geometry'])->html_code();
 						break;
 					case 'bool':
 						$data['label'] = $title;

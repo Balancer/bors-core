@@ -100,9 +100,10 @@ function smarty_block_form($params, $content, &$smarty)
 			{
 				if(!is_array($data))
 				{
-					$type  = call_user_func(array($form, '__field_type' ), $data);
-					$title = call_user_func(array($form, '__field_title'), $data);
 					$property_name = $data;
+					$data = array('name' => $property_name);
+					$data['type']  = $type  = call_user_func(array($form, '__field_type' ), $property_name);
+					$data['title'] = $title = call_user_func(array($form, '__field_title'), $property_name);
 				}
 				else
 				{
@@ -123,11 +124,10 @@ function smarty_block_form($params, $content, &$smarty)
 				if($type != 'bool')
 					echo "<tr><th>{$title}</th><td>";
 
-//				$data['name' => $property_name,
+//				echo $property_name,
 				$data['value'] = $form->$property_name();
 				$data['class'] = 'w100p';
 //				);
-
 				switch($type)
 				{
 					case 'string':

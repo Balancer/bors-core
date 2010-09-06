@@ -9,19 +9,6 @@
 	return false
 }{/literal}</script>
 
-{if $page_tabs}
-<ul class="pages-tabs">
-	{foreach from=$page_tabs key="u" item="t"}
-	<li{if $this->called_url() == $u} class="selected"{/if}><a href="{$u}">{$t}</a></li>
-	{/foreach}
-</ul>
-{else}
-<ul class="pages-tabs">
-	<li>{$object|get:titled_admin_url}</li>
-	<li>Связи</li>
-</ul>
-{/if}
-
 {form subaction="add"}
 {input name="title" value=""}
 <label>{checkbox name="is_exactly" checked="0"}&nbsp;точное соответствие</label>

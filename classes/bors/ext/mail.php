@@ -43,11 +43,18 @@ class bors_ext_mail extends bors_empty
 			//TODO: ввести другие виды разметки
 		}
 
+		require_once("engines/smarty/assign.php");
+		$text = template_assign_data('xfile:aviaport/mail.txt', array('body' => $mail->text()));
+		$html = $mail->get('html') ? template_assign_data('xfile:aviaport/mail.html', array(
+			'body' => $mail->html(),
+			'skip_title' => true,
+		)) : NULL;
+
 		send_mail(
 			self::make_recipient($user),
 			$mail->title(),
-			$mail->text(),
-			$mail->get('html'),
+			$text,
+			$html,
 			self::make_recipient($from),
 			$mail->get('headers')
 		);

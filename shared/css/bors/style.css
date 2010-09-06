@@ -1,5 +1,5 @@
-big { font-size: 120%; }
-big.extra { font-size: 200%; }
+big, .big { font-size: 120%; }
+big.extra, .big-extra { font-size: 200%; }
 
 .big20 { font-size: 20pt; }
 

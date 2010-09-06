@@ -233,12 +233,16 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function create($object)
 	{
+		$where = array();
 		list($data, $where) = self::__update_data_prepare($object, $where);
 
 		if(!$data)
 			return;
 
 		$dbh = new driver_mysql($object->db_name());
-		$dbh->insert($object->table_name(), $data);
+		if($object->replace_on_new_instance())
+			$dbh->replace($object->table_name(), $data);
+		else
+			$dbh->insert_ignore($object->table_name(), $data);
 	}
 }

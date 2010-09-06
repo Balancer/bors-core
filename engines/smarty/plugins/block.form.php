@@ -95,45 +95,48 @@ function smarty_block_form($params, $content, &$smarty)
 			$labels = array();
 			if(!is_array($fields))
 				$fields = explode(',', $fields);
-			foreach($fields as $f)
+
+			foreach($fields as $title => $data)
 			{
-				if(!is_array($f))
+				if(!is_array($data))
 				{
-					$type  = call_user_func(array($form, '__field_type' ), $f);
-					$title = call_user_func(array($form, '__field_title'), $f);
+					$property_name = $data;
+					$data = array('name' => $property_name);
+					$data['type']  = $type  = call_user_func(array($form, '__field_type' ), $property_name);
+					$data['title'] = $title = call_user_func(array($form, '__field_title'), $property_name);
 				}
 				else
 				{
-					$type = $f['type'];
-					$title = $f['title'];
-					if(!empty($f['class']))
+					$type = $data['type'];
+					$title = $data['title'];
+					if(!empty($data['class']))
 					{
 						$type = 'dropdown';
-						$class = $f['class'];
+						$class = $data['class'];
 					}
 
-					$f = $f['name'];
+					$property_name = $data['name'];
 				}
 
 				if(!$title)
-					$title = $f;
+					$title = $property_name;
 
 				if($type != 'bool')
 					echo "<tr><th>{$title}</th><td>";
 
-				$data = array(
-					'name' => $f,
-					'value'=>$form->$f(),
-					'class' => 'w100p',
-				);
-
+//				echo $property_name,
+				$data['value'] = $form->$property_name();
+				$data['class'] = 'w100p';
+//				);
 				switch($type)
 				{
 					case 'string':
+					case 'input':
 						require_once('function.input.php');
 						smarty_function_input($data, $smarty);
 						break;
 					case 'text':
+					case 'textarea':
 						require_once('function.textarea.php');
 						smarty_function_textarea($data, $smarty);
 						break;
@@ -144,7 +147,7 @@ function smarty_block_form($params, $content, &$smarty)
 						smarty_function_dropdown($data, $smarty);
 						break;
 					case 'dropdown':
-						$data['list'] = base_list::make($class);
+						$data['list'] = !array_key_exists('named_list', $field) ? base_list::make($class) : call_user_func(array($field['named_list'], 'named_list'));
 						$data['is_int'] = true;
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);
@@ -153,6 +156,10 @@ function smarty_block_form($params, $content, &$smarty)
 						$data['can_drop'] = true;
 						require_once('function.input_date.php');
 						smarty_function_input_date($data, $smarty);
+						break;
+					case 'image':
+						$image = object_load('bors_image', $data['value']);
+						echo $image->thumbnail($data['geometry'])->html_code();
 						break;
 					case 'bool':
 						$data['label'] = $title;

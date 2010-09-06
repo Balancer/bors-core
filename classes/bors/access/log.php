@@ -27,4 +27,5 @@ class bors_access_log extends base_object_db
 	}
 
 	function auto_targets()	{ return array('target' => 'target_class_name(target_object_id)'); }
+	function auto_objects()	{ return array('user' => 'bors_user(user_id)'); }
 }

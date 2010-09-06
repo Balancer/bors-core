@@ -42,10 +42,11 @@ class bors_admin_edit_smart extends base_page
 		$args = array();
 		foreach($this->object()->editor_fields_list() as $field_title => $x)
 		{
+			$data = array();
 			$field_name = $x;
 
 			$type = 'input';
-			if(preg_match('/^(\w+)\|(.+)$/', $field_name, $m))
+			if(preg_match('/^(\w+)\|(.+)$/', $field_name, $m)) // source|textarea=4
 			{
 				$field_name = $m[1];
 				$type = $m[2];
@@ -59,10 +60,29 @@ class bors_admin_edit_smart extends base_page
 						$args[$mm[1]] = $mm[2];
 			}
 
-			$fields[$field_title] = array('origin' => $x, 'type' => $type, 'args' => $args);
+			if(preg_match('/^(\w+)=(.+)$/', $type, $m))
+			{
+				$type = $m[1];
+				switch($type)
+				{
+					case 'dropdown':
+						$data['named_list'] = $m[2];
+						break;
+					case 'image':
+						$data['geometry'] = $m[2];
+						break;
+				}
+			}
+
+			if(empty($type))
+				$type = 'input';
+
+			$fields[$field_title] = array_merge($data, array('title' => $field_title, 'name' => $field_name, 'origin' => $x, 'type' => $type, 'args' => $args));
 		}
 
-		$fields = bors_lib_orm::all_fields($this->object());
+		if(!$fields)
+			$fields = bors_lib_orm::all_fields($this->object());
+
 //		var_dump($fields);
 
 		return array(

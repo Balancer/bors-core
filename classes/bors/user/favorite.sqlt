@@ -1,0 +1,15 @@
+class: bors_user_favorite
+bors_favorites:
+	uint	id++!
+
+	string	owner_class_name	latin1	// Имя класса владельца
+	uint	owner_id					// ID владельца
+
+	string	target_title		NULL	// Название объекта
+	string	target_class_name	latin1	// Имя класса объекта
+	uint	target_object_id			// ID объекта
+	uint	target_create_time			// Дата создания объекта
+
+	uint	create_time!
+
+	unique	owner_class_name, owner_id, target_class_name, target_object_id

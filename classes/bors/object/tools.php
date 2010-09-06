@@ -33,7 +33,7 @@ class bors_object_tools extends base_empty
 		else
 			$aurl = '/_bors/tools/favorites/ajax?op=add&object='.$target_uri;
 
-		return "<a href=\"$aurl\" onclick=\"return bors_ajax_click(this.href)\"><img id=\"favo_{$target_uri}\" src=\"$img\" width=\"16\" height=\"16\" title=\"".htmlspecialchars($title)."\"/></a>";
+		return "<a href=\"$aurl\" onclick=\"return bors_ajax_click(this.href)\"><img id=\"favo_{$target_uri}\" src=\"$img\" width=\"16\" height=\"16\" title=\"".htmlspecialchars($title)."\" alt=\"F\"/></a>";
 	}
 
 	function use_ajax()

@@ -8,7 +8,7 @@ class base_page_paged extends base_page
 
 	private function _where($where = array())
 	{
-		$where = array_merge($this->where(), $where);
+		$where = array_merge(object_property($this, 'where', array()), $where);
 
 		if($group = $this->group())
 			$where['group'] = $group;

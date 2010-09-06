@@ -353,6 +353,6 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 	. "\n---------------------------\n\n";
 
 
-	@file_put_contents("{$out_dir}/hidden-{$type}.log", $out, FILE_APPEND);
+	@file_put_contents("{$out_dir}/{$type}.log", $out, FILE_APPEND);
 }
 

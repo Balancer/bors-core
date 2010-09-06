@@ -50,12 +50,13 @@ function lt_img($params)
 				}
 			}
 
-//			exit($uri);
+//var_dump($uri);
+//			return $uri;
 
 //			$uri = $hts->normalize_uri($uri, $GLOBALS['lcml']['uri']);
 
 			$data = url_parse($uri);
-
+//var_dump($data);
 			if(!file_exists($path) && $data['local'])
 			{
 				$path = $data['local_path'];
@@ -109,7 +110,7 @@ function lt_img($params)
 					$response = $req->sendRequest();
 
 					if(!empty($response) && PEAR::isError($response)) 
-						return "Download image =$uri= error: ".$response->getMessage();
+						return "<a href=\"$uri\">$uri</a> (error: ".$response->getMessage().")<br/>\n";
 
 					$data = $req->getResponseBody();
 					if(strlen($data) <= 0)
@@ -175,7 +176,7 @@ function lt_img($params)
 					$img_page_uri = $uri.'.htm';
 
 				require_once('HTTP/Request.php');
-				$req =& new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 2,'timeout' => 4));
+				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 2,'timeout' => 4));
 				$response = $req->sendRequest();
 				if(!empty($response) && PEAR::isError($response))
 				{
@@ -188,7 +189,7 @@ function lt_img($params)
 
 				if(!intval($width) || !intval($height))
 					return "<a href=\"{$params['url']}\">{$params['url']}</a>";
-					
+
 					/*lcml("Get image [url]{$params['url']}[/url] error [spoiler|details]".
 "File: ".__FILE__." line: ".__LINE__."[br]\n".
 "uri=_{$uri}_[br]\n".
@@ -203,7 +204,7 @@ function lt_img($params)
 //					$hts->nav_link($GLOBALS['main_uri'], $uri);
 				require_once("funcs/images/fill.php");
 				fill_image_data($uri);
-			   
+
 //				return "==={$params['description']}===";
 
 				if(empty($params['description']))

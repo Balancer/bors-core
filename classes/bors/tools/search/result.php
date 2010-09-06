@@ -92,7 +92,9 @@ class bors_tools_search_result extends bors_tools_search
 			$cl->SetFilter('forum_id', $f);
 
 		if($disabled = airbase_forum_forum::disabled_ids_list())
-			$cl->SetFilter('forum_id', $disabled, true);
+			$cl->SetFilter('forum_id', array_merge($disabled, array(191)), true);
+		else
+			$cl->SetFilter('forum_id', array(191), true);
 
 		if($this->u())
 		{

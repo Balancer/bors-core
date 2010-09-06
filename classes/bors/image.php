@@ -152,7 +152,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 			debug_hidden_log("recalculate", "time = $dura, url = {$this->url()}, this={$this}, data=".print_r($this->data, true));
 	}
 
-	function admin_url() { return config('admin_host_url').'/images/'.($this->id() ? $this->id() : '%OBJECT_ID%').'/'; }
+//	function admin_url() { return config('admin_host_url').'/images/'.($this->id() ? $this->id() : '%OBJECT_ID%').'/'; }
 
 	function upload($data, $dir)
 	{

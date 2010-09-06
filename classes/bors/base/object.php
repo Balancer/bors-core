@@ -1062,7 +1062,7 @@ class base_object extends base_empty
 
 	function show($object) { echo $this->get_content($object); }
 
-	function object_title() { return $this->class_title().ec(' «').$this->title().ec('»'); }
+	function object_title() { return strip_tags(bors_lower($this->class_title()).ec(' «').$this->title().ec('»')); }
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }
 
 	function cross_ids($to_class) { return bors_get_cross_ids($this, $to_class); }

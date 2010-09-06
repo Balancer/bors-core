@@ -5,7 +5,7 @@
 {assign var="ptype" value=$x.type}
 {assign var="pargs" value=$x.args}
 {explode vars="field_name,type" value=$desc}
-{explode vars="type,arg" value=$type delim="="}
+{explode vars="type,arg" value=$ptype delim="="}
 {explode vars="arg,args" value=$arg delim=":"}
 <tr><th align="right" width="200">{$title}</th><td>
 {if $type == ''}{input name=$field_name class="w100p"}{/if}

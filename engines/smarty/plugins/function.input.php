@@ -30,7 +30,6 @@ function smarty_function_input($params, &$smarty)
 			$value = '';
 
 		$class = empty($class) ? array() : explode(' ', $class);
-
 		if(in_array($name, explode(',', session_var('error_fields'))))
 			$class[] = "error";
 

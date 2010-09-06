@@ -1,0 +1,15 @@
+class: bors_log_mysql
+bors_logging:
+	int		id++!
+
+	string	category!
+	string	type!
+	text	title
+	string	target_class_name
+	string	target_object_id
+	text	message
+
+	int		create_time!
+	int		modify_time!
+	int		owner_id
+	int		last_editor_id

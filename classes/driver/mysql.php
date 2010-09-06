@@ -5,6 +5,8 @@ require_once('obsolete/DataBase.php');
 
 class driver_mysql extends DataBase implements Iterator 
 {
+	function connection() { return $this->dbh; }
+
 	static function one($db) { return new driver_mysql($db); }
 	static function factory($db) { return new driver_mysql($db); }
 
@@ -78,7 +80,7 @@ class driver_mysql extends DataBase implements Iterator
 	public function each($table, $fields, $where)
     {
     	$query = "SELECT $fields FROM {$table} ".mysql_args_compile($where);
-    	echo "$query\n";
+//    	echo "$query\n";
 		$this->query($query);
 		return $this;
     }

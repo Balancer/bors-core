@@ -61,3 +61,21 @@ APC/memcached/etc - performance
  * http://jacobsantos.com/2006/general/patterns-for-php-iterator/
  * http://articles.sitepoint.com/article/php5-standard-library
  * http://www.devshed.com/c/a/PHP/Iterators-in-the-Simplest-Sense-Traversing-Data-Structures-in-PHP-5/3/
+
+OpenID и др. системы авторизации
+--------------------------------
+ * http://habrahabr.ru/blogs/wordpress/93658/
+ * http://shakin.ru/other/social-buttons.html
+ * http://habrahabr.ru/blogs/webdev/97380/
+ * http://habrahabr.ru/tag/loginza/
+ * https://loginza.ru/api-overview
+ * http://balancer.endofinternet.net/bors-post-redirector.php?go=http%3A%2F%2Fbalancer.endofinternet.net%2Ftests%2Floginza%2F%3Fxx%3Dyy
+ * http://forum.loginza.ru/viewtopic.php?f=6&t=2&p=35&hilit=%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80#p35
+ * http://balancer.ru/personal/avatars/
+ * http://habrahabr.ru/tag/facebook/page4/
+ * http://habrahabr.ru/tag/vkonakte/
+ * http://habrahabr.ru/tag/вконтакте/
+ * http://habrahabr.ru/blogs/php/92518/
+ * http://www.phpbbguru.net/community/topic28955.html
+
+ 

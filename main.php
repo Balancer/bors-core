@@ -202,7 +202,7 @@ if(config('debug_timing') && is_string($res))
 	$deb .= "Total time: $time sec.\n";
 	$deb .= "-->\n";
 
-	if(function_exists('debug_is_balancer') && debug_is_balancer())
+	if(config('is_developer'))
 		debug_hidden_log('debug_timing', $deb, false);
 
 	$res = str_ireplace('</body>', $deb.'</body>', $res);

@@ -60,8 +60,6 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 		return false;
 	}
 
-//	if(debug_is_balancer()) { echo "image_file_scale($file_in, $file_out, $width, $height, $opts)<br/>\n"; exit(); }
-
 	$img =& Image_Transform::factory(config('image_transform_engine'));
 
 	if(PEAR::isError($img))

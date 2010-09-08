@@ -56,9 +56,6 @@ class bors_image_thumb extends bors_image
 		else
 			return $this->set_loaded(false);
 
-//		if(debug_is_balancer())
-//		debug_hidden_log('2', "width={$this->width()} && fe({$this->file_name_with_path()})=".file_exists($this->file_name_with_path()));
-
 		//TODO: сделать вариант, совместимый с safe_mod!
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_loaded(true);
@@ -106,9 +103,6 @@ class bors_image_thumb extends bors_image
 				debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
 		}
 
-//		if(debug_is_balancer())
-//			debug_hidden_log('4', "size of ".$this->original->file_name()." = $fsize_orig");
-
 		if(!$this->original->file_name() || !$fsize_orig)
 			return;
 
@@ -147,14 +141,6 @@ class bors_image_thumb extends bors_image
 
 	private function thumb_create($abs = false)
 	{
-/*
-		if(debug_is_balancer())
-			debug_hidden_log('3', "
-OriginalRP = {$this->original->relative_path()}
-Original = {$this->original->file_name_with_path()}
-Target   = {$this->file_name_with_path()}\n
-		");
-*/
 		if(file_exists($this->file_name_with_path()))
 			return;
 

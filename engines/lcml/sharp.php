@@ -2,15 +2,6 @@
 
 function lcml_sharp($txt, &$mask)
 {
-/*
-		if(debug_is_balancer())
-		{
-			echo "<xmp>>>>>>>>>>>>>\n";
-			echo "text=".str_replace("\n", '@', $txt)."\n";
-			echo "mask=".str_replace("\n", '@', $mask)."\n";
-			echo "</xmp>\n";
-		}
-*/
         $array = explode("\n", $txt);
 
 		$pos = 0;
@@ -111,21 +102,13 @@ function lcml_sharp($txt, &$mask)
         
         $txt  = join("\n", $array);
         $mask = join("",  $mask_array);
-/*
-		if(debug_is_balancer())
-		{
-			echo "<xmp>\n";
-			echo "text=".str_replace("\n", ' ', $txt)."\n";
-			echo "mask=".str_replace("\n", '@', $mask)."\n";
-			echo "</xmp>\n";
-		}
-*/
+
 		if($changed)
             $txt = lcml_sharp($txt, $mask);
 
 /*        if(!isset($GLOBALS['forum_tag_found'] && !$GLOBALS['forum_tag_found']))
             $txt.="\n<?\$id=\"$::page_data{forum_id}\";\$page=\"$::page\";include(\"/home/airbase/html/inc/show/forum-comments.phtml\");?>\n";
-*/        
+*/
         return $txt;
 }
 

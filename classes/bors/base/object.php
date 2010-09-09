@@ -384,17 +384,20 @@ class base_object extends base_empty
 			$this->add_template_data($key, $value);
 	}
 
-	function titled_url()
+	function titled_url($append = '')
 	{
 		if(($target = $this->get('frame_target')))
 			$target = " target=\"{$target}\"";
 		else
 			$target = '';
 
-		return '<a href="'.$this->url($this->page())."\"{$target}>{$this->title()}</a>";
+		if($append)
+			$append = ' '.$append;
+
+		return '<a href="'.$this->url($this->page())."\"{$target}{$append}>{$this->title()}</a>";
 	}
 
-	function titled_link() { return $this->titled_url(); }
+	function titled_link($append = '') { return $this->titled_url($append); }
 
 	function titled_target_link() { return $this->target()->titled_link(); }
 

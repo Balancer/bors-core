@@ -8,6 +8,7 @@ bors_url_submap(array(
 	'/edit\-smart/ => _edit_smart',
 	'/append/child\?object=([^&]*) => _append_child(1)',
 	'/edit/page\?object=([^&]+) => _edit_page(1)',
+	'/edit/crosslinks/ => bors_admin_edit_crosslinks',
 	'/property\?object=([^&]*) => _property(1)',
 	'/visibility\?act=(show|hide)&object=([^&]*) => _visibility(2)',
 	'/reports/ => _reports_main',

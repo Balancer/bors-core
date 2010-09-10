@@ -47,7 +47,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		list($select, $where) = self::__query_data_prepare($object, $where);
 //		var_dump($where);
 
-		$datas = $dbh->select_array($object->table_name(), join(',', $select), $where, $object->class_nam());
+		$datas = $dbh->select_array($object->table_name(), join(',', $select), $where, $object->class_name());
 		$objects = array();
 		$class_name = $object->class_name();
 		foreach($datas as $data)

@@ -52,6 +52,9 @@ class base_object_db extends base_object
 		return NULL;
 	}
 
+	function inner_join_fields() { return array(); }
+	function left_join_fields()  { return array(); }
+
 	function delete($remove_cross = true)
 	{
 		if(method_exists($this, 'on_delete_pre'))

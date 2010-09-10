@@ -66,6 +66,9 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	else
 		$data = false;
 
+	if(!class_exists($class))
+		throw new Exception("Class name '$class' not exists");
+
 	$id = call_user_func(array($class, 'id_prepare'), $id, $class);
 	$object = &object_new($class, $id);
 
@@ -219,4 +222,12 @@ function object_property($object, $property, $def = NULL)
 	}
 
 	return $def;
+}
+
+/**
+	Возвращает истину, если классы объектов и их ID совпадают.
+*/
+function bors_eq($object1, $object2)
+{
+	return $object1->extends_class() == $object2->extends_class() && $object1->id() == $object2->id();
 }

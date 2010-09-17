@@ -218,9 +218,6 @@ function class_load($class, $id = NULL, $args=array())
 
 function class_load_by_url($url, $args)
 {
-//	if(debug_is_balancer())
-//		echo "Load $url<br />\n";
-
 	if($obj = class_load_by_vhosts_url($url, $args))
 		return $obj;
 
@@ -384,19 +381,10 @@ function class_load_by_local_url($url, $args)
 		if(strpos($url_pattern, '\\?') && !empty($url_data['query']))
 			$check_url .= '?'.$url_data['query'];
 
-//		if(debug_is_balancer()) echo "<small>Initial url=$url, pair=$pair, check_url='$check_url'</small><br/>\n";
-
-//		echo "pair=$pair<br />\n";
-//		if(debug_is_balancer())	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
-//		if(debug_is_balancer() && strpos($pair, 'balancer.ru'))	echo "<small>Check $url_pattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_pattern}\$! to {$check_url}</small><br />\n";
 		if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
 		{
-//			echo "<b>Ok - $class_path</b><br />";
 			if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $match, $url_pattern, 1)))
-			{
-//				echo "Found $obj";
 				return $obj;
-			}
 		}
 	}
 //	exit();
@@ -407,8 +395,6 @@ function class_load_by_local_url($url, $args)
 function class_load_by_vhosts_url($url)
 {
 	$data = @parse_url($url);
-
-//	if(debug_is_balancer()) { echo "Load $url<br />\n"; print_d($data); }
 
 	if(!$data || empty($data['host']))
 	{
@@ -421,8 +407,6 @@ function class_load_by_vhosts_url($url)
 	$obj = @$bors_data['classes_by_uri'][$url];
 	if(!empty($obj))
 		return $obj;
-
-//	if(debug_is_balancer()) { var_dump($data); print_d($bors_data['vhosts']); }
 
 	if(empty($bors_data['vhosts'][$data['host']]))
 		return NULL;
@@ -450,11 +434,9 @@ function class_load_by_vhosts_url($url)
 			$prefix = '';
 		else
 			$prefix = 'http://('.preg_quote($data['host']).')';
-//		if(debug_is_balancer()) { echo "^{$prefix}{$url_pattern}\$ == $check_url<br />\n"; }
+
 		if(preg_match("!^{$prefix}{$url_pattern}$!i", $check_url, $match))
 		{
-//			echo "Found: $class_path for  $check_url<br />";
-
 			if(preg_match("!^redirect:(.+)$!", $class_path, $m))
 			{
 				$class_path = $m[1];
@@ -546,11 +528,6 @@ function class_load_by_vhosts_url($url)
 
 function object_init($class_name, $object_id, $args = array())
 {
-//	if(config('debug_class_search_track'))
-//	if(debug_is_balancer())
-//	if(@call_user_func(array($class_name, 'can_cached')))
-//		echo "<small>object_init($class_name, $object_id, ".print_r($args, true).")</small><br/>\n";
-
 	// В этом методе нельзя использовать debug_test()!!!
 
 	$obj = NULL;

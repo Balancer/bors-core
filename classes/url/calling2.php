@@ -32,6 +32,9 @@ class url_calling2 extends url_base
 		if($obj->get('in_frame'))
 			$url = url_append_param($url, 'inframe', 'yes');
 
+		if($obj->get('url_no_query'))
+			$url = preg_replace('/^(.+?)\?.+$/', '$1', $url);
+
 		return $url;
 	}
 }

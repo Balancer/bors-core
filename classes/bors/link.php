@@ -10,6 +10,7 @@ class bors_link extends base_object_db
 		return array(
 			'id',
 			'type_id',
+//			'is_auto',
 			'from_class',
 			'from_id',
 			'target_class_id' => 'to_class',
@@ -26,9 +27,23 @@ class bors_link extends base_object_db
 		);
 	}
 
-	function from_object() { return object_load($this->from_class(), $this->from_id()); }
-	function target()   { return object_load($this->target_class_id(),   $this->target_object_id()); }
-	function type() { return object_load('bors_cross_types', $this->type_id()); }
+	function auto_targets()
+	{
+		return array(
+			'from_object'	=> 'from_class(from_id)',
+			'target' 		=> 'target_class_id(target_object_id)',
+		);
+	}
+
+	function auto_objects()
+	{
+		return array(
+			'type' => 'bors_links_types(type_id)',
+		);
+	}
+
+	function is_auto() { return $this->owner_id() < 0; }
+	function is_about() { return $this->type_id() == bors_links_types::ABOUT; }
 
 	function set_from($obj_from, $db_up)
 	{

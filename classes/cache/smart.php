@@ -77,8 +77,6 @@ class cache_smart extends cache_base
 		// Если время хранения отрицательное - используется только memcached, при его наличии.
 		if($memcache = config('memcached_instance'))
 		{
-	//		if(debug_is_balancer())
-	//			echo "Set memc {$this->last_hmd} = $value";
 			$memcache->set('phpmv3'.$this->last_hmd, $value, MEMCACHE_COMPRESSED, abs($time_to_expire));
 			debug_count_inc('smart_cache_gets_memcached_stores');
 

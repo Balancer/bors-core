@@ -48,7 +48,7 @@ require_once('strings.php');
 
 function bors_close_tags($text)
 {
-    $close_tags = explode(" ","a i b u s font div option select small span td tr tt table blockquote pre xmp");
+    $close_tags = explode(" ","a b dd dl dt i u s font div option select small span td tr tt table blockquote pre xmp");
 
    	for($i=0, $count = count($close_tags); $i<$count; $i++)
     {

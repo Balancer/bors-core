@@ -25,6 +25,7 @@ class bors_votes_thumb extends base_object_db
 	{
 		return array(
 			'owner' => 'forum_user(user_id)',
+			'target_user' => 'balancer_board_user(target_user_id)',
 		);
 	}
 }

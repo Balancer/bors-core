@@ -71,9 +71,12 @@ function geoip_info($ip)
 		$gi = geoip_open($gf, GEOIP_STANDARD);
 
 		$record = geoip_record_by_addr($gi, $ip);
-		$cc = $record->country_code;
-		$cn = $record->country_name;
-		$cin = $record->city;
+		if($record)
+		{
+			$cc = $record->country_code;
+			$cn = $record->country_name;
+			$cin = $record->city;
+		}
 		geoip_close($gi);
 		$city_object = $record;
 	}

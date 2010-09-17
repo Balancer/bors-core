@@ -8,6 +8,8 @@ form.big label { font-size: 20pt; }
 form.big input { font-size: 20pt; }
 
 .w100p { width: 98%; }
+.w50p, .half  { width: 49%; }
+.w33p, .third { width: 32%; }
 .right { text-align: right; }
 small, .small { font-size: 0.8em !important; }
 .f8pt { font-size: 8pt !important; }
@@ -64,7 +66,28 @@ img.flag {
 	margin-right: 2px;
 }
 
-div.float-half {
+.float-half {
 	float: left;
 	width: 48%;
+}
+
+.float-rhalf {
+	float: left;
+	width: 48%;
+}
+
+.float-left {
+	float: left;
+}
+
+.float-right {
+	float: right;
+}
+
+.rspace {
+	margin-right: 20px;
+}
+
+.rpspace {
+	padding-right: 20px;
 }

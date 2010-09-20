@@ -2,7 +2,7 @@
 
 require_once('inc/bors/cross.php');
 
-class base_object_db extends base_object
+class base_object_db extends bors_object
 {
 	function can_cached() { return false; } //TODO: пока не разберусь, откуда глюки сохранения memcache
 

@@ -41,15 +41,31 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static function load_array($object, $where)
 	{
-//		echo "load_array($object, $where)\n";
-		$dbh = new driver_mysql($object->db_name());
+//		echo "load_array($object, ".print_r($where).")<br/>\n";
+		if(is_null($object))
+		{
+			$db_name = $where['*db'];
+			$table_name = $where['*table'];
+			unset($where['*db'], $where['*table']);
+			$select = array('*');
+			$class_name = 'base_object_db';
+			$object = new base_object_db(NULL);
+		}
+		else
+		{
+			$db_name = $object->db_name();
+			$table_name = $object->table_name();
+			$class_name = $object->class_name();
+			list($select, $where) = self::__query_data_prepare($object, $where);
+		}
 
-		list($select, $where) = self::__query_data_prepare($object, $where);
-//		var_dump($where);
+		$dbh = new driver_mysql($db_name);
 
-		$datas = $dbh->select_array($object->table_name(), join(',', $select), $where, $object->class_name());
+//		echo "select_array($table_name, ".join(',', $select).", ".print_r($where, true).", $class_name);<Br/>\n";
+
+		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
 		$objects = array();
-		$class_name = $object->class_name();
+
 		foreach($datas as $data)
 		{
 			$object->set_id($data['id']);

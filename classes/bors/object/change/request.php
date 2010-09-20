@@ -30,6 +30,13 @@ class bors_object_change_request extends base_object_db
 		);
 	}
 
+	function auto_objects()
+	{
+		return array(
+			'owner' => 'bors_user(user_id)',
+		);
+	}
+
 	// $self_class_name - это костыль из-за отсутствия позднего статического связывания в PHP < 5.3
 	static function add($target, $property, $value, $type_title, $user, $self_class_name)
 	{

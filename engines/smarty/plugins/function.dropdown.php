@@ -18,7 +18,7 @@ function smarty_function_dropdown($params, &$smarty)
 
 	echo "<select";
 
-	foreach(explode(' ', 'size style multiple class onchange') as $p)
+	foreach(explode(' ', 'id size style multiple class onchange') as $p)
 		if(!empty($$p))
 			echo " $p=\"{$$p}\"";
 
@@ -49,7 +49,7 @@ function smarty_function_dropdown($params, &$smarty)
 		}
 		elseif(preg_match("!^\w+$!", $list))
 		{
-			$list =&new $list(@$args);
+			$list = new $list(@$args);
 			$list = $list->named_list();
 		}
 		else
@@ -69,6 +69,11 @@ function smarty_function_dropdown($params, &$smarty)
 
 	if(!$current && !empty($list['default']))
 		$current = $list['default'];
+
+	if(empty($current))
+		$current = session_var("form_value_{$name}");
+
+	set_session_var("form_value_{$name}", NULL);
 
 	if(!is_array($current))
 		$current = array($current);

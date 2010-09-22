@@ -162,3 +162,9 @@ function calling_function_name()
 	$backtrace = debug_backtrace();
 	return $backtrace[2]['function'];
 }
+
+function set_session_form_data($data)
+{
+	foreach($data as $field => $value)
+		set_session_var("form_value_{$field}", $value);
+}

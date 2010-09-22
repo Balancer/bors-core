@@ -13,7 +13,7 @@ function smarty_function_input($params, &$smarty)
 				$value = NULL;
 		}
 
-		if(!isset($value))
+		if(empty($value))
 			$value = session_var("form_value_{$name}");
 
 //		echo "===$value===".session_var("form_value_{$name}");

@@ -17,8 +17,10 @@ class bors_object_change_request extends base_object_db
 			'target_target_object_id',
 			'user_id',
 			'create_time',
+			'modify_time',
 			'is_confirmed',
 			'type_title',
+			'last_editor_id',
 		);
 	}
 

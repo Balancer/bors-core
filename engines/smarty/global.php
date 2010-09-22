@@ -81,13 +81,27 @@ function do_php($code)
 	return $content;
 }
 
+function template_jquery_ui()
+{
+	template_jquery();
+//	template_js_include('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js');
+	template_js_include('/_bors3rdp/jquery/ui/jquery-ui-1.8.5.custom.min.js');
+}
+
+function template_jquery_ui_css($tpl = 'overcast') { template_css('/_bors3rdp/jquery/ui/themes/'.$tpl.'/jquery-ui-1.8.5.custom.css'); }
+
 function template_jquery_ui_tabs($id)
 {
-//	template_css('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
-	template_css('/_bors3rdp/jquery/jquery-ui.css');
-	template_jquery();
-	template_js_include('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js');
+	template_jquery_ui();
+	template_jquery_ui_css();
 
+	template_js("jQuery(document).ready(function() { jQuery('$id').tabs(); });");
+}
+
+function template_jquery_ui_autocomplete($id, $url)
+{
+	template_jquery_ui();
+	template_jquery_ui_css();
 	template_js("jQuery(document).ready(function() { jQuery('$id').tabs(); });");
 }
 
@@ -112,3 +126,6 @@ function template_jquery_markitup($id)
 
 //	jQuery('#bbcode').height(300);
 }
+
+function template_rightjs() { template_js_include('/_bors3rdp/rightjs/right-safe.js'); }
+function template_rightjs_plugin($name) { template_rightjs(); template_js_include("/_bors3rdp/rightjs/right-{$name}.js"); }

@@ -95,4 +95,15 @@ class bors_lib_orm
 		}
 		return $fields_array;
 	}
+
+	static function property_to_field($class_name, $property)
+	{
+		$object = new $class_name(NULL);
+		foreach(self::all_fields($object) as $f)
+			if($f['property'] == $property)
+				return $f['name'];
+
+//		var_dump(self::all_fields($object));
+		return NULL;
+	}
 }

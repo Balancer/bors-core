@@ -48,15 +48,23 @@ require_once('strings.php');
 
 function bors_close_tags($text)
 {
-    $close_tags = explode(" ","a b dd dl dt i u s font div option select small span td tr tt table blockquote pre xmp");
+    $close_tags = explode(" ","a b blockquote dd div dl dt font i option p pre s select small span table td tr tt u xmp");
 
    	for($i=0, $count = count($close_tags); $i<$count; $i++)
     {
 		$tag = $close_tags[$i];
        	$n = preg_match_all("!<$tag(\s|>)!i", $text, $m) - preg_match_all("!</$tag(\s|>)!i", $text, $m);
+
+		if($n == 0)
+			continue;
+
         if($n > 0)
        	    while($n--)
            	    $text .="</$tag>";
+
+        if($n < 0)
+       	    while($n++)
+           	    $text = "<$tag>" . $text;
    	}
 
    	return $text;

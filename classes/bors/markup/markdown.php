@@ -38,6 +38,7 @@ class bors_markup_markdown extends base_object
 	{
 		$text = parent::text();
 		$text = preg_replace('/<(http:.+?)>/', '$1', $text);
+		$text = preg_replace('/<([^>]+@[^>]+)>/', '$1', $text);
 		return $text;
 	}
 

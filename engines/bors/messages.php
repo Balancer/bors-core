@@ -2,8 +2,7 @@
 
 function bors_message($text, $params=array())
 {
-	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+	template_nocache();
 
 	$ocs = config('output_charset', config('internal_charset', 'utf-8'));
 	$ics = config('internal_charset', 'utf-8');
@@ -16,6 +15,7 @@ function bors_message($text, $params=array())
 	$nav_name = defval($params, 'nav_name', $title);
 	$timeout = defval($params, 'timeout', -1);
 	$template = defval($params, 'template', config('default_message_template', config('default_template')));
+	$hidden_log = defval($params, 'hidden_log');
 
 	if(!$redir)
 	{
@@ -118,6 +118,9 @@ function bors_message($text, $params=array())
 	}
 
 	clean_all_session_vars();
+
+	if($hidden_log)
+		debug_hidden_log($hidden_log, "message: $text");
 
 	if($redir && $timeout >= 0)
 		return go($redir, false, $timeout);

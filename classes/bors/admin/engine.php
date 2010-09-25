@@ -199,9 +199,9 @@ class bors_admin_engine extends base_empty
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/delete-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i16/delete.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
-			return "<img src=\"/_bors/i/delete-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
+			return "<img src=\"/_bors/i16/delete.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
 
 	function login_url() { return $this->real_object()->url().'?login'; }

@@ -31,20 +31,27 @@ class url_getp extends url_base
 				$v = $obj->get($k);
 
 				if(is_array($v))
-					$pars[] = urlencode($k).'='.join(',', array_map('urlencode', $v));
+					$v = join(',', array_map('urlencode', $v));
 				else
-				{
-					$pars[] = urlencode($k).'='.urlencode($v);
-				}
+					$v = urlencode($v);
+
+				if(!$v)
+					continue;
+
+				$pars[] = urlencode($k).'='.$v;
 			}
 
 			if($page && $page != 1)
 				$pars[] = 'p='.$page;
 		}
 		else
+		{
 			foreach($get as $k => $v)
 			{
 				if(!$k || in_array($k, $skip_keys))
+					continue;
+
+				if(!$v)
 					continue;
 
 				if(is_array($v))
@@ -53,6 +60,7 @@ class url_getp extends url_base
 					$pars[] = urlencode($k).'='.urlencode($v);
 
 			}
+		}
 
 		if($pars)
 			return $url.'?'.join('&', $pars);

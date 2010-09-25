@@ -239,6 +239,8 @@ class storage_db_mysql_smart extends base_null
 			if($only_count)
 			{
 				$cnt = intval($dbh->get('SELECT COUNT(*) '.$q, false));
+				if(strpos($q, ' GROUP BY '))
+					$cnt = intval($dbh->get('SELECT FOUND_ROWS()'));
 				$dbh->close();
 				return $cnt;
 			}

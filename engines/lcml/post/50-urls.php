@@ -3,7 +3,7 @@
 // URLs processing
 // Global vars: none
 //
-// (c) Balancer 2003-2004
+// (c) Balancer 2003-2010
 // 07.06.04 0.1.2 исправлена обработка ссылок, "упирающихся" в тэг, например, <li> http://www.ru/<li>
 // 08.06.04 0.1.3 если сервер теперь не возвращает кодировку, считается, что она - Windows-1251
 // 28.06.04 0.1.4 исправления выделения ссылок, заканчивающихся [, |, ] и т.п.
@@ -93,7 +93,7 @@
 		));
 
         if(preg_match("!lenta\.ru!", $url))
-			curl_setopt($ch, CURLOPT_PROXY, 'home.balancer.ru:3128');
+			curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 		require_once('inc/urls.php');
 

@@ -46,12 +46,12 @@ function class_name_to_id($object)
 	if($class_id = @$loaded[1][$class_name])
 		return $class_id;
 
-	$db = &new DataBase(config('main_bors_db'));
+	$db = new driver_mysql(config('main_bors_db'));
 	$db->insert('bors_class_names', array('name' => $class_name));
 	$class_id = $db->last_id();
 	$db->close();
 
-	bors_class_names_load();
+	bors_class_names_load(true);
 
 	return $class_id;
 }

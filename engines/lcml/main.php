@@ -60,7 +60,7 @@ class bors_lcml
         if(!is_dir($dir))
 			return;
 
-		$files = self::memcache()->get('lcml_actions_'.$_SERVER['HTTP_HOST'].'_3:'.$dir);
+		$files = self::memcache()->get('lcml_actions_'.@$_SERVER['HTTP_HOST'].'_3:'.$dir);
 		if(!$files)
 		{
 	        $files = array();
@@ -278,8 +278,14 @@ function lcml_tag_disabled($tag)
 	return !empty($enabled);
 }
 
-function html2bb($text, $url)
+function html2bb($text, $args = array())
 {
+	$url		= defval($args, 'origin_url');	// Ссылка оригинального HTML. Нужна для вычисления относительных ссылок
+	$strip_forms= defval($args, 'strip_forms');	// Выкинуть формы
+
+	if($strip_forms)
+		$text = preg_replace('!<form.+</form>!is', '', $text);
+
 	$text = preg_replace("!<(\w+)><(\w+)>(.+?)</\\1></\\2>!is", "<$1><$2>$3</$2></$1>", $text); // бывает и такой изврат: <b><i>..</b></i>
 
 	$text = preg_replace("!<font color=\"(blue)\">(.+?)</font>!is", "[$1]$2[/$1]", $text);
@@ -290,6 +296,9 @@ function html2bb($text, $url)
 		$text = preg_replace("!<$tag>(.+?)</$tag>!is", "[$tag]$1[/$tag]", $text);
 		$text = preg_replace("!<$tag [^>]+>(.+?)</$tag>!is", "[$tag]$1[/$tag]", $text);
 	}
+
+	$text = preg_replace("!<div [^>]*>\s*(.+?)\s*</div>!is", "\n$1\n", $text);
+	$text = preg_replace("!<div>\s*(.*?)\s*</div>!is", "\n$1\n", $text);
 	$text = preg_replace("!<p [^>]+>(.+?)</p>!is", "\n$1\n", $text);
 	$text = preg_replace("!<p>!i", "\n\n", $text);
 	$text = preg_replace("!<o:[^>]+>!i", "", $text);
@@ -297,6 +306,7 @@ function html2bb($text, $url)
 	$text = preg_replace("!<noindex>!i", "", $text);
 	$text = preg_replace("!</noindex>!i", "", $text);
 	$text = preg_replace("!<br\s*/?>!", "\n", $text);
+
 
 	$text = preg_replace("!(<a [^>]*href=\")(/.+?)(\"[^>]*?>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
 	$text = preg_replace("!(<a [^>]*href=)([^\"']\S+)( [^>]+>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
@@ -313,6 +323,7 @@ function html2bb($text, $url)
 
 	$text = preg_replace("/^\s+$/m", '', $text);
 
+	$text = preg_replace("!\n(&nbsp;| )\n!", "\n\n", $text);
 	$text = preg_replace("!\n{2,}!", "\n\n", $text);
 
 	return trim($text);

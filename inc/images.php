@@ -136,3 +136,10 @@ function bors_image_resize_error_return($message, $file_out, $width, $height)
 	bors_thread_unlock('image_file_scale');
 	return false;
 }
+
+function bors_icon($image, $params = array())
+{
+	$title = defval($params, 'title');
+	$alt   = defval($params, 'alt', '[IMG]');
+	return "<img src=\"/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$alt\" class=\"flag\" />";
+}

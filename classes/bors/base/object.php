@@ -409,6 +409,19 @@ class base_object extends base_empty
 		return '<a href="'.$this->url($this->page()).$url_append.'"'.($append?' '.$append:'').">{$title}</a>"; 
 	}
 
+	function titled_link_ex($params)
+	{
+		$title = defval($params, 'title');
+		if($title === NULL)
+			$title = $this->title();
+
+		$page = defval($params, 'page');
+		if($page === NULL)
+			$title = $this->page();
+
+		return '<a href="'.$this->url_ex($page).defval($params, 'url_append').">{$title}</a>"; 
+	}
+
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
 	function titled_admin_url($title = NULL)
 	{
@@ -706,6 +719,14 @@ class base_object extends base_empty
 				debug_exit("Can't load url engine '{$this->get('url_engine')}' for class {$this}");
 
 		return $this->attr['_url_engine_object']->url($page);
+	}
+
+	function url_ex($args)
+	{
+		if(!($url_engine = defval($args, 'url_engine')))
+			$url_engine = $this->get('url_engine');
+
+		return object_load($url_engine)->url(defval($args, 'page'));
 	}
 
 	function internal_uri_ascii($limit = false, $ignore_oversize = false)

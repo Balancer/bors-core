@@ -230,7 +230,8 @@
 */
     function params($in)
     {
-        $params=array();
+        $params = array();
+        $params['self'] = defval($GLOBALS['lcml']['params'], 'self');
 
         if(preg_match("!^(.*?)\|(.*)$!s",$in,$m))
         {

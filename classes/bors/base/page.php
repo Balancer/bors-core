@@ -87,7 +87,8 @@ class base_page extends base_object
 		if($this->__havefc())
 			return $this->__lastc();
 
-		return $this->__setc(($total = $this->total_items()) >= 0 ? intval(($total - 1)/$this->items_per_page()) + 1 : 1);
+		$total = $this->total_items();
+		return $this->__setc($total >= 0 ? intval(($total - 1)/$this->items_per_page()) + 1 : 1);
 	}
 
 	function items_per_page() { return 25; }

@@ -78,6 +78,35 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		return $objects;
 	}
 
+	static function count($object, $where)
+	{
+//		echo "load_array($object, ".print_r($where).")<br/>\n";
+		if(is_null($object))
+		{
+			$db_name = $where['*db'];
+			$table_name = $where['*table'];
+			unset($where['*db'], $where['*table']);
+			$select = array('*');
+			$class_name = 'base_object_db';
+			$object = new base_object_db(NULL);
+		}
+		else
+		{
+			$db_name = $object->db_name();
+			$table_name = $object->table_name();
+			$class_name = $object->class_name();
+			list($select, $where) = self::__query_data_prepare($object, $where);
+		}
+
+		$dbh = new driver_mysql($db_name);
+
+		$count = $dbh->select($table_name, 'COUNT(*)', $where, $class_name);
+		if(!empty($where['group']))
+			$count = intval($dbh->get('SELECT FOUND_ROWS()'));
+
+		return $count;
+	}
+
 	static private function __query_data_prepare($object, $where)
 	{
 		$select = array();

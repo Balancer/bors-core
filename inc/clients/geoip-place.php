@@ -16,7 +16,7 @@ function geoip_place($ip)
 	return $res;
 }
 
-function geoip_flag($ip)
+function geoip_flag($ip, $fun = false)
 {
 	list($cc, $cn, $city) = geoip_info($ip);
 
@@ -30,6 +30,9 @@ function geoip_flag($ip)
 	$file = bors_lower($cc).".gif";
 //	if(!file_exists("/var/www/balancer.ru/htdocs/img/flags/$file"))
 //		$file = "-.gif";
+
+	if($fun)
+		$alt = "Earth, {$alt}";
 
 	$res = '<img src="http://balancer.ru/img/flags/'.$file.'" class="flag" title="'.addslashes($alt).'" alt="'.$cc.'"/>';
 	return $res;
@@ -48,9 +51,9 @@ function geoip_info($ip)
 	require_once(BORS_3RD_PARTY."/geoip/geoip.inc");
 	require_once(BORS_3RD_PARTY."/geoip/geoipcity.inc");
 
-	$ch = new Cache();
-	if($ch->get("users-geoip-info", $ip))
-		0;//return $ch->last();
+//	$ch = new Cache();
+//	if($ch->get("users-geoip-info", $ip))
+//		0;//return $ch->last();
 
 	$cc = '';
 	$city_object = NULL;
@@ -99,7 +102,10 @@ function geoip_info($ip)
 		geoip_close($gi);
 	}
 
+	$cc  = iconv('ISO-8859-1', 'utf-8', $cc );
+	$cn  = iconv('ISO-8859-1', 'utf-8', $cn );
 	$cin = iconv('ISO-8859-1', 'utf-8', $cin);
 
-	return $ch->set(array($cc, $cn, $cin, $city_object), -3600);
+	return array($cc, $cn, $cin, $city_object);
+//	return $ch->set(array($cc, $cn, $cin, $city_object), -3600);
 }

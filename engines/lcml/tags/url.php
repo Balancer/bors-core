@@ -1,6 +1,10 @@
 <?php
+
 	function lt_url($params) 
-	{ 
+	{
+//		if(debug_in_console())
+//			echo '>>>';
+
 		$url = $params['url'];
 
 		if(preg_match("!^[^/]+\.\w{2,3}!",$url))
@@ -9,13 +13,13 @@
 
 		$hts = NULL;
 		if(class_exists('DataBaseHTS') && config('obsolete_use_handlers_system'))
-			$hts = &new DataBaseHTS();
+			$hts = new DataBaseHTS();
 
 		if(!preg_match("!^\w+://!",$url) && !preg_match("!^/!",$url))
 			$url = @$GLOBALS['main_uri'].$url;
 
-		if($hts)
-			$parse = url_parse($url);
+//		if($hts)
+//		$parse = url_parse($url);
 
 		$external = @$parse['local'] ? '' : ' class="external"';
 

@@ -37,7 +37,7 @@ class bors_external_feeds_entry extends base_object_db
 	function make_source()
 	{
 		$link = $this->entry_url();
-		$text = html2bb($this->text(), $link);
+		$text = html2bb(bors_close_tags($this->text()), array('origin_url' => $link, 'strip_forms' => true));
 		$feed = $this->feed();
 		$text = explode("\n", $text);
 		$limit = $feed->para_limit();

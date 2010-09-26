@@ -85,7 +85,11 @@ class bors_global extends base_empty
 
 				//TODO: уже можно снести проверку в следующей строке?
 				if(!(method_exists($obj, 'skip_save') && $obj->skip_save())) //TODO: костыль для bors_admin_image_append
+				{
 					$storage->save($obj);
+					if(config('debug_trace_changed_save'))
+						echo 'Save '.$obj->debug_title()."\n";
+				}
 			}
 
 			save_cached_object($obj);

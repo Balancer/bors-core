@@ -73,6 +73,10 @@ function objects_count($class, $args = array())
 	else
 		$init = new $class(NULL);
 
+	$storage = $init->storage();
+	if(method_exists($storage, 'count'))
+		return $storage->count($init, $args);
+
 	$where = mysql_args_compile($args, $class);
 
 	$cargs = array();
@@ -80,7 +84,7 @@ function objects_count($class, $args = array())
 	if(!empty($args['object_id']))
 		$cargs['object_id'] = $args['object_id'];
 
-	return $init->storage()->load($init, $where, true, $cargs);
+	return $storage->load($init, $where, true, $cargs);
 }
 
 function bors_field_array_extract($objects_array, $field)

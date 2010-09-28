@@ -2,9 +2,6 @@
 
 	function lt_url($params) 
 	{
-//		if(debug_in_console())
-//			echo '>>>';
-
 		$url = $params['url'];
 
 		if(preg_match("!^[^/]+\.\w{2,3}!",$url))
@@ -39,6 +36,6 @@
 //			if(!preg_match('!a href!', $description))
 				$params['description'] = $description;
 		}
-		
+
 		return "<a href=\"$url\"$external>{$params['description']}</a>";
 	}

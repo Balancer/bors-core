@@ -47,7 +47,7 @@
 {foreach from=$list item="i"}{if $i}
 <tr{if $item->default_image_id() == $i->id()} class="is_default"{/if}>
 <td><a href="{$i->url()}">{$i->thumbnail("128x96(up,crop)")|get:html_code}</a></td>
-<td><a href="{$i->url()}">{$i->description_or_title()}</a></td>
+<td>{$i->admin()->imaged_titled_link($i->description_or_title())}</td>
 <td class="nobr">
 	{$i->admin()->imaged_edit_link('редактировать')}<br/>
 	{$i->admin()->imaged_set_default_link($item, 'по умолчанию')}<br/>

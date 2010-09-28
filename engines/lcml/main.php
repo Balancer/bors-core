@@ -108,6 +108,7 @@ class bors_lcml
 
 	function parse($text, $params = array())
 	{
+//		echo "<xmp>parse~$text~</xmp>";
 		$text = str_replace("\r", '', $text);
 		if(!trim($text))
 			return '';

@@ -29,5 +29,5 @@ class bors_page_fs_htsu extends base_page
 
 //	function cache_static() { return rand(10*86400, 30*86400); }
 
-	function cache_static()		{ return config('page_fs_cache_static'); }
+//	function cache_static()		{ return config('page_fs_cache_static'); }
 }

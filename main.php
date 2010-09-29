@@ -226,14 +226,22 @@ if(config('404_logging'))
 	if(!empty($_SERVER['HTTP_REFERER']) && strpos($uri, 'files/') === false)
 	{
 		if(preg_match('/aviaport/', $_SERVER['HTTP_REFERER']))
-			$fname_404 = '404-filtered-internal.log';
+			$fname_404 = '404-internal';
 		else
-			$fname_404 = '404-filtered-external.log';
+			$fname_404 = '404-external';
 	}
 	else
-		$fname_404 = '404-other.log';
+		$fname_404 = '404-other';
 
-	@file_put_contents($file = config('debug_hidden_log_dir')."/{$fname_404}", "$uri <= ".@$_SERVER['HTTP_REFERER'] 
+	$info = array("url = $uri");
+	if($referer = @$_SERVER['HTTP_REFERER'])
+		$info[] = "referer = $referer";
+	$info[] = "user ip = ".bors()->client()->ip();
+	$info[] = "user agent = ".bors()->client()->agent();
+	$info[] = "user place = ".bors()->client()->place();
+	bors_log::info(join("\n", $info), $fname_404);
+
+	@file_put_contents($file = config('debug_hidden_log_dir')."/{$fname_404}.log", "$uri <= ".@$_SERVER['HTTP_REFERER'] 
 		. " ; IP=".@$_SERVER['REMOTE_ADDR']
 		. "; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);

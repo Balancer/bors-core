@@ -49,16 +49,20 @@ class bors_admin_engine extends base_empty
 		return '/_bors/admin/property?object='.urlencode($obj->internal_uri());
 	}
 
-	function imaged_titled_link()
+	function imaged_titled_link($title = NULL)
 	{
 		$obj = $this->real_object();
-		return "<a href=\"{$obj->admin()->url()}\">{$obj->title()}</a>&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+		if(is_null($title))
+			$title =$obj->title();
+		return "<a href=\"{$obj->admin()->url()}\">{$title}</a>&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
 	}
 
-	function titled_link()
+	function titled_link($title = NULL)
 	{
 		$obj = $this->real_object();
-		return "<a href=\"{$obj->admin()->url()}\">{$obj->title()}</a>\n";
+		if(is_null($title))
+			$title = $obj->title();
+		return "<a href=\"{$obj->admin()->url()}\">{$title}</a>\n";
 	}
 
 	function imaged_nav_named_link()

@@ -56,8 +56,11 @@ function airbase_time($time)
 	return strftime("%Y-%m-%d",$time);
 }
 
-function smart_time($time, $human_readable = true)
+function smart_time($time, $human_readable = true, $def='')
 {
+	if(!$time)
+		return $def;
+
 	global $now;
 	if(is_today($time))
 		return ec(strftime("сегодня,&nbsp;%H:%M",$time));

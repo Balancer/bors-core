@@ -4,7 +4,7 @@
 
 require_once('Log.php');
 
-class bors_log_pear
+class bors_log_pear extends base_object_db
 {
 	static function error($message, $type = 'COMMON') { self::logger($type)->log($message, PEAR_LOG_ERR); }
 	static function warning($message, $type = 'COMMON') { self::logger($type)->log($message, PEAR_LOG_WARNING); }
@@ -28,5 +28,19 @@ class bors_log_pear
 			$max_level = PEAR_LOG_DEBUG;
 
 		return Log::singleton($handler, $name, $ident, $conf, $max_level);
+	}
+
+	function storage_engine() { return 'bors_storage_mysql'; }
+	function db_name() { return 'WWW'; }
+	function table_name() { return 'pear_log'; }
+	function table_fields()
+	{
+		return array(
+			'id',
+			'logtime',
+			'ident',
+			'priority',
+			'message',
+		);
 	}
 }

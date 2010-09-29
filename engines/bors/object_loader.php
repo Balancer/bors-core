@@ -74,6 +74,7 @@ function bors_object_caches_drop() { unset($GLOBALS['bors_data']['cached_objects
 
 function &load_cached_object($class_name, $id, $args, &$found=0)
 {
+//		$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()] = &$object;
 	$obj = NULL;
 
 	if(is_object($id) || @$args['no_load_cache'])
@@ -86,7 +87,9 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 		if(config('object_loader_filemtime_check'))
 			$updated = !method_exists($obj, 'class_filemtime') || filemtime($obj->real_class_file()) > $obj->class_filemtime();
 
-//		echo "Found in memory <b>$class_name</b>('$id'); can_cached={$obj->can_cached()}; updated = $updated (me=".method_exists($obj, 'class_filemtime')."; ".filemtime($obj->real_class_file()).' > '.$obj->class_filemtime().")<br />";
+//		if(config('is_developer'))
+//			echo "Found in memory <b>$class_name</b>('$id'); can_cached={$obj->can_cached()}; updated = $updated (me=".method_exists($obj, 'class_filemtime')."; ".filemtime($obj->real_class_file()).' > '.$obj->class_filemtime().")<br />";
+//		echo "load {$class_name}($id), nocache=".@$args['no_load_cache']."<br/>\n";
 
 		if($obj->can_cached() && !$updated)
 		{

@@ -3,7 +3,7 @@
 class base_page_db extends base_page
 {
 	function can_be_empty() { return false; }
-	function can_cached() { return false; } //TODO: пока не разберусь, откуда глюки сохранения memcache
+	function can_cached() { return true; } //TODO: пока не разберусь, откуда глюки сохранения memcache
 
 	function id_field()
 	{

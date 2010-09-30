@@ -34,7 +34,7 @@ function geoip_flag($ip, $fun = false)
 	if($fun)
 		$alt = "Earth, {$alt}";
 
-	$res = '<img src="http://balancer.ru/img/flags/'.$file.'" class="flag" title="'.addslashes($alt).'" alt="'.$cc.'"/>';
+	$res = '<img src="http://s.wrk.ru/f/'.$file.'" class="flag" title="'.addslashes($alt).'" alt="'.$cc.'"/>';
 	return $res;
 }
 

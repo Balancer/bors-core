@@ -295,7 +295,7 @@
 		{
 //			print_d($match);
 			foreach($match as $m)
-				$params[strtolower($m[1])] = preg_replace('!^(/forum/smilies/)!', 'http://airbase.ru$1', $m[2]);
+				$params[strtolower($m[1])] = preg_replace('!^/forum/smilies(/.+)!', 'http://s.wrk.ru/s$1', $m[2]);
 		}
 		
         if(empty($params['uri']))

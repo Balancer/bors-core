@@ -423,6 +423,7 @@ class base_object extends base_empty
 	}
 
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
+	function nav_named_link() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
 	function titled_admin_url($title = NULL)
 	{
 		if($title === NULL)

@@ -4,7 +4,7 @@ function lp_csv($txt, $params)
 {
 	require_once('engines/lcml/bcsTable.php');
 	require_once('inc/csv.php');
-	$lcml_parse_cells = bors_strlen($txt) < 512;
+	$lcml_parse_cells = bors_strlen($txt) < 4096;
 
 	$tab = new bcsTable();
 
@@ -53,7 +53,8 @@ function lp_csv($txt, $params)
                         $d = '&nbsp;';
 					elseif($lcml_parse_cells and !preg_match('!^[\w,\-\+\.]+$!', $d))
 						$d = lcml($d);
-
+					else
+						$d = str_replace("[br]", "<br/>", $d);
                     $tab->append($d);
                 }
                 $tab->new_row();

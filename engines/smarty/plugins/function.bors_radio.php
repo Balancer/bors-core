@@ -3,9 +3,9 @@
 function smarty_function_bors_radio($params, &$smarty)
 {
 	extract($params);
-		
+
 	$obj = $smarty->get_template_vars('current_form_class');
-		
+
 	$params = "";
 	foreach(split(' ', 'size style') as $p)
 		if(!empty($$p))
@@ -18,8 +18,15 @@ function smarty_function_bors_radio($params, &$smarty)
 		else
 			$list = object_load($m[1])->$m[2]();
 	}
+	elseif(preg_match("!^\w+$!", $list))
+	{
+		$list = new $list(@$args);
+		$list = $list->named_list();
+	}
 	else
-		$list = object_load($list)->named_list();
+	{
+		eval('$list='.$list);
+	}
 
 	if(empty($object))
 	{
@@ -31,9 +38,9 @@ function smarty_function_bors_radio($params, &$smarty)
 		$current = $object->$name();
 		$object = $object->internal_uri();
 	}
-	
+
 //	echo "Current for {$object} = '$current'<br />\n";
-	
+
 	if(!$current && !empty($list['default']))
 		$current = $list['default'];
 

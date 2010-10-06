@@ -38,8 +38,16 @@ class auto_object_php extends base_object
 
 		if(preg_match('!^(.+)_(\d+)$!', $class_path, $m))
 		{
-			$class_path = bors_unplural($m[1]);
-			$object_id = $m[2];
+			if(class_include($class_base.'_'.($cp = $m[1].'_edit')))
+			{
+				$class_path = $cp;
+				$object_id = $m[2];
+			}
+			else
+			{
+				$class_path = bors_unplural($m[1]);
+				$object_id = $m[2];
+			}
 		}
 		else
 			$object_id = $this->id();

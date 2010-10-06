@@ -21,4 +21,5 @@ else
 	function bors_ucfirst($str) { return ucfirst($str); }
 }
 
-eval('class bors_log extends '.config('log.class', 'bors_log_stub').' { } ');
+eval('class bors_log  extends '.config('log.class', 'bors_log_stub').' { } ');
+eval('class bors_time extends '.config('time.class', 'bors_time_ts').' { } ');

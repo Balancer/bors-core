@@ -91,3 +91,8 @@ img.flag {
 .rpspace {
 	padding-right: 20px;
 }
+
+.hspace { margin-left: 20px; margin-right: 20px; }
+
+a.link-as-text { text-decoration: none; }
+a.link-as-text:hover { text-decoration: underline; }

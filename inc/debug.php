@@ -4,7 +4,8 @@ require_once('inc/texts.php');
 
 function debug_exit($message)
 {
-	if($tmp = @ob_get_contents())
+	$ob_status = ob_get_status();
+	if(!empty($ob_status['type']) && ($tmp = @ob_get_contents()))
 	{
 		ob_end_clean();
 		echo bors_close_tags($tmp);

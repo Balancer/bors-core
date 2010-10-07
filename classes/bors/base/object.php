@@ -1185,4 +1185,12 @@ class base_object extends base_empty
 
 		$this->set_keywords($keywords, $up);
 	}
+
+	function logger()
+	{
+		if($this->__havefc())
+			return $this->__lastc();
+
+		return $this->__setc(object_load(config('logs.default_logger_class', 'bors_log_stub'), $this));
+	}
 }

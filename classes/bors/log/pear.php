@@ -12,7 +12,7 @@ class bors_log_pear extends base_object_db
 	static function info($message, $type = 'COMMON') { self::logger($type)->log($message, PEAR_LOG_INFO); }
 	static function debug($message, $type = 'COMMON') { self::logger($type)->log($message, PEAR_LOG_DEBUG); }
 
-	static function logger($ident)
+	function logger($ident) //TODO: тщательно проверить взаимодействие с base_object::logger()!
 	{
 		@list($handler, $name, $conf, $max_level) = config('pear.log', array('console'));
 //		var_dump(array($handler, $name, $conf));

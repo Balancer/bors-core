@@ -221,6 +221,8 @@ function smarty_block_form($params, $content, &$smarty)
 		echo "<input type=\"hidden\" name=\"checkboxes_list\" value=\"".join(',', array_unique(array_filter($vcbs)))."\" />\n";
 	if($tmv = base_object::template_data('form_time_vars'))
 		echo "<input type=\"hidden\" name=\"time_vars\" value=\"".join(',', array_unique(array_filter($tmv)))."\" />\n";
+	if($fls = base_object::template_data('form_file_vars'))
+		echo "<input type=\"hidden\" name=\"file_vars\" value=\"".join(',', array_unique(array_filter($fls)))."\" />\n";
 
 	if(!base_object::template_data('form_have_go'))
 		echo "<input type=\"hidden\" name=\"go\" value=\"$go\" />\n";
@@ -230,6 +232,7 @@ function smarty_block_form($params, $content, &$smarty)
 	base_object::add_template_data('form_checkboxes', NULL);
 	base_object::add_template_data('form_time_vars', NULL);
 	base_object::add_template_data('form_have_go', NULL);
+	base_object::add_template_data('form_file_vars', NULL);
 
 	set_session_var('error_fields', NULL);
 }

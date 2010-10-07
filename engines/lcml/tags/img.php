@@ -88,7 +88,7 @@ function lt_img($params)
 				if(!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
 				{
 					require_once('HTTP/Request.php');
-					$req =& new HTTP_Request($params['url'], array(
+					$req = new HTTP_Request($params['url'], array(
 						'allowRedirects' => true,
 						'maxRedirects' => 2,
 						'timeout' => 3,

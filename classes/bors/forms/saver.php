@@ -134,6 +134,9 @@ class bors_forms_saver extends base_empty
 				$old_file = $object->get($file_field);
 				if($old_file)
 					$old_file->delete();
+
+				$object->set($file_field, NULL, false);
+				$object->set($file_id_field, NULL, true);
 			}
 
 			$file_data = @$files[$file_name];

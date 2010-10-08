@@ -427,7 +427,13 @@ class base_object extends base_empty
 	function titled_admin_url($title = NULL)
 	{
 		if($title === NULL)
-			$title = $this->title() ? $this->title() : '---';
+		{
+			$title = $this->title();
+			if(!$title)
+				$title = object_property($this->get('parent_object'), 'title');
+			if(!$title)
+				$title = '---';
+		}
 		return '<a href="'.$this->admin_url($this->page()).'">'.$title.'</a>';
 	}
 

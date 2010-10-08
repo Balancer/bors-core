@@ -209,6 +209,9 @@ function smarty_block_form($params, $content, &$smarty)
 	else
 		$go = 'newpage_admin';
 
+	if($class_name && !$id)
+		$go = 'newpage_admin';
+
 	if(!empty($class_name) && $class_name != 'NULL' && $class_name != 'this')
 		echo "<input type=\"hidden\" name=\"class_name\" value=\"$class_name\" />\n";
 

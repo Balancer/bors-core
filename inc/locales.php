@@ -1,5 +1,6 @@
 <?php
-@include_once("localization/russian-{$GLOBALS['cms']['charset_u']}.php");
+
+// @include_once("localization/russian-".config('internal_charset', 'utf-8').".php");
 
 function tr($txt)
 {

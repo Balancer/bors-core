@@ -154,7 +154,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 //	function admin_url() { return config('admin_host_url').'/images/'.($this->id() ? $this->id() : '%OBJECT_ID%').'/'; }
 
-	function upload($data, $dir)
+	function upload($data, $dir = NULL)
 	{
 		if(!file_exists($file = $data['tmp_name']))
 		{
@@ -185,13 +185,18 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 		$this->set_original_filename($data['name'], true);
 
-		if(config('image_upload_skip_subdirs'))
+		if(is_null($dir))
+			$dir = popval($data, 'upload_dir');
+
+		if(config('image_upload_skip_subdirs') || !empty($data['no_subdirs']))
 			$this->set_relative_path(secure_path($dir), true);
 		else
 			$this->set_relative_path(secure_path($dir.'/'.$this->id()%100), true);
 
 		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), true);
-		$this->set_file_name($this->id().'.'.$this->extension(), true);
+
+		$upload_file_name = defval($data, 'file_name', $this->id().'.'.$this->extension());
+		$this->set_file_name($upload_file_name, true);
 
 		mkpath($this->image_dir(), 0777);
 		if(!file_exists($this->image_dir()))

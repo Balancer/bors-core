@@ -6,8 +6,8 @@ bors_url_map(array(
 ));
 
 $map = array(
-	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
-	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif)) => bors_image_autothumb(1)',
+	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
+	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
 
 	'/do\-login/ => common_do_login',
 	'/users/do\-login => common_do_login',

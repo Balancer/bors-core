@@ -3,7 +3,7 @@
 class bors_admin_engine extends base_empty
 {
 	function object() { return $this->id(); }
-	function real_object() { return method_exists($this->object(), 'object') ? $this->object()->object() : $this->object(); }
+	function real_object() { return object_property($this->object(), 'real_object', $this->object()); }
 
 	function url($page = NULL)
 	{

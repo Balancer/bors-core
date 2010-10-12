@@ -115,8 +115,11 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 		$x = @$objs[$r['class_id']][$r['object_id']];
 		if(empty($x))
 		{
-			debug_hidden_log('cross-errors', "Cross {$object->internal_uri()} to unknown object ".print_r($r, true));
-			bors_remove_cross_pair($r['class_id'], $r['object_id'], $object->class_id(), $object->id(), $dbh);
+			if(config('bors_link.lost_auto_delete'))
+			{
+				debug_hidden_log('cross-errors', "Cross {$object->internal_uri()} to unknown object ".print_r($r, true));
+				bors_remove_cross_pair($r['class_id'], $r['object_id'], $object->class_id(), $object->id(), $dbh);
+			}
 			continue;
 		}
 

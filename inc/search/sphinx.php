@@ -100,7 +100,7 @@ function bors_search_sphinx($query, $params = array())
 	$data['total'] = $res['total'];
 
 	if($res === false)
-		$data['error'] = $cl->GetLastError();
+		echo $data['error'] = $cl->GetLastError();
 	else
 	{
 		if ( $cl->GetLastWarning() )

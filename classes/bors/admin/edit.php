@@ -33,14 +33,26 @@ class bors_admin_edit extends bors_page
 		return $this->_object = object_load($this->main_class(), $this->id());
 	}
 */
-	function auto_objects()
+
+	function admin_object()
 	{
+		if($this->__havefc())
+			return $this->__lastc();
+
+		$admin_main_class = $this->main_class();
+
+		return $this->__setc(object_load($admin_main_class, $this->id()));
+	}
+
+	function real_object()
+	{
+		if($this->__havefc())
+			return $this->__lastc();
+
 		$admin_main_class = $this->main_class();
 		$real_main_class = call_user_func(array($admin_main_class, 'extends_class'));
-		return array(
-			'admin_object' => "$admin_main_class(id)",
-			'real_object' => "$real_main_class(id)",
-		);
+
+		return $this->__setc(object_load($real_main_class, $this->id()));
 	}
 
 	function template_local_vars() { return parent::template_local_vars().($this->id() ? ' admin_object real_object' : ''); }

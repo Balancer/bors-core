@@ -5,21 +5,20 @@ class bors_forms_saver extends base_empty
 	function save($form_object, $data, $files)
 	{
 //		echo "On input:"; print_d($data); print_d($files); bors_exit();
-		if(empty($data['id']))
-		{
-			// Создаём новый объект
-			echo "Требуется создание нового объекта";
-			print_d($data);
-			print_d($files);
-			bors_exit();
-		}
-		else
-			$object = object_load($data['class_name'], $data['id']);
-
 		if(!empty($data['time_vars']))
 			self::parse_time($data);
 
 //		echo "Time vars parsed:"; print_d($data);
+
+		if(empty($data['id']))
+		{
+			// Создаём новый объект
+			$object = object_new_instance($data['class_name'], $data);
+			$data['id'] = $object->id();
+			bors()->changed_save();
+		}
+
+		$object = object_load($data['class_name'], $data['id']);
 
 		if(!empty($data['file_vars']))
 			self::load_files($object, $data, $files);
@@ -41,13 +40,14 @@ class bors_forms_saver extends base_empty
 
 		if(!empty($data['go']))
 		{
+//			var_dump($form_object);
 			require_once('inc/navigation.php');
 			switch($data['go'])
 			{
 				case 'newpage':
 					return go($form_object->url(1));
 				case 'newpage_admin':
-					return go($form_object->admin_url(1));
+					return go($object->admin_url(1));
 				case 'newpage_edit_parent':
 				case 'admin_parent':
 					if($p = object_load($form_object->admin_url(1)))

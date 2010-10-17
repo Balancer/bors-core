@@ -58,4 +58,6 @@ class base_config extends base_empty
 
 		return $data;
 	}
+
+	function object() { return $this->id(); }
 }

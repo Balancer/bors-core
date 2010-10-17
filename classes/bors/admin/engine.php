@@ -3,7 +3,7 @@
 class bors_admin_engine extends base_empty
 {
 	function object() { return $this->id(); }
-	function real_object() { return method_exists($this->object(), 'object') ? $this->object()->object() : $this->object(); }
+	function real_object() { return object_property($this->object(), 'real_object', $this->object()); }
 
 	function url($page = NULL)
 	{
@@ -16,8 +16,13 @@ class bors_admin_engine extends base_empty
 
 	function admin_url()
 	{
-		if(method_exists($obj = $this->real_object(), 'admin_url'))
+		$obj = $this->real_object();
+//		echo $obj->admin_url()."<br/>";
+		if(method_exists($obj, 'admin_url'))
 			return $obj->admin_url();
+
+		if(method_exists($obj, 'edit_url'))
+			return $obj->edit_url();
 
 		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
 	}

@@ -64,7 +64,7 @@ function debug_only_one_time($mark, $trace=true, $times = 1)
 	@$GLOBALS['debug']['onetime'][$mark]++;
 
 	if($trace)
-	debug_trace();
+		echo debug_trace();
 }
 
 function echolog($message, $level=3)
@@ -156,8 +156,11 @@ function debug_trace($skip = 0, $html = NULL, $level = -1)
 	for($i = 1; $i <= $skip; $i++)
 		array_shift($traceArr);
 
+//	var_dump($traceArr);
 	if(is_numeric($level) && $level > 0)
 		$traceArr = array_slice($traceArr, 0, $level);
+	if(is_numeric($level) && $level < 0)
+		$traceArr = array_slice($traceArr, -$level);
 
 	$tabs = 0; //sizeof($traceArr)-1;
 	for($pos=0, $stop=sizeof($traceArr); $pos<$stop; $pos++)
@@ -344,16 +347,46 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 
 	$out = strftime('%Y-%m-%d %H:%M:%S: ') . $message . "\n";
 	if($trace)
-	$out .= "url: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
-	.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
-	. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
-	. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
-	. (!empty($_SERVER['HTTP_USER_AGENT']) ? "user agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"
-	. ((empty($args['dont_show_user']) && bors()->user()) ? 'user = '.dc(bors()->user()->title()) . ' [' .bors()->user_id()."]\n": '')
-	. debug_trace(1, false, $trace)
-	. "\n---------------------------\n\n";
+		$out .= "url: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
+			.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
+			. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
+			. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
+			. (!empty($_SERVER['HTTP_USER_AGENT']) ? "user agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"
+//			. ((empty($args['dont_show_user']) && bors()->user()) ? 'user = '.dc(bors()->user()->title()) . ' [' .bors()->user_id()."]\n": '')
+			. debug_trace(1, false, $trace)
+			. "\n---------------------------\n\n";
 
+//	if(!empty($args['mkpath']))
+//		mkpath(dirname("{$out_dir}/{$type}.log"));
+
+	if(!empty($args['append']))
+		$out .= "\n".$args['append'];
 
 	@file_put_contents("{$out_dir}/{$type}.log", $out, FILE_APPEND);
 }
+
+function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcontext)
+{
+	// Решение из http://anvilstudios.co.za/blog/php/how-to-ignore-errors-in-a-custom-php-error-handler/
+	if(error_reporting() === 0) // continue script execution, skipping standard PHP error handler
+		return false;
+
+	// Примеры также в http://www.homefilm.info/php42/error-handling.html
+
+	if(!($out_dir = config('debug_hidden_log_dir')))
+		return false;
+
+	@mkdir(config('debug_hidden_log_dir').'/errors');
+	if(!file_exists(config('debug_hidden_log_dir').'/errors'))
+		return false;
+
+	debug_hidden_log('errors/'.date('c'), "Handled error:\n\t\terrno=$errno\n\t\terrstr=$errstr\n\t\terrfile=$errfile\n\t\terrline=$errline", -1, array('append' => "errcontext=".print_r($errcontext, true)));
+
+	return true;
+}
+
+//error_reporting(0);
+set_error_handler('bors_system_error_handler', E_ALL & ~E_STRICT & ~E_NOTICE);
+//set_error_handler('bors_system_error_handler', E_ERROR | E_WARNING | E_PARSE);
+//$x = 5/0;
 

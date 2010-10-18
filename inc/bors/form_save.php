@@ -11,22 +11,6 @@ function bors_form_save(&$obj)
 	if(($post_js = @$_GET['javascript_post_append']))
 		session_array_append('javascript_post_append', $post_js);
 
-	if(method_exists($obj, 'on_action'))
-	{
-		if(method_exists($obj, 'action_target'))
-			$obj = $obj->action_target();
-
-		if(!$obj->access())
-			return bors_message(ec("Не заданы режимы доступа класса ").get_class($obj)."; access_engine=".$obj->access_engine());
-
-		if(!$obj->access()->can_action(NULL, $_GET))
-			return bors_message(ec("[0] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).", method=can_action)"));
-
-		$result = $obj->on_action($_GET);
-		if($result === true)
-			return true;
-	}
-
 	if(!empty($_GET['act']))
 	{
 		if(method_exists($obj, 'action_target'))
@@ -44,6 +28,22 @@ function bors_form_save(&$obj)
 			if($result === true)
 				return true;
 		}
+	}
+
+	if(method_exists($obj, 'on_action'))
+	{
+		if(method_exists($obj, 'action_target'))
+			$obj = $obj->action_target();
+
+		if(!$obj->access())
+			return bors_message(ec("Не заданы режимы доступа класса ").get_class($obj)."; access_engine=".$obj->access_engine());
+
+		if(!$obj->access()->can_action(NULL, $_GET))
+			return bors_message(ec("[0] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).", method=can_action)"));
+
+		$result = $obj->on_action($_GET);
+		if($result === true)
+			return true;
 	}
 
 	$class_name = @$_GET['class_name'];

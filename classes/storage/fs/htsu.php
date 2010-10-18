@@ -141,12 +141,23 @@ class storage_fs_htsu extends base_null
     	$this->ext('file');
     	$this->ext('forum_id');
 
+//		$this->hts = preg_replace_callback('/^#(template_data)_(\w+)\s+(.+)$/m', array(&$this, '_set_callback'), $this->hts);
+		$this->hts = preg_replace_callback('/^#call (\w+)(.+?)$/m', array(&$this, '_call_callback'), $this->hts);
+
 	    $this->hts = preg_replace("!^\n+!",'',$this->hts);
     	$object->set_source(preg_replace("!\n+$!","",$this->hts), false);
 
 		debug_log_var('data_file', $file);
 
 		return $object->set_loaded(true);
+	}
+
+	function _call_callback($matches)
+	{
+		$method = $matches[1];
+		$args   = trim($matches[2]);
+		call_user_func_array(array($this->obj, $method), explode(' ', $args));
+		return '';
 	}
 
 	function save($object)

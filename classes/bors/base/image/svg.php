@@ -19,7 +19,7 @@ class base_image_svg extends base_object
 		$this->show_image();
 		$svg = ob_get_contents();
 		ob_end_clean();
-		
+
 		return $svg;
 	}
 }

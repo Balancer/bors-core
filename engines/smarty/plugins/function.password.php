@@ -29,7 +29,7 @@ function smarty_function_password($params, &$smarty)
 
 	echo "<input type=\"password\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
 
-	foreach(split(' ', 'class id maxlength size style') as $p)
+	foreach(explode(' ', 'class id maxlength size style') as $p)
 		if(!empty($$p))
 			echo " $p=\"{$$p}\"";
 

@@ -23,7 +23,7 @@ function show_page($uri, $data = true)
 //        if($page != $uri && empty($GLOBALS['title']))
 //            go($page);
 
-		foreach(split(' ', 'source body title') as $key)
+		foreach(explode(' ', 'source body title') as $key)
 			if(empty($data[$key]))
 				$$key = @$GLOBALS['page_data'][$key];
 			else
@@ -171,7 +171,7 @@ function show_page($uri, $data = true)
 		
             $page_vars = 'author copyright compile_time create_time description modify_time publisher right_column subscribe title version views views_first views_last';
 
-            foreach(split(' ', $page_vars) as $key)
+            foreach(explode(' ', $page_vars) as $key)
 			{
 				global $$key;
                	$$key = empty($GLOBALS['page_data'][$key]) ? $hts->get_data($page, $key) : $GLOBALS['page_data'][$key];
@@ -210,11 +210,11 @@ function show_page($uri, $data = true)
 //				if($do_print)
 //	                recompile($page, false);
 
-                foreach(split(' ', $page_vars) as $key)
+                foreach(explode(' ', $page_vars) as $key)
                     $$key = $hts->get_data($page, $key);
             }
 
-            foreach(split(' ', "access level action body user_id user_name $page_vars") as $key)
+            foreach(explode(' ', "access level action body user_id user_name $page_vars") as $key)
                 $smarty->assign($key, @$$key);
 
 			$uri = @$GLOBALS['main_uri'];
@@ -290,7 +290,7 @@ function show_page($uri, $data = true)
             foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
        	        $smarty->assign($key, $value);
 
-		foreach(split(' ', 'host_name main_host_uri') as $key)
+		foreach(explode(' ', 'host_name main_host_uri') as $key)
 			$smarty->assign($key, @$GLOBALS['cms'][$key]);
 
 		$errrep_save = error_reporting();

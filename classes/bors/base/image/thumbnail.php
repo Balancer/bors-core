@@ -8,7 +8,7 @@ class base_image_thumbnail extends base_image
 	{
 		@list($id, $this->geometry) = explode(',', $this->id());
 	
-		list($this->geo_width, $this->geo_height) = @split('x', $this->geometry);
+		list($this->geo_width, $this->geo_height) = @explode('x', $this->geometry);
 		
 		$this->original = object_load('base_image', $id);
 		

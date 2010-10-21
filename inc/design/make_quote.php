@@ -8,7 +8,7 @@
 		$author = preg_replace('!^<(.+?)>$!','$1',$author);
 		$author = preg_replace('!^&lt;(.+?)&gt;$!','$1',$author);
 
-		foreach(split(' ', 'code quote pre') as $tag)
+		foreach(explode(' ', 'code quote pre') as $tag)
 			$message = preg_replace("!\[".$tag."[^\]]*\].+\[/".$tag."\]!is", "", $message);
 			
 		$message = preg_replace("!\[img](.+?)\[/img\]!i", "[img \"$1\" x64]", $message);

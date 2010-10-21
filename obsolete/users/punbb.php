@@ -61,7 +61,7 @@
             $value = $db->get("SELECT `value` FROM `users_data` WHERE `member_id`=$member_id AND `key`='".addslashes($key)."'");
         else
 		{
-			list($base, $table, $field, $key) = split(" +",$forums_data[$key]);
+			list($base, $table, $field, $key) = explode(" +",$forums_data[$key]);
 	        $dbp = new DataBase('punbb');
             $value = $dbp->get("SELECT $field FROM $base.$table WHERE $key=$member_id");
        	}
@@ -95,7 +95,7 @@
 		else
 		{
 	        $db = new DataBase('punbb');
-			list($base, $table, $field, $where) = split(" +",$forums_data[$key]);
+			list($base, $table, $field, $where) = explode(" +",$forums_data[$key]);
             $db->query("UPDATE `$base`.`$table` SET `$field` = '".addslashes($value)."' WHERE `$where` = ".intval($member_id));
 		}
 

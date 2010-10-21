@@ -28,7 +28,7 @@ function smarty_function_textarea($params, &$smarty)
 		}
 
 		echo "<textarea name=\"$name\"";
-		foreach(split(' ', 'class id style rows cols') as $p)
+		foreach(explode(' ', 'class id style rows cols') as $p)
 			if(!empty($$p))
 				echo " $p=\"{$$p}\"";
 

@@ -7,7 +7,7 @@
 
 		echo "<input type=\"file\" name=\"$name\"";
 
-		foreach(split(' ', 'class style') as $p)
+		foreach(explode(' ', 'class style') as $p)
 			if(!empty($$p))
 				echo " $p=\"{$$p}\"";
 

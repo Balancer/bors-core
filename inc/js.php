@@ -39,7 +39,7 @@ function str2js($text)
 
 	$skip = false;
 
-    foreach(split("\n", $text) as $s)
+    foreach(explode("\n", $text) as $s)
 	{
 		if($skip)
 		{

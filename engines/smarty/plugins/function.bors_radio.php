@@ -7,7 +7,7 @@ function smarty_function_bors_radio($params, &$smarty)
 	$obj = $smarty->get_template_vars('current_form_class');
 
 	$params = "";
-	foreach(split(' ', 'size style') as $p)
+	foreach(explode(' ', 'size style') as $p)
 		if(!empty($$p))
 			$params .= " $p=\"{$$p}\"";
 

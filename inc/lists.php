@@ -16,7 +16,7 @@ function parse_condensed_list($list)
 {
         $numbers = array();
 
-        foreach(split(",", $list) as $n)
+        foreach(explode(",", $list) as $n)
         {
 			if(!$n)
 				continue;
@@ -25,7 +25,7 @@ function parse_condensed_list($list)
                 $numbers[] = intval($n);
             else
             {
-                list($b,$e) = split('-', $n);
+                list($b,$e) = explode('-', $n);
                 for($j = $b; $j <= $e; $j++)
                     $numbers[] = intval($j);
             }

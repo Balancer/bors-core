@@ -15,7 +15,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 			
 	if(!$db)
-		$db = &new DataBase(config('search_db'));
+		$db = new DataBase(config('search_db'));
 
 	$object_id	= intval($object->id());
 	$class_name	= intval($object->class_id());
@@ -140,9 +140,9 @@ function bors_search_in_titles($query, $params = array())
 
 	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 			
-	$db = &new DataBase(config('search_db'));
+	$db = new DataBase(config('search_db'));
 
-	$Stemmer = &new Lingua_Stem_Ru();
+	$Stemmer = new Lingua_Stem_Ru();
 				
 	$must = array();
 	$none = array();
@@ -208,7 +208,7 @@ function bors_search_get_word_id($word, $db = NULL)
 	
 	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 		
-	$Stemmer = &new Lingua_Stem_Ru();
+	$Stemmer = new Lingua_Stem_Ru();
 	$original = $word;
 	$word = $Stemmer->stem_word($word);
 			
@@ -219,7 +219,7 @@ function bors_search_get_word_id($word, $db = NULL)
 		return $GLOBALS['bors_search_get_word_id_cache'][$word];
 
 	if(!$db)
-		$db = &new DataBase(config('search_db'));
+		$db = new DataBase(config('search_db'));
 
 	$word_id = $db->get("SELECT id FROM bors_search_words WHERE word = '".addslashes($word)."'");
 
@@ -262,7 +262,7 @@ function bors_search_get_word_id_array($words, $db = NULL)
 	$buffer = array();
 
 	if(!$db)
-		$db = &new DataBase(config('search_db'));
+		$db = new DataBase(config('search_db'));
 
 	$stemmed_map = bors_search_stem_array($words);
 	$list = array_map('addslashes', array_unique(array_values($stemmed_map)));
@@ -299,9 +299,9 @@ function search_titles_like($title, $limit=20, $forum=0)
 
 	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 			
-	$db = &new DataBase(config('search_db'));
+	$db = new DataBase(config('search_db'));
 
-	$Stemmer = &new Lingua_Stem_Ru();
+	$Stemmer = new Lingua_Stem_Ru();
 				
 	$search = array();
 	foreach($words as $word)
@@ -399,9 +399,9 @@ function bors_search_in_bodies($query)
 
 	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 			
-	$db = &new DataBase(config('search_db'));
+	$db = new DataBase(config('search_db'));
 
-	$Stemmer = &new Lingua_Stem_Ru();
+	$Stemmer = new Lingua_Stem_Ru();
 				
 	$must = array();
 	$none = array();

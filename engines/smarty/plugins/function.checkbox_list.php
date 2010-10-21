@@ -26,7 +26,7 @@
 	}
 	elseif(preg_match("!^\w+$!", $list))
 	{
-		$list = &new $list(@$args);
+		$list = new $list(@$args);
 		$list = $list->named_list();
 	}
 	else

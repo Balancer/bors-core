@@ -60,7 +60,7 @@ class storage_fs_xml extends base_null
 
 		$object->set_attr('storage_file', $file, false);
 
-		$xml = &new BorsXml;
+		$xml = new BorsXml;
 		$xml->parse($content);
 
 		$loaded = false;

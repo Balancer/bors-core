@@ -57,7 +57,7 @@ function lcml_smilies_list($dir)
 {
 		$save = config('cache_disabled');
 		config_set('cache_disabled', false);
-        $cache = &new Cache();
+        $cache = new Cache();
 
 //		echo "Get ".get_class($cache)."<br/>";
 

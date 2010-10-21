@@ -293,7 +293,7 @@ class DataBase extends base_object
 		$ch = NULL;
 		if($cached !== false)
 		{
-			$ch = &new Cache();
+			$ch = new Cache();
 			if($ch->get("DataBaseQuery:{$this->db_name}", $query) !== NULL)
 				return unserialize($ch->last());
 		}
@@ -342,7 +342,7 @@ class DataBase extends base_object
 		$ch = NULL;
 		if($cached !== false && class_exists('Cache'))
 		{
-			$ch = &new Cache();
+			$ch = new Cache();
 			if($ch->get("DataBaseQuery:{$this->db_name}-v2", $query))
 				return $ch->last();
 		}

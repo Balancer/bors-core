@@ -23,7 +23,7 @@ class storage_db_oci extends storage_db
 			$added = array();
 			$main_id_name = '';
 
-			$dbh = &new driver_oci($db);
+			$dbh = new driver_oci($db);
 
 			$is_one_table = (count($tables) == 1);
 			
@@ -188,7 +188,7 @@ class storage_db_oci extends storage_db
 
 					save_cached_object($object);
 					$class = get_class($object);
-					$object = &new $class(NULL);
+					$object = new $class(NULL);
 				}
 			}
 

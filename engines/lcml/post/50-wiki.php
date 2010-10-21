@@ -12,7 +12,7 @@
         if(!$text)
             $text = $title;
 
-        $hts = &new DataBaseHTS();
+        $hts = new DataBaseHTS();
 
 		$uri = $hts->page_uri_by_value('title', $title);
 

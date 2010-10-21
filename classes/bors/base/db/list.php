@@ -14,7 +14,7 @@ class base_db_list extends base_object
 		parent::__construct($id);
 
 		$item_class = $this->item_class();
-		$item_class = &new $item_class(NULL); //object_load($this->item_class(), NULL);
+		$item_class = new $item_class(NULL); //object_load($this->item_class(), NULL);
 
 		if(!$item_class)
 			debug_exit("Error: can not class '{$this->item_class()}' init");

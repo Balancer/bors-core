@@ -5,7 +5,7 @@
 function bors_get_cross_ids($object, $to_class = '', $dbh = NULL)
 {
 	if(!$dbh)
-		$dbh = &new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(config('bors_core_db'));
 
 	if($to_class)
 	{
@@ -236,7 +236,7 @@ function bors_add_cross_obj($from, $to, $order=0, $dbh = NULL)
 function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $type_id = 0, $dbh = NULL, $ins_type = 'replace', $owner_id = NULL)
 {
 	if(!$dbh)
-		$dbh = &new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(config('bors_core_db'));
 
 	if(!is_numeric($from_class))
 		$from_class = class_name_to_id($from_class);
@@ -279,7 +279,7 @@ function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $typ
 function bors_remove_cross_pair($from_class, $from_id, $to_class, $to_id, $dbh = NULL)
 {
 	if(!$dbh)
-		$dbh = &new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(config('bors_core_db'));
 
 	if(!is_numeric($from_class))
 		$from_class = class_name_to_id($from_class);
@@ -305,7 +305,7 @@ function bors_remove_cross_pair($from_class, $from_id, $to_class, $to_id, $dbh =
 function bors_remove_cross_to($to_class, $to_id, $dbh = NULL)
 {
 	if(!$dbh)
-		$dbh = &new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(config('bors_core_db'));
 
 	if(!is_numeric($to_class))
 		$to_class = class_name_to_id($to_class);

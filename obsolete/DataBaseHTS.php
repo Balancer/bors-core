@@ -20,7 +20,7 @@ class DataBaseHTS
 		if($data && is_array($data))
 		{
 			$this->uri = @$data['uri'];
-			$this->dbh = &new DataBase(@$data['db']);
+			$this->dbh = new DataBase(@$data['db']);
 		}
 		else
 		{
@@ -30,7 +30,7 @@ class DataBaseHTS
 			if(preg_match("!^[\w]+://!", $data))
 			{
 				$this->uri = $data;
-				$this->dbh = &new DataBase('HTS');
+				$this->dbh = new DataBase('HTS');
 			}
 			else
 			{
@@ -38,7 +38,7 @@ class DataBaseHTS
 				if(!$data)
 					$data = 'HTS';
 					
-				$this->dbh = &new DataBase($data);
+				$this->dbh = new DataBase($data);
 			}
 		}
 		

@@ -224,7 +224,7 @@
             if($ret = $this->data($key, NULL))
                 return $ret;
 											
-            $hts = &new DataBaseHTS('HTS');
+            $hts = new DataBaseHTS('HTS');
             if($ret = $hts->get_data("forum_user://{$this->id}/", $key))
             	return $ret;
 																			
@@ -275,7 +275,7 @@
 				return;
 			}
 
-			$db = &new driver_mysql('punbb');
+			$db = new driver_mysql('punbb');
 
 			$this->id = 1;
 			if($user_hash_password)

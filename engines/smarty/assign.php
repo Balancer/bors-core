@@ -7,7 +7,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 	unset($GLOBALS['module_data']);
 
 	require_once(config('smarty_path').'/Smarty.class.php');
-	$smarty = &new Smarty;
+	$smarty = new Smarty;
 	require('smarty-register.php');
 
 	$smarty->compile_dir = secure_path(config('cache_dir').'/smarty-templates_c_'.config('internal_charset').'/');

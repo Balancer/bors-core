@@ -28,7 +28,7 @@
     {
         if(0 && class_exists('Cache'))
         {
-            $cache = &new Cache();
+            $cache = new Cache();
             if($cache->get('url_titles-v4', $url))
                 return $cache->last();
             else
@@ -66,7 +66,7 @@
 
 		if(!$query && class_exists('DataBaseHTS') && config('hts_db'))
         {
-            $hts = &new DataBaseHTS($url);
+            $hts = new DataBaseHTS($url);
             if($title = $hts->get('title'))
                 return "<a href=\"{$original_url}\">$title</a>";
         }

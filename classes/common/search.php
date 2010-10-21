@@ -52,7 +52,7 @@ class common_search extends base_page
 	{
 		$GLOBALS['cms']['cache_disabled'] = false;
 	
-		$ch = &new Cache();
+		$ch = new Cache();
 		if($ch->get('seacrh-total-results', $this->query().':'.$this->where()))
 			return $ch->last();
 

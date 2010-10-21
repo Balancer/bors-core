@@ -10,7 +10,7 @@ class bors_templates_smarty extends bors_templates_abstract
 		if(!$template_file)
 			return ec("Ошибка: не найден файл шаблона");
 
-		$smarty = &new Smarty;
+		$smarty = new Smarty;
 		require('smarty-register.php');
 
 		$smarty->compile_dir = secure_path(config('cache_dir').'/smarty/templates_c/');

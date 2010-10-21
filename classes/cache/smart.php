@@ -48,7 +48,7 @@ class cache_smart extends cache_base
 		if($this->last && $row['saved_time'] > 0.5)
 		{
 			@$GLOBALS['bors_stat_smart_cache_gets_db_hits']++;
-			$dbh = &new driver_mysql(config('cache_database'));
+			$dbh = new driver_mysql(config('cache_database'));
 			$dbh->update('cache', array('hmd'=>$this->last_hmd), array (
 				'int access_time' => $now, 
 				'int count' => $new_count,

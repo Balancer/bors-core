@@ -8,7 +8,7 @@ class dataprovider_dblist extends base_object
 	{
 		$obj = $this->id();
 	
-		$dbh = &new DataBase($obj->db_name());
+		$dbh = new DataBase($obj->db_name());
 	
 		$list = array();
 

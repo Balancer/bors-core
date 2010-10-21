@@ -16,7 +16,7 @@ function show_page($uri, $data = true)
 			$data = array();
 		}
 		
-        $hts  = &new DataBaseHTS();
+        $hts  = new DataBaseHTS();
 
         $page = $hts->normalize_uri($uri);
 
@@ -64,7 +64,7 @@ function show_page($uri, $data = true)
             }
         }
         
-        $smarty = &new Smarty;
+        $smarty = new Smarty;
         require('engines/smarty/smarty-register.php');
 		
 		$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';

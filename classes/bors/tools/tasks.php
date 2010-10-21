@@ -28,7 +28,7 @@ class bors_tools_tasks extends base_object_db
 
 	static function add_task($target_object, $worker_class_name, $execute_time = 0, $priority = 0)
 	{
-		$db = &new driver_mysql(bors_tools_tasks::main_db_storage());
+		$db = new driver_mysql(bors_tools_tasks::main_db_storage());
 		$db->insert_ignore(bors_tools_tasks::main_table(), array(
 			'target_class_id' => $target_object->class_id(),
 			'target_object_id' => $target_object->id(),

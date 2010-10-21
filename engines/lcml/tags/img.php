@@ -139,7 +139,7 @@ function lt_img($params)
 					$uri = str_replace(config('sites_store_path'), config('sites_store_uri'), $path);
 					$data['local'] = true;
 
-					$db = &new driver_mysql(config('main_bors_db'));
+					$db = new driver_mysql(config('main_bors_db'));
 
 					$id = intval($db->select('images', 'id', array('original_url=' => $remote)));
 					if(!$id)

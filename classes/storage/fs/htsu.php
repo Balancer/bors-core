@@ -145,6 +145,13 @@ class storage_fs_htsu extends base_null
 		$this->hts = preg_replace_callback('/^#call (\w+)(.+?)$/m', array(&$this, '_call_callback'), $this->hts);
 
 	    $this->hts = preg_replace("!^\n+!",'',$this->hts);
+
+		if(config('storage.htsu.do_php'))
+		{
+			require_once('inc/php.php');
+			$this->hts = preg_replace("!\[php\](.+?)\[/php\]!es", "bors_php_fetch(stripq('$1'))", $this->hts);
+		}
+
     	$object->set_source(preg_replace("!\n+$!","",$this->hts), false);
 
 		debug_log_var('data_file', $file);

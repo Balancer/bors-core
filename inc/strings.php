@@ -11,13 +11,33 @@ function sklon($n, $s1, $s2=NULL, $s5=NULL) // 1 нож 2 ножа 5 ножей
 		list($s1, $s2, $s5) = explode(',', $s1);
 
    	$ns=intval(substr($n,-1));
-		$n2=intval(substr($n,-2));
+	$n2=intval(substr($n,-2));
 
     if($n2>=10 && $n2<=19) return $s5;
    	if($ns==1) return $s1;
     if($ns>=2&&$ns<=4) return $s2;
 
 	return $s5;
+}
+
+/**
+	То же, что и функция sklon(), но пишет и само число.
+	<p>Всего <?= sklonn($amount, 'штука,штуки,штук')?> на общую сумму <b><?=$sum_rur?> руб.</b></p>
+*/
+
+function sklonn($n, $s1, $s2=NULL, $s5=NULL)
+{
+	if($s2 === NULL)
+		list($s1, $s2, $s5) = explode(',', $s1);
+
+    $ns=intval(substr($n,-1));
+    $n2=intval(substr($n,-2));
+
+    if($n2>=10 && $n2<=19) return $n.' '.$s5;
+    if($ns==1) return $n.' '.$s1;
+    if($ns>=2&&$ns<=4) return $n.' '.$s2;
+
+    return $n.' '.$s5;
 }
 
 function truncate($string, $length = 80, $etc = '...', $break_words = false, $middle = false)

@@ -124,10 +124,10 @@ function smarty_block_form($params, $content, &$smarty)
 				if($type != 'bool')
 					echo "<tr><th>{$title}</th><td>";
 
-//				echo $property_name,
 				$data['value'] = $form->$property_name();
 				$data['class'] = 'w100p';
-//				);
+//print_d($data);
+//var_dump($fields);
 				switch($type)
 				{
 					case 'string':
@@ -147,7 +147,24 @@ function smarty_block_form($params, $content, &$smarty)
 						smarty_function_dropdown($data, $smarty);
 						break;
 					case 'dropdown':
-						$data['list'] = !array_key_exists('named_list', $field) ? base_list::make($class) : call_user_func(array($field['named_list'], 'named_list'));
+						if(array_key_exists('named_list', $data))
+						{
+							if(preg_match('/^(\w+):(\w+)$/', $data['named_list'], $m))
+							{
+								$class_name = $m[1];
+								$id = $m[2];
+							}
+							else
+							{
+								$class_name = $data['named_list'];
+								$id = NULL;
+							}
+							$list = new $class_name($id);	//TODO: статический вызов тут не прокатит, пока не появится повсеместный PHP-5.3.3.
+							$data['list'] = $list->named_list();
+						}
+						else
+							$data['list'] = base_list::make($class);
+
 						$data['is_int'] = true;
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);

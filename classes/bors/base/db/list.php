@@ -60,7 +60,7 @@ class base_db_list extends base_object
 	function named_list()
 	{
 		if(!$this->_dbh)
-			$this->__construct();
+			$this->__construct(NULL);
 
 		$list = $this->zero_item() === false ? array() : array(0 => $this->zero_item());
 

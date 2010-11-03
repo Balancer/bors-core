@@ -12,7 +12,11 @@ class bors_tools_codegen_sqlt extends bors_object
 	var $fields;
 	var $keys = array();
 
-	function parse($text)
+	function class_title() { return $this->class_title; }
+	function class_title_lower() { return bors_lower($this->class_title); }
+	function admin_path() { return str_replace('_', '/', $this->class_name); }
+
+	function sqlt_parse($text)
 	{
 		foreach(explode("\n", $text) as $s)
 		{
@@ -20,6 +24,9 @@ class bors_tools_codegen_sqlt extends bors_object
 			$skip_class_type = false;
 			$s = trim($s);
 			if(!$s)
+				continue;
+
+			if(preg_match('/^#/', $s)) // комментарий
 				continue;
 
 			if(!$this->class_name && preg_match('!^class:\s*(.+?)$!', $s, $m))
@@ -169,12 +176,9 @@ class bors_tools_codegen_sqlt extends bors_object
 				'is_index' => $is_index,
 				'arg' => $arg,
 				'comment' => $comment,
+				'auto_type' => !$skip_class_type,
 			);
-
-//			echo $s."\n";
 		}
-
-//		print_d($this->fields());
 	}
 
 	function make_mysql_create()
@@ -235,5 +239,24 @@ class bors_tools_codegen_sqlt extends bors_object
 			.");\n";
 
 		return $sql;
+	}
+
+	function make_class()
+	{
+		$fields = array();
+
+		foreach($this->fields as $f)
+		{
+			$fields[] = $f['name']."\n";
+		}
+
+		$this->class_field_names = join("\t\t\t", $fields);
+
+		global $self;
+		$self = $this;
+		$tpl = file_get_contents('sqlt-class.tpl.php');
+		$tpl = preg_replace_callback('/%(\w+)%/', create_function('$m', 'global $self; return method_exists($self, $m[1]) ? $self->$m[1]() : $self->$m[1];'), $tpl);
+
+		return $tpl;
 	}
 }

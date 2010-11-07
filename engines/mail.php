@@ -1,7 +1,7 @@
 <?php
 
-require_once('Mail.php'); 
-require_once('Mail/mime.php'); 
+require_once('Mail.php');
+require_once('Mail/mime.php');
 
 function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = NULL)
 {

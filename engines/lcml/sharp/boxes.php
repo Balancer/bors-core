@@ -1,7 +1,7 @@
 <?php
 /*    function lst_link($txt)
     {
-        list($url,$img,$title,$text,$author,$time)=split("\|",$txt."||||||");
+        list($url,$img,$title,$text,$author,$time)=explode('|',$txt."||||||");
         if(preg_match("!^\d+$!",$time))
             $time=strftime("%d.%m.%Y %H:%M",$time);
         $img=$img?"<td width=204><a href=$url>[img $img nohref 200x]</a></td>":"";

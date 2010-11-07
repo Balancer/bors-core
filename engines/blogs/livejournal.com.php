@@ -27,7 +27,7 @@ function bors_blog_livejournal_com_post($user_id, $title_obj, $url_obj, $body_ob
 		return;
 
 	$time		= $body_obj->create_time();
-	$message	= bors_blog_message($title_obj, &$url_obj, $body_obj);
+	$message	= bors_blog_message($title_obj, $url_obj, $body_obj);
 	$subject	= $title_obj->title();
 	if($desc = $title_obj->description())
 		$subject .= " ($desc)";

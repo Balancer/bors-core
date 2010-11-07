@@ -61,7 +61,7 @@ class DataBaseHTS
 
 		$orig_uri = $uri;
 
-		list ($uri, $params) = split("\?", $uri.'?');
+		list ($uri, $params) = explode('?', $uri.'?');
 
 		if (is_global_key('normalize_uri', $uri))
 			return global_key('normalize_uri', $uri);
@@ -360,7 +360,7 @@ class DataBaseHTS
 		if(!empty($params['order']))
 		{
 			$order = array();
-			foreach(split(',', $params['order']) as $ord)
+			foreach(explode(',', $params['order']) as $ord)
 			{
 				$ord = trim($ord);
 				if($ord{0} == "+")
@@ -693,9 +693,9 @@ class DataBaseHTS
 
 		if ($res['params'])
 		{
-			foreach (split(",", $res['params']) as $p)
+			foreach (explode(",", $res['params']) as $p)
 			{
-				list ($f, $t) = split("=", $p);
+				list ($f, $t) = explode("=", $p);
 				$params_fields .= "`$f` $t NOT NULL,\n";
 				if ($t != 'TEXT' && substr($t, 0, 7) != 'VARCHAR')
 					$params_key .= ", `$f`";
@@ -902,7 +902,7 @@ class DataBaseHTS
 	function export($uri)
 	{
 		$save = '';
-		foreach (split(' ', 'title source') as $i)
+		foreach (explode(' ', 'title source') as $i)
 			$save .= "$i = ".$this->get_data($uri, $i).";\n\n";
 		return $save;
 	}
@@ -1344,7 +1344,7 @@ class DataBaseHTS
 							$value = $m2[2];
 							$t[$key]['table'] = $m2[1];
 						}
-//						$value = split("\.", $value);
+//						$value = explode(".", $value);
 //						$value = "`".join("`.`", $value)."`";
 						$t[$key]['r'] = "`$value` AS $key";
 						$t[$key]['w'] = "`$value` = '$1'";

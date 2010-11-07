@@ -60,7 +60,7 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 		return false;
 	}
 
-	$img =& Image_Transform::factory(config('image_transform_engine'));
+	$img = Image_Transform::factory(config('image_transform_engine'));
 
 	if(PEAR::isError($img))
 	{

@@ -106,4 +106,14 @@ class bors_lib_orm
 //		var_dump(self::all_fields($object));
 		return NULL;
 	}
+
+	static function parse_property($class_name, $property)
+	{
+		$object = new $class_name(NULL);
+		foreach(self::all_fields($object) as $f)
+			if($f['property'] == $property)
+				return $f;
+
+		return NULL;
+	}
 }

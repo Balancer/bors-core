@@ -73,6 +73,7 @@ class bors_link extends base_object_db
 
 	static function link($class1, $id1, $class2, $id2, $params = array())
 	{
+		echo "link($class1, $id1, $class2, $id2, $params = array())<br/>";
 		$obj1 = object_load($class1, $id1);
 		$obj2 = object_load($class2, $id2);
 		self::link_object_to($obj1, $obj2, $params);
@@ -210,5 +211,22 @@ class bors_link extends base_object_db
 		$tc = $object->class_id();
 		$ti = $object->id();
 		$dbh->delete(self::main_table(), array("((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
+	}
+
+	static function drop_target($object, $where)
+	{
+		if(!$object->id())
+			return;
+
+		$dbh = new driver_mysql(config('main_bors_db'));
+		$fc = $object->class_id();
+		$fi = $object->id();
+
+		$tc = class_name_to_id($where['target_class']);
+		if(!$tc)
+			return;
+
+		$dbh->delete(self::main_table(), array("((from_class=$fc AND from_id=$fi AND to_class=$tc) 
+			OR (to_class=$fc AND to_id=$fi AND from_class=$tc))"));
 	}
 }

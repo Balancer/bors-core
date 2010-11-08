@@ -1,20 +1,20 @@
 CREATE TABLE IF NOT EXISTS `bors_access_log` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user_ip` varchar(16) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `url` varchar(255) NOT NULL,
-  `server_uri` varchar(255) NOT NULL,
-  `referer` varchar(255) NOT NULL,
-  `class_name` varchar(64) NOT NULL,
-  `object_id` int(11) NOT NULL,
-  `access_time` int(11) NOT NULL,
-  `operation_time` float NOT NULL,
-  `has_bors` tinyint(1) unsigned NOT NULL,
-  `has_bors_url` tinyint(1) unsigned NOT NULL,
-  `user_agent` varchar(255) NOT NULL,
-  `is_bot` varchar(64) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `user_ip` (`user_ip`)
-);
-
-
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_ip` varchar(16) NOT NULL DEFAULT '',
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `url` varchar(255) NOT NULL DEFAULT '',
+  `server_uri` varchar(255) NOT NULL DEFAULT '',
+  `referer` varchar(255) NOT NULL DEFAULT '',
+  `class_name` varchar(64) NOT NULL DEFAULT '',
+  `object_id` int(11) NOT NULL DEFAULT '0',
+  `access_time` int(11) NOT NULL DEFAULT '0',
+  `operation_time` float NOT NULL DEFAULT '0',
+  `has_bors` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `has_bors_url` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `user_agent` varchar(255) NOT NULL DEFAULT '',
+  `is_bot` varchar(64) NOT NULL DEFAULT '',
+  `was_counted` tinyint(1) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_ip` (`user_ip`),
+  KEY `uip_at` (`user_ip`,`access_time`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

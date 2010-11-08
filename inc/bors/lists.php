@@ -2,26 +2,16 @@
 
 function bors_named_list_db($class_name, $zero_item = NULL, $where = array())
 {
-	$obj = object_new($class_name);
-
-	$items_db = $obj->db_name();
-	$items_tab = $obj->table_name();
-	$db = new driver_mysql($items_db);
-
-
 	$res = array();
 
 	if(isset($zero_item))
 		$res[0] = $zero_item;
 
-	$id_field = $obj->id_field();
-	$title_field = $obj->title_field();
-
 	if(empty($where['order']))
-		$where['order'] = $title_field;
+		$where['order'] = 'title';// $title_field;
 
-	foreach($db->select_array($items_tab, "$id_field as id, $title_field as title", $where) as $x)
-		$res[$x['id']] = $x['title'];
+	foreach(bors_find_all($class_name, $where) as $x)
+		$res[$x->id()] = $x->title();
 
 	return $res;
 }

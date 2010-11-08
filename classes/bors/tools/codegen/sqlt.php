@@ -12,6 +12,7 @@ class bors_tools_codegen_sqlt extends bors_object
 	var $fields;
 	var $keys = array();
 
+	function class_name() { return $this->class_name; }
 	function class_title() { return $this->class_title; }
 	function class_title_lower() { return bors_lower($this->class_title); }
 	function admin_path() { return str_replace('_', '/', $this->class_name); }

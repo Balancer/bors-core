@@ -32,7 +32,7 @@ class bors_templates_smarty extends bors_templates_abstract
 
 		$obj = $this->object();
 
-		$caching = !$obj->is_cache_disabled() && config('templates_cache_disabled') !== true;
+//		$caching = !$obj->is_cache_disabled() && config('templates_cache_disabled') !== true;
 
 		$smarty->caching = false;// $caching;
 		$smarty->compile_check = true; 
@@ -59,10 +59,16 @@ class bors_templates_smarty extends bors_templates_abstract
 //		foreach(explode(' ', $obj->template_vars()) as $var)
 //			$smarty->assign($var, $obj->$var());
 
-		foreach(explode(' ', $obj->template_local_vars()) as $var)
-			$smarty->assign($var, $obj->$var());
+		if($obj)
+		{
+			foreach(explode(' ', $obj->template_local_vars()) as $var)
+				$smarty->assign($var, $obj->$var());
 
-		foreach($obj->local_template_data_array() as $var => $value)
+			foreach($obj->local_template_data_array() as $var => $value)
+				$smarty->assign($var, $value);
+		}
+
+		foreach($this->data as $var => $value)
 			$smarty->assign($var, $value);
 
 //		$template = smarty_template($template ? $template : $obj->template());
@@ -104,7 +110,7 @@ class bors_templates_smarty extends bors_templates_abstract
 
 	function full_path()
 	{
-		echo "Get tpl {$this->template}<br/>\n";
+//		echo "Get tpl {$this->template}<br/>\n";
 		return parent::full_path();
 	}
 }

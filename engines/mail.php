@@ -3,7 +3,7 @@
 require_once('Mail.php');
 require_once('Mail/mime.php');
 
-function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = NULL)
+function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = NULL, $attaches = array())
 {
 	// По умолчанию всю почту шлём в UTF-8. Но можем указать, если что, в параметрах.
 	$charset = defval($headers, 'charset', config('mail_charset', 'utf-8'));
@@ -23,6 +23,16 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 			$html = "<html><body>{$html}</body></html>";
 
 		$mime->setHTMLBody($html);
+	}
+
+	foreach($attaches as $a)
+	{
+		$mime->addAttachment(
+			$a['file'],
+			defval($a, 'type', 'application/octet-stream'),
+			defval($a, 'name', ''),
+			defval($a, 'is_file', true)
+		);
 	}
 
 	if(!$from)

@@ -45,4 +45,12 @@ class bors_templates_abstract extends base_null
 
 //		return '/var/www/bors/bors-core/templates/';
 	}
+
+	static function render_data($template, $data)
+	{
+		$render = bors_load(get_called_class(), NULL);
+		$render->set_template($template);
+		$render->set_data($data);
+		return $render->render();
+	}
 }

@@ -126,8 +126,7 @@ function smarty_block_form($params, $content, &$smarty)
 
 				$data['value'] = $form->$property_name();
 				$data['class'] = 'w100p';
-//print_d($data);
-//var_dump($fields);
+//				echo "property=$property_name, type=$type, data=".print_d($data).", field=".print_d($field)."<Br/>\n";
 				switch($type)
 				{
 					case 'string':
@@ -166,6 +165,9 @@ function smarty_block_form($params, $content, &$smarty)
 							$data['list'] = base_list::make($class);
 
 						$data['is_int'] = true;
+						foreach($data['list'] as $v => $n)
+							$data['is_int'] &= is_numeric($v);
+
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);
 						break;

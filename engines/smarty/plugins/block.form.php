@@ -124,10 +124,9 @@ function smarty_block_form($params, $content, &$smarty)
 				if($type != 'bool')
 					echo "<tr><th>{$title}</th><td>";
 
-//				echo $property_name,
 				$data['value'] = $form->$property_name();
 				$data['class'] = 'w100p';
-//				);
+//				echo "property=$property_name, type=$type, data=".print_d($data).", field=".print_d($field)."<Br/>\n";
 				switch($type)
 				{
 					case 'string':
@@ -147,8 +146,17 @@ function smarty_block_form($params, $content, &$smarty)
 						smarty_function_dropdown($data, $smarty);
 						break;
 					case 'dropdown':
-						$data['list'] = !array_key_exists('named_list', $field) ? base_list::make($class) : call_user_func(array($field['named_list'], 'named_list'));
+//						echo "dropdown, cond = ".array_key_exists('named_list', $field)."<br/>";
+//						echo "base_list::make($class)";
+						//TODO: проверить все вызовы editor_fields_list с |dropdown= и новые найти
+						if(empty($data['named_list']))
+							$data['list'] = ($class && !array_key_exists('named_list', $field)) ? base_list::make($class) : call_user_func(array($field['named_list'], 'named_list'));
+						else
+							$data['list'] = call_user_func(array($data['named_list'], 'named_list'));
+//						echo "data=".print_d($data['list'])."<br/>";
 						$data['is_int'] = true;
+						foreach($data['list'] as $v => $n)
+							$data['is_int'] &= is_numeric($v);
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);
 						break;

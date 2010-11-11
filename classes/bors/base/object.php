@@ -693,7 +693,15 @@ class base_object extends base_empty
 		return object_load($access, $this);
 	}
 
-	function edit_url()  { return '/_bors/admin/edit-smart/?object='.$this->internal_uri_ascii(); }
+	function edit_url()
+	{
+		if($x = $this->get('edit_smart_object'))
+			$obj = $x;
+		else
+			$obj = $this;
+
+		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii(); 
+	}
 //	function admin_url($exact = false) { return $exact ? NULL : '/_bors/admin/?object='.urlencode($this->internal_uri()); }
 	function admin_url($exact = false) { return $exact ? NULL : $this->edit_url(); }
 	function new_url()  { return '/_bors/admin/new-smart/?object='.urlencode($this->internal_uri()); }

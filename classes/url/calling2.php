@@ -19,6 +19,7 @@ class url_calling2 extends url_base
 		else
 			$query = NULL;
 
+//TODO: придумать, как бороться с URL вида http://www.aviaport.ru/404.html
 		if(preg_match('!^(.+/)\w+\.html$!', $url, $m))
 			$url = (!$page || $page == $obj->default_page()) ? $m[1] : $m[1].$page.'.html';
 		elseif(preg_match('!^.+/[\w\-]+/$!', $url))

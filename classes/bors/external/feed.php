@@ -20,6 +20,7 @@ class bors_external_feed extends base_object_db
 			'is_suspended',
 			'id_extract_regexp',
 			'skip_entry_content_regexp',
+			'keywords_in_sqbr',
 			'titles_in_posts',
 			'is_washeable',
 		);
@@ -101,8 +102,26 @@ class bors_external_feed extends base_object_db
 					$tags[] = 'кино';
 					$tags[] = 'фильм';
 				}
+
 				if(preg_match('/Отзыв о фильме "(.+)" на Имхонет/', $title, $m))
 					$tags[] = $m[1];
+
+				if(preg_match('/Отзыв о книге "(.+)" на Имхонет/', $title, $m))
+				{
+					$tags[] = $m[1];
+					$tags[] = 'литература';
+				}
+
+				if($this->keywords_in_sqbr()) // Тэги в квадратных скобках
+				{
+					if(preg_match_all('/\[(.+?)\]/', $title, $matches))
+					{
+						foreach($matches[1] as $m)
+							$tags[] = $m;
+
+						$title = preg_replace('/^(\[[^]]+?\])+\s*/', '', $title);
+					}
+				}
 			}
 
 			$keywords_string = join(', ', $tags);

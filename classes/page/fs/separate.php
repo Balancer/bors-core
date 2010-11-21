@@ -25,4 +25,25 @@ class page_fs_separate extends base_page
 //	function dont_check_fields() { return array_merge(parent::dont_check_fields, array('cr_type')); }
 
 	function delete() { $this->storage()->delete($this); }
+
+	function children()
+	{
+		return $this->children_ex($this->url(), $this->storage_base_dir(), $this->storage_file_prefix());
+	}
+
+	function children_ex($url, $base, $pfx)
+	{
+		$dh = opendir($base);
+		$children = array();
+		while(($file = readdir($dh)) !== false)
+		{
+			$subdir = $base.$file.'/';
+			$subfile = "{$subdir}{$pfx}title.txt";
+			if($file{0} != '.' && is_dir($subdir) && file_exists($subfile))
+				$children[] = bors_load_uri($url.$file.'/');
+//			echo "$subfile<br/>\n";
+		}
+		closedir($dh);
+		return $children;
+	}
 }

@@ -203,6 +203,7 @@ function class_load($class, $id = NULL, $args=array())
 	{
 		if(preg_match("!^http://!", $class))
 		{
+//			echo "Try load $class<Br/>\n";
 			if(preg_match('!^(.+)#(.+)$!', $class, $m))
 				$class = $m[1];
 

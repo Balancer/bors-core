@@ -231,6 +231,9 @@ function smarty_block_form($params, $content, &$smarty)
 	if($class_name && !$id)
 		$go = 'newpage_admin';
 
+	if(defval($params, 'go') == 'NULL')	
+		$go = NULL;
+
 	if(!empty($class_name) && $class_name != 'NULL' && $class_name != 'this')
 		echo "<input type=\"hidden\" name=\"class_name\" value=\"$class_name\" />\n";
 
@@ -246,7 +249,7 @@ function smarty_block_form($params, $content, &$smarty)
 	if($fls = base_object::template_data('form_file_vars'))
 		echo "<input type=\"hidden\" name=\"file_vars\" value=\"".join(',', array_unique(array_filter($fls)))."\" />\n";
 
-	if(!base_object::template_data('form_have_go'))
+	if(!base_object::template_data('form_have_go') && $go)
 		echo "<input type=\"hidden\" name=\"go\" value=\"$go\" />\n";
 
 	echo "</form>\n";

@@ -165,7 +165,8 @@ class base_object extends base_empty
 
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 
-	static function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
+	//TODO: под рефакторинг. Данные шаблона - отдельная сущность.
+	function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
 
 	private $template_data = array();
 	function add_local_template_data($var_name, $value)
@@ -200,7 +201,7 @@ class base_object extends base_empty
 			$GLOBALS['cms']['templates']['data'][$var_name][] = $value;
 	}
 
-	function strict_auto_fields_check() { return config('strict_auto_fields_check'); }
+	function strict_auto_fields_check() { return config('strict_auto_fields_check', true); }
 	function __call($method, $params)
 	{
 		// Это был вызов $obj->set_XXX($value, $db_up)
@@ -1098,8 +1099,6 @@ class base_object extends base_empty
 
 		return $content;
 	}
-
-	function show($object) { echo $this->get_content($object); }
 
 	function object_title() { return strip_tags(bors_lower($this->class_title()).ec(' «').$this->title().ec('»')); }
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }

@@ -10,4 +10,6 @@ class bors_server extends base_object
 	{
 		return "http://{$_SERVER['HTTP_HOST']}/bors-post-redirector.php?go=".urlencode($url);
 	}
+
+	function document_root() { return @$_SERVER['DOCUMENT_ROOT']; }
 }

@@ -142,6 +142,13 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static private function __update_data_prepare($object, $where)
 	{
+		$_back_functions = array(
+			'html_entity_decode' => 'htmlspecialchars',
+			'UNIX_TIMESTAMP' => 'FROM_UNIXTIME',
+			'aviaport_old_denormalize' => 'aviaport_old_normalize',
+			'stripslashes' => 'addslashes',
+		);
+
 		$update = array();
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
@@ -152,8 +159,21 @@ class bors_storage_mysql extends bors_storage implements Iterator
 //			if(!empty($f['post_function']))
 //				$post_functions[$f['property']] = $f['post_function'];
 
+			if(preg_match('/^(\w+)\(([\w`]+)\)$/', $f['name'], $m))
+			{
+				$f['name'] = $m[2];
+				$sql = $_back_functions[$m[1]];
+			}
+			else
+				$sql = false;
+
 			if(array_key_exists($f['property'], $object->changed_fields))
-				$update[$f['name']] = $object->get($f['property']);
+			{
+				if($sql)
+					$update[$f['name']] = $sql.'('.$object->get($f['property']).')';
+				else
+					$update[$f['name']] = $object->get($f['property']);
+			}
 		}
 
 		$select = array(); // dummy
@@ -268,7 +288,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 							$post_functions[$field['property']] = $field['post_function'];
 
 //						echo "{$field['property']} => {$field['name']}: ".$object->get($field['property'])."<br/>\n";
-						if(array_key_exists($field['property'], $object->changed_fields))
+						if(!empty($object->changed_fields) && array_key_exists($field['property'], $object->changed_fields))
 							$update[$field['name']] = $object->get($field['property']);
 					}
 				}

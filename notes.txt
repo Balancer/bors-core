@@ -78,4 +78,19 @@ OpenID и др. системы авторизации
  * http://habrahabr.ru/blogs/php/92518/
  * http://www.phpbbguru.net/community/topic28955.html
 
- 
+JS-оптимизация
+--------------
+ * Lazy Loading Asyncronous Javascript http://friendlybit.com/js/lazy-loading-asyncronous-javascript/ 
+ * NBL – a tiny non-blocking JavaScript lazy loader http://berklee.github.com/nbl/
+ * Use jQuery with Google Analytics to Track Clicks on Outgoing Links From Your Site. http://think2loud.com/use-jquery-with-google-analytics-to-track-clicks-on-outgoing-links-from-your-site/
+ * gaTracker - Google Analytics Integration for jQuery http://plugins.jquery.com/project/gaTracker
+
+JS-фреймворки
+-------------
+ * http://www.prototypejs.org/
+ * Google Libraries API - Developer's Guide http://code.google.com/intl/ru/apis/libraries/devguide.html 
+
+jQuery
+------
+ * http://docs.jquery.com/UI/Tabs
+ * HashMask http://lab.arc90.com/2009/07/09/hashmask-another-more-secure-experiment-in-password-masking/

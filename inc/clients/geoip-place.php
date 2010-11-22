@@ -84,7 +84,7 @@ function geoip_info($ip)
 		$city_object = $record;
 	}
 
-	if(!$cc && file_exists(($gf = "/usr/share/GeoIP/GeoIP.dat")))
+	if(!$cc && @file_exists(($gf = "/usr/share/GeoIP/GeoIP.dat")))
 	{
 		$gi = geoip_open($gf, GEOIP_STANDARD);
 		$cc = geoip_country_code_by_addr($gi, $ip);

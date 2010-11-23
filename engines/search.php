@@ -391,18 +391,18 @@ function search_titles_like($title, $limit=20, $forum=0)
 function bors_search_in_bodies($query)
 {
 	// +word -word word
-		
+
 	$words = index_split($query);
-		
+
 	if(!$words)
 		return array();
 
 	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
-			
+
 	$db = new DataBase(config('search_db'));
 
 	$Stemmer = new Lingua_Stem_Ru();
-				
+
 	$must = array();
 	$none = array();
 	$maybe= array();

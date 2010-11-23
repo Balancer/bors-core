@@ -171,6 +171,8 @@ class bors_link extends base_object_db
 			else
 				$x->set_link_type_id($link->type_id(), false);
 
+			$x->set_bors_link($link, false);
+
 			$result[] = $x;
 		}
 

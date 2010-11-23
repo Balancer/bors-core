@@ -86,6 +86,9 @@ class bors_lib_orm
 
 	static function main_fields($object)
 	{
+		if($fields = $object->attr['___main_fields'])
+			return $fields;
+
 		$fields_array = array();
 		foreach($object->table_fields() as $property => $field)
 		{
@@ -93,7 +96,8 @@ class bors_lib_orm
 //			if($field['name'] != 'id')
 				$fields_array[] = $field;
 		}
-		return $fields_array;
+
+		return $object->attr['___main_fields'] = $fields_array;
 	}
 
 	static function property_to_field($class_name, $property)

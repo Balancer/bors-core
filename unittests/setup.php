@@ -1,9 +1,13 @@
 <?php
 
-@include_once('setup-host.php');
+$DIR = dirname(__FILE__);
+
+if(file_exists("$DIR/setup-host.php"))
+	include_once("$DIR/setup-host.php");
 
 if(!defined('BORS_CORE'))
-	define('BORS_CORE', dirname(dirname(__FILE__)));
+	define('BORS_CORE', dirname($DIR));
 
 if(!defined('BORS_SITE'))
-	define('BORS_SITE', dirname(__FILE__));
+	define('BORS_SITE', $DIR);
+

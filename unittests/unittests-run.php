@@ -3,7 +3,7 @@
 require_once './setup.php';
 require_once BORS_CORE.'/init.php';
 
-require_once config('phpunit_include').'/Framework.php';
+require_once config('phpunit_include').'/Autoload.php';
 
 class BorsTests
 {

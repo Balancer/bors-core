@@ -14,6 +14,7 @@ class DataBase extends base_object
 	private $start_time;
 
 	private $ics;
+	private $icst;
 	private $dcs;
 	private $need_encode;
 
@@ -41,9 +42,9 @@ class DataBase extends base_object
 		do
 		{
 			if(config('mysql_persistent'))
-				$this->dbh = @mysql_pconnect($server, $login, $password, config('mysql_renew_links'));
+				$this->dbh = mysql_pconnect($server, $login, $password, config('mysql_renew_links'));
 			else
-				$this->dbh = @mysql_connect($server, $login, $password, config('mysql_renew_links'));
+				$this->dbh = mysql_connect($server, $login, $password, config('mysql_renew_links'));
 
 			if(!$this->dbh && config('mysql_try_reconnect'))
 			{
@@ -86,7 +87,11 @@ class DataBase extends base_object
 	{
 		$this->ics = config('internal_charset');
 		$this->dcs = config('db_charset');
-		$this->need_encode = ($this->ics != $this->dcs);
+		if($this->need_encode = ($this->ics != $this->dcs))
+		{
+			$this->icsi = $this->ics.'//IGNORE';
+			$this->dcsi = $this->dcs.'//IGNORE';
+		}
 
 		$this->db_name = $base;
 
@@ -140,12 +145,12 @@ class DataBase extends base_object
 		debug_count_inc('mysql_queries');
 
 		if($this->need_encode)
-			$query = iconv($this->ics, $this->dcs.'//IGNORE', $query);
+			$query = iconv($this->ics, $this->dcsi, $query);
 
 		$qstart = microtime(true);
 
 		debug_timing_start('mysql_query_main');
-		$this->result = !empty($query) ? @mysql_query($query,$this->dbh) : false;
+		$this->result = !empty($query) ? mysql_query($query,$this->dbh) : false;
 		debug_timing_stop('mysql_query_main');
 
 		$qtime = microtime(true) - $qstart;
@@ -205,14 +210,13 @@ class DataBase extends base_object
 
 	function free()
 	{
-		@mysql_free_result($this->result);
+		mysql_free_result($this->result);
 	}
 
 	protected $__current_value;
 
 	function fetch()
 	{
-//		echo debug_trace();
 		if(!$this->result)
 			return $this->__current_value = false;
 
@@ -223,38 +227,46 @@ class DataBase extends base_object
 		{
 			if(sizeof($row)==1)
 			{
-				foreach($row as $s)
+				if($this->need_encode)
 				{
-					if($this->need_encode)
-						$s = iconv($this->dcs, $this->ics.'//IGNORE', $s);
-					$row = $s;
+					foreach($row as $s)
+						$row = iconv($this->dcs, $this->icsi, $s);
+				}
+				else
+				{
+					foreach($row as $s) // Фактически это $row = array_pop(array_values($row)). Нужно будет поискать оптимальный вариант.
+						$row = $s;
 				}
 			}
 			else
 			{
-				foreach($row as $k => $v)
+				if($this->need_encode)
 				{
-					if($this->need_encode)
-						$v = iconv($this->dcs, $this->ics.'//IGNORE', $v);
-					$row[$k] = $v;
+					$dcs  = $this->dcs;
+					$icsi = $this->icsi;
+//					Вариант с array_map получается НАМНОГО медленнее цикла.
+//					$row = array_map(create_function('$x', 'return iconv("'.$dcs.'", "'.$icsi.'", $x);'), $row);
+					foreach($row as $k => $v)
+						$row[$k] = iconv($dcs, $icsi, $v);
 				}
 			}
 
 			return $this->__current_value = $row;
 		}
 
+		// А к этому месту у нас включен magic_quote_gpc. То же, что выше, но с деквотингом.
 		if(sizeof($row)==1)
 			foreach($row as $s)
 			{
 				if($this->need_encode)
-					$s = iconv($this->dcs, $this->ics.'//IGNORE', $s);
+					$s = iconv($this->dcs, $this->icsi, $s);
 				$row = quote_fix($s);
 			}
 		else
 			foreach($row as $k => $v)
 			{
 				if($this->need_encode)
-					$v = iconv($this->dcs, $this->ics.'//IGNORE', $v);
+					$v = iconv($this->dcs, $this->icsi, $v);
 				$row[$k] = quote_fix($v);
 			}
 
@@ -297,7 +309,7 @@ class DataBase extends base_object
 			if($ch->get("DataBaseQuery:{$this->db_name}", $query) !== NULL)
 				return unserialize($ch->last());
 		}
-			
+
 		$this->query($query, $ignore_error);
 		$row = $this->fetch();
 		$this->free();
@@ -348,16 +360,15 @@ class DataBase extends base_object
 		}
 
 		$res=array();
-		//			$found = false;
 
 		$this->query($query, $ignore_error);
 
 		while(($row = $this->fetch()) !== false)
-			$res[]=$row;
+			$res[] = $row;
 
 		$this->free();
 
-		if($ch/* && $found*/)
+		if($ch)
 			$ch->set($res, $cached);
 
 		return $res;

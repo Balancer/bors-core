@@ -47,12 +47,9 @@
 <tr>
 	<td>{$x->class_title()}</td>
 	<td>{if $cross_type}
-		{if $cross_type > 0}
-			{$cross_type|bors_list_item_name:bors_cross_types|strtolower}
-		{else}
-			{$cross_type|abs|bors_list_item_name:bors_cross_types|strtolower} (авто)
+			{$cross_type|abs|bors_list_item_name:bors_cross_types|strtolower}
+			{if $x->bors_link()->is_auto()} (авто){/if}
 		{/if}
-	{/if}
 	</td>
 {if $x->link_type_abs_id() == 3}
 	<td><b>{$x->admin()->imaged_titled_link()}</b></td>

@@ -398,8 +398,6 @@ function bors_search_in_bodies($query)
 	if(!$words)
 		return array();
 
-//	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
-
 	$db = new driver_mysql(config('search_db'));
 
 	$Stemmer = new Lingua_Stem_Ru();

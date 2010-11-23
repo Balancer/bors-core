@@ -6,5 +6,5 @@ class bors_request extends base_object
 
 	static function is_utf8() { return config('internal_charset') == 'utf-8'; }
 
-	static function data() { return $_GET; }
+	static function data($key = NULL) { return $key ? @$_GET[$key] : $_GET; }
 }

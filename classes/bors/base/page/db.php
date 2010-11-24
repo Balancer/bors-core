@@ -100,8 +100,7 @@ class base_page_db extends base_page
 		if($remove_cross)
 			bors_remove_cross_to($this->class_name(), $this->id());
 
-		if($this->id())
-			$this->db()->delete($tab, array($id_field.'=' => $this->id()));
+		$this->storage()->delete($this);
 
 		if(method_exists($this, 'on_delete_post'))
 			if($this->on_delete_post() === true)

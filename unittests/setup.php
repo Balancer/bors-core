@@ -10,4 +10,3 @@ if(!defined('BORS_CORE'))
 
 if(!defined('BORS_SITE'))
 	define('BORS_SITE', $DIR);
-

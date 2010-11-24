@@ -33,6 +33,14 @@ function storage() { if($storage_class_name = $this->get('storage_engine')) retu
 
 Метод служит для загрузки данных объекта при его инициализации.
 
+[code php]function load_array($object, $where);[/code]
+
+Метод загрузки массива объектов. Первое неинициализированное значение - $object. Усовия загрузки - массив $where.
+
+[code php]function count($object, $where);[/code]
+
+Возвращает количество объектов типа $object (неинициализированное значение), удовлетворяющее условиям $where.
+
 [code php]function save($object);[/code]
 
 Метод служит для сохранения изменённых данных объекта.

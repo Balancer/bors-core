@@ -141,6 +141,18 @@ function bors_exit($message = '')
 
 	bors()->changed_save();
 
+	if(config('debug.show_variables'))
+	{
+		$deb = '';
+		if($s = debug_vars_info())
+			$deb = "\n=== debug vars info: ===\n$s";
+		if($s = debug_count_info_all())
+			$deb .= "\n=== debug counting: ===\n$s";
+		if($s = debug_timing_info_all())
+			$deb .= "\n=== debug timing: ===\n$s";
+		echo $deb."\n";
+	}
+
 	if(!config('do_not_exit'))
 		exit();
 

@@ -818,7 +818,7 @@ class base_object extends base_empty
 
 	function id_field()
 	{
-		if(array_key_exists($this->attr, '__id_field_name'))
+		if(@array_key_exists($this->attr, '__id_field_name'))
 			return $object->attr['__id_field_name'];
 
 		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();

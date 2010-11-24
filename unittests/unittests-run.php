@@ -17,7 +17,8 @@ class BorsTests
 						$suite->addTestSuite(self::bors_class_test($cn));
 			else
 				"NF $tests_list_file\n";
-		return $suite; 
+
+		return $suite;
     }
 
 	static function bors_class_test($class_name)
@@ -35,6 +36,4 @@ class BorsTests
 		require_once($test_class_file);
 		return $class_name.'_unittest';
 	}
-
 }
-

@@ -316,5 +316,8 @@ function lt_img_bors($params)
 	global $lt_img_bors_parsed;
 	$lt_img_bors_parsed[$uri] = true;
 
-	return join('', $around_beg).$image->thumbnail($size)->html_code(join(' ', $append)).join('', array_reverse($around_end));
+	if(@$params['noresize'])
+		return join('', $around_beg).$image->html_code(join(' ', $append)).join('', array_reverse($around_end));
+	else
+		return join('', $around_beg).$image->thumbnail($size)->html_code(join(' ', $append)).join('', array_reverse($around_end));
 }

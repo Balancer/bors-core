@@ -38,6 +38,7 @@ class driver_mysql extends DataBase implements Iterator
 
 	function delete($table, $where)
 	{
+//		echo "DELETE FROM `".addslashes($table)."` ".mysql_where_compile($where)."<br/>\n";
 		$this->query("DELETE FROM `".addslashes($table)."` ".mysql_where_compile($where));
 	}
 

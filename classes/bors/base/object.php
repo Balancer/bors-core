@@ -209,11 +209,11 @@ class base_object extends base_empty
 			return $this->set($match[1], $params[0], $params[1]);
 
 		// Проверяем нет ли уже загруженного значения данных объекта
-		if(array_key_exists($method, $this->data))
+		if(@array_key_exists($method, $this->data))
 			return $this->data[$method];
 
 		// Проверяем нет ли уже загруженного значения атрибута (временных несохраняемых данных) объекта
-		if(array_key_exists($method, $this->attr))
+		if(@array_key_exists($method, $this->attr))
 			return $this->attr[$method];
 
 		// Проверяем автоматические объекты.
@@ -578,11 +578,12 @@ class base_object extends base_empty
 				foreach($array as $key => $val)
 				{
 					$method = "set_$key";
+//					echo "{$this->debug_title()}->{$method}($val, $db_update_flag);<br/>\n";
 					$this->$method($val, $db_update_flag);
 				}
 			}
 		}
-
+//		exit();
 		return true;
 	}
 
@@ -817,6 +818,9 @@ class base_object extends base_empty
 
 	function id_field()
 	{
+		if(array_key_exists($this->attr, '__id_field_name'))
+			return $object->attr['__id_field_name'];
+
 		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
 		return defval($ff, 'id', 'id');
 	}

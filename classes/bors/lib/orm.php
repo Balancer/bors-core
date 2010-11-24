@@ -50,6 +50,7 @@ class bors_lib_orm
 					if($field['name'] != 'id')
 						$fields_array[] = $field;
 				}
+
 		return $fields_array;
 	}
 
@@ -84,7 +85,7 @@ class bors_lib_orm
 		return $fields_array;
 	}
 
-	static function main_fields($object)
+	static function main_fields(&$object)
 	{
 		if($fields = $object->attr['___main_fields'])
 			return $fields;
@@ -93,8 +94,12 @@ class bors_lib_orm
 		foreach($object->table_fields() as $property => $field)
 		{
 			$field = self::field($property, $field);
+//			print_d($field);
 //			if($field['name'] != 'id')
 				$fields_array[] = $field;
+
+			if($field['property'] == 'id')
+				$object->attr['__id_field_name'] = $field['name'];
 		}
 
 		return $object->attr['___main_fields'] = $fields_array;

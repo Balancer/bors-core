@@ -1,6 +1,11 @@
 <?php
 
-class bors_storage_fs_bbh extends base_null
+/**
+	Класс хранения данных HTML-страниц в виде *.bbh файлов в каталогах data/fs.
+	Пока - только чтение.
+*/
+
+class bors_storage_fs_bbh extends bors_storage
 {
 	private function __find($object)
 	{
@@ -37,16 +42,14 @@ class bors_storage_fs_bbh extends base_null
 		$object->set_markup('bors_markup_lcmlbbh', false);
 
 		$content = $object->cs_f2i(file_get_contents($file));
-		if(preg_match('/(^|\n)(.+)\n(=+)\n/s', $content, $m))
-			$object->set_title($m[2], false);
+		if(preg_match('/^(.+)\n(=+)\n(.+)$/s', $content, $m))
+		{
+			$object->set_title($m[1], false);
+			$content = $m[3];
+		}
 
 		$object->set_source($content, false);
 
 		return $object->set_loaded(true);
-	}
-
-	function save($object)
-	{
-		debug_exit(ec('Сохранение markdown-файлов ещё не реализовано'));
 	}
 }

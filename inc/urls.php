@@ -99,7 +99,7 @@ function url_parse($url)
 		$data['path'] = $m[1];
 
 	$data['local_path'] = NULL;
-	if(file_exists($data['path']))
+	if(@file_exists($data['path']))
 		$data['local_path'] = $data['path'];
 	elseif($data['local'] = !empty($data['root']))
 	{

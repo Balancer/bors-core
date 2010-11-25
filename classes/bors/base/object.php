@@ -165,7 +165,8 @@ class base_object extends base_empty
 
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 
-	static function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
+	//TODO: под рефакторинг. Данные шаблона - отдельная сущность.
+	function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
 
 	private $template_data = array();
 	function add_local_template_data($var_name, $value)
@@ -200,7 +201,7 @@ class base_object extends base_empty
 			$GLOBALS['cms']['templates']['data'][$var_name][] = $value;
 	}
 
-	function strict_auto_fields_check() { return config('strict_auto_fields_check'); }
+	function strict_auto_fields_check() { return config('strict_auto_fields_check', true); }
 	function __call($method, $params)
 	{
 		// Это был вызов $obj->set_XXX($value, $db_up)
@@ -208,11 +209,11 @@ class base_object extends base_empty
 			return $this->set($match[1], $params[0], $params[1]);
 
 		// Проверяем нет ли уже загруженного значения данных объекта
-		if(array_key_exists($method, $this->data))
+		if(@array_key_exists($method, $this->data))
 			return $this->data[$method];
 
 		// Проверяем нет ли уже загруженного значения атрибута (временных несохраняемых данных) объекта
-		if(array_key_exists($method, $this->attr))
+		if(@array_key_exists($method, $this->attr))
 			return $this->attr[$method];
 
 		// Проверяем автоматические объекты.
@@ -577,11 +578,12 @@ class base_object extends base_empty
 				foreach($array as $key => $val)
 				{
 					$method = "set_$key";
+//					echo "{$this->debug_title()}->{$method}($val, $db_update_flag);<br/>\n";
 					$this->$method($val, $db_update_flag);
 				}
 			}
 		}
-
+//		exit();
 		return true;
 	}
 
@@ -816,6 +818,9 @@ class base_object extends base_empty
 
 	function id_field()
 	{
+		if(@array_key_exists($this->attr, '__id_field_name'))
+			return $object->attr['__id_field_name'];
+
 		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
 		return defval($ff, 'id', 'id');
 	}
@@ -1098,8 +1103,6 @@ class base_object extends base_empty
 
 		return $content;
 	}
-
-	function show($object) { echo $this->get_content($object); }
 
 	function object_title() { return strip_tags(bors_lower($this->class_title()).ec(' «').$this->title().ec('»')); }
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }

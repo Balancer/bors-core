@@ -1,6 +1,11 @@
 <?php
 
-class bors_storage_fs_markdown extends base_null
+/**
+	Класс хранения данных HTML-страниц в виде markdown-файлов в каталогах data/fs.
+	Пока - только чтение.
+*/
+
+class bors_storage_fs_markdown extends bors_storage
 {
 	private function __find($object)
 	{
@@ -52,10 +57,5 @@ class bors_storage_fs_markdown extends base_null
 		$object->set_source($content, false);
 
 		return $object->set_loaded(true);
-	}
-
-	function save($object)
-	{
-		debug_exit(ec('Сохранение markdown-файлов ещё не реализовано'));
 	}
 }

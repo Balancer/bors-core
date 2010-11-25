@@ -61,6 +61,7 @@ class DataBase extends base_object
 
 			debug_exit("mysql_connect({$server}, {$login}) to DB '{$db_name} => {$real_db}' failed ".mysql_errno().": ".mysql_error()."<br />");
 		}
+
 		set_global_key("DataBaseHandler:{$server}", $db_name, $this->dbh);
 		set_global_key("DataBaseStartTime:{$server}", $db_name, $this->start_time = time());
 
@@ -106,7 +107,7 @@ class DataBase extends base_object
 			$server   = config_mysql('server', $base);
 
 		if(config('mysql_use_pool2') 
-			&& is_global_key("DataBaseHandler:$server", $base) 
+			&& global_key("DataBaseHandler:$server", $base) 
 			&& (time() - global_key("DataBaseStartTime:$server", $base) < 7 )
 			&& $this->db_name == $base
 		)
@@ -116,11 +117,16 @@ class DataBase extends base_object
 			$this->dbh = global_key("DataBaseHandler:$server", $base);
 			$this->start_time = global_key("DataBaseStartTime:$server", $base);
 
+			if(!$this->dbh)
+			{
+				echolog(__FILE__.':'.__LINE__." Can't init connection to '$base' (".mysql_errno()."): ".mysql_error()."<BR />", 1);
+				bors_exit();
+			}
+
 			if(!mysql_select_db($base, $this->dbh))
 			{
 				echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 				bors_exit();
-//				$this->reconnect();
 			}
 		}
 		else

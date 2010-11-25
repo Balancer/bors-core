@@ -44,11 +44,21 @@ class bors_ext_mail extends bors_empty
 		}
 
 		require_once("engines/smarty/assign.php");
-		$text = template_assign_data('xfile:aviaport/mail.txt', array('body' => $mail->text()));
-		$html = $mail->get('html') ? template_assign_data('xfile:aviaport/mail.html', array(
-			'body' => $mail->html(),
-			'skip_title' => true,
-		)) : NULL;
+		//  'xfile:aviaport/mail.txt'
+		if($tpl = config('mail.template.txt'))
+			$text = template_assign_data($tpl, array('body' => $mail->text()));
+		else
+			$text = $mail->text();
+
+		$html = $mail->get('html');
+		if($html)
+		{
+			if($tpl = config('mail.template.html')) // , 'xfile:aviaport/mail.html'
+				$html = template_assign_data($tpl, array(
+					'body' => $mail->html(),
+					'skip_title' => true,
+				));
+		}
 
 		send_mail(
 			self::make_recipient($user),

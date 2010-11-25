@@ -1,4 +1,4 @@
-<? 
+<?php
 /*
  * Author:   Bill Wheaton <billwheaton atsign mindspring fullstop com>
  * Synopsis:

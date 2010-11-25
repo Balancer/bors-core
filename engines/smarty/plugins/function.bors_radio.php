@@ -28,6 +28,14 @@ function smarty_function_bors_radio($params, &$smarty)
 		eval('$list='.$list);
 	}
 
+	if(preg_match('/^(\w+)\[\]$/', $name, $m))
+	{
+		$name = $m[1];
+		$is_array = true;
+	}
+	else
+		$is_array = false;
+
 	if(empty($object))
 	{
 		$current = $obj ? $obj->$name() : NULL;
@@ -39,17 +47,15 @@ function smarty_function_bors_radio($params, &$smarty)
 		$object = $object->internal_uri();
 	}
 
-//	echo "Current for {$object} = '$current'<br />\n";
+	if($is_array)
+		$current = array_pop($current);
 
 	if(!$current && !empty($list['default']))
 		$current = $list['default'];
 
 	if(empty($delim))
 		$delim = "<br />";
-		
+
 	foreach($list as $id => $iname)
-	{
-//		echo "$id == $current? -> ".($id == $current)."<br />";
-		echo "<label><input type=\"radio\" name=\"{$object}".addslashes($name)."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$params />&nbsp;$iname</label>$delim\n";
-	}
+		echo "<label><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$params />&nbsp;$iname</label>$delim\n";
 }

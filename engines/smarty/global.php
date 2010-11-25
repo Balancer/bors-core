@@ -75,6 +75,16 @@ function template_css($css)
 	bors_page::add_template_data('template_css_'.$hash, true);
 }
 
+function template_style($style)
+{
+	$hash = md5(print_r($style, true));
+	if(bors_page::template_data('template_style_'.$hash))
+		return;
+
+	bors_page::merge_template_data_array('style', array($style));
+	bors_page::add_template_data('template_style_'.$hash, true);
+}
+
 function do_php($code)
 {
 	eval($code);
@@ -96,6 +106,14 @@ function template_jquery_ui_tabs($id)
 	template_jquery_ui_css();
 
 	template_js("jQuery(document).ready(function() { jQuery('$id').tabs(); });");
+}
+
+function template_jquery_ui_datapicker($lang = 'ru')
+{
+	template_jquery_ui();
+	template_jquery_ui_css();
+
+	template_js_include('/_bors3rdp/jquery/ui/jquery.ui.datepicker-'.$lang.'.js');
 }
 
 function template_jquery_ui_autocomplete($id, $url)

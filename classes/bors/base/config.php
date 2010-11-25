@@ -1,6 +1,6 @@
 <?php
 
-class base_config extends base_empty
+class base_config extends base_object
 {
 	function __construct(&$object)
 	{
@@ -55,6 +55,9 @@ class base_config extends base_empty
 
 			set_session_var('javascript_post_append', NULL);
 		}
+
+		if(property_exists($this, 'template_data'))
+			$data = array_merge($this->template_data, $data);
 
 		return $data;
 	}

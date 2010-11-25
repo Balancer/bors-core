@@ -5,6 +5,7 @@ bors_url_map(array(
 	'(/_bors/tools)(/.*) => include(bors_tools)',
 ));
 
+// Устаревший формат. Требует переписывания на использование bors_url_map()
 $map = array(
 	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
 	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',

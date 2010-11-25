@@ -89,6 +89,9 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 	function url()
 	{
+		if($this->full_url())
+			return $this->full_url();
+
 		$fn = $this->file_name();
 		if(preg_match('/\.$/', $fn))
 			$fn .= 'jpg';
@@ -328,4 +331,9 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 	}
 
 	function access_engine() { return config('access_public_class', 'access_base'); }
+
+	function bb_code($append = '')
+	{
+		return "[img bors_image://{$this->id()}".($append?' '.$append:'')."]";
+	}
 }

@@ -141,7 +141,11 @@ function bors_exit($message = '')
 
 	bors()->changed_save();
 
-	$error = error_get_last();
+	if(function_exists('error_get_last')) // Заразо. Оно только с PHP 5 >= 5.2.0
+		$error = error_get_last();
+	else
+		$error = array('type' => 0);
+
     if ($error['type'] == 1)
     {
 		if($out_dir = config('debug_hidden_log_dir'))

@@ -63,7 +63,12 @@ function smarty_function_dropdown($params, &$smarty)
 	$is_int = defval($params, 'is_int');
 
 	if(empty($get))
-		$current = preg_match('!^\w+$!', $name) ? (isset($value) ? $value : ($obj ? $obj->$name() : NULL)) : 0;
+	{
+		if(preg_match('!^\w+$!', $name))
+			$current =  isset($value) ? $value : ($obj ? $obj->$name() : NULL);
+		else
+			$current =  isset($value) ? $value : 0;
+	}
 	else
 		$current = $obj->$get();
 

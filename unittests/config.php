@@ -19,4 +19,6 @@ function bors_unit_test_up()
 config_set('main_bors_db', config('unit-test.mysql.db'));
 config_set('bors_core_db', config('unit-test.mysql.db')); // Этим оперируют cross-методы
 
+config_set('debug.show_variables', true);
+
 require_once(dirname(__FILE__).'/config-host.php');

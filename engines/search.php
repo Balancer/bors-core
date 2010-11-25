@@ -389,16 +389,16 @@ function search_titles_like($title, $limit=20, $forum=0)
 	return $ch->set($out, 86400+rand(0,86400));
 }
 
-function bors_search_in_bodies($query)
+function bors_search_in_bodies($query, $where = array())
 {
 	// +word -word word
 
 	$words = index_split($query);
+	$page     = defval($where, '*page',      1);
+	$per_page = defval($where, '*per_page', 50);
 
 	if(!$words)
 		return array();
-
-//	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 
 	$db = new driver_mysql(config('search_db'));
 
@@ -454,7 +454,12 @@ function bors_search_in_bodies($query)
 				)
 			));
 
+	if(defval($where, '*count'))
+		return count($cross);
+
 	$result = array();
+
+	$cross = array_slice($cross, ($page-1)*$per_page, $per_page);
 
 	if($cross)
 		foreach($cross as $x)

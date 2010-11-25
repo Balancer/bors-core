@@ -41,6 +41,9 @@ class base_object_db extends bors_object
 
 	function main_id_field()
 	{
+//		if(method_exists($this, 'table_fields'))
+//			return defval($this->table_fields(), 'id', 'id');
+
 		$f = $this->fields_map_db();
 		$f = $f[$this->db_name()];
 		$f = $f[$this->table_name()];

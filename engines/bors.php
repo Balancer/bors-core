@@ -141,6 +141,40 @@ function bors_exit($message = '')
 
 	bors()->changed_save();
 
+	if(function_exists('error_get_last')) // Заразо. Оно только с PHP 5 >= 5.2.0
+		$error = error_get_last();
+	else
+		$error = array('type' => 0);
+
+    if ($error['type'] == 1)
+    {
+		if($out_dir = config('debug_hidden_log_dir'))
+		{
+			@mkdir(config('debug_hidden_log_dir').'/errors');
+			if(file_exists(config('debug_hidden_log_dir').'/errors'))
+			{
+				$trace = debug_trace();
+				debug_hidden_log('errors/'.date('c'), "Handled fatal error:
+		errno={$error['type']}
+		errstr={$error['message']}
+		errfile={$error['file']}
+		errline={$error['line']}", -1, array('append' => "errcontext=".print_r($trace, true)));
+			}
+		}
+	}
+
+	if(config('debug.show_variables'))
+	{
+		$deb = '';
+		if($s = debug_vars_info())
+			$deb = "\n=== debug vars info: ===\n$s";
+		if($s = debug_count_info_all())
+			$deb .= "\n=== debug counting: ===\n$s";
+		if($s = debug_timing_info_all())
+			$deb .= "\n=== debug timing: ===\n$s";
+		echo $deb."\n";
+	}
+
 	if(!config('do_not_exit'))
 		exit();
 

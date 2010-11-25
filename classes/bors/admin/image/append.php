@@ -21,8 +21,19 @@ class bors_admin_image_append extends base_object
 		$tmp_file = $data['tmp_name'];
 
 		$idata = getimagesize($tmp_file);
-		if(!$idata || !$idata[0] || $idata[0] > config('image_upload_max_width', 2048) || $idata[1] > config('image_upload_max_height', 2048))
+		$maxw = config('image_upload_max_width', 2048);
+		$maxh = config('image_upload_max_height', 2048);
+		if(!$idata || !$idata[0] || $idata[0] > $maxw || $idata[1] > $maxh)
+		{
+			if(!is_array($idata) || empty($idata[0]) || empty($idata[1]))
+				$err = ec('не могу определить размеры изображения: ').print_r($idata, true);
+			else
+				$err = ec("размер изображения {$idata[0]}x{$idata[1]} при лимите {$maxw}x{$maxh}");
+
+			add_session_message(ec('Ошибка загрузки изображения: ').$err, array('type' => 'error'));
+			debug_hidden_log('image-upload-error', "Image upload error: if(!".print_r($idata, true)." || !{$idata[0]} || {$idata[0]} > ".config('image_upload_max_width', 2048).	" || {$idata[1]} > ".config('image_upload_max_height', 2048).')');
 			return;
+		}
 
 		$sort_order = intval($get['sort_order']);
 

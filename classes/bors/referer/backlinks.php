@@ -9,12 +9,12 @@ class bors_referer_backlinks extends base_page
 		return array(
 			'searches' => objects_array('bors_referer_search', array(
 				'target_class_name' => $this->object()->class_name(), 
-				'target_object_id' => this->object()->id(),
+				'target_object_id' => $this->object()->id(),
 				'order' => '-count',
 			)),
 			'links' => objects_array('bors_referer_links', array(
 				'target_class_name' => $this->object()->class_name(), 
-				'target_object_id' => this->object()->id(),
+				'target_object_id' => $this->object()->id(),
 				'order' => '-count',
 			)),
 		);

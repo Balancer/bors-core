@@ -30,7 +30,7 @@ class tex_render
 \begin{document}
 $thunk
 \end{document}
- EOS;
+EOS;
 	}
 
 	function render_latex($thunk, $hash)

@@ -68,7 +68,7 @@ function class_include($class_name, &$args = array())
 	return false;
 }
 
-function __autoload($class_name) { class_include($class_name); }
+spl_autoload_register('class_include');
 
 function bors_object_caches_drop() { unset($GLOBALS['bors_data']['cached_objects4']); }
 

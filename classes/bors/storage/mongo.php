@@ -24,7 +24,7 @@ class bors_storage_mongo extends bors_storage
 		), $object->data));
 	}
 
-	function findOne($class_name, $where = array())
+	function find_first($class_name, $where = array())
 	{
 		if(!is_array($where))
 			$where = array('object_id' => $where);

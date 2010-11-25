@@ -141,6 +141,24 @@ function bors_exit($message = '')
 
 	bors()->changed_save();
 
+	$error = error_get_last();
+    if ($error['type'] == 1)
+    {
+		if($out_dir = config('debug_hidden_log_dir'))
+		{
+			@mkdir(config('debug_hidden_log_dir').'/errors');
+			if(file_exists(config('debug_hidden_log_dir').'/errors'))
+			{
+				$trace = debug_trace();
+				debug_hidden_log('errors/'.date('c'), "Handled fatal error:
+		errno={$error['type']}
+		errstr={$error['message']}
+		errfile={$error['file']}
+		errline={$error['line']}", -1, array('append' => "errcontext=".print_r($trace, true)));
+			}
+		}
+	}
+
 	if(config('debug.show_variables'))
 	{
 		$deb = '';

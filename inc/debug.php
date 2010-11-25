@@ -362,7 +362,8 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 	if(!empty($args['append']))
 		$out .= "\n".$args['append'];
 
-	@file_put_contents("{$out_dir}/{$type}.log", $out, FILE_APPEND);
+	@file_put_contents($file = "{$out_dir}/{$type}.log", $out, FILE_APPEND);
+	@chmod($file, 0664);
 }
 
 function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcontext)
@@ -376,8 +377,9 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 	if(!($out_dir = config('debug_hidden_log_dir')))
 		return false;
 
-	@mkdir(config('debug_hidden_log_dir').'/errors');
-	if(!file_exists(config('debug_hidden_log_dir').'/errors'))
+	@mkdir($dir = config('debug_hidden_log_dir').'/errors');
+	@chmod($dir, 0775);
+	if(!file_exists($dir))
 		return false;
 
 	debug_hidden_log('errors/'.date('c'), "Handled error:\n\t\terrno=$errno\n\t\terrstr=$errstr\n\t\terrfile=$errfile\n\t\terrline=$errline", -1, array('append' => "errcontext=".print_r($errcontext, true)));

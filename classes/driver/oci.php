@@ -47,6 +47,7 @@ class driver_oci
 			$error = oci_error($this->statement);
 			if(@$error['sqltext'] && @$error['offset'])
 				$error['error_in'] = substr($error['sqltext'], $error['offset']);
+			print_d($error);
 			bors_throw('oci_execute error: '.print_r($error, true));
 		}
 		debug_timing_stop('oci_execute');
@@ -62,7 +63,7 @@ class driver_oci
 		$dcs = configh('oci_access', $this->database, 'charset');
 //		echo "ics=$ics, dcs=$dcs\n";
 
-		if($ics != $dcs)
+		if($row && $ics != $dcs)
 		{
 			$ics .= '//IGNORE';
 			foreach($row as $k => $v)

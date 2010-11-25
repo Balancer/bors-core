@@ -2,7 +2,7 @@
 
 class bors_storage_mysql extends bors_storage implements Iterator
 {
-	static function load($object)
+	function load($object)
 	{
 		$select = array();
 		$post_functions = array();
@@ -27,6 +27,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$dbh = new driver_mysql($object->db_name());
 		$data = $dbh->select($object->table_name(), join(',', $select), $where);
 
+		if(!$data)
+			return $object->set_loaded(false);
+
 		$object->data = $data;
 
 		if(!empty($post_functions))
@@ -39,7 +42,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		return true;
 	}
 
-	static function load_array($object, $where)
+	function load_array($object, $where)
 	{
 		if(is_null($object))
 		{
@@ -75,7 +78,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		return $objects;
 	}
 
-	static function count($object, $where)
+	function count($object, $where)
 	{
 		if(is_null($object))
 		{
@@ -148,6 +151,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$update = array();
 		$db_name = $object->db_name();
 		$table_name = $object->table_name();
+
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
 //			echo "{$f['property']} => {$f['name']}: ".$object->get($f['property'])."<br/>\n";
@@ -178,12 +182,16 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		self::__join('inner', $object, $select, $where, $post_functions, $update);
 		self::__join('left',  $object, $select, $where, $post_functions, $update);
 
+		if(empty($update[$db_name][$table_name][$object->id_field()]))
+			$update[$db_name][$table_name][$object->id_field()] = $object->id();
+
 //		$dbh = new driver_mysql($object->db_name());
 		return array($update, $where);
 	}
 
 	function save($object)
 	{
+//		var_dump($object->id());
 		$where = array($object->id_field() => $object->id());
 		list($update, $where) = self::__update_data_prepare($object, $where);
 
@@ -304,6 +312,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function create($object)
 	{
+		$where = array();
 		list($data, $where) = self::__update_data_prepare($object, $where);
 
 		if(!$data)
@@ -359,5 +368,76 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 			$dbh = new driver_mysql($object->db_name());
 			$dbh->delete($object->table_name(), array($object->id_field() => $object->id()));
+	}
+
+	static function create_table($class_name)
+	{
+		$map = array(
+			'string'	=>	'VARCHAR(255)',
+			'text'		=>	'TEXT',
+			'int'		=>	'INT',
+			'uint'		=>	'INT UNSIGNED',
+			'bool'		=>	'TINYINT(1) UNSIGNED',
+			'float'		=>	'FLOAT',
+			'enum'		=>	'ENUM(%)',
+		);
+
+		$db_fields = array();
+
+		$class = new $class_name(NULL);
+
+		$db_name = $class->db_name();
+		$table_name = $class->table_name();
+		$fields = $class->table_fields();
+
+		$object_fields = array_smart_expand($fields);
+		$db_fields = array();
+		$primary = false;
+
+		foreach(bors_lib_orm::main_fields($class) as $field)
+		{
+//			var_dump($field);
+			$db_field = '`'.$field['name'].'` '.$map[$field['type']];
+			if($field['property'] == 'id')
+			{
+				$db_field .= ' AUTO_INCREMENT';
+				$primary = $field['name'];
+			}
+
+			$db_fields[$db_field] = $db_field;
+		}
+
+		if(empty($primary))
+			return bors_throw(ec("Не найден первичный индекс для ").print_r($object_fields, true));
+
+		$db_fields[] = "PRIMARY KEY (`$primary`)";
+
+		$query = "CREATE TABLE IF NOT EXISTS `$table_name` (".join(', ', array_values($db_fields)).");";
+
+		$db = new driver_mysql($db_name);
+		$db->query($query);
+//		$db->close();
+
+	}
+
+	static function drop_table($class_name)
+	{
+		if(!config('can-drop-tables'))
+			return bors_throw(ec('Удаление таблиц запрещено'));
+
+		$class = new $class_name(NULL);
+		foreach($class->fields_map_db() as $db_name => $tables)
+		{
+			$db = new driver_mysql($db_name);
+
+			foreach($tables as $table_name => $fields)
+			{
+				if(preg_match('/^(\w+)\((\w+)\)$/', $table_name, $m))
+					$table_name = $m[1];
+
+				$db->query("DROP TABLE IF EXISTS $table_name");
+//				$db->close();
+			}
+		}
 	}
 }

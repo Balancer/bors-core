@@ -6,10 +6,11 @@ bors_tests_object_db3
 bors_tests_object_db4
 bors_tests_object_db5
 
+bors_tests_storage_mysql_db
+
 bors_tests_page
 
 bors_tests_xml_array2xml
 bors_tests_xml_array2xmlwp
 bors_tests_xml_xml2array
-
 

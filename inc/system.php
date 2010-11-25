@@ -114,7 +114,7 @@ function set_session_message($message, $params = array())
 			break;
 	}
 
-	if(($fields = $params['error_fields']))
+	if(($fields = @$params['error_fields']))
 		set_session_var('error_fields', $fields);
 }
 

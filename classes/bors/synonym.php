@@ -49,6 +49,8 @@ class bors_synonym extends base_object_db
 				else
 					self::add_object($name, $object, array_merge($params, array('is_exactly' => false)));
 			}
+
+			$title = $object->title();
 		}
 		else
 		{

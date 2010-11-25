@@ -136,7 +136,7 @@ function bors_exit($message = '')
 
 	echo $message;
 
-	if(config('cache_static'))
+	if(config('cache_static') && $message)
 		cache_static::drop(bors()->main_object());
 
 	bors()->changed_save();

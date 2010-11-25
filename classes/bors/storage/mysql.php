@@ -268,7 +268,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 							$post_functions[$field['property']] = $field['post_function'];
 
 //						echo "{$field['property']} => {$field['name']}: ".$object->get($field['property'])."<br/>\n";
-						if(array_key_exists($field['property'], $object->changed_fields))
+						if(@array_key_exists($field['property'], @$object->changed_fields))
 							$update[$field['name']] = $object->get($field['property']);
 					}
 				}

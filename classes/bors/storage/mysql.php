@@ -2,7 +2,7 @@
 
 class bors_storage_mysql extends bors_storage implements Iterator
 {
-	static function load($object)
+	function load($object)
 	{
 		$select = array();
 		$post_functions = array();
@@ -27,6 +27,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$dbh = new driver_mysql($object->db_name());
 		$data = $dbh->select($object->table_name(), join(',', $select), $where);
 
+		if(!$data)
+			return $object->set_loaded(false);
+
 		$object->data = $data;
 
 		if(!empty($post_functions))
@@ -39,9 +42,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		return true;
 	}
 
-	static function load_array($object, $where)
+	function load_array($object, $where)
 	{
-//		echo "load_array($object, ".print_r($where).")<br/>\n";
 		if(is_null($object))
 		{
 			$db_name = $where['*db'];
@@ -61,8 +63,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$dbh = new driver_mysql($db_name);
 
-//		echo "select_array($table_name, ".join(',', $select).", ".print_r($where, true).", $class_name);<Br/>\n";
-
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
 		$objects = array();
 
@@ -78,9 +78,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		return $objects;
 	}
 
-	static function count($object, $where)
+	function count($object, $where)
 	{
-//		echo "load_array($object, ".print_r($where).")<br/>\n";
 		if(is_null($object))
 		{
 			$db_name = $where['*db'];
@@ -142,7 +141,17 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static private function __update_data_prepare($object, $where)
 	{
+		$_back_functions = array(
+			'html_entity_decode' => 'htmlspecialchars',
+			'UNIX_TIMESTAMP' => 'FROM_UNIXTIME',
+			'aviaport_old_denormalize' => 'aviaport_old_normalize',
+			'stripslashes' => 'addslashes',
+		);
+
 		$update = array();
+		$db_name = $object->db_name();
+		$table_name = $object->table_name();
+
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
 //			echo "{$f['property']} => {$f['name']}: ".$object->get($f['property'])."<br/>\n";
@@ -152,13 +161,29 @@ class bors_storage_mysql extends bors_storage implements Iterator
 //			if(!empty($f['post_function']))
 //				$post_functions[$f['property']] = $f['post_function'];
 
+			if(preg_match('/^(\w+)\(([\w`]+)\)$/', $f['name'], $m))
+			{
+				$f['name'] = $m[2];
+				$sql = $_back_functions[$m[1]];
+			}
+			else
+				$sql = false;
+
 			if(array_key_exists($f['property'], $object->changed_fields))
-				$update[$f['name']] = $object->get($f['property']);
+			{
+				if($sql)
+					$update[$db_name][$table_name][$f['name']] = $sql.'('.$object->get($f['property']).')';
+				else
+					$update[$db_name][$table_name][$f['name']] = $object->get($f['property']);
+			}
 		}
 
 		$select = array(); // dummy
 		self::__join('inner', $object, $select, $where, $post_functions, $update);
 		self::__join('left',  $object, $select, $where, $post_functions, $update);
+
+		if(empty($update[$db_name][$table_name][$object->id_field()]))
+			$update[$db_name][$table_name][$object->id_field()] = $object->id();
 
 //		$dbh = new driver_mysql($object->db_name());
 		return array($update, $where);
@@ -166,15 +191,23 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function save($object)
 	{
-//		print_d($object->changed_fields);
+//		var_dump($object->id());
 		$where = array($object->id_field() => $object->id());
 		list($update, $where) = self::__update_data_prepare($object, $where);
 
-		if(!$update)
+		$update_plain = array();
+		foreach($update as $db_name => $tables)
+			foreach($tables as $table_name => $fields)
+			{
+				unset($fields['*id_field']);
+				$update_plain = array_merge($update_plain, $fields);
+			}
+
+		if(!$update_plain)
 			return;
-//		print_d($update); print_d($where); exit();
+
 		$dbh = new driver_mysql($object->db_name());
-		$dbh->update($object->table_name(), $where, $update);
+		$dbh->update($object->table_name(), $where, $update_plain);
 	}
 
 	private $data;
@@ -255,6 +288,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					$j = "$t ON `$main_table`.`$main_id_field` = $t.`$id_field`";
 					$where[$type.'_join'][] = $j;
 
+					$update[$db_name][$table_name]['*id_field'] = $id_field;
 					foreach($fields as $property => $field)
 					{
 						$field = bors_lib_orm::field($property, $field);
@@ -268,8 +302,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 							$post_functions[$field['property']] = $field['post_function'];
 
 //						echo "{$field['property']} => {$field['name']}: ".$object->get($field['property'])."<br/>\n";
-						if(@array_key_exists($field['property'], @$object->changed_fields))
-							$update[$field['name']] = $object->get($field['property']);
+						if(!empty($object->changed_fields) && array_key_exists($field['property'], $object->changed_fields))
+							$update[$db_name][$table_name][$field['name']] = $object->get($field['property']);
 					}
 				}
 			}
@@ -284,10 +318,126 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		if(!$data)
 			return;
 
-		$dbh = new driver_mysql($object->db_name());
-		if($object->replace_on_new_instance())
-			$dbh->replace($object->table_name(), $data);
-		else
-			$dbh->insert_ignore($object->table_name(), $data);
+//		print_d($data);
+		$main_table = true;
+
+		foreach($data as $db_name => $tables)
+		{
+			$dbh = new driver_mysql($db_name);
+			foreach($tables as $table_name => $fields)
+			{
+				if(!$main_table)
+				{
+					$id_field = $fields['*id_field'];
+					unset($fields['*id_field']);
+					$fields[$id_field] = $new_id;
+				}
+
+				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
+				$dbh->insert($table_name, $fields);
+				if($main_table)
+				{
+					$main_table = false;
+					$new_id = $dbh->last_id();
+				}
+			}
+		}
+
+		$object->set_id($new_id);
+//		echo "New id=$new_id, {$object->id()}<br/>";
+//		exit();
+	}
+
+	function delete($object)
+	{
+		$object->on_delete();
+
+		$update = array();
+		$where  = array();
+		$select = array();
+		$post_functions = array();
+		self::__join('inner', $object, $select, $where, $post_functions, $update);
+		self::__join('left',  $object, $select, $where, $post_functions, $update);
+
+		foreach($update as $db_name => $tables)
+		{
+			$dbh = new driver_mysql($db_name);
+			foreach($tables as $table_name => $fields)
+				$dbh->delete($table_name, array($fields['*id_field'] => $object->id()));
+		}
+
+			$dbh = new driver_mysql($object->db_name());
+			$dbh->delete($object->table_name(), array($object->id_field() => $object->id()));
+	}
+
+	static function create_table($class_name)
+	{
+		$map = array(
+			'string'	=>	'VARCHAR(255)',
+			'text'		=>	'TEXT',
+			'int'		=>	'INT',
+			'uint'		=>	'INT UNSIGNED',
+			'bool'		=>	'TINYINT(1) UNSIGNED',
+			'float'		=>	'FLOAT',
+			'enum'		=>	'ENUM(%)',
+		);
+
+		$db_fields = array();
+
+		$class = new $class_name(NULL);
+
+		$db_name = $class->db_name();
+		$table_name = $class->table_name();
+		$fields = $class->table_fields();
+
+		$object_fields = array_smart_expand($fields);
+		$db_fields = array();
+		$primary = false;
+
+		foreach(bors_lib_orm::main_fields($class) as $field)
+		{
+//			var_dump($field);
+			$db_field = '`'.$field['name'].'` '.$map[$field['type']];
+			if($field['property'] == 'id')
+			{
+				$db_field .= ' AUTO_INCREMENT';
+				$primary = $field['name'];
+			}
+
+			$db_fields[$db_field] = $db_field;
+		}
+
+		if(empty($primary))
+			return bors_throw(ec("Не найден первичный индекс для ").print_r($object_fields, true));
+
+		$db_fields[] = "PRIMARY KEY (`$primary`)";
+
+		$query = "CREATE TABLE IF NOT EXISTS `$table_name` (".join(', ', array_values($db_fields)).");";
+
+		$db = new driver_mysql($db_name);
+		$db->query($query);
+//		$db->close();
+
+	}
+
+	static function drop_table($class_name)
+	{
+		if(!config('can-drop-tables'))
+			return bors_throw(ec('Удаление таблиц запрещено'));
+
+		$class = new $class_name(NULL);
+		foreach($class->fields_map_db() as $db_name => $tables)
+		{
+			$db = new driver_mysql($db_name);
+
+			foreach($tables as $table_name => $fields)
+			{
+				if(preg_match('/^(\w+)\((\w+)\)$/', $table_name, $m))
+					$table_name = $m[1];
+
+				$db->query("DROP TABLE IF EXISTS $table_name");
+//				$db->close();
+			}
+		}
 	}
 }

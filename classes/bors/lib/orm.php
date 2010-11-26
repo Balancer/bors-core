@@ -86,7 +86,7 @@ class bors_lib_orm
 
 	static function main_fields($object)
 	{
-		if($fields = $object->attr['___main_fields'])
+		if($fields = @$object->attr['___main_fields'])
 			return $fields;
 
 		$fields_array = array();

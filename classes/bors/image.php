@@ -89,7 +89,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 	function url()
 	{
-		if($this->full_url())
+		if($this->get('full_url'))
 			return $this->full_url();
 
 		$fn = $this->file_name();

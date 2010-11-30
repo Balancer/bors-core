@@ -250,3 +250,54 @@ div.separated_menu {
 	border: 1px solid #ccc;
 	padding: 4px 10px;
 }
+
+ul.org-tabs {
+	margin: 0 20px 20px 0;
+	padding: 5px 5px;
+	list-style: none;
+	border-bottom: 1px solid #ccc;
+	white-space: nowrap;
+}
+
+ul.org-tabs li {
+	margin: 0 1px;
+	padding: 5px 12px;
+	list-style: none;
+	display: inline;
+	border: 1px solid #ccc;
+	background-color: #eee;
+}
+
+ul.org-tabs li a {
+	text-decoration: none;
+}
+
+ul.org-tabs li a:hover {
+	text-decoration: underline;
+}
+
+li.tab-selected {
+	border-bottom: 1px solid #fff !important;
+	background-color: #fff !important;
+}
+
+.org-logo {
+	float: left;
+}
+
+.org-logo img {
+	border: none;
+	float: left;
+}
+
+#org-desc-img {
+	margin-left: 170px;
+}
+
+#org-desc-wo-img {
+	margin-left: 10px;
+}
+
+p.org-form {
+	color: #777;
+}

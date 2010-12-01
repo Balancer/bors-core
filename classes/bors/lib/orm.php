@@ -86,14 +86,15 @@ class bors_lib_orm
 
 	static function main_fields($object)
 	{
-		if($fields = @$object->attr['___main_fields'])
+		$class_name = $object->class_name();
+		if($fields = global_key('___main_fields', $class_name))
 			return $fields;
 
 		$fields_array = array();
 		foreach($object->table_fields() as $property => $field)
 			$fields_array[] = self::field($property, $field);
 
-		return $object->attr['___main_fields'] = $fields_array;
+		return set_global_key('___main_fields', $class_name, $fields_array);
 	}
 
 	static function property_to_field($class_name, $property)

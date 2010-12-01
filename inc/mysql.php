@@ -25,6 +25,10 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 			else
 				$w = "0";
 		}
+		elseif(preg_match('! BETWEEN$!', $field_cond))
+		{
+			$w = mysql_bors_join_parse($field_cond) . ' ' . $value[0] . ' AND ' . $value[1];
+		}
 		elseif(is_numeric($field_cond)) // Готовое условие
 			$w = $value;
 		elseif(preg_match('!^\w+$!', $field_cond))

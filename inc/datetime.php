@@ -56,7 +56,7 @@ function airbase_time($time)
 	return strftime("%Y-%m-%d",$time);
 }
 
-function smart_time($time, $human_readable = true, $def='', $always_show_time = false)
+function smart_date($time, $human_readable = true, $def='', $always_show_time = false)
 {
 	if(!$time)
 		return $def;
@@ -71,6 +71,11 @@ function smart_time($time, $human_readable = true, $def='', $always_show_time = 
 	$hhmm = $always_show_time ? date(' H:i', $time) : '';
 
 	return ($human_readable ? full_hdate($time) : strftime("%d.%m.%Y", $time)).$hhmm;
+}
+
+function smart_time($time, $human_readable = true, $def='', $always_show_time = true)
+{
+	return smart_date($time, $human_readable, $def, $always_show_time);
 }
 
 function news_short_time($time)

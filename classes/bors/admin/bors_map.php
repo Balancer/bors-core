@@ -13,5 +13,11 @@ bors_url_submap(array(
 	'/visibility\?act=(show|hide)&object=([^&]*) => _visibility(2)',
 	'/reports/ => _reports_main',
 	'/reports/load/ => _reports_load',
+
+	'/cross_chtype\?.* => _cross_chtype',
 	'/cross_unlink\?.* => _cross_unlink',
+
+	'/links/ => _links_main',
+	'/links/(\d+)\.html => _links_main(NULL,1)',
+	'/links/search/ => _links_search',
 ));

@@ -4,7 +4,7 @@ function smarty_function_icon($params, &$smarty)
 {
 	extract($params);
 
-	$img = "<img src=\"/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$action\" />";
+	$img = "<img src=\"/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$action\" style=\"vertical-align: middle\" />";
 
 	$self = $smarty->get_template_vars('this');
 

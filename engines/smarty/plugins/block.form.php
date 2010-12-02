@@ -206,6 +206,11 @@ function smarty_block_form($params, $content, &$smarty)
 	if(!empty($fields))
 		echo "</table>";
 
+	if($act == 'skip_all')
+	{
+		unset($uri);
+	}
+
 	if(isset($uri) && $uri != 'NULL')
 		echo "<input type=\"hidden\" name=\"uri\" value=\"$uri\" />\n";
 	if(isset($ref) && $ref != 'NULL')

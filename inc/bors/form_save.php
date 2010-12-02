@@ -13,6 +13,9 @@ function bors_form_save(&$obj)
 
 	if(!empty($_GET['act']))
 	{
+		if($_GET['act'] == 'skip_all')
+			return false;
+
 		if(method_exists($obj, 'action_target'))
 			$obj = $obj->action_target();
 

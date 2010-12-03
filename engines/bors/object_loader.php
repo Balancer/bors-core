@@ -316,10 +316,13 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 				if(preg_match('!\?!', $url_subpattern) && !empty($url_data['query']))
 					$check_url .= '?'.$url_data['query'];
 
-//				echo "<small>Check $url_subpattern to $url for <b>{$class_path}</b> as !^http://({$url_data['host']}[^/]*){$url_subpattern}\$! to {$check_url}</small><br />\n";
+//				echo "<small>Check $url_subpattern to $url for <b>{$class_path}</b> as<br/>&nbsp; &nbsp; &nbsp; &nbsp; !^http://({$url_data['host']}[^/]*){$url_subpattern}\$! to {$check_url}</small><br />\n";
 				if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_subpattern$!i", $check_url, $submatch))
+				{
+//					echo "+<br/>";
 					if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $submatch, $url_subpattern, 1)))
 						return $obj;
+				}
 			}
 
 			return NULL;

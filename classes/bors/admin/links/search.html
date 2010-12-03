@@ -1,0 +1,20 @@
+{form act='skip_all'}
+<table class="btab">
+<tr><th>&nbsp;</th><th>Тип объекта</th><th>ID объекта</th></tr>
+<tr>
+	<th>Объект 1:</th>
+	<td>{dropdown name="fc" list="bors_admin_links_classNames"}</td>
+	<td>{input name="fi"}</td>
+</tr>
+<tr>
+	<th>Объект 2:</th>
+	<td>{dropdown name="tc" list="bors_admin_links_classNames"}</td>
+	<td>{input name="ti"}</td>
+</tr>
+<tr><th>&nbsp;</th><td colspan="2">{submit value="Искать"}</td></tr>
+</table>
+{/form}
+
+{if $this->act()}
+{include file="xfile:main.html"}
+{/if}

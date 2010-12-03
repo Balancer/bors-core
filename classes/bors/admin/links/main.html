@@ -1,0 +1,45 @@
+{$this->pages_links_nul()}
+
+<table class="btab">
+<tr>
+	<th rowspan="2">id связи</th>
+	<th colspan="2">Объект1</th>
+	<th colspan="2">Объект2</th>
+	<th rowspan="2">Дата создания</th>
+	<th rowspan="2">Тип</th>
+	<th rowspan="2">Действия</th>
+</tr>
+<tr>
+	<th>тип</th>
+	<th>объект</th>
+	<th>тип</th>
+	<th>объект</th>
+</tr>
+{foreach from=$items item="link"}
+<tr>
+	<td>{$link->id()}</td>
+	<td class="nobr">{$link->from_object()|object_property:'class_title'}</td>
+	<td>
+		{if $link->from_object()}
+			{$link->from_object()->admin()->imaged_nav_named_link()}
+			{icon image='relationship.png' link=$link->from_object()->admin()->urls('links') title="Редактировать все связи этого объекта"}
+		{else}
+			<span class="red">Нет объекта {$link->from_class_name()}({$link->from_id()})</span>
+		{/if}
+	</td>
+	<td class="nobr">{$link->target()->class_title()}</td>
+	<td>
+		{$link->target()->admin()->imaged_nav_named_link()}
+		{icon image='relationship.png' link=$link->target()->admin()->urls('links') title="Редактировать все связи этого объекта"}
+	</td>
+	<td class="nobr">{$link->modify_time(true)|smart_time}</td>
+	<td class="nobr">{$link->type()->title()|lower}, {if $link->is_auto()}авто{else}ручной{/if}</td>
+	<td>
+		{$link->admin()->imaged_edit_link('')}
+		{$link->admin()->imaged_delete_link('')}
+	</td>
+</tr>
+{/foreach}
+</table>
+
+{$this->pages_links_nul()}

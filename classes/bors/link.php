@@ -42,8 +42,20 @@ class bors_link extends base_object_db
 		);
 	}
 
+	function admin_url()
+	{
+		$from = $this->from_object();
+		$to = $this->target();
+		if(!$from || !$to)
+			return NULL;
+
+		return '/_bors/admin/cross_chtype?from='.$from->internal_uri_ascii()
+			.'&to='.$to->internal_uri_ascii(); 
+	}
+
 	function is_auto() { return $this->owner_id() < 0; }
 	function is_about() { return $this->type_id() == bors_links_types::ABOUT; }
+	function from_class_name() { return class_id_to_name($this->from_class()); }
 
 	function set_from($obj_from, $db_up)
 	{

@@ -1,0 +1,17 @@
+<p>Смена типа привязки объектов:</p>
+<ul>
+<li>{$this->from_titled_url()}</li>
+<li>{$this->to_titled_url()}</li>
+</ul>
+
+
+{form subaction="chtype"}
+<table class="btab">
+<tr><th>Тип привязки</th><td>{dropdown name="type_id" list="bors_cross_types" value=$type_id}</td></tr>
+<tr><th>Порядок сортировки (по умолчанию - 0)</th><td>{input name="sort_order" value=$this->sort_order()}</td></tr>
+<tr><th colspan="2">{submit value="Сохранить"}</td></tr>
+</table>
+{hidden name="from" value=$this->from()|get:internal_uri_ascii}
+{hidden name="to"   value=$this->to()|get:internal_uri_ascii}
+{hidden name="ref"   value=$this->ref()}
+{/form}

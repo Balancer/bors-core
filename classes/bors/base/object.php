@@ -1210,4 +1210,6 @@ class base_object extends base_empty
 
 		return $this->__setc(object_load(config('logs.default_logger_class', 'bors_log_stub'), $this));
 	}
+
+	function urls() { return NULL; }
 }

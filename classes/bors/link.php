@@ -243,4 +243,17 @@ class bors_link extends base_object_db
 		$dbh->delete(self::main_table(), array("((from_class=$fc AND from_id=$fi AND to_class=$tc) 
 			OR (to_class=$fc AND to_id=$fi AND from_class=$tc))"));
 	}
+
+	function urls($type)
+	{
+		switch($type)
+		{
+			case 'unlink':
+				return '/_bors/admin/cross_unlink?from='
+					.object_property($this->from_object(), 'internal_uri')
+					.'&to='.object_property($this->target(), 'internal_uri');
+		}
+
+		return parent::urls($type);
+	}
 }

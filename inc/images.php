@@ -141,5 +141,9 @@ function bors_icon($image, $params = array())
 {
 	$title = defval($params, 'title');
 	$alt   = defval($params, 'alt', '[IMG]');
-	return "<img src=\"/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$alt\" class=\"flag\" />";
+	$html = "<img src=\"/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$alt\" class=\"flag\" />";
+	if($url = defval($params, 'url'))
+		$html = "<a href=\"$url\">{$html}</a>";
+
+	return $html;
 }

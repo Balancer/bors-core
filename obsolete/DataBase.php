@@ -162,7 +162,7 @@ class DataBase extends base_object
 		$qtime = microtime(true) - $qstart;
 
 		if($qtime > config('debug_mysql_slow', 5))
-			debug_hidden_log('mysql-slow', "Slow query [{$qtime}s]: ".$query);
+			debug_hidden_log('mysql-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
 
 		if($cdmql = config('debug_mysql_queries_log'))
 		{

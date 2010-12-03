@@ -6,7 +6,7 @@ class bors_access_log extends base_object_db
 	function main_table_fields()
 	{
 		return array(
-			'id',
+//			'id',
 			'user_ip',
 			'user_id',
 			'access_url' => 'url',

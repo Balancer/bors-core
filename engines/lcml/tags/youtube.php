@@ -7,13 +7,19 @@ function lp_youtube($id, &$params)
 
 	if(($self = defval($params, 'self')) && ($self->class_name() == 'balancer_board_post' || $self->class_name() == 'forum_post'))
 	{
-		object_new_instance('balancer_board_posts_object', array(
-			'post_id' => $self->id(),
-			'target_class_id' => class_name_to_id('bors_external_youtube'),
-			'target_class_name' => 'bors_external_youtube',
-			'target_object_id' => $id,
-			'target_create_time' => $self->create_time(),
-			'target_score' => $self->score(),
+		if(!bors_find_first('balancer_board_posts_object', array(
+				'post_id' => $self->id(),
+//				'target_class_id' => class_name_to_id('bors_external_youtube'),
+				'target_class_name' => 'bors_external_youtube',
+				'target_object_id' => $id,
+		)))
+			object_new_instance('balancer_board_posts_object', array(
+				'post_id' => $self->id(),
+				'target_class_id' => class_name_to_id('bors_external_youtube'),
+				'target_class_name' => 'bors_external_youtube',
+				'target_object_id' => $id,
+				'target_create_time' => $self->create_time(),
+				'target_score' => $self->score(),
 		));
 	}
 

@@ -7,6 +7,8 @@ class bors_system_sitemap_map extends bors_page
 		$class_name = $this->id();
 		$page = $this->page();
 
+		debug_hidden_log('sitemap', "{$class_name}[{$page}]");
+
 		header("Content-Type: application/xml; charset=utf-8");
 		echo '<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

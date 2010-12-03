@@ -174,3 +174,20 @@ function bors_message_tpl($template, $obj, $params)
 
 	return true;
 }
+
+
+function bors_http_error($errno)
+{
+	switch($errno)
+	{
+		case 404:
+			@header("HTTP/1.0 404 Not Found");
+			if(config('404_page_url'))
+				return go(config('404_page_url'), true);
+			if(config('404_show', true))
+				echo ec("404 Not found<br/>Page '{$GLOBALS['bors_full_request_url']}' not found!");
+			break;
+	}
+
+	bors_exit();
+}

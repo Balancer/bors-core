@@ -134,6 +134,10 @@ function smarty_block_form($params, $content, &$smarty)
 						require_once('function.input.php');
 						smarty_function_input($data, $smarty);
 						break;
+					case 'input_date':
+						require_once('function.input_date.php');
+						smarty_function_input_date(array_merge($data, @$data['args']), $smarty);
+						break;
 					case 'text':
 					case 'textarea':
 						require_once('function.textarea.php');

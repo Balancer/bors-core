@@ -67,13 +67,26 @@ class bors_image_thumb extends bors_image
 
 //		$this->delete();
 
-		$new_path = secure_path('/cache/'.$this->original->relative_path().'/'.$this->geometry);
-
 		$caching = config('cache_database') ? true : false;
 		if($caching)
 			$this->new_instance();
 
+		if($original_path = $this->original->relative_path())
+			$new_path = secure_path('/cache/'.$original_path.'/'.$this->geometry);
+		else
+			$new_path = NULL;
+
 		$this->set_relative_path($new_path, $caching);
+
+		if($original_url = $this->original->full_url())
+			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
+		else
+			$new_url = NULL;
+
+		if(config('is_developer'))
+			echo "nu: $new_url \n";
+
+		$this->set_full_url($new_url, $caching);
 
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
 			$this->set($key, $this->original->$key(), $caching);
@@ -160,7 +173,7 @@ class bors_image_thumb extends bors_image
 
 	function alt() { return $this->original ? $this->original->alt() : ""; }
 
-	function url() { return secure_path(config('pics_base_url').$this->relative_path().'/'.$this->file_name()); }
+//	function url() { return secure_path(config('pics_base_url').$this->relative_path().'/'.$this->file_name()); }
 
 	function replace_on_new_instance() { return true; }
 }

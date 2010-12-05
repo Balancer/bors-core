@@ -4,6 +4,8 @@ require_once('inc/urls.php');
 
 function lt_img($params) 
 {
+//	if(config('is_developer')) var_dump($params);
+
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
 		return lt_img_bors($params);
 
@@ -32,21 +34,24 @@ function lt_img($params)
 //			echo $uri; print_d($data); exit();
 //			echo $GLOBALS['lcml']['level'];
 //			exit(print_r($GLOBALS['lcml']['uri'],true));
-//			print_d($params); print_d($data); exit();
+//			if(config('is_developer')) { print_d($params); print_d($data); exit(); }
 
-		   	$fp = preg_replace("!^(.*?)/([^/]+)$!", "$1/img/$2", $data['local_path']);
-			if(file_exists($fp))
+			if($data['local'])
 			{
-				$path  = $fp; // локальный путь
-				$uri   = preg_replace("!^(.*?)/([^/]+)$!", "$1/img/$2", $data['uri']);
-			}
-			else
-			{
-				$fp = $data['local_path'];
+			   	$fp = preg_replace("!^(.*?)/([^/]+)$!", "$1/img/$2", $data['local_path']);
 				if(file_exists($fp))
 				{
 					$path  = $fp; // локальный путь
-					$uri   = $data['uri'];
+					$uri   = preg_replace("!^(.*?)/([^/]+)$!", "$1/img/$2", $data['uri']);
+				}
+				else
+				{
+					$fp = $data['local_path'];
+					if(file_exists($fp))
+					{
+						$path  = $fp; // локальный путь
+						$uri   = $data['uri'];
+					}
 				}
 			}
 
@@ -56,7 +61,7 @@ function lt_img($params)
 //			$uri = $hts->normalize_uri($uri, $GLOBALS['lcml']['uri']);
 
 			$data = url_parse($uri);
-//var_dump($data);
+//if(config('is_developer')) { echo "Parse '$uri'"; var_dump($data); }
 			if(!file_exists($path) && $data['local'])
 			{
 				$path = $data['local_path'];
@@ -87,44 +92,31 @@ function lt_img($params)
 
 				if(!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
 				{
-					require_once('HTTP/Request.php');
-					$req = new HTTP_Request($params['url'], array(
-						'allowRedirects' => true,
-						'maxRedirects' => 2,
-						'timeout' => 3,
-					));
-
-//					exit("down {$params['url']}");
-
-					$req->addHeader('Content-Encoding', 'gzip');
-					$req->addHeader('Referer', $params['url']);
-
-					if(preg_match("!(lenta\.ru|pisem\.net|biorobot\.net|compulenta\.ru|ferra\.ru|radikal.ru|postimage.org)!",$uri))
-						$req->setProxy('balancer.endofinternet.net', 3128);
+//					if(preg_match("!(lenta\.ru|pisem\.net|biorobot\.net|compulenta\.ru|ferra\.ru|radikal.ru|postimage.org)!",$uri))
+//						$req->setProxy('balancer.endofinternet.net', 3128);
 
 #					if(preg_match("!(ljplus\.ru)!",$uri))
 #						$req->setProxy('home.balancer.ru', 3128);
 
-//					return "=$path=<br />\n";
+					require_once('inc/http.php');
+					$x = http_get_ex($params['url']);
+					$content      = $x['content'];
+					$content_type = $x['content_type'];
 
-					$response = $req->sendRequest();
-
-					if(!empty($response) && PEAR::isError($response)) 
-						return "<a href=\"$uri\">$uri</a> (error: ".$response->getMessage().")<br/>\n";
-
-					$data = $req->getResponseBody();
-					if(strlen($data) <= 0)
+					if(strlen($content) <= 0)
 						return lcml("Zero size image ={$uri}= error.");
 
-					$content_type = $req->getResponseHeader('Content-Type');
-					if(!preg_match("!image!",$content_type))
+					if(!preg_match("!image!", $content_type))
+					{
+						debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type); // Это не картинка
 //						return lcml("Non-image content type ('$content_type') image ={$uri}= error.");
-						return lcml_urls_title($params['url']); // Это не картинка
+						return lcml_urls_title($params['url']);
+					}
 
 					require_once('inc/filesystem.php');
 					mkpath(dirname($path), 0775);
 					$fh = fopen($path,'wb');
-					fwrite($fh, $data);
+					fwrite($fh, $content);
 					fclose($fh);
 					@chmod($path, 0664);
 

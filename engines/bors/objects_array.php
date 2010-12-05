@@ -27,6 +27,12 @@ function objects_array($class, $args = array())
 		$preload = explode(',', $preload);
 	}
 
+	if(!preg_match('/^\w+$/', $class))
+	{
+		debug_hidden_log('data-errors', "Incorrect class name {$class} objects_load by ".print_r($args, true));
+		return array();
+	}
+
 	$init = new $class(NULL);
 
 	if($s = $init->storage())

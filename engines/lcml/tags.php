@@ -251,7 +251,7 @@
         $params['nohref'] = false;
         $params['noresize'] = false;
 //		$params['page'] = $GLOBALS['lcml'][''];
-
+//if(config('is_developer')) var_dump(preg_split("![\s\n\t]+!",$in));
         foreach(preg_split("![\s\n\t]+!",$in) as $param)
         {
             if(preg_match("!^\d+x\d+$!",$param)) { $params['size']=$param; continue;}
@@ -283,14 +283,14 @@
 			foreach($match as $m)
 				$params[strtolower($m[1])] = $m[2];
 		}
-		
+
 		if(preg_match_all("!(?<=^|\s)(\w+)='([^']+)'(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)
 				$params[strtolower($m[1])] = $m[2];
 		}
-		
+
 		if(preg_match_all("!(?<=^|\s)(\w+)=([^\"'\s]+)(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);

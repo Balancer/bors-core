@@ -36,7 +36,7 @@
 	<td class="nobr">{$link->type()->title()|lower}, {if $link->is_auto()}авто{else}ручной{/if}</td>
 	<td>
 		{$link->admin()->imaged_edit_link('')}
-		{$link->admin()->imaged_delete_link('')}
+		{$link->admin()->imaged_link('unlink', 'delete.png')}
 	</td>
 </tr>
 {/foreach}

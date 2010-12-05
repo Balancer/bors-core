@@ -69,6 +69,13 @@ class bors_admin_engine extends base_empty
 		return "<a href=\"{$obj->admin()->url()}\">{$title}</a>&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
 	}
 
+	function imaged_link($type, $image)
+	{
+		require_once('inc/images.php');
+		$url = $this->object()->urls($type);
+		return bors_icon($image, array('url' => $url));
+	}
+
 	function titled_link($title = NULL)
 	{
 		$obj = $this->real_object();
@@ -278,6 +285,9 @@ class bors_admin_engine extends base_empty
 
 	function urls($type)
 	{
+		if(method_exists($obj = $this->object(), 'urls') && ($object_url = $obj->urls($type)))
+			return $object_url;
+
 		switch($type)
 		{
 			case 'links':

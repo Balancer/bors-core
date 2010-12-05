@@ -340,9 +340,11 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 		$args['page'] = $page;
 
 //	echo "object_init($check_class, $id)<br />";
-	if(($obj = object_init($check_class, $id, $args))
-		&& ($obj->can_be_empty() || $obj->loaded())
-	)
+	$obj = object_init($check_class, $id, $args);
+	if(!$obj)
+		return NULL;
+
+	if($obj->can_be_empty() || $obj->loaded())
 	{
 		if($redirect)
 		{

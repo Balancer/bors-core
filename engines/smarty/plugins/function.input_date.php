@@ -104,6 +104,9 @@ function smarty_function_input_date($params, &$smarty)
 		echo "</select>\n";
 	}
 
+	if($can_drop)
+		echo "<input type=\"hidden\" name=\"{$name}_can_drop\" value=\"1\" />\n";
+
 	$tmv = base_object::template_data('form_time_vars');
 	$tmv[] = $name;
 	base_object::add_template_data('form_time_vars', $tmv);

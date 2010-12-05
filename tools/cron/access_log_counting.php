@@ -11,7 +11,7 @@ if(!config('bors_core_db'))
 try{
 	$db = new driver_mysql(config('bors_core_db'));
 }
-catch(e)
+catch(Exception $e)
 {
 	exit();
 }

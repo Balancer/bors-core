@@ -525,12 +525,13 @@ class base_object extends base_empty
 	function set_fields($array, $db_update_flag, $fields_list = NULL, $check_values = false)
 	{
 		//TODO: заюзать make_input_time? (funcs/datetime.php)
+		//А пока - единственный, кажется, работающий кусок кода
 		if(!empty($array['time_vars']))
 		{
-//			print_d($array);
+//			print_d($array); exit();
 			foreach(explode(',', $array['time_vars']) as $var)
 			{
-				if(@$array["{$var}_month"] && @$array["{$var}_day"] && @$array["{$var}_year"])
+				if(empty($array["{$var}_can_drop"]) && @$array["{$var}_month"] && @$array["{$var}_day"] && @$array["{$var}_year"])
 				{
 					$array[$var] = strtotime(intval(@$array["{$var}_year"])
 						.'-'.intval(@$array["{$var}_month"])
@@ -555,7 +556,7 @@ class base_object extends base_empty
 				if(empty($array["{$var}_month"]) && empty($array["{$var}_day"]) && empty($array["{$var}_year"]))
 					$array[$var] = NULL;
 
-				unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"]);
+				unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"], $array["{$var}_can_drop"]);
 			}
 //			exit();
 		}
@@ -1210,4 +1211,6 @@ class base_object extends base_empty
 
 		return $this->__setc(object_load(config('logs.default_logger_class', 'bors_log_stub'), $this));
 	}
+
+	function urls() { return NULL; }
 }

@@ -33,7 +33,7 @@ class bors_admin_links_search extends bors_admin_links_main
 			$cond['from_class'] = class_name_to_id($from_class);
 
 		if($from_id)
-			$cond['from_id'] = $from_id();
+			$cond['from_id'] = $from_id;
 
 		if($to_class)
 			$cond['to_class'] = class_name_to_id($to_class);

@@ -133,8 +133,9 @@ function bors_form_parse_time(&$array, $integer = false)
 
 	foreach(explode(',', $array['time_vars']) as $var)
 	{
+		// Похоже _сейчас_ этот код не обрабатывается.
 		// Полный формат данных: YYYY-MM-DD. Если нет - то ниже.
-		if(@$array["{$var}_month"] && @$array["{$var}_day"] && @$array["{$var}_year"])
+		if(empty($array["{$var}_can_drop"]) && @$array["{$var}_month"] && @$array["{$var}_day"] && @$array["{$var}_year"])
 		{
 			$array[$var] = strtotime(intval(@$array["{$var}_year"])
 				.'-'.intval(@$array["{$var}_month"])
@@ -177,7 +178,7 @@ function bors_form_parse_time(&$array, $integer = false)
 		if(empty($array["{$var}_month"]) && empty($array["{$var}_day"]) && empty($array["{$var}_year"]))
 			$array[$var] = NULL;
 
-		unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"]);
+		unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"], $array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"], $array["{$var}_can_drop"]);
 	}
 
 	unset($array['time_vars']);

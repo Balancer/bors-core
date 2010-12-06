@@ -12,7 +12,6 @@
 			startsWith_re ... 0.73672199249268; ok
 			startsWith_cmp1 ... 0.91414713859558; ok
 
-
 			endsWith_sub ... 0.71000194549561; ok
 			endsWith_re ... 0.7322678565979; ok
 			endsWith_pos ... 0.92304110527039; ok

@@ -87,7 +87,7 @@ function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $va
 function config($key, $def = NULL) { return array_key_exists($key, $GLOBALS['cms']['config']) ? $GLOBALS['cms']['config'][$key] : $def; }
 
 function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
-function configh($section, $hash, $key, $def = NULL) { return array_key_exists($key, @$GLOBALS['cms']['config'][$section][$hash]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
+function configh($section, $hash, $key, $def = NULL) { return @array_key_exists($key, @$GLOBALS['cms']['config'][$section][$hash]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
 
 function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 {

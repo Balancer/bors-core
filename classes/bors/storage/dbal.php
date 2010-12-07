@@ -30,7 +30,7 @@ class bors_storage_dbal extends bors_storage implements Iterator
 		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
 		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
 
-		$dbh = new driver_pdo($object->db_name());
+		$dbh = new driver_dbal($object->db_name());
 		$data = $dbh->select($object->table_name(), join(',', $select), $where);
 
 		if(!$data)
@@ -67,7 +67,7 @@ class bors_storage_dbal extends bors_storage implements Iterator
 			list($select, $where) = self::__query_data_prepare($object, $where);
 		}
 
-		$dbh = new driver_pdo($db_name);
+		$dbh = new driver_dbal($db_name);
 
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
 		$objects = array();
@@ -103,7 +103,7 @@ class bors_storage_dbal extends bors_storage implements Iterator
 			list($select, $where) = self::__query_data_prepare($object, $where);
 		}
 
-		$dbh = new driver_pdo($db_name);
+		$dbh = new driver_dbal($db_name);
 
 		$count = $dbh->select($table_name, 'COUNT(*)', $where, $class_name);
 		if(!empty($where['group']))
@@ -139,7 +139,6 @@ class bors_storage_dbal extends bors_storage implements Iterator
 		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
 		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
 
-//		$dbh = new driver_pdo($object->db_name());
 		return array($select, $where, $post_functions);
 	}
 
@@ -189,7 +188,6 @@ class bors_storage_dbal extends bors_storage implements Iterator
 		if(empty($update[$db_name][$table_name][$object->id_field()]))
 			$update[$db_name][$table_name][$object->id_field()] = $object->id();
 
-//		$dbh = new driver_pdo($object->db_name());
 		return array($update, $where);
 	}
 
@@ -209,7 +207,7 @@ class bors_storage_dbal extends bors_storage implements Iterator
 		if(!$update_plain)
 			return;
 
-		$dbh = new driver_pdo($object->db_name());
+		$dbh = new driver_dbal($object->db_name());
 		$dbh->update($object->table_name(), $where, $update_plain);
 	}
 
@@ -225,10 +223,10 @@ class bors_storage_dbal extends bors_storage implements Iterator
 		$db_name = $object->db_name();
 		$table_name = $object->table_name();
 
-		$iterator = new bors_storage_pdo();
+		$iterator = new bors_storage_dbal();
 		$iterator->object = $object;
 		$iterator->__class_name = $class_name;
-		$iterator->dbi = driver_pdo::factory($db_name)->each($table_name, join(',', $select), $where);
+		$iterator->dbi = driver_dbal::factory($db_name)->each($table_name, join(',', $select), $where);
 		return $iterator;
 	}
 
@@ -325,7 +323,7 @@ class bors_storage_dbal extends bors_storage implements Iterator
 
 		foreach($data as $db_name => $tables)
 		{
-			$dbh = new driver_pdo($db_name);
+			$dbh = new driver_dbal($db_name);
 			foreach($tables as $table_name => $fields)
 			{
 				if($main_table)
@@ -367,12 +365,12 @@ class bors_storage_dbal extends bors_storage implements Iterator
 
 		foreach($update as $db_name => $tables)
 		{
-			$dbh = new driver_pdo($db_name);
+			$dbh = new driver_dbal($db_name);
 			foreach($tables as $table_name => $fields)
 				$dbh->delete($table_name, array($fields['*id_field'] => $object->id()));
 		}
 
-			$dbh = new driver_pdo($object->db_name());
+			$dbh = new driver_dbal($object->db_name());
 			$dbh->delete($object->table_name(), array($object->id_field() => $object->id()));
 	}
 
@@ -386,7 +384,6 @@ class bors_storage_dbal extends bors_storage implements Iterator
 			'uint'		=>	array('integer', array('unsigned' => true)),
 			'bool'		=>	'boolean',
 			'float'		=>	'decimal',
-//			'enum'		=>	'ENUM(%)',
 		);
 
 		$db_name = $class->db_name();
@@ -419,11 +416,15 @@ class bors_storage_dbal extends bors_storage implements Iterator
 
 		$table->setPrimaryKey(array($id_field));
 
-		$db = new driver_dbal($db_name);
+		$db = new driver_dbal($db_name, true);
 		$queries = $schema->toSql($db->connection()->getDatabasePlatform());
 
-		foreach($queries as $query)
-			$db->query($query);
+		try
+		{
+			foreach($queries as $query)
+				$db->query($query);
+		}
+		catch(Exception $e) { }
 
 		$db->close();
 	}
@@ -436,7 +437,7 @@ class bors_storage_dbal extends bors_storage implements Iterator
 		$class = new $class_name(NULL);
 		foreach($class->fields_map_db() as $db_name => $tables)
 		{
-			$db = new driver_pdo($db_name);
+			$db = new driver_dbal($db_name);
 
 			foreach($tables as $table_name => $fields)
 			{

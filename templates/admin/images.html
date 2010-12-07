@@ -36,7 +36,7 @@
 {assign var="order" value="0"}
 {foreach from=$list item="i"}
 {if $i}
-<div style="width: 200px; height: 250px; float: left; margin: 10px; padding: 10px; text-align: center;" {if $item->default_image_id() == $i->id()} class="is_default"{/if}>
+<div style="width: 200px; height: 250px; float: left; margin: 10px; padding: 10px; text-align: center;" {if $item && $item->default_image_id() == $i->id()} class="is_default"{/if}>
 <div style="width: 200px; height: 200px; vertical-align: bottom;"><a href="{$i->url()}">{$i->thumbnail('200x200')|get:html_code}</a></div>
 <small>{$i->description_or_title()|truncate:30}</small><br />
 {$i->imaged_edit_url()}

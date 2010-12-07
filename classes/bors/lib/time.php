@@ -28,7 +28,7 @@ class bors_lib_time
 			$yyyy	= sprintf('%04d', @$array["{$var}_year"]);
 			$mm	= sprintf('%02d', @$array["{$var}_month"]);
 			$dd	= sprintf('%02d', @$array["{$var}_day"]);
-			$hh	= sprintf('%04d', @$array["{$var}_hour"]);
+			$hh	= sprintf('%02d', @$array["{$var}_hour"]);
 			$ii	= sprintf('%02d', @$array["{$var}_minute"]);
 			$ss	= sprintf('%02d', @$array["{$var}_seconds"]);
 
@@ -58,7 +58,10 @@ class bors_lib_time
 						$array[$var] = substr($array[$var], 0, $size);
 				}
 				else // unixtime - по умолчанию
+				{
+//					echo "****** {$yyyy}-{$mm}-{$dd} $hh:$ii:$ss -> ".strtotime("{$yyyy}-{$mm}-{$dd} $hh:$ii:$ss")."<br/>";
 					$array[$var] = strtotime("{$yyyy}-{$mm}-{$dd} $hh:$ii:$ss");
+				}
 
 			}
 			else // Если год не указан...

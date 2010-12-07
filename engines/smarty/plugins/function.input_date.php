@@ -105,7 +105,10 @@ function smarty_function_input_date($params, &$smarty)
 	}
 
 	if($can_drop)
-		echo "<input type=\"hidden\" name=\"{$name}_can_drop\" value=\"1\" />\n";
+		echo "<input type=\"hidden\" name=\"{$name}_is_fuzzy\" value=\"1\" />\n";
+
+	if(@$params['is_integer'])
+		echo "<input type=\"hidden\" name=\"{$name}_is_integer\" value=\"{$params['is_integer']}\" />\n";
 
 	$tmv = base_object::template_data('form_time_vars');
 	$tmv[] = $name;

@@ -6,7 +6,7 @@ class bors_forms_saver extends base_empty
 	{
 //		echo "On input:"; print_d($data); print_d($files); bors_exit();
 		if(!empty($data['time_vars']))
-			self::parse_time($data);
+			bors_lib_time::parse_form($data);
 
 //		echo "Time vars parsed:"; print_d($data);
 
@@ -68,51 +68,6 @@ class bors_forms_saver extends base_empty
 		}
 
 		return false;
-	}
-
-	function parse_time(&$data, $integer = false)
-	{
-		//TODO: заюзать make_input_time? (funcs/datetime.php)
-		foreach(explode(',', $data['time_vars']) as $var)
-		{
-			// Полный формат данных: YYYY-MM-DD. Если нет - то ниже.
-			if(@$data["{$var}_month"] && @$data["{$var}_day"] && @$data["{$var}_year"])
-			{
-				$data[$var] = strtotime(intval(@$data["{$var}_year"])
-					.'-'.intval(@$data["{$var}_month"])
-					.'-'.intval(@$data["{$var}_day"])
-					.' '.intval(@$data["{$var}_hour"])
-					.':'.intval(@$data["{$var}_minute"])
-					.':'.intval(@$data["{$var}_seconds"]));
-			}
-			else // Не полный формат даты, например, 2009-0-0 - пишем как строку.
-			{
-				if($integer) // или как число вида YYYY0000
-				{
-					if(@$data["{$var}_year"])
-					{
-						$d = sprintf('%04d', @$data["{$var}_year"]);
-						if(array_key_exists("{$var}_month", $data))
-							$d .= sprintf('%02d', $data["{$var}_month"]);
-						if(array_key_exists("{$var}_day", $data))
-							$d .= sprintf('%02d', $data["{$var}_day"]);
-
-						$data[$var] = intval($d);
-					}
-					else
-						$data[$var] = NULL;
-				}
-				else
-					$data[$var] = intval(@$data["{$var}_year"]).'-'.intval(@$data["{$var}_month"]).'-'.intval(@$data["{$var}_day"]);
-			}
-
-			if(empty($data["{$var}_month"]) && empty($data["{$var}_day"]) && empty($data["{$var}_year"]))
-				$data[$var] = NULL;
-
-			unset($data["{$var}_hour"], $data["{$var}_minute"], $data["{$var}_second"], $data["{$var}_month"], $data["{$var}_day"], $data["{$var}_year"]);
-		}
-
-		unset($data['time_vars']);
 	}
 
 	function load_files($object, &$data, &$files)

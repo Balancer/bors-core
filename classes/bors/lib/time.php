@@ -4,7 +4,7 @@
 
 class bors_lib_time
 {
-	static function form_parse(&$array)
+	static function parse_form(&$array)
 	{
 		if(empty($array['time_vars']))
 			return;
@@ -28,16 +28,13 @@ class bors_lib_time
 			$yyyy	= sprintf('%04d', @$array["{$var}_year"]);
 			$mm	= sprintf('%02d', @$array["{$var}_month"]);
 			$dd	= sprintf('%02d', @$array["{$var}_day"]);
-			if($have_time = @$array["{$var}_have_time"])
-			{
-				$hh	= sprintf('%04d', @$array["{$var}_hour"]);
-				$ii	= sprintf('%02d', @$array["{$var}_minute"]);
-				$ss	= sprintf('%02d', @$array["{$var}_seconds"]);
-			}
+			$hh	= sprintf('%04d', @$array["{$var}_hour"]);
+			$ii	= sprintf('%02d', @$array["{$var}_minute"]);
+			$ss	= sprintf('%02d', @$array["{$var}_seconds"]);
 
-			$is_fizzy = @$array["{$var}_is_fuzzy"];
+			$is_fuzzy = @$array["{$var}_is_fuzzy"];
 
-			if($year)
+			if(intval($yyyy))
 			{
 				if($is_fuzzy)
 				{
@@ -69,7 +66,10 @@ class bors_lib_time
 				if($is_fuzzy) // И формат плавающий, значит дата не указана совсем.
 					$array[$var] = NULL;
 				else // если формат фиксированный, значит нам передали простую строку с датой для strtotime:
+				{
+//					echo "====== {$array[$var]} -> ".strtotime($array[$var])."<br/>";
 					$array[$var] = strtotime($array[$var]);
+				}
 			}
 
 			// И почистим массив, оставив только результат.

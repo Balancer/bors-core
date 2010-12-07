@@ -18,12 +18,15 @@ function template_noindex()
 	bors_page::add_template_data_array('meta[robots]', 'noindex, follow');
 }
 
-function template_jquery()
+function template_jquery($link = NULL)
 {
 	if(bors_page::template_data('jquery_has_added'))
 		return;
 
-	bors_page::add_template_data_array('js_include', '/_bors3rdp/jquery/jquery-1.4.2.min.js');
+	if(!$link)
+		$link = '/_bors3rdp/jquery/jquery-1.4.2.min.js';
+
+	bors_page::add_template_data_array('js_include', $link);
 	bors_page::add_template_data('jquery_has_added', true);
 }
 

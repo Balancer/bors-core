@@ -524,8 +524,10 @@ class base_object extends base_empty
 
 	function set_fields($array, $db_update_flag, $fields_list = NULL, $check_values = false)
 	{
+//		var_dump($array);
 		if(!empty($array['time_vars']))
 			bors_lib_time::parse_form($array);
+//		var_dump($array); exit();
 
 		if($check_values && $this->check_data($array) === true)
 			return false;

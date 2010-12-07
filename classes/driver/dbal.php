@@ -25,27 +25,34 @@ class driver_dbal
 		$registered = true;
 	}
 
-	function __construct($dbname)
+	function __construct($dbname, $create_db = false)
 	{
 		$this->dbname = $dbname;
-		$this->_reconnect();
+		$this->_reconnect($create_db);
 	}
 
-	private function _reconnect()
+	private function _reconnect($create_db = false)
 	{
 		debug_timing_start('dbal_connect');
 
 		$dbname = $this->dbname;
 
 		$connectionParams = array(
+			'driver'	=> configh('dbal', $dbname, 'driver'),
 			'dbname'	=> configh('dbal', $dbname, 'dbname'),
+			'path'		=> configh('dbal', $dbname, 'path'),
 			'user'		=> configh('dbal', $dbname, 'user'),
 			'password'	=> configh('dbal', $dbname, 'password'),
 			'host'		=> configh('dbal', $dbname, 'host', 'localhost'),
-			'driver'	=> configh('dbal', $dbname, 'driver'),
 		);
 
 		$this->connection = \Doctrine\DBAL\DriverManager::getConnection($connectionParams);
+
+		if($create_db)
+		{
+			$sm = $this->connection->getSchemaManager();
+			$sm->createDatabase($connectionParams['dbname']);
+		}
 
 		debug_timing_stop('dbal_connect');
 	}
@@ -57,7 +64,7 @@ class driver_dbal
 
 	function query($query)
 	{
-		echo "query '$query'\n";
+//		echo "query '$query'\n";
 		debug_timing_start('dbal_query');
 //		$this->prepare($query);
 //		$this->execute();
@@ -199,15 +206,23 @@ class driver_dbal
 
 	function insert($table, $fields)
 	{
-		echo "Insert:";
-		var_dump($fields);
+//		echo "Insert:"; var_dump($fields);
 		$this->connection->insert($table, $fields);
 	}
 
 	function update($table, $where, $fields)
 	{
+//		echo "update $table set ".print_r($fields, true)." where ".print_r($where, true)."\n";
 //		$where['*set'] = $this->make_string_set($fields);
-		return $this->connection->update($table, $fields, $where); //FIXME: посмотреть на тему преобразований where.
+		unset($where['*class_name']);
+		try
+		{
+			$this->connection->update($table, $fields, $where); //FIXME: посмотреть на тему преобразований where.
+		}
+		catch(Exception $e)
+		{
+			var_dump($e);
+		}
 	}
 
 	function last_id() { return $this->connection->lastInsertId(); }

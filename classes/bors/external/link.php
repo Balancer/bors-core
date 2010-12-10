@@ -74,15 +74,15 @@ class bors_external_link extends base_object_db
 			CURLOPT_RETURNTRANSFER => true,
 		));
 
-	if(preg_match("!lenta\.ru!", $url))
-		curl_setopt($ch, CURLOPT_PROXY, 'home.balancer.ru:3128');
+//		if(preg_match("!lenta\.ru!", $url))
+//			curl_setopt($ch, CURLOPT_PROXY, 'home.balancer.ru:3128');
 
-	$data = curl_exec($ch);
+		$data = curl_exec($ch);
 
-//	print_r($data);
+//		print_r($data);
 
-	curl_close($ch);
+		curl_close($ch);
 
-	return $data;
+		return $data;
 	}
 }

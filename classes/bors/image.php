@@ -72,6 +72,13 @@ function set_created_from($v, $dbup) { return $this->set('created_from', $v, $db
 function moderated() { return @$this->data['moderated']; }
 function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
+	function auto_targets()
+	{
+		return array_merge(parent::auto_targets(array(
+			'parent_object' => 'parent_class_id(parent_object_id)',
+		)));
+	}
+
 	function file_name_with_path() { return $this->image_dir().$this->file_name(); }
 
 	// Редкое исключение: возвращаем путь с '/' на конце. (зачем?)
@@ -335,5 +342,11 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 	function bb_code($append = '')
 	{
 		return "[img bors_image://{$this->id()}".($append?' '.$append:'')."]";
+	}
+
+	function set_parent_object($object, $db_up)
+	{
+		$this->set_parent_class_id($object->class_id(), $db_up);
+		$this->set_parent_object_id($object->id(), $db_up);
 	}
 }

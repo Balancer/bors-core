@@ -90,6 +90,9 @@ class bors_link extends base_object_db
 		$obj2 = object_load($class2, $id2);
 		self::link_object_to($obj1, $obj2, $params);
 		self::link_object_to($obj2, $obj1, $params);
+
+		if(method_exists($obj2, 'set_parent_object') && !$obj2->parent_object())
+			$obj2->set_parent_object($obj1, true);
 	}
 
 	static function link_object_to($from, $to, $params = array())
@@ -106,6 +109,9 @@ class bors_link extends base_object_db
 
 		$link->new_instance();
 		$link->store();
+
+		if(method_exists($to, 'set_parent_object') && !$to->parent_object())
+			$to->set_parent_object($from, true);
 	}
 
 	private static function _target_class_parse(&$params)
@@ -138,8 +144,15 @@ class bors_link extends base_object_db
 		if(empty($params['order']))
 			$params['order'] = 'sort_order';
 
-		$params['from_class'] = $object->class_id();
-		$params['from_id']    = $object->id();
+		if(is_object($object))
+		{
+			$params['from_class'] = $object->class_id();
+			$params['from_id']    = $object->id();
+		}
+		else
+		{
+			$params['from_class'] = class_name_to_id($object);
+		}
 
 		if(!empty($params['to']))
 		{

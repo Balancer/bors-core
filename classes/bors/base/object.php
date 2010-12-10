@@ -1081,6 +1081,8 @@ class base_object extends base_empty
 	function add_cross_object($object, $order = 0) { return bors_add_cross_obj($this, $object, $order); }
 	function cross_remove_object($obj) { bors_remove_cross_pair($this->class_id(), $this->id(), $obj->class_id(), $obj->id()); }
 
+	function add_link_to($target, $params = array()) { bors_link::link_object_to($this, $target, $params); }
+
 	function on_action_link($data)
 	{
 		if(empty($data['link_object_from']))

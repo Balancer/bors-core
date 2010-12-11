@@ -83,9 +83,6 @@ class bors_image_thumb extends bors_image
 		else
 			$new_url = NULL;
 
-		if(config('is_developer'))
-			echo "nu: $new_url \n";
-
 		$this->set_full_url($new_url, $caching);
 
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
@@ -172,8 +169,6 @@ class bors_image_thumb extends bors_image
 	function fullsized_url() { return $this->original? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : NULL; }
 
 	function alt() { return $this->original ? $this->original->alt() : ""; }
-
-//	function url() { return secure_path(config('pics_base_url').$this->relative_path().'/'.$this->file_name()); }
 
 	function replace_on_new_instance() { return true; }
 }

@@ -152,8 +152,6 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 			$this->set_height(intval($x[1]), $db_update);
 			$this->set_size(intval(@filesize($this->file_name_with_path())), $db_update);
 			$this->set_mime_type($x['mime'], $db_update);
-//			echo "o=".$this->original_filename();
-//			echo "ext=".preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename());
 			$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), $db_update);
 			$this->store();
 		}
@@ -161,8 +159,6 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		if(($dura = (microtime(true) - $start)) > 0.5)
 			debug_hidden_log("recalculate", "time = $dura, url = {$this->url()}, this={$this}, data=".print_r($this->data, true));
 	}
-
-//	function admin_url() { return config('admin_host_url').'/images/'.($this->id() ? $this->id() : '%OBJECT_ID%').'/'; }
 
 	function upload($data, $dir = NULL)
 	{

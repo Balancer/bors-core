@@ -46,7 +46,7 @@ class base_page extends base_object
 
 	function is_reversed() { return false; }
 
-	function pages_links_nul($css='pages_select', $text = NULL, $delim = '', $show_current = true, $use_items_numeration = false)
+	function pages_links_nul($css='pages_select', $text = NULL, $delim = '', $show_current = true, $use_items_numeration = false, $around_page = NULL)
 	{
 		if($this->total_pages() < 2)
 			return '';
@@ -56,7 +56,10 @@ class base_page extends base_object
 
 		include_once('inc/design/page_split.php');
 
-		$pages = pages_show($this, $this->total_pages(), $this->items_around_page(),
+		if(!$around_page)
+			$around_page = $this->items_around_page();
+
+		$pages = pages_show($this, $this->total_pages(), $around_page,
 			$show_current, 'current_page', 'select_page',
 			$use_items_numeration, $this->items_per_page(), $this->total_items()
 		);

@@ -110,9 +110,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 	{
 		$select = array();
 		$post_functions = array();
+
+		$table = $object->table_name();
+
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
-			$x = $f['name'];
+			$x = $table.'.'.$f['name'];
 			if($f['name'] != $f['property'])
 			{
 //				var_dump($where);

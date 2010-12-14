@@ -9,7 +9,7 @@ function lp_rutube($id, &$params)
 	{
 		object_new_instance('balancer_board_posts_object', array(
 			'post_id' => $self->id(),
-			'target_class_id' => class_name_to_id('bors_external_youtube'),
+			'target_class_id' => class_name_to_id('bors_external_rutube'),
 			'target_class_name' => 'bors_external_rutube',
 			'target_object_id' => $id,
 			'target_create_time' => $self->create_time(),

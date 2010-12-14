@@ -11,7 +11,7 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 
 	// Перекодируем всё из системной кодировки в целевую.
 	foreach(explode(' ', 'to subject text html from') as $x)
-		$$x = dc($$x, NULL, $charset);
+		$$x = dc($$x, $charset);
 
 	$mime = new Mail_mime("\r\n");
 

@@ -94,7 +94,7 @@ class storage_fs_htsu extends base_null
 			return $object->set_loaded(false);
 
 		if($object->internal_charset() != 'utf-8')
-			$hts = dc($hts, 'utf-8', $object->internal_charset());
+			$hts = ec($hts);
 
 		$hts = str_replace("\r", "", $hts);
 

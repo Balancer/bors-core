@@ -989,7 +989,7 @@ class base_object extends base_empty
 		if($this->files_charset() == $this->internal_charset())
 			return $str;
 
-		return  dc($str, $this->files_charset(), $this->internal_charset());
+		return  ec($str, $this->files_charset());
 	}
 
 	function cs_d2i($str) { return iconv($this->db_charset(), $this->internal_charset().'//IGNORE', $str); }

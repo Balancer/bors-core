@@ -37,7 +37,12 @@ class bors_external_feeds_entry extends base_object_db
 	function make_source()
 	{
 		$link = $this->entry_url();
-		$text = html2bb(bors_close_tags($this->text()), array('origin_url' => $link, 'strip_forms' => true));
+		$text = $this->text();
+
+		// Разворачиваем в BB-код тэги picasaweb с Juick'а
+		$text = preg_replace('!<a href="http://picasaweb.google.\w+.+photo/(.+?)\?feat=directlink.*?</a>!', "\n[picasa notitle]\\1[/picasa]\n", $text);
+
+		$text = html2bb(bors_close_tags($text), array('origin_url' => $link, 'strip_forms' => true));
 		$feed = $this->feed();
 		$text = explode("\n", $text);
 		$limit = $feed->para_limit();
@@ -57,7 +62,7 @@ class bors_external_feeds_entry extends base_object_db
 		return $text;
 	}
 
-	function update_target()
+	function update_target($update_lcml = false)
 	{
 		$feed = $this->feed();
 
@@ -75,7 +80,9 @@ class bors_external_feeds_entry extends base_object_db
 			$post->set_owner_id($owner_id, true);
 			$post->set_author_name($owner_name, true);
 			$post->set_source($this->make_source(), true);
-			$post->set_source_html(NULL, true);
+			$post->set_body(NULL, true);
+			if($update_lcml)
+				$post->body();
 			$post->set_create_time($this->pub_date(), true);
 
 			$post->topic()->recalculate();

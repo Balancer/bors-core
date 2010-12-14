@@ -1,6 +1,6 @@
 <?php
 
-class bors_external_youtube extends bors_object
+class bors_external_rutube extends bors_object
 {
 	function html($width, $height)
 	{

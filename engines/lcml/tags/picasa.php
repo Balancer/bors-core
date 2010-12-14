@@ -25,6 +25,9 @@ function lp_picasa($id, $params)
 
 		$thumb_url = preg_replace('!/s\d+/!', "/s$width/", $thumb_url);
 
+		if($params['notitle'])
+			$title = NULL;
+
 		return "<a href=\"$url\"><img src=\"$thumb_url\" />" . ($title ? "<br/>\n$title" : "")."</a>";
 	}
 

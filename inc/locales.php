@@ -7,19 +7,20 @@ function tr($txt)
 	return empty($GLOBALS['cms']['lang'][$txt]) ? $txt : $GLOBALS['cms']['lang'][$txt];
 }
 
-function ec($txt)
+function ec($txt, $charset_from = 'utf-8') // utf-8 или указанную во внутреннюю кодировку
 {
-	$charset = config('internal_charset', 'utf-8');
-	if($charset == 'utf-8')
+	$charset_to = config('internal_charset', 'utf-8');
+
+	if(strcasecmp($charset_from, $charset_to) == 0)
 		return $txt;
 
-	if($charset == 'koi8-r')
+	if($charset_to == 'koi8-r')
 		$txt = str_replace(array('«','»','–'), array('&laquo;','&raquo;','&mdash;'), $txt);
 
-	return iconv('utf-8', $charset.'//TRANSLIT', $txt);
+	return iconv($charset_from, $charset_to.'//TRANSLIT', $txt);
 }
 
-function dc($txt, $charset_from = NULL, $charset_to = NULL)
+function dc($txt, $charset_to = NULL) // внутренняя кодировка в UTF-8 или в указанную.
 {
 	if(!$charset_to)
 		$charset_to = 'utf-8';
@@ -27,7 +28,7 @@ function dc($txt, $charset_from = NULL, $charset_to = NULL)
 	if(!$charset_from)
 		$charset_from = config('internal_charset', 'utf-8');
 
-	if($charset_from == $charset_to)
+	if(strcasecmp($charset_from, $charset_to) == 0)
 		return $txt;
 
 	if($charset_to == 'koi8-r' || $charset_to == 'cp866')

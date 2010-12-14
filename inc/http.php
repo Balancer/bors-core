@@ -202,3 +202,15 @@ function query_explode($query_string)
 
 	return $data;
 }
+
+if(!function_exists('curl_setopt_array'))
+{
+   function curl_setopt_array(&$ch, $curl_options)
+   {
+       foreach($curl_options as $option => $value)
+           if(!curl_setopt($ch, $option, $value))
+               return false;
+
+       return true;
+   }
+}

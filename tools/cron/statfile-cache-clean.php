@@ -18,10 +18,15 @@ require_once(BORS_CORE.'/init.php');
 
 	foreach($db->get_array("SELECT file, recreate, class_id, object_id, original_uri FROM cached_files WHERE expire_time BETWEEN 0 AND ".time()) as $x)
 	{
-		echo "{$x['file']}: ";
+		echo "{$x['original_uri']}, {$x['file']} [recreate={$x['recreate']}]: ";
 		$db->query("DELETE FROM cached_files WHERE file = '".addslashes($x['file'])."'");
 		if($x['recreate'])
 		{
+			unset($_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT']);
+			$data = url_parse($x['original_uri']);
+			$_SERVER['HTTP_HOST'] = $data['host'];
+			$_SERVER['DOCUMENT_ROOT'] = $data['root'];
+
 			if($obj = object_load($x['original_uri']))
 				bors_object_create($obj);
 			elseif($obj = object_load($x['class_id'], $x['object_id']))

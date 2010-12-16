@@ -967,7 +967,7 @@ class base_object extends base_empty
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
 
-		if(preg_match('/viewforum.php/', $file))
+		if(preg_match('/viewforum.php/', $file))	//TODO: убрать хардкод
 		{
 			debug_hidden_log('stat-cache', 'try to cache viewforum.php!');
 			return NULL;

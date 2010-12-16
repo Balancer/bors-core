@@ -12,7 +12,7 @@ class lcml_tag_code_geshi extends base_empty
 		// Страшный костыль. Но иначе иногда рвёт после вставки кривых строк из под винды.
 		if(str_replace('�', '?', $code) != $code)
 			return "<div class=\"box error\">Ошибка: некорректные символы в коде</div>";
-	
+
 		$code = preg_replace('/^\s*?\n|\s*?\n$/','',$code);
 		$lang1 = bors_lower(empty($params['language']) ? 'text' : $params['language']);
 

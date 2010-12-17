@@ -95,9 +95,9 @@ class cache_static extends base_object_db
 		}
 
 		mkpath(dirname($file), 0777);
-		chmod(dirname($file), 0777);
+		@chmod(dirname($file), 0777);
 		file_put_contents($file, $content);
-		chmod($file, 0664);
+		@chmod($file, 0664);
 		if(!file_exists($file))
 			debug_hidden_log('filesystem', "Can't create static file for {$object}: {$file}");
 	}

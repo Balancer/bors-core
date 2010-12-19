@@ -32,6 +32,7 @@ function smarty_block_form($params, $content, &$smarty)
 		$id = NULL;
 
 	$form = object_load($name, $id);
+
 	$smarty->assign('current_form_class', $form);
 	$smarty->assign('form', $form);
 
@@ -102,8 +103,11 @@ function smarty_block_form($params, $content, &$smarty)
 				{
 					$property_name = $data;
 					$data = array('name' => $property_name);
-					$data['type']  = $type  = call_user_func(array($form, '__field_type' ), $property_name);
-					$data['title'] = $title = call_user_func(array($form, '__field_title'), $property_name);
+					if(is_object($form))
+					{
+						$data['type']  = $type  = call_user_func(array($form, '__field_type' ), $property_name);
+						$data['title'] = $title = call_user_func(array($form, '__field_title'), $property_name);
+					}
 				}
 				else
 				{
@@ -124,7 +128,7 @@ function smarty_block_form($params, $content, &$smarty)
 				if($type != 'bool')
 					echo "<tr><th>{$title}</th><td>";
 
-				$data['value'] = $form->$property_name();
+				$data['value'] = object_property($form, $property_name);
 				$data['class'] = 'w100p';
 //				echo "property=$property_name, type=$type, data=".print_d($data).", field=".print_d($field)."<Br/>\n";
 				switch($type)

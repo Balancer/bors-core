@@ -14,24 +14,15 @@ class bors_search extends base_null
 	static function snippet($text, $keywords, $limit, $max_length, $around = array('<b>', '</b>'))
 	{
 		$result = array();
-static $cnt=0;
+
 		$keywords = self::normalize($keywords);
 		list($pre, $post) = $around;
-//		var_dump($keywords);
 		$prev = array();
 		$after = false;
 
-//		echo "<xmp>$text</xmp>";
-//		if($cnt++<3)
-//			echo "<b>after=$after, is_kw=$is_kw, prev=".print_r($prev, true)."</b><br/>";
-//print_d($keywords);
 		foreach(self::normalize_hash($text) as $word_orig => $word_norm)
 		{
-//			if($cnt++<100)
-//				echo "$word_orig => $word_norm, after=$after, is_kw=$is_kw, prev=".print_r($prev, true)."<br/>";
-
 			$is_kw = false;
-//			echo "test '$word_norm'\n";
 			if(in_array($word_norm, $keywords))
 			{
 				$prev[] = $pre.$word_orig.$post;

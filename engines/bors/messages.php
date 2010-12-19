@@ -14,7 +14,6 @@ function bors_message($text, $params=array())
 	$title = defval($params, 'title', ec('Ошибка!'));
 	$nav_name = defval($params, 'nav_name', $title);
 	$timeout = defval($params, 'timeout', -1);
-	$template = defval($params, 'template', config('default_message_template', config('default_template')));
 	$hidden_log = defval($params, 'hidden_log');
 
 	if(!$redir)
@@ -83,7 +82,10 @@ function bors_message($text, $params=array())
 
 	$data['url_engine'] = 'url_calling';
 
-	$page = new base_page(NULL);
+	$page_class_name = defval($params, 'page_class_name', 'base_page');
+	$page = new $page_class_name(NULL);
+	$page->_configure();
+	$page->template_data_fill();
 	$page->set_fields($data, false);
 
 	$page->set_parents(array(@$_SERVER['REQUEST_URI']), false);
@@ -95,6 +97,14 @@ function bors_message($text, $params=array())
 		'body' => $body,
 		'this' => $page,
 	);
+
+	$template = defval($params, 'template');
+
+	if(!$template && defval($params, 'page_class_name'))
+		$template = $page->template();
+
+	if(!$template)
+		$template = config('default_message_template', config('default_template'));
 
 	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 		$template = "xfile:$template";

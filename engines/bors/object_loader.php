@@ -537,6 +537,7 @@ function class_load_by_vhosts_url($url)
 
 function object_init($class_name, $object_id, $args = array())
 {
+//	if(config('is_debug')) debug_hidden_log('debug', "Try to load $class_name($object_id)");
 	// В этом методе нельзя использовать debug_test()!!!
 
 	$obj = NULL;

@@ -33,6 +33,10 @@ class page_fs_separate extends base_page
 
 	function children_ex($url, $base, $pfx)
 	{
+		$ch = new Cache();
+		if($ch->get('page-fs-separate-children-cache', "$url:$base:$pfx"))
+			return $ch->last();
+
 		$dh = opendir($base);
 		$children = array();
 		while(($file = readdir($dh)) !== false)
@@ -44,6 +48,6 @@ class page_fs_separate extends base_page
 //			echo "$subfile<br/>\n";
 		}
 		closedir($dh);
-		return $children;
+		return $ch->set($children, 3600);
 	}
 }

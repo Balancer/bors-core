@@ -377,6 +377,9 @@ function class_load_by_local_url($url, $args)
 	}
 
 	$url_data = @parse_url($url);
+	$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
+	$is_query = !empty($url_data['query']);
+	$host_helper = "!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)";
 
 	foreach($GLOBALS['bors_map'] as $pair)
 	{
@@ -386,11 +389,10 @@ function class_load_by_local_url($url, $args)
 		$url_pattern = trim($match[1]);
 		$class_path  = trim($match[2]);
 
-		$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
-		if(strpos($url_pattern, '\\?') && !empty($url_data['query']))
+		if(strpos($url_pattern, '\\?') && $is_query)
 			$check_url .= '?'.$url_data['query'];
 
-		if(preg_match("!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)$url_pattern$!i", $check_url, $match))
+		if(preg_match($host_helper.$url_pattern.'$!i', $check_url, $match))
 		{
 			if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $match, $url_pattern, 1)))
 				return $obj;

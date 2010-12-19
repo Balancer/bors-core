@@ -301,4 +301,18 @@ class base_page extends base_object
 	}
 
 	function keywords_linked() { return ''; }
+
+	function search_source($include_headers = true)
+	{
+		$result = array();
+		if($include_headers)
+		{
+			$result[] = $this->title();
+			$result[] = $this->description();
+		}
+
+		return join("\n\n", array_merge($result, array(
+			$this->source(),
+		)));
+	}
 }

@@ -19,5 +19,5 @@ function smarty_modifier_get($object, $field, $param1 = false, $param2 = false)
 	if($param2 !== false)
 		$params[] = $param2;
 
-	return $params ? call_user_func_array(array(&$object, $field), $params) : $object->$field();
+	return $params ? call_user_func_array(array(&$object, $field), $params) : object_property($object, $field);
 }

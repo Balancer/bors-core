@@ -17,7 +17,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 	if(!$db)
 		$db = new DataBase(config('search_db'));
 
-	$object_id	= intval($object->id());
+	$object_id	= $object->id();
 	$class_name	= intval($object->class_id());
 	$object_page	= intval($object->page());
 
@@ -34,7 +34,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 			for($sub=0; $sub<10; $sub++)
 				$db->query("DELETE FROM bors_search_source_{$sub}
 							WHERE target_class_id = {$class_name}
-								AND target_object_id = {$object_id}"
+								AND target_object_id = '".addslashes($object_id)."'"
 //								AND target_page = {$object_page}"
 				);
 		}
@@ -51,7 +51,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 					$db->multi_insert_add($tab, array(
 						'int word_id' => $word_id, 
 						'int target_class_id' => $class_name, 
-						'int target_object_id' => $object_id, 
+						'target_object_id' => $object_id,
 //						'int class_page' => $object_page, 
 						'int count' => $count, 
 						'int target_create_time' => $object->create_time(), 
@@ -76,7 +76,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 		if($append=='replace')
 			$db->query("DELETE FROM bors_search_titles 
 				WHERE target_class_id = {$class_name}
-					AND target_object_id = {$object_id}
+					AND target_object_id = '".addslashes($object_id)."'
 				");
 
 		$doing = array();
@@ -93,7 +93,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 			$data = array(
 					'int word_id' => $word_id, 
 					'int target_class_id' => $class_name, 
-					'int target_object_id' => $object_id, 
+					'target_object_id' => $object_id, 
 //					'int class_name' => $class_name,
 					'int target_create_time' => $object->create_time(), 
 					'int target_modify_time' => $object->modify_time(),
@@ -389,6 +389,12 @@ function search_titles_like($title, $limit=20, $forum=0)
 	return $ch->set($out, 86400+rand(0,86400));
 }
 
+/***********************************************************************
+
+Поиск в теле объектов
+
+**********************************************************************/
+
 function bors_search_in_bodies($query, $where = array())
 {
 	// +word -word word
@@ -463,7 +469,8 @@ function bors_search_in_bodies($query, $where = array())
 
 	if($cross)
 		foreach($cross as $x)
-			$result[] = object_load($x['target_class_id'], $x['target_object_id']);
+			if($obj = object_load($x['target_class_id'], $x['target_object_id']))
+				$result[] = $obj;
 
 	return $result;
 }

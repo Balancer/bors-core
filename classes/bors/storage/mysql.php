@@ -8,7 +8,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$post_functions = array();
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
-			$x = $f['name'];
+			$x = '`'.$f['name'].'`'; // убирать апострофы нельзя, иначе тупо не работабт поля с некорректными именами
 			if($f['name'] != $f['property'])
 				$x .= " AS `{$f['property']}`";
 
@@ -353,7 +353,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function delete($object)
 	{
-		$object->on_delete();
+		if(method_exists($object, 'on_delete'))
+			$object->on_delete();
 
 		$update = array();
 		$where  = array();

@@ -390,11 +390,14 @@ function class_load_by_local_url($url, $args)
 		$class_path  = trim($match[2]);
 
 		if(strpos($url_pattern, '\\?') && $is_query)
-			$check_url .= '?'.$url_data['query'];
+			$test_url = $check_url . '?' . $url_data['query'];
+		else
+			$test_url = $check_url;
 
-		if(preg_match($host_helper.$url_pattern.'$!i', $check_url, $match))
+//		echo $host_helper.$url_pattern.'$!i<br/>'.$check_url."<Br/>$url_pattern<br/><br/>";
+		if(preg_match($host_helper.$url_pattern.'$!i', $test_url, $match))
 		{
-			if(($obj = try_object_load_by_map($url, $url_data, $check_url, $class_path, $match, $url_pattern, 1)))
+			if(($obj = try_object_load_by_map($url, $url_data, $test_url, $class_path, $match, $url_pattern, 1)))
 				return $obj;
 		}
 	}

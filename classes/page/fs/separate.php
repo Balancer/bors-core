@@ -50,4 +50,18 @@ class page_fs_separate extends base_page
 		closedir($dh);
 		return $ch->set($children, 3600);
 	}
+
+	function search_weight() //TODO: жёсткий харкод. Убрать потом в РП.
+	{
+		if(preg_match('!/action/!', $this->url()))
+			return 100000000;
+
+		if(preg_match('!/contacts/!', $this->url()))
+			return 1000000;
+
+		if(preg_match('!http://[^/]+/\w+/$!', $this->url()))
+			return 100;
+
+		return 10;
+	}
 }

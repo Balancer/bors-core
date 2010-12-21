@@ -15,11 +15,12 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 //	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 
 	if(!$db)
-		$db = new DataBase(config('search_db'));
+		$db = new driver_mysql(config('search_db'));
 
 	$object_id	= $object->id();
 	$class_name	= intval($object->class_id());
 	$object_page	= intval($object->page());
+	$target_weight	= intval($object->get('search_weight'));
 
 //	exit("$class_name($object_id, $object_page) => <xmp>$source</xmp>");
 
@@ -54,8 +55,9 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 						'target_object_id' => $object_id,
 //						'int class_page' => $object_page, 
 						'int count' => $count, 
-						'int target_create_time' => $object->create_time(), 
+						'int target_create_time' => $object->create_time(),
 						'int target_modify_time' => $object->modify_time(),
+						'int target_weight' => $target_weight,
 					));
 				}
 //				set_loglevel(9);
@@ -91,12 +93,13 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 
 			$doing[$word_id] = true;
 			$data = array(
-					'int word_id' => $word_id, 
-					'int target_class_id' => $class_name, 
-					'target_object_id' => $object_id, 
-//					'int class_name' => $class_name,
-					'int target_create_time' => $object->create_time(), 
-					'int target_modify_time' => $object->modify_time(),
+				'int word_id' => $word_id, 
+				'int target_class_id' => $class_name, 
+				'target_object_id' => $object_id, 
+//				'int class_name' => $class_name,
+				'int target_create_time' => $object->create_time(),
+				'int target_modify_time' => $object->modify_time(),
+				'int target_weight' => $target_weight,
 			);
 
 			if($append == 'replace')

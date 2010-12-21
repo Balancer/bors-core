@@ -1,7 +1,6 @@
 <?php
 
 require_once('../config.php');
-include_once(BORS_CORE.'/init.php');
 
 echo "---[ access log counting ]---\n";
 
@@ -13,6 +12,7 @@ try{
 }
 catch(Exception $e)
 {
+	echo "Exception $e";
 	exit();
 }
 

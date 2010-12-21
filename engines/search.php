@@ -54,10 +54,10 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 						'int target_class_id' => $class_name, 
 						'target_object_id' => $object_id,
 //						'int class_page' => $object_page, 
-						'int count' => $count, 
+						'int count' => $count,
 						'int target_create_time' => $object->create_time(),
 						'int target_modify_time' => $object->modify_time(),
-						'int target_weight' => $target_weight,
+						'int target_weight' => $target_weight*$count,
 					));
 				}
 //				set_loglevel(9);
@@ -143,7 +143,7 @@ function bors_search_in_titles($query, $params = array())
 
 	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 
-	$db = new DataBase(config('search_db'));
+	$db = new driver_mysql(config('search_db'));
 
 	$Stemmer = new Lingua_Stem_Ru();
 
@@ -266,7 +266,7 @@ function bors_search_get_word_id_array($words, $db = NULL)
 	$buffer = array();
 
 	if(!$db)
-		$db = new DataBase(config('search_db'));
+		$db = new driver_mysql(config('search_db'));
 
 	$stemmed_map = bors_search_stem_array($words);
 	$list = array_map('addslashes', array_unique(array_values($stemmed_map)));
@@ -303,7 +303,7 @@ function search_titles_like($title, $limit=20, $forum=0)
 
 	include_once('include/classes/text/Stem_ru-'.config('charset_u', 'utf8').'.php');
 
-	$db = new DataBase(config('search_db'));
+	$db = new driver_mysql(config('search_db'));
 
 	$Stemmer = new Lingua_Stem_Ru();
 
@@ -437,9 +437,10 @@ function bors_search_in_bodies($query, $where = array())
 		foreach($maybe as $w)
 		{
 			$res = $db->select_array('bors_search_source_'.($w%10),
-				'DISTINCT target_class_id, target_object_id', array(
+				'target_class_id, target_object_id', array(
 					'word_id' => $w,
-					'order' => '-target_modify_time'
+					'group' => 'target_class_id, target_object_id',
+					'order' => 'SUM(target_weight) DESC, target_modify_time DESC'
 				)
 			);
 

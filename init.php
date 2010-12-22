@@ -77,6 +77,18 @@ function defval_ne(&$data, $name, $default=NULL)
 	return $default;
 }
 
+/**
+	Устновить элемент массива $name в переменную $value, если он до этого не определён
+*/
+
+function set_def(&$data, $name, $value)
+{
+	if($data && array_key_exists($name, $data))
+		return $data[$name];
+
+	return $data[$name] = $value;
+}
+
 if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_REAL_IP'];
 

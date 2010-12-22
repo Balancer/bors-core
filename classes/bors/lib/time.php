@@ -33,6 +33,7 @@ class bors_lib_time
 			$ss	= sprintf('%02d', @$array["{$var}_seconds"]);
 
 			$is_fuzzy = @$array["{$var}_is_fuzzy"];
+			$is_utc   = @$array["{$var}_is_utc"];
 
 			if(intval($yyyy))
 			{
@@ -60,9 +61,12 @@ class bors_lib_time
 				else // unixtime - по умолчанию
 				{
 //					echo "****** {$yyyy}-{$mm}-{$dd} $hh:$ii:$ss -> ".strtotime("{$yyyy}-{$mm}-{$dd} $hh:$ii:$ss")."<br/>";
+					$tz_save = date_default_timezone_get();
+					if($tz = @$array["{$var}_timezone"])
+						date_default_timezone_set($tz);
 					$array[$var] = strtotime("{$yyyy}-{$mm}-{$dd} $hh:$ii:$ss");
+					date_default_timezone_set($tz_save);
 				}
-
 			}
 			else // Если год не указан...
 			{
@@ -78,7 +82,8 @@ class bors_lib_time
 			// И почистим массив, оставив только результат.
 			unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"],
 				$array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"],
-				$array["{$var}_is_fuzzy"], $array["{$var}_have_time"], $array["{$var}_is_integer"]);
+				$array["{$var}_is_fuzzy"], $array["{$var}_have_time"], $array["{$var}_is_integer"],
+				$array["{$var}_is_utc"], $array["{$var}_timezone"]);
 		}
 
 		unset($array['time_vars']);

@@ -6,7 +6,7 @@ function smarty_function_checkbox($params, &$smarty)
 
 		if(!array_key_exists('checked', $params))
 		{
-			$obj = $smarty->get_template_vars('current_form_class');
+			$obj = $smarty->get_template_vars('form');
 			$checked = preg_match('!^\w+$!', $name) ? ($obj?$obj->$name():NULL) : '';
 
 			if(!isset($checked) && isset($def))

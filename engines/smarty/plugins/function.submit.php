@@ -4,14 +4,21 @@ function smarty_function_submit($params, &$smarty)
 {
 	extract($params);
 
+	$out = "";
+
 	if($image_src = defval($params, 'image'))
-		echo "<input type=\"image\" src=\"".htmlspecialchars($image_src)."\" value=\"".htmlspecialchars($value)."\"";
+		$out .= "<input type=\"image\" src=\"".htmlspecialchars($image_src)."\" value=\"".htmlspecialchars($value)."\"";
 	else
-		echo "<input type=\"submit\" value=\"".htmlspecialchars($value)."\"";
+		$out .= "<input type=\"submit\" value=\"".htmlspecialchars($value)."\"";
 
 	foreach(explode(' ', 'class style onClick onclick name') as $p)
 		if(!empty($$p))
-			echo " $p=\"{$$p}\"";
+			$out .= " $p=\"{$$p}\"";
 
-	echo " />";
+	$out .= " />";
+
+	if($smarty->get_template_vars('has_autofields'))
+		$out = "<tr><th colspan=\"2\">{$out}</th></tr>\n";
+
+	echo $out;
 }

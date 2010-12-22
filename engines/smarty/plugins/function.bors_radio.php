@@ -4,7 +4,7 @@ function smarty_function_bors_radio($params, &$smarty)
 {
 	extract($params);
 
-	$obj = $smarty->get_template_vars('current_form_class');
+	$obj = $smarty->get_template_vars('form');
 
 	$params = "";
 	foreach(explode(' ', 'size style') as $p)

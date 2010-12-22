@@ -31,7 +31,13 @@ function smarty_block_form($params, $content, &$smarty)
 	if(empty($id) || $id == 'NULL')
 		$id = NULL;
 
-	$form = object_load($name, $id);
+	$class_name = $name;
+
+	$form = object_load($class_name, $id);
+	if(is_object($form))
+		$foo = $form;
+	else
+		$foo = new $class_name($id);
 
 	$smarty->assign('current_form_class', $form);
 	$smarty->assign('form', $form);
@@ -90,8 +96,14 @@ function smarty_block_form($params, $content, &$smarty)
 
 		base_object::add_template_data('form_checkboxes', array());
 
+		if($foo)
+			$object_fields = bors_lib_orm::fields($foo);
+		else
+			$object_fields = array();
+
 		if(!empty($fields))
 		{
+			$smarty->assign('has_autofields', true);
 			echo "<table class=\"btab\">";
 			$labels = array();
 			if(!is_array($fields))
@@ -99,28 +111,19 @@ function smarty_block_form($params, $content, &$smarty)
 
 			foreach($fields as $title => $data)
 			{
+//				echo "Check $title -> $data<br/>\n";
 				if(!is_array($data))
-				{
-					$property_name = $data;
-					$data = array('name' => $property_name);
-					if(is_object($form))
-					{
-						$data['type']  = $type  = call_user_func(array($form, '__field_type' ), $property_name);
-						$data['title'] = $title = call_user_func(array($form, '__field_title'), $property_name);
-					}
-				}
-				else
-				{
-					$type = $data['type'];
-					$title = $data['title'];
-					if(!empty($data['class']))
-					{
-						$type = 'dropdown';
-						$class = $data['class'];
-					}
+					$data = $object_fields[$property_name = $data];
 
-					$property_name = $data['name'];
+				$type = $data['type'];
+				$title = $data['title'];
+				if(!empty($data['class']))
+				{
+					$type = 'dropdown';
+					$class = $data['class'];
 				}
+
+				$property_name = $data['name'];
 
 				if(!$title)
 					$title = $property_name;
@@ -141,6 +144,14 @@ function smarty_block_form($params, $content, &$smarty)
 					case 'input_date':
 						require_once('function.input_date.php');
 						smarty_function_input_date(array_merge($data, @$data['args']), $smarty);
+						break;
+					case 'utime': // UNIX_TIMESTAMP в UTC
+						require_once('function.input_date.php');
+						set_def($data, 'is_utc', true);
+						set_def($data, 'time', true);
+						if(!empty($data['args']))
+							$data = array_merge($data, $data['args']);
+						smarty_function_input_date($data, $smarty);
 						break;
 					case 'text':
 					case 'textarea':
@@ -190,10 +201,11 @@ function smarty_block_form($params, $content, &$smarty)
 						break;
 					case 'bool':
 						$data['label'] = $title;
-						$labels[$f] = $data;
+						$labels[$property_name] = $data;
 				}
 				echo "</td></tr>\n";
 			}
+
 			if($labels)
 			{
 				echo "<tr><th>Метки</th><td>";
@@ -210,7 +222,6 @@ function smarty_block_form($params, $content, &$smarty)
 	echo $content;
 
 	// === Закрытие формы ===
-
 	if(!empty($fields))
 		echo "</table>";
 

@@ -25,16 +25,21 @@ class bors_lib_orm
 
 		$field['property'] = $property;
 
-		if(preg_match('/^\w+_id$/', $property) || $property == 'id')
-			$field['type'] = 'int';
-		elseif(preg_match('/^is_\w+$/', $property))
-			$field['type'] = 'bool';
-		elseif(preg_match('/^\w+_date$/', $property))
-			$field['type'] = 'date';
-		elseif(preg_match('/^\w+$/', $property))
-			$field['type'] = 'string';
-		else
-			bors_throw(ec('Неизвестное поле ').$property);
+		if(empty($field['type']))
+		{
+			if(preg_match('/^\w+_id$/', $property) || $property == 'id')
+				$field['type'] = 'int';
+			elseif(preg_match('/^is_\w+$/', $property))
+				$field['type'] = 'bool';
+			elseif(preg_match('/^\w+_date$/', $property))
+				$field['type'] = 'date';
+			elseif(preg_match('/text/', $property))
+				$field['type'] = 'text';
+			elseif(preg_match('/^\w+$/', $property))
+				$field['type'] = 'string';
+			else
+				bors_throw(ec('Неизвестное поле ').$property);
+		}
 
 		return $field;
 	}
@@ -95,6 +100,22 @@ class bors_lib_orm
 			$fields_array[] = self::field($property, $field);
 
 		return set_global_key('___main_fields', $class_name, $fields_array);
+	}
+
+	static function fields($object)
+	{
+		$class_name = $object->class_name();
+		if($fields = global_key('___fields', $class_name))
+			return $fields;
+
+		$fields_array = array();
+		foreach($object->table_fields() as $property => $field)
+		{
+			$field = self::field($property, $field);
+			$fields_array[$field['property']] = $field;
+		}
+
+		return set_global_key('___fields', $class_name, $fields_array);
 	}
 
 	static function property_to_field($class_name, $property)

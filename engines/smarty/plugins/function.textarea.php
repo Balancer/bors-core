@@ -3,7 +3,7 @@ function smarty_function_textarea($params, &$smarty)
 {
 		extract($params);
 
-		$obj = $smarty->get_template_vars('current_form_class');
+		$obj = $smarty->get_template_vars('form');
 
 		if(!isset($value))
 			$value = $obj ? $obj->$name() : NULL;

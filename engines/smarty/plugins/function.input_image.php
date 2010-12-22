@@ -7,7 +7,7 @@ function smarty_function_input_image($params, &$smarty)
 	$image_id_field   = defval($params, 'image', 'image_id');
 	$image_class_name = defval($params, 'image_class', config('image_class', 'bors_image'));//TODO: убедиться в унификации конфига
 
-	$obj = $smarty->get_template_vars('current_form_class');
+	$obj = $smarty->get_template_vars('form');
 
 	if($obj && ($image = $obj->$image_name_field()))
 	{

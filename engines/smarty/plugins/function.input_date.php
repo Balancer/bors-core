@@ -8,11 +8,11 @@ function smarty_function_input_date($params, &$smarty)
 
 	if(!isset($value))
 	{
-		$obj = $smarty->get_template_vars('current_form_class');
+		$obj = $smarty->get_template_vars('form');
 		$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($obj?$obj->$name():NULL)) : '';
 	}
 
-//	$obj = $smarty->get_template_vars('current_form_class');
+//	$obj = $smarty->get_template_vars('form');
 
 	$date = $value; // $obj ? $obj->$name() : NULL;
 	if(!$date && !empty($def))
@@ -109,6 +109,13 @@ function smarty_function_input_date($params, &$smarty)
 
 	if(@$params['is_integer'])
 		echo "<input type=\"hidden\" name=\"{$name}_is_integer\" value=\"{$params['is_integer']}\" />\n";
+
+	if(@$params['is_utc'])
+	{
+		echo "TZ=".date_default_timezone_get();
+		echo "<input type=\"hidden\" name=\"{$name}_is_utc\" value=\"1\" />\n";
+		echo "<input type=\"hidden\" name=\"{$name}_timezone\" value=\"".date_default_timezone_get()."\" />\n";
+	}
 
 	$tmv = base_object::template_data('form_time_vars');
 	$tmv[] = $name;

@@ -12,6 +12,12 @@ class driver_oci
 			foreach($envs as $e)
 				putenv($e);
 
+/*		echo $this->database;
+		echo configh('oci_access', $this->database, 'user');
+		echo configh('oci_access', $this->database, 'password');
+		echo configh('oci_access', $this->database, 'db');
+		exit();
+*/
 		debug_timing_start('oci_connect');
 		$this->connection = oci_connect(
 			configh('oci_access', $this->database, 'user'),
@@ -36,6 +42,8 @@ class driver_oci
 		debug_timing_start('oci_query');
 		$this->statement = oci_parse($this->connection, $query);
 		debug_timing_stop('oci_query');
+
+		$this->execute();
 	}
 
 	function execute()
@@ -81,7 +89,6 @@ class driver_oci
 		$query = str_replace('`', '"', $query);
 //		echo $query."\n";
 		$this->query($query);
-		$this->execute();
 		return $this->fetch();
 	}
 
@@ -89,8 +96,36 @@ class driver_oci
 	{
 		$query = 'SELECT '.$fields.' FROM '.$table.' '.mysql_args_compile($where);
 		$query = str_replace('`', '"', $query);
+//		echo $query."\n";
 		$this->query($query);
-		$this->execute();
+		$data = array();
+		while($row = $this->fetch())
+		{
+			$data[] = $row;
+		}
+
+		return $data;
+	}
+
+	function get($query)
+	{
+		$this->query($query);
+		$row = $this->fetch();
+		if(count($row) == 1)
+			foreach($row as $s) // Фактически это $row = array_pop(array_values($row)). Нужно будет поискать оптимальный вариант.
+				$row = $s;
+
+		return $row;
+	}
+
+	function get_all($query)
+	{
+		$this->query($query);
+		return $this->fetch_all();
+	}
+
+	function fetch_all()
+	{
 		$data = array();
 		while($row = $this->fetch())
 		{

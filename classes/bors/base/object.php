@@ -1133,6 +1133,9 @@ class base_object extends base_empty
 		if(preg_match('/^is_/', $field_name))
 			return 'bool';
 
+		if(preg_match('/text/', $field_name))
+			return 'text';
+
 		return 'string';
 	}
 

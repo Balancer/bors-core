@@ -4,7 +4,7 @@ function smarty_function_file_delete($params, &$smarty)
 {
 	extract($params);
 
-	$obj = $smarty->get_template_vars('current_form_class');
+	$obj = $smarty->get_template_vars('form');
 
 	if(!$obj->$name())
 		return;

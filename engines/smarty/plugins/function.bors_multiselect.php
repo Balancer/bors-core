@@ -3,13 +3,13 @@ function smarty_function_bors_multiselect($params, &$smarty)
 {
 	extract($params);
 		
-	$obj = $smarty->get_template_vars('current_form_class');
-		
+	$obj = $smarty->get_template_vars('form');
+
 	$params = "";
 	foreach(explode(' ', 'size style') as $p)
 		if(!empty($$p))
 			$params .= " $p=\"{$$p}\"";
-				
+
 	$out = "<select multiple=\"multiple\" name=\"".addslashes($name)."[]\"$params>\n";
 
 	if(!is_array($list))

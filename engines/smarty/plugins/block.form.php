@@ -1,5 +1,10 @@
 <?php
 
+/**
+	Старый формат. class="..." - имя класса объекта формы
+	class_name - имя объекта для передачи в обработчик
+*/
+
 function smarty_block_form($params, $content, &$smarty)
 {
 	extract($params);
@@ -31,13 +36,15 @@ function smarty_block_form($params, $content, &$smarty)
 	if(empty($id) || $id == 'NULL')
 		$id = NULL;
 
-	$class_name = $name;
+	$object_class_name = $name;
 
-	$form = object_load($class_name, $id);
+	$form = object_load($object_class_name, $id);
 	if(is_object($form))
 		$foo = $form;
+	elseif($object_class_name && $object_class_name != 'NULL')
+		$foo = new $object_class_name($id);
 	else
-		$foo = new $class_name($id);
+		$foo = NULL;
 
 	$smarty->assign('current_form_class', $form);
 	$smarty->assign('form', $form);
@@ -169,15 +176,15 @@ function smarty_block_form($params, $content, &$smarty)
 						{
 							if(preg_match('/^(\w+):(\w+)$/', $data['named_list'], $m))
 							{
-								$class_name = $m[1];
+								$list_class_name = $m[1];
 								$id = $m[2];
 							}
 							else
 							{
-								$class_name = $data['named_list'];
+								$list_class_name = $data['named_list'];
 								$id = NULL;
 							}
-							$list = new $class_name($id);	//TODO: статический вызов тут не прокатит, пока не появится повсеместный PHP-5.3.3.
+							$list = new $list_class_name($id);	//TODO: статический вызов тут не прокатит, пока не появится повсеместный PHP-5.3.3.
 							$data['list'] = $list->named_list();
 						}
 						else

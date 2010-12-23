@@ -13,6 +13,18 @@ class bors_tools_search extends base_page
 			return array(object_load('forum_topic', $_GET['t']));
 	}
 
+	function pre_parse()
+	{
+//		$url = $this->url();
+		$url = bors()->request()->url();
+		$clean_url = url_clean_params($url);
+//		echo "'$url' => '$clean_url'<br/>";
+		if($url != $clean_url)
+			return go($clean_url);
+
+		return parent::pre_parse();
+	}
+
 	function title() { return ec('Поиск по форуму'); }
 	function nav_name() { return ec('поиск'); }
 	function total_items() { return 0; }

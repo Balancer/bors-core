@@ -326,7 +326,7 @@ function url_append_param($url, $param, $value)
 
 function url_clean_params($url)
 {
-	list($url, $params) = explode('?', $url);
+	@list($url, $params) = @explode('?', $url);
 	if(!$params)
 		return $url;
 

@@ -18,7 +18,7 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 	if(!empty($_GET['inframe']))
 		$uri = url_append_param($uri, 'inframe', 'yes');
 
-    if(config('debug_redirect_trace'))
+	if(config('debug_redirect_trace'))
 		return debug_exit("Go to <a href=\"{$uri}\">{$uri}</a>");
 
 	if(config('do_not_exit'))

@@ -251,6 +251,8 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 	function delete()
 	{
 		@unlink($this->file_name_with_path());
+		if($this->full_file_name())
+			@unlink($this->full_file_name());
 		@rmdir($this->image_dir());
 		parent::delete();
 	}

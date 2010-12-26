@@ -25,8 +25,7 @@ function dc($txt, $charset_to = NULL) // внутренняя кодировка
 	if(!$charset_to)
 		$charset_to = 'utf-8';
 
-	if(!$charset_from)
-		$charset_from = config('internal_charset', 'utf-8');
+	$charset_from = config('internal_charset', 'utf-8');
 
 	if(strcasecmp($charset_from, $charset_to) == 0)
 		return $txt;

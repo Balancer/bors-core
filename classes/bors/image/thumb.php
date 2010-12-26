@@ -126,14 +126,18 @@ class bors_image_thumb extends bors_image
 			$file_thumb_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_thumb);
 			//TODO: ужасно, но пока только так.
 			$fsize_thumb = strlen(file_get_contents($file_thumb_r));
+			//TODO: а это  совсем жопа
+			$this->set_full_file_name(str_replace('http://pics.aviaport.ru/', '/var/www/pics.aviaport.ru/htdocs/', $file_thumb_r), true);
 		}
 		else
 		{
 			$file_thumb_r = $file_thumb;
 			//TODO: придумать обработку больших картинок.
 			$fsize_thumb = @filesize($file_thumb_r);
+			$this->set_full_file_name($file_thumb, true);
 		}
 
+//		echo $this->table_name();
 //		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
 		$this->set_size($fsize_thumb, $caching);
 
@@ -166,7 +170,7 @@ class bors_image_thumb extends bors_image
 		return $err == NULL;
 	}
 
-	function fullsized_url() { return $this->original? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : NULL; }
+	function fullsized_url() { $this->init(); return $this->original ? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : $this->html_code(); }
 
 	function alt() { return $this->original ? $this->original->alt() : ""; }
 

@@ -44,7 +44,7 @@ class storage_fs_htsu extends base_null
 		if(file_exists($file = "{$dir}.htsu"))
 			return $file;
 
-		if($object->host() == $_SERVER['HTTP_HOST'])
+		if($object->host() == @$_SERVER['HTTP_HOST'])
 		{
 			foreach(bors_dirs() as $d)
 			{

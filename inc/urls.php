@@ -323,3 +323,17 @@ function url_append_param($url, $param, $value)
 
 	return $url."$param=".urlencode($value);
 }
+
+function url_clean_params($url)
+{
+	@list($url, $params) = @explode('?', $url);
+	if(!$params)
+		return $url;
+
+	$result = array();
+	foreach(explode('&', $params) as $pair)
+		if(preg_match('!^(.+?)=(.+)$!', $pair, $m) && $m[2])
+			$result[] = $pair;
+
+	return $url.'?'.join('&', $result);
+}

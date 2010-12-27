@@ -399,6 +399,14 @@ class base_object extends base_empty
 		return '<a href="'.$this->url($this->page())."\"{$target}{$append}>{$this->title()}</a>";
 	}
 
+	function url_in_container() { return $this->url(); }
+	function title_in_container() { return $this->title(); }
+
+	function titled_url_in_container()
+	{
+		return '<a href="'.$this->url_in_container()."\"{$target}>{$this->title_in_container()}</a>";
+	}
+
 	function titled_link($append = '') { return $this->titled_url($append); }
 
 	function titled_target_link() { return $this->target()->titled_link(); }

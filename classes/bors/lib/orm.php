@@ -109,7 +109,7 @@ class bors_lib_orm
 			return $fields;
 
 		$fields_array = array();
-		foreach($object->table_fields() as $property => $field)
+		foreach($object->get('table_fields') as $property => $field)
 		{
 			$field = self::field($property, $field);
 			$fields_array[$field['property']] = $field;

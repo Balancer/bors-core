@@ -21,6 +21,9 @@ class bors_lib_time
 		 - YYYYMMDD		- xxx_is_fuzzy && xxx_is_integer
 		 - YYYY-MM-DD hh:ii:ss	- xxx_is_fuzzy && xxx_have_time
 		 - YYYYMMDDHHIISS		- xxx_is_fuzzy && xxx_have_time && xxx_is_integer
+
+		Старый формат: bors_form_parse_time(&$array, $integer = false)
+		http://trac.balancer.ru/bors-core/browser/inc/datetime.php?rev=7f771e3209b85370e4d4fdae5afbe86b5082bddd
 */
 
 		foreach(explode(',', $array['time_vars']) as $var)

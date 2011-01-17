@@ -901,7 +901,7 @@ class base_object extends base_empty
 	function document_root()
 	{
 		$data = url_parse($this->called_url());
-		return $data['root'];
+		return @$data['root'];
 	}
 
 	function host()

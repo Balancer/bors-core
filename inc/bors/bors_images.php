@@ -2,8 +2,8 @@
 
 function bors_image_message($message, $params = array())
 {
-	$ww = defval($params, 'width', 100);
-	$hh = defval($params, 'height', 100);
+	$ww = intval(defval($params, 'width', 100));
+	$hh = intval(defval($params, 'height', 100));
 
 	$img = imagecreatetruecolor($ww, $hh);
 

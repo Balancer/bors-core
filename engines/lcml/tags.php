@@ -111,7 +111,7 @@
                     $end = false;
             }
 
-        } while($end !== false && time()-$start<20);
+        } while($end !== false && time()-$start<30);
 
         return $txt;
     }

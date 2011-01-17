@@ -315,6 +315,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function create($object)
 	{
+//		var_dump($object->data);
 		$where = array();
 		list($data, $where) = self::__update_data_prepare($object, $where);
 

@@ -109,10 +109,15 @@ class bors_lib_orm
 			return $fields;
 
 		$fields_array = array();
-		foreach($object->get('table_fields') as $property => $field)
+
+		$table_fields = $object->get('table_fields');
+		if(is_array($table_fields))
 		{
-			$field = self::field($property, $field);
-			$fields_array[$field['property']] = $field;
+			foreach($table_fields as $property => $field)
+			{
+				$field = self::field($property, $field);
+				$fields_array[$field['property']] = $field;
+			}
 		}
 
 		return set_global_key('___fields', $class_name, $fields_array);

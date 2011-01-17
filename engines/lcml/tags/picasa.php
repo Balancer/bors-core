@@ -10,8 +10,21 @@ function lp_picasa($id, $params)
 		$size = defval_ne($params, 'size', '640x');
 		@list($width, $height) = explode('x', $size);
 
-		require_once('inc/http.php');
-		$content = http_get_content($url = "http://picasaweb.google.com/lh/photo/{$id}?feat=directlink");
+		$url = "http://picasaweb.google.com/lh/photo/{$id}?feat=directlink";
+		$cache_status_save = config('cache_disabled');
+		config_set('cache_disabled', false);
+		$ch = new Cache;
+		if($ch->get('lcml-tags-picas', 'page-'.$url))
+		{
+			$content = $ch->last();
+		}
+		else
+		{
+			require_once('inc/http.php');
+			$content = http_get_content($url);
+			$ch->set($content, 3600);
+		}
+		config_set('cache_disabled', $cache_status_save);
 
 		if(preg_match('!<link rel=\'image_src\' href="(.+?)"/>!', $content, $m))
 			$thumb_url = $m[1];

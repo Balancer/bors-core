@@ -141,7 +141,7 @@ function http_get_ex($url, $raw = true)
 	curl_setopt_array($ch, array(
 		CURLOPT_TIMEOUT => 10,
 		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_MAXREDIRS => 3,
+		CURLOPT_MAXREDIRS => 5,
 		CURLOPT_ENCODING => 'gzip,deflate',
 //		CURLOPT_RANGE => '0-4095',
 		CURLOPT_REFERER => $original_url,

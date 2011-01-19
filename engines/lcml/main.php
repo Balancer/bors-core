@@ -145,42 +145,42 @@ class bors_lcml
 		$start = 0;
 		$can_modif = true;
 
-		if($this->_params['level'] == 1)
+		for($i=0, $stop=bors_strlen($text); $i<$stop; $i++)
 		{
-			for($i=0, $stop=bors_strlen($text); $i<$stop; $i++)
-			{
-				if($mask[$i] == 'X')
-				{
-					if($can_modif)
-					{
-						if($start != $i)
-							$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, $i-$start));
-
-						$start = $i;
-						$can_modif = false;
-					}
-				}
-				else
-				{
-					if(!$can_modif)
-					{
-						$result .= bors_substr($text, $start, $i-$start);
-						$start = $i;
-						$can_modif = true;
-					}
-				}
-			}
-
-			if($start < bors_strlen($text))
+			if($mask[$i] == 'X')
 			{
 				if($can_modif)
-					$result .= $this->functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, bors_strlen($text) - $start));
-				else
-					$result .= bors_substr($text, $start, bors_strlen($text) - $start);
+				{
+					if($start != $i)
+						$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, $i-$start));
+
+					$start = $i;
+					$can_modif = false;
+				}
 			}
+			else
+			{
+				if(!$can_modif)
+				{
+					$result .= bors_substr($text, $start, $i-$start);
+					$start = $i;
+					$can_modif = true;
+				}
+			}
+		}
 
-			$text = $result;
+		if($start < bors_strlen($text))
+		{
+			if($can_modif)
+				$result .= $this->functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, bors_strlen($text) - $start));
+			else
+				$result .= bors_substr($text, $start, bors_strlen($text) - $start);
+		}
 
+		$text = $result;
+
+		if($this->_params['level'] == 1)
+		{
 			$text = $this->functions_do(bors_lcml::$data['post_whole_functions'], $text);
 		}
 

@@ -58,6 +58,7 @@ function http_get_content($url, $raw = false)
 	$header[] = "Accept-Language: ru, en";
 
 	debug_timing_start('http-get: '.$url);
+	debug_timing_start('http-get-total');
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
 		CURLOPT_TIMEOUT => 10,
@@ -88,6 +89,7 @@ function http_get_content($url, $raw = false)
 
 	curl_close($ch);
 
+	debug_timing_stop('http-get-total');
 	debug_timing_stop('http-get: '.$url);
 	if($raw)
 		return $data;

@@ -32,7 +32,22 @@ function smarty_function_input_date($params, &$smarty)
 
 	if($date)
 	{
-		if(is_numeric($date))
+		if(@$params['is_integer'])
+		{
+			$yea = substr($date, 0, 4);
+			$date = substr($date, 4);
+			if($date != 0)
+			{
+				$mon = substr($date, 0, 2);
+				$date = substr($date, 2);
+			}
+			if($date != 0)
+			{
+				$day = substr($date, 0, 2);
+				$date = substr($date, 2);
+			}
+		}
+		elseif(is_numeric($date))
 		{
 			$day = strftime('%d', $date);
 			$mon = strftime('%m', $date);

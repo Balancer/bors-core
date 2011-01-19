@@ -23,7 +23,7 @@ function lcml_lists($txt)
 					$res .= "[$tag]";
 					array_push($stack, $tag);
 				}
-									
+
                 if($ul_open > $ident)
                     for($ul_open; $ul_open>$ident; $ul_open--)
                         $res .= "[/".array_pop($stack)."]";
@@ -37,7 +37,7 @@ function lcml_lists($txt)
                 {
                     for($ul_open; $ul_open>0; $ul_open--)
 						$res .= "[/".array_pop($stack)."]";
-						
+
                     $sum[] = $res;
                     $res = '';
                 }

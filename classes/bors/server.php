@@ -12,4 +12,5 @@ class bors_server extends base_object
 	}
 
 	function document_root() { return @$_SERVER['DOCUMENT_ROOT']; }
+	function host() { return @$_SERVER['HTTP_HOST']; }
 }

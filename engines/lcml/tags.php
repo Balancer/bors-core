@@ -55,10 +55,12 @@
 								$part2 = bors_substr($txt, $end, $next_pos-$end);
                                 $part3 = bors_substr($txt, $next_end);
                                 $tag_params = params($params);
+                                $tag_params['skip_around_cr'] = false;
                                 $part2 = $cfunc($part2, $tag_params);
 
-                                if(!empty($tag_params['skip_around_cr']))
+                                if($tag_params['skip_around_cr'])
                                 {
+//                                	echo "+++<xmp>'$part2'</xmp>";
 									$part1 = rtrim($part1);
                                 	$part3 = ltrim($part3);
                                 	$pos = bors_strlen($part1);

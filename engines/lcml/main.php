@@ -56,7 +56,6 @@ class bors_lcml
 
 	private static function _actions_load($dir, &$functions = array())
 	{
-//		echo "Load $dir<br/>\n";
         if(!is_dir($dir))
 			return;
 
@@ -96,7 +95,7 @@ class bors_lcml
 		{
 			$original = $text;
 
-			$text = $fn($text);
+			$text = $fn($text, $this);
 
 			if(!trim($text) && trim($original))
 				debug_hidden_log('lcml-error', "Drop on $fn convert '$original'");
@@ -108,8 +107,8 @@ class bors_lcml
 
 	function parse($text, $params = array())
 	{
-//		echo "<xmp>parse~$text~</xmp>";
 		$text = str_replace("\r", '', $text);
+
 		if(!trim($text))
 			return '';
 
@@ -146,42 +145,44 @@ class bors_lcml
 		$start = 0;
 		$can_modif = true;
 
-		for($i=0, $stop=bors_strlen($text); $i<$stop; $i++)
+		if($this->_params['level'] == 1)
 		{
-			if($mask[$i] == 'X')
+			for($i=0, $stop=bors_strlen($text); $i<$stop; $i++)
+			{
+				if($mask[$i] == 'X')
+				{
+					if($can_modif)
+					{
+						if($start != $i)
+							$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, $i-$start));
+
+						$start = $i;
+						$can_modif = false;
+					}
+				}
+				else
+				{
+					if(!$can_modif)
+					{
+						$result .= bors_substr($text, $start, $i-$start);
+						$start = $i;
+						$can_modif = true;
+					}
+				}
+			}
+
+			if($start < bors_strlen($text))
 			{
 				if($can_modif)
-				{
-					if($start != $i)
-						$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, $i-$start));
-
-					$start = $i;
-					$can_modif = false;
-				}
+					$result .= $this->functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, bors_strlen($text) - $start));
+				else
+					$result .= bors_substr($text, $start, bors_strlen($text) - $start);
 			}
-			else
-			{
-				if(!$can_modif)
-				{
-					$result .= bors_substr($text, $start, $i-$start);
-					$start = $i;
-					$can_modif = true;
-				}
-			}
-		}
 
-		if($start < bors_strlen($text))
-		{
-			if($can_modif)
-				$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, bors_strlen($text) - $start));
-			else
-				$result .= bors_substr($text, $start, bors_strlen($text) - $start);
-		}
+			$text = $result;
 
-		$text = $result;
-
-		if($this->_params['level'] == 1)
 			$text = $this->functions_do(bors_lcml::$data['post_whole_functions'], $text);
+		}
 
 		return $cache ? $cache->set($text, 86400) : $text;
 	}

@@ -1,24 +1,25 @@
 <?php
-    foreach(array('b' => 'strong') as $tag => $html)
-		eval("function lp_$tag(\$txt){return '<$html>'.lcml(\$txt).'</$html>';}");
 
-    foreach(explode(" ",'big em i s strike strong sub sup small u') as $tag)
-		eval("function lp_$tag(\$txt){return '<$tag>'.lcml(\$txt).'</$tag>';}");
+foreach(array('b' => 'strong') as $tag => $html)
+	eval("function lp_$tag(\$txt){return '<$html>'.lcml(\$txt).'</$html>';}");
 
-    foreach(explode(" ","br hr") as $tag)
-		eval("function lt_$tag(){return '<$tag />';}");
+foreach(explode(" ",'big em i s strike strong sub sup small u') as $tag)
+	eval("function lp_$tag(\$txt){return '<$tag>'.lcml(\$txt).'</$tag>';}");
 
-	function lp_html_iframe($inner, $params)
-	{
-		if(@$params['width'] < 200)
-			$params['width'] = 200;
-		if(@$params['height'] < 200)
-			$params['height'] = 200;
+foreach(explode(" ","br hr") as $tag)
+	eval("function lt_$tag(){return '<$tag />';}");
 
-		$params['src'] = html_entity_decode(@$params['src']);
-		
-		return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling marginheight marginwidth src').">$inner</iframe>";
-	}
+function lp_html_iframe($inner, $params)
+{
+	if(@$params['width'] < 200)
+		$params['width'] = 200;
+	if(@$params['height'] < 200)
+		$params['height'] = 200;
+
+	$params['src'] = html_entity_decode(@$params['src']);
+
+	return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling marginheight marginwidth src').">$inner</iframe>";
+}
 
 /*
 function lp_style($inner, $params)

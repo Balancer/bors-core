@@ -315,4 +315,10 @@ class base_page extends base_object
 			$this->source(),
 		)));
 	}
+
+	function page_data() { return array(); }
+	function body_data() { return array(); }
+
+	function global_data() { return array_merge(parent::global_data(), $this->page_data()); }
+	function local_data()  { return array_merge(parent::local_data(), $this->body_data()); }
 }

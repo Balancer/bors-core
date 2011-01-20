@@ -8,7 +8,6 @@ class DataBase extends base_object
 {
 	protected $dbh;
 	protected $result;
-	protected $row;
 	private $db_name;
 	private $x1, $x2, $x3;
 	private $start_time;
@@ -226,7 +225,7 @@ class DataBase extends base_object
 		if(!$this->result)
 			return $this->__current_value = false;
 
-		if(!($row = $this->row = mysql_fetch_assoc($this->result)))
+		if(!($row = mysql_fetch_assoc($this->result)))
 			return $this->__current_value = false;
 
 		if(empty($GLOBALS['bors_data']['config']['gpc']))
@@ -281,7 +280,7 @@ class DataBase extends base_object
 
 	function fetch_row()
 	{
-		return $this->row = mysql_fetch_assoc($this->result);
+		return mysql_fetch_assoc($this->result);
 	}
 
 	function fetch1()

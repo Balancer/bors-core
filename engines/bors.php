@@ -250,6 +250,8 @@ function object_property($object, $property, $def = NULL)
 			return $object->get($property, $def);
 		else
 		{
+//			echo debug_trace();
+//			echo "\$x = \$object->{$property};";
 			eval("\$x = \$object->{$property};");
 			return $x;
 		}

@@ -798,7 +798,11 @@ class base_object extends base_empty
 			return $object->attr['__id_field_name'];
 
 		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
-		return defval($ff, 'id', 'id');
+		if($id_field = @$ff['id'])
+			return $id_field;
+
+		//FIXME: исправить на возможность id в ненулевой позиции
+		return $ff[0] == 'id' ? 'id' : NULL;
 	}
 
 	function title_field() { return defval($this->fields_map(), 'title', 'title'); }

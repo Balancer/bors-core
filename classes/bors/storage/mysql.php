@@ -185,8 +185,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		self::__join('inner', $object, $select, $where, $post_functions, $update);
 		self::__join('left',  $object, $select, $where, $post_functions, $update);
 
-		if(empty($update[$db_name][$table_name][$object->id_field()]))
-			$update[$db_name][$table_name][$object->id_field()] = $object->id();
+		if(($idf = $object->id_field()) && empty($update[$db_name][$table_name][$idf]))
+			$update[$db_name][$table_name][$idf] = $object->id();
 
 //		$dbh = new driver_mysql($object->db_name());
 		return array($update, $where);
@@ -338,7 +338,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				}
 
 				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
-				$dbh->insert($table_name, $fields);
+
+				if($object->replace_on_new_instance())
+					$dbh->replace($table_name, $fields);
+				else
+					$dbh->insert($table_name, $fields);
+
 				if($main_table)
 				{
 					$main_table = false;

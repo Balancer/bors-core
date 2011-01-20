@@ -122,6 +122,11 @@ function smarty_block_form($params, $content, &$smarty)
 				if(!is_array($data))
 					$data = $object_fields[$property_name = $data];
 
+				if(!$data)
+					foreach($object_fields as $f)
+						if($f['name'] == $property_name)
+							$data = $f;
+
 				$type = $data['type'];
 				$title = $data['title'];
 				if(!empty($data['class']))

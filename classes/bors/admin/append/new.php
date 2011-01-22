@@ -11,8 +11,8 @@ class bors_admin_append_new extends base_page
 		if(!($me = bors()->user()) && !config('admin_can_nologin'))
 			return bors_message(ec('Вы не авторизованы'));
 
-		if(!$me->can_edit($this->object()))
-			return bors_message(ec('Вы не можете редактировать этот объект'));
+//		if(!$me->can_edit($this->object()))
+//			return bors_message(ec('Вы не можете редактировать этот объект'));
 
 		return false;
 	}
@@ -31,6 +31,9 @@ class bors_admin_append_new extends base_page
 
 	function on_action($data)
 	{
+		if(empty($data['new_url']))
+			return false;
+
 		$data['id'] = $data['new_url'];
 		$data['main_url'] = $data['new_url'];
 		unset($data['new_url']);

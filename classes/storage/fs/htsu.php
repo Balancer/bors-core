@@ -141,6 +141,9 @@ class storage_fs_htsu extends base_null
     	$this->ext('file');
     	$this->ext('forum_id');
 
+		if($config_class = $this->ext('config', '-'))
+			$object->set_config_class($config_class, false);
+
 //		$this->hts = preg_replace_callback('/^#(template_data)_(\w+)\s+(.+)$/m', array(&$this, '_set_callback'), $this->hts);
 		$this->hts = preg_replace_callback('/^#call (\w+)(.+?)$/m', array(&$this, '_call_callback'), $this->hts);
 

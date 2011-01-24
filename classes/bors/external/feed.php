@@ -23,6 +23,7 @@ class bors_external_feed extends base_object_db
 			'keywords_in_sqbr',
 			'titles_in_posts',
 			'is_washeable',
+			'parser_class_name',
 		);
 	}
 

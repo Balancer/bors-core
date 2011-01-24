@@ -2,8 +2,10 @@
 
 class bors_votes_thumb extends base_object_db
 {
-	function main_table() { return 'bors_thumb_votes'; }
-	function main_table_fields()
+	function storage_engine() { return 'bors_storage_mysql'; }
+
+	function table_name() { return 'bors_thumb_votes'; }
+	function table_fields()
 	{
 		return array(
 			'id',

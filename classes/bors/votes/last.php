@@ -9,7 +9,9 @@ class bors_votes_last extends base_page
 	function local_data()
 	{
 		$last = objects_array('bors_votes_thumb', array(
+				'create_time>' => time() - 86400,
 				'order' => '-create_time',
+				'group' => 'target_class_name,target_object_id',
 				'limit' => 30,
 		));
 

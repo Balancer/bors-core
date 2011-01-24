@@ -30,10 +30,10 @@
 </dl>
 
 <dl class="box">
-<dt>Последние <?=count($last)?> оценок из <?=$total?></dt>
+<dt>Последние <?=count($last)?> оценённых топиков</dt>
 <dd>
 <?php foreach($last as $x):?>
-&nbsp;&nbsp;&nbsp;<?=airbase_time($x->create_time())?><img src="http://balancer.ru/_bors/i/thumb_<?=$x->score() > 0 ? 'up' : 'down'?>.gif" />&nbsp;<?=$x->target()->titled_url()?><br/>
+&nbsp;&nbsp;&nbsp;<?=airbase_time($x->create_time())?><img src="http://balancer.ru/_bors/i/thumb_<?=$x->score() > 0 ? 'up' : 'down'?>.gif" />&nbsp;<?=$x->target()->titled_url_in_container()?>&nbsp;<?=$x->target()->score_colorized()?><br/>
 <?php endforeach ?>
 </dd>
 </dl>

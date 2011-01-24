@@ -272,3 +272,10 @@ function bors_load($class_name, $id) { return object_load($class_name, $id); }
 function bors_load_uri($uri) { return object_load($uri); }
 function bors_find_all($class_name, $where) { return objects_array($class_name, $where); }
 function bors_find_first($class_name, $where) { return objects_first($class_name, $where); }
+
+function bors_each($class_name, $where)
+{
+	$class = new $class_name(NULL);
+	$storage = $class->storage();
+	return $storage::each($class_name, $where);
+}

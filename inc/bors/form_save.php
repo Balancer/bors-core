@@ -257,7 +257,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 	if(!$object->id() && method_exists($object, 'new_instance'))
 	{
-		$object->new_instance();
+		$object->new_instance($data);
 		$object->on_new_instance($data);
 	}
 

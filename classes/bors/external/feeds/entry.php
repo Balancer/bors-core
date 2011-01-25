@@ -71,7 +71,7 @@ class bors_external_feeds_entry extends base_object_db
 		$owner_id = $feed->owner_id();
 		$owner_name = $this->author_name() ? $this->author_name() : $feed->owner_name();
 
-		if($this->target_object_id()) // Уже было запощено ранее.
+		if($this->get('target_object_id')) // Уже было запощено ранее.
 		{
 			$post = $this->target();
 			if(!$post)

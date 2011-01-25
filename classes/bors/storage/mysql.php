@@ -63,6 +63,15 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$dbh = new driver_mysql($db_name);
 
+		if(!empty($where['*set']))
+		{
+			// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')
+			foreach(preg_split(',\s*', $where['*set']) as $set)
+				$select[] = $set;
+
+			unset($where['*set']);
+		}
+
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
 		$objects = array();
 

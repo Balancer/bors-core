@@ -10,7 +10,7 @@ class base_null
 	function _configure() { return false; }
 	function can_cached() { return false; }
 	function loaded() { return false; }
-	function set_class_file() { }
+	function set_class_file($foo) { }
 	static function id_prepare($id) { return $id; }
 	function __toString() { return $this->class_name().'://!'; }
 	function id() { return NULL; }

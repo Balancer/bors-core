@@ -15,6 +15,7 @@ class bors_system_go_redirect extends base_object
 					break;
 			}
 		}
+//	echo $object->url_in_container(); return true;
 
 		if($object)
 			return go($object->url_in_container(), true);

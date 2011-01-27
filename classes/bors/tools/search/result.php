@@ -18,7 +18,7 @@ class bors_tools_search_result extends bors_tools_search
 	function t() { return @$_GET['t']; }
 	function u() { return urldecode(@$_GET['u']); }
 	function x() { return !empty($_GET['x']); }
-	function w() { return !empty($_GET['w']); }
+	function w() { return urldecode(@$_GET['w']); }
 	function f()
 	{
 		$f = @$_GET['f'];
@@ -27,7 +27,7 @@ class bors_tools_search_result extends bors_tools_search
 
 		return $f;
 	}
-	
+
 //	function parents() { return $this->q() ? array('/tools/search.bas?q=') : array('/tools/'); }
 	function can_cached() { return false; }
 
@@ -42,40 +42,55 @@ class bors_tools_search_result extends bors_tools_search
 	{
 		if($this->_data !== false)
 			return false;
-		
+
 		$data = array();
 		$this->_data = &$data;
-		
+
 		if(!$this->q())
 			return false;
 
 		$host = "localhost";
 		$port = 3312;
+//echo $this->w();
 
-		if($this->w())
-			$index = "*";
-		else
-			$index = "topics";
+		$weights = NULL;
+
+		switch($this->w())
+		{
+			case 'a':
+				$index = "*";
+				break;
+			case 'b':
+				$index = "blog_titles,blog_keywords,blog_sources";
+				$weights = array ('blog_titles' => 100 , 'blog_keywords' => 1000, 'blog_sources' => 10);
+				break;
+			default:
+				$index = "topics";
+				break;
+		}
 //		$groupby = "topic_id";
 #		$groupsort = "@group desc";
 //		$filter = "topic_id";
 		$filtervals = array();
 		$distinct = "";
 #		$sortby = "timestamp";
-
+//echo $index;
 		$ranker = SPH_RANK_PROXIMITY_BM25;
 
 		$cl = new SphinxClient ();
 		$cl->SetServer ( $host, $port );
 		$cl->SetConnectTimeout ( 1 );
 //		$cl->SetWeights ( array ( 100, 1 ) );
-		$cl->SetIndexWeights ( array ( 'topics' => 1000 , 'forum_2' => 100) );
+		if($weights)
+			$cl->SetIndexWeights ( $weights );
+		else
+			$cl->SetIndexWeights ( array ( 'topics' => 1000 , 'posts' => 100) );
 
 		if($this->x())
 			$cl->SetMatchMode (SPH_MATCH_PHRASE);
 		else
 			$cl->SetMatchMode (SPH_MATCH_ALL);
-		
+
 		if ( count($filtervals) )
 			$cl->SetFilter ( $filter, $filtervals );
 		if ( @$groupby )
@@ -105,7 +120,7 @@ class bors_tools_search_result extends bors_tools_search
 
 		if($this->t())
 			$cl->SetFilter('topic_id', array(intval($this->t())));
-		
+
 		switch($this->s())
 		{
 			case 'c':
@@ -121,7 +136,7 @@ class bors_tools_search_result extends bors_tools_search
 				$cl->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'create_time');
 				break;
 		}
-		
+
 		$cl->SetRankingMode ( $ranker );
 		$cl->SetArrayResult ( true );
 		$res = $cl->Query ( $this->q(), $index );
@@ -136,9 +151,9 @@ class bors_tools_search_result extends bors_tools_search
 
 			$data['q'] = $this->q();
 			$data['res'] = &$res;
-			
+
 //			print_d($res);
-			
+
 			$opts = array (
 				'before_match'		=> '<b>',
 				'after_match'		=> '</b>',
@@ -154,26 +169,29 @@ class bors_tools_search_result extends bors_tools_search
 
 			$post_ids = array();
 			$topic_ids = array();
+
 			for($i=0; $i<count($res['matches']); $i++)
 			{
 				$x = &$res['matches'][$i];
-				if(empty($x['attrs']['class_name']))
+				if(@$x['attrs']['class_id'] == 2) // 'balancer_board_topic'
 					$topic_ids[] = floor($x['id'] / 1000);
-				else
-					$post_ids[] = $x['id'];
+				if(@$x['attrs']['class_id'] == 1) // 'balancer_board_post'
+					$post_ids[] = floor($x['id'] / 1000);
+				if(@$x['attrs']['class_id'] == 15) // 'balancer_board_blog'
+					$post_ids[] = floor($x['id'] / 1000);
 			}
-
+//print_d($post_ids);
 			$this->_data['posts'] = array();
 			if($post_ids)
-				$x = objects_array('forum_post', array('id IN' => $post_ids, 'by_id' => true));
-
+				$x = objects_array('forum_post', array('id IN' => array_unique($post_ids), 'by_id' => true));
+//print_d($x);
 			foreach($post_ids as $id)
 				$this->_data['posts'][$id] = $x[$id];
 
 			$this->_data['topics'] = array();
 			if($topic_ids)
 			{
-				$x = objects_array('forum_topic', array('id IN' => $topic_ids, 'by_id' => true));
+				$x = objects_array('forum_topic', array('id IN' => array_unique($topic_ids), 'by_id' => true));
 				foreach($topic_ids as $id)
 					if(!empty($x[$id]))
 						$this->_data['topics'][$id] = $x[$id];
@@ -189,7 +207,7 @@ class bors_tools_search_result extends bors_tools_search
 
 			if($post_ids)
 			{
-				$exc = $cl->BuildExcerpts($docs, 'forum_2', $this->q(), $opts);
+				$exc = $cl->BuildExcerpts($docs, 'posts', $this->q(), $opts);
 
 				if (!$exc)
 					echo $data['error'] = $cl->GetLastError();
@@ -201,7 +219,7 @@ class bors_tools_search_result extends bors_tools_search
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -209,20 +227,20 @@ class bors_tools_search_result extends bors_tools_search
 	{
 		return $this->_data;
 	}
-	
+
 	function total_items() { return $this->_data['res']['total']; }
 	function id() { return true; }
-	
+
 	private function gets($list)
 	{
 		$result = array();
 		foreach($list as $key => $val)
 			if(!empty($val) && (!is_array($val) || !empty($val[0])))
 				$result[] = $key.'='.urlencode(is_array($val) ? join(',', $val) : $val);
-		
+
 		return $result ? '?'.join('&', $result) : '';
 	}
-	
+
 	private function get_clear($enabled)
 	{
 		$enabled = explode(' ', $enabled);
@@ -230,7 +248,7 @@ class bors_tools_search_result extends bors_tools_search
 			if(!in_array($key, $enabled))
 				unset($_GET[$key]);
 	}
-	
+
 	function url($page = NULL, $get = true)
 	{
 		if(!$page)

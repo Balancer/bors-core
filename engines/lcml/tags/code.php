@@ -11,7 +11,7 @@ function lp_code($txt, $params)
 	{
 		$highliter = object_load($code_engine_class_name);
 		if($res = $highliter->render($txt, $params))
-			return $res;
+			return save_format($res);
 	}
 
 	include_once("funcs/modules/colorer.php");

@@ -113,7 +113,7 @@ class bors_tools_search_result extends bors_tools_search
 
 		if($this->u())
 		{
-			$user = objects_first('forum_user', array('username' => $this->u()));
+			$user = objects_first('balancer_board_user', array('username' => $this->u()));
 			if($user)
 			$cl->SetFilter('owner_id', array($user->id()));
 		}
@@ -136,6 +136,10 @@ class bors_tools_search_result extends bors_tools_search
 				$cl->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'create_time');
 				break;
 		}
+
+		$user = bors()->user();
+		if(!$user || !$user->is_coordinator())
+			$cl->SetFilter('is_public', array(0), true);
 
 		$cl->SetRankingMode ( $ranker );
 		$cl->SetArrayResult ( true );

@@ -13,6 +13,7 @@ class bors_referer_search extends base_object_db
 			'query',
 			'target_class_name',
 			'target_object_id',
+			'target_page',
 			'count',
 			'search_engine',
 			'target_url',

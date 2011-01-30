@@ -31,7 +31,7 @@ class bors_external_feeds_entry extends base_object_db
 
 	function auto_targets()
 	{
-		return array('target' => 'target_class_name(target_object_id)');
+		return array_merge(parent::auto_targets(), array('target' => 'target_class_name(target_object_id)'));
 	}
 
 	function make_source()

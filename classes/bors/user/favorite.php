@@ -21,9 +21,9 @@ class bors_user_favorite extends base_object_db
 
 	function auto_targets()
 	{
-		return array(
+		return array_merge(parent::auto_targets(), array(
 			'target' => 'target_class_name(target_object_id)',
-		);
+		));
 	}
 
 	static function add($user, $target)

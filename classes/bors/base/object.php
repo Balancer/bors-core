@@ -658,7 +658,12 @@ class base_object extends base_empty
 	function data_providers() { return array(); }
 
 	function auto_objects() { return array(); }
-	function auto_targets() { return array(); }
+	function auto_targets()
+	{
+		return array(
+			'referent' => 'referent_class(id)',
+		);
+	}
 
 	function storage() { if($storage_class_name = $this->get('storage_engine')) return new $storage_class_name; else return NULL; }
 
@@ -941,6 +946,12 @@ class base_object extends base_empty
 		$changed = max($this->create_time(true), $this->modify_time(true));
 		return $changed || $exactly ? $changed : time();
 	}
+
+	// Класс, который будет записываться в системах учёта ссылок.
+	// Если где-то в статистике, например, показывается ссылка на
+	// view-класс, а учитывать нужно базовый объект, для которого
+	// вызывается view, то $base_class = $view->referent();
+	function referent_class() { return $this->class_name(); }
 
 	function extends_class() { return $this->class_name(); }
 

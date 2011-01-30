@@ -26,10 +26,10 @@ class bors_object_change_request extends base_object_db
 
 	function auto_targets()
 	{
-		return array(
+		return array_merge(parent::auto_targets(), array(
 			'target' => 'target_class_name(target_object_id)',
 			'target_target' => 'target_target_class_name(target_target_object_id)',
-		);
+		));
 	}
 
 	function auto_objects()

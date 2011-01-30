@@ -15,8 +15,8 @@ class bors_object extends base_object
 	// Предустановленные авто целевые объекты
 	function auto_targets()
 	{
-		return array(
+		return array_merge(parent::auto_targets(), array(
 			'target' => 'target_class_name(target_object_id)',
-		);
+		));
 	}
 }

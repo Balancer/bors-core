@@ -29,7 +29,7 @@ class bors_synonym extends base_object_db
 
 	function auto_targets()
 	{
-		return array('target' => 'target_class_name(target_object_id)');
+		return array_merge(parent::auto_targets(), array('target' => 'target_class_name(target_object_id)'));
 	}
 
 	// На всякий случай принудительно укажем. Чтобы не терялись пометки о запрете.

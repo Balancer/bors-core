@@ -56,7 +56,7 @@ function set_last_editor_id($v, $dbup) { return $this->set('last_editor_id', $v,
 
 	function auto_targets()
 	{
-		return array('generator' => 'generator_class_name(generator_data)');
+		return array_merge(parent::auto_targets(), array('generator' => 'generator_class_name(generator_data)'));
 	}
 
 	function visits_counting() { return true; }

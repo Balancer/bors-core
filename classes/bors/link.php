@@ -29,10 +29,10 @@ class bors_link extends base_object_db
 
 	function auto_targets()
 	{
-		return array(
+		return array_merge(parent::auto_targets(), array(
 			'from_object'	=> 'from_class(from_id)',
 			'target' 		=> 'target_class_id(target_object_id)',
-		);
+		));
 	}
 
 	function auto_objects()

@@ -277,7 +277,7 @@ $sql = "CREATE TABLE IF NOT EXISTS `$table_name` (
 
 if(in_array('target_class_name', $names))
 {
-	$ftargets = "\n\tfunction auto_targets()\n\t{\n\t\treturn array(\n\t\t\t'target' => 'target_class_name(target_object_id)',\n\t\t);\n\t}\n";
+	$ftargets = "\n\tfunction auto_targets()\n\t{\n\t\treturn array_merge(parent::auto_targets(), array(\n\t\t\t'target' => 'target_class_name(target_object_id))',\n\t\t);\n\t}\n";
 	$ftitle = "\tfunction title() { return \$this->target()->class_name().ec(' «').\$this->target()->title().ec('»'); }";
 }
 else

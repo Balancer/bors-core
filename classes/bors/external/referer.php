@@ -42,11 +42,16 @@ class bors_external_referer
 			if(preg_match($re, $target_url))
 				return;
 
-		$data = array(
-			'target_class_name' => object_property($object, 'class_name'),
-			'target_object_id' => object_property($object, 'id'),
-			'target_page' => object_property($object, 'page'),
-		);
+		if($object)
+		{
+			$data = array(
+				'target_class_name' => object_property($object->referent(), 'extends_class'),
+				'target_object_id' => object_property($object->referent(), 'id'),
+				'target_page' => $object->args('page'),
+			);
+		}
+		else
+			$data = array();
 
 		if($q = bors_external_search::query_extract($referer))
 		{

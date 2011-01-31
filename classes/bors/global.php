@@ -94,6 +94,7 @@ class bors_global extends base_empty
 
 			save_cached_object($obj);
 			$this->drop_changed_object($obj);
+			$obj->cache_clean();
 
 			if(config('search_autoindex') && $obj->auto_search_index())
 			{

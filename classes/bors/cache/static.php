@@ -94,10 +94,10 @@ class cache_static extends base_object_db
 			$content = iconv($ic, $oc.'//translit', $content);
 		}
 
-		mkpath(dirname($file), 0777);
+		mkpath($dir = dirname($file), 0777);
 //		@chmod(dirname($file), 0777);
 
-		if(is_writable($file)) //TODO: проверить скорость. Быстрее проверка или маскировка собакой
+		if(is_writable($dir)) //TODO: проверить скорость. Быстрее проверка или маскировка собакой
 		{
 			file_put_contents($file, $content);
 			chmod($file, 0664);

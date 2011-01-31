@@ -162,7 +162,7 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 
 	for($i=1, $stop=count($trace); $i<$stop; $i++)
 	{
-		$php_file_dir = dirname($trace[$i]['file']).'/';
+		$php_file_dir = dirname(@$trace[$i]['file']).'/';
 		if(file_exists($php_file_dir.$wo_xfile_prefix))
 		{
 			$caller_path = $php_file_dir;

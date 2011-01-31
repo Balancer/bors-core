@@ -19,12 +19,21 @@ class driver_oci
 		exit();
 */
 		debug_timing_start('oci_connect');
+//		echo "oci_connect(".configh('oci_access', $this->database, 'user').", ".configh('oci_access', $this->database, 'password').", ".configh('oci_access', $this->database, 'db').")";
 		$this->connection = oci_connect(
 			configh('oci_access', $this->database, 'user'),
 			configh('oci_access', $this->database, 'password'),
 			configh('oci_access', $this->database, 'db')
 		);
 		debug_timing_stop('oci_connect');
+var_dump($this->connection);
+		if(!$this->connection)
+		{
+			var_dump(oci_error());
+			$error = oci_error();
+			print_d($error);
+			bors_throw('oci_connection error: '.print_r($error, true));
+		}
 	}
 
 	function __construct($database = NULL)

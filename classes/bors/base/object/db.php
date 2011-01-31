@@ -69,7 +69,7 @@ class base_object_db extends bors_object
 			debug_exit("Try to delete empty main table in class ".__FILE__.":".__LINE__);
 
 
-		$id_field = $this->main_id_field();
+		$id_field = $this->id_field();
 		if(!$id_field)
 			debug_exit("Try to delete empty id field in class ".__FILE__.":".__LINE__);
 

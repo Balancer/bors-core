@@ -59,6 +59,7 @@ class bors_lcml
         if(!is_dir($dir))
 			return;
 
+
 		$files = self::memcache()->get('lcml_actions_'.@$_SERVER['HTTP_HOST'].'_3:'.$dir);
 		if(!$files)
 		{
@@ -75,15 +76,21 @@ class bors_lcml
 			self::memcache()->set($files);
 		}
 
+		$fns_list_enabled  = config('lcml_functions_enabled',  array());
+		$fns_list_disabled = config('lcml_functions_disabled', array());
+
         foreach($files as $file) 
         {
             if(preg_match("!(.+)\.php$!", $file, $m))
             {
                 include_once("$dir/$file");
 
-                $fn = "lcml_".substr($file, 3, -4);
+                $fn = "lcml_".($ffn=substr($file, 3, -4));
 
-                if(function_exists($fn))
+                if(function_exists($fn)
+					&& (!$fns_list_enabled || in_array($ffn, $fns_list_enabled))
+					&& ($fns_list_disabled || !in_array($ffn, $fns_list_disabled))
+                )
 					$functions[] = $fn;
             }
         }
@@ -345,12 +352,19 @@ function lcmlbb_parse_img($tag)
 {
 	//alt="" width="158" height="240" border="0" src="http://pics.livejournal.com/idolomantis/pic/0003fg6a/s320x240"
 //	echo "img attrs = $tag\n";
-	$dom = new DOMDocument;
-	@$dom->loadHTML($tag);
-	$x = $dom->getElementsByTagName('img')->item(0);
-//	$x = $xs[0];
-//	echo "src=".$x->getAttribute('src')."\n";
-	return "[img]{$x->getAttribute('src')}[/img]";
+	if(class_exists('DOMDocument'))
+	{
+		$dom = new DOMDocument;
+		@$dom->loadHTML($tag);
+		$x = $dom->getElementsByTagName('img')->item(0);
+		return "[img]{$x->getAttribute('src')}[/img]";
+	}
+
+	// Если нет DOMDocument, то ручной костыль.
+	if(preg_match('!src=\"(.+?)\"!', $tag, $m))
+		return "[img]{$m[1]}[/img]";
+
+	return $tag;
 }
 
 function url_relative_join($url_main, $url_rel)

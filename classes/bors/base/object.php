@@ -221,13 +221,19 @@ class base_object extends base_empty
 		$auto_objs = $this->auto_objects();
 		if(($f = @$auto_objs[$method]))
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
-				return $this->attr[$method] = object_load($m[1], $this->$m[2]());
+				if(config('orm.auto.cache_attr_skip'))
+					return object_load($m[1], $this->$m[2]());
+				else
+					return $this->attr[$method] = object_load($m[1], $this->$m[2]());
 
 		// Автоматические целевые объекты (имя класса задаётся)
 		$auto_targs = $this->auto_targets();
 		if(($f = @$auto_targs[$method]))
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
-				return $this->attr[$method] = object_load($this->$m[1](), $this->$m[2]());
+				if(config('orm.auto.cache_attr_skip'))
+					return object_load($this->$m[1](), $this->$m[2]());
+				else
+					return $this->attr[$method] = object_load($this->$m[1](), $this->$m[2]());
 
 		$name = $method;
 
@@ -860,6 +866,7 @@ class base_object extends base_empty
 	}
 
 	function cache_children() { return array(); }
+	function cache_children_soft() { return array(); }
 
 	function cache_clean($clean_object = NULL)
 	{
@@ -869,6 +876,10 @@ class base_object extends base_empty
 		$this->cache_clean_self();
 
 		foreach($this->cache_children() as $child_cache)
+			if($child_cache)
+				$child_cache->cache_clean($clean_object);
+
+		foreach($this->cache_children_soft() as $child_cache)
 			if($child_cache)
 				$child_cache->cache_clean_self($clean_object);
 	}

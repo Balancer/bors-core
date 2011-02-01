@@ -277,5 +277,5 @@ function bors_each($class_name, $where)
 {
 	$class = new $class_name(NULL);
 	$storage = $class->storage();
-	return $storage::each($class_name, $where);
+	return $storage->each($class_name, $where);
 }

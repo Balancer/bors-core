@@ -26,7 +26,7 @@ class driver_oci
 			configh('oci_access', $this->database, 'db')
 		);
 		debug_timing_stop('oci_connect');
-var_dump($this->connection);
+
 		if(!$this->connection)
 		{
 			var_dump(oci_error());
@@ -105,6 +105,8 @@ var_dump($this->connection);
 	{
 		$query = 'SELECT '.$fields.' FROM '.$table.' '.mysql_args_compile($where);
 		$query = str_replace('`', '"', $query);
+		$query = preg_replace('/"(\d+)"/', '$1', $query);
+		$query = preg_replace("/'(\d+)'/", '$1', $query);
 //		echo $query."\n";
 		$this->query($query);
 		$data = array();

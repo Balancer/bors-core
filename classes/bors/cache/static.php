@@ -100,7 +100,7 @@ class cache_static extends base_object_db
 		if(is_writable($dir)) //TODO: проверить скорость. Быстрее проверка или маскировка собакой
 		{
 			file_put_contents($file, $content);
-			chmod($file, 0664);
+			@chmod($file, 0664);
 		}
 
 		if(!file_exists($file))

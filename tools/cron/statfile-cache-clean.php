@@ -20,7 +20,7 @@ require_once(BORS_CORE.'/init.php');
 	{
 		echo "{$x['original_uri']}, {$x['file']} [recreate={$x['recreate']}]: ";
 		$db->query("DELETE FROM cached_files WHERE file = '".addslashes($x['file'])."'");
-		if($x['recreate'])
+		if($x['recreate'] && config('cache_static'))
 		{
 			unset($_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT']);
 			$data = url_parse($x['original_uri']);
@@ -51,7 +51,7 @@ require_once(BORS_CORE.'/init.php');
 				@rmdir(dirname(dirname(dirname($x['file']))));
 			}
 		}
-		
+
 		echo "<br/>\n";
 	}
 

@@ -71,12 +71,19 @@ function http_get_content($url, $raw = false)
 		CURLOPT_HTTPHEADER => $header,
 		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
 		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_SSL_VERIFYPEER => false,
 	));
 
 //    if(preg_match("!lenta\.ru!", $url))
 //		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
-	$data = trim(curl_exec($ch));
+	$data = curl_exec($ch);
+	if($data === false)
+	{
+		echo 'Curl error: ' . curl_error($ch);
+		return '';
+	}
+	$data = trim($data);
 //	$data = trim(curl_redir_exec($ch));
 
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);

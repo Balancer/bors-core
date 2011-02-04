@@ -879,11 +879,11 @@ class base_object extends base_empty
 		$this->cache_clean_self();
 
 		foreach($this->cache_children() as $child_cache)
-			if($child_cache)
+			if($child_cache && !$child_cache->was_cleaned())
 				$child_cache->cache_clean($clean_object);
 
 		foreach($this->cache_children_soft() as $child_cache)
-			if($child_cache)
+			if($child_cache && !$child_cache->was_cleaned())
 				$child_cache->cache_clean_self($clean_object);
 	}
 

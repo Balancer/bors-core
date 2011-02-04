@@ -77,7 +77,11 @@ class bors_external_link extends base_object_db
 //		if(preg_match("!lenta\.ru!", $url))
 //			curl_setopt($ch, CURLOPT_PROXY, 'home.balancer.ru:3128');
 
+		debug_timing_start('http-get[classes/bors/external/link.php]: '.$url);
+		debug_timing_start('http-get-total');
 		$data = curl_exec($ch);
+		debug_timing_stop('http-get-total');
+		debug_timing_stop('http-get[classes/bors/external/link.php]: '.$url);
 
 //		print_r($data);
 

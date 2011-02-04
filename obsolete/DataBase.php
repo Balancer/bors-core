@@ -41,9 +41,9 @@ class DataBase extends base_object
 		do
 		{
 			if(config('mysql_persistent'))
-				$this->dbh = mysql_pconnect($server, $login, $password, config('mysql_renew_links'));
+				$this->dbh = mysql_pconnect($server, $login, $password, config('mysql_renew_links', true));
 			else
-				$this->dbh = mysql_connect($server, $login, $password, config('mysql_renew_links'));
+				$this->dbh = mysql_connect($server, $login, $password, config('mysql_renew_links', true));
 
 			if(!$this->dbh && config('mysql_try_reconnect'))
 			{
@@ -105,8 +105,8 @@ class DataBase extends base_object
 		if(!$login)
 			$server   = config_mysql('server', $base);
 
-		if(config('mysql_use_pool2') 
-			&& global_key("DataBaseHandler:$server", $base) 
+		if(config('mysql_use_pool2')
+			&& global_key("DataBaseHandler:$server", $base)
 			&& (time() - global_key("DataBaseStartTime:$server", $base) < 7 )
 			&& $this->db_name == $base
 		)

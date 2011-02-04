@@ -67,7 +67,8 @@ class bors_global extends base_empty
 			$obj = $x;
 			if(!$obj->id() || empty($obj->changed_fields))
 				continue;
-
+//var_dump($obj->changed_fields);
+//var_dump($obj->data);
 //			$obj->cache_clean();
 			if($obj != $x)
 			{
@@ -77,7 +78,7 @@ class bors_global extends base_empty
 
 			if(($storage_class = $obj->storage_engine()))
 			{
-//			if(!$storage_class)
+///			if(!$storage_class)
 //				$storage_class = 'storage_db_mysql_smart';
 //				debug_exit('Not defined storage engine for '.$obj->class_name());
 

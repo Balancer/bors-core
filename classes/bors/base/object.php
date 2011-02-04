@@ -847,6 +847,9 @@ class base_object extends base_empty
 
 	function cache_clean_self()
 	{
+//		echo debug_trace();
+//		exit('cache_clean_self');
+
 		if($this->was_cleaned())
 			return;
 
@@ -1076,8 +1079,9 @@ class base_object extends base_empty
 
 		if($use_static 
 			&& !$fs 
-			&& $this->use_temporary_static_file() 
+			&& $this->use_temporary_static_file()
 			&& config('temporary_file_contents')
+			&& !file_exists($this->static_file())
 		)
 			cache_static::save($this, /*$this->cs_i2o*/(str_replace(array(
 				'$url',

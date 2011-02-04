@@ -8,7 +8,7 @@ require_once(BORS_CORE.'/init.php');
 	require_once('obsolete/DataBase.php');
 	require_once('inc/processes.php');
 
-	if(!bors_thread_lock('statfile-cache-clean', 1200))
+	if(!bors_thread_lock('statfile-cache-clean', 600))
 		exit("Locked\n");
 
 	if(!config('cache_database'))
@@ -19,7 +19,16 @@ require_once(BORS_CORE.'/init.php');
 	foreach($db->get_array("SELECT file, recreate, class_id, object_id, original_uri FROM cached_files WHERE expire_time BETWEEN 0 AND ".time()) as $x)
 	{
 		echo "{$x['original_uri']}, {$x['file']} [recreate={$x['recreate']}]: ";
+
+
+		if(!$obj = object_load($x['original_uri']))
+			$obj = object_load($x['class_id'], $x['object_id']);
+
+		if($obj)
+			$db->delete('cache_groups', array('_target_class_id' => $obj->class_id(), '_target_object_id' => $obj->id()));
+
 		$db->query("DELETE FROM cached_files WHERE file = '".addslashes($x['file'])."'");
+
 		if($x['recreate'] && config('cache_static'))
 		{
 			unset($_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT']);
@@ -27,9 +36,7 @@ require_once(BORS_CORE.'/init.php');
 			$_SERVER['HTTP_HOST'] = $data['host'];
 			$_SERVER['DOCUMENT_ROOT'] = $data['root'];
 
-			if($obj = object_load($x['original_uri']))
-				bors_object_create($obj);
-			elseif($obj = object_load($x['class_id'], $x['object_id']))
+			if($obj)
 				bors_object_create($obj);
 			else
 				debug_hidden_log('static-cache', "Can't load recreateable object {$x['class_id']}({$x['object_id']}, url={$x['original_uri']}, file={$x['file']}");

@@ -97,7 +97,11 @@
 
 		require_once('inc/urls.php');
 
+		debug_timing_start('http-get[engines/lcml/post/50-urls.php]: '.$url);
+		debug_timing_start('http-get-total');
 		$data = trim(curl_exec($ch));
+		debug_timing_stop('http-get-total');
+		debug_timing_stop('http-get[engines/lcml/post/50-urls.php]: '.$url);
 //		$data = trim(curl_redir_exec($ch));
 
 		$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);

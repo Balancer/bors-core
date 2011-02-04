@@ -27,9 +27,11 @@ class bors_external_feed extends base_object_db
 		);
 	}
 
-	function update()
+	function update($is_test = false)
 	{
 		$xml = bors_lib_http::get($this->feed_url());
+		if($is_test)
+			echo "xml = $xml\n";
 		$data = bors_lib_xml::xml2array($xml);
 		$rss = @$data['rss'][0];
 		if(!$rss)
@@ -129,6 +131,13 @@ class bors_external_feed extends base_object_db
 
 //			echo "=== $title ===\ntags: ".join(', ', $tags)."\n// $link\n".$forum->debug_title()."\n\n";
 //	echo "=== $title ===\n$description\n// $link\n".$forum->debug_title()."\n\n";
+
+			if($is_test)
+			{
+				echo "title = '$title'\n";
+				echo "keywords string = '$keywords_string'\n";
+				continue;
+			}
 
 			if($entry)
 			{

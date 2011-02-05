@@ -70,6 +70,9 @@ function lt_img($params)
 
 //			return "$path:$uri:{$GLOBALS['cms']['page_path']}:".str_replace(" ","&nbsp;",print_r($data,true))."<br/>\n";
 
+			if(preg_match('/\w{5,}$/', $data['path']))
+				$data['path'] .= '.jpg';
+
 			if(!$data['local'])
 			{
 				$path = config('sites_store_path')."/{$data['host']}{$data['path']}";
@@ -88,7 +91,7 @@ function lt_img($params)
 						$path .= "index";
 				}
 
-//				exit($path);
+//				return $path;
 
 				if(!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
 				{

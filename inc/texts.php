@@ -30,7 +30,7 @@ require_once('strings.php');
 			$text = preg_replace('!^\s*\S+>.*$!m', '', $text);
 			$text = str_replace("\n", " ", $text);
 			$text = preg_replace("/\s{2,}/", " ", trim($text));
-			$text = preg_replace("!\[/?\w+[^\]*]\]!", " ", trim($text));
+			$text = preg_replace("!\[/?\w+[^\]]*\]!", " ", trim($text));
 			$text = strip_tags($text);
 			$text = str_replace(array(':eek:'), array('o_O'), $text);
 			if(bors_strlen($text) > $len)

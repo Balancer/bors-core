@@ -2,7 +2,7 @@
 
 require_once('strings.php');
 
-	function strip_text($text, $len=192, $more_text = '&#133;')
+	function strip_text($text, $len=192, $more_text = '&#133;', $microstyle = false)
 	{
     	$text=to_one_string($text);
 
@@ -24,7 +24,28 @@ require_once('strings.php');
 	    $text=preg_replace("/^#nav(.+?)#/","",$text);
     	$text=preg_replace("!\-+!","-",$text);
 
-	    if(bors_strlen($text)>$len)
+		if($microstyle)
+		{
+			$text = preg_replace('!<br[^>]*>!', "\n", $text);
+			$text = preg_replace('!^\s*\S+>.*$!m', '', $text);
+			$text = str_replace("\n", " ", $text);
+			$text = preg_replace("/\s{2,}/", " ", trim($text));
+			$text = preg_replace("!\[/?\w+[^\]*]\]!", " ", trim($text));
+			$text = strip_tags($text);
+			$text = str_replace(array(':eek:'), array('o_O'), $text);
+			if(bors_strlen($text) > $len)
+			{
+				$text = bors_substr($text, 0, $len-bors_strlen($more_text));
+				$space_pos = strrpos($text, ' ');
+				if($space_pos !== false)
+					$text = substr($text, 0, $space_pos);
+				$text .= $more_text;
+			}
+
+			return $text;
+		}
+
+	    if(bors_strlen($text) > $len)
     	{
         	$res="";
 	        $do_flag=1;
@@ -42,8 +63,7 @@ require_once('strings.php');
     	    $text = $res . $more_text;
 	    }
 
-
-	    return bors_close_tags("$text");
+		return bors_close_tags($text);
 	}
 
 function bors_close_tags($text)

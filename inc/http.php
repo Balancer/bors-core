@@ -158,6 +158,7 @@ function http_get_ex($url, $raw = true)
 		CURLOPT_HTTPHEADER => $header,
 		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
 		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_SSL_VERIFYPEER => false,
 	));
 
 //    if(preg_match("!lenta\.ru!", $url))

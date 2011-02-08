@@ -145,7 +145,8 @@ class storage_fs_htsu extends base_null
 			$object->set_config_class($config_class, false);
 
 //		$this->hts = preg_replace_callback('/^#(template_data)_(\w+)\s+(.+)$/m', array(&$this, '_set_callback'), $this->hts);
-		$this->hts = preg_replace_callback('/^#call (\w+)(.+?)$/m', array(&$this, '_call_callback'), $this->hts);
+		$this->hts = preg_replace_callback('/^#call\s+(\w+)\s+(.+?)$/m', array(&$this, '_call_callback'), $this->hts);
+		$this->hts = preg_replace_callback('/^#set\s+(\w+)\s+(.+?)$/m', array(&$this, '_set_callback'), $this->hts);
 
 	    $this->hts = preg_replace("!^\n+!",'',$this->hts);
 
@@ -167,6 +168,14 @@ class storage_fs_htsu extends base_null
 		$method = $matches[1];
 		$args   = trim($matches[2]);
 		call_user_func_array(array($this->obj, $method), explode(' ', $args));
+		return '';
+	}
+
+	function _set_callback($matches)
+	{
+		$property = $matches[1];
+		$value    = trim($matches[2]);
+		call_user_func_array(array($this->obj, 'set'), array($property, $value, false));
 		return '';
 	}
 

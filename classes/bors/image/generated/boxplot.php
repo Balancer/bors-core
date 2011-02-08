@@ -2,6 +2,8 @@
 
 require_once(config('boxplot_include'));
 
+debug_hidden_log('___catch', 'image generated');
+
 class bors_image_generated_boxplot extends base_image
 {
 	private $_hash, $_width, $_height, $_data, $_bp;

@@ -47,7 +47,6 @@ if(config('bors_version_show'))
 // разбираться, что это за фигня. Соответственно - в лог.
 if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 {
-//	print_d($_SERVER);
 	@file_put_contents($file = config('debug_hidden_log_dir')."/main-php-referers.log", @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
 	exit("Do not use direct bors-call!\n");
@@ -60,8 +59,9 @@ if(bors()->client()->is_bot() && config('bot_lavg_limit'))
 	$cache = new BorsMemCache();
 	if(!($load_avg = $cache->get('system-load-average')))
 	{
-		$uptime = explode(' ', exec('uptime'));
-		$cache->set($load_avg = floatval($uptime[10]), 30);
+		$uptime = preg_split('/\s+/', exec('uptime'));
+		$load_avg = floatval($uptime[10]);
+		$cache->set($load_avg, 30);
 	}
 
 	if($load_avg > config('bot_lavg_limit'))

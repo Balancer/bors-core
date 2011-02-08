@@ -39,5 +39,5 @@ class bors_admin_reports_load extends base_page
 		);
 	}
 
-	function cache_static() { return rand(60, 120); }
+	function cache_static() { return bors()->user() ? 0 : rand(60, 120); }
 }

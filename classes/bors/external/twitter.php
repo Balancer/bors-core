@@ -30,8 +30,10 @@ class bors_external_twitter extends bors_object
 				);
 
 				$twitter->setOAuth($oauth);
-				$msg = $twitter->statuses->update($msg);
+				$msg = $twitter->statuses->update($message);
+				return $msg->id;
 //				print_r($msg);
+//    [id] => 34916085417521153 для http://twitter.com/#!/balabot/status/34916085417521153
 			}
 			catch (Services_Twitter_Exception $e)
 			{

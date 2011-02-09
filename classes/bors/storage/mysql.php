@@ -8,9 +8,13 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$post_functions = array();
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
-			$x = '`'.$f['name'].'`'; // убирать апострофы нельзя, иначе тупо не работабт поля с некорректными именами
-			if($f['name'] != $f['property'])
-				$x .= " AS `{$f['property']}`";
+			if(preg_match('/^\w+$/', $name = $f['name']))
+				$x = '`'.$name.'`'; // убирать апострофы нельзя, иначе тупо не работабт поля с некорректными именами
+			else
+				$x = $name;
+
+			if($f['name'] != ($property = $f['property']))
+				$x .= " AS `{$property}`";
 
 			$select[] = $x;
 
@@ -40,6 +44,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 //		print_d($data);
 
 		return true;
+	}
+
+	static function post_functions_do(&$object, $post_functions)
+	{
+		foreach($post_functions as $property => $function)
+			$object->set($property, $function($object->$property()), false);
 	}
 
 	function load_array($object, $where)
@@ -77,7 +87,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		foreach($datas as $data)
 		{
-			$object->set_id($data['id']);
+			$object->set_id(@$data['id']);
 			$object->data = $data;
 			$object->set_loaded(true);
 
@@ -129,8 +139,14 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
-			$x = $table.'.'.$f['name'];
-			if($f['name'] != $f['property'])
+			if(preg_match('/^(\w+)\((\w+)\)$/', $field_name = $f['name'], $m))
+				$x = $m[1].'('.$table.'.'.$m[2].')';
+			elseif(preg_match('/^\w+\(.+\)$/', $field_name)) // id => CONCAT(keyword,":",keyword_id)
+				$x = $field_name;
+			else
+				$x = $table.'.'.$field_name;
+
+			if($field_name != $f['property'])
 			{
 //				var_dump($where);
 //				echo "{$f['property']} -> {$f['name']}<br/>";
@@ -329,7 +345,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function create($object)
 	{
-//		var_dump($object->data);
 		$where = array();
 		list($data, $where) = self::__update_data_prepare($object, $where);
 
@@ -353,8 +368,10 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
 
-				if($object->replace_on_new_instance())
+				if($object->replace_on_new_instance() || $object->attr('__replace_on_new_instance'))
 					$dbh->replace($table_name, $fields);
+				elseif($object->ignore_on_new_instance())
+					$dbh->insert_ignore($table_name, $fields);
 				else
 					$dbh->insert($table_name, $fields);
 

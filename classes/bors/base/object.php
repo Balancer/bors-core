@@ -658,7 +658,19 @@ class base_object extends base_empty
 		}
 	}
 
+	/**
+		Если выставлен этот флаг, то новые объекты в БД будут
+		добавляться по методу replace, замещая возможное старое значение
+	*/
 	function replace_on_new_instance() { return false; }
+	/**
+		Если выставлен этот флаг, то новые объекты в БД будут
+		добавляться по методу insert ignore, не трогая возможное старое значение
+
+		В случае отсутствия определения replace или ignore, вставка идёт
+		с помощью обычного insert и образует ошибку в случае дублей
+	*/
+	function ignore_on_new_instance()  { return false; }
 
 	function data_provider() { return NULL; }
 	function data_providers() { return array(); }
@@ -968,6 +980,7 @@ class base_object extends base_empty
 	function referent_class() { return $this->class_name(); }
 
 	function extends_class() { return $this->class_name(); }
+	function extends_class_name() { return $this->class_name(); }
 
 	function extends_class_id()
 	{

@@ -75,6 +75,8 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	$object->set_owner_id(defval($data, 'owner_id', bors()->user_id()), true);
 	$object->set_last_editor_id(bors()->user_id(), true);
 
+	$replace = popval($data, '*replace', false);
+
 	if(!$object->set_fields($data, true, NULL, $need_check_data) && $need_check_data)
 	{
 		bors()->drop_changed_object($object);
@@ -82,6 +84,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 		return $object;
 	}
 
+	$object->set_attr('__replace_on_new_instance', $replace);
 	$object->new_instance();
 	$object->_configure();
 	return $object;

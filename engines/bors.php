@@ -226,7 +226,6 @@ function bors_stop_bots()
 	if(bors()->client()->is_bot())
 	{
 		@header("HTTP/1.0 404 Not Found");
-		debug_hidden_log('bot_stopped', 'stop_bots');
 		return go('http://balancer.ru/forum/', true);
 	}
 

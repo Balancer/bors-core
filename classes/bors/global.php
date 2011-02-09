@@ -55,6 +55,9 @@ class bors_global extends base_empty
 	function have_changed_objects() { return !empty($this->changed_objects); }
 	function changed_objects() { return $this->changed_objects; }
 
+	function drop_all_caches() { bors_object_caches_drop(); }
+	function memory_usage() { return round(memory_get_usage()/1048576)."/".round(memory_get_peak_usage()/1048576)."MB"; }
+
 	function changed_save()
 	{
 		include_once('engines/search.php');

@@ -113,41 +113,6 @@ function get_browser_info($user_agent)
 		$os = 'Linux';
 	}
 
-	if(preg_match('!Yahoo!', $user_agent))
-	{
-		$browser = 'YahooBot';
-		$os = 'YahooBot';
-		$is_bot = true;
-	}
-
-	if(preg_match('!Rambler!', $user_agent))
-	{
-		$browser = 'RamblerBot';
-		$os = 'RamblerBot';
-		$is_bot = true;
-	}
-
-	if(preg_match('!Googlebot!', $user_agent))
-	{
-		$browser = 'GoogleBot';
-		$os = 'GoogleBot';
-		$is_bot = true;
-	}
-
-	if(preg_match('!msnbot!', $user_agent))
-	{
-		$browser = 'MSNBot';
-		$os = 'MSNBot';
-		$is_bot = true;
-	}
-
-	if(preg_match('!WebAlta!', $user_agent))
-	{
-		$browser = 'WebAltaBot';
-		$os = 'WebAltaBot';
-		$is_bot = true;
-	}
-
 	if(preg_match('!Anonymouse.org!', $user_agent))
 	{
 		$browser = 'Anonymouse.org';
@@ -166,44 +131,17 @@ function get_browser_info($user_agent)
 		$os = 'Windows';
 	}
 
-	if(preg_match('!Yandex!', $user_agent))
-	{
-		$browser = 'YandexBot';
-		$os = 'YandexBot';
-		$is_bot = true;
-	}
-
-	if(preg_match('!Nigma!', $user_agent))
-	{
-		$browser = 'NigmaBot';
-		$os = 'NigmaBot';
-		$is_bot = true;
-	}
-
-	if(preg_match('!Yanga!', $user_agent))
-	{
-		$browser = 'YangaBot';
-		$os = 'YangaBot';
-		$is_bot = true;
-	}
-
-	if(preg_match('!Speedy Spider!', $user_agent))
-	{
-		$browser = 'EntirewebBot';
-		$os = '';
-		$ov = '';
-		$is_bot = true;
-	}
-
 	if(preg_match('!Opera/\d+\.\d+ \(; U; \w+\) Presto/[\d\.]+!', $user_agent))
 	{
 		$browser = 'Opera';
 		$os = 'Unknown';
 	}
 
-	if(!$is_bot && preg_match('/(bot|crowler|spider)/i', $user_agent))
+	if($bot = bors_bot_detect($user_agent))
 	{
-		debug_hidden_log('__need-append-data', 'Unknown bot: '.$user_agent);
+		$browser = $bot;
+		$os = '';
+		$ov = '';
 		$is_bot = true;
 	}
 

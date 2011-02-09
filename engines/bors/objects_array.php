@@ -38,7 +38,7 @@ function objects_array($class, $args = array())
 	if($s = $init->storage())
 	{
 		if(method_exists($s, 'load_array'))
-			$objects = $s->load_array($init, $args);
+			$objects = $s->load_array($init, array_merge($cargs, $args));
 		else
 			$objects = $s->load($init, mysql_args_compile($args, $class), false, $cargs);
 

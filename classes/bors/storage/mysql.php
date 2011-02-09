@@ -44,6 +44,10 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function load_array($object, $where)
 	{
+		$by_id  = popval($where, 'by_id');
+		$select = popval($where, 'select');
+		$set    = popval($where, '*set');
+
 		if(is_null($object))
 		{
 			$db_name = $where['*db'];
@@ -63,14 +67,10 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$dbh = new driver_mysql($db_name);
 
-		if(!empty($where['*set']))
-		{
-			// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')
-			foreach(preg_split(',\s*', $where['*set']) as $set)
-				$select[] = $set;
-
-			unset($where['*set']);
-		}
+		// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')
+		if($set)
+			foreach(preg_split('/,\s*/', $set) as $s)
+				$select[] = $s;
 
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
 		$objects = array();
@@ -80,7 +80,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$object->set_id($data['id']);
 			$object->data = $data;
 			$object->set_loaded(true);
-			$objects[] = $object;
+
+			if($by_id)
+				$objects[$object->id()] = $object;
+			else
+				$objects[] = $object;
+
 			$object = new $class_name(NULL);
 		}
 

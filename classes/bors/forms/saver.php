@@ -42,10 +42,9 @@ class bors_forms_saver extends base_empty
 			if($object->$method($data))
 				return true;
 
-		if($file_vars  = popval($data, 'file_vars'))
-			self::load_files($object, $data, $files, $file_vars);
 
 		// Чистим служебные переменные
+		$file_vars  = popval($data, 'file_vars');
 		$go  = popval($data, 'go');
 		$uri = popval($data, 'uri');
 		$class_name = popval($data, 'class_name');
@@ -64,6 +63,9 @@ class bors_forms_saver extends base_empty
 			$object->new_instance($data);
 			$object->on_new_instance($data);
 		}
+
+		if($file_vars)
+			self::load_files($object, $data, $files, $file_vars);
 
 		if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 			$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));

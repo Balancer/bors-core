@@ -70,3 +70,71 @@ function bors_client_info_short($ip, $ua = '')
 
 	return join('', $info).bors_browser_images($ua);
 }
+
+function im_client_detect($client_id, $type)
+{
+	if(preg_match('/purple/i', $client_id))
+		return array('Pidgin', NULL);
+
+	switch($type)
+	{
+		case 'jabber':
+		case 'xmpp':
+			return array('Jabber', NULL);
+	}
+
+	debug_hidden_log('append_data', "Unknown IM client $client_id (of $type)");
+	return array(NULL, NULL);
+}
+
+function im_client_image($client_name)
+{
+	if(!$client_name)
+		return NULL;
+
+	switch($client_name)
+	{
+		case 'Pidgin':
+			return 'http://s.wrk.ru/i16/im/pidgin.png';
+		case 'Jabber':
+			return 'http://s.wrk.ru/i16/im/jabber.jpg';
+	}
+
+	debug_hidden_log('append_data', "Unknown IM type $name for $client_id (of $type)");
+	return NULL;
+}
+
+function os_image($os_name)
+{
+	switch($os_name)
+	{
+		case 'Linux':
+			return '/bors-shared/images/os/linux.gif';
+		case 'FreeBSD':
+			return '/bors-shared/images/os/freebsd.png';
+		case 'MacOSX':
+			return '/bors-shared/images/os/macos.gif';
+		case 'iPhone':
+			return '/bors-shared/images/os/iphone.gif';
+		case 'Symbian':
+			return '/bors-shared/images/os/symbian.gif';
+		case 'J2ME':
+			return '/bors-shared/images/os/java.gif';
+		case 'OS/2':
+			return '/bors-shared/images/os/os2.gif';
+		case 'PocketPC':
+		case 'J2ME':
+				break;
+		case 'WindowsVista':
+		case 'WindowsXP':
+		case 'Windows2000':
+		case 'Windows98':
+		case 'Windows98':
+		case 'Windows':
+			return '/bors-shared/images/os/windows.gif';
+			break;
+		default:
+	}
+
+	return NULL;
+}

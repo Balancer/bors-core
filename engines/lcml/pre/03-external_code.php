@@ -13,6 +13,9 @@ function lcml_external_code($text)
 	$text = preg_replace('!(^|\s)https?://picasaweb.google.(com|ru)/lh/photo/([\w\-]+)\?feat=directlink($|\s)!m', "\n[picasa]$3[/picasa]\n", $text);
 	$text = preg_replace('!(^|\s)https?://picasaweb.google.(com|ru)/lh/photo/([\w\-]+)(\s+|$)!m', "\n[picasa]$3[/picasa]\n", $text);
 
+	// pics.livejournal.com
+	$text = preg_replace('!(http://pics\.livejournal\.com/(\w+)/pic/(\w+))!', "\n[img $1]\n", $text);
+
 	$text = preg_replace('!(<script type="text/javascript" src="http://googlepage.googlepages.com/player.js"></script>)!ise', 'save_format("\1")', $text);
 
 	return $text;

@@ -132,4 +132,15 @@ class bors_global extends base_empty
 	function client() { return $this->__havec('client') ? $this->__lastc() : $this->__setc(object_load('bors_client')); }
 	function server() { return $this->__havec('server') ? $this->__lastc() : $this->__setc(object_load('bors_server')); }
 	function request(){ return $this->__havec('request')? $this->__lastc() : $this->__setc(object_load('bors_request')); }
+
+	function do_task($task_class, $data = array())
+	{
+		$client= new GearmanClient();
+		$client->addServer();
+
+		$data['worker_class_name'] = $task_class;
+
+		$client->doBackground('balabot.work', serialize($data));
+		debug_hidden_log('balabot_work', "$task_class: ".substr(serialize($data), 0, 50), false);
+	}
 }

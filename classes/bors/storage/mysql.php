@@ -122,10 +122,13 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		}
 
 		$dbh = new driver_mysql($db_name);
-
-		$count = $dbh->select($table_name, 'COUNT(*)', $where, $class_name);
-		if(!empty($where['group']))
+		if(empty($where['group']))
+			$count = $dbh->select($table_name, 'COUNT(*)', $where, $class_name);
+		else
+		{
+			$dbh->select_array($table_name, 'COUNT(*)', $where, $class_name);
 			$count = intval($dbh->get('SELECT FOUND_ROWS()'));
+		}
 
 		return $count;
 	}

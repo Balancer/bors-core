@@ -24,6 +24,8 @@ class bors_external_feeds_entry extends base_object_db
 		);
 	}
 
+	function keywords() { return preg_split('/\s*,\s*/', $this->keywords_string()); }
+
 	function auto_objects()
 	{
 		return array('feed' => 'bors_external_feed(feed_id)');
@@ -39,8 +41,15 @@ class bors_external_feeds_entry extends base_object_db
 		$link = $this->entry_url();
 		$text = $this->text();
 
-		// Разворачиваем в BB-код тэги picasaweb с Juick'а
-		$text = preg_replace('!<a href="http://picasaweb.google.\w+.+photo/(.+?)\?feat=directlink.*?</a>!', "\n[picasa notitle]\\1[/picasa]\n", $text);
+		if($this->feed_id() == 2) // Juick
+		{
+			// Разворачиваем в BB-код тэги picasaweb с Juick'а
+			$text = preg_replace('!<a href="http://picasaweb.google.\w+.+photo/(.+?)\?feat=directlink.*?</a>!', "\n[picasa notitle]\\1[/picasa]\n", $text);
+			// Разворачиваем в BB-код картинки
+			// <a href="http://img200.imageshack.us/img200/2530/screenshotdl.png" rel="nofollow">img200.imageshack.us</a>
+			$text = preg_replace('!<a href="([^"]+?\.(jpe?g|png|gif))" rel="nofollow">[^\s\<]+</a>!i', "[img $1]", $text);
+//			echo "$text\n\n\n";
+		}
 
 		$text = html2bb(bors_close_tags($text), array('origin_url' => $link, 'strip_forms' => true));
 		$feed = $this->feed();
@@ -62,6 +71,8 @@ class bors_external_feeds_entry extends base_object_db
 		return $text;
 	}
 
+	function recalculate() { $this->update_target(true); }
+
 	function update_target($update_lcml = false)
 	{
 		$feed = $this->feed();
@@ -81,8 +92,31 @@ class bors_external_feeds_entry extends base_object_db
 			$post->set_author_name($owner_name, true);
 			$post->set_source($this->make_source(), true);
 			$post->set_body(NULL, true);
+			$post->set_post_body(NULL, true);
+			$post->cache_clean();
+			$post->store();
+
 			if($update_lcml)
+			{
+				config_set('lcml_cache_disable', true);
+				$post->post_body();
+
+				$post->set_post_body(NULL, true);
+				$post->set_warning_id(NULL, true);
+				$post->set_flag_db(NULL, true);
+				$post->cache_clean();
+				$post->store();
+
+				$topic = $post->topic();
+				$topic->cache_clean();
+				$topic->set_modify_time(time(), true);
+				$topic->store();
+
+				$blog = bors_load('balancer_board_blog', $post->id());
+
 				$post->body();
+			}
+
 			$post->set_create_time($this->pub_date(), true);
 
 			$post->topic()->recalculate();

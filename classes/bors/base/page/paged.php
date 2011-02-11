@@ -16,7 +16,7 @@ class base_page_paged extends base_page
 		return $where;
 	}
 
-	function on_items_load($items) { }
+	function on_items_load(&$items) { }
 
 	private $_items;
 	function items()

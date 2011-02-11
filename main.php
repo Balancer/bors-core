@@ -19,26 +19,6 @@ if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 // Инициализация фреймворка
 require_once(dirname(__FILE__).'/init.php');
 
-// Проверка на загрузку системы данным пользователем.
-// Если делает много тяжёлых запросов - просим подождать.
-if(config('access_log') && config('overload_time') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
-{
-	$dbh = new driver_mysql(config('main_bors_db'));
-	$total = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
-		'user_ip' => $_SERVER['REMOTE_ADDR'],
-		'access_time>' => time() - 600,
-	));
-
-	if($total > config('overload_time'))
-	{
-		debug_hidden_log('system_overload', $total);
-
-		header('Status: 503 Service Temporarily Unavailable');
-		header('Retry-After: 600');
-		exit("Service Temporarily Unavailable");
-	}
-}
-
 // Скажем, кто мы такие. Какой версии.
 if(config('bors_version_show'))
 	header('X-Bors: v' .config('bors_version_show'));
@@ -111,6 +91,27 @@ if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY
 }
 
 $_GET = array_merge($_GET, $_POST); // но, вообще, нужно с этим завязывать
+
+// Проверка на загрузку системы данным пользователем.
+// Если делает много тяжёлых запросов - просим подождать.
+if(config('access_log') && config('overload_time') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
+{
+	$dbh = new driver_mysql(config('main_bors_db'));
+	$total = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
+		'user_ip' => $_SERVER['REMOTE_ADDR'],
+		'access_time>' => time() - 600,
+	));
+
+	if($total > config('overload_time'))
+	{
+		debug_hidden_log('system_overload', $total);
+
+		header('Status: 503 Service Temporarily Unavailable');
+		header('Retry-After: 600');
+		exit("Service Temporarily Unavailable");
+	}
+}
+
 
 // Если кодировка вывода в браузер не та же, что внутренняя - то перекодируем
 // все входные данные во внутреннюю кодировку

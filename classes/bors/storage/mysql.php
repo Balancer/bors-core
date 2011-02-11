@@ -153,7 +153,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$x .= " AS `{$f['property']}`";
 				if(array_key_exists($f['property'], $where))
 				{
-					$where[$f['name']] = $where[$f['property']];
+					$where[$field_name] = $where[$f['property']];
 					unset($where[$f['property']]);
 				}
 			}
@@ -185,19 +185,27 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$db_name = $object->db_name();
 		$table_name = $object->table_name();
 
+		$skip_joins = false;
+
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
 //			echo "{$f['property']} => {$f['name']}: ".$object->get($f['property'])."<br/>\n";
-			$x = $f['name'];
+			$field_name = $f['name'];
 
 //			Сюда сунуть обратное преобразование
 //			if(!empty($f['post_function']))
 //				$post_functions[$f['property']] = $f['post_function'];
 
-			if(preg_match('/^(\w+)\(([\w`]+)\)$/', $f['name'], $m))
+			if(preg_match('/^(\w+)\(([\w`]+)\)$/', $field_name, $m))
 			{
-				$f['name'] = $m[2];
+				$field_name = $m[2];
 				$sql = $_back_functions[$m[1]];
+			}
+			elseif(preg_match('/^\w+\(.+\)$/', $field_name)) // id => CONCAT(keyword,":",keyword_id)
+			{
+//				echo "skip $field_name\n";
+				$skip_joins = true;
+				continue;
 			}
 			else
 				$sql = false;
@@ -211,12 +219,17 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			}
 		}
 
+//		var_dump($update);
+//		echo "skip = $skip_joins\n";
 		$select = array(); // dummy
-		self::__join('inner', $object, $select, $where, $post_functions, $update);
-		self::__join('left',  $object, $select, $where, $post_functions, $update);
+		if(!$skip_joins)
+		{
+			self::__join('inner', $object, $select, $where, $post_functions, $update);
+			self::__join('left',  $object, $select, $where, $post_functions, $update);
+			if(($idf = $object->id_field()) && empty($update[$db_name][$table_name][$idf]))
+				$update[$db_name][$table_name][$idf] = $object->id();
+		}
 
-		if(($idf = $object->id_field()) && empty($update[$db_name][$table_name][$idf]))
-			$update[$db_name][$table_name][$idf] = $object->id();
 
 //		$dbh = new driver_mysql($object->db_name());
 		return array($update, $where);
@@ -351,7 +364,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		if(!$data)
 			return;
 
-//		print_d($data);
 		$main_table = true;
 
 		foreach($data as $db_name => $tables)

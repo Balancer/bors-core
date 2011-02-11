@@ -20,8 +20,12 @@ function get_browser_info($user_agent)
 		$os = 'PocketPC';
 	elseif(preg_match('!iPhone!', $user_agent))
 		$os = 'iPhone';
-	elseif(preg_match('!Symbian OS!', $user_agent))
+	elseif(preg_match('!(Symbian OS|SymbOS)!', $user_agent))
+	{
 		$os = 'Symbian';
+		if(preg_match('!S(\d+);!', $user_agent))
+			$osv = 'Series 60';
+	}
 	elseif(preg_match('!J2ME!', $user_agent))
 		$os = 'J2ME';
 	elseif(preg_match('!Intel Mac OS X!', $user_agent))

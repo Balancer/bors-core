@@ -69,7 +69,9 @@ function http_get_content($url, $raw = false)
 		CURLOPT_REFERER => $original_url,
 		CURLOPT_AUTOREFERER => true,
 		CURLOPT_HTTPHEADER => $header,
-		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
+//TODO: сделать перебор разных UA при ошибке
+//		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
+		CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_SSL_VERIFYPEER => false,
 	));
@@ -156,7 +158,9 @@ function http_get_ex($url, $raw = true)
 		CURLOPT_REFERER => $original_url,
 		CURLOPT_AUTOREFERER => true,
 		CURLOPT_HTTPHEADER => $header,
-		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
+//TODO: сделать перебор разных UA при ошибке
+//		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
+		CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_SSL_VERIFYPEER => false,
 	));

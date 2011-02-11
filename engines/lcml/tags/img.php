@@ -4,7 +4,7 @@ require_once('inc/urls.php');
 
 function lt_img($params) 
 {
-//	if(config('is_developer')) var_dump($params);
+//	if(config('is_debug')) var_dump($params);
 
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
 		return lt_img_bors($params);
@@ -34,7 +34,7 @@ function lt_img($params)
 //			echo $uri; print_d($data); exit();
 //			echo $GLOBALS['lcml']['level'];
 //			exit(print_r($GLOBALS['lcml']['uri'],true));
-//			if(config('is_developer')) { print_d($params); print_d($data); exit(); }
+//			if(config('is_debug')) { print_d($params); print_d($data); exit(); }
 
 			if($data['local'])
 			{
@@ -61,7 +61,8 @@ function lt_img($params)
 //			$uri = $hts->normalize_uri($uri, $GLOBALS['lcml']['uri']);
 
 			$data = url_parse($uri);
-//if(config('is_developer')) { echo "Parse '$uri'"; var_dump($data); }
+//			if(config('is_debug')) { echo "Parse '$uri'"; var_dump($data); }
+
 			if(!file_exists($path) && $data['local'])
 			{
 				$path = $data['local_path'];
@@ -107,7 +108,7 @@ function lt_img($params)
 					$content_type = $x['content_type'];
 
 					if(strlen($content) <= 0)
-						return lcml("Zero size image ={$uri}= error.");
+						return lcml("Zero size error for image '{$uri}'");
 
 					if(!preg_match("!image!", $content_type))
 					{
@@ -115,6 +116,8 @@ function lt_img($params)
 //						return lcml("Non-image content type ('$content_type') image ={$uri}= error.");
 						return lcml_urls_title($params['url']);
 					}
+
+//					if(config('is_debug')) echo "Got content for {$params['url']} to {$path}: ".strlen($content)."\n";
 
 					require_once('inc/filesystem.php');
 					mkpath(dirname($path), 0775);

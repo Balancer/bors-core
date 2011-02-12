@@ -77,20 +77,25 @@ function set_last_editor_id($v, $dbup) { return $this->set('last_editor_id', $v,
 		{
 			$g = object_new($params['class_name'], $params);
 
-			$x = object_new_instance('bors_image_generated', array(
-				'hash_id' => md5($this->id()),
-				'generator_class_name' => $params['class_name'],
-				'generator_data' => serialize($params['data']),
-				'base_name' => $g->base_name(),
-				'image_url' => $g->url(),
-				'dir' => $g->dir(),
-				'width' => $g->width(),
-				'height' => $g->height(),
-				'description' => $description = $g->description(),
-			));
+			$x = bors_find_first(__CLASS__, array('hash_id' => md5($this->id())));
+			if(!$x)
+			{
+				$x = object_new_instance('bors_image_generated', array(
+					'hash_id' => md5($this->id()),
+					'generator_class_name' => $params['class_name'],
+					'generator_data' => serialize($params['data']),
+					'base_name' => $g->base_name(),
+					'image_url' => $g->url(),
+					'dir' => $g->dir(),
+					'width' => $g->width(),
+					'height' => $g->height(),
+					'description' => $description = $g->description(),
+				));
+			}
 
 			mkpath($g->dir());
 			$image = $g->image();
+
 			if($params['crop'])
 			{
 				list($top, $right, $bottom, $left) = explode(',', $params['crop']);
@@ -120,6 +125,8 @@ function set_last_editor_id($v, $dbup) { return $this->set('last_editor_id', $v,
 		else
 			$description = '';
 
-		return "<img src=\"{$x->url()}\" width=\"{$w}\" height=\"{$h}\" />{$description}";
+		$width  = $w ? ' width="' .$w.'"' : '';
+		$height = $h ? ' height="'.$h.'"' : '';
+		return "<img src=\"{$x->url()}\"$w$h />{$description}";
 	}
 }

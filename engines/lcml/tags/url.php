@@ -1,24 +1,24 @@
 <?php
 
-	function lt_url($params) 
-	{
-		$url = $params['url'];
+function lt_url($params) 
+{
+	$url = $params['url'];
 
-		if(preg_match("!^[^/]+\.\w{2,3}!",$url))
-			if(!preg_match("!^\w+://!",$url))
-				$params['url']="http://$url";
+	if(preg_match("!^[^/]+\.\w{2,3}!",$url))
+		if(!preg_match("!^\w+://!",$url))
+			$params['url']="http://$url";
 
-		$hts = NULL;
-		if(class_exists('DataBaseHTS') && config('obsolete_use_handlers_system'))
-			$hts = new DataBaseHTS();
+	$hts = NULL;
+	if(class_exists('DataBaseHTS') && config('obsolete_use_handlers_system'))
+		$hts = new DataBaseHTS();
 
-		if(!preg_match("!^\w+://!",$url) && !preg_match("!^/!",$url))
-			$url = @$GLOBALS['main_uri'].$url;
+	if(!preg_match("!^\w+://!",$url) && !preg_match("!^/!",$url))
+		$url = @$GLOBALS['main_uri'].$url;
 
 //		if($hts)
 //		$parse = url_parse($url);
 
-		$external = @$parse['local'] ? '' : ' class="external"';
+	$external = @$parse['local'] ? '' : ' class="external"';
 
 //		debug("'External' for $url='$external'; parse=".print_r($parse,true));
 
@@ -38,4 +38,4 @@
 		}
 
 		return "<a href=\"$url\"$external>{$params['description']}</a>";
-	}
+}

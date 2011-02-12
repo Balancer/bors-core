@@ -76,6 +76,12 @@ function im_client_detect($client_id, $type)
 	if(preg_match('/purple/i', $client_id))
 		return array('Pidgin', NULL);
 
+	if(preg_match('/gajim/i', $client_id))
+		return array('Gajim', NULL);
+
+	if(preg_match('/qip/i', $client_id))
+		return array('QIP', 'Windows');
+
 	switch($type)
 	{
 		case 'jabber':
@@ -98,6 +104,10 @@ function im_client_image($client_name)
 			return 'http://s.wrk.ru/i16/im/pidgin.png';
 		case 'Jabber':
 			return 'http://s.wrk.ru/i16/im/jabber.jpg';
+		case 'Gajim':
+			return 'http://s.wrk.ru/i16/im/gajim.png';
+		case 'QIP':
+			return 'http://s.wrk.ru/i16/im/qipinfium.png';
 	}
 
 	debug_hidden_log('append_data', "Unknown IM type $name for $client_id (of $type)");

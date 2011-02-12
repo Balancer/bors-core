@@ -49,6 +49,7 @@ class bors_external_feeds_entry extends base_object_db
 			// <a href="http://img200.imageshack.us/img200/2530/screenshotdl.png" rel="nofollow">img200.imageshack.us</a>
 			$text = preg_replace('!<a href="([^"]+?\.(jpe?g|png|gif))" rel="nofollow">[^\s\<]+</a>!i', "[img $1]", $text);
 //			echo "$text\n\n\n";
+			$text = preg_replace('!<a href="http://www.youtube.\w+/watch\?v=([^"])+" rel="nofollow">youtube.com</a>!', '[youtube]$1[/youtube]', $text);
 		}
 
 		$text = html2bb(bors_close_tags($text), array('origin_url' => $link, 'strip_forms' => true));

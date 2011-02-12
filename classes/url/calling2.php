@@ -5,6 +5,7 @@ class url_calling2 extends url_base
 	function url($page = NULL)
 	{
 		$obj = $this->id();
+
 		$url = $obj->called_url();
 
 		if(!$url)

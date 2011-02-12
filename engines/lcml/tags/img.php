@@ -248,10 +248,15 @@ __EOT__;
 					$styles[] = @$params['align'];
 				}
 
-				if(@$params['border'])
-					$styles[] = 'box';
+				$out = '';
 
-				$out = '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" alt=\"\" />{$a_href_e}";
+				if(@$params['border'])
+				{
+					$out .= "<div class=\"clear\">&nbsp;</div>\n";
+					$styles[] = 'box';
+				}
+
+				$out .= '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" alt=\"\" />{$a_href_e}";
 				if($description)
 					$out .= "<div style=\"font-size: xx-small;\">".lcml($description, array('html'=>'safe'))."</div>";
 				$out .= '</div>';

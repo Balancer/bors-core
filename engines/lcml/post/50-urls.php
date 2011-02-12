@@ -58,6 +58,19 @@
 			$query = $m[2];
 		}
 
+		if(config('lcml_balancer'))
+		{
+			//TODO: придумать хук вместо хардкода
+			$data = url_parse($pure_url);
+			if(in_array($data['host'], array('airbase.ru', 'balabot.balancer.ru', 'balancer.ru', 'bors.balancer.ru', 'forums.airbase.ru', 'forums.balancer.ru')))
+			{
+				$anchor = NULL;
+				$obj = bors_load_uri($pure_url);
+				if($obj)
+					return "<a href=\"$original_url\">{$obj->title()}</a>";
+			}
+		}
+
 		if(preg_match("!/[^/]+\.[^/]+$!", $pure_url) 
 				&& !preg_match("!\.(html|htm|phtml|shtml|jsp|pl|php|php4|php5|cgi)$!i", $pure_url)
 				&& !preg_match("!^http://[^/]+/?$!i", $pure_url)
@@ -84,16 +97,17 @@
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_MAXREDIRS => 3,
 			CURLOPT_ENCODING => 'gzip,deflate',
-			CURLOPT_RANGE => '0-4095',
+//			CURLOPT_RANGE => '0-4095',
 			CURLOPT_REFERER => $original_url,
 			CURLOPT_AUTOREFERER => true,
 			CURLOPT_HTTPHEADER => $header,
-			CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
+//			CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
+			CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
 			CURLOPT_RETURNTRANSFER => true,
 		));
 
-        if(preg_match("!lenta\.ru!", $url))
-			curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
+//        if(preg_match("!lenta\.ru!", $url))
+//			curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 		require_once('inc/urls.php');
 
@@ -105,7 +119,7 @@
 //		$data = trim(curl_redir_exec($ch));
 
 		$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-//		echo "<xmp>"; print_r($data); echo "</xmp>";
+//		echo "$url: <xmp>"; print_r($data); echo "</xmp>"; exit();
 
         if(preg_match("!charset=(\S+)!i", $content_type, $m))
             $charset = $m[1];

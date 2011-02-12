@@ -1,73 +1,130 @@
 <?php
 
-function get_browser_info($user_agent)
+function get_browser_info($user_agent, $log_unknown = true)
 {
 	$os = '';
 	$ov = '';
+	$device = NULL;
 
-	$is_bot = false;
-
-	if(preg_match('!FreeBSD!', $user_agent))
-		$os = 'FreeBSD';
-	elseif(preg_match('!Gentoo!', $user_agent))
+	if($bot = bors_bot_detect($user_agent))
 	{
-		$os = 'Linux';
-		$ov = 'Gentoo';
+		$browser = $bot;
+		$is_bot = true;
 	}
-	elseif(preg_match('!Linux!', $user_agent))
-		$os = 'Linux';
-	elseif(preg_match('!Windows CE; PPC!', $user_agent))
-		$os = 'PocketPC';
+	else
+		$is_bot = false;
+
+	// ************************************************************
+	// Обнаруживаем устройства
+	// ************************************************************
+
+	if(preg_match('!Desire.*HD!i', $user_agent))
+	{
+		$device = 'HTC Desire HD';
+	}
+	elseif(preg_match('!NokiaN70!i', $user_agent))
+	{
+		$device = 'Nokia N70';
+	}
+	elseif(preg_match('!Nokia!i', $user_agent))
+	{
+		$device = 'Nokia';
+	}
+	elseif(preg_match('!iPad!', $user_agent))
+	{
+		$os = 'iOS';
+		if(preg_match('/ OS (\d+)_/', $user_agent, $m))
+			$ov = $m[1];
+		$device = 'iPad';
+	}
 	elseif(preg_match('!iPhone!', $user_agent))
-		$os = 'iPhone';
-	elseif(preg_match('!(Symbian OS|SymbOS)!', $user_agent))
 	{
-		$os = 'Symbian';
-		if(preg_match('!S(\d+);!', $user_agent))
-			$osv = 'Series 60';
+		$os = 'iOS';
+		if(preg_match('/ OS (\d+)_/', $user_agent, $m))
+			$ov = $m[1];
+		$device = 'iPhone';
 	}
-	elseif(preg_match('!J2ME!', $user_agent))
-		$os = 'J2ME';
-	elseif(preg_match('!Intel Mac OS X!', $user_agent))
-		$os = 'MacOSX';
-	elseif(preg_match('!Macintosh; PPC Mac OS X!', $user_agent))
-		$os = 'MacOSX';
-	elseif(preg_match('!OS/2;!', $user_agent))
-		$os = 'OS/2';
-	elseif(preg_match('!J2ME!', $user_agent))
-		$os = 'J2ME';
-	elseif(preg_match('!Tablet PC 1.7!', $user_agent))
-	{
-		$os = 'Windows';
-		$ov = 'XP Tablet PC Edition 2005';
-	}
-	elseif(preg_match('!Windows NT 6.1!', $user_agent))
-	{
-		$os = 'Windows';
-		$ov = 'Seven';
-	}
-	elseif(preg_match('!Windows NT 6.0!', $user_agent))
-	{
-		$os = 'Windows';
-		$ov = 'Vista';
-	}
-	elseif(preg_match('!Windows NT 5.(1|2)!', $user_agent))
-	{
-		$os = 'Windows';
-		$ov = 'XP';
-	}
-	elseif(preg_match('!Windows NT 5.0!', $user_agent))
-	{
-		$os = 'Windows';
-		$ov = '2000';
-	}
-	elseif(preg_match('!Windows 98!', $user_agent))
-		$os = 'Windows98';
-	elseif(preg_match('!Win98!', $user_agent))
-		$os = 'Windows98';
-	elseif(preg_match('!Windows!i', $user_agent))
-		$os = 'Windows';
 
+	// ************************************************************
+	// Обнаруживаем ОС и устройства
+	// ************************************************************
+
+	if(!$os)
+	{
+		if(preg_match('!Android!i', $user_agent))
+		{
+			$os = 'Android';
+			if(preg_match('!Android ([\d\.]+);!', $user_agent, $m))
+				$osv = $m[1];
+		}
+		elseif(preg_match('!FreeBSD!', $user_agent))
+			$os = 'FreeBSD';
+		elseif(preg_match('!Gentoo!', $user_agent))
+		{
+			$os = 'Linux';
+			$ov = 'Gentoo';
+		}
+		elseif(preg_match('!Linux!', $user_agent))
+			$os = 'Linux';
+		elseif(preg_match('!Windows CE; PPC!', $user_agent))
+			$os = 'PocketPC';
+		elseif(preg_match('!(Symbian OS|SymbOS)!', $user_agent))
+		{
+			$os = 'Symbian';
+			if(preg_match('!S(\d+);!', $user_agent, $m))
+				$osv = 'Series '.$m[1];
+		}
+		elseif(preg_match('!Series60!', $user_agent))
+		{
+			$os = 'Symbian';
+			$osv = 'Series 60';
+		}
+		elseif(preg_match('!J2ME!', $user_agent))
+			$os = 'J2ME';
+		elseif(preg_match('!Intel Mac OS X!', $user_agent))
+			$os = 'MacOSX';
+		elseif(preg_match('!Macintosh; PPC Mac OS X!', $user_agent))
+			$os = 'MacOSX';
+		elseif(preg_match('!OS/2;!', $user_agent))
+			$os = 'OS/2';
+		elseif(preg_match('!J2ME!', $user_agent))
+			$os = 'J2ME';
+		elseif(preg_match('!Tablet PC 1.7!', $user_agent))
+		{
+			$os = 'Windows';
+			$ov = 'XP Tablet PC Edition 2005';
+		}
+		elseif(preg_match('!Windows NT 6\.1!', $user_agent))
+		{
+			$os = 'Windows';
+			$ov = 'Seven';
+		}
+		elseif(preg_match('!Windows NT 6.0!', $user_agent))
+		{
+			$os = 'Windows';
+			$ov = 'Vista';
+		}
+		elseif(preg_match('!Windows NT 5.(1|2)!', $user_agent))
+		{
+			$os = 'Windows';
+			$ov = 'XP';
+		}
+		elseif(preg_match('!Windows NT 5.0!', $user_agent))
+		{
+			$os = 'Windows';
+			$ov = '2000';
+		}
+		elseif(preg_match('!Windows 98!', $user_agent))
+			$os = 'Windows98';
+		elseif(preg_match('!Win98!', $user_agent))
+			$os = 'Windows98';
+		elseif(preg_match('!Windows!i', $user_agent))
+			$os = 'Windows';
+	}
+
+	// ************************************************************
+	// Обнаруживаем браузеры
+	// ************************************************************
 	$browser='';
 	$bv = '';
 	if(preg_match('!KHTML, like Gecko.*Chrome/(\S+)!', $user_agent, $m))
@@ -79,6 +136,11 @@ function get_browser_info($user_agent)
 		$browser='Opera';
 	elseif(preg_match('!Konqueror!', $user_agent))
 		$browser='Konqueror';
+	elseif(preg_match('!w3m!', $user_agent))
+	{
+		$browser = 'w3m';
+		$os = 'Linux';
+	}
 	elseif(preg_match('!SeaMonkey!', $user_agent))
 		$browser = 'SeaMonkey';
 	elseif(preg_match('!Iceweasel!', $user_agent))
@@ -89,6 +151,8 @@ function get_browser_info($user_agent)
 		if(preg_match('!Firefox/([\d\.]+)!', $user_agent, $m))
 			$bv = $m[1];
 	}
+	elseif(preg_match('! Firef !', $user_agent))
+		$browser = 'Firefox';
 	elseif(preg_match('!Shiretoko!', $user_agent))
 		$browser = 'Firefox';
 	elseif(preg_match('!GranParadiso!', $user_agent))
@@ -110,6 +174,8 @@ function get_browser_info($user_agent)
 			$bv = '';
 		}
 	}
+	elseif(preg_match('!MIDP!', $user_agent))
+		$browser = 'MIDP';
 
 	if(preg_match('!Akregator!', $user_agent))
 	{
@@ -141,19 +207,17 @@ function get_browser_info($user_agent)
 		$os = 'Unknown';
 	}
 
-	if($bot = bors_bot_detect($user_agent))
-	{
-		$browser = $bot;
-		$os = '';
-		$ov = '';
-		$is_bot = true;
-	}
+	if(!$is_bot && (!$browser or !$os) && $log_unknown)
+		debug_hidden_log('user_agents', "Unknown user agent '{$user_agent}'");
 
-	return array($os, $browser, $ov, $bv, $is_bot);
+	return array($os, $browser, $ov, $bv, $is_bot, $device);
 }
 
 function bors_find_shared_file($base_name, $path, $default = 'unknown.png')
 {
+	$base_name = bors_lower($base_name);
+	$base_name = preg_replace('/\W/', '-', $base_name);
+
 	$dir = BORS_CORE;
 	if(file_exists("$dir/shared/".($file = "$path/$base_name.png")))
 		return $file;
@@ -168,36 +232,53 @@ function bors_find_shared_file($base_name, $path, $default = 'unknown.png')
 	return NULL;
 }
 
-function bors_browser_images($ua)
+function bors_browser_images($ua, $ip = NULL)
 {
-	list($os, $browser, $osver, $bver, $is_bot) = get_browser_info($ua);
+	list($client_name, $os) = im_client_detect($ua.'-'.$ip, NULL); // xmpp для блогов, по типу
+	if($client_name)
+	{
+		$client_image = im_client_image($client_name);
+		return '<span title="'.htmlspecialchars($client_name)."\"><img src=\"{$client_image}\" width=\"16\" height=\"16\"></span>";
+	}
+
+	list($os, $browser, $osver, $bver, $is_bot, $device) = get_browser_info($ua);
 
 	$short = array();
-	if($os || $osver) $short[] = trim("$os $osver");
-	if($browser || $bver) $short[] = trim("$browser $bver");
+	if($browser || $bver)	
+		$short[] = trim("$browser $bver");
+	if($os || $osver)
+		$short[] = trim("$os $osver");
+	if($device)
+		$short[] = $device;
+
 	if($is_bot) $short[] = "bot";
 
 	$title = htmlspecialchars(join(', ', array_unique($short))." [{$ua}]");
 
 	$info = array();
 
+	if(($bfile = bors_find_shared_file("$browser-$bver", 'images/browsers', false)))
+		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+	elseif(($bfile = bors_find_shared_file($browser, 'images/browsers', false)))
+		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+	elseif($is_bot && ($bfile = bors_find_shared_file('spider-unknown', 'images/browsers', false)))
+		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+
 	if(!$is_bot)
 	{
-		if(($ofile = bors_find_shared_file(bors_lower("$os-$osver"), 'images/os', false)))
-			$info[] = "<img src=\"/_bors/$ofile\" class=\"flag\" title=\"$title\" alt=\"$bver\"/>";
-		elseif(($ofile = bors_find_shared_file(bors_lower($os), 'images/os', false)))
-			$info[] = "<img src=\"/_bors/$ofile\" class=\"flag\" title=\"$title\" alt=\"$bver\"/>";
+		if(($ofile = bors_find_shared_file("$os-$osver", 'images/os', false)))
+			$info[] = "<img src=\"/_bors/$ofile\" class=\"i16\" alt=\"$bver\"/>";
+		elseif(($ofile = bors_find_shared_file($os, 'images/os', false)))
+			$info[] = "<img src=\"/_bors/$ofile\" class=\"i16\" alt=\"$bver\"/>";
 	}
 
-	if(($bfile = bors_find_shared_file(bors_lower("$browser-$bver"), 'images/browsers', false)))
-		$info[] = "<img src=\"/_bors/$bfile\" class=\"flag\" title=\"$title\" alt=\"$over\"/>";
-	elseif(($bfile = bors_find_shared_file(bors_lower($browser), 'images/browsers', false)))
-		$info[] = "<img src=\"/_bors/$bfile\" class=\"flag\" title=\"$title\" alt=\"$over\"/>";
-	elseif($is_bot && ($bfile = bors_find_shared_file('spider-unknown', 'images/browsers', false)))
-		$info[] = "<img src=\"/_bors/$bfile\" class=\"flag\" title=\"$title\" alt=\"$over\"/>";
+	if(($device_image = bors_find_shared_file("$device", 'i16/dev', false)))
+		$info[] = "<img src=\"/_bors/$device_image\" class=\"i16\" alt=\"$over\"/>";
 
 	if(empty($info))
-		$info[] = "<img src=\"/_bors/i/unknown-16.png\" class=\"flag\" title=\"$title\" alt=\"Unknown\"/>";
+	{
+		$info[] = "<img src=\"/_bors/i/unknown-16.png\" class=\"i16\" alt=\"Unknown\"/>";
+	}
 
-	return join('', $info);
+	return "<span title=\"$title\">".join('', $info)."</span>";
 }

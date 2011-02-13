@@ -33,7 +33,9 @@ class bors_external_feeds_entry extends base_object_db
 
 	function auto_targets()
 	{
-		return array_merge(parent::auto_targets(), array('target' => 'target_class_name(target_object_id)'));
+		return array_merge(parent::auto_targets(), array(
+			'target' => 'target_class_name(target_object_id)',
+		));
 	}
 
 	function make_source()
@@ -48,8 +50,8 @@ class bors_external_feeds_entry extends base_object_db
 			// Разворачиваем в BB-код картинки
 			// <a href="http://img200.imageshack.us/img200/2530/screenshotdl.png" rel="nofollow">img200.imageshack.us</a>
 			$text = preg_replace('!<a href="([^"]+?\.(jpe?g|png|gif))" rel="nofollow">[^\s\<]+</a>!i', "[img $1]", $text);
-//			echo "$text\n\n\n";
-			$text = preg_replace('!<a href="http://www.youtube.\w+/watch\?v=([^"])+" rel="nofollow">youtube.com</a>!', '[youtube]$1[/youtube]', $text);
+//			exit("$text");
+			$text = preg_replace('!<a href="http://www.youtube.\w+/watch\?v=([^"]+)" rel="nofollow">youtube.com</a>!', '[youtube]$1[/youtube]', $text);
 		}
 
 		$text = html2bb(bors_close_tags($text), array('origin_url' => $link, 'strip_forms' => true));
@@ -78,6 +80,19 @@ class bors_external_feeds_entry extends base_object_db
 	{
 		$feed = $this->feed();
 
+		if($parser_class_name = $feed->parser_class_name())
+		{
+			$parser = new $parser_class_name(NULL);
+			$data = $parser->parse(array(
+				'text' => $this->text(),
+			));
+
+			$source = $data['text'];
+			$source .= "\n// Транслировано с {$this->entry_url()}\n";
+		}
+		else
+			$source = $this->make_source();
+
 		$keywords = join(',', $this->full_keywords_list());
 
 		$owner_id = $feed->owner_id();
@@ -91,7 +106,7 @@ class bors_external_feeds_entry extends base_object_db
 
 			$post->set_owner_id($owner_id, true);
 			$post->set_author_name($owner_name, true);
-			$post->set_source($this->make_source(), true);
+			$post->set_source($source, true);
 			$post->set_body(NULL, true);
 			$post->set_post_body(NULL, true);
 			$post->cache_clean();
@@ -137,7 +152,7 @@ class bors_external_feeds_entry extends base_object_db
 			'topic_id' => $topic->id(),
 			'owner_id' => $owner_id,
 			'author_name' => $owner_name,
-			'source' => $this->make_source(),
+			'source' => $source,
 			'create_time' => $this->pub_date(),
 		));
 

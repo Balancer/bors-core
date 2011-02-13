@@ -59,7 +59,6 @@ class bors_lcml
         if(!is_dir($dir))
 			return;
 
-
 		$files = self::memcache()->get('lcml_actions_'.@$_SERVER['HTTP_HOST'].'_3:'.$dir);
 		if(!$files)
 		{
@@ -329,6 +328,9 @@ function html2bb($text, $args = array())
 
 	$text = preg_replace('!<lj\-embed id="(\d+)" />!ise', "lcmlbb_lj_embed(\"$1\", '$url');", $text);
 	$text = str_replace('embed', 'xx', $text);
+
+	require_once('pre/03-external_code.php');
+	$text = lcml_external_code($text);
 
 	$text = preg_replace("/^\s+$/m", '', $text);
 

@@ -41,4 +41,29 @@ class bors_external_twitter extends bors_object
 			}
 		}
 	}
+
+	static function parse($data)
+	{
+		extract($data);
+		// Фикс ошибок вида http://bit.ly/gNE1ZE/ - последний слеш - ошибка.
+		$text = preg_replace('!(http://bit.ly/\w+?)/!', '$1', $text);
+
+		// http://bit.ly/gNE1ZE
+		$text = preg_replace('!(http://(lnk.ms)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
+
+		// http://youtu.be/sdUUx5FdySs?a
+		// http://youtu.be/1SBkx-sn9i8?a
+		$text = preg_replace('!(http://(youtu.be)/[^\?]+\?a)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
+
+		$text = html2bb(bors_close_tags($text), array(
+//			'origin_url' => $link,
+			'strip_forms' => true,
+		));
+
+//		var_dump($text);
+
+		return array(
+			'text' => $text,
+		);
+	}
 }

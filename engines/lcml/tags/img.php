@@ -4,14 +4,18 @@ require_once('inc/urls.php');
 
 function lt_img($params) 
 {
-//	if(config('is_debug')) var_dump($params);
-
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
 		return lt_img_bors($params);
 
 	$url = bors()->main_object() ? bors()->main_object()->url() : NULL;
 	require_once('inc/airbase/images.php');
 	$data = airbase_image_data($params['url'], $url);
+
+	if(preg_match('/\.gif$/i', $params['url']))
+	{
+		$params['noresize'] = true;
+		$params['nohref'] = true;
+	}
 
 //	if(!$data['local'])
 //		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.

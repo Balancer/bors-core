@@ -56,6 +56,16 @@ function class_name_to_id($object)
 	return $class_id;
 }
 
+function class_names_to_ids($class_names)
+{
+	$class_ids  = array();
+
+	foreach($class_names as $class_name)
+		$class_ids[] = class_name_to_id($class_name);
+
+	return $class_ids;
+}
+
 function class_id_to_name($class_id)
 {
 	$loaded = bors_class_names_load();

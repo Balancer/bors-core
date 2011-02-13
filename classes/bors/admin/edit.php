@@ -4,6 +4,9 @@ class bors_admin_edit extends bors_page
 {
 	function config_class() { return config('admin_config_class'); }
 
+	function can_be_empty() { return false; }
+	function loaded() { return !!$this->real_object(); }
+
 	function title()
 	{
 		if(!$this->id())

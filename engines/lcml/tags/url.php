@@ -20,22 +20,20 @@ function lt_url($params)
 
 	$external = @$parse['local'] ? '' : ' class="external"';
 
-//		debug("'External' for $url='$external'; parse=".print_r($parse,true));
+	if($hts && !$hts->get_data($url, 'create_time') && !$hts->get_data($url, 'title'))
+	{
+		$hts->set_data($url, 'title', $params['description']);
+		$hts->set_data($url, 'modify_time', time());
+	}
 
-		if($hts && !$hts->get_data($url, 'create_time') && !$hts->get_data($url, 'title'))
-		{
-			$hts->set_data($url, 'title', $params['description']);
-			$hts->set_data($url, 'modify_time', time());
-		}
+	if(!isset($params['description']) || $url == $params['description'])
+		$params['description'] = $url;
+	else
+	{
+		$description = lcml($params['description'],  array('html'=>'safe', 'only_tags' => true));
+//		if(!preg_match('!a href!', $description))
+			$params['description'] = $description;
+	}
 
-		if(!isset($params['description']) || $url == $params['description'])
-			$params['description'] = $url;
-		else
-		{
-			$description = lcml($params['description'],  array('html'=>'safe', 'only_tags' => true));
-//			if(!preg_match('!a href!', $description))
-				$params['description'] = $description;
-		}
-
-		return "<a href=\"$url\"$external>{$params['description']}</a>";
+	return "<a href=\"$url\"$external>{$params['description']}</a>";
 }

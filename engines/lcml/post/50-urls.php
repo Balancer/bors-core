@@ -83,7 +83,6 @@
             if($title = $hts->get('title'))
                 return "<a href=\"{$original_url}\">$title</a>";
         }
-
 		if(!function_exists('curl_init'))
 	        return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";
 
@@ -91,64 +90,16 @@
 		$header[] = "Accept-Charset: {$GLOBALS['lcml_request_charset_default']}";
 		$header[] = "Accept-Language: ru, en";
 
-		$ch = curl_init($url);
-		curl_setopt_array($ch, array(
-			CURLOPT_TIMEOUT => 5,
-			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_MAXREDIRS => 3,
-			CURLOPT_ENCODING => 'gzip,deflate',
-//			CURLOPT_RANGE => '0-4095',
-			CURLOPT_REFERER => $original_url,
-			CURLOPT_AUTOREFERER => true,
-			CURLOPT_HTTPHEADER => $header,
-//			CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
-			CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
-			CURLOPT_RETURNTRANSFER => true,
-		));
+		$data = bors_lib_http::get($url);
 
-//        if(preg_match("!lenta\.ru!", $url))
-//			curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
-
-		require_once('inc/urls.php');
-
-		debug_timing_start('http-get[engines/lcml/post/50-urls.php]: '.$url);
-		debug_timing_start('http-get-total');
-		$data = trim(curl_exec($ch));
-		debug_timing_stop('http-get-total');
-		debug_timing_stop('http-get[engines/lcml/post/50-urls.php]: '.$url);
-//		$data = trim(curl_redir_exec($ch));
-
-		$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-//		echo "$url: <xmp>"; print_r($data); echo "</xmp>"; exit();
-
-        if(preg_match("!charset=(\S+)!i", $content_type, $m))
-            $charset = $m[1];
-        else
-            $charset = '';
-
-		curl_close($ch);
-
-		if(empty($charset))
-		{
-	        if(preg_match("!<meta http\-equiv=\"Content\-Type\"[^>]+charset=(.+?)\"!i", $data, $m))
-    	        $charset = $m[1];
-			elseif(preg_match("!<meta[^>]+charset=(.+?)\"!i", $data, $m))
-    	        $charset = $m[1];
-		}
-
-        if(!$charset)
-			$charset = $GLOBALS['lcml_request_charset_default'];
-
-        if(preg_match("!<title>(.+?)</title>!is",$data,$m)) //@file_get_contents($url)
+        if(preg_match("!<title[^>]*>(.+?)</title>!is", $data, $m))
         {
-            if($charset)
-                $m[1] = iconv($charset, config('internal_charset').'//IGNORE', $m[1]);
+        	$title = $m[1];
+			$title = bors_substr(trim(preg_replace("!\s+!"," ", str_replace("\n"," ", strip_tags($title)))), 0, 256);
+			if(!$title)
+				$title = $url;
 
-			$new_url = bors_substr(trim(preg_replace("!\s+!"," ",str_replace("\n"," ",strip_tags($m[1])))),0,256);
-			if(!$new_url)
-				$new_url = $url;
-
-            return "<a href=\"{$original_url}\" class=\"external\">{$new_url}</a>";
+            return "<a href=\"{$original_url}\" class=\"external\">{$title}</a>";
         }
 
         return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";

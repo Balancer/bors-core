@@ -2,7 +2,18 @@
 
 class bors_system_go_redirect extends base_object
 {
+
+	function title() { return object_property($this->object(), 'title'); }
+
 	function pre_show()
+	{
+		if($object = $this->object())
+			return go($object->url_in_container(), true);
+
+		return false;
+	}
+
+	function object()
 	{
 		$object = NULL;
 
@@ -15,11 +26,7 @@ class bors_system_go_redirect extends base_object
 					break;
 			}
 		}
-//	echo $object->url_in_container(); return true;
 
-		if($object)
-			return go($object->url_in_container(), true);
-
-		return false;
+		return $object;
 	}
 }

@@ -143,4 +143,18 @@ class bors_global extends base_empty
 		$client->doBackground('balabot.work', serialize($data));
 		debug_hidden_log('balabot_work', "$task_class: ".substr(serialize($data), 0, 50), false);
 	}
+
+	static function ping($loops, $message)
+	{
+		static $count = 0;
+		if($count++ > $loops)
+		{
+			$count = 0;
+			bors()->changed_save();
+			bors_object_caches_drop();
+			echo '['.date('Y-m-d H:i:s').'] '.($message ? "{$message} " : '').self::memory_usage()."\n";
+		}
+
+//		var_dump($GLOBALS);
+	}
 }

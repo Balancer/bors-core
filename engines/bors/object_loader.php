@@ -70,7 +70,11 @@ function class_include($class_name, &$args = array())
 
 spl_autoload_register('class_include');
 
-function bors_object_caches_drop() { unset($GLOBALS['bors_data']['cached_objects4']); }
+function bors_object_caches_drop()
+{
+	unset($GLOBALS['bors_data']['cached_objects4']);
+	unset($GLOBALS['bors_search_get_word_id_cache']);
+}
 
 function &load_cached_object($class_name, $id, $args, &$found=0)
 {

@@ -531,13 +531,13 @@ function class_load_by_vhosts_url($url)
 
 				if($redirect)
 				{
-					if(!config('do_not_exit'))
-					{
-						echo "Redirect by $url_pattern";
-						go($obj->url($page), true);
-						exit("Redirect");
-					}
-					else
+//					if(!config('do_not_exit'))
+//					{
+//						echo "Redirect by $url_pattern";
+//						go($obj->url($page), true);
+//						exit("Redirect");
+//					}
+//					else
 						return object_load($obj->url($page));
 				}
 

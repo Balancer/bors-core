@@ -2,9 +2,9 @@
 
 class bors_external_feed extends base_object_db
 {
+	function storage_engine() { return 'bors_storage_mysql'; }
 	function table_name() { return 'external_feeds'; }
-
-	function main_table_fields()
+	function table_fields()
 	{
 		return array(
 			'id',

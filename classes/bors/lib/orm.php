@@ -48,6 +48,7 @@ class bors_lib_orm
 	{
 		$fields_array = array();
 		foreach($object->fields() as $db => $tables)
+		{
 			foreach($tables as $table => $fields)
 				foreach($fields as $property => $field)
 				{
@@ -55,6 +56,8 @@ class bors_lib_orm
 					if($field['name'] != 'id')
 						$fields_array[] = $field;
 				}
+		}
+
 		return $fields_array;
 	}
 
@@ -66,9 +69,9 @@ class bors_lib_orm
 			if(preg_match('/^set_(\w+)$/', $name, $m))
 				$fields_array[$m[1]] = $m[1];
 
-//		print_r($object->fields_map_db());
+//		print_r($object->fields());
 
-		foreach($object->fields_map_db() as $db => $tables)
+		foreach($object->fields() as $db => $tables)
 			foreach($tables as $table => $fields)
 				foreach($fields as $property => $field)
 				{
@@ -127,8 +130,10 @@ class bors_lib_orm
 	{
 		$object = new $class_name(NULL);
 		foreach(self::all_fields($object) as $f)
+		{
 			if($f['property'] == $property)
 				return $f['name'];
+		}
 
 		return NULL;
 	}

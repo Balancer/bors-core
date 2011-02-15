@@ -98,6 +98,7 @@ function array_smart_expand(&$array)
 
 function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 {
+//	echo "bors_class_field_to_db($class, $property, $was_joined) <br/>\n";
 	if(!$class)
 		return $property;
 
@@ -109,63 +110,18 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 		$class = new $class(NULL);
 	}
 
-	$found = false;
-	foreach($class->fields_map_db() as $db => $tables)
-	{
-		foreach($tables as $table => $fields)
-		{
-			if(preg_match('!^(inner|left)\s+(.+)$!i', $table, $m))
-				$table = $m[2];
+	if($field = bors_lib_orm::property_to_field($class, $property))
+		return $field;
 
-			if(preg_match('!^(\w+)\((.+)\)$!', $table, $m))
-				$table = $m[1];
+	if(!$property)
+		return $class->table_name();
 
-			if(($field = @$fields[$property]))
-			{
-				$found = true;
-				break;
-			}
-
-			$fields	 = array_smart_expand($fields);
-			if(($field = @$fields[$property]))
-			{
-				$found = true;
-				break;
-			}
-		}
-
-		if($found)
-			break;
-	}
-
-	if(!$field)
-	{
-		if(!$property)
-			return $class->table_name();
-
-		return $property;
-	}
-
-	if(is_array($field))
-	{
-		bors_lib_orm::field($property, $field);
-		$field = $field['name'];
-	}
-
-	if(preg_match('!^(.+)\|.+!', $field, $m))
-		$field = $m[1];
-
-	if(!$was_joined && $table == $class->table_name())
-		$table = '';
-
-	if(preg_match('/^(\w+)\((\w+)\)$/', $field, $m))
-		return $m[1].'('.($table ? $table.'.' : '') . $m[2] .')';
-	else
-		return (@$table ? $table.'.' : '') . $field;
+	return $property;
 }
 
 function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 {
+//	echo "mysql_bors_join_parse($join, $class_name, $was_joined)\n";
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
 	$join = preg_replace('!^(\w+)\.(\w+)$!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
 	$join = preg_replace('!(\w+)\.(\w+)\s*(=|>|<)!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
@@ -184,7 +140,7 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 	return $join;
 }
 
-function mysql_args_compile($args, $class='')
+function mysql_args_compile($args, $class=NULL)
 {
 	if(!empty($args['*class_name']))
 	{

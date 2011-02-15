@@ -8,6 +8,7 @@
 лучше и их владельцев переписать на использование bors_storage_mysql.
 Также сносятся в пользу:
 main_db_storage() -> main_db()
+main_table_storage() -> main_table()
 
 2010-07-22
 ----------

@@ -2,9 +2,10 @@
 
 class bors_external_feeds_entry extends base_object_db
 {
-	function table_name() { return 'external_feeds_entries'; }
+	function storage_engine() { return 'bors_storage_mysql'; }
 
-	function main_table_fields()
+	function table_name() { return 'external_feeds_entries'; }
+	function table_fields()
 	{
 		return array(
 			'id',
@@ -46,7 +47,7 @@ class bors_external_feeds_entry extends base_object_db
 		if($this->feed_id() == 2) // Juick
 		{
 			// Разворачиваем в BB-код тэги picasaweb с Juick'а
-			$text = preg_replace('!<a href="http://picasaweb.google.\w+.+photo/(.+?)\?feat=directlink.*?</a>!', "\n[picasa notitle]\\1[/picasa]\n", $text);
+			$text = preg_replace('!<a href="https?://picasaweb.google.\w+.+photo/(.+?)\?feat=directlink.*?</a>!', "\n[picasa notitle]\\1[/picasa]\n", $text);
 			// Разворачиваем в BB-код картинки
 			// <a href="http://img200.imageshack.us/img200/2530/screenshotdl.png" rel="nofollow">img200.imageshack.us</a>
 			$text = preg_replace('!<a href="([^"]+?\.(jpe?g|png|gif))" rel="nofollow">[^\s\<]+</a>!i', "[img $1]", $text);

@@ -150,7 +150,7 @@ function http_get_ex($url, $raw = true)
 
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => 10,
+		CURLOPT_TIMEOUT => preg_match('/imageshack.us/', $url) ? 40 : 10,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 5,
 		CURLOPT_ENCODING => 'gzip,deflate',

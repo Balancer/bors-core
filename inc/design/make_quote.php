@@ -1,6 +1,6 @@
 <?php
 
-	function make_quote($author, $message)
+	function make_quote($author, $message, $skip_quotes = true)
 	{
 		$InsertPostMess = "";
 
@@ -8,9 +8,10 @@
 		$author = preg_replace('!^<(.+?)>$!','$1',$author);
 		$author = preg_replace('!^&lt;(.+?)&gt;$!','$1',$author);
 
-		foreach(explode(' ', 'code quote pre') as $tag)
-			$message = preg_replace("!\[".$tag."[^\]]*\].+\[/".$tag."\]!is", "", $message);
-			
+		if($skip_quotes)
+			foreach(explode(' ', 'code quote pre') as $tag)
+				$message = preg_replace("!\[".$tag."[^\]]*\].+\[/".$tag."\]!is", "", $message);
+
 		$message = preg_replace("!\[img](.+?)\[/img\]!i", "[img \"$1\" x64]", $message);
 
 		if(strpos($author,' ') !== false)
@@ -53,6 +54,6 @@
 
 			$InsertPostMess .= "$author&gt; $s\n";
 		}
-	
+
 		return trim($InsertPostMess)."\n";
 	}

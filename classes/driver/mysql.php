@@ -17,14 +17,14 @@ class driver_mysql extends DataBase implements Iterator
 //	function where_is($field) { $this->where[] = $field; return $this; }
 	function where($field, $val) { $this->where[$field] = $val; return $this; }
 
-	function select($table, $field = NULL, $where_map = array())
+	function select($table, $field = NULL, $where_map = array(), $class_name = NULL)
 	{
 		$where_map['limit'] = 1;
 
 		if($field === NULL)
 		{
 			$field = $table;
-			return $this->get("SELECT $field FROM {$this->table} ".mysql_args_compile($this->where));
+			return $this->get("SELECT $field FROM {$this->table} ".mysql_args_compile($this->where, $class_name));
 		}
 
 		if(!empty($where_map['table']))
@@ -33,7 +33,7 @@ class driver_mysql extends DataBase implements Iterator
 			unset($where_map['table']);
 		}
 
-		return $this->get("SELECT $field FROM $table ".mysql_args_compile($where_map));
+		return $this->get("SELECT $field FROM $table ".mysql_args_compile($where_map, $class_name));
 	}
 
 	function delete($table, $where)

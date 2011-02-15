@@ -461,7 +461,7 @@ class bors_storage_pdo extends bors_storage implements Iterator
 			return bors_throw(ec('Удаление таблиц запрещено'));
 
 		$class = new $class_name(NULL);
-		foreach($class->fields_map_db() as $db_name => $tables)
+		foreach($class->fields() as $db_name => $tables)
 		{
 			$db = new driver_pdo($db_name);
 

@@ -88,7 +88,7 @@ class bors_admin_edit_smart extends base_page
 		return array(
 			'object' => $this->object(),
 //			'fields' => $fields,
-//			'fields' => $this->fields_map_db(),
+//			'fields' => $this->fields(),
 			'referer' => ($ref = bors()->referer()) ? $ref : 'newpage_admin',
 			'auto_fields' => $fields,
 		);

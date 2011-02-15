@@ -39,7 +39,8 @@ class bors_admin_engine extends base_empty
 		if(method_exists($obj = $this->real_object(), 'delete_url'))
 			return $obj->delete_url();
 
-		if(method_exists($obj, 'fields_map_db') && $obj->has_smart_field('is_deleted'))
+		//TODO: придумать лучший вариант определения. Отказаться от has_smart_field.
+		if(method_exists($obj, 'fields') && $obj->has_smart_field('is_deleted'))
 			return '/_bors/admin/mark/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin_parent_url());
 		else
 			return '/_bors/admin/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin_parent_url());

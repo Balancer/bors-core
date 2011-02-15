@@ -21,16 +21,29 @@ class base_object_db extends bors_object
 //			bors_db_fields_init($this);
 	}
 
-	function fields_map_db() { return $this->fields(); }
-	function fields() { return array($this->db_name(config('main_bors_db')) => array($this->table_name(bors_plural($this->class_name())) => $this->fields_map())); }
+	function fields()
+	{
+		if($this->storage_engine() != 'storage_db_mysql_smart')
+		{
+			return array(
+				$this->db_name(config('main_bors_db')) => array(
+					$this->table_name(bors_plural($this->class_name())) => $this->table_fields()
+				)
+			);
+		}
+
+		return array(
+			$this->main_db(config('main_bors_db')) => array(
+				$this->main_table(bors_plural($this->class_name())) => $this->main_table_fields()
+			)
+		);
+	}
 
 	function db_name($default = NULL) { return $this->main_db($default); }
-	function main_db($default = NULL) { return $this->main_db_storage($default); }
-	function main_db_storage($default = NULL) { return $default ? $default : array_shift(array_keys($this->fields_map_db())); }
+	function main_db($default = NULL) { return $default ? $default : array_shift(array_keys($this->fields())); }
 
 	function table_name($default = NULL) { return $this->main_table($default); }
-	function main_table($default = NULL) { return $this->main_table_storage($default); }
-	function main_table_storage($default = NULL) { return $default ? $default : array_shift(array_keys(array_shift($this->fields_map_db()))); }
+	function main_table($default = NULL) { return $default ? $default : array_shift(array_keys(array_shift($this->fields()))); }
 
 	function new_instance() { bors_object_new_instance_db($this); }
 
@@ -44,7 +57,7 @@ class base_object_db extends bors_object
 //		if(method_exists($this, 'table_fields'))
 //			return defval($this->table_fields(), 'id', 'id');
 
-		$f = $this->fields_map_db();
+		$f = $this->fields();
 		$f = $f[$this->db_name()];
 		$f = $f[$this->table_name()];
 		if($fid = @$f['id'])

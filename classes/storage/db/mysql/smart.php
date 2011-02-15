@@ -22,14 +22,14 @@ class storage_db_mysql_smart extends base_null
 		global $stdbms_cache;
 
 //		echo "Load $object (".$GLOBALS['bors_data']['class_included'][get_class($object)].")<br/>";
-//		print_d($object->fields_map_db());
+//		print_d($object->fields());
 
 		$hash = md5(join('!', array($object->class_name(), $common_where, $only_count)));
 
 		$need_convert = $object->db_charset() != $object->internal_charset();
 		$must_be_configured = $object->get('must_be_configured');
 
-		foreach($object->fields_map_db() as $db => $tables)
+		foreach($object->fields() as $db => $tables)
 		{
 			$tab_count = 0;
 			$select = defval($args, 'select', array());
@@ -336,7 +336,7 @@ class storage_db_mysql_smart extends base_null
 
 //		$need_convert = $object->db_charset() != $object->internal_charset();
 
-		foreach($object->fields_map_db() as $db => $tables)
+		foreach($object->fields() as $db => $tables)
 		{
 			$dbh = new driver_mysql($db);
 
@@ -459,7 +459,7 @@ class storage_db_mysql_smart extends base_null
 
 //		$need_convert = $object->db_charset() != $object->internal_charset();
 
-		foreach($object->fields_map_db() as $db => $tables)
+		foreach($object->fields() as $db => $tables)
 		{
 //			echo "Database: $db; tables="; print_r($tables); echo "<br />\n";
 			$dbh = new driver_mysql($db);
@@ -584,7 +584,7 @@ class storage_db_mysql_smart extends base_null
 
 		$class = new $class_name(NULL);
 
-		foreach($class->fields_map_db() as $db_name => $tables)
+		foreach($class->fields() as $db_name => $tables)
 		{
 			foreach($tables as $table_name => $fields)
 			{
@@ -654,7 +654,7 @@ class storage_db_mysql_smart extends base_null
 			return bors_throw(ec('Удаление таблиц запрещено'));
 
 		$class = new $class_name(NULL);
-		foreach($class->fields_map_db() as $db_name => $tables)
+		foreach($class->fields() as $db_name => $tables)
 		{
 			$db = new driver_mysql($db_name);
 

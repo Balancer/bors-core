@@ -144,15 +144,32 @@ class bors_global extends base_empty
 		debug_hidden_log('balabot_work', "$task_class: ".substr(serialize($data), 0, 50), false);
 	}
 
-	static function ping($loops, $message)
+	static function ping($loops, $message, $rest = 0)
 	{
 		static $count = 0;
+		static $prev  = 0;
+		static $prev_ts  = 0;
+
+		$rest_msg = NULL;
+
 		if($count++ > $loops)
 		{
+			if($rest)
+			{
+				if($prev)
+				{
+					$rest_us = $rest*(microtime(true) - $prev_ts)/($prev - $rest);
+					$rest_msg = 'ETA '.smart_interval(intval($rest_us+0.5));
+				}
+
+				$prev = $rest;
+				$prev_ts = microtime(true);
+			}
+
 			$count = 0;
 			bors()->changed_save();
 			bors_object_caches_drop();
-			echo '['.date('Y-m-d H:i:s').'] '.($message ? "{$message} " : '').self::memory_usage()."\n";
+			echo '['.date('Y-m-d H:i:s').'] '.($message ? "{$message} " : '').self::memory_usage()." $rest_msg\n";
 		}
 
 //		var_dump($GLOBALS);

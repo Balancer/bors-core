@@ -63,7 +63,7 @@ class base_object extends base_empty
 		$r_id_field = NULL;
 		$r_db_field = NULL;
 
-		foreach($this->fields_map_db() as $db => $tables)
+		foreach($this->fields() as $db => $tables)
 		{
 			foreach($tables as $table => $fields)
 			{

@@ -2,137 +2,6 @@
 
 class bors_storage_mysql extends bors_storage implements Iterator
 {
-	function load($object)
-	{
-		$select = array();
-		$post_functions = array();
-		foreach(bors_lib_orm::main_fields($object) as $f)
-		{
-			if(preg_match('/^\w+$/', $name = $f['name']))
-				$x = '`'.$name.'`'; // убирать апострофы нельзя, иначе тупо не работабт поля с некорректными именами
-			else
-				$x = $name;
-
-			if($f['name'] != ($property = $f['property']))
-				$x .= " AS `{$property}`";
-
-			$select[] = $x;
-
-			if(!empty($f['post_function']))
-				$post_functions[$f['property']] = $f['post_function'];
-		}
-
-		$where = array('`'.$object->id_field().'`=' => $object->id());
-
-		$dummy = array();
-		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
-		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
-
-		$dbh = new driver_mysql($object->db_name());
-		$data = $dbh->select($object->table_name(), join(',', $select), $where);
-
-		if(!$data)
-			return $object->set_loaded(false);
-
-		$object->data = $data;
-
-		if(!empty($post_functions))
-			self::post_functions_do($object, $post_functions);
-
-		$object->set_loaded(true);
-
-//		print_d($data);
-
-		return true;
-	}
-
-	static function post_functions_do(&$object, $post_functions)
-	{
-		foreach($post_functions as $property => $function)
-			$object->set($property, $function($object->$property()), false);
-	}
-
-	function load_array($object, $where)
-	{
-		$by_id  = popval($where, 'by_id');
-		$select = popval($where, 'select');
-		$set    = popval($where, '*set');
-
-		if(is_null($object))
-		{
-			$db_name = $where['*db'];
-			$table_name = $where['*table'];
-			unset($where['*db'], $where['*table']);
-			$select = array('*');
-			$class_name = 'base_object_db';
-			$object = new base_object_db(NULL);
-		}
-		else
-		{
-			$db_name = $object->db_name();
-			$table_name = $object->table_name();
-			$class_name = $object->class_name();
-			list($select, $where) = self::__query_data_prepare($object, $where);
-		}
-
-		$dbh = new driver_mysql($db_name);
-
-		// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')
-		if($set)
-			foreach(preg_split('/,\s*/', $set) as $s)
-				$select[] = $s;
-
-		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
-		$objects = array();
-
-		foreach($datas as $data)
-		{
-			$object->set_id(@$data['id']);
-			$object->data = $data;
-			$object->set_loaded(true);
-
-			if($by_id)
-				$objects[$object->id()] = $object;
-			else
-				$objects[] = $object;
-
-			$object = new $class_name(NULL);
-		}
-
-		return $objects;
-	}
-
-	function count($object, $where)
-	{
-		if(is_null($object))
-		{
-			$db_name = $where['*db'];
-			$table_name = $where['*table'];
-			unset($where['*db'], $where['*table']);
-			$select = array('*');
-			$class_name = 'base_object_db';
-			$object = new base_object_db(NULL);
-		}
-		else
-		{
-			$db_name = $object->db_name();
-			$table_name = $object->table_name();
-			$class_name = $object->class_name();
-			list($select, $where) = self::__query_data_prepare($object, $where);
-		}
-
-		$dbh = new driver_mysql($db_name);
-		if(empty($where['group']))
-			$count = $dbh->select($table_name, 'COUNT(*)', $where, $class_name);
-		else
-		{
-			$dbh->select_array($table_name, 'COUNT(*)', $where, $class_name);
-			$count = intval($dbh->get('SELECT FOUND_ROWS()'));
-		}
-
-		return $count;
-	}
-
 	static private function __query_data_prepare($object, $where)
 	{
 		$select = array();
@@ -238,6 +107,195 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		return array($update, $where);
 	}
 
+	static private function __join($type, $object, &$select, &$where, &$post_functions, &$update)
+	{
+		$where['*class_name'] = $object->class_name();
+
+		$main_db = $object->db_name();
+		$main_table = $object->table_name();
+		$main_id_field = $object->id_field();
+
+		$join = $object->get("{$type}_join_fields");
+		if($join)
+		{
+			foreach($join as $db_name => $tables)
+			{
+				foreach($tables as $table_name => $fields)
+				{
+					if(!preg_match('/^(\w+)\((\w+)\)$/', $table_name, $m))
+						throw new Exception('Unknown field format '.$table_name.' for class '.$object->class_name());
+
+					$id_field = $m[2];
+					$table_name = $m[1];
+
+					$t = '';
+					if($db_name != $main_db)
+						$t = "`$db_name`.";
+
+					$t .= "`$table_name`";
+
+					$j = "$t ON `$main_table`.`$main_id_field` = $t.`$id_field`";
+					$where[$type.'_join'][] = $j;
+
+					$update[$db_name][$table_name]['*id_field'] = $id_field;
+					foreach($fields as $property => $field)
+					{
+						$field = bors_lib_orm::field($property, $field);
+						$x = "$t.`{$field['name']}`";//FIXME: предусмотреть возможность подключать FUNC(`field`)
+						if($field['name'] != $field['property'])
+							$x .= " AS `{$field['property']}`";
+
+						$select[] = $x;
+
+						if(!empty($field['post_function']))
+							$post_functions[$field['property']] = $field['post_function'];
+
+//						echo "{$field['property']} => {$field['name']}: ".$object->get($field['property'])."<br/>\n";
+						if(!empty($object->changed_fields) && array_key_exists($field['property'], $object->changed_fields))
+							$update[$db_name][$table_name][$field['name']] = $object->get($field['property']);
+					}
+				}
+			}
+		}
+	}
+
+	static function post_functions_do(&$object, $post_functions)
+	{
+		foreach($post_functions as $property => $function)
+			$object->set($property, $function($object->$property()), false);
+	}
+
+	/**********************************************************
+
+		Загрузка одиночного объекта
+
+	***********************************************************/
+
+	function load($object)
+	{
+		$select = array();
+		$post_functions = array();
+		foreach(bors_lib_orm::main_fields($object) as $f)
+		{
+			if(preg_match('/^\w+$/', $name = $f['name']))
+				$x = '`'.$name.'`'; // убирать апострофы нельзя, иначе тупо не работабт поля с некорректными именами
+			else
+				$x = $name;
+
+			if($f['name'] != ($property = $f['property']))
+				$x .= " AS `{$property}`";
+
+			$select[] = $x;
+
+			if(!empty($f['post_function']))
+				$post_functions[$f['property']] = $f['post_function'];
+		}
+
+		$where = array('`'.$object->id_field().'`=' => $object->id());
+
+		$dummy = array();
+		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
+		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
+
+		$dbh = new driver_mysql($object->db_name());
+		$data = $dbh->select($object->table_name(), join(',', $select), $where);
+
+		if(!$data)
+			return $object->set_loaded(false);
+
+		$object->data = $data;
+
+		if(!empty($post_functions))
+			self::post_functions_do($object, $post_functions);
+
+		$object->set_loaded(true);
+
+//		print_d($data);
+
+		return true;
+	}
+
+	function load_array($object, $where)
+	{
+		$by_id  = popval($where, 'by_id');
+		$select = popval($where, 'select');
+		$set    = popval($where, '*set');
+
+		if(is_null($object))
+		{
+			$db_name = $where['*db'];
+			$table_name = $where['*table'];
+			unset($where['*db'], $where['*table']);
+			$select = array('*');
+			$class_name = 'base_object_db';
+			$object = new base_object_db(NULL);
+		}
+		else
+		{
+			$db_name = $object->db_name();
+			$table_name = $object->table_name();
+			$class_name = $object->class_name();
+			list($select, $where) = self::__query_data_prepare($object, $where);
+		}
+
+		$dbh = new driver_mysql($db_name);
+
+		// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')
+		if($set)
+			foreach(preg_split('/,\s*/', $set) as $s)
+				$select[] = $s;
+
+		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
+		$objects = array();
+
+		foreach($datas as $data)
+		{
+			$object->set_id(@$data['id']);
+			$object->data = $data;
+			$object->set_loaded(true);
+
+			if($by_id)
+				$objects[$object->id()] = $object;
+			else
+				$objects[] = $object;
+
+			$object = new $class_name(NULL);
+		}
+
+		return $objects;
+	}
+
+	function count($object, $where)
+	{
+		if(is_null($object))
+		{
+			$db_name = $where['*db'];
+			$table_name = $where['*table'];
+			unset($where['*db'], $where['*table']);
+			$select = array('*');
+			$class_name = 'base_object_db';
+			$object = new base_object_db(NULL);
+		}
+		else
+		{
+			$db_name = $object->db_name();
+			$table_name = $object->table_name();
+			$class_name = $object->class_name();
+			list($select, $where) = self::__query_data_prepare($object, $where);
+		}
+//var_dump($where);
+		$dbh = new driver_mysql($db_name);
+		if(empty($where['group']))
+			$count = $dbh->select($table_name, 'COUNT(*)', $where, $class_name);
+		else
+		{
+			$dbh->select_array($table_name, 'COUNT(*)', $where, $class_name);
+			$count = intval($dbh->get('SELECT FOUND_ROWS()'));
+		}
+
+		return $count;
+	}
+
 	function save($object)
 	{
 //		var_dump($object->id());
@@ -305,58 +363,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$object->data = $data;
 		$object->set_loaded(true);
 		return $this->object = $object;
-	}
-
-	static private function __join($type, $object, &$select, &$where, &$post_functions, &$update)
-	{
-		$where['*class_name'] = $object->class_name();
-
-		$main_db = $object->db_name();
-		$main_table = $object->table_name();
-		$main_id_field = $object->id_field();
-
-		$join = $object->get("{$type}_join_fields");
-		if($join)
-		{
-			foreach($join as $db_name => $tables)
-			{
-				foreach($tables as $table_name => $fields)
-				{
-					if(!preg_match('/^(\w+)\((\w+)\)$/', $table_name, $m))
-						throw new Exception('Unknown field format '.$table_name.' for class '.$object->class_name());
-
-					$id_field = $m[2];
-					$table_name = $m[1];
-
-					$t = '';
-					if($db_name != $main_db)
-						$t = "`$db_name`.";
-
-					$t .= "`$table_name`";
-
-					$j = "$t ON `$main_table`.`$main_id_field` = $t.`$id_field`";
-					$where[$type.'_join'][] = $j;
-
-					$update[$db_name][$table_name]['*id_field'] = $id_field;
-					foreach($fields as $property => $field)
-					{
-						$field = bors_lib_orm::field($property, $field);
-						$x = "$t.`{$field['name']}`";//FIXME: предусмотреть возможность подключать FUNC(`field`)
-						if($field['name'] != $field['property'])
-							$x .= " AS `{$field['property']}`";
-
-						$select[] = $x;
-
-						if(!empty($field['post_function']))
-							$post_functions[$field['property']] = $field['post_function'];
-
-//						echo "{$field['property']} => {$field['name']}: ".$object->get($field['property'])."<br/>\n";
-						if(!empty($object->changed_fields) && array_key_exists($field['property'], $object->changed_fields))
-							$update[$db_name][$table_name][$field['name']] = $object->get($field['property']);
-					}
-				}
-			}
-		}
 	}
 
 	function create($object)
@@ -482,7 +488,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			return bors_throw(ec('Удаление таблиц запрещено'));
 
 		$class = new $class_name(NULL);
-		foreach($class->fields_map_db() as $db_name => $tables)
+		foreach($class->fields() as $db_name => $tables)
 		{
 			$db = new driver_mysql($db_name);
 

@@ -2,7 +2,7 @@
 
 class cache_static extends base_object_db
 {
-	function main_db_storage() { return config('cache_database'); }
+	function main_db() { return config('cache_database'); }
 	function main_table() { return 'cached_files'; }
 	function main_table_fields()
 	{

@@ -58,7 +58,7 @@ class bors_lib_orm
 				foreach($fields as $property => $field)
 				{
 					$field = self::field($property, $field);
-					if($field['name'] != 'id')
+//					if($field['name'] != 'id')
 						$fields_array[] = $field;
 				}
 		}

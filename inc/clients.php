@@ -89,7 +89,6 @@ function im_client_detect($client_id, $type)
 			return array('Jabber', NULL);
 	}
 
-	debug_hidden_log('append_data', "Unknown IM client $client_id (of $type)");
 	return array(NULL, NULL);
 }
 

@@ -8,8 +8,8 @@ class bors_external_content extends base_object_db
 		return array(
 			'id',
 			'create_time',
-			'www' => array('field' => 'url', 'title' => ec('Ссылка на источник')),
-			'content_raw' => array('field' => 'content', 'title' => ec('Полное содержание источника'), 'type' => 'text'),
+			'www' => array('name' => 'url', 'title' => ec('Ссылка на источник')),
+			'content_raw' => array('name' => 'content', 'title' => ec('Полное содержание источника'), 'type' => 'text'),
 			'title' => array('title' => ec('Извлечённый заголовок')),
 		);
 	}

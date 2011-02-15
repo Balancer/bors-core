@@ -352,6 +352,10 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	{
 		if($redirect)
 		{
+			//TODO: ввести корректную отработку redirect:
+			// Проверить на http://forums.airbase.ru/2008/06/t61976--ssylki-na-temy-po-proektam-korablej-i-sudov-prezhde-chem-nac.html
+			// баг в том, что редиректит при простой инициализации объектов
+/*
 			if(!config('do_not_exit'))
 			{
 				echo "Redirect by $url_pattern";
@@ -359,6 +363,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 				bors_exit("Redirect");
 			}
 			else
+*/
 				return object_load($obj->url($page));
 		}
 		return $obj;

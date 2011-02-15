@@ -2,15 +2,15 @@
 
 class bors_user_favorite extends base_object_db
 {
+	function storage_engine() { return 'bors_storage_mysql'; }
 	function table_name() { return 'bors_favorites'; }
-
-	function fields_map()
+	function table_fields()
 	{
 		return array(
 			'id',
 			'user_class_name' => array('title' => ec('Имя класса владельца')),
 			'user_id' => array('title' => ec('ID владельца')),
-			'title' => array('field' => 'target_title', 'title' => ec('Название объекта')),
+			'title' => array('name' => 'target_title', 'title' => ec('Название объекта')),
 			'target_title' => array('title' => ec('Название объекта')),
 			'target_class_name' => array('title' => ec('Имя класса объекта')),
 			'target_object_id' => array('title' => ec('ID объекта')),

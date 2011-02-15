@@ -21,7 +21,12 @@ class bors_lib_orm
 				$field = array('name' => $field);
 		}
 		elseif(empty($field['name']))
-			$field['name'] = $property;
+		{
+			if(empty($field['field']))
+				$field['name'] = $property;
+			else
+				$field['name'] = $field['field'];
+		}
 
 		$field['property'] = $property;
 

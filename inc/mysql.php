@@ -21,13 +21,13 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 				$value = "'".join("','", array_map('addslashes', $value))."'";
 
 			if($value)
-				$w = mysql_bors_join_parse($field_cond) . '(' . $value . ')';
+				$w = mysql_bors_join_parse($field_cond, $class) . '(' . $value . ')';
 			else
 				$w = "0";
 		}
 		elseif(preg_match('! BETWEEN$!', $field_cond))
 		{
-			$w = mysql_bors_join_parse($field_cond) . ' ' . $value[0] . ' AND ' . $value[1];
+			$w = mysql_bors_join_parse($field_cond, $class) . ' ' . $value[0] . ' AND ' . $value[1];
 		}
 		elseif(is_numeric($field_cond)) // Готовое условие
 			$w = $value;
@@ -98,7 +98,7 @@ function array_smart_expand(&$array)
 
 function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 {
-//	echo "bors_class_field_to_db($class, $property, $was_joined) <br/>\n";
+//	if(config('is_debug')) echo "<i>bors_class_field_to_db</i>($class, $property, $was_joined) <br/>\n";
 	if(!$class)
 		return $property;
 
@@ -110,8 +110,18 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 		$class = new $class(NULL);
 	}
 
+//	if(config('is_debug') && $class) var_dump(bors_lib_orm::all_fields($class));
+
 	if($field = bors_lib_orm::property_to_field($class, $property))
-		return $field;
+	{
+		if($was_joined && preg_match('/^\w+$/', $field)) // Если это JOIN и имя поля буквеннон, то допишем имя таблицы
+		{
+//			if(config('is_debug')) echo "tn={$class->table_name()}, mt={$class->main_table()} -> {$class->table_name()}.{$field}<br/>\n";
+			return $class->table_name().'.'.$field;
+		}
+		else // Иначе имя таблицы уже дописано.
+			return $field;
+	}
 
 	if(!$property)
 		return $class->table_name();
@@ -121,7 +131,13 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 
 function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 {
-//	echo "mysql_bors_join_parse($join, $class_name, $was_joined)\n";
+/*	if(config('is_debug'))
+	{
+		echo "mysql_bors_join_parse($join, $class_name, $was_joined) <br/>\n";
+		if(preg_match('/posts.posts/', $was_joined))
+			echo debug_trace();
+	}
+*/
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
 	$join = preg_replace('!^(\w+)\.(\w+)$!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
 	$join = preg_replace('!(\w+)\.(\w+)\s*(=|>|<)!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
@@ -129,7 +145,10 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 //	$join = preg_replace('!(ON )(\w+)\.(\w+)(\s+)!e', '"$1".bors_class_field_to_db("$2", "$3")."$4"', $join);
 	$join = preg_replace('!(=\s*|>|<)(\w+)\.(\w+)!e', '"$1".bors_class_field_to_db("$2", "$3")', $join);
 	$join = preg_replace('!^(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
-	$join = preg_replace('!(\w+)\s*(=|>|<)!e', 'bors_class_field_to_db("$class_name", "$1")."$2"', $join);
+//	if(config('is_debug')) echo "    ??? result1: $join <br/>\n";
+	$join = preg_replace('!([ \(])(\w+)\s*(=|>|<)!e', '"$1".bors_class_field_to_db("$class_name", "$2")."$3"', $join);
+//	if(config('is_debug')) echo "    --- result2: $join <br/>\n";
+
 
 	if($class_name)
 	{
@@ -142,6 +161,7 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 
 function mysql_args_compile($args, $class=NULL)
 {
+//	if(config('is_debug')) echo "<b>mysql_args_compile</b>(".print_r($args, true).", $class) <br/>\n";
 	if(!empty($args['*class_name']))
 	{
 		$class = $args['*class_name'];
@@ -162,10 +182,10 @@ function mysql_args_compile($args, $class=NULL)
 		if(is_array($args['inner_join']))
 		{
 			foreach($args['inner_join'] as $j)
-				$join[] = 'INNER JOIN '.mysql_bors_join_parse($j);
+				$join[] = 'INNER JOIN '.mysql_bors_join_parse($j, $class);
 		}
 		else
-			$join[] = 'INNER JOIN '.mysql_bors_join_parse($args['inner_join']);
+			$join[] = 'INNER JOIN '.mysql_bors_join_parse($args['inner_join'], $class);
 
 		unset($args['inner_join']);
 	}
@@ -175,10 +195,10 @@ function mysql_args_compile($args, $class=NULL)
 		if(is_array($args['left_join']))
 		{
 			foreach($args['left_join'] as $j)
-				$join[] = 'LEFT JOIN '.mysql_bors_join_parse($j);
+				$join[] = 'LEFT JOIN '.mysql_bors_join_parse($j, $class);
 		}
 		else
-			$join[] = 'LEFT JOIN '.mysql_bors_join_parse($args['left_join']);
+			$join[] = 'LEFT JOIN '.mysql_bors_join_parse($args['left_join']. $class);
 
 		unset($args['left_join']);
 	}

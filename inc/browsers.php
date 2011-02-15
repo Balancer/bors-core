@@ -278,6 +278,7 @@ function bors_browser_images($ua, $ip = NULL)
 	if(empty($info))
 	{
 		$info[] = "<img src=\"/_bors/i/unknown-16.png\" class=\"i16\" alt=\"Unknown\"/>";
+		debug_hidden_log('append_data', "Unknown user agent $ua - $ip");
 	}
 
 	return "<span title=\"$title\">".join('', $info)."</span>";

@@ -1043,7 +1043,7 @@ class base_object extends base_empty
 		return  ec($str, $this->files_charset());
 	}
 
-	function cs_d2i($str) { return iconv($this->db_charset(), $this->internal_charset().'//IGNORE', $str); }
+	function cs_d2i($str) { return @iconv($this->db_charset(), $this->internal_charset().'//IGNORE', $str); }
 
 	function cs_i2d($str, $f='') { return iconv($this->internal_charset(), $this->db_charset().'//IGNORE', $str); }
 

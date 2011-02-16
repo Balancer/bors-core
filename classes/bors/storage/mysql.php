@@ -85,9 +85,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			if(array_key_exists($f['property'], $object->changed_fields))
 			{
 				if($sql)
-					$update[$db_name][$table_name][$f['name']] = $sql.'('.$object->get($f['property']).')';
+					$update[$db_name][$table_name][$field_name] = $sql.'('.$object->get($f['property']).')';
 				else
-					$update[$db_name][$table_name][$f['name']] = $object->get($f['property']);
+					$update[$db_name][$table_name][$field_name] = $object->get($f['property']);
 			}
 		}
 

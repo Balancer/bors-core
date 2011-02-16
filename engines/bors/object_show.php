@@ -43,9 +43,14 @@
 				$msg = ec("Извините, у Вас нет доступа к этому ресурсу");
 
 			return empty($GLOBALS['cms']['error_show']) ? bors_message($msg . "
-				<!-- access=$access_object
-				access_object=$access_object
+				<!--
+				object to read = '$obj'
+				object to read file = '{$obj->get('class_file')}'
+				access engine = $access_object
 				class_file = ".(method_exists($access_object, 'class_file') ? $access_object->class_file() : 'none')."
+				object.config = ".object_property($obj->config(), 'debug_title')."
+
+".debug_trace(0, false, 0)."
 			-->") : true;
 		}
 

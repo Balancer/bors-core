@@ -173,11 +173,11 @@ function debug_trace($skip = 0, $html = NULL, $level = -1)
 		$s = '';
 
 	$traceArr = debug_backtrace();
+//	var_dump($traceArr);
 
 	for($i = 1; $i <= $skip; $i++)
 		array_shift($traceArr);
 
-//	var_dump($traceArr);
 	if(is_numeric($level) && $level > 0)
 		$traceArr = array_slice($traceArr, 0, $level);
 	if(is_numeric($level) && $level < 0)

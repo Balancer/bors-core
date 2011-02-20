@@ -214,6 +214,8 @@ function smarty_block_form($params, $content, &$smarty)
 					case 'bool':
 						$data['label'] = $title;
 						$labels[$property_name] = $data;
+					default:
+						echo defval($data, 'value');
 				}
 				echo "</td></tr>\n";
 			}

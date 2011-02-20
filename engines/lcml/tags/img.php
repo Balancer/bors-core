@@ -314,9 +314,9 @@ function lt_img_bors($params)
 
 	if($popup = @$params['popup'])
 	{
-		$around_beg[] = "<a href=\"/images/{$image->id()}/popup-{$popup}/\" 
-			onClick=\"popupWin = window.open(this.href, 'image', 'width=1020,height=620,top=0'); popupWin.focus(); return false;\"
-			target=\"_blank\">";
+		$around_beg[] = "<a href=\"/images/{$image->id()}/popup-{$popup}/\""
+			." onClick=\"popupWin = window.open(this.href, 'image', 'width=1020,height=620,top=0'); popupWin.focus(); return false;\""
+			." target=\"_blank\">";
 		$around_end[] = "</a>";
 	}
 

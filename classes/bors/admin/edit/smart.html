@@ -1,5 +1,5 @@
 {form action=$this->url() class=$object->class_name() id=$object->id() fields=$auto_fields}
-<table class="btab w100p">
+
 {foreach from=$fields key="title" item="x"}
 {assign var="desc" value=$x.origin}
 {assign var="ptype" value=$x.type}
@@ -17,10 +17,12 @@
 {if $ptype == 'input_date'}{input_date name=$field_name can_drop=1 year_min=1900 time=$pargs.time}{/if}
 </td></tr>
 {/foreach}
-<tr><th>&nbsp;</th><th>{submit value="Сохранить"}</th></tr>
-</table>
+
+{submit value="Сохранить"}
+
 {foreach from=$smarty.get item="v" key="k"}
 {hidden name=$k value=$v}
 {/foreach}
+
 {go value=$referer}
 {/form}

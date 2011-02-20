@@ -15,7 +15,8 @@ class bors_admin_edit_smart extends base_page
 		return array($obj->url());
 	}
 
-	function title() { return ec('редактор'); }
+	function title() { return ec('Редактор ').($this->object()->class_title_rp()).ec(' «').($this->object()->title()).ec('»'); }
+	function nav_name() { return ec('редактор'); }
 
 	function object()
 	{
@@ -40,7 +41,9 @@ class bors_admin_edit_smart extends base_page
 
 		$fields = array();
 		$args = array();
-		foreach($this->object()->editor_fields_list() as $field_title => $x)
+
+		if(method_exists($this->object(), 'editor_fields_list'))
+			foreach($this->object()->editor_fields_list() as $field_title => $x)
 		{
 			$data = array();
 			$field_name = $x;

@@ -281,3 +281,5 @@ function bors_each($class_name, $where)
 	$storage = $class->storage();
 	return $storage->each($class_name, $where);
 }
+
+function bors_new($class_name, $data = array()) { return object_new_instance($class_name, $data); }

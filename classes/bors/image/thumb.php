@@ -4,15 +4,15 @@ require_once('inc/images.php');
 
 class bors_image_thumb extends bors_image
 {
-	function main_table() { return 'bors_pictures_thumbs'; }
-	function main_db() { return config('cache_database'); }
+	function db_name() { return config('cache_database'); }
+	function table_name() { return 'bors_pictures_thumbs'; }
 	function can_be_empty() { return true; }
 
 	private $geo_width, $geo_height, $geo_opts, $geometry, $original;
 
 	function image_class() { return 'bors_image'; }
 
-	function main_table_fields()
+	function table_fields()
 	{
 		return array(
 			'id',
@@ -137,7 +137,6 @@ class bors_image_thumb extends bors_image
 			$this->set_full_file_name($file_thumb, true);
 		}
 
-//		echo $this->table_name();
 //		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
 		$this->set_size($fsize_thumb, $caching);
 
@@ -156,7 +155,7 @@ class bors_image_thumb extends bors_image
 	private function thumb_create($abs = false)
 	{
 		if(file_exists($this->file_name_with_path()))
-			return;
+			return true;
 
 		if($abs)
 		{

@@ -683,7 +683,13 @@ class base_object extends base_empty
 		);
 	}
 
-	function storage() { if($storage_class_name = $this->get('storage_engine')) return new $storage_class_name; else return NULL; }
+	function storage()
+	{
+		if($storage_class_name = $this->get('storage_engine', config('storage.default.class_name')))
+			return new $storage_class_name(NULL);
+		else
+			return NULL;
+	}
 
 	function access()
 	{

@@ -20,4 +20,5 @@ bors_url_submap(array(
 	'/links/ => _links_main',
 	'/links/(\d+)\.html => _links_main(NULL,1)',
 	'/links/search/ => _links_search',
+	'/action\?(\w+) => _action(1)',
 ));

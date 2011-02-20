@@ -2,10 +2,12 @@
 
 class bors_image extends base_object_db
 {
-	function main_db() { return config('bors_core_db'); }
-	function main_table() { return config('images_table', 'bors_images'); }
+	function storage_engine() { return 'bors_storage_mysql'; }
 
-	function main_table_fields()
+	function db_name() { return config('bors_core_db'); }
+	function table_name() { return config('images_table', 'bors_images'); }
+
+	function table_fields()
 	{
 		return array(
 			'id',

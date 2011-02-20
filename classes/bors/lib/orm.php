@@ -21,7 +21,7 @@ class bors_lib_orm
 				$field = array('name' => $field);
 		}
 		elseif(empty($field['name']))
-			$field['name'] = $property;
+			$field['name'] = defval($field, 'field', $property);
 
 		$field['property'] = $property;
 
@@ -46,6 +46,9 @@ class bors_lib_orm
 
 	static function all_fields($object, $only_editable = true)
 	{
+		if($fields = global_key($gk = __CLASS__.'-'.$only_editable, $object->class_name()))
+			return $fields;
+
 		$fields_array = array();
 		foreach($object->fields() as $db => $tables)
 		{
@@ -58,7 +61,7 @@ class bors_lib_orm
 				}
 		}
 
-		return $fields_array;
+		return set_global_key($gk, $object->class_name(), $fields_array);
 	}
 
 	static function all_field_names($object)

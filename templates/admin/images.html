@@ -8,7 +8,8 @@
 {defval var="image_class" value="bors_image"}
 <div class="clear">&nbsp;</div>
 
-<h2>Изображения</h2>
+<fieldset class="admin">
+<legend>Изображения</legend>
 
 {foreach from=$list item="i"}
 {assign var="order" value=$i->sort_order()}
@@ -47,5 +48,7 @@
 {/if}
 {/foreach}
 {/if}
+
+</fieldset>
 
 <div class="clear">&nbsp;</div>

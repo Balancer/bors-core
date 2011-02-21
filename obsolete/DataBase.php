@@ -141,6 +141,9 @@ class DataBase extends base_object
 	var $last_query_time;
 	function query($query, $ignore_error=false, $reenter = false)
 	{
+//		if(preg_match('/select.*count.*topics/i', $query))
+//			debug_hidden_log('__00query_topics', $query);
+
 		if(!$query)
 			return;
 

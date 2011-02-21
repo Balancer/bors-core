@@ -69,6 +69,8 @@ class cache_smart extends cache_base
 
 	function set($value, $time_to_expire = 86400, $infinite = false)
 	{
+//		if(config('is_debug')) echo "set($value, $time_to_expire, $infinite)<br/>";
+
 //		echo "cd = ".config('cache_disabled')."<br/>";
 		if(config('cache_disabled'))
 			return $this->last = $value;

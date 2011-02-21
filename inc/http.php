@@ -77,7 +77,8 @@ function http_get_content($url, $raw = false)
 	));
 
 //    if(preg_match("!lenta\.ru!", $url))
-//		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
+	if(preg_match("!rian.ru!", $url))
+		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 	$data = curl_exec($ch);
 	if($data === false)
@@ -150,7 +151,7 @@ function http_get_ex($url, $raw = true)
 
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => preg_match('/imageshack.us/', $url) ? 40 : 10,
+		CURLOPT_TIMEOUT => preg_match('/(imageshack.us|upload.wikimedia.org)/', $url) ? 40 : 10,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 5,
 		CURLOPT_ENCODING => 'gzip,deflate',
@@ -165,8 +166,8 @@ function http_get_ex($url, $raw = true)
 		CURLOPT_SSL_VERIFYPEER => false,
 	));
 
-//    if(preg_match("!lenta\.ru!", $url))
-//		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
+	if(preg_match("!rian.ru!", $url))
+		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 	$data = trim(curl_exec($ch));
 //	$data = trim(curl_redir_exec($ch));

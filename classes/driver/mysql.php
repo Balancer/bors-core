@@ -99,4 +99,10 @@ class driver_mysql extends DataBase implements Iterator
     }
 
     public function valid() { return $this->row != false; }
+
+	function estimated_count($table)
+	{
+		$x = $this->get("SHOW TABLE STATUS LIKE '".addslashes($table)."'");
+		return $x['Rows'];
+	}
 }

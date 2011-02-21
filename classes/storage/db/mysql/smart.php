@@ -444,7 +444,12 @@ class storage_db_mysql_smart extends base_null
 
 				// Закончили сбор обновляемых полей. Обновляем таблицу.
 				if($id_field)
-					$dbh->update($table_name, array($id_field => $oid), $set);
+				{
+					if($dbh->select($table_name, $id_field, array($id_field => $oid)))
+						$dbh->update($table_name, array($id_field => $oid), $set);
+					else
+						$dbh->insert($table_name, array_merge(array($id_field => $oid), $set));
+				}
 			}
 		}
 

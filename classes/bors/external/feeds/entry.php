@@ -55,6 +55,9 @@ class bors_external_feeds_entry extends base_object_db
 			$text = preg_replace('!<a href="http://www.youtube.\w+/watch\?v=([^"]+)" rel="nofollow">youtube.com</a>!', '[youtube]$1[/youtube]', $text);
 			$text = preg_replace('!<a href="http://smotri.com/video/view/\?id=([^"]+)" rel="nofollow">smotri.com</a>!', '[smotricom]$1[/smotricom]', $text);
 			$text = preg_replace('!<a href="http://vimeo.com/(\d+)" rel="nofollow">vimeo.com</a>!', '[vimeo]$1[/vimeo]', $text);
+			$text = preg_replace('!<a href="(http://[^/]*fotki.yandex.ru/get/\d+/[^/]+/\w+_(XL|orig))" rel="nofollow">[^<]+</a>!', '[img $1]', $text);
+			// http://img821.imageshack.us/img821/933/gamedevcaptcha.png
+			$text = preg_replace('!<a href="(http://\w+.imageshack.us/\w+/\w+/[^"/]+)" rel="nofollow">[^<]+</a>!', '[img $1]', $text);
 		}
 
 		$text = html2bb(bors_close_tags($text), array('origin_url' => $link, 'strip_forms' => true));

@@ -19,7 +19,7 @@ class base_image_png extends base_object
 		$this->show_image();
 		$png = ob_get_contents();
 		ob_end_clean();
-		
+
 		return $png;
 	}
 }

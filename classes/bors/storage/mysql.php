@@ -173,6 +173,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function load($object)
 	{
+		$must_be_configured = $object->get('must_be_configured');
 		$select = array();
 		$post_functions = array();
 		foreach(bors_lib_orm::main_fields($object) as $f)
@@ -205,21 +206,30 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$object->data = $data;
 
+		if($must_be_configured)
+			$object->_configure();
+
 		if(!empty($post_functions))
 			self::post_functions_do($object, $post_functions);
 
 		$object->set_loaded(true);
 
-//		print_d($data);
-
 		return true;
 	}
+
+	/**********************************************************
+
+		Загрузка массива объектов
+
+	***********************************************************/
 
 	function load_array($object, $where)
 	{
 		$by_id  = popval($where, 'by_id');
 		$select = popval($where, 'select');
 		$set    = popval($where, '*set');
+
+		$must_be_configured = $object->get('must_be_configured');
 
 		if(is_null($object))
 		{
@@ -252,6 +262,10 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		{
 			$object->set_id(@$data['id']);
 			$object->data = $data;
+
+			if($must_be_configured)
+				$object->_configure();
+
 			$object->set_loaded(true);
 
 			if($by_id === true)

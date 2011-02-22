@@ -8,6 +8,8 @@ function lcml_external_code($text)
 		$text = preg_replace('!<object[^>]+><param[^>]+value="http://www\.youtube\.com/v/([^&?]+).*?</object>!s', "\n[youtube]$1[/youtube]\n", $text);
 		$text = preg_replace('!(^|\s)http://www\.youtube\.com/watch\?v=([^&]+)&\S+(\s|$)!m', "\n[youtube]$2[/youtube]\n", $text);
 		$text = preg_replace('!(^|\s)http://www\.youtube\.com/watch\?v=(\S+)(\s|$)!m', "\n[youtube]$2[/youtube]\n", $text);
+		// http://www.youtube.com/watch?v=TXxcR3qgyYQ&playnext=1&list=PL21AA194D7FBBA2D9
+		$text = preg_replace('!(^|\s)http://www.youtube.com/watch?v=([^&]+)&playnext=\d+&list=\w+(\s|$)!m', "\n[youtube]$2[/youtube]\n", $text);
 	}
 
 	// PicasaWeb

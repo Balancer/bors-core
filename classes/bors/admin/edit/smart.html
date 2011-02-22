@@ -26,3 +26,14 @@
 
 {go value=$referer}
 {/form}
+
+{if $items}
+{foreach from=$items item="list" key="title"}
+<h2>{$title}</h2>
+<ul>
+{foreach from=$list item="x"}
+<li>{$x->admin()->imaged_titled_link()}</li>
+{/foreach}
+</ul>
+{/foreach}
+{/if}

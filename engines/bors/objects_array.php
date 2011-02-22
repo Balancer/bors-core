@@ -14,7 +14,7 @@ function objects_array($class, $args = array())
 	unset($args['object_id']);
 
 	if(!empty($args['by_id']))
-		$cargs['by_id'] = true;
+		$cargs['by_id'] = $args['by_id'];
 	unset($args['by_id']);
 
 	if(!empty($args['select']))

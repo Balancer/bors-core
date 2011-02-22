@@ -111,7 +111,7 @@ function smarty_block_form($params, $content, &$smarty)
 		if(!empty($fields))
 		{
 			$smarty->assign('has_autofields', true);
-			echo "<table class=\"btab\">";
+			echo "<table class=\"btab\" style=\"width: 90%\">";
 			$labels = array();
 			if(!is_array($fields))
 				$fields = explode(',', $fields);
@@ -141,7 +141,7 @@ function smarty_block_form($params, $content, &$smarty)
 					$title = $property_name;
 
 				if($type != 'bool')
-					echo "<tr><th>{$title}</th><td>";
+					echo "<tr><th class=\"w33p\">{$title}</th><td>";
 
 				$data['value'] = object_property($form, $property_name);
 				$data['class'] = 'w100p';

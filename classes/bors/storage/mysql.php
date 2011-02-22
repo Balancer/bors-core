@@ -254,8 +254,10 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$object->data = $data;
 			$object->set_loaded(true);
 
-			if($by_id)
+			if($by_id === true)
 				$objects[$object->id()] = $object;
+			elseif($by_id)
+				$objects[$object->$by_id()] = $object;
 			else
 				$objects[] = $object;
 

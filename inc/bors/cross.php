@@ -57,7 +57,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 		$dbh = new driver_mysql(config('bors_core_db'));
 
 	if(empty($args['order']))
-		$order = 'ORDER BY sort_order, object_id';
+		$order = 'ORDER BY sort_order, class_id, object_id';
 	else
 		$order = 'ORDER BY '.$args['order'];
 

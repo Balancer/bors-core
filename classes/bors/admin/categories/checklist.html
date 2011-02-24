@@ -1,0 +1,10 @@
+<fieldset class="admin">
+<legend>Привязка к категориям</legend>
+{form object=$this action='/_bors/admin/action?categories_checklist' act='update'}
+{checkbox_list list=$named_list name="items" value=$selected}<br/>
+{submit value="Сохранить"}
+{hidden name="target" value=$target->internal_uri_ascii()}
+{hidden name="list_class" value=$list_class}
+{hidden name="map_class"  value=$map_class}
+{/form}
+</fieldset>

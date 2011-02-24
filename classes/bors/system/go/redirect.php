@@ -1,4 +1,4 @@
-<?php
+?<?php
 
 class bors_system_go_redirect extends base_object
 {
@@ -23,6 +23,9 @@ class bors_system_go_redirect extends base_object
 			{
 				case 'p':
 					$object = bors_load('balancer_board_post', $m[2]);
+					break;
+				case 't':
+					$object = bors_load('balancer_board_topic', $m[2]);
 					break;
 			}
 		}

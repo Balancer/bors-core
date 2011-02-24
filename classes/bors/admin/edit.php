@@ -5,7 +5,7 @@ class bors_admin_edit extends bors_page
 	function config_class() { return config('admin_config_class'); }
 
 	function can_be_empty() { return false; }
-	function loaded() { return !!$this->real_object(); }
+	function loaded() { return !$this->id() || !!$this->real_object(); }
 
 	function title()
 	{
@@ -18,7 +18,7 @@ class bors_admin_edit extends bors_page
 	function main_class_title_vp()
 	{
 		$cn = $this->main_class();
-		$tc = new $cn;
+		$tc = new $cn(NULL);
 		return call_user_func(array($tc, 'class_title_vp'));
 	}
 

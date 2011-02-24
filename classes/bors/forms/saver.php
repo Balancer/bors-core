@@ -101,8 +101,8 @@ class bors_forms_saver extends base_empty
 
 			if($form_object)
 			{
-				$go = str_replace('%OBJECT_ID%', $form_object->id(), $data['go']);
-				$go = str_replace('%OBJECT_URL%', $form_object->url(), $data['go']);
+				$go = str_replace('%OBJECT_ID%', $form_object->id(), $go);
+				$go = str_replace('%OBJECT_URL%', $form_object->url(), $go);
 			}
 
 			return go($go);
@@ -119,11 +119,19 @@ class bors_forms_saver extends base_empty
 				Короткий: file_vars: image1,image2...
 		*/
 
-//		echo "Сохранение файлов для {$object->debug_title()}"; var_dump($data); var_dump($files); bors_exit();
+//		echo "Сохранение файлов для {$object->debug_title()}"; var_dump($data); var_dump($files);
 
 		foreach(explode(',', $file_vars) as $f)
 		{
 			$method_name = NULL;
+
+			// Метод, возвращающий объект старого файла, используется
+			// 		для удаления старых версий
+			$object_file_method = NULL;
+
+			// Поле объекта, куда записывается имя класса файла
+			$file_class_name_field = NULL;
+
 			if(preg_match('/^\w+$/', $f))
 			{
 				// Это простое указание имени файла. 
@@ -137,13 +145,13 @@ class bors_forms_saver extends base_empty
 				}
 
 				$file_name = $f;			// Собственное имя файла
-				$file_class_name_field = NULL;		// Имя поля объекта, где хранится класс файла
+				$file_class_name = NULL;		// Имя поля объекта, где хранится класс файла
 				$file_id_field = NULL;				// Имя поля объекта, где хранится id файла
 			}
 			elseif(preg_match('/^(\w+)=(\w+)\((\w+)\)$/', $f, $m))
 			{
 				$file_name = $file_field = $m[1];	// Собственное имя файла
-				$file_class_name_field = $m[2];		// Имя поля объекта, где хранится класс файла
+				$file_class_name = $m[2];		// Имя поля объекта, где хранится класс файла
 				$file_id_field = $m[3];				// Имя поля объекта, где хранится id файла
 			}
 			else
@@ -168,7 +176,7 @@ class bors_forms_saver extends base_empty
 					$object->set($file_id_field, NULL, true);
 			}
 
-			$file_data = $files[$f];
+			$file_data = $files[$file_name];
 			if(empty($file_data['tmp_name'])) // Файл не загружался. Вызываем после проверки на удаление.
 				continue;
 
@@ -230,7 +238,12 @@ class bors_forms_saver extends base_empty
 			))
 */
 
-			$old_file = $object->get($file_class_name_field);
+			$old_file = NULL;
+			if($object_file_method)
+				$old_file = $object->get($object_file_method);
+			elseif($file_id_field)
+				$old_file = bors_load($file_class_name, $file_id_field);
+
 			if($old_file)
 			{
 				$old_file->set('parent_class_id', NULL, true);
@@ -238,11 +251,12 @@ class bors_forms_saver extends base_empty
 			}
 
 //			echo "file_name = $file_name, class_name = $file_class_name, id_field = $file_id_field";
-			$file_data['upload_dir'] = popval($data, "{$file_class_name_field}___upload_dir");
-			$file_data['no_subdirs'] = popval($data, "{$file_class_name_field}___no_subdirs");
+			$file_data['upload_dir'] = popval($data, "{$file_name}___upload_dir");
+			$file_data['no_subdirs'] = popval($data, "{$file_name}___no_subdirs");
 			$file = new $file_class_name(NULL);
 			$file->upload($file_data);
-			$object->set($file_class_name_field, $file->extends_class_name(), false);
+			if($file_class_name_field)
+				$object->set($file_class_name_field, $file->extends_class_name(), false);
 			$object->set($file_id_field, $file->id(), true);
 			$file->set('parent_class_id', $object->class_id(), true);
 			$file->set('parent_class_name', $object->extends_class_name(), true);

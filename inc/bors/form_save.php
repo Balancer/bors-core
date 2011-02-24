@@ -23,7 +23,10 @@ function bors_form_save(&$obj)
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($obj)."; access_engine=".$obj->access_engine());
 
 		if(!$obj->access()->can_action($_GET['act'], $_GET))
-			return bors_message(ec("[1] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).", method=can_action)"));
+			return bors_message(ec("[1] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).", method=can_action)
+<!--
+".debug_trace(0, false)."
+-->"));
 
 		if(method_exists($obj, $method = "on_action_{$_GET['act']}"))
 		{

@@ -44,7 +44,9 @@ function debug_pre($text)
 }
 
 function print_d($data, $string=false) { return debug_xmp(print_r($data, true), $string); }
-function print_dd($data, $string=false, $level=0)
+function print_dd($data, $string=false){ return debug_xmp(__print_dd($data), $string); }
+
+function __print_dd($data, $level=0)
 {
 	$s = '';
 	$step = str_repeat(' ', $level*4);
@@ -54,16 +56,13 @@ function print_dd($data, $string=false, $level=0)
 	{
 		$s .= "{$step}array(\n";
 		foreach($data as $key => $value)
-			$s .= $step."    '{$key}' => " . print_dd($value, true, $level+1) . "\n";
+			$s .= $step."    '{$key}' => " . __print_dd($value, $level+1) . "\n";
 		$s .= "{$step});\n";
 	}
 	else
 		$s .= $step.$data."\n";
 
-	if($string)
-		return trim($s);
-
-	echo $s;
+	return trim($s);
 }
 
 function set_loglevel($n, $file=false)

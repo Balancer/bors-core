@@ -137,6 +137,7 @@ class bors_link extends base_object_db
 	}
 
 	// Возвращает список ссылок (не самих объектов!) от данного объекта
+	// Если Объект - имя класса, то от всех объектов данного класса.
 	static function links($object, $params = array())
 	{
 		self::_target_class_parse($params);
@@ -165,6 +166,7 @@ class bors_link extends base_object_db
 	}
 
 	// Возвращает список объектов, на которые ссылается данный объект.
+	// Если Объект - имя класса, то от всех объектов данного класса.
 	static function objects($object, $params = array())
 	{
 		$result = array();

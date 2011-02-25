@@ -27,18 +27,20 @@ class module_date_calend_month extends base_page
 			$format = $m[2];
 			$begin_of_month = strtotime(date('Y-m-1', $time0));
 		}
-		
+
 		$Ym = date('Y', $time0).'/'.date('m', $time0);
 
 		if(!($list = $this->args('list')))
 		{
 			$list = array();
 			$counts = array();
-			
+
 			$time_field = $this->args('class_time_field', 'create_time');
 
 			if($this->args('class_name'))
-				foreach(objects_array($this->args('class_name'), array($this->args('class_name').".{$time_field} BETWEEN {$time0} AND {$time9}")) as $x)
+				foreach(bors_find_all($this->args('class_name'), array(
+					$this->args('class_name').".{$time_field} BETWEEN {$time0} AND {$time9}")
+				) as $x)
 					@$counts[date('j', $x->$time_field())]++;
 
 			foreach($counts as $day => $count)

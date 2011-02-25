@@ -44,6 +44,11 @@ function get_browser_info($user_agent, $log_unknown = true)
 			$ov = $m[1];
 		$device = 'iPhone';
 	}
+	elseif(preg_match('!kindle!i', $user_agent))
+	{
+		$os = 'Linux';
+		$device = 'Amazon Kindle';
+	}
 
 	// ************************************************************
 	// Обнаруживаем ОС и устройства

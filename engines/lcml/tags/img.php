@@ -112,7 +112,8 @@ function lt_img($params)
 					$content_type = $x['content_type'];
 
 					if(strlen($content) <= 0)
-						return lcml("Zero size error for image '{$uri}'");
+//						return lcml("Zero size error for image '{$uri}'");
+						return "<a href=\"{$uri}\">{$uri}</a> <small>[zero size or time out]</small>";
 
 					if(!preg_match("!image!", $content_type))
 					{

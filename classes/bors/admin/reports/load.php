@@ -35,7 +35,7 @@ class bors_admin_reports_load extends base_page
 				)
 			),
 
-			'can_see_ip' => bors()->user() ? !!bors()->user()->is_coordinator() : false,
+			'can_see_ip' => object_property(bors()->user(), 'is_coordinator'),
 		);
 	}
 

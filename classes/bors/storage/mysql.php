@@ -403,7 +403,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					$fields[$id_field] = $new_id;
 				}
 
-				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
+//				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
 
 				if($object->replace_on_new_instance() || $object->attr('__replace_on_new_instance'))
 					$dbh->replace($table_name, $fields);

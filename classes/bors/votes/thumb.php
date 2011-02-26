@@ -30,4 +30,12 @@ class bors_votes_thumb extends base_object_db
 			'target_user' => 'balancer_board_user(target_user_id)',
 		);
 	}
+
+	function score_html()
+	{
+		if($this->score() > 0)
+			return "<span color=\"green\">+".$this->score()."</span>";
+		else
+			return "<span color=\"red\">".$this->score()."</span>";
+	}
 }

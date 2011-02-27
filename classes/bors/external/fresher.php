@@ -2,7 +2,7 @@
 
 //	Класс извлечения контента сайта fresher.ru
 
-class bors_external_site_fresher extends bors_object
+class bors_external_fresher extends bors_object
 {
 	static function parse($html)
 	{
@@ -15,6 +15,11 @@ class bors_external_site_fresher extends bors_object
 		$main->removeChild($dom->getElementById('sharebar'));
 		$main->removeChild($dom->getElementById('sharebarx'));
 
+		$tags = array();
+		foreach($xpath->query('//p[@class="link sects"]/span/a') as $node)
+			if($tag = $node->nodeValue)
+				$tags[] = $tag;
+
 		foreach(array(
 			'//div[@class="more link"]',
 			'//p[@class="link sects"]',
@@ -24,11 +29,13 @@ class bors_external_site_fresher extends bors_object
 			foreach($xpath->query($query) as $node)
 				$node->parentNode->removeChild($node);
 
-		$out = bors_lib_bb::from_dom($main)."\n";
+		$title = trim($xpath->query('//div[@class="tip conttip"]/h2')->item(0)->nodeValue);
+
+		$bb_code = bors_lib_bb::from_dom($main)."\n";
 
 		$more = $xpath->query('//div[@class="tip linkss"]')->item(0);
-		$out .= "\n\n// ".trim(bors_lib_bb::from_dom($more))."\n";
+		$bb_code = trim("$bb_code\n\n// ".trim(bors_lib_bb::from_dom($more)));
 
-		return trim(preg_replace("/\n{3,}/", "\n\n", $out));
+		return compact('title', 'bb_code', 'tags');
 	}
 }

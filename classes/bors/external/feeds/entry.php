@@ -196,6 +196,7 @@ class bors_external_feeds_entry extends base_object_db
 
 		$this->set_target_class_name($post->class_name(), true);
 		$this->set_target_object_id($post->id(), true);
+		$this->store();
 	}
 
 	function find_topic()

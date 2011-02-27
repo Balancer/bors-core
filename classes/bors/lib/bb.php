@@ -14,6 +14,7 @@ class bors_lib_bb
 		'source' => array('bb' => 'html_source', 'save_attrs' => true, 'urls' => 'src'),
 		'span' => array('skip_all' => true),
 		'strong' => array('bb' => 'b'),
+		'style' => array('bb' => '', 'after_cr' => true),
 		'video' => array('bb' => 'html_video', 'save_attrs' => true, 'urls' => 'poster'),
 	);
 
@@ -69,7 +70,8 @@ class bors_lib_bb
 			$attrs = '';
 
 		if($bbtag = defval($bb, 'bb'))
-			$bb_code .= "[{$bbtag}{$attrs}]";
+			if($bbtag != 'url' || $element->getAttribute('href'))
+				$bb_code .= "[{$bbtag}{$attrs}]";
 
 		$children = $element->childNodes;
 		foreach($children as $child)
@@ -81,7 +83,8 @@ class bors_lib_bb
 		}
 
 		if($bbtag && !defval($bb, 'no_ending'))
-			$bb_code .= "[/$bbtag]";
+			if($bbtag != 'url' || $element->getAttribute('href'))
+				$bb_code .= "[/$bbtag]";
 
 		if(defval($bb, 'after_cr'))
 			$bb_code .= "\n";

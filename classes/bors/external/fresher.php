@@ -6,14 +6,23 @@ class bors_external_fresher extends bors_object
 {
 	static function parse($html)
 	{
+		$html = preg_replace('!<script>[^>]*function.*?</script>!s', '', $html);
+
+//		$html = preg_replace('!<div id="(\w+)">([^<]+?)</div>\s*<p><script[^>]*>([^>]*jwplayer.*?)</script>!s', "[html_div id=$1]$2[/html_div]\n[bors3rdp_js]js/jwplayer.js[/bors3rdp_js]\n[javascript]$3[/javascript]", $html);
+
+		$html = preg_replace('!<div id="(\w+)">([^<]+?)</div>\s*<p><script[^>]*>([^>]*jwplayer.*?)</script>!s', "<div><i>Видео смотрите по оригинальной ссылке [BalaBOT]</i></div>", $html);
+
 		$dom = new DOMDocument('1.0', 'UTF-8');
-		$dom->loadHTML($html);
+		if(!@$dom->loadHTML($html))
+			return NULL;
+
 		$xpath = new DOMXPath($dom);
 
 		$main = $xpath->query('//div[@class="tip conttip"]')->item(0);
 
-		$main->removeChild($dom->getElementById('sharebar'));
-		$main->removeChild($dom->getElementById('sharebarx'));
+		foreach(array('sharebar', 'sharebarx') as $id)
+			if($el = $dom->getElementById($id))
+				$main->removeChild($el);
 
 		$tags = array();
 		foreach($xpath->query('//p[@class="link sects"]/span/a') as $node)
@@ -24,7 +33,10 @@ class bors_external_fresher extends bors_object
 			'//div[@class="more link"]',
 			'//p[@class="link sects"]',
 			'//div[@class="tip conttip"]/h2/span',
+			'//div[@class="tip conttip"]/div[@class="rates"]',
 			'//div[@class="tip linkss"]/p[@class="comments"]',
+			'//style',
+//			'//script',
 		) as $query)
 			foreach($xpath->query($query) as $node)
 				$node->parentNode->removeChild($node);

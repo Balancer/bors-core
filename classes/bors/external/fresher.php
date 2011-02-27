@@ -36,6 +36,9 @@ class bors_external_fresher extends bors_object
 		$more = $xpath->query('//div[@class="tip linkss"]')->item(0);
 		$bb_code = trim("$bb_code\n\n// ".trim(bors_lib_bb::from_dom($more)));
 
+		if(preg_match('/\[embed/', $bb_code))
+			$bb_code = preg_replace('!\[html_video.+?\[/html_video\]!s', '', $bb_code);
+
 		return compact('title', 'bb_code', 'tags');
 	}
 }

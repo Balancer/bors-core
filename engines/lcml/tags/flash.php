@@ -18,7 +18,23 @@
 	function lp_embed($inner, &$params)
 	{
 		$params['skip_around_cr'] = true;
+//		$params['flashvars'] = str_replace('&amp;', '&', $params['flashvars']);
+//		print_d($params);
+//		print_d(make_enabled_params($params, 'allowscriptaccess bgcolor flashvars menu pluginspage quality src type wmode width height scale salign style allowfullscreen'));
+//		exit();
 		return "<embed ".make_enabled_params($params, 'allowscriptaccess bgcolor flashvars menu pluginspage quality src type wmode width height scale salign style allowfullscreen').">".lcml_h($inner)."</embed>";
+	}
+
+	function lp_html_video($inner, &$params)
+	{
+		$params['skip_around_cr'] = true;
+		return "<video ".make_enabled_params($params, 'poster').">".lcml_h($inner)."</video>";
+	}
+
+	function lp_html_source($inner, &$params)
+	{
+		$params['skip_around_cr'] = true;
+		return "<source ".make_enabled_params($params, 'src').">".lcml_h($inner)."</source>";
 	}
 
 	function lp_object($inner, &$params)

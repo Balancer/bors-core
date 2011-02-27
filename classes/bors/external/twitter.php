@@ -59,8 +59,12 @@ class bors_external_twitter extends bors_object
 		{
 			// Это ссылка на fresher.ru
 			$content = bors_lib_http::get_cached($m[1], 3600);
-			extract(bors_external_fresher::parse($content));
-			$text = '[i]'.$m[1].'[/i]';
+			$result = bors_external_fresher::parse($content, $m[1]);
+			if(!$result)
+				return NULL;
+
+			$result['bb_code'] = "[quote]{$result['bb_code']}\n\n// ".$m[1]."[/quote]";
+			return $result;
 		}
 
 		// balancer73: http://bit.ly/dOvjUq (Репортаж: Понять дракона) #Дагестан #Кавказ #Махачкала

@@ -8,13 +8,13 @@ class bors_lib_bb
 		'br' => array('bb' => '', 'after_cr' => true),
 		'div' => array('bb' => '', 'before_cr' => true, 'after_cr' => true),
 		'em' => array('bb' => 'i'),
-		'embed' => array('bb' => 'html_embed', 'save_attrs' => true),
+		'embed' => array('bb' => 'embed', 'save_attrs' => true, 'urls'=>'src'),
 		'h2' => array('bb' => 'h', 'before_cr' => true, 'after_cr' => true),
 		'p' => array('bb' => '', 'before_cr' => true, 'after_cr' => true),
-		'source' => array('bb' => 'html_source', 'save_attrs' => true),
+		'source' => array('bb' => 'html_source', 'save_attrs' => true, 'urls' => 'src'),
 		'span' => array('skip_all' => true),
 		'strong' => array('bb' => 'b'),
-		'video' => array('bb' => 'html_video', 'save_attrs' => true),
+		'video' => array('bb' => 'html_video', 'save_attrs' => true, 'urls' => 'poster'),
 	);
 
 	static function from_dom($element, $base_url = NULL, $bbmap = array())
@@ -35,7 +35,7 @@ class bors_lib_bb
 		if(defval($bb, 'before_cr'))
 			$bb_code .= "\n";
 
-		if($urls = defval($bb, 'urls'))
+		if($urls = defval($bb, 'urls') && $base_url)
 		{
 			$udata = parse_url($base_url);
 			$usite = $udata['scheme'].'://'.$udata['host'];
@@ -62,7 +62,7 @@ class bors_lib_bb
 		{
 			$attrs = array();
 			foreach($element->attributes as $attrName => $attrNode)
-				$attrs[] = "$attrName=\"".htmlspecialchars($element->getAttribute($attrName))."\"";
+				$attrs[] = "$attrName=\"".$element->getAttribute($attrName)."\"";
 			$attrs = " ".join(" ", $attrs);
 		}
 		else

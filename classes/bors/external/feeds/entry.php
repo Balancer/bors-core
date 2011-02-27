@@ -96,14 +96,16 @@ class bors_external_feeds_entry extends base_object_db
 				'text' => $this->text(),
 			));
 
-			$source = $data['bb_code'];
-			$tags   = $data['tags'];
+			$source	= $data['bb_code'];
+			$tags	= $data['tags'];
+			$title	= $data['title'];
 			$source .= "\n// Транслировано с {$this->entry_url()}\n";
 		}
 		else
 		{
 //			exit('nope');
 			$source = $this->make_source();
+			$title = NULL;
 		}
 
 		if(empty($tags))
@@ -155,12 +157,11 @@ class bors_external_feeds_entry extends base_object_db
 			$blog = bors_load_ex('balancer_board_blog', $post->id(), array('no_load_cache' => true));
 			$blog->set_blogged_time($this->pub_date(), true);
 			$blog->set_keywords(explode(',', $keywords), true);
-			$blog->store();
+			$blog->set_title($title, true);
+//			$blog->store();
 
 			return;
 		}
-
-exit('?');
 
 		// Не были запощены. Ищем топик и форум.
 

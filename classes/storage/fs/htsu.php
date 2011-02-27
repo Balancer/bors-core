@@ -167,7 +167,19 @@ class storage_fs_htsu extends base_null
 	{
 		$method = $matches[1];
 		$args   = trim($matches[2]);
-		call_user_func_array(array($this->obj, $method), explode(' ', $args));
+
+		if(preg_match('/^(\w+)\s+(.+)$/', $args, $m))
+		{
+			$x1 = $m[1];
+			$x2 = $m[2];
+		}
+		else
+		{
+			$x1 = $args;
+			$x2 = NULL;
+		}
+
+		call_user_func_array(array($this->obj, $method), array($x1, $x2));
 		return '';
 	}
 

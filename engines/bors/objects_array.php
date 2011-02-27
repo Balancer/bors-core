@@ -134,3 +134,18 @@ function objects_delete($class, $args = array())
 	foreach($init->storage()->load($init, $where, false, $cargs) as $x)
 		$x->delete();
 }
+
+function bors_titled_links($objects, $admin = false)
+{
+	if(empty($objects))
+		return '';
+
+	$result = '';
+	foreach($objects as $x)
+		if($admin)
+			$result[] = $x->admin()->imaged_titled_link();
+		else
+			$result[] = $x->titled_link();
+
+	return join(', ', $result);
+}

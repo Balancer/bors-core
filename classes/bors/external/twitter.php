@@ -49,18 +49,39 @@ class bors_external_twitter extends bors_object
 		$text = preg_replace('!(http://bit.ly/\w+?)/!', '$1', $text);
 
 		// http://bit.ly/gNE1ZE
-		$text = preg_replace('!(http://(lnk.ms)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
+		$text = preg_replace('!(http://(lnk\.ms|bit\.ly)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
 
 		// http://youtu.be/sdUUx5FdySs?a
 		// http://youtu.be/1SBkx-sn9i8?a
 		$text = preg_replace('!(http://(youtu.be)/[^\?]+\?a)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
 
+		if(preg_match('!(http://(www\.)?fresher\.ru/\d+/\d+/\d+/[^/]+/) \((.+)\)!', $text, $m))
+		{
+			// Это ссылка на fresher.ru
+			$content = bors_lib_http::get_cached($m[1], 3600);
+			extract(bors_external_fresher::parse($content));
+			$text = '[i]'.$m[1].'[/i]';
+		}
+
+		// balancer73: http://bit.ly/dOvjUq (Репортаж: Понять дракона) #Дагестан #Кавказ #Махачкала
+		// -> balancer73: http://rusrep.ru/article/2011/01/26/report (Репортаж: Понять дракона) #Дагестан #Кавказ #Махачкала
+		if(preg_match('!(http://rusrep\.ru/article/\d+/\d+/\d+/report) \(.+?\)!', $text, $m))
+		{
+			$content = bors_lib_http::get_cached($m[1], 3600);
+			$result = bors_external_rusrep::parse($content, $m[1]);
+			if(!$result)
+				return NULL;
+
+			$result['bb_code'] = "[quote]{$result['bb_code']}\n\n// ".$m[1]."[/quote]";
+			return $result;
+		}
+
+		return NULL;
+
 		$text = html2bb(bors_close_tags($text), array(
 //			'origin_url' => $link,
 			'strip_forms' => true,
 		));
-
-//		var_dump($text);
 
 		return array(
 			'text' => $text,

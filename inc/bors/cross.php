@@ -198,11 +198,11 @@ function bors_cross_where_cond($field, $cond, &$where)
 		else
 			$yes[] = is_numeric($c) ? $c : class_name_to_id($c);
 	}
-//	$where = array();
+
 	if($yes)
 		$where[] = $field . (count($yes) > 1 ? ' IN ('.join(',', $yes).')' : '='.$yes[0]);
 	if($no)
-		$where[] = $field . (count($no) > 1 ? ' NOT IN ('.join(',', $yes).')' : '<>'.$no[0]);
+		$where[] = $field . (count($no) > 1 ? ' NOT IN ('.join(',', $no).')' : '<>'.$no[0]);
 
 	if($where)
 		return 'AND '.join(' AND ', $where);

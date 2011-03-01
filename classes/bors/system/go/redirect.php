@@ -1,8 +1,7 @@
-?<?php
+<?php
 
 class bors_system_go_redirect extends base_object
 {
-
 	function title() { return object_property($this->object(), 'title'); }
 
 	function pre_show()

@@ -164,7 +164,7 @@ if(config('access_log'))
 		$data['access_url'] = $object->url();
 	}
 
-	$x = object_new_instance('bors_access_log', $data);
+	bors_new('bors_access_log', $data);
 }
 
 bors()->changed_save();

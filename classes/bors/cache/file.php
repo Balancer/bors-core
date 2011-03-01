@@ -30,8 +30,8 @@ class bors_cache_file extends cache_base
 		$file = $cache_dir.$this->last_hmd;
 		$expire = time() + $time_to_expire;
 		mkpath($cache_dir);
-		@file_put_contents($file, serialize(array($expire, $value)));
-		@touch($file, $expire);
+		file_put_contents($file, serialize(array($expire, $value)));
+		touch($file, $expire);
 
 		return $this->last = $value;
 	}

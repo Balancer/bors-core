@@ -11,6 +11,7 @@ class base_empty extends base_null
 
 	function __construct($id)
 	{
+//		echo get_class($this)."<br/>";
 		$this->set_id($this->initial_id = $id);
 	}
 

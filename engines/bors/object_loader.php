@@ -197,7 +197,7 @@ function class_load($class, $id = NULL, $args=array())
 	if(preg_match("!^\w+$!", $class))
 		return object_init($class, $id, $args);
 
-	if(preg_match("!^/!", $class))
+	if(preg_match("!^/!", $class) && !empty($_SERVER['HTTP_HOST']))
 		$class = 'http://'.$_SERVER['HTTP_HOST'].$class;
 
 	if(!is_object($id) && preg_match("!^(\d+)/$!", $id, $m))
@@ -386,7 +386,7 @@ function class_load_by_local_url($url, $args)
 	}
 
 	$url_data = @parse_url($url);
-	$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).$url_data['path'];
+	$check_url = $url_data['scheme'].'://'.$url_data['host'].(empty($url_data['port'])?'':':'.$url_data['port']).@$url_data['path'];
 	$is_query = !empty($url_data['query']);
 	$host_helper = "!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)";
 
@@ -436,7 +436,7 @@ function class_load_by_vhosts_url($url)
 
 	$host_data = $bors_data['vhosts'][$data['host']];
 
-	$url_noq = $data['scheme'].'://'.$data['host'].$data['path'];
+	$url_noq = $data['scheme'].'://'.$data['host'].@$data['path'];
 	$query = @$data['query'];
 
 	foreach($host_data['bors_map'] as $pair)

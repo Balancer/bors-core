@@ -365,6 +365,9 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 	if(!($out_dir = config('debug_hidden_log_dir')))
 		return;
 
+	if(empty($args['dont_show_user']))
+		$user = bors()->user();
+
 	$out = strftime('%Y-%m-%d %H:%M:%S: ') . $message . "\n";
 	if($trace)
 		$out .= "url: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
@@ -372,7 +375,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 			. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
 			. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
 			. (!empty($_SERVER['HTTP_USER_AGENT']) ? "user agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"
-//			. ((empty($args['dont_show_user']) && bors()->user()) ? 'user = '.dc(bors()->user()->title()) . ' [' .bors()->user_id()."]\n": '')
+			. ($user ? 'user = '.dc($user->title()) . ' [' .bors()->user_id()."]\n": '')
 			. debug_trace(1, false, $trace)
 			. "\n---------------------------\n\n";
 

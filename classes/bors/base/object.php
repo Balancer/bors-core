@@ -988,6 +988,7 @@ class base_object extends base_empty
 
 	function extends_class() { return $this->class_name(); }
 	function extends_class_name() { return $this->class_name(); }
+	function new_class_name() { return $this->class_name(); }
 
 	function extends_class_id()
 	{

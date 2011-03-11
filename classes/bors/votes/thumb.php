@@ -34,7 +34,7 @@ class bors_votes_thumb extends base_object_db
 	function score_html()
 	{
 		if($this->score() > 0)
-			return "<span color=\"green\">+".$this->score()."</span>";
+			return "<span color=\"green\">+".intval($this->score())."</span>";
 		else
 			return "<span color=\"red\">".$this->score()."</span>";
 	}

@@ -120,7 +120,6 @@ class base_page extends base_object
 			return error_message(ec("У Вас недостаточный уровень доступа для этой страницы. Ваш уровень ").$me->get("level").ec(", требуется ").$this->need_access_level());
 		}
 
-
 		if(!$this->cache_life_time())
 			return $this->cacheable_body();
 

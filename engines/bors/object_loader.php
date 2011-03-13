@@ -561,7 +561,12 @@ function object_init($class_name, $object_id, $args = array())
 		$object_id = NULL;
 
 	if(!($class_file = class_include($class_name, $args)))
+	{
+		if(config('throw_exception_on_class_not_found'))
+			return bors_throw("Class '$class_name' not found");
+
 		return $obj;
+	}
 
 	$found = 0;
 

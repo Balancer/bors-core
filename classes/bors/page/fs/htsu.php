@@ -24,6 +24,7 @@ class bors_page_fs_htsu extends base_page
 	function pre_show()
 	{
 		config_set('cache_disabled', true);
+		config_set('lcml_markdown', true);
 		return parent::pre_show();
 	}
 

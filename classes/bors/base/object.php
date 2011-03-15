@@ -335,9 +335,9 @@ class base_object extends base_empty
 	function description() { return @$this->data['description']; }
 	function set_description($description, $db_update) { return $this->set('description', $description, $db_update); }
 
-	function nav_name()
+	function nav_name($exact = false)
 	{
-		if(($nav_name = $this->get('nav_name', NULL, true)))
+		if(($nav_name = $this->get('nav_name', NULL, true)) || $exact)
 			return $nav_name;
 
 		return  $this->get('nav_name_lower', config('nav_name_lower')) ? bors_lower($this->title()) : $this->title();

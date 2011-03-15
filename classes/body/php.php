@@ -21,7 +21,11 @@ class body_php extends base_null
 			$$var = $value;
 
 		$self = $object;
-		$tpl = preg_replace('!\.php$!', '.tpl.php', $object->class_file());
+		$ext = $object->body_template_ext();
+		if(!$ext || $ext == 'html')
+			$ext = 'tpl.php';
+
+		$tpl = preg_replace('!\.php$!', '.'.$ext, $object->class_file());
 		ob_start();
 		$err_rep_save = error_reporting();
 		error_reporting($err_rep_save & ~E_NOTICE);

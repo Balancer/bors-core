@@ -169,7 +169,7 @@ class bors_global extends base_empty
 			$count = 0;
 			bors()->changed_save();
 			bors_object_caches_drop();
-			echo '['.date('Y-m-d H:i:s').'] '.($message ? "{$message} " : '').self::memory_usage()." $rest_msg\n";
+			echo '['.date('Y-m-d H:i:s').'] '.(@$message ? "{$message} " : '').self::memory_usage()." $rest_msg\n";
 		}
 
 //		var_dump($GLOBALS);

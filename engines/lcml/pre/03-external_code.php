@@ -6,13 +6,14 @@ function lcml_external_code($text)
 	if(!config('lcml_external_parse_youtube_disable'))
 	{
 		$text = preg_replace('!<object[^>]+><param[^>]+value="http://www\.youtube\.com/v/([^&?]+).*?</object>!s', "\n[youtube]$1[/youtube]\n", $text);
-		$text = preg_replace('!(^|\s)http://www\.youtube\.com/watch\?v=([^&]+)&\S+(\s|$)!m', "\n[youtube]$2[/youtube]\n", $text);
-		$text = preg_replace('!(^|\s)http://www\.youtube\.com/watch\?v=(\S+)(\s|$)!m', "\n[youtube]$2[/youtube]\n", $text);
+		$text = preg_replace('!(^|\s)http://www\.youtube\.com/watch\?v=([\w\-]+)&\S+(\s|$)!im', "\n[youtube]$2[/youtube]\n", $text);
+		$text = preg_replace('!(^|\s)http://www\.youtube\.com/watch\?v=([\w\-]+)(\s|$)!m', "\n[youtube]$2[/youtube]\n", $text);
 		// http://www.youtube.com/watch?v=TXxcR3qgyYQ&playnext=1&list=PL21AA194D7FBBA2D9
 		$text = preg_replace('!(^|\s)http://www.youtube.com/watch?v=([^&]+)&playnext=\d+&list=\w+(\s|$)!m', "\n[youtube]$2[/youtube]\n", $text);
 	}
 
 	// PicasaWeb
+	// http://picasaweb.google.com/lh/photo/Ds6wIz_ClELVCBg84Q7-6Q?feat=directlink
 	$text = preg_replace('!(^|\s)https?://picasaweb.google.(com|ru)/lh/photo/([\w\-]+)\?feat=directlink($|\s)!m', "\n[picasa]$3[/picasa]\n", $text);
 	$text = preg_replace('!(^|\s)https?://picasaweb.google.(com|ru)/lh/photo/([\w\-]+)(\s+|$)!m', "\n[picasa]$3[/picasa]\n", $text);
 

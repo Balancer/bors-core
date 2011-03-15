@@ -14,7 +14,7 @@ function lp_picasa($id, $params)
 		$cache_status_save = config('cache_disabled');
 		config_set('cache_disabled', false);
 		$ch = new Cache;
-		if($ch->get('lcml-tags-picas', 'page-'.$url))
+		if($ch->get('lcml-tags-picasa', 'page-'.$url))
 		{
 			$content = $ch->last();
 		}
@@ -29,7 +29,10 @@ function lp_picasa($id, $params)
 		if(preg_match('!<link rel=\'image_src\' href="(.+?)"/>!', $content, $m))
 			$thumb_url = $m[1];
 		else
+		{
+			debug_hidden_log('external_code', 'picasa: can not find image '.$url);
 			return $url;
+		}
 
 		if(preg_match('!<meta name="description" content="(.+?)"/>!', $content, $m))
 			$title = $m[1];

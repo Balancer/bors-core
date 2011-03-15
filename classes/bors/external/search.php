@@ -84,7 +84,7 @@ class bors_external_search
 		if(!preg_match($re, $url, $q))
 			return false;
 
-		eval($func);
+		@eval($func);
 //		echo "\t\tSearch $ref_domain: '$q' -> $uri".($obj ? " [{$obj}({$obj->page()})]":'')."\n";
 
 		return $q;

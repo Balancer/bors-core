@@ -90,18 +90,28 @@ class bors_external_feeds_entry extends base_object_db
 
 		if($parser_class_name = $feed->parser_class_name())
 		{
+//			exit($parser_class_name);
 			$parser = new $parser_class_name(NULL);
 			$data = $parser->parse(array(
 				'text' => $this->text(),
 			));
 
-			$source = $data['text'];
+			$source	= $data['bb_code'];
+			$tags	= $data['tags'];
+			$title	= $data['title'];
 			$source .= "\n// Транслировано с {$this->entry_url()}\n";
 		}
 		else
+		{
+//			exit('nope');
 			$source = $this->make_source();
+			$title = NULL;
+		}
 
-		$keywords = join(',', $this->full_keywords_list());
+		if(empty($tags))
+			$keywords = join(',', $this->full_keywords_list());
+		else
+			$keywords = join(',', $this->full_keywords_list($tags));
 
 		$owner_id = $feed->owner_id();
 		$owner_name = $this->author_name() ? $this->author_name() : $feed->owner_name();
@@ -136,17 +146,19 @@ class bors_external_feeds_entry extends base_object_db
 				$topic->set_modify_time(time(), true);
 				$topic->store();
 
-				$blog = bors_load('balancer_board_blog', $post->id());
+//				$blog = bors_load('balancer_board_blog', $post->id());
 
 				$post->body();
 			}
 
 			$post->set_create_time($this->pub_date(), true);
-
 			$post->topic()->recalculate();
 
-			$blog = object_load('balancer_board_blog', $post->id());
+			$blog = bors_load_ex('balancer_board_blog', $post->id(), array('no_load_cache' => true));
 			$blog->set_blogged_time($this->pub_date(), true);
+			$blog->set_keywords(explode(',', $keywords), true);
+			$blog->set_title($title, true);
+//			$blog->store();
 
 			return;
 		}
@@ -184,6 +196,7 @@ class bors_external_feeds_entry extends base_object_db
 
 		$this->set_target_class_name($post->class_name(), true);
 		$this->set_target_object_id($post->id(), true);
+		$this->store();
 	}
 
 	function find_topic()
@@ -216,9 +229,9 @@ class bors_external_feeds_entry extends base_object_db
 		return $this->make_topic($forum_id);
 	}
 
-	function full_keywords_list()
+	function full_keywords_list($tags = array())
 	{
-		$tags = explode(',', $this->keywords_string() .',' . $this->feed()->append_keywords());
+		$tags = array_merge($tags, explode(',', $this->keywords_string() .',' . $this->feed()->append_keywords()));
 
 		sort($tags);
 		$ftags = array();

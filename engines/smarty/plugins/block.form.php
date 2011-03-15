@@ -150,6 +150,8 @@ function smarty_block_form($params, $content, &$smarty)
 				{
 					case 'string':
 					case 'input':
+						if(!empty($data['property']))
+							$data['name'] = $data['property'];
 						require_once('function.input.php');
 						smarty_function_input($data, $smarty);
 						break;
@@ -215,7 +217,9 @@ function smarty_block_form($params, $content, &$smarty)
 						$data['label'] = $title;
 						$labels[$property_name] = $data;
 					default:
-						echo defval($data, 'value');
+//						print_dd($data);
+//						echo defval($data, 'value');
+//						echo defval($data, 'value');
 				}
 				echo "</td></tr>\n";
 			}

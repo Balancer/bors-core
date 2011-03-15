@@ -6,6 +6,14 @@
 
     function lcml_pure_urls_title($url)
     {
+    	$url_data = parse_url($url);
+    	if(!empty($url_data['host']) && ($skip_domains = config('lcml.urls.skip_domains')))
+    	{
+			$host = str_replace('www.', '', $url_data['host']);
+			if(in_array($host, $skip_domains))
+				return $url;
+		}
+
         return "<a href=\"$url\" class=\"external\">".url_truncate($url, 80)."</a>";
     }
 

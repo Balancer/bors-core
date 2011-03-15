@@ -26,7 +26,7 @@
 
     function lcml_urls_title($url)
     {
-        if(0 && class_exists('Cache'))
+        if(class_exists('Cache'))
         {
             $cache = new Cache();
             if($cache->get('url_titles-v4', $url))
@@ -110,6 +110,8 @@
 		if(config('lcml_post_urls_disable'))
 			return $txt;
 
+		// Если у нас есть список явно разрешённых тэгов, то по умолчанию
+		// всё остальное запрещено. Проверяем, разрешены ли такие автоссылки явно
 		$taglist = config('lcml_tags_enabled');
 		if($taglist && empty($taglist['post_urls']))
 			return $txt;

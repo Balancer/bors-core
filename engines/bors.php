@@ -270,7 +270,9 @@ function bors_eq($object1, $object2)
 	return $object1->extends_class() == $object2->extends_class() && $object1->id() == $object2->id();
 }
 
+function bors_count($class_name, $where) { return objects_count($class_name, $where); }
 function bors_load($class_name, $id) { return object_load($class_name, $id); }
+function bors_load_ex($class_name, $id, $attrs) { return object_load($class_name, $id, $attrs); }
 function bors_load_uri($uri) { return object_load($uri); }
 function bors_find_all($class_name, $where) { return objects_array($class_name, $where); }
 function bors_find_first($class_name, $where) { return objects_first($class_name, $where); }

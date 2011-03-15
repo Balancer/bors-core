@@ -511,6 +511,7 @@ class base_object extends base_empty
 	function admin() { return object_load($this->admin_engine(), $this); }
 	// Используется только при подключении BORS_EXT
 	function tools() { return object_load('bors_object_tools', $this); }
+	function urls() { return NULL; }
 
 	function admin_delete_link()
 	{
@@ -987,6 +988,7 @@ class base_object extends base_empty
 
 	function extends_class() { return $this->class_name(); }
 	function extends_class_name() { return $this->class_name(); }
+	function new_class_name() { return $this->class_name(); }
 
 	function extends_class_id()
 	{
@@ -1131,6 +1133,7 @@ class base_object extends base_empty
 
 	function object_title() { return strip_tags(bors_lower($this->class_title()).ec(' «').$this->title().ec('»')); }
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }
+	function object_titled_vp_link() { return $this->class_title_vp().ec(' «').$this->titled_link().ec('»'); }
 
 	function cross_ids($to_class) { return bors_get_cross_ids($this, $to_class); }
 	function cross_objs($to_class = '') { return bors_get_cross_objs($this, $to_class); }
@@ -1241,5 +1244,4 @@ class base_object extends base_empty
 		return $this->__setc(object_load(config('logs.default_logger_class', 'bors_log_stub'), $this));
 	}
 
-	function urls() { return NULL; }
 }

@@ -8,6 +8,15 @@ class bors_lib_http
 		return http_get_content($url, $raw);
 	}
 
+	function get_cached($url, $ttl = 86400, $raw = false)
+	{
+		$cache = new Cache();
+		if($cache->get('bors_lib_http.get_cached', $url))
+			return $cache->last();
+
+		return $cache->set(self::get($url, $raw), $ttl);
+	}
+
 	static function url_unshort($url, $type, $loop = 0)
 	{
 		if($loop > 2)

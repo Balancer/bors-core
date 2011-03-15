@@ -26,7 +26,8 @@ class dbal_test extends base_object_db
 }
 
 $storage_class = dbal_test::storage_engine();
-$storage_class::create_table('dbal_test');
+$storage = new $storage_class(NULL);
+$storage->create_table('dbal_test');
 
 $x = object_new_instance('dbal_test', array(
 	'title' => 'test '.time(),

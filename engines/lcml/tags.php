@@ -60,11 +60,9 @@
 
                                 if($tag_params['skip_around_cr'])
                                 {
-//                                	echo "+++<xmp>'$part2'</xmp>";
-									$part1 = rtrim($part1);
-                                	$part3 = ltrim($part3);
+									$part1 = preg_replace("/\n{2,}$/s", "\n", $part1);
+									$part3 = preg_replace("/^\n{2,}/s", "\n", $part3);
                                 	$pos = bors_strlen($part1);
-//                                	$next_end = $pos + strlen($part2);
                                 }
 
 								$mask = substr($mask, 0, $pos).str_repeat('X',bors_strlen($part2)).substr($mask, $next_end);
@@ -367,18 +365,18 @@ function make_enabled_params($params, $names_list, $skip_list = '')
 	foreach(explode(' ', $names_list) as $name)
 	{
 		if(isset($params[$name]))
-			$res[] = "$name=\"".$params[$name]."\"";
+			$res[] = "$name=\"".str_replace('&amp;', '&', $params[$name])."\"";
 
 		unset($params[$name]);
 	}
 
 	if($params)
 	{
-		$skip_list = " {$skip_list} align alt orig _border url uri border width xwidth _width skip_around_cr";
+		$skip_list = " {$skip_list} align alt notitle orig _border url uri border width xwidth _width self skip_around_cr";
 		$att = array();
 		foreach($params as $key => $value)
 			if($value && strpos($skip_list, " $key ")===false)
-				$att[] = "params['$key']='$value'\n";
+				$att[] = "params['$key']='".str_replace('&amp;', '&', $value)."'\n";
 
 		if($att)
 			debug_hidden_log('lcml-need-attention', "Unknown parameters: ".join(' ', $att));

@@ -26,7 +26,7 @@ class auto_object_php extends base_object
 		if(($ut = config('url_truncate')))
 			$path = preg_replace("!/$ut/!", '/', $path);
 
-		$page = 1;
+		$page = NULL;
 		if(preg_match('!^(.+/)(\d+)\.html$!', $path, $m))
 		{
 			$path = $m[1];

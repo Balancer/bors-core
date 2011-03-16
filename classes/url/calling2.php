@@ -26,7 +26,9 @@ class url_calling2 extends url_base
 		elseif(preg_match('!^.+/[\w\-]+/$!', $url))
 			$url = (!$page || $page == $obj->default_page()) ? $url : preg_replace('!/$!', "/{$page}.html", $url);
 		elseif(preg_match('!^http://[^/]+/$!', $url))
+		{
 			$url = (!$page || $page == $obj->default_page()) ? $url : preg_replace('!/$!', "/{$page}.html", $url);
+		}
 
 		if($query)
 			$url .= '?'.$query;

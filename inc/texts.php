@@ -79,11 +79,15 @@ function bors_close_tags($text)
 			continue;
 
         if($n > 0)
+        {
        	    while($n--)
            	    $text .="</$tag>";
-		elseif($n < 0)
-       	    while($n++)
-           	    $text = "<$tag>" . $text;
+
+			return $text;
+		}
+
+		while($n++)
+			$text = "<$tag>" . $text;
    	}
 
    	return $text;

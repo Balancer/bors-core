@@ -27,6 +27,7 @@ class bors_common_event extends base_object_db
 	{
 		return array_merge(parent::auto_targets(), array(
 			'object' => 'object_class_name(object_id)',
+			'target' => 'target_class_name(target_id)',
 			'user' => 'user_class_id(user_id)',
 		));
 	}

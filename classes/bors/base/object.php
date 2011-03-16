@@ -435,7 +435,7 @@ class base_object extends base_empty
 		if($page === NULL)
 			$title = $this->page();
 
-		return '<a href="'.$this->url_ex($page).defval($params, 'url_append').">{$title}</a>"; 
+		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."\">{$title}</a>"; 
 	}
 
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
@@ -749,7 +749,7 @@ class base_object extends base_empty
 		if(!($url_engine = defval($args, 'url_engine')))
 			$url_engine = $this->get('url_engine');
 
-		return object_load($url_engine)->url(defval($args, 'page'));
+		return bors_load($url_engine, $this)->url(defval($args, 'page'));
 	}
 
 	function internal_uri_ascii($limit = false, $ignore_oversize = false)

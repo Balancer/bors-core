@@ -193,8 +193,9 @@ class DataBase extends base_object
 		{
 			if(!$reenter && config('mysql_autorepair', true) && preg_match('/REPLACE (\w+) /i', $query, $m))
 			{
-				$this->query('REPAIR TABLE '.$m[1], true, true);
-				return $this->query($query, $ignore_error, true);
+				debug_hidden_log('__crazy_mysql_repair', 'Try to repair: '.$query);
+//				$this->query('REPAIR TABLE '.$m[1], true, true);
+//				return $this->query($query, $ignore_error, true);
 			}
 
 			if(($err_msg_header = config('error_message_header')))

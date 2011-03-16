@@ -11,6 +11,7 @@ class bors_votes_thumb extends base_object_db
 			'id',
 			'user_id',
 			'target_class_name',
+			'target_class_id',
 			'target_object_id',
 			'target_user_id',
 			'score',
@@ -34,8 +35,8 @@ class bors_votes_thumb extends base_object_db
 	function score_html()
 	{
 		if($this->score() > 0)
-			return "<span color=\"green\">+".intval($this->score())."</span>";
+			return "<span style=\"color:green\">+".intval($this->score())."</span>";
 		else
-			return "<span color=\"red\">".$this->score()."</span>";
+			return "<span style=\"color:red\">".$this->score()."</span>";
 	}
 }

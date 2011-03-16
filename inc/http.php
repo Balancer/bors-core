@@ -4,7 +4,7 @@ function http_get($url)
 {
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => 5,
+		CURLOPT_TIMEOUT => 15,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 3,
 		CURLOPT_ENCODING => 'gzip, deflate',
@@ -61,7 +61,7 @@ function http_get_content($url, $raw = false)
 	debug_timing_start('http-get-total');
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => 10,
+		CURLOPT_TIMEOUT => 15,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 3,
 		CURLOPT_ENCODING => 'gzip,deflate',
@@ -151,7 +151,7 @@ function http_get_ex($url, $raw = true)
 
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => preg_match('/(imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru)/', $url) ? 40 : 10,
+		CURLOPT_TIMEOUT => preg_match('/(imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru)/', $url) ? 40 : 15,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 5,
 		CURLOPT_ENCODING => 'gzip,deflate',

@@ -11,11 +11,11 @@ class url_titled extends url_base
 		$obj = $this->id();
 
 		if(!is_object($obj))
-			debug_exit("Unknown url_titled {$this->id()}");
+			debug_exit("Unknown url_titled '{$this->id()}'");
 
 		if(preg_match("!^http://!", $obj->id()))
 			return $obj->id();
-			
+
 		if($page === NULL)
 			$page = $obj->page();
 
@@ -25,7 +25,7 @@ class url_titled extends url_base
 			require_once("inc/urls.php");
 			$prefix    = $obj->base_url().strftime("%Y/%m/", $obj->create_time());
 			$prefix_lp = $obj->base_url().strftime("%Y/%m/", $obj->modify_time());
-			
+
 			$uri_name = $obj->uri_name();
 			if(strlen($uri_name) > 3)
 				$uri_name .= '-';

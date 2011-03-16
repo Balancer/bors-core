@@ -23,6 +23,14 @@ class bors_common_event extends base_object_db
 
 	function replace_on_new_instance() { return true; }
 
+	function auto_targets()
+	{
+		return array_merge(parent::auto_targets(), array(
+			'object' => 'object_class_name(object_id)',
+			'user' => 'user_class_id(user_id)',
+		));
+	}
+
 	/**
 		$action	— класс-обработчик
 		$object — объект события

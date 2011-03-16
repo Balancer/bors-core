@@ -343,7 +343,6 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	else
 		$args['page'] = $page;
 
-//	echo "object_init($check_class, $id)<br />";
 	$obj = object_init($check_class, $id, $args);
 	if(!$obj)
 		return NULL;
@@ -606,6 +605,7 @@ function object_init($class_name, $object_id, $args = array())
 
 	unset($args['local_path']);
 	unset($args['no_load_cache']);
+
 
 	if(method_exists($obj, 'set_args') && $args)
 		$obj->set_args($args);

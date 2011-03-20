@@ -286,7 +286,7 @@
 				$params[strtolower($m[1])] = $m[2];
 		}
 
-		if(preg_match_all("!(?<=^|\s)(\w+)='([^']+)'(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
+		if(preg_match_all("!(?<=^|\s)(\w+)='([^']+)'(?=\s|$|/)!ms", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)

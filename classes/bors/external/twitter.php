@@ -7,6 +7,12 @@ class bors_external_twitter extends bors_object
 		require_once 'Services/Twitter.php';
 		require_once 'HTTP/OAuth/Consumer.php';
 
+		if(!is_object($user))
+		{
+			debug_hidden_log('__objects_error', 'Not object user '.$user);
+			return;
+		}
+
 		$user_blog_info = bors_find_all('bors_users_blog', array(
 			'user_id' => $user->id(),
 			'blog_class' => __CLASS__,

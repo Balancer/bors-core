@@ -90,12 +90,12 @@ function http_get_content($url, $raw = false)
 //	$data = trim(curl_redir_exec($ch));
 
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-//	echo "<xmp>"; print_r($data); echo "</xmp>";
 
     if(preg_match("!charset=(\S+)!i", $content_type, $m))
         $charset = $m[1];
     else
         $charset = '';
+
 
 	curl_close($ch);
 
@@ -106,15 +106,23 @@ function http_get_content($url, $raw = false)
 
 	if(empty($charset))
 	{
-        if(preg_match("!<meta http\-equiv=\"Content\-Type\"[^>]+charset=(.+?)\"!i", $data, $m))
-	        $charset = $m[1];
-		elseif(preg_match("!<meta[^>]+charset=(.+?)\"!i", $data, $m))
+        if(preg_match("!<meta http\-equiv=(\"|')Content\-Type(\"|')[^>]+charset=(.+?)(\"|')!i", $data, $m))
+	        $charset = $m[3];
+		elseif(preg_match("!<meta[^>]+charset=(.+?)(\"|')!i", $data, $m))
 	        $charset = $m[1];
 	}
 
     if(!$charset)
 		$charset = config('lcml_request_charset_default');
-
+/*
+	if(config('is_debug'))
+	{
+		echo "url = '$url'";
+		echo print_d(substr($data, 0, 100));
+		echo "Content-type = '$content_type'<br/>";
+		echo "charset = '$charset'<br/>";
+	}
+*/
 	if($charset)
 		$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
 

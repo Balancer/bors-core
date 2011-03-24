@@ -257,7 +257,9 @@ __EOT__;
 
 				if(@$params['border'])
 				{
-					$out .= "<div class=\"clear\">&nbsp;</div>\n";
+					if($width > 640)
+						$out .= "<div class=\"clear\">&nbsp;</div>\n";
+
 					$styles[] = 'box';
 				}
 

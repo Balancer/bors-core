@@ -12,14 +12,14 @@ function lcml_lists($txt)
         foreach($txt as $s)
         {
         	$m = array();
-            if(preg_match("!^( +)(\*|#) !m", $s, $m))
+            if(preg_match("!^( +)(\*|#|•) !m", $s, $m))
             {
                 $ident = strlen($m[1]);
 
                 if($ul_open+1 == $ident)
 				{
 					$ul_open++;
-					$tag = $m[2]=='*' ? 'ul' : 'ol';
+					$tag = $m[2]!='#' ? 'ul' : 'ol';
 					$res .= "[$tag]";
 					array_push($stack, $tag);
 				}
@@ -28,7 +28,7 @@ function lcml_lists($txt)
                     for($ul_open; $ul_open>$ident; $ul_open--)
                         $res .= "[/".array_pop($stack)."]";
 
-                $s = @preg_replace("!^ +(\*|#) (.*)$!", "[li]$2[/li]", $s);
+                $s = @preg_replace("!^ +(\*|#|•) (.*)$!", "[li]$2[/li]", $s);
                 $res .= $s;
             }
             else

@@ -73,7 +73,7 @@ class bors_external_feeds_entry extends base_object_db
 			$text[] = "\n// Полный текст по адресу [url]{$link}[/url] ...\n";
 		}
 		else
-			$text[] = "\n// Транслировано с [url]{$link}[/url]\n";
+			$text[] = "\n[span style=\"color: #ccc; font-size: 10pt;\"]// Транслировано с [url]{$link}[/url][/span]\n";
 
 		$text = str_replace("/\n{3,}/", "\n\n", join("\n", $text));
 		if($this->feed()->titles_in_posts())
@@ -154,10 +154,17 @@ class bors_external_feeds_entry extends base_object_db
 			$post->set_create_time($this->pub_date(), true);
 			$post->topic()->recalculate();
 
-			$blog = bors_load_ex('balancer_board_blog', $post->id(), array('no_load_cache' => true));
-			$blog->set_blogged_time($this->pub_date(), true);
-			$blog->set_keywords(explode(',', $keywords), true);
-			$blog->set_title($title, true);
+			if($blog = bors_load_ex('balancer_board_blog', $post->id(), array('no_load_cache' => true)))
+			{
+				$blog->set_blogged_time($this->pub_date(), true);
+				$blog->set_keywords(explode(',', $keywords), true);
+				$blog->set_title($title, true);
+			}
+			else
+			{
+				echo " *** Error: Can't load blog {$post->id()}\n";
+				debug_hidden_log('feeds_translate', " *** Error: Can't load blog {$post->id()}");
+			}
 //			$blog->store();
 
 			return;

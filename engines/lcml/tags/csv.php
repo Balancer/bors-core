@@ -4,7 +4,7 @@ function lp_csv($txt, $params)
 {
 	require_once('engines/lcml/bcsTable.php');
 	require_once('inc/csv.php');
-	$lcml_parse_cells = bors_strlen($txt) < 4096;
+	$lcml_parse_cells = bors_strlen($txt) < 8192;
 
 	$tab = new bcsTable();
 

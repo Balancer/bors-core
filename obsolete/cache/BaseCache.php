@@ -26,8 +26,7 @@
 			$this->last_uri  = $uri  = "0x".md5($uri);
             $this->last_hmd  = $hmd  = "0x".md5("$type:$key");
 
-			list($usec, $sec) = explode(" ",microtime());
-			$this->start_time = (float)$usec + (float)$sec;
+			$this->start_time = microtime(true);
 		}
         function last()
         {

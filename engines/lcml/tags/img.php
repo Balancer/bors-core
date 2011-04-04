@@ -8,8 +8,8 @@ function lt_img($params)
 		return lt_img_bors($params);
 
 	$url = bors()->main_object() ? bors()->main_object()->url() : NULL;
-	require_once('inc/airbase/images.php');
-	$data = airbase_image_data($params['url'], $url);
+//	require_once('inc/airbase/images.php');
+//	$data = airbase_image_data($params['url'], $url);
 
 	if(preg_match('/\.gif$/i', $params['url']))
 	{
@@ -39,6 +39,9 @@ function lt_img($params)
 //			echo $GLOBALS['lcml']['level'];
 //			exit(print_r($GLOBALS['lcml']['uri'],true));
 //			if(config('is_debug')) { print_d($params); print_d($data); exit(); }
+
+//			if(config('is_debug'))
+//				var_dump($data);
 
 			if($data['local'])
 			{
@@ -178,6 +181,9 @@ function lt_img($params)
 				else
 					$img_page_uri = $uri.'.htm';
 
+				if(defval($params, 'is_direct'))
+					$img_page_uri = $uri;
+
 				require_once('HTTP/Request.php');
 				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 2,'timeout' => 4));
 				$response = $req->sendRequest();
@@ -205,8 +211,8 @@ function lt_img($params)
 
 //				if(!empty($GLOBALS['main_uri']))
 //					$hts->nav_link($GLOBALS['main_uri'], $uri);
-				require_once("funcs/images/fill.php");
-				fill_image_data($uri);
+//				require_once("funcs/images/fill.php");
+//				fill_image_data($uri);
 
 //				return "==={$params['description']}===";
 

@@ -267,6 +267,8 @@
             if(preg_match("!^nohref$!",$param)) { $params['nohref']=true; continue;}
             if(preg_match("!^noresize$!",$param)) { $params['noresize']=true; continue;}
             if(preg_match("!^notitle$!", $param)) { $params['notitle'] = true; continue;}
+            if(preg_match("!^direct$!", $param)) { $params['is_direct'] = true; continue;}
+            if(preg_match("!^blank$!", $param)) { $params['is_blank'] = true; continue;}
 //            if(preg_match("!^(\w+)=\"([^\"]+)\"$!s",$param,$m)) { $params[$m[1]]=$m[2]; continue;}
             if(empty($params['url']))
 			{

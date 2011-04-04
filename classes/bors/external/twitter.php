@@ -53,7 +53,8 @@ class bors_external_twitter extends bors_object
 			}
 			catch (Services_Twitter_Exception $e)
 			{
-				echo $e->getMessage();
+//				echo $e->getMessage();
+				debug_hidden_log('twitter', 'Exception :'.$e);
 			}
 		}
 	}

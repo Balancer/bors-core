@@ -510,8 +510,8 @@ class base_object extends base_empty
 	function admin_engine() { return config('admin_engine', 'bors_admin_engine'); }
 	function admin() { return object_load($this->admin_engine(), $this); }
 	// Используется только при подключении BORS_EXT
-	function tools() { return object_load('bors_object_tools', $this); }
-	function urls() { return NULL; }
+	function tools() { return bors_load('bors_object_tools', $this); }
+	function urls()  { return bors_load('bors_object_urls',  $this); }
 
 	function admin_delete_link()
 	{

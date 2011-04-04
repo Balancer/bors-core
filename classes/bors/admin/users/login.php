@@ -9,6 +9,11 @@ class bors_admin_users_login extends base_page
 	function pre_parse($data)
 	{
 		$this->referer = isset($_GET['redirect_url']) ? $_GET['redirect_url'] : @$_SERVER['HTTP_REFERER'];
+		if(!$this->referer)
+			$this->referer = defval($_GET, 'ref');
+
+		$this->ref = $this->referer;
+
 		if(!$this->referer || preg_match('!login!', $this->referer))
 			$this->referer = '/';
 
@@ -35,6 +40,13 @@ class bors_admin_users_login extends base_page
 
 //		set_session_var('success_message', ec('Вы успешно аутентифицированы, ').$me->title().'!');
 		return go_ref_message(ec('Вы успешно аутентифицированы, ').$me->title().'!', array('go' => $this->referer, 'error' => false));
+	}
+
+	function body_data()
+	{
+		return array_merge(parent::body_data(), array(
+			'ref' => $this->ref,
+		));
 	}
 
 	function can_cache() { return false; }

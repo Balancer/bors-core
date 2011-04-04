@@ -2,6 +2,16 @@
 
 class bors_external_twitter extends bors_object
 {
+	static function linkify($object)
+	{
+		$title = $object->title();
+		$url = ' '.bors_external_googl::short_url($object->url());
+
+		$limit = 140 - bors_strlen($url);
+		$text = strip_text($title, $limit, '…', true);
+		return $text . $url;
+	}
+
 	static function send($user, $message)
 	{
 		require_once 'Services/Twitter.php';

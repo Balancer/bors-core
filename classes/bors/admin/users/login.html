@@ -11,6 +11,7 @@
 <tr><th class="right">Пароль:</th><td><input type="password" name="password" value="" /></td></tr>
 <tr><th colSpan="2"><input type="submit" value="Вход"></th></tr>
 </table>
+<input type="hidden" name="ref" value="{$ref|htmlspecialchars}" />
 </form>
 {else}
 Здравствуйте, <b>{$me->title()}</b>! [<a href="/_bors/users/do-logout.bas">выход</a>]

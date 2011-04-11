@@ -928,9 +928,21 @@ class base_object extends base_empty
 	function need_access_level() { return 0; }
 	function cache_life_time() { return 0; }
 
+	private function ___path_data()
+	{
+		if($this->__havefc())
+			return $this->__lastc();
+		$path = $this->called_url();
+		if(!$path)
+			$path = $this->id();
+
+		return $this->__setc(url_parse($path));
+	}
+
 	function dir()
 	{
-		$data = url_parse($this->called_url());
+		$data = $this->___path_data();
+//		$data = url_parse($this->called_url());
 //		print_d($data);
 
 //		return $data['local_path'];
@@ -938,6 +950,12 @@ class base_object extends base_empty
 
 		//TODO: затычка!
 //		return $_SERVER['DOCUMENT_ROOT'].preg_replace('!^http://[^/]+!', '', $this->called_url());
+	}
+
+	function _basename()
+	{
+		$data = $this->___path_data();
+		return preg_match('!^(.+)/$!', $data['local_path'], $m) ? '' : basename($data['local_path']);
 	}
 
 	function document_root()

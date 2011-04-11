@@ -72,6 +72,11 @@ class bors_external_twitter extends bors_object
 		// http://youtu.be/1SBkx-sn9i8?a
 		$text = preg_replace('!(http://(youtu.be)/[^\?]+\?a)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
 
+		$tags = array();
+		if(preg_match_all('/( |^)#([\wа-яА-ЯёЁ]+)/um', $text, $matches))
+			foreach($matches[2] as $m)
+				$tags[] = $m;
+
 		if(preg_match('!(http://(www\.)?fresher\.ru/\d+/\d+/\d+/[^/]+/) \((.+)\)!', $text, $m))
 		{
 			// Это ссылка на fresher.ru
@@ -97,7 +102,9 @@ class bors_external_twitter extends bors_object
 			return $result;
 		}
 
-		return NULL;
+//		return NULL;
+
+		$text = preg_replace('/^\w+:/', '', $text);
 
 		$text = html2bb(bors_close_tags($text), array(
 //			'origin_url' => $link,
@@ -106,6 +113,8 @@ class bors_external_twitter extends bors_object
 
 		return array(
 			'text' => $text,
+			'bb_code' => $text,
+			'tags' => $tags,
 		);
 	}
 }

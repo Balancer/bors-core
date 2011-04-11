@@ -73,7 +73,7 @@ class bors_external_feeds_entry extends base_object_db
 			$text[] = "\n// Полный текст по адресу [url]{$link}[/url] ...\n";
 		}
 		else
-			$text[] = "\n[span style=\"color: #ccc; font-size: 10pt;\"]// Транслировано с [url]{$link}[/url][/span]\n";
+			$text[] = "\n[span class=\"transgray\"]// Транслировано с ".$this->url_host_link($link)."[/span]\n";
 
 		$text = str_replace("/\n{3,}/", "\n\n", join("\n", $text));
 		if($this->feed()->titles_in_posts())
@@ -83,6 +83,14 @@ class bors_external_feeds_entry extends base_object_db
 	}
 
 	function recalculate() { $this->update_target(true); }
+
+	static function url_host_link($url)
+	{
+		if(preg_match('!http://([^/]+)!', $url, $m))
+			return "[url={$url}]{$m[1]}[/url]";
+
+		return "[url]{$url}[/url]";
+	}
 
 	function update_target($update_lcml = false)
 	{
@@ -96,10 +104,10 @@ class bors_external_feeds_entry extends base_object_db
 				'text' => $this->text(),
 			));
 
-			$source	= $data['bb_code'];
-			$tags	= $data['tags'];
-			$title	= $data['title'];
-			$source .= "\n// Транслировано с {$this->entry_url()}\n";
+			$source	= @$data['bb_code'];
+			$tags	= @$data['tags'];
+			$title	= @$data['title'];
+			$source .= "\n\n[span class=\"transgray\"]// Транслировано с ".$this->url_host_link($this->entry_url())."[/span]\n";
 		}
 		else
 		{

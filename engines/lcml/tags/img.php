@@ -170,6 +170,8 @@ function lt_img($params)
 					$need_upload = true;
 				}
 
+//				if(config('is_debug')) echo "path=$path, need_upload=$need_upload<br/>";
+
 				if($params['noresize'])
 					$img_ico_uri  = $uri;
 				else
@@ -183,6 +185,8 @@ function lt_img($params)
 
 				if(defval($params, 'is_direct'))
 					$img_page_uri = $uri;
+
+//				if(config('is_debug')) echo "img_ico_uri=$img_ico_uri<br/>";
 
 				require_once('HTTP/Request.php');
 				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 2,'timeout' => 4));

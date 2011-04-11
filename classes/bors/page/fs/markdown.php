@@ -20,6 +20,8 @@ class bors_page_fs_markdown extends base_page
 	{
 		$this->add_template_data('skip_page_title', true);
 		$this->add_template_data('skip_page_admin', true);
+
+		return parent::template();
 	}
 
 	function body()

@@ -28,6 +28,8 @@ class bors_image_autothumb extends base_object
 		$rel  = dirname($this->origin_path);
 		$file = basename($this->origin_path);
 
+//		$caching = config('cache_database') ? true : false;
+
 		$img = objects_first('bors_image', array('relative_path' => $rel, 'file_name' => $file));
 
 		if(!$img || !file_exists($img->file_name_with_path()))

@@ -366,7 +366,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 		return;
 
 	if(empty($args['dont_show_user']))
-		$user = bors()->user();
+		$user = object_property(bors(), 'user');
 
 	$out = strftime('%Y-%m-%d %H:%M:%S: ') . $message . "\n";
 	if($trace)

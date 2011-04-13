@@ -6,6 +6,7 @@ bors_url_submap(array(
 	'/mark/delete/\?object=([^&]+).* => _mark_delete(1)',
 	'/edit\-smart/\?object=([^&]+).* => _edit_smart(1)',
 	'/edit\-smart/ => _edit_smart',
+	'/edit-var\?var=([^&]+).* => _edit_var(1)',
 	'/append/child\?object=([^&]*) => _append_child(1)',
 	'/edit/page\?object=([^&]+) => _edit_page(1)',
 	'/edit/crosslinks/ => bors_admin_edit_crosslinks',

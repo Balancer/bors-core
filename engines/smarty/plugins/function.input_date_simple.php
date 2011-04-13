@@ -30,10 +30,24 @@ function smarty_function_input_date_simple($params, &$smarty)
 			echo " ".date(':s', $date);
 	}
 
-	echo "\" />";
+	echo '" ';
+
+	if(@$params['time_on_post'])
+		echo 'disabled="disabled" ';
+
+	echo "/>";
 
 	if(@$params['is_integer'])
-		echo "<input type=\"hidden\" name=\"{$name}_is_integer\" value=\"{$params['is_integer']}\" />\n";
+		echo "<input type=\"hidden\" name=\"{$name}_is_integer\" value=\"{$params['is_integer']}\" />";
+
+	if(@$params['time_on_post'])
+	{
+		template_jquery();
+		echo "&nbsp;<label><input name=\"time_on_post\" type=\"checkbox\" checked=\"checked\" />&nbsp;использовать время отсылки</label>";
+		template_js("$(function () { $('input[name=\"time_on_post\"]').change(function() { x=$('input[name=\"$name\"]'); if($(this).attr('checked')) x.attr('disabled', 'disabled'); else x.removeAttr('disabled') }); })");
+	}
+
+	echo "\n";
 
 	$tmv = base_object::template_data('form_time_vars');
 	$tmv[] = $name;

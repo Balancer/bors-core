@@ -121,8 +121,11 @@ function bors_db_fields_init($obj)
 $GLOBALS['bors_global'] = NULL;
 function bors()
 {
-	if($GLOBALS['bors_global'] == NULL)
-		$GLOBALS['bors_global'] = new bors_global(NULL);
+	if(is_null(@$GLOBALS['bors_global']))
+		if(class_exists('bors_global'))
+			$GLOBALS['bors_global'] = new bors_global(NULL);
+		else
+			$GLOBALS['bors_global'] = false;
 
 	return $GLOBALS['bors_global'];
 }

@@ -78,7 +78,7 @@ class bors_lib_time
 				else // если формат фиксированный, значит нам передали простую строку с датой для strtotime:
 				{
 //					echo "====== {$array[$var]} -> ".strtotime($array[$var])."<br/>";
-					$array[$var] = strtotime($array[$var]);
+					$array[$var] = strtotime(@$array[$var]);
 				}
 			}
 

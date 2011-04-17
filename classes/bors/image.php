@@ -199,7 +199,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		if(config('image_upload_skip_subdirs') || !empty($data['no_subdirs']))
 			$this->set_relative_path(secure_path($dir), true);
 		else
-			$this->set_relative_path(secure_path($dir.'/'.$this->id()%100), true);
+			$this->set_relative_path(secure_path($dir.'/'.sprintf("%03d", intval($this->id()/1000))), true);
 
 		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), true);
 

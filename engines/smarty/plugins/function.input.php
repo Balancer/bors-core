@@ -50,6 +50,14 @@ function smarty_function_input($params, &$smarty)
 
 		$class = join(' ', $class);
 
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+		if($th = defval($params, 'th'))
+		{
+			echo "<tr><th>{$th}</th><td>";
+			if(empty($tyle))
+				$style = "width: 99%";
+		}
+
 		echo "<input type=\"text\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
 
 		foreach(explode(' ', 'class id maxlength size style') as $p)
@@ -57,4 +65,6 @@ function smarty_function_input($params, &$smarty)
 				echo " $p=\"{$$p}\"";
 
 		echo " />\n";
+		if($th)
+			echo "</td></tr>\n";
 }

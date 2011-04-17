@@ -4,10 +4,14 @@ function smarty_function_input_image($params, &$smarty)
 {
 	extract($params);
 	$image_name_field = defval($params, 'image', 'image');
-	$image_id_field   = defval($params, 'image', 'image_id');
-	$image_class_name = defval($params, 'image_class', config('image_class', 'bors_image'));//TODO: убедиться в унификации конфига
+	$image_id_field   = defval($params, 'image', $image_name_field.'_id');
+	$image_class_name = defval($params, 'image_class', config('image_class', 'bors_image')); //TODO: убедиться в унификации конфига
 
 	$obj = $smarty->get_template_vars('form');
+
+	// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+	if($th = defval($params, 'th'))
+		echo "<tr><th>{$th}</th><td>";
 
 	if($obj && ($image = $obj->$image_name_field()))
 	{
@@ -28,6 +32,8 @@ function smarty_function_input_image($params, &$smarty)
 	$fls[] = "{$image_name_field}={$image_class_name}({$image_id_field})";
 	base_object::add_template_data('form_file_vars', $fls);
 
-	echo "<input type=\"hidden\" name=\"{$image_name_field}___upload_dir\" value=\"".defval($params, 'upload_dir')."\"/>\n";
-	echo "<input type=\"hidden\" name=\"{$image_name_field}___no_subdirs\" value=\"".defval($params, 'no_subdirs')."\"/>\n";
+	echo "<input type=\"hidden\" name=\"{$image_name_field}___upload_dir\" value=\"".defval($params, 'upload_dir', config('upload_dir').'/images')."\"/>\n";
+	echo "<input type=\"hidden\" name=\"{$image_name_field}___no_subdirs\" value=\"".defval($params, 'no_subdirs', config('no_subdirs'))."\"/>\n";
+	if($th)
+		echo "</td></tr>\n";
 }

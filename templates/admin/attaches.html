@@ -1,0 +1,56 @@
+{*
+	$item - главный объект
+	$upload_dir - относительный путь загрузки, напр. /uploads/attaches/
+	$list - список аттачей
+	$link_type - тип связывания, parent или cross
+	$attach_class = 'bors_attach' - класс аттачей
+*}
+{defval var="attach_class" value="bors_attach"}
+{if not $upload_attaches_count}{assign var="upload_attaches_count" value="5"}{/if}
+<div class="clear">&nbsp;</div>
+
+<fieldset class="admin">
+<legend>Файлы</legend>
+
+{foreach from=$list item="i"}
+{assign var="order" value=$i->sort_order()}
+{/foreach}
+<h3>Добавить файлы:</h3>
+<div class="red">Функция не включена</div>
+<table class="btab">
+<tr><th width="50%">Описание</th><th>Файл</th><th>Порядок сортировки</th></tr>
+{form class="bors_admin_image_append" action="target"}
+{assign_adv var="range" value="range(1,$upload_attaches_count)"}
+{foreach from=$range item="i"}
+{assign var="order" value=$order+10}
+<tr><td>{input name="image_title[]" class="w100p"}</td><td>{file name="image[]"}</td><td>{input name="sort_order[]" value=$order size="4"}</td></tr>
+{/foreach}
+</td></tr>
+<tr><td colSpan="4">{submit value="Загрузить"}</td></tr>
+{hidden name="object_to_link" value=$item|get:internal_uri}
+{hidden name="link_type" value=$link_type}
+{hidden name="upload_dir" value=$upload_dir}
+{hidden name="author_name" value=$author_name}
+{/form}
+</table>
+
+{if $list}
+<h3>Связанные файлы:</h3>
+{assign var="order" value="0"}
+{foreach from=$list item="i"}
+{if $i}
+<div style="width: 200px; height: 250px; float: left; margin: 10px; padding: 10px; text-align: center;" {if $item && $item->default_image_id() == $i->id()} class="is_default"{/if}>
+<div style="width: 200px; height: 200px; vertical-align: bottom;"><a href="{$i->url()}">{$i->thumbnail('200x200')|get:html_code}</a></div>
+<small>{$i->description_or_title()|truncate:30}</small><br />
+{$i->imaged_edit_url()}
+{$i->imaged_set_default_url($item)}
+<form action="/admin/tools/set-sort-order/?child={$image_class}://{$i->id()}{if $link_type=='cross'}&parent={$item|get:internal_uri}{/if}" method="post" style="display: inline"><input name="sort_order" value="{$i->sort_order()}" title="Порядок сортировки" size="4" style="width: auto !important;"/>&nbsp;Сортировка</form><br/>
+{$i->imaged_delete_url()}
+</div>
+{/if}
+{/foreach}
+{/if}
+
+</fieldset>
+
+<div class="clear">&nbsp;</div>

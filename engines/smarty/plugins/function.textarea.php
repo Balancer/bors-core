@@ -27,10 +27,21 @@ function smarty_function_textarea($params, &$smarty)
 				$class .= " error";
 		}
 
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+		if($th = defval($params, 'th'))
+		{
+			echo "<tr><th>{$th}</th><td>";
+			if(empty($tyle))
+				$style = "width: 99%";
+		}
+
 		echo "<textarea name=\"$name\"";
 		foreach(explode(' ', 'class id style rows cols') as $p)
 			if(!empty($$p))
 				echo " $p=\"{$$p}\"";
 
 		echo ">".htmlspecialchars($value)."</textarea>\n";
+
+		if($th)
+			echo "</td></tr>\n";
 }

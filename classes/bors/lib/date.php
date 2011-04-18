@@ -2,7 +2,7 @@
 
 class bors_lib_date
 {
-	static function date_interval($begin_date, $end_date, $show_year = true)
+	static function interval($begin_date, $end_date, $show_year = true)
 	{
 		if(!$begin_date)
 			return '';

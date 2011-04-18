@@ -15,7 +15,7 @@ function smarty_function_input_image($params, &$smarty)
 
 	if($obj && ($image = $obj->$image_name_field()))
 	{
-		echo "<a href=\"{$image->admin()->url()}\">{$image->thumbnail('200x')->html_code()}</a><br/>\n";
+		echo "<a href=\"{$image->admin()->url()}\">".$image->thumbnail(defval_ne($params, 'geo', '200x'))->html_code()."</a><br/>\n";
 		echo "<input type=\"checkbox\" name=\"file_{$image_name_field}_delete_do\" />&nbsp;".ec('Удалить изображение')."<br/>\n";
 	}
 	else

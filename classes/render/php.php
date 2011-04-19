@@ -30,13 +30,13 @@ class render_php extends base_null
 		foreach(bors_dirs(true) as $dir)
 			if(file_exists($tpl_file = $dir.'/templates/'.$object->template()))
 				break;
-		
+
 		if(!$tpl_file)
 		{
 			debug_timing_stop('render_global_php');
 			return false;
 		}
-		
+
 		$self = $object;
 		ob_start();
 
@@ -46,7 +46,7 @@ class render_php extends base_null
 		error_reporting($err_rep_save);
 		$result = ob_get_contents();
 		ob_end_clean();
-		
+
 		debug_timing_stop('render_global_php');
 		return $result;
 	}

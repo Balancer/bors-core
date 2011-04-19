@@ -16,6 +16,14 @@ function smarty_function_dropdown($params, &$smarty)
 			$class .= " error";
 	}
 
+	// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+	if($th = defval($params, 'th'))
+	{
+		echo "<tr><th>{$th}</th><td>";
+		if(empty($tyle))
+			$style = "width: 99%";
+	}
+
 	echo "<select";
 
 	foreach(explode(' ', 'id size style multiple class onchange') as $p)
@@ -92,4 +100,7 @@ function smarty_function_dropdown($params, &$smarty)
 			echo "<option value=\"$id\"".(in_array($id, $current, $strict) ? " selected=\"selected\"" : "").">$iname</option>\n";
 
 	echo "</select>";
+
+	if($th)
+		echo "</td></tr>\n";
 }

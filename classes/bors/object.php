@@ -19,4 +19,19 @@ class bors_object extends base_object
 			'target' => 'target_class_name(target_object_id)',
 		));
 	}
+
+	function renderer()
+	{
+		$renderer_class = $this->get('renderer_class');
+
+		if(!$renderer_class)
+			$renderer_class = $this->get('render_engine'); // Старый API, для совместимости.
+
+		if($renderer_class == 'self')
+			return $this;
+
+		return $renderer_class ? bors_load($renderer_class, NULL) : NULL;
+	}
+
+	function direct_content() { return $renderer->render($this); }
 }

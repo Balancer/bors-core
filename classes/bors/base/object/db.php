@@ -23,7 +23,7 @@ class base_object_db extends bors_object
 
 	function fields()
 	{
-		if($this->storage_engine() != 'storage_db_mysql_smart')
+//		if($this->storage_engine() != 'storage_db_mysql_smart')
 		{
 //			echo "{$this} ({$this->storage_engine()}) => ".$this->table_name(bors_plural($this->class_name()))."\n";
 			return array(

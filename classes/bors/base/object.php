@@ -828,6 +828,11 @@ class base_object extends base_empty
 			return $object->attr['__id_field_name'];
 
 		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
+
+		if(count($ff) == 1) //FIXME: костыль для поддержки древних field() методов.
+							//В списке полей одна запись, если по дефолту прочиталось function main_table_fields() { return array('id'); }
+			$ff = array_shift(array_shift($this->fields()));
+
 		if($id_field = @$ff['id'])
 			return $id_field;
 
@@ -835,7 +840,13 @@ class base_object extends base_empty
 		return $ff[0] == 'id' ? 'id' : NULL;
 	}
 
-	function title_field() { return defval($this->fields_map(), 'title', 'title'); }
+	function title_field()
+	{
+		if(method_exists($this, 'table_fields'))
+			return defval($this->table_fields(), 'title', 'title');
+
+		return defval($this->fields_map(), 'title', 'title');
+	}
 
 	function set_checkboxes($check_list, $db_up)
 	{

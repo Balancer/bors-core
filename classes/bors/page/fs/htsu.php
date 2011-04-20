@@ -1,7 +1,7 @@
 <?php
 /* Поддержка старого *.hts формата файлов в utf-8. */
 
-class bors_page_fs_htsu extends base_page
+class bors_page_fs_htsu extends bors_page
 {
 	//TODO: на время отладки
 	function can_cached() { return false; }

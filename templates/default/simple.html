@@ -19,6 +19,16 @@
 {if $meta}{foreach key=key item=value from=$meta}
 <meta name="{$key}" content="{$value|htmlspecialchars}" />
 {/foreach}{/if}
+{foreach from=$js_include item="s"}
+<script type="text/javascript" src="{$s}"></script>
+{/foreach}
+{if $javascript}
+<script type="text/javascript"><!--
+{foreach from=$javascript item="s"}
+{$s}
+{/foreach}
+--></script>
+{/if}
 {foreach item=s from=$head_append}
 {$s}
 {/foreach}

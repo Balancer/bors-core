@@ -33,5 +33,5 @@ class bors_object extends base_object
 		return $renderer_class ? bors_load($renderer_class, NULL) : NULL;
 	}
 
-	function direct_content() { return $renderer->render($this); }
+	function direct_content() { return $this->renderer()->render($this); }
 }

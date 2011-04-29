@@ -1,3 +1,11 @@
+{form act='theme'}
+{module class="aviaport_admin_common_themes_module" object=$this->real_object()}
+{submit value="Сохранить"}
+{go value=$this->url()}
+{/form}
+
+<br/><br/>
+<h3>Прямые связи</h3>
 <script type="text/javascript">{literal}function content_load(x,u,d) {
 	$(x).html('<div class="box red"><img src="/_bors/i/wait-16.gif" style="vertical-align:middle;"/> <b>Ждите...</b></div>').attr('disabled', 'disabled')
 	$.ajax({ 

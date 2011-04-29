@@ -4,6 +4,22 @@
 
 class bors_lib_time
 {
+
+	static function parse_property($name, &$array, $unixtime = true)
+	{
+		if($unixtime)
+			unset($array["{$name}_is_fuzzy"]);
+//		var_dump($array);
+//		if(empty($array['time_vars']))
+//			$array['time_vars'] = $name;
+//		else
+//			$array['time_vars'] .= ' '.$name;
+
+		self::parse_form($array);
+//		var_dump($array); exit();
+		return $array[$name];
+	}
+
 	static function parse_form(&$array)
 	{
 		if(empty($array['time_vars']))
@@ -78,7 +94,7 @@ class bors_lib_time
 				else // если формат фиксированный, значит нам передали простую строку с датой для strtotime:
 				{
 //					echo "====== {$array[$var]} -> ".strtotime($array[$var])."<br/>";
-					$array[$var] = strtotime($array[$var]);
+					$array[$var] = strtotime(@$array[$var]);
 				}
 			}
 

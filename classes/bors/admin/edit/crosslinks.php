@@ -9,7 +9,7 @@ class bors_admin_edit_crosslinks extends bors_admin_edit
 	function admin_object() { return $this->object(); }
 	function real_object() { return $this->object(); }
 
-	function parents() { return array($_GET['edit_class']); }
+	function parents() { return array(empty($_GET['edit_class']) ? $this->real_object()->admin_url() : $_GET['edit_class']); }
 
 	function page() { return max(1, @$_GET['p']); }
 	function url_use_keys() { return 'p,object'; }
@@ -71,5 +71,16 @@ class bors_admin_edit_crosslinks extends bors_admin_edit
 			return $p->config_class();
 		else
 			return parent::config_class();
+	}
+
+	function on_action_theme($data)
+	{
+//		echo $this->real_object();
+		bors_link::drop_target($this->real_object(), array('target_class' => 'aviaport_common_theme'));
+		if($data['common_themes'])
+			foreach($data['common_themes'] as $theme_id)
+				bors_link::link($this->real_object()->class_name(), $this->real_object()->id(), 'aviaport_common_theme', $theme_id);
+
+		return go($data['go']);
 	}
 }

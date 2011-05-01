@@ -70,43 +70,14 @@ class bors_global extends base_empty
 			$obj = $x;
 			if(!$obj->id() || empty($obj->changed_fields))
 				continue;
-//var_dump($obj->changed_fields);
-//var_dump($obj->data);
-//			$obj->cache_clean();
+
 			if($obj != $x)
 			{
 				debug_hidden_log('__workaround', "strange object cache clean error: {$x} -> {$obj}");
 				$obj = $x;
 			}
 
-			if(($storage_class = $obj->storage_engine()))
-			{
-///			if(!$storage_class)
-//				$storage_class = 'storage_db_mysql_smart';
-//				debug_exit('Not defined storage engine for '.$obj->class_name());
-
-				$storage = object_load($storage_class);
-
-				//TODO: уже можно снести проверку в следующей строке?
-				if(!(method_exists($obj, 'skip_save') && $obj->skip_save())) //TODO: костыль для bors_admin_image_append
-				{
-					$storage->save($obj);
-					if(config('debug_trace_changed_save'))
-						echo 'Save '.$obj->debug_title()."\n";
-				}
-			}
-
-			save_cached_object($obj);
-			$this->drop_changed_object($obj);
-			$obj->cache_clean();
-
-			if(config('search_autoindex') && $obj->auto_search_index())
-			{
-				if(config('bors_tasks'))
-					bors_tools_tasks::add_task($obj, 'bors_task_index', 0, -10);
-				else
-					bors_search_object_index($obj, 'replace');
-			}
+			$obj->store();
 		}
 
 		$this->changed_objects = false;

@@ -23,6 +23,8 @@ function lt_img($params)
 	if(empty($params['size']))
 		$params['size'] = '468x468';
 
+//var_dump($params); exit();
+
 		if(!empty($params['url']))
 		{
 			$path = NULL;
@@ -115,8 +117,7 @@ function lt_img($params)
 					$content_type = $x['content_type'];
 
 					if(strlen($content) <= 0)
-//						return lcml("Zero size error for image '{$uri}'");
-						return "<a href=\"{$uri}\">{$uri}</a> <small>[zero size or time out]</small>";
+						return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[zero size or time out]</small>";
 
 					if(!preg_match("!image!", $content_type))
 					{
@@ -189,7 +190,7 @@ function lt_img($params)
 //				if(config('is_debug')) echo "img_ico_uri=$img_ico_uri<br/>";
 
 				require_once('HTTP/Request.php');
-				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 2,'timeout' => 4));
+				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 4,'timeout' => 5));
 				$response = $req->sendRequest();
 				if(!empty($response) && PEAR::isError($response))
 				{
@@ -201,7 +202,7 @@ function lt_img($params)
 //				return "__$img_ico_uri:list($width, $height, $type, $attr)__";
 
 				if(!intval($width) || !intval($height))
-					return "<a href=\"{$params['url']}\">{$params['url']}</a>";
+					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get WxH]";
 
 					/*lcml("Get image [url]{$params['url']}[/url] error [spoiler|details]".
 "File: ".__FILE__." line: ".__LINE__."[br]\n".
@@ -281,7 +282,8 @@ __EOT__;
 				return $out;
 			}
 		}
-		return "<a href=\"{$params['url']}\">{$params['url']}</a>";
+
+		return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [empty url]</small>";
 	}
 
 function lt_img_bors($params)

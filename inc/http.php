@@ -177,13 +177,17 @@ function http_get_ex($url, $raw = true)
 	if(preg_match("!rian.ru!", $url))
 		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
-	$data = trim(curl_exec($ch));
-//	$data = trim(curl_redir_exec($ch));
+	$data = curl_exec($ch);
+	if($data === false)
+		bors_exit('Curl error: ' . curl_error($ch));
+
+	if(!$raw)
+		$data = trim($data);
 
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 //	echo "<xmp>"; print_r($data); echo "</xmp>";
 
-    if(preg_match("!charset=(\S+)!i", $content_type, $m))
+    if(!$raw && preg_match("!charset=(\S+)!i", $content_type, $m))
         $charset = $m[1];
     else
         $charset = '';

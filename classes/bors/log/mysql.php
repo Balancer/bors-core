@@ -32,6 +32,8 @@ class bors_log_mysql extends base_object_db
 		return bors_new('bors_log_mysql', $data);
 	}
 
+	function owner() { return bors_load('bors_user', $this->owner_id()); }
+
 	function auto_targets()
 	{
 		return array_merge(parent::auto_targets(), array('target' => 'target_class_name(target_object_id)'));

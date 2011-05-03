@@ -9,9 +9,9 @@ class bors_objects_version extends base_object_db
 	{
 		return array(
 			'id',
-			'class_name',
-			'object_id',
-			'version',
+			'target_class_name',
+			'target_id',
+			'target_version',
 			'property_name',
 			'value',
 			'create_time',
@@ -21,22 +21,54 @@ class bors_objects_version extends base_object_db
 		);
 	}
 
+	function replace_on_new_instance() { return true; }
+
 	static function load($class_name, $object_id, $version)
 	{
 		$object = bors_load($class_name, $object_id);
+//		echo $object;
 		foreach(bors_find_all(__CLASS__, array(
-			'class_name' => $class_name,
-			'object_id' => $object_id,
-			'version' => $version,
+			'target_class_name' => $class_name,
+			'target_id' => $object_id,
+			'target_version' => $version,
 		)) as $x)
-			$object[$x->property_name()] = $x->value();
+		{
+//			echo "{$x->property_name()} = {$x->value()}<br/>\n";
+			$object->set_attr('versioning_properties',
+				array_merge(
+					$object->attr('versioning_properties', array()),
+					array($x->property_name() => $object->get($x->property_name()))
+				)
+			);
+
+			$object->set($x->property_name(), $x->value(), false);
+//			$object->set_attr('versioning_property', $x->property_name());
+		}
 
 		return $object;
 	}
 
-	static function save($class_name, $object_id, $version)
+	static function remove_all($object)
 	{
+		foreach(bors_find_all(__CLASS__, array(
+			'target_class_name' => $object->extends_class_name(),
+			'target_id' => $object->id(),
+		)) as $x)
+			$x->delete();
 	}
 
-//	static function approve($object, )
+	static function save($object, $version)
+	{
+		foreach($object->changed_fields as $property => $dummy)
+		{
+			bors_new(__CLASS__, array(
+				'target_class_name' => $object->extends_class_name(),
+				'target_id' => $object->id(),
+				'target_version' => $version,
+				'property_name' => $property,
+				'value' => $object->get($property),
+				'is_approved' => false,
+			));
+		}
+	}
 }

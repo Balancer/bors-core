@@ -251,8 +251,12 @@ class bors_forms_saver extends base_empty
 			}
 
 //			echo "file_name = $file_name, class_name = $file_class_name, id_field = $file_id_field";
+//			var_dump($data);
 			$file_data['upload_dir'] = popval($data, "{$file_name}___upload_dir");
 			$file_data['no_subdirs'] = popval($data, "{$file_name}___no_subdirs");
+			$file_data['link_type']  = popval($data, "{$file_name}___link_type");
+//			echo popval($data, "{$file_name}___parent");
+			$file_data['parent'] = bors_load_uri(popval($data, "{$file_name}___parent"));
 			$file = new $file_class_name(NULL);
 			$file->upload($file_data);
 			if($file_class_name_field)

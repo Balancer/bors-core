@@ -44,9 +44,10 @@ function smarty_function_input_file($params, &$smarty)
 	$fls[] = "{$name}={$file_class_name}({$file_id_field})";
 	base_object::add_template_data('form_file_vars', $fls);
 
-	echo "<input type=\"hidden\" name=\"{$file_name_field}___upload_dir\" value=\"".defval($params, 'upload_dir', config('upload_dir').'/files')."\"/>\n";
-	echo "<input type=\"hidden\" name=\"{$file_name_field}___no_subdirs\" value=\"".defval($params, 'no_subdirs', config('no_subdirs'))."\"/>\n";
-	echo "<input type=\"hidden\" name=\"{$file_name_field}___link_type\" value=\"" .defval($params, 'link_type', 'cross')."\"/>\n";
+	echo "<input type=\"hidden\" name=\"{$name}___upload_dir\" value=\"".defval($params, 'upload_dir', config('upload_dir').'/files')."\"/>\n";
+	echo "<input type=\"hidden\" name=\"{$name}___no_subdirs\" value=\"".defval($params, 'no_subdirs', config('no_subdirs'))."\"/>\n";
+	echo "<input type=\"hidden\" name=\"{$name}___link_type\" value=\"" .defval($params, 'link_type', 'cross')."\"/>\n";
+	echo "<input type=\"hidden\" name=\"{$name}___parent\" value=\"" .defval($params, 'object', $obj)->internal_uri_ascii()."\"/>\n";
 	if($th)
 		echo "</td></tr>\n";
 }

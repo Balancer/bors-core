@@ -29,9 +29,7 @@ class bors_log_mysql extends base_object_db
 			unset($data['target']);
 		}
 
-		$x = object_new_instance('bors_log_mysql', $data);
-		$x->save();
-		return $x;
+		return bors_new('bors_log_mysql', $data);
 	}
 
 	function auto_targets()

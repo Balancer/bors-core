@@ -2,6 +2,9 @@
 
 define('THREADS', 10);
 
+define('BORS_LOCAL', dirname(__FILE__));
+require '../tools/config.php';
+
 require_once('sharedMemoryStore.php');
 main();
 
@@ -45,34 +48,55 @@ function main()
 
 	}
 
-	print_r($pids);
+	echo "Running thread PIDs:\n";
+//	print_r($pids);
 
-	echo "\ncreated for ".(microtime(true) - $start)." ms\n"; 
+	echo "\nCreated for ".(microtime(true) - $start)." ms\n"; 
 
-	usleep(10000); // 0,1sec
+	usleep(1000000); // 0,01sec
 
+	echo "Begin startin process…\n";
 	$start = microtime(true);
 	foreach($pids as $pid)
 		posix_kill($pid, SIGHUP);
 
-	echo "\nstarted for ".(microtime(true) - $start)." ms\n";
+	echo "\nStarted for ".(microtime(true) - $start)." ms\n";
 
-	echo "wait for child finihed\n";
-	usleep(10000); // 0,1sec
+	usleep(100000); // 0,1sec
+
+	echo "Wait for child finihed…\n";
 	$status = 0;
-	pcntl_wait($status);
+//	pcntl_wait($status);
+	foreach($pids as $pid)
+		pcntl_waitpid($pid, $status);
+
+	echo "All children stopped…\n";
+	usleep(100000); // 0,1sec
 
 	$memx->lock();
 	$timing = unserialize($memx->get("timing"));
  	$memx->unlock();
 
 	print_r($timing);
-	echo "tasks count = ".count($timing)."\n";
+	echo "Result tasks count = ".count($timing)."\n";
+
+	$values = array_values($timing);
+
+	sort($values);
+	$sum = array_sum($values);
+	$count = count($values);
+	$min = min($values);
+	$max = max($values);
+	$median = array_pop(array_slice($values, intval($count/2), 1));
+	echo "avg=".($sum/$count)."; median=".$median."; min=$min; max=$max\n";
 }
 
 function do_test()
 {
-	$s = ".";
-	for($i=0; $i<100000; $i++)
-		$s .= ".";
+	sleep(1);
+
+	bors_benchmarks_cache_zendfile::test_like_bors();
+//	$s = ".";
+//	for($i=0; $i<2000000; $i++)
+//		$s .= ".";
 }

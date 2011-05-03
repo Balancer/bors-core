@@ -79,7 +79,7 @@ class bors_external_feed extends base_object_db
 
 //			echo date('r', $pub_date)."\n";
 
-			$is_suspended = $this->skip_entry_content_regexp() && preg_match('!'.$this->skip_entry_content_regexp().'!', $description);
+			$is_suspended = $this->skip_entry_content_regexp() && preg_match('!'.$this->skip_entry_content_regexp().'!i', $description);
 
 			if($entry && $pub_date <= $entry->pub_date())
 				continue;

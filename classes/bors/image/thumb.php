@@ -30,6 +30,8 @@ class bors_image_thumb extends bors_image
 		);
 	}
 
+	function replace_on_new_instance() { return true; }
+
 	function init()
 	{
 		if(is_numeric($this->id()) && $this->args('geometry'))
@@ -137,6 +139,17 @@ class bors_image_thumb extends bors_image
 			$this->set_full_file_name($file_thumb, true);
 		}
 
+		//TODO: странный костыль.
+		if($caching)
+		{
+			$prev = bors_find_first($this->class_name(), array(
+				'full_file_name' => $this->full_file_name(),
+			));
+
+			if($prev)
+				$prev->delete();
+		}
+
 //		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
 		$this->set_size($fsize_thumb, $caching);
 
@@ -172,6 +185,4 @@ class bors_image_thumb extends bors_image
 	function fullsized_url() { $this->init(); return $this->original ? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : $this->html_code(); }
 
 	function alt() { return $this->original ? $this->original->alt() : ""; }
-
-	function replace_on_new_instance() { return true; }
 }

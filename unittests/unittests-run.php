@@ -6,18 +6,29 @@ require_once BORS_CORE.'/init.php';
 if(!@include_once(config('phpunit_include').'/Autoload.php'))
 	require_once(config('phpunit_include').'/Framework.php');
 
+require_once('inc/filesystem.php');
+
 class BorsTests
 {
     public static function suite()
     {
         $suite = new PHPUnit_Framework_TestSuite('BorsSuite');
 		foreach(bors_dirs() as $dir)
+		{
 			if(file_exists(($tests_list_file = $dir.'/data/unittests-classes.list')))
 				foreach(file($tests_list_file) as $class_name)
 					if(($cn = trim($class_name)))
 						$suite->addTestSuite(self::bors_class_test($cn));
 			else
 				"NF $tests_list_file\n";
+		}
+
+		foreach(search_dir(dirname(__FILE__).'/tests', $mask='\.php$') as $file)
+		{
+			require_once($file);
+			if(preg_match('!.+/(\w+)\.php$!', $file, $m))
+				$suite->addTestSuite($m[1].'_unittest');
+		}
 
 		return $suite;
     }

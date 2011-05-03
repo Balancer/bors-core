@@ -374,7 +374,7 @@ function make_enabled_params($params, $names_list, $skip_list = '')
 
 	if($params)
 	{
-		$skip_list = " {$skip_list} align alt notitle orig title _border url uri border width xwidth _width self skip_around_cr";
+		$skip_list = " {$skip_list} align _align_b _align_e alt notitle orig title _border url uri border width xwidth _width self skip_around_cr";
 		$att = array();
 		foreach($params as $key => $value)
 			if($value && strpos($skip_list, " $key ")===false)

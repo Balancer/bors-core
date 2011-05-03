@@ -33,7 +33,7 @@ class bors_var
 		return $x;
 	}
 
-	static function set($name, $value, $time_to_live)
+	static function set($name, $value, $time_to_live = NULL)
 	{
 		$x = object_new_instance('bors_var_db', array(
 			'name' => $name,

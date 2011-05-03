@@ -2,7 +2,7 @@
 
 require_once('engines/lcml/main.php');
 
-class base_page extends base_object
+class base_page extends bors_object
 {
 	function render_engine() { return config('render_engine', 'render_page'); }
 	function storage_engine() { return NULL; }

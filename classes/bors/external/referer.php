@@ -15,7 +15,7 @@ class bors_external_referer
 		if(preg_match('!(/translate_c\?hl='
 				.'|search\?q=cache:|translate\.google\.com'
 				.'|cgi\-bin/readmsg\?id|/translate\?hl'
-				.'!/babelfish/translate_url_content)!', $referer))
+				.'|/babelfish/translate_url_content)!', $referer))
 			return;
 
 		if(preg_match('!^https?://([^/]+)!', $referer, $m))

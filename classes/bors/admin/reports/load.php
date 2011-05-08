@@ -6,7 +6,7 @@ class bors_admin_reports_load extends base_page
 	function config_class() { return config('admin_config_class'); }
 	function template() { return 'forum/_header.html'; }
 
-	function local_data()
+	function body_data()
 	{
 		$dbh = new driver_mysql(config('bors_core_db'));
 		return array(
@@ -39,5 +39,5 @@ class bors_admin_reports_load extends base_page
 		);
 	}
 
-	function cache_static() { return bors()->user() ? 0 : rand(60, 120); }
+//	function cache_static() { return bors()->user() ? 0 : rand(60, 120); }
 }

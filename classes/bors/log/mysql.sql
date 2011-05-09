@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS `bors_logging` (
 	`modify_time` INT NOT NULL,
 	`owner_id` INT NOT NULL,
 	`last_editor_id` INT NOT NULL,
+	`owner_ip` VARCHAR(16) NULL,
+	`action_url` TEXT NULL,
 
 	PRIMARY KEY (`id`),
 	KEY `category` (`category`),

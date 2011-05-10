@@ -4,7 +4,7 @@ class bors_var
 {
 	static function get($name, $default = NULL)
 	{
-		$x = objects_first('bors_var_db', array('name' => $name));
+		$x = bors_find_first('bors_var_db', array('name' => $name));
 		if(!$x)
 			return $default;
 
@@ -19,7 +19,7 @@ class bors_var
 
 	static function get_var($name)
 	{
-		$x = objects_first('bors_var_db', array('name' => $name));
+		$x = bors_find_first('bors_var_db', array('name' => $name));
 
 		if(!$x)
 			return NULL;
@@ -35,12 +35,11 @@ class bors_var
 
 	static function set($name, $value, $time_to_live = NULL)
 	{
-		$x = object_new_instance('bors_var_db', array(
+		$x = bors_new('bors_var_db', array(
 			'name' => $name,
 			'value' => $value,
 			'expire_time' => $time_to_live > 0 ? time() + $time_to_live : $time_to_live,
 		));
-		$x->store();
 
 		return $value;
 	}

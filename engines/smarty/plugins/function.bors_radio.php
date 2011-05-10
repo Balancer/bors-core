@@ -48,7 +48,7 @@ function smarty_function_bors_radio($params, &$smarty)
 	}
 
 	if($is_array)
-		$current = array_pop($current);
+		$current = @array_pop($current); // wtf?
 
 	if(!$current && !empty($list['default']))
 		$current = $list['default'];

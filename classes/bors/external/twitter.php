@@ -104,6 +104,12 @@ class bors_external_twitter extends bors_object
 
 //		return NULL;
 
+		// http://twitpic.com/4vifl4 в
+		// <a href="http://twitpic.com/4vifl4" title="Share photos on twitter with Twitpic"><img src="http://twitpic.com/show/thumb/4vifl4.jpg" width="150" height="150" alt="Share photos on twitter with Twitpic"></a>
+		$text = preg_replace('!http://twitpic\.com/(\w+)!', 
+			'<br/><a href="http://twitpic.com/$1" title="Фото из Твиттера на Twitpic"><img src="http://twitpic.com/show/thumb/$1.jpg" width="150" height="150" alt="Фото"></a><br/>',
+			$text);
+
 		$text = preg_replace('/^\w+:/', '', $text);
 
 		$text = html2bb(bors_close_tags($text), array(

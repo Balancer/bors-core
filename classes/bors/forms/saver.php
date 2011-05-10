@@ -43,6 +43,8 @@ class bors_forms_saver extends base_empty
 				return true;
 
 
+		$object->pre_set($data);
+
 		// Чистим служебные переменные
 		$file_vars  = popval($data, 'file_vars');
 		$go  = popval($data, 'go');
@@ -51,8 +53,6 @@ class bors_forms_saver extends base_empty
 
 		if(($ret = $object->check_data($data)))
 			return $ret;
-
-		$object->pre_set($data);
 
 		if(!$object->set_fields($data, true))
 			return true;

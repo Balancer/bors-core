@@ -12,6 +12,7 @@ class bors_var_db extends base_object_db
 		return array(
 			'id',
 			'name',
+			'title',
 			'value',
 			'type',
 			'create_time',

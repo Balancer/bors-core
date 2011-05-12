@@ -44,6 +44,10 @@ $map = array(
 
 //	Заглушки для удобства.
 	'/login/? => bors_admin_users_login',
+	'/_bors/login/? => bors_admin_users_login',
+	'/_bors/users/do-login/? => bors_admin_users_login',
+	'/_bors/users/do-logout/? => bors_admin_users_logout',
+	'/_bors/logout/? => bors_admin_users_logout',
 
 	'/___/ => bors_ext_admin_main',
 	'/___/core/ => bors_ext_admin_core_main',

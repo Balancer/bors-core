@@ -19,7 +19,10 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 		$uri = url_append_param($uri, 'inframe', 'yes');
 
 	if(config('debug_redirect_trace'))
+	{
+		echo '<pre>$_SESSION:</pre>';	var_dump(@$_SESSION);
 		return debug_exit("Go to <a href=\"{$uri}\">{$uri}</a>");
+	}
 
 	if(config('do_not_exit'))
 		return true;
@@ -98,7 +101,10 @@ function go_message($message, $params = array())
 		set_session_var('error_fields', $ef);
 
 	if(defval($params, 'ref'))
+	{
+		$GLOBALS['ref'] = defval($params, 'go');
 		return go_ref($go, $permanent);
+	}
 	else
 		return go($go, $permanent);
 }

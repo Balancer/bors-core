@@ -44,6 +44,9 @@
 			else
 				$msg = ec("Извините, у Вас нет доступа к этому ресурсу");
 
+			if($access_object->get('login_redirect'))
+				return go('/_bors/login?ref='.$obj->url());
+
 			return empty($GLOBALS['cms']['error_show']) ? bors_message($msg . "
 				<!--
 				object to read = '$obj'

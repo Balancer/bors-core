@@ -1,5 +1,7 @@
 <?php
 
+require_once('inc/clients/geoip-place.php');
+
 class bors_admin_reports_load extends base_page
 {
 	function title() { return ec('Загрузка системы на ').date('d.m.Y H:i'); }

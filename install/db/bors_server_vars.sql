@@ -12,4 +12,5 @@ CREATE TABLE IF NOT EXISTS `bors_server_vars` (
   KEY `create_time` (`create_time`),
   KEY `modify_time` (`modify_time`),
   KEY `expire_time` (`expire_time`)
-);
+) DEFAULT CHARSET=utf8;
+

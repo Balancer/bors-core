@@ -1,0 +1,17 @@
+<div id="module_{$this->class_name()}_{$year}_{$month}">
+<table class="{$table_class}">
+{if $ajax_calend}
+<caption>{$month|month_name} {$year}</caption>
+{else}
+{if $show_caption}<caption>{$month|month_name} {$year}</caption>{/if}
+{/if}
+<tr><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th></tr>
+{foreach from=$calend item="week"}
+<tr>
+{foreach from=$week item="day"}
+<td{if $day.now} class="now"{/if}>{if $day.url}<a href="{$day.url}" title="{$day.title|htmlspecialchars}">{$day.number}</a>{else}{$day.number}{/if}</td>
+{/foreach}
+</tr>
+{/foreach}
+</table>
+</div>

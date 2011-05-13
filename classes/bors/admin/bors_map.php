@@ -12,8 +12,9 @@ bors_url_submap(array(
 	'/edit/crosslinks/ => bors_admin_edit_crosslinks',
 	'/property\?object=([^&]*) => _property(1)',
 	'/visibility\?act=(show|hide)&object=([^&]*) => _visibility(2)',
-	'/reports/ => _reports_main',
-	'/reports/load/ => _reports_load',
+	'/reports/? => _reports_main',
+	'/reports/ip\?ip=(.+) => _reports_ip(1)',
+	'/reports/load/? => _reports_load',
 
 	'/cross_chtype\?.* => _cross_chtype',
 	'/cross_unlink\?.* => _cross_unlink',

@@ -11,6 +11,10 @@ class bors_storage_fs_markdown extends bors_storage
 	{
 		$dir = $object->dir();
 		$base = $object->_basename();
+
+		if(preg_match('/\.php$/', $base)) // Хардкод, но что делать? :-/
+			return false;
+
 		$rel = secure_path(str_replace($_SERVER['DOCUMENT_ROOT'], '/', $dir));
 
 		if($base && file_exists($file = "{$dir}/{$base}.mdml"))

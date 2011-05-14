@@ -15,9 +15,6 @@ function lt_url($params)
 	if(!preg_match("!^\w+://!",$url) && !preg_match("!^/!",$url))
 		$url = @$GLOBALS['main_uri'].$url;
 
-//		if($hts)
-//		$parse = url_parse($url);
-
 	$external = @$parse['local'] ? '' : ' class="external"';
 
 	if($hts && !$hts->get_data($url, 'create_time') && !$hts->get_data($url, 'title'))

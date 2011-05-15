@@ -286,7 +286,10 @@ class base_object extends base_empty
 //			if(@$this->data[$field] == $value && @$this->data[$field] !== NULL && $value !== NULL)
 //				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$field]).'; new type: '.gettype($value));
 
-			$this->changed_fields[$field] = true;
+			// Запоминаем первоначальное значение переменной.
+			if(!@array_key_exists($field, $this->changed_fields))
+				$this->changed_fields[$field] = @$this->data[$field];
+
 			bors()->add_changed_object($this);
 		}
 

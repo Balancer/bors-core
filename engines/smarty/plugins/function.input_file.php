@@ -31,7 +31,7 @@ function smarty_function_input_file($params, &$smarty)
 		if($file)
 		{
 			echo "<a href=\"{$file->admin()->url()}\">".$file->html_code()."</a><br/>\n";
-			echo "<input type=\"checkbox\" name=\"file_{$file_name_field}_delete_do\" />&nbsp;".ec('Удалить файл')."<br/>\n";
+			echo "<input type=\"checkbox\" name=\"file_{$name}_delete_do\" />&nbsp;".ec('Удалить файл')."<br/>\n";
 		}
 	}
 

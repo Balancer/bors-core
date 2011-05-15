@@ -370,7 +370,8 @@ class storage_db_mysql_smart extends base_null
 					if($property == 'id')
 						$def_id = $field;
 
-					if(empty($object->changed_fields[$property]))
+//					if(empty($object->changed_fields[$property]))
+					if(!@array_key_exists($property, $object->changed_fields))
 						continue;
 
 					$value = $object->$property();
@@ -487,7 +488,8 @@ class storage_db_mysql_smart extends base_null
 					if($property == 'id')
 						$main_id_name = $def_id = $field;
 
-					if(empty($object->changed_fields[$property]))
+//					if(empty($object->changed_fields[$property]))
+					if(!@array_key_exists($property, $object->changed_fields))
 						continue;
 
 					$value = isset($data[$property]) ? $data[$property] : $object->$property();

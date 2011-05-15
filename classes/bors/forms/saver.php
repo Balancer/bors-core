@@ -159,12 +159,17 @@ class bors_forms_saver extends base_empty
 				debug_hidden_log('errors.forms.files', $msg = "Unknown file var format: '$f' for {$object}");
 				bors_exit($msg);
 			}
-
 			// Удаляем старый файл, если есть пометка к его удалению.
 			if(!empty($data['file_'.$file_name.'_delete_do']))
 			{
+				//TODO: исправить. Продумать отличие записей:
+				//	attach=bors_attach(attach_id)
+				//	attach=attach_class_name(attach_id)
 				$old_file = $object->get($file_class_name_field);
+//				echo "f=$f; file_class_name_field=$file_class_name_field; ".$file_name; var_dump($data); exit();
 				if($old_file)
+					$old_file->delete();
+				elseif($old_file = $object->get($file_name))
 					$old_file->delete();
 
 				if(method_exists($object, $remove_method = "remove_{$file_name}_file"))
@@ -251,7 +256,7 @@ class bors_forms_saver extends base_empty
 			}
 
 //			echo "file_name = $file_name, class_name = $file_class_name, id_field = $file_id_field";
-//			var_dump($data);
+//			var_dump($data); exit();
 			$file_data['upload_dir'] = popval($data, "{$file_name}___upload_dir");
 			$file_data['no_subdirs'] = popval($data, "{$file_name}___no_subdirs");
 			$file_data['link_type']  = popval($data, "{$file_name}___link_type");

@@ -59,8 +59,12 @@ class bors_objects_version extends base_object_db
 
 	static function save($object, $version)
 	{
-		foreach($object->changed_fields as $property => $dummy)
+		$fields = bors_lib_orm::fields($object);
+		foreach($object->changed_fields as $property => $original)
 		{
+			if(!empty($fields[$property]['non_versioning']))
+				continue;
+
 			bors_new(__CLASS__, array(
 				'target_class_name' => $object->extends_class_name(),
 				'target_id' => $object->id(),
@@ -69,6 +73,8 @@ class bors_objects_version extends base_object_db
 				'value' => $object->get($property),
 				'is_approved' => false,
 			));
+
+			unset($object->changed_fields[$property]);
 		}
 	}
 }

@@ -14,6 +14,13 @@ class bors_admin_reports_ip extends bors_admin_page
 		$ip = $this->ip();
 		list($country_code, $country_name, $city_name, $city_object) = geoip_info($ip);
 
-		return compact('country_code', 'country_name', 'city_name', 'city_object', 'ip');
+		require_once "Net/Whois.php";
+		$server = "whois.ripe.net";
+		$query  = $ip;     // get information about
+                               // this domain
+		$whois = new Net_Whois;
+		$whois = $whois->query($query, $server);
+
+		return compact('country_code', 'country_name', 'city_name', 'city_object', 'ip', 'whois');
 	}
 }

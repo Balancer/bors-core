@@ -28,14 +28,18 @@ class base_rss extends base_page
 //		$feed->descriptionTruncSize = 500;
 		$feed->descriptionHtmlSyndicated = true;
 
-/*		$image = new FeedImage(); 
-		$image->title = "dailyphp.net logo"; 
-		$image->url = "http://www.dailyphp.net/images/logo.gif"; 
-		$image->link = "http://www.dailyphp.net"; 
-		$image->description = "Feed provided by dailyphp.net. Click to visit."; 
-		$feed->image = $image; 
-*/
-		// get your news items from somewhere, e.g. your database: 
+		if($xmlns = $rss->get('xmlns_append'))
+			$feed->xmlns_append = $xmlns;
+
+		if($img_url = $rss->get('rss_image_src'))
+		{
+			$image = new FeedImage();
+			$image->title = $rss->get('rss_image_title');
+			$image->url = $img_url;
+			$image->link = $rss->get('rss_image_link', $rss->main_url());
+			$image->description = $rss->get('rss_image_description');
+			$feed->image = $image; 
+		}
 
 		foreach($rss->rss_items() as $o)
 		{
@@ -55,6 +59,18 @@ class base_rss extends base_page
 				$item->author = $owner->title();
 
 			$item->category = $rss->item_rss_keywords_string($o);
+
+			if($add = $rss->item_additional($o, $rss))
+				$item->additionalElements = $add;
+
+			if($e = $rss->item_rss_enclosure($o))
+			{
+	 			$item->enclosure = new EnclosureItem();
+				$item->enclosure->url = $e['url'];
+				$item->enclosure->type = $e['type'];
+				if($s = @$e['size'])
+					$item->enclosure->length = $s;
+			}
 /*
 			if($image = object_property($o, 'image'))
 			{
@@ -75,9 +91,20 @@ class base_rss extends base_page
 
 	function item_rss_title($item) { return $item->rss_title(); }
 	function item_rss_body($item, $rss) { return $rss->rss_body($item, $rss->rss_strip()); }
+	function item_rss_full_html($item, $rss) { return $item->html(); }
 	function item_rss_url($item) { return $item->url(); }
 	function item_rss_guid($item) { return $item->url(); }
 	function item_rss_keywords_string($item) { return object_property($item, 'keywords_string'); }
+
+	function item_additional($item, $rss)
+	{
+		if($this->has_yandex_fields())
+			return array('yandex:full-text' => htmlspecialchars($this->item_rss_full_html($item, $rss)));
+		else
+			return array();
+	}
+
+	function item_rss_enclosure($item) { return NULL; }
 
 	function rss_body($object, $strip = 0)
 	{

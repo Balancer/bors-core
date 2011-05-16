@@ -22,4 +22,13 @@ class bors_cache_base
 	function set($value, $expire) { return $this->last = $value; }
 
 	function last() { return $this->last; }
+
+	static function get_or_set($type, $key, $function, $ttl)
+	{
+		$ch = new bors_cache;
+		if($ch->get($type, $key))
+			return $ch->last();
+
+		return $ch->set($function(), $ttl);
+	}
 }

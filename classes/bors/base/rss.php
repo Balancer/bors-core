@@ -41,6 +41,10 @@ class base_rss extends base_page
 			$feed->image = $image; 
 		}
 
+		foreach(explode(' ', 'copyright docs language') as $n)
+			if($x = $rss->get($n))
+				$feed->$n = $x;
+
 		foreach($rss->rss_items() as $o)
 		{
 		    $item = new FeedItem();
@@ -52,7 +56,7 @@ class base_rss extends base_page
 			if(($desc = $rss->item_rss_body($o, $rss)))
 				$item->description = $desc;
 			$item->descriptionHtmlSyndicated = true;
-			$item->date = intval($o->create_time());
+			$item->date = intval($o->create_time());//$rss->item_rss_gmtime($o);
 			$item->source = $rss->rss_source_url();
 			$owner = $o->get('owner');
 			if($owner)
@@ -95,6 +99,7 @@ class base_rss extends base_page
 	function item_rss_url($item) { return $item->url(); }
 	function item_rss_guid($item) { return $item->url(); }
 	function item_rss_keywords_string($item) { return object_property($item, 'keywords_string'); }
+//	function item_rss_gmtime($item) { return time_local_to_gmt($item->create_time()); }
 
 	function item_additional($item, $rss)
 	{
@@ -129,4 +134,5 @@ class base_rss extends base_page
 	function cache_static() { return 0; }
 	function index_file() { return 'index.xml'; }
 	function use_temporary_static_file() { return false; }
+	function has_yandex_fields() { return false; }
 }

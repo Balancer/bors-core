@@ -20,5 +20,5 @@ class bors_rss extends base_rss
 //	function main_url() { return $this->called_url(); }
 	function rss_url()  { return $this->called_url(); }
 
-
+	function language() { return 'ru'; }
 }

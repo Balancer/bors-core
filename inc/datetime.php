@@ -179,3 +179,11 @@ function smart_interval($interval, $parts = 2)
 
 	return join(' ', array_slice($res, $i, $parts));
 }
+
+function time_local_to_gmt($time = 0)
+{
+	if(!$time)
+		$time = time();
+
+	return mktime( gmdate("H", $time), gmdate("i", $time), gmdate("s", $time), gmdate("m", $time), gmdate("d", $time), gmdate("Y", $time));
+}

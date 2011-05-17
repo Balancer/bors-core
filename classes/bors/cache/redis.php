@@ -1,7 +1,5 @@
 <?php
 
-//INFO: в процессе написания.
-
 require_once(config('rediska.include'));
 
 class bors_cache_redis extends bors_cache_base

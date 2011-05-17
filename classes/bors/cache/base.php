@@ -11,12 +11,12 @@ class bors_cache_base
 
 	function __construct() { $this->init(); }
 
-	function get($type, $key)
+	function get($type, $key, $default = NULL)
 	{
 		$this->type = $type;
 		$this->key  = $key;
 		$this->hmd  = md5($type.':'.$key);
-		return $this->last = NULL;
+		return $this->last = $default;
 	}
 
 	function set($value, $expire) { return $this->last = $value; }
@@ -26,8 +26,8 @@ class bors_cache_base
 	static function get_or_set($type, $key, $function, $ttl)
 	{
 		$ch = new bors_cache;
-		if($ch->get($type, $key))
-			return $ch->last();
+		if($value = $ch->get($type, $key))
+			return $value;
 
 		return $ch->set($function(), $ttl);
 	}

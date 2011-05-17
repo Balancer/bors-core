@@ -26,17 +26,22 @@ class bors_cache_zend_file extends bors_cache_base
 			$backendOptions);
 	}
 
-	function get($type, $key)
+	function get($type, $key, $default = NULL)
 	{
-		parent::get($type, $key);
-//		echo "get for {$this->hmd}\n";
+		parent::get($type, $key, $default);
+
+		if(config('cache_disabled'))
+			return NULL;
+
 		return $this->last = $this->ch->load($this->hmd);
 	}
 
-	function set($value, $expire)
+	function set($value, $ttl)
 	{
-//		echo "save for $expire: {$this->hmd}\n";
-//		$this->ch->setLifeTime(600);
+		if(config('cache_disabled'))
+			return $this->last = $value;
+
+		$this->ch->setLifeTime($ttl);
 		$this->ch->save($value, $this->hmd);
 		return $this->last = $value;
 	}

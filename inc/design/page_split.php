@@ -80,13 +80,13 @@
 		$pages[] = get_page_link($obj, 1, 1==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
 
 		if($start > 2)
-			$pages[] = "...";
+			$pages[] = "<span class=\"skip\">&#133;</span>";
 
 		for($i = $start; $i <= $stop; $i++)
 			$pages[] = get_page_link($obj, $i, $i==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
 
 		if($stop < $total_pages - 1)
-			$pages[] = "...";
+			$pages[] = "<span class=\"skip\">&#133;</span>";
 
 		$pages[] = get_page_link($obj, $total_pages, $total_pages==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
 

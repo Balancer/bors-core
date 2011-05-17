@@ -33,7 +33,11 @@ class bors_cache_zend_file extends bors_cache_base
 		if(config('cache_disabled'))
 			return NULL;
 
-		return $this->last = $this->ch->load($this->hmd);
+		$this->last = $this->ch->load($this->hmd);
+		if($this->last === false)
+			$this->last = $default;
+
+		return $this->last;
 	}
 
 	function set($value, $ttl)

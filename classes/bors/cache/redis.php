@@ -4,42 +4,49 @@
 
 require_once(config('rediska.include'));
 
-class bors_cache_redis extends cache_base
+class bors_cache_redis extends bors_cache_base
 {
-	private $_rediska;
-	function __construct()
+	function init()
 	{
+		static $_rediska = NULL;
+		if($_rediska)
+			return;
+
 		$options = array(
+//			'namespace' => 'BORS_Cache_',
+//			'name'      => 'bors_cache',
 			'servers' => array(
 				'server1' => array('host' => '127.0.0.1', 'port' => 6379)
 			)
 		);
 
-		$this->_rediska = new Rediska($options);
+		$_rediska = new Rediska;//($options);
 	}
 
-	function get($type, $key, $uri='', $default=NULL)
+	function get($type, $key, $default = NULL)
 	{
-		$this->init($type, $key, $uri);
+		parent::get($type, $key, $default);
 
 		if(config('cache_disabled'))
-			return $this->last = $default;
+			return NULL;
 
 		$key = new Rediska_Key($this->hmd);
-		if($key->isExists())
-			return $this->last = $key->getValue();
+
+		$this->last = $key->getValue();
+		if($this->last !== NULL)
+			return $this->last;
 
 		return $this->last = $default;
 	}
 
-	function set($value, $time_to_expire = 86400)
+	function set($value, $ttl)
 	{
 		if(config('cache_disabled'))
 			return $this->last = $value;
 
 		$key = new Rediska_Key($this->hmd);
-		$key->setExpire($time_to_expire);
 		$key->setValue($value);
+		$key->expire($ttl);
 
 		return $this->last = $value;
 	}

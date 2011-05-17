@@ -12,6 +12,8 @@ function lcml_external_code($text)
 		$text = preg_replace('!(^|\s)http://www.youtube.com/watch?v=([^&]+)&playnext=\d+&list=\w+(\s|$)!m', "\n[youtube]$2[/youtube]\n", $text);
 	}
 
+	$text = preg_replace('!(^|\s)http://rutube\.ru/tracks/\d+\.html\?v=(\w+)(\s|$)!m', "\n[rutube]$2[/rutube]\n", $text);
+
 	// PicasaWeb
 	// http://picasaweb.google.com/lh/photo/Ds6wIz_ClELVCBg84Q7-6Q?feat=directlink
 	$text = preg_replace('!(^|\s)https?://picasaweb.google.(com|ru)/lh/photo/([\w\-]+)\?feat=directlink($|\s)!m', "\n[picasa]$3[/picasa]\n", $text);

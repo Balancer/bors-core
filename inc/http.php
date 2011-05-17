@@ -77,7 +77,7 @@ function http_get_content($url, $raw = false)
 	));
 
 //    if(preg_match("!lenta\.ru!", $url))
-	if(preg_match("!rian.ru!", $url))
+	if(preg_match("!(rian.ru)!", $url))
 		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 	$data = curl_exec($ch);
@@ -174,7 +174,7 @@ function http_get_ex($url, $raw = true)
 		CURLOPT_SSL_VERIFYPEER => false,
 	));
 
-	if(preg_match("!rian.ru!", $url))
+	if(preg_match("!(rian.ru)!", $url))
 		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 	$data = curl_exec($ch);

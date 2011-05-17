@@ -23,7 +23,7 @@ function lt_img($params)
 	if(empty($params['size']))
 		$params['size'] = '468x468';
 
-//var_dump($params); exit();
+//		if(empty($params['url'])) { var_dump($params); exit(); }
 
 		if(!empty($params['url']))
 		{
@@ -105,12 +105,6 @@ function lt_img($params)
 
 				if(!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
 				{
-//					if(preg_match("!(lenta\.ru|pisem\.net|biorobot\.net|compulenta\.ru|ferra\.ru|radikal.ru|postimage.org)!",$uri))
-//						$req->setProxy('balancer.endofinternet.net', 3128);
-
-#					if(preg_match("!(ljplus\.ru)!",$uri))
-#						$req->setProxy('home.balancer.ru', 3128);
-
 					require_once('inc/http.php');
 					$x = http_get_ex($params['url']);
 					$content      = $x['content'];
@@ -129,15 +123,18 @@ function lt_img($params)
 //					if(config('is_debug')) echo "Got content for {$params['url']} to {$path}: ".strlen($content)."\n";
 
 					require_once('inc/filesystem.php');
-					mkpath(dirname($path), 0775);
+					mkpath(dirname($path), 0777);
+					if(!is_writable(dirname($path)))
+					{
+						debug_hidden_log('access_error', "Can't write to ".dirname($path));
+						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write]</small>";
+					}
+
 					$fh = fopen($path,'wb');
 					fwrite($fh, $content);
 					fclose($fh);
-					@chmod($path, 0664);
+					@chmod($path, 0666);
 
-//					$cmd = "wget --header=\"Referer: $uri\" -O \"$path\" \"".html_entity_decode($uri, ENT_COMPAT, 'UTF-8')."\"";
-//					return "cmd:$cmd=<br />\n";
-//					system($cmd);
 				}
 
 				if(file_exists($path) && filesize($path)>0)

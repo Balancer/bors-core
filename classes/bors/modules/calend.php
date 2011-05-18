@@ -12,9 +12,10 @@ class bors_modules_calend extends bors_module
 		$day	= $this->args('day',   date('d', $show_date));
 
 		$target_class_name	= $this->args('target_class_name');
+		$target_count_class_name	= $this->args('target_count_class_name', $target_class_name);
 		$calend_class_name	= $this->args('calend_class_name');
 		$calend_mask		= $this->args('calend_mask');
-		$where				= $this->args('where');
+		$where				= $this->args('where', array());
 		$table_class		= $this->args('table_class', 'btab');
 		$show_caption		= $this->args('show_caption', true);
 
@@ -33,15 +34,19 @@ class bors_modules_calend extends bors_module
 
 		for($d = 1; $d <= $days_in_month; $d++)
 		{
-			$day_begin = strtotime("$y-$m-$d 00:00:00");
-			$day_end   = strtotime("$y-$m-$d 23:59:59");
-			$count = bors_count($target_class_name, array_merge($where, array('create_time BETWEEN' => $day_begin, $day_end)));
+			$day_begin = strtotime("$year-$month-$d 00:00:00");
+			$day_end   = strtotime("$year-$month-$d 23:59:59");
+
+			$count = bors_count($target_count_class_name, array_merge($where, array(
+				'create_time BETWEEN' => array($day_begin, $day_end)
+			)));
+
 			$days[] = array(
 				'type' => $count ? 'normal' : 'empty',
 				'now' => $d == $day,
-				'number' => $day,
+				'number' => $d,
 				'count' => $count,
-				'url' => $calend_mask ? date($calend_mask, $day_begin) : bors_load($calend_class_name, $day_begin)->url();
+				'url' => $count ? ($calend_mask ? strftime($calend_mask, $day_begin) : bors_load($calend_class_name, $day_begin)->url()) : NULL,
 			);
 
 			if(count($days) == 7)
@@ -53,9 +58,8 @@ class bors_modules_calend extends bors_module
 
 		if($cnt = count($days))
 		{
-			$i = 1;
-			while($cnt--)
-				$days[] = array('type' => 'disabled', 'number' => $i++, 'count' => 0);
+			for($i=1; $i<=7-$cnt; $i++)
+				$days[] = array('type' => 'disabled', 'number' => $i, 'count' => 0);
 
 			$calend[] = $days;
 		}

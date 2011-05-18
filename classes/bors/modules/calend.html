@@ -9,7 +9,7 @@
 {foreach from=$calend item="week"}
 <tr>
 {foreach from=$week item="day"}
-<td{if $day.now} class="now"{/if}>{if $day.url}<a href="{$day.url}" title="{$day.title|htmlspecialchars}">{$day.number}</a>{else}{$day.number}{/if}</td>
+<td style="text-align: right" {if $day.now} class="now"{/if}>{if $day.url && $day.count}<a href="{$day.url}" title="{$day.title|htmlspecialchars} ({$day.count})">{$day.number}</a>{else}{$day.number}{/if}</td>
 {/foreach}
 </tr>
 {/foreach}

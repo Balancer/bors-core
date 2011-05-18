@@ -7,6 +7,8 @@ class bors_modules_calend extends bors_module
 		$now		= $this->args('now', time());
 		$show_date	= $this->args('show_date', $now);
 
+		$show_date_hr	= date('Y/m/d', $show_date);
+
 		$year	= $this->args('year',  date('Y', $show_date));
 		$month	= $this->args('month', date('m', $show_date));
 		$day	= $this->args('day',   date('d', $show_date));
@@ -19,7 +21,12 @@ class bors_modules_calend extends bors_module
 		$table_class		= $this->args('table_class', 'btab');
 		$show_caption		= $this->args('show_caption', true);
 
-		$ajax_calend		= $this->args('ajax_calend', true);
+		$ajax				= $this->args('ajax', true);
+		if($ajax)
+		{
+			template_jquery();
+			template_js_include('/_bors3rdp/js/strftime-min.js');
+		}
 
 		$begin = strtotime("$year-$month-1 00:00:00");
 
@@ -30,7 +37,11 @@ class bors_modules_calend extends bors_module
 		$days = array();
 
 		for($i=1; $i<$first_weekday; $i++)
-			$days[] = array('type' => 'disabled', 'number' => date('d', $begin - 86400*($first_weekday-$i)), 'count' => 0);
+			$days[] = array(
+				'class' => 'bc_disabled',
+				'number' => date('d', $begin - 86400*($first_weekday-$i)),
+				'count' => 0,
+			);
 
 		for($d = 1; $d <= $days_in_month; $d++)
 		{
@@ -41,12 +52,15 @@ class bors_modules_calend extends bors_module
 				'create_time BETWEEN' => array($day_begin, $day_end)
 			)));
 
+			$class = $count ? 'bc_normal' : 'bc_empty';
+			if(date('d.m.Y', $show_date) == "$d.$month.$year")
+				$class .= $class.' bc_now';
+
 			$days[] = array(
-				'type' => $count ? 'normal' : 'empty',
-				'now' => $d == $day,
 				'number' => $d,
 				'count' => $count,
 				'url' => $count ? ($calend_mask ? strftime($calend_mask, $day_begin) : bors_load($calend_class_name, $day_begin)->url()) : NULL,
+				'class' => $class,
 			);
 
 			if(count($days) == 7)
@@ -59,11 +73,15 @@ class bors_modules_calend extends bors_module
 		if($cnt = count($days))
 		{
 			for($i=1; $i<=7-$cnt; $i++)
-				$days[] = array('type' => 'disabled', 'number' => $i, 'count' => 0);
+				$days[] = array(
+					'class' => 'bc_disabled',
+					'number' => $i,
+					'count' => 0
+				);
 
 			$calend[] = $days;
 		}
 
-		return compact('calend', 'month', 'now', 'show_caption', 'show_date', 'table_class', 'year');
+		return compact('ajax', 'calend', 'calend_mask', 'day', 'month', 'now', 'show_caption', 'show_date', 'show_date_hr', 'table_class', 'year');
 	}
 }

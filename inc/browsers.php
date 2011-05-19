@@ -130,6 +130,8 @@ function get_browser_info($user_agent, $log_unknown = true)
 			$os = 'Windows98';
 		elseif(preg_match('!Windows!i', $user_agent))
 			$os = 'Windows';
+		elseif(preg_match('!RIM Tablet OS!', $user_agent))
+			$os = 'BlackBerry';
 	}
 
 	// ************************************************************

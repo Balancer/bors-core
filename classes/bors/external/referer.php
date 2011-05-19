@@ -12,7 +12,10 @@ class bors_external_referer
 
 		$norm_referer = self::normalize($referer);
 
-		if(preg_match('!(/translate_c\?hl=|search\?q=cache:|translate\.google\.com|cgi\-bin/readmsg\?id|/translate\?hl)!', $referer))
+		if(preg_match('!(/translate_c\?hl='
+				.'|search\?q=cache:|translate\.google\.com'
+				.'|cgi\-bin/readmsg\?id|/translate\?hl'
+				.'|/babelfish/translate_url_content)!', $referer))
 			return;
 
 		if(preg_match('!^https?://([^/]+)!', $referer, $m))

@@ -66,8 +66,13 @@
 			{
 				$anchor = NULL;
 				$obj = bors_load_uri($pure_url);
+
+				if(!$obj)
+					$obj = bors_load_uri($url);
+
 				if($obj)
-					return "<a href=\"$original_url\">{$obj->title()}</a>";
+//					return "<a href=\"$original_url\">{$obj->title()}</a>";
+					return $obj->titled_url_in_container();
 			}
 		}
 

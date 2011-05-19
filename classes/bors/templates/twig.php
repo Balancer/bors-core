@@ -1,27 +1,19 @@
 <?php
 
 $twig_inc = config('twig_include_dir');
-
 require_once($twig_inc.'/Autoloader.php');
-require_once($twig_inc.'/ExtensionInterface.php');
-require_once($twig_inc.'/Extension.php');
-require_once($twig_inc.'/TokenParser.php');
-require_once($twig_inc.'/Node.php');
+Twig_Autoloader::register();
 
-class bors_templates_twig extends bors_templates_abstract
+class bors_templates_twig
 {
-	function render()
+	static function fetch($template, $data)
 	{
-		Twig_Autoloader::register();
-
-		$template_file = $this->full_path();
-		if(!$template_file)
-			return ec("Ошибка: не найден файл шаблона");
-
 		$cache_dir = config('cache_dir').'/twig/';
 		mkpath($cache_dir);
 
-		$paths = array(dirname($template_file));
+		$template_file = preg_replace('!tpl://!', '/', $template);
+
+		$paths = file_exists($template_file) ? array(dirname($template_file)) : array();
 		foreach(bors_dirs() as $dir)
 			if(is_dir($dir = "$dir/templates/"))
 				$paths[] = $dir;
@@ -34,8 +26,9 @@ class bors_templates_twig extends bors_templates_abstract
 
 		$twig->addExtension(new bors_twig_extension());
 
-		$template = $twig->loadTemplate(basename($template_file));
-		$result = $template->render($this->data);
+//		$template = $twig->loadTemplate(basename($template_file));
+		$template = $twig->loadTemplate($template_file);
+		$result = $template->render($data);
 
 		return $result;
 	}
@@ -85,17 +78,17 @@ class bors_twig_parser_module extends Twig_TokenParser
 
 class bors_twig_node_module extends Twig_Node
 {
-  protected $params;
+	protected $params;
 
-  public function __construct($lineno, $params)
-  {
-    parent::__construct($lineno);
-    $this->params = $params;
-  }
+	public function __construct($lineno, $params)
+	{
+		parent::__construct($lineno);
+		$this->params = $params;
+	}
 
-  public function __toString() { return get_class($this); }
+	public function __toString() { return get_class($this); }
 
-	public function compile($compiler)
+	function compile(Twig_Compiler $compiler)
 	{
 //		var_dump($this->params);
 

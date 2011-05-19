@@ -5,3 +5,5 @@
 	function lp_cterm($text) { return "<tt class=\"code\">".lcml($text)."</tt>"; }
 
 	function lp_lcml($text) { return lcml($text); }
+
+function lt_clear($text) { return "<div class=\"clear\">&nbsp;</div>"; }

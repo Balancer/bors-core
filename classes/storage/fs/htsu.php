@@ -28,6 +28,7 @@ class storage_fs_htsu extends base_null
 	{
 		$dir = $object->dir();
 		$root = $object->document_root();
+		$base = $object->_basename();
 		$rel = secure_path(str_replace($root, '/', $dir));
 
 		if(($ut = config('url_truncate')))
@@ -38,29 +39,45 @@ class storage_fs_htsu extends base_null
 			$rel = preg_replace("!/$ut(/|$)!", '', $rel);
 		}
 
-		if(file_exists($file = "{$dir}/index.htsu"))
+
+		if($base && file_exists($file = "{$dir}/{$base}.htsu"))
 			return $file;
 
-		if(file_exists($file = "{$dir}.htsu"))
+		if($base && file_exists($file = "{$dir}/{$base}/main.htsu"))
+			return $file;
+
+		if($base && file_exists($file = "{$dir}/{$base}/index.htsu"))
+			return $file;
+
+//		if($base && file_exists($file = "{$dir}/{$base}"))
+//			return $file;
+
+		if(!$base && file_exists($file = "{$dir}/index.htsu"))
+			return $file;
+
+		if(!$base && file_exists($file = "{$dir}.htsu"))
 			return $file;
 
 		if($object->host() == @$_SERVER['HTTP_HOST'])
 		{
 			foreach(bors_dirs() as $d)
 			{
-				if(file_exists($file = secure_path("{$d}/data/fs/{$rel}.htsu")))
+				if($base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/{$base}.htsu")))
 					return $file;
 
-				if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/main.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/data/fs/{$rel}.htsu")))
 					return $file;
 
-				if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.htsu")))
+				if(!$base  && file_exists($file = secure_path("{$d}/data/fs/{$rel}/main.htsu")))
 					return $file;
 
-				if(file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.htsu")))
 					return $file;
 
-				if(file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}/index.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}.htsu")))
+					return $file;
+
+				if(!$base && file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}/index.htsu")))
 					return $file;
 			}
 		}

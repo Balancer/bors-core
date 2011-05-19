@@ -19,12 +19,28 @@ function smarty_function_textarea($params, &$smarty)
 		if(empty($cols))
 			$cols = 50;
 
+		$class = empty($class) ? array() : explode(' ', $class);
 		if(in_array($name, explode(',', session_var('error_fields'))))
+			$class[] = "error";
+
+		$versioning = object_property($obj, 'versioning_properties', array());
+		if(array_key_exists($name, $versioning))
 		{
-			if(empty($class))
-				$class = "error";
-			else
-				$class .= " error";
+			$has_versioning = true;
+			$previous = $versioning[$name];
+			$class[] = 'yellow_box';
+		}
+		else
+			$has_versioning = false;
+
+		$class = join(' ', $class);
+
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+		if($th = defval($params, 'th'))
+		{
+			echo "<tr><th>{$th}</th><td>";
+			if(empty($style))
+				$style = "width: 99%";
 		}
 
 		echo "<textarea name=\"$name\"";
@@ -33,4 +49,10 @@ function smarty_function_textarea($params, &$smarty)
 				echo " $p=\"{$$p}\"";
 
 		echo ">".htmlspecialchars($value)."</textarea>\n";
+
+		if($has_versioning)
+			echo "<br/><small>".ec("Исходное значение: ").$previous."</small>\n";
+
+		if($th)
+			echo "</td></tr>\n";
 }

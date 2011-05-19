@@ -40,12 +40,12 @@ function sklonn($n, $s1, $s2=NULL, $s5=NULL)
     return $n.' '.$s5;
 }
 
-function bors_truncate($string, $length = 80, $etc = '…', $break_words = false, $middle = false)
+function bors_truncate($string, $length = 80, $etc = '&#133;', $break_words = false, $middle = false)
 {
 	return truncate($string, $length, $etc, $break_words, $middle);
 }
 
-function truncate($string, $length = 80, $etc = '...', $break_words = false, $middle = false)
+function truncate($string, $length = 80, $etc = '&#133;', $break_words = false, $middle = false)
 {
     if($length == 0)
         return '';

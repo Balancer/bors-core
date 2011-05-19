@@ -21,9 +21,6 @@ class storage_db_mysql_smart extends base_null
 
 		global $stdbms_cache;
 
-//		echo "Load $object (".$GLOBALS['bors_data']['class_included'][get_class($object)].")<br/>";
-//		print_d($object->fields());
-
 		$hash = md5(join('!', array($object->class_name(), $common_where, $only_count)));
 
 		$need_convert = $object->db_charset() != $object->internal_charset();
@@ -255,7 +252,6 @@ class storage_db_mysql_smart extends base_null
 					$q = $m[1].$m[3];
 				}
 
-//				if(debug_in_console()) echo 'SELECT '.join(',', $select).' '.$q;
 				$dbh->query('SELECT '.join(',', $select).' '.$q, false);
 			}
 
@@ -374,7 +370,8 @@ class storage_db_mysql_smart extends base_null
 					if($property == 'id')
 						$def_id = $field;
 
-					if(empty($object->changed_fields[$property]))
+//					if(empty($object->changed_fields[$property]))
+					if(!@array_key_exists($property, $object->changed_fields))
 						continue;
 
 					$value = $object->$property();
@@ -491,7 +488,8 @@ class storage_db_mysql_smart extends base_null
 					if($property == 'id')
 						$main_id_name = $def_id = $field;
 
-					if(empty($object->changed_fields[$property]))
+//					if(empty($object->changed_fields[$property]))
+					if(!@array_key_exists($property, $object->changed_fields))
 						continue;
 
 					$value = isset($data[$property]) ? $data[$property] : $object->$property();

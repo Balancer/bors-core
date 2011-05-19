@@ -8,8 +8,8 @@ function lt_img($params)
 		return lt_img_bors($params);
 
 	$url = bors()->main_object() ? bors()->main_object()->url() : NULL;
-	require_once('inc/airbase/images.php');
-	$data = airbase_image_data($params['url'], $url);
+//	require_once('inc/airbase/images.php');
+//	$data = airbase_image_data($params['url'], $url);
 
 	if(preg_match('/\.gif$/i', $params['url']))
 	{
@@ -22,6 +22,8 @@ function lt_img($params)
 
 	if(empty($params['size']))
 		$params['size'] = '468x468';
+
+//		if(empty($params['url'])) { var_dump($params); exit(); }
 
 		if(!empty($params['url']))
 		{
@@ -39,6 +41,9 @@ function lt_img($params)
 //			echo $GLOBALS['lcml']['level'];
 //			exit(print_r($GLOBALS['lcml']['uri'],true));
 //			if(config('is_debug')) { print_d($params); print_d($data); exit(); }
+
+//			if(config('is_debug'))
+//				var_dump($data);
 
 			if($data['local'])
 			{
@@ -100,20 +105,13 @@ function lt_img($params)
 
 				if(!file_exists($path) || filesize($path)==0 || !@getimagesize($path))
 				{
-//					if(preg_match("!(lenta\.ru|pisem\.net|biorobot\.net|compulenta\.ru|ferra\.ru|radikal.ru|postimage.org)!",$uri))
-//						$req->setProxy('balancer.endofinternet.net', 3128);
-
-#					if(preg_match("!(ljplus\.ru)!",$uri))
-#						$req->setProxy('home.balancer.ru', 3128);
-
 					require_once('inc/http.php');
 					$x = http_get_ex($params['url']);
 					$content      = $x['content'];
 					$content_type = $x['content_type'];
 
 					if(strlen($content) <= 0)
-//						return lcml("Zero size error for image '{$uri}'");
-						return "<a href=\"{$uri}\">{$uri}</a> <small>[zero size or time out]</small>";
+						return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[zero size or time out]</small>";
 
 					if(!preg_match("!image!", $content_type))
 					{
@@ -125,15 +123,18 @@ function lt_img($params)
 //					if(config('is_debug')) echo "Got content for {$params['url']} to {$path}: ".strlen($content)."\n";
 
 					require_once('inc/filesystem.php');
-					mkpath(dirname($path), 0775);
+					mkpath(dirname($path), 0777);
+					if(!is_writable(dirname($path)))
+					{
+						debug_hidden_log('access_error', "Can't write to ".dirname($path));
+						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write]</small>";
+					}
+
 					$fh = fopen($path,'wb');
 					fwrite($fh, $content);
 					fclose($fh);
-					@chmod($path, 0664);
+					@chmod($path, 0666);
 
-//					$cmd = "wget --header=\"Referer: $uri\" -O \"$path\" \"".html_entity_decode($uri, ENT_COMPAT, 'UTF-8')."\"";
-//					return "cmd:$cmd=<br />\n";
-//					system($cmd);
 				}
 
 				if(file_exists($path) && filesize($path)>0)
@@ -167,6 +168,8 @@ function lt_img($params)
 					$need_upload = true;
 				}
 
+//				if(config('is_debug')) echo "path=$path, need_upload=$need_upload<br/>";
+
 				if($params['noresize'])
 					$img_ico_uri  = $uri;
 				else
@@ -178,8 +181,13 @@ function lt_img($params)
 				else
 					$img_page_uri = $uri.'.htm';
 
+				if(defval($params, 'is_direct'))
+					$img_page_uri = $uri;
+
+//				if(config('is_debug')) echo "img_ico_uri=$img_ico_uri<br/>";
+
 				require_once('HTTP/Request.php');
-				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 2,'timeout' => 4));
+				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 4,'timeout' => 5));
 				$response = $req->sendRequest();
 				if(!empty($response) && PEAR::isError($response))
 				{
@@ -191,7 +199,7 @@ function lt_img($params)
 //				return "__$img_ico_uri:list($width, $height, $type, $attr)__";
 
 				if(!intval($width) || !intval($height))
-					return "<a href=\"{$params['url']}\">{$params['url']}</a>";
+					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get WxH]";
 
 					/*lcml("Get image [url]{$params['url']}[/url] error [spoiler|details]".
 "File: ".__FILE__." line: ".__LINE__."[br]\n".
@@ -205,8 +213,8 @@ function lt_img($params)
 
 //				if(!empty($GLOBALS['main_uri']))
 //					$hts->nav_link($GLOBALS['main_uri'], $uri);
-				require_once("funcs/images/fill.php");
-				fill_image_data($uri);
+//				require_once("funcs/images/fill.php");
+//				fill_image_data($uri);
 
 //				return "==={$params['description']}===";
 
@@ -271,7 +279,8 @@ __EOT__;
 				return $out;
 			}
 		}
-		return "<a href=\"{$params['url']}\">{$params['url']}</a>";
+
+		return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [empty url]</small>";
 	}
 
 function lt_img_bors($params)

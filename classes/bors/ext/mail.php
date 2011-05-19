@@ -23,50 +23,56 @@ class bors_ext_mail extends bors_empty
 	{
 		require_once('engines/mail.php');
 
-		if(!is_object($mail))
+		if(is_array($mail))
 		{
-			$title = NULL;
-
-			if(is_array($mail))
-			{
-				$title = $mail[0];
-				$mail  = $mail[1];
-			}
-
+			$title = $mail[0];
+			$text  = $mail[1];
+			$html  = @$mail[2];
+			$headers = @$mail[3];
+		}
+		elseif(is_object($mail))
+		{
+			$title = $mail->title();
+			$text  = $mail->text();
+			$html  = $mail->html();
+			$headers = $mail->get('headers');
+		}
+		else
+		{
 			$text = $mail;
 
 			$mail = bors_markup_markdown::factory($text);
 
-			if($title)
-				$mail->set_title($title, false);
+//			if($title)
+//				$mail->set_title($title, false);
 
+			$title = $mail->get('title');
+			$html = $mail->get('html');
 			//TODO: ввести другие виды разметки
+			$headers = $mail->get('headers');
 		}
 
 		require_once("engines/smarty/assign.php");
 		//  'xfile:aviaport/mail.txt'
 		if($tpl = config('mail.template.txt'))
-			$text = template_assign_data($tpl, array('body' => $mail->text()));
-		else
-			$text = $mail->text();
+			$text = template_assign_data($tpl, array('body' => $text));
 
-		$html = $mail->get('html');
 		if($html)
 		{
 			if($tpl = config('mail.template.html')) // , 'xfile:aviaport/mail.html'
 				$html = template_assign_data($tpl, array(
-					'body' => $mail->html(),
+					'body' => $html,
 					'skip_title' => true,
 				));
 		}
 
 		send_mail(
 			self::make_recipient($user),
-			$mail->title(),
+			$title,
 			$text,
 			$html,
 			self::make_recipient($from),
-			$mail->get('headers')
+			$headers
 		);
 	}
 

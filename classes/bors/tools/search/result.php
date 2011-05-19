@@ -58,6 +58,7 @@ class bors_tools_search_result extends bors_tools_search
 		switch($this->w())
 		{
 			case 'a':
+			case '1':
 				$index = "*";
 				break;
 			case 'b':

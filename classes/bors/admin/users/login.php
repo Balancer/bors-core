@@ -4,13 +4,18 @@ class bors_admin_users_login extends base_page
 {
 	function title() { return ec('Аутентификация'); }
 
+	function template()
+	{
+		return 'default/index.html';
+//		return 'admin/net-dreams/login.html';
+	}
+
 	var $error;
 
 	function pre_parse($data)
 	{
-		$this->referer = isset($_GET['redirect_url']) ? $_GET['redirect_url'] : @$_SERVER['HTTP_REFERER'];
-		if(!$this->referer)
-			$this->referer = defval($_GET, 'ref');
+		$this->referer = defval($_GET, 'redirect_url', @$_SERVER['HTTP_REFERER']);
+		$this->referer = defval($_GET, 'ref', $this->referer);
 
 		$this->ref = $this->referer;
 
@@ -34,11 +39,11 @@ class bors_admin_users_login extends base_page
 				$me = ec('Ошибка аутентификации');
 
 			$this->error = $me;
-//			set_session_var('error_message', $me);
+			sleep(2);
 			return go_ref_message($me, array('go' => $this->referer, 'error_fields' => 'login,password'));
+//			return false;
 		}
 
-//		set_session_var('success_message', ec('Вы успешно аутентифицированы, ').$me->title().'!');
 		return go_ref_message(ec('Вы успешно аутентифицированы, ').$me->title().'!', array('go' => $this->referer, 'error' => false));
 	}
 
@@ -51,4 +56,6 @@ class bors_admin_users_login extends base_page
 
 	function can_cache() { return false; }
 	function admin() { return false; }
+
+	function config_class() { return 'bors_config'; }
 }

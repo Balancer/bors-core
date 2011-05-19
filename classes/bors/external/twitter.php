@@ -53,7 +53,8 @@ class bors_external_twitter extends bors_object
 			}
 			catch (Services_Twitter_Exception $e)
 			{
-				echo $e->getMessage();
+//				echo $e->getMessage();
+				debug_hidden_log('twitter', 'Exception :'.$e);
 			}
 		}
 	}
@@ -70,6 +71,11 @@ class bors_external_twitter extends bors_object
 		// http://youtu.be/sdUUx5FdySs?a
 		// http://youtu.be/1SBkx-sn9i8?a
 		$text = preg_replace('!(http://(youtu.be)/[^\?]+\?a)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
+
+		$tags = array();
+		if(preg_match_all('/( |^)#([\wа-яА-ЯёЁ]+)/um', $text, $matches))
+			foreach($matches[2] as $m)
+				$tags[] = $m;
 
 		if(preg_match('!(http://(www\.)?fresher\.ru/\d+/\d+/\d+/[^/]+/) \((.+)\)!', $text, $m))
 		{
@@ -96,7 +102,15 @@ class bors_external_twitter extends bors_object
 			return $result;
 		}
 
-		return NULL;
+//		return NULL;
+
+		// http://twitpic.com/4vifl4 в
+		// <a href="http://twitpic.com/4vifl4" title="Share photos on twitter with Twitpic"><img src="http://twitpic.com/show/thumb/4vifl4.jpg" width="150" height="150" alt="Share photos on twitter with Twitpic"></a>
+		$text = preg_replace('!http://twitpic\.com/(\w+)!', 
+			'<br/><a href="http://twitpic.com/$1" title="Фото из Твиттера на Twitpic"><img src="http://twitpic.com/show/thumb/$1.jpg" width="150" height="150" alt="Фото"></a><br/>',
+			$text);
+
+		$text = preg_replace('/^\w+:/', '', $text);
 
 		$text = html2bb(bors_close_tags($text), array(
 //			'origin_url' => $link,
@@ -105,6 +119,8 @@ class bors_external_twitter extends bors_object
 
 		return array(
 			'text' => $text,
+			'bb_code' => $text,
+			'tags' => $tags,
 		);
 	}
 }

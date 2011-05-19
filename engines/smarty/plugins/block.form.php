@@ -108,10 +108,23 @@ function smarty_block_form($params, $content, &$smarty)
 		else
 			$object_fields = array();
 
+		if(array_key_exists('th', $params))
+			$th = defval_ne($params, 'th', '-');
+		else
+			$th = false;
+
+		if($th || !empty($fields))
+		{
+			echo "<table class=\"btab\" style=\"width: 90%\">";
+			$smarty->assign('has_form_table', true);
+		}
+
+		if($th && $th!='-')
+			echo "<caption>{$th}</caption>";
+
 		if(!empty($fields))
 		{
 			$smarty->assign('has_autofields', true);
-			echo "<table class=\"btab\" style=\"width: 90%\">";
 			$labels = array();
 			if(!is_array($fields))
 				$fields = explode(',', $fields);
@@ -240,7 +253,7 @@ function smarty_block_form($params, $content, &$smarty)
 	echo $content;
 
 	// === Закрытие формы ===
-	if(!empty($fields))
+	if($smarty->get_template_vars('has_form_table'))
 		echo "</table>";
 
 	if($act == 'skip_all')

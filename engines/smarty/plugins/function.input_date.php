@@ -72,6 +72,10 @@ function smarty_function_input_date($params, &$smarty)
 	else
 		$shown = explode(',', $params['show_only']);
 
+	// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+	if($th = defval($params, 'th'))
+		echo "<tr><th>{$th}</th><td>";
+
 	if(in_array('d', $shown))
 	{
 		echo "<select name=\"{$name}_day\">\n";
@@ -135,4 +139,7 @@ function smarty_function_input_date($params, &$smarty)
 	$tmv = base_object::template_data('form_time_vars');
 	$tmv[] = $name;
 	base_object::add_template_data('form_time_vars', $tmv);
+
+	if($th)
+		echo "</td></tr>\n";
 }

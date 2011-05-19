@@ -7,9 +7,10 @@ form.big { margin: 20px; }
 form.big label { font-size: 20pt; }
 form.big input { font-size: 20pt; }
 
-.w100p { width: 98%; }
-.w50p, .half  { width: 49%; }
-.w33p, .third { width: 32%; }
+.wa { width: auto !important }
+.w100p { width: 98% !important }
+.w50p, .half  { width: 49% !important }
+.w33p, .third { width: 32% !important }
 .right { text-align: right; }
 small, .small { font-size: 0.8em !important; }
 .f8pt { font-size: 8pt !important; }
@@ -38,21 +39,21 @@ img {
 	border: none;
 }
 
-div.yellow_box {
+.yellow_box {
 	margin: 4px 0;
 	padding: 4px 8px;
 	background-color: #ffd;
 	border: 1px solid #eec;
 }
 
-div.green_box {
+.green_box {
 	margin: 4px 0;
 	padding: 4px 8px;
 	background-color: #dfd;
 	border: 1px solid #8f8;
 }
 
-div.red_box {
+.red_box {
 	margin: 4px 0;
 	padding: 4px 8px;
 	background-color: #fdd;

@@ -48,7 +48,25 @@ function smarty_function_input($params, &$smarty)
 
 //		class="validate[required,custom[noSpecialCaracters],length[5,20]]"
 
+		$versioning = object_property($obj, 'versioning_properties', array());
+		if(array_key_exists($name, $versioning))
+		{
+			$has_versioning = true;
+			$previous = $versioning[$name];
+			$class[] = 'yellow_box';
+		}
+		else
+			$has_versioning = false;
+
 		$class = join(' ', $class);
+
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+		if($th = defval($params, 'th'))
+		{
+			echo "<tr><th>{$th}</th><td>";
+			if(empty($tyle))
+				$style = "width: 99%";
+		}
 
 		echo "<input type=\"text\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
 
@@ -57,4 +75,10 @@ function smarty_function_input($params, &$smarty)
 				echo " $p=\"{$$p}\"";
 
 		echo " />\n";
+
+		if($has_versioning)
+			echo "<br/><small>".ec("Исходное значение: ").$previous."</small>\n";
+
+		if($th)
+			echo "</td></tr>\n";
 }

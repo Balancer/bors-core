@@ -305,6 +305,12 @@ function html2bb($text, $args = array())
 		$text = preg_replace("!<$tag [^>]+>(.+?)</$tag>!is", "[$tag]$1[/$tag]", $text);
 	}
 
+	foreach(array('strong' => 'b') as $h => $b)
+	{
+		$text = preg_replace("!<$h>(.+?)</$h>!is", "[$b]$1[/$b]", $text);
+		$text = preg_replace("!<$h [^>]+>(.+?)</$h>!is", "[$b]$1[/$b]", $text);
+	}
+
 	$text = preg_replace("!<div [^>]*>\s*(.+?)\s*</div>!is", "\n$1\n", $text);
 	$text = preg_replace("!<div>\s*(.*?)\s*</div>!is", "\n$1\n", $text);
 	$text = preg_replace("!<p [^>]+>(.+?)</p>!is", "\n$1\n", $text);

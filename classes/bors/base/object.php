@@ -286,7 +286,10 @@ class base_object extends base_empty
 //			if(@$this->data[$field] == $value && @$this->data[$field] !== NULL && $value !== NULL)
 //				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$field]).'; new type: '.gettype($value));
 
-			$this->changed_fields[$field] = true;
+			// Запоминаем первоначальное значение переменной.
+			if(!@array_key_exists($field, $this->changed_fields))
+				$this->changed_fields[$field] = @$this->data[$field];
+
 			bors()->add_changed_object($this);
 		}
 
@@ -599,8 +602,6 @@ class base_object extends base_empty
 
 	function check_value_conditions() { return array(); }
 
-	function save($cache_clean = true) { return $this->store($cache_clean); }
-
 	function store($cache_clean = true)
 	{
 		if(!$this->id())
@@ -611,8 +612,8 @@ class base_object extends base_empty
 
 		include_once('engines/search.php');
 
-//		if($cache_clean)
-//			$this->cache_clean();
+		if($cache_clean)
+			$this->cache_clean();
 
 		if(!($storage = $this->storage_engine()))
 		{
@@ -622,7 +623,14 @@ class base_object extends base_empty
 
 		$storage = object_load($storage);
 
-		$storage->save($this);
+		//TODO: уже можно снести проверку в следующей строке?
+		if(!(method_exists($this, 'skip_save') && $this->skip_save())) //TODO: костыль для bors_admin_image_append
+		{
+			$storage->save($this);
+			if(config('debug_trace_changed_save'))
+				echo 'Save '.$this->debug_title()."\n";
+		}
+
 		$this->__update_relations();
 		save_cached_object($this);
 
@@ -828,6 +836,11 @@ class base_object extends base_empty
 			return $object->attr['__id_field_name'];
 
 		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
+
+		if(count($ff) == 1) //FIXME: костыль для поддержки древних field() методов.
+							//В списке полей одна запись, если по дефолту прочиталось function main_table_fields() { return array('id'); }
+			$ff = array_shift(array_shift($this->fields()));
+
 		if($id_field = @$ff['id'])
 			return $id_field;
 
@@ -835,7 +848,13 @@ class base_object extends base_empty
 		return $ff[0] == 'id' ? 'id' : NULL;
 	}
 
-	function title_field() { return defval($this->fields_map(), 'title', 'title'); }
+	function title_field()
+	{
+		if(method_exists($this, 'table_fields'))
+			return defval($this->table_fields(), 'title', 'title');
+
+		return defval($this->fields_map(), 'title', 'title');
+	}
 
 	function set_checkboxes($check_list, $db_up)
 	{
@@ -928,9 +947,21 @@ class base_object extends base_empty
 	function need_access_level() { return 0; }
 	function cache_life_time() { return 0; }
 
+	private function ___path_data()
+	{
+		if($this->__havefc())
+			return $this->__lastc();
+		$path = $this->called_url();
+		if(!$path)
+			$path = $this->id();
+
+		return $this->__setc(url_parse($path));
+	}
+
 	function dir()
 	{
-		$data = url_parse($this->called_url());
+		$data = $this->___path_data();
+//		$data = url_parse($this->called_url());
 //		print_d($data);
 
 //		return $data['local_path'];
@@ -938,6 +969,12 @@ class base_object extends base_empty
 
 		//TODO: затычка!
 //		return $_SERVER['DOCUMENT_ROOT'].preg_replace('!^http://[^/]+!', '', $this->called_url());
+	}
+
+	function _basename()
+	{
+		$data = $this->___path_data();
+		return preg_match('!^(.+)/$!', $data['local_path'], $m) ? '' : basename($data['local_path']);
 	}
 
 	function document_root()

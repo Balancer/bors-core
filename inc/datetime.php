@@ -194,3 +194,11 @@ function short_interval($ss)
 
 	return intval($hh).':'.$hh.':'.$ss;
 }
+
+function time_local_to_gmt($time = 0)
+{
+	if(!$time)
+		$time = time();
+
+	return mktime( gmdate("H", $time), gmdate("i", $time), gmdate("s", $time), gmdate("m", $time), gmdate("d", $time), gmdate("Y", $time));
+}

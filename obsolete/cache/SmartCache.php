@@ -7,7 +7,7 @@
         var $dbh;
 		var $create_time;
 		var $expire_time;
-        
+
         function Cache()
         {
             $this->dbh = new driver_mysql(config('cache_database'));
@@ -16,7 +16,7 @@
         function get($type, $key, $uri='', $default=NULL)
         {
 			$this->init($type, $key, $uri);
-		
+
 			if($GLOBALS['cms']['cache_disabled'])
            		return ($this->last = $default);
 
@@ -32,7 +32,7 @@
 					return $this->last = $x;
 				}
 			}
-				
+
             $row = $this->dbh->get("SELECT `value`, `expire_time`, `count`, `saved_time`, `create_time` FROM `cache` WHERE `hmd`={$this->last_hmd}");
 			$this->last = $row['value'] ? unserialize($row['value']) : $row['value'];
 
@@ -60,15 +60,23 @@
 					'int count' => $new_count,
 					'float rate' => $rate,
 				));
-			}	
-			
+			}
+
             return ($this->last ? $this->last : $default);
         }
 
         function set($value, $time_to_expire = 86400, $infinite = false)
         {
+        	// Не кешируем совсем крошечные операции
+			$saved_time = microtime(true) - $this->start_time;
+			if($saved_time < 0.01)
+			{
+				debug_hidden_log('cache_smart', 'Caching not needed: '.$saved_time);
+				return $this->last = $value;
+			}
+
 			// Если время хранения отрицательное - используется только memcached, при его наличии.
-		
+
 //			echolog("Set cache {$this->last_type_name}", 1);
 			if($memcache = config('memcached_instance'))
 			{
@@ -78,10 +86,9 @@
 			}
 			else
 				$time_to_expire = abs($time_to_expire);
-			
+
 			if($time_to_expire > 0)
 			{
-				list($usec, $sec) = explode(" ",microtime());
     	        $this->dbh->replace('cache', array(
 					'int hmd'	=> $this->last_hmd,
 					'int type'	=> $this->last_type,
@@ -92,11 +99,11 @@
 					'int create_time' => $infinite ? -1 : time(),
 					'int expire_time' => time() + intval($time_to_expire),
 					'int count' => 1,
-					'float saved_time' => (float)$usec + (float)$sec - $this->start_time,
+					'float saved_time' => $saved_time,
 					'float rate' => 0,
 				));
 			}
-			
+
             return $this->last = $value;
         }
 

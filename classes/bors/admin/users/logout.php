@@ -6,7 +6,9 @@ class bors_admin_users_logout extends base_page
 
 	function pre_parse()
 	{
-		$referer = isset($_GET['redirect_url']) ? $_GET['redirect_url'] : @$_SERVER['HTTP_REFERER'];
+		$referer = defval($_GET, 'redirect_url', @$_SERVER['HTTP_REFERER']);
+		$referer = defval($_GET, 'ref', $referer);
+
 		if($me = bors()->user())
 			$me->do_logout();
 

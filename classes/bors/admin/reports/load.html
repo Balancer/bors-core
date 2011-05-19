@@ -9,7 +9,7 @@
 	<th>user agent</th>
 </tr>
 {foreach from=$max_cpu_by_user item="x"}
-<tr><td>{if $can_see_ip}{$x.user_ip}{else}xxx.xxx.xxx.xxx{/if}</td>
+<tr><td class="nobr">{$x.user_ip|geoip_flag}{if $can_see_ip}<a href="/_bors/admin/reports/ip?ip={$x.user_ip}">{$x.user_ip}</a>{else}xxx.xxx.xxx.xxx{/if}</td>
 	<td>{$x.user_id}</td>
 	<td>{$x.cnt}</td>
 	<td>{$x.su|round:2}</td>
@@ -48,7 +48,7 @@
 	<th>user agent</th>
 </tr>
 {foreach from=$max_cpu_by_combine item="x"}
-<tr><td>{if $can_see_ip}{$x.user_ip}{else}xxx.xxx.xxx.xxx{/if}</td>
+<tr><td class="nobr">{$x.user_ip|geoip_flag}{if $can_see_ip}<a href="/_bors/admin/reports/ip?ip={$x.user_ip}">{$x.user_ip}{else}xxx.xxx.xxx.xxx{/if}</td>
 	<td>{$x.user_id}</td>
 	<td>{$x.class_name}</td>
 	<td>{$x.cnt}</td>

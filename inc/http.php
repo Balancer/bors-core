@@ -77,7 +77,7 @@ function http_get_content($url, $raw = false)
 	));
 
 //    if(preg_match("!lenta\.ru!", $url))
-	if(preg_match("!rian.ru!", $url))
+	if(preg_match("!(rian.ru)!", $url))
 		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 	$data = curl_exec($ch);
@@ -159,7 +159,7 @@ function http_get_ex($url, $raw = true)
 
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => preg_match('/(imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru)/', $url) ? 40 : 15,
+		CURLOPT_TIMEOUT => preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru)/', $url) ? 40 : 15,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 5,
 		CURLOPT_ENCODING => 'gzip,deflate',
@@ -174,16 +174,20 @@ function http_get_ex($url, $raw = true)
 		CURLOPT_SSL_VERIFYPEER => false,
 	));
 
-	if(preg_match("!rian.ru!", $url))
+	if(preg_match("!(rian.ru)!", $url))
 		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
-	$data = trim(curl_exec($ch));
-//	$data = trim(curl_redir_exec($ch));
+	$data = curl_exec($ch);
+	if($data === false)
+		bors_exit('Curl error: ' . curl_error($ch));
+
+	if(!$raw)
+		$data = trim($data);
 
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 //	echo "<xmp>"; print_r($data); echo "</xmp>";
 
-    if(preg_match("!charset=(\S+)!i", $content_type, $m))
+    if(!$raw && preg_match("!charset=(\S+)!i", $content_type, $m))
         $charset = $m[1];
     else
         $charset = '';

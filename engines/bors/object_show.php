@@ -36,11 +36,16 @@
 		if(!$access_object->can_read())
 		{
 			if(bors()->user())
+			{
 				$msg = ec("Извините, ").bors()->user()->title()
-					.ec(" у Вас нет доступа к этому ресурсу ")
+					.ec(", у Вас нет доступа к этому ресурсу ")
 					."[<a href=\"/users/do-logout\">выйти</a>]";
+			}
 			else
 				$msg = ec("Извините, у Вас нет доступа к этому ресурсу");
+
+			if($access_object->get('login_redirect'))
+				return go('/_bors/login?ref='.$obj->url());
 
 			return empty($GLOBALS['cms']['error_show']) ? bors_message($msg . "
 				<!--

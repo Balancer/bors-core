@@ -38,7 +38,7 @@ function smarty_function_bors_radio($params, &$smarty)
 
 	if(empty($object))
 	{
-		$current = $obj ? $obj->$name() : NULL;
+		$current = $obj ? $obj->$name() : @$def;
 		$object = "";
 	}
 	else
@@ -48,7 +48,7 @@ function smarty_function_bors_radio($params, &$smarty)
 	}
 
 	if($is_array)
-		$current = array_pop($current);
+		$current = @array_pop($current); // wtf?
 
 	if(!$current && !empty($list['default']))
 		$current = $list['default'];

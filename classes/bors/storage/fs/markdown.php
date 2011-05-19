@@ -10,7 +10,18 @@ class bors_storage_fs_markdown extends bors_storage
 	private function __find($object)
 	{
 		$dir = $object->dir();
+		$base = $object->_basename();
+
+		if(preg_match('/\.php$/', $base)) // Хардкод, но что делать? :-/
+			return false;
+
 		$rel = secure_path(str_replace($_SERVER['DOCUMENT_ROOT'], '/', $dir));
+
+		if($base && file_exists($file = "{$dir}/{$base}.mdml"))
+			return $file;
+
+		if($base && file_exists($file = "{$dir}/{$base}"))
+			return $file;
 
 		if(file_exists($file = "{$dir}/index.markdown"))
 			return $file;
@@ -24,6 +35,9 @@ class bors_storage_fs_markdown extends bors_storage
 		foreach(bors_dirs() as $d)
 		{
 			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}.mdml")))
+				return $file;
+
+			if($base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/{$base}.mdml")))
 				return $file;
 
 			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/main.mdml")))

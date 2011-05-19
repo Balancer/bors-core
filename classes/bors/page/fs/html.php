@@ -1,6 +1,6 @@
 <?php
 
-class bors_page_fs_html extends base_page
+class bors_page_fs_html extends bors_page
 {
 	//TODO: на время отладки
 	function can_cached() { return false; }

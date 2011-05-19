@@ -44,6 +44,12 @@ class bors_lib_bb
 			foreach(explode(',', $urls) as $uattr)
 			{
 				$u = $element->getAttribute($uattr);
+				if(!$u)
+				{
+					debug_hidden_log('_bb-parse-need-attention', 'Empty uattr for '.$urls);
+					continue;
+				}
+
 				if($u[0] == '/')
 					$u = $usite . $u;
 				elseif(!preg_match('!^\w+://!', $u))

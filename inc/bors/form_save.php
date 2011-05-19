@@ -58,6 +58,8 @@ function bors_form_save(&$obj)
 		$tmp = new $class_name(NULL);
 		if($form_saver_class = object_property($tmp, 'form_saver_class'))
 			return object_load($form_saver_class)->save($obj, $_GET, $_FILES);
+		elseif($form_saver_class = config('form_saver.class_name'))
+			return object_load($form_saver_class)->save($obj, $_GET, $_FILES);
 
 		$objects_common_data = array();
 		$objects_data = array();

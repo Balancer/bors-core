@@ -199,11 +199,23 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		if(config('image_upload_skip_subdirs') || !empty($data['no_subdirs']))
 			$this->set_relative_path(secure_path($dir), true);
 		else
-			$this->set_relative_path(secure_path($dir.'/'.$this->id()%100), true);
+			$this->set_relative_path(secure_path($dir.'/'.sprintf("%03d", intval($this->id()/1000))), true);
 
-		$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), true);
+		$data = @getimagesize($file);
+		switch($data['mime'])
+		{
+			case 'image/jpeg':
+				$ext = 'jpg';
+				break;
+			default:
+				debug_hidden_log('image-upload-error', "Unknown mime: {$data['mime']}");
+				return NULL;
+		}
 
-		$upload_file_name = defval($data, 'file_name', $this->id().'.'.$this->extension());
+		$this->set_extension($ext, true);
+
+		$original_name = translite_uri_simple(preg_replace('/\.\w+$/', '', $this->original_filename()));
+		$upload_file_name = defval($data, 'file_name', sprintf('%06d', $this->id()).'-'.$original_name.'.'.$this->extension());
 		$this->set_file_name($upload_file_name, true);
 
 		mkpath($this->image_dir(), 0777);

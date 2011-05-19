@@ -49,7 +49,6 @@ class base_config extends base_object
 
 		if(($post_js = session_var('javascript_post_append')))
 		{
-//			print_d($post_js);
 			foreach($post_js as $js)
 				$this->id()->add_template_data_array('javascript', $js);
 

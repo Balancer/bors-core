@@ -1,0 +1,54 @@
+{if $ajax}
+<script><!--{literal}
+$(function() {
+	function bmc_up(yd)
+	{
+		m=$("#bmc_month").val()
+		d={/literal}{$day}{literal}
+		y=parseInt($("#bmc_year").val())+yd
+		//alert('d='+d+'; m='+m+'; y='+y)
+		date = new Date(''+y+'/'+m+'/'+d);
+		link = date.strftime('{/literal}{$calend_mask}{literal}');
+		//alert(link)
+		document.location.href = link
+	}
+	$("#bmc_month").val({/literal}{$month}{literal})
+	$("#bmc_month").click(function(){bmc_up(0)})
+	$("#bmc_year").blur  (function(){bmc_up(0)})
+	$("#bmc_yprev").click(function(){bmc_up(-1)})
+	$("#bmc_ynext").click(function(){bmc_up(1)})
+})
+{/literal}--></script>
+{/if}
+<div id="module_{$this->class_name()}_{$year}_{$month}">
+<table class="{$table_class}">
+{if $ajax}
+<caption class="nobr center">
+<select id="bmc_month">
+<option value="1">январь</option>
+<option value="2">февраль</option>
+<option value="3">март</option>
+<option value="4">апрель</option>
+<option value="5">май</option>
+<option value="6">июнь</option>
+<option value="7">июль</option>
+<option value="8">август</option>
+<option value="9">сентябрь</option>
+<option value="10">октябрь</option>
+<option value="11">ноябрь</option>
+<option value="12">декабрь</option>
+</select><a href="#" id="bmc_yprev">«</a><input size="4" maxlength="4" id="bmc_year" value="{$year}" /><a href="#" id="bmc_ynext">»</a>
+</caption>
+{else}
+{if $show_caption}<caption>{$month|month_name} {$year}</caption>{/if}
+{/if}
+<tr><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th class="holyday">Сб</th><th class="holyday">Вс</th></tr>
+{foreach from=$calend item="week"}
+<tr>
+{foreach from=$week item="day"}
+<td style="text-align: right" class="{$day.class}">{if $day.url && $day.count}<a href="{$day.url}" title="{$day.title|htmlspecialchars} ({$day.count})">{$day.number}</a>{else}{$day.number}{/if}</td>
+{/foreach}
+</tr>
+{/foreach}
+</table>
+</div>

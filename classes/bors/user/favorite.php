@@ -31,7 +31,7 @@ class bors_user_favorite extends base_object_db
 		if(!$user || !$target)
 			return NULL;
 
-		$f = object_new_instance('bors_user_favorite', array(
+		return bors_new('bors_user_favorite', array(
 			'user_class_name' => $user->class_name(),
 			'user_id' => $user->id(),
 			'target_title' => $target->class_title().ec(' «').$target->title().ec('»'),
@@ -39,8 +39,6 @@ class bors_user_favorite extends base_object_db
 			'target_object_id' => $target->id(),
 			'target_create_time' => $target->create_time(),
 		));
-		$f->save();
-		return $f;
 	}
 
 	static function find($user, $target)

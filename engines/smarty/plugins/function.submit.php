@@ -6,6 +6,10 @@ function smarty_function_submit($params, &$smarty)
 
 	$out = "";
 
+	// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+	if($th = defval($params, 'th'))
+		$value = $th;
+
 	if($image_src = defval($params, 'image'))
 		$out .= "<input type=\"image\" src=\"".htmlspecialchars($image_src)."\" value=\"".htmlspecialchars($value)."\"";
 	else
@@ -17,7 +21,7 @@ function smarty_function_submit($params, &$smarty)
 
 	$out .= " />";
 
-	if($smarty->get_template_vars('has_autofields'))
+	if($th || $smarty->get_template_vars('has_autofields'))
 		$out = "<tr><th colspan=\"2\">{$out}</th></tr>\n";
 
 	echo $out;

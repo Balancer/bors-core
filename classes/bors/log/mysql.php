@@ -17,6 +17,8 @@ class bors_log_mysql extends base_object_db
 			'modify_time',
 			'owner_id',
 			'last_editor_id',
+			'owner_ip',
+			'action_url',
 		);
 	}
 
@@ -29,10 +31,16 @@ class bors_log_mysql extends base_object_db
 			unset($data['target']);
 		}
 
-		$x = object_new_instance('bors_log_mysql', $data);
-		$x->save();
-		return $x;
+		if(!bors()->user())
+			debug_hidden_log('bors_log', 'Empty owner!');
+
+		$data['owner_ip'] = bors()->client()->ip();
+		$data['action_url'] = bors()->request()->url();
+
+		return bors_new('bors_log_mysql', $data);
 	}
+
+	function owner() { return bors_load('bors_user', $this->owner_id()); }
 
 	function auto_targets()
 	{

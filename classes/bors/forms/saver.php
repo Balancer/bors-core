@@ -79,6 +79,11 @@ class bors_forms_saver extends base_empty
 			add_session_message(ec('Данные успешно сохранены'), array('type' => 'success'));
 		}
 
+		if(method_exists($object, 'post_save'))
+			$object->post_save($data);
+
+		$go = defval($data, 'go', $go);
+
 		if($go)
 		{
 //			var_dump($form_object);

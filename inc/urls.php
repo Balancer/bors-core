@@ -329,6 +329,12 @@ function url_append_param($url, $param, $value)
 	return $url."$param=".urlencode($value);
 }
 
+function url_remove_params($url)
+{
+	@list($url, $params) = @explode('?', $url);
+	return $url;
+}
+
 function url_clean_params($url)
 {
 	@list($url, $params) = @explode('?', $url);

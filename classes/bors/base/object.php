@@ -1003,6 +1003,7 @@ class base_object extends base_empty
 
 	function pre_set() { }
 	function post_set() { }
+	function post_save() { }
 
 	function on_new_instance()
 	{

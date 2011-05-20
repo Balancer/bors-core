@@ -11,7 +11,7 @@ class bors_cache_base
 
 	function __construct() { $this->init(); }
 
-	function get($type, $key, $default = NULL)
+	function get($type, $key, $default = NULL, $object = NULL)
 	{
 		$this->type = $type;
 		$this->key  = $key;
@@ -23,7 +23,7 @@ class bors_cache_base
 
 	function last() { return $this->last; }
 
-	static function get_or_set($type, $key, $function, $ttl)
+	static function get_or_set($type, $key, $function, $ttl, $object = NULL)
 	{
 		$ch = new bors_cache;
 		if($value = $ch->get($type, $key))

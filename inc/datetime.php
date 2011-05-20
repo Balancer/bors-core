@@ -180,6 +180,21 @@ function smart_interval($interval, $parts = 2)
 	return join(' ', array_slice($res, $i, $parts));
 }
 
+function short_interval($ss)
+{
+	$mm = floor($ss/60);
+	$ss = sprintf('%02d', $ss % 60);
+	if(!$mm)
+		return intval($ss).ec(' сек.');
+
+	$hh = floor($mm/60);
+	$mm = sprintf('%02d', $mm % 60);
+	if(!$hh)
+		return intval($mm).':'.$ss;
+
+	return intval($hh).':'.$hh.':'.$ss;
+}
+
 function time_local_to_gmt($time = 0)
 {
 	if(!$time)

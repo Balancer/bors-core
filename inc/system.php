@@ -83,6 +83,13 @@ function session_var($name, $def = NULL, $set = false)
 	return defval($_SESSION, $name, $def, $set);
 }
 
+function pop_session_var($name, $def = NULL)
+{
+	$val = session_var($name, $def);
+	unset($_SESSION[$name]);
+	return $val;
+}
+
 function set_session_var($name, $value)
 {
 	__session_init();

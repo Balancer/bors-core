@@ -266,6 +266,11 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		$object->on_new_instance($data);
 	}
 
+	if(method_exists($object, 'post_save'))
+		$object->post_save($data);
+
+	$_GET['go'] = defval($data, 'go', @$_GET['go']);
+
 	if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 		$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));
 

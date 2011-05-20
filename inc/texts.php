@@ -149,3 +149,17 @@ function bors_text_clear($text, $morfology = true, $spacer = ' ')
 
 	return $result;
 }
+
+function clause_truncate_ceil($text, $limit, $max_limit = NULL)
+{
+	if(is_null($max_limit))
+		$max_limit = $limit * 2;
+
+	$dcs = '['.preg_quote('.!?;', '/').']';
+
+	if(preg_match('/(.+?[\.\?!])($|\s)/m', substr($text, $limit), $m))
+		if(bors_strlen($m[1]) <= $max_limit)
+			return substr($text, 0, $limit) . $m[1];
+
+	return strip_text($text, $max_limit);
+}

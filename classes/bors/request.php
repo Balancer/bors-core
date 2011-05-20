@@ -9,4 +9,5 @@ class bors_request extends base_object
 	static function data($key = NULL) { return $key ? @$_GET[$key] : $_GET; }
 
 	function url() { return $GLOBALS['bors_full_request_url']; }
+	function referer() { return @$_SERVER['HTTP_REFERER']; }
 }

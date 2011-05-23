@@ -23,8 +23,10 @@ class bors_cache_smart extends bors_cache_base
 		if($x = global_key('cache', $this->hmd))
 			return $this->last = $x;
 
-		if($memcache = config('memcached_instance'))
+		if($m = config('memcached'))
 		{
+			$memcache = new Memcache;
+			$memcache->connect($m) or debug_exit("Could not connect memcache");
 			if($x = @$memcache->get('phpmv4'.$this->hmd))
 			{
 				debug_count_inc('smart_cache_gets_memcached_hits');
@@ -83,8 +85,10 @@ class bors_cache_smart extends bors_cache_base
 
 		set_global_key('cache', $this->hmd, $value);
 		// Если время хранения отрицательное - используется только memcached, при его наличии.
-		if($memcache = config('memcached_instance'))
+		if($m = config('memcached'))
 		{
+			$memcache = new Memcache;
+			$memcache->connect($m) or debug_exit("Could not connect memcache");
 			$memcache->set('phpmv4'.$this->hmd, $value, MEMCACHE_COMPRESSED, abs($time_to_expire));
 			debug_count_inc('smart_cache_gets_memcached_stores');
 

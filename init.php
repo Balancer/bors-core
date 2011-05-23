@@ -275,7 +275,7 @@ function bors_include($file, $warn = false, $once = false)
 	$message = "Can't bors_include({$file})";
 
 	if($warn == 2)
-		return bors_exit($message);
+		return bors_throw($message);
 
 	echo $message;
 }

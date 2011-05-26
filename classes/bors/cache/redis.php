@@ -11,14 +11,15 @@ class bors_cache_redis extends bors_cache_base
 			return;
 
 		$options = array(
-//			'namespace' => 'BORS_Cache_',
+			'namespace' => 'BORS_Cache2_',
 //			'name'      => 'bors_cache',
-			'servers' => array(
-				'server1' => array('host' => '127.0.0.1', 'port' => 6379)
-			)
+//			'serializerAdapter' => 'json',
+//			'servers' => array(
+//				'server1' => array('host' => '127.0.0.1', 'port' => 6379)
+//			)
 		);
 
-		$_rediska = new Rediska;//($options);
+		$_rediska = new Rediska($options);
 	}
 
 	function get($type, $key, $default = NULL)
@@ -30,10 +31,24 @@ class bors_cache_redis extends bors_cache_base
 
 		$key = new Rediska_Key($this->hmd);
 
-		$this->last = $key->getValue();
-		if($this->last !== NULL)
-			return $this->last;
+		try
+		{
+			$this->last = $key->getValue();
+		}
+		catch(Exception $e)
+		{
+			var_dump($e->getMessage());
+			debug_count_inc('redis_unserialize_exception');
+			$this->last = NULL;
+		}
 
+		if($this->last !== NULL)
+		{
+			debug_count_inc('redis_cache_hit');
+			return $this->last;
+		}
+
+		debug_count_inc('redis_cache_miss');
 		return $this->last = $default;
 	}
 
@@ -45,6 +60,7 @@ class bors_cache_redis extends bors_cache_base
 		$key = new Rediska_Key($this->hmd);
 		$key->setValue($value);
 		$key->expire($ttl);
+		debug_count_inc('redis_cache_store');
 
 		return $this->last = $value;
 	}

@@ -37,7 +37,11 @@ class bors_external_feed extends base_object_db
 		if(!$rss)
 		{
 			echo "RSS {$this->feed_url()} not found\n";
-			print_d($xml);
+			if($xml)
+			{
+				print_d($xml)."\n";
+				print_d($data)."\n";
+			}
 			debug_hidden_log('rss_error', "Can't get rss {$this->feed_url()}");
 			return;
 		}

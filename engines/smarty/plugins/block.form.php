@@ -162,7 +162,11 @@ function smarty_block_form($params, $content, &$smarty)
 				if($type != 'bool')
 					echo "<tr><th class=\"w33p\">{$title}</th><td>";
 
-				$data['value'] = object_property($form, $property_name);
+				if(!empty($data['arg']))
+					$data['value'] = object_property_args($form, $property_name, array($data['arg']));
+				else
+					$data['value'] = object_property($form, $property_name);
+
 				$data['class'] = 'w100p';
 //				echo "property=$property_name, type=$type, data=".print_d($data).", field=".print_d($field)."<Br/>\n";
 				switch($type)

@@ -265,6 +265,14 @@ function object_property($object, $property, $def = NULL)
 	return $def;
 }
 
+function object_property_args($object, $property, $args = array(), $def = NULL)
+{
+	if(is_object($object))
+		return call_user_func_array(array($object, $property), $args);
+
+	return $def;
+}
+
 /**
 	Возвращает истину, если классы объектов и их ID совпадают.
 */

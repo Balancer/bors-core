@@ -33,8 +33,10 @@ class bors_time_ts extends bors_object //TODO: придумать названи
 		return new bors_time_ts(strtotime('-'.$offset, $this->_time));
 	}
 
+	function date($format) { return date($format, $this->_time); }
+	function strftime($format) { return strftime($format, $this->_time); }
 
-
+	function __toString() { return $this->date('d.m.Y H:i:s'); }
 
 //TODO: реализовать:
 //	function mysql_time()

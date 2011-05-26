@@ -4,7 +4,7 @@ function smarty_function_input($params, &$smarty)
 {
 		extract($params);
 
-		if(!isset($value))
+		if(!array_key_exists('value', $params))
 		{
 			$obj = $smarty->get_template_vars('form');
 			if(($obj && $obj->id()))

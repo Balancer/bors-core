@@ -842,7 +842,15 @@ class base_object extends base_empty
 			$ff = array_shift(array_shift($this->fields()));
 
 		if($id_field = @$ff['id'])
-			return $id_field;
+		{
+			if(is_array($id_field))
+			{
+				bors_lib_orm::field('id', $id_field);
+				return $id_field['name'];
+			}
+			else
+				return $id_field;
+		}
 
 		//FIXME: исправить на возможность id в ненулевой позиции
 		return $ff[0] == 'id' ? 'id' : NULL;

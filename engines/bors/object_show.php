@@ -77,6 +77,7 @@
 
 		$called_url = preg_replace('/\?.*$/', '', $obj->called_url());
 		$target_url = preg_replace('/\?.*$/', '', $obj->url($page));
+//		echo "{$obj}: .called={$obj->called_url()}, target={$target_url} && called={$called_url} && {$obj->_auto_redirect()}<br/>";
 		if($obj->called_url() && !preg_match('!'.preg_quote($target_url).'$!', $called_url) && $obj->_auto_redirect())
 			return go($obj->url($page), true);
 

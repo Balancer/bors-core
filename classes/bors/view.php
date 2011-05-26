@@ -20,6 +20,7 @@ class bors_view extends bors_page
 	function referent_class() { return $this->main_class(); }
 
 	function title($exact = false) { return $this->object()->title($exact); }
+	function nav_name($exact = false) { return $this->object()->nav_name($exact); }
 	function create_time($exact = false) { return $this->object()->create_time($exact); }
 	function modify_time($exact = false) { return $this->object()->modify_time($exact); }
 
@@ -36,4 +37,6 @@ class bors_view extends bors_page
 			$this->item_name() => $this->object(),
 		), $this->object()->data);
 	}
+
+	function url($page = NULL) { return $this->object()->url($page); }
 }

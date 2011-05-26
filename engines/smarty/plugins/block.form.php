@@ -38,7 +38,7 @@ function smarty_block_form($params, $content, &$smarty)
 
 	$object_class_name = $name;
 
-	$form = object_load($object_class_name, $id);
+	$form = bors_load($object_class_name, $id);
 	if(is_object($form))
 		$foo = $form;
 	elseif($object_class_name && $object_class_name != 'NULL')
@@ -113,6 +113,9 @@ function smarty_block_form($params, $content, &$smarty)
 		else
 			$th = false;
 
+		if($fields == 'auto')
+			$fields = array_keys($object_fields);
+
 		if($th || !empty($fields))
 		{
 			echo "<table class=\"btab\" style=\"width: 90%\">";
@@ -139,6 +142,9 @@ function smarty_block_form($params, $content, &$smarty)
 					foreach($object_fields as $f)
 						if($f['name'] == $property_name)
 							$data = $f;
+
+				if(!defval($data, 'is_editable', true))
+					continue;
 
 				$type = $data['type'];
 				$title = $data['title'];

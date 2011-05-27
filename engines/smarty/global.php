@@ -140,7 +140,7 @@ function template_jquery_markitup($id)
 	template_css("/_bors3rdp/jquery/plugins/$base/skins/simple/style.css");
 	template_css("/_bors3rdp/jquery/plugins/".config('jquery.markitup.sets.bbcode')."/style.css");
 
-	template_js_include("/_bors3rdp/jquery/plugins/$base/jquery.markitup.pack.js");
+	template_js_include("/_bors3rdp/jquery/plugins/$base/jquery.markitup.js");
 	template_js_include("/_bors3rdp/jquery/plugins/".config('jquery.markitup.sets.bbcode')."/set.js");
 
 	template_js("jQuery(document).ready(function() { jQuery('$id').markItUp(mySettings); });");

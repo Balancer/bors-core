@@ -43,6 +43,14 @@ function smarty_function_textarea($params, &$smarty)
 				$style = "width: 99%";
 		}
 
+		if(@$type == 'bbcode')
+		{
+			static $tmp_id = 0;
+			if(!$id)
+				$id = 'tmp_id_'.($tmp_id++);
+			template_jquery_markitup('#'.$id);
+		}
+
 		echo "<textarea name=\"$name\"";
 		foreach(explode(' ', 'class id style rows cols') as $p)
 			if(!empty($$p))

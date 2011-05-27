@@ -190,6 +190,7 @@ function smarty_block_form($params, $content, &$smarty)
 							$data = array_merge($data, $data['args']);
 						smarty_function_input_date($data, $smarty);
 						break;
+					case 'bbcode':
 					case 'text':
 					case 'textarea':
 						require_once('function.textarea.php');

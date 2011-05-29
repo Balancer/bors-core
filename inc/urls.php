@@ -342,3 +342,9 @@ function url_clean_params($url)
 
 	return $url.'?'.join('&', $result);
 }
+
+function url_drop_params($url)
+{
+	@list($url, $params) = @explode('?', $url);
+	return $url;
+}

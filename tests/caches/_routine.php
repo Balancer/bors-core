@@ -4,8 +4,11 @@ define('BORS_SITE', __DIR__);
 
 require_once('../config.php');
 
-define('LOOPS', 100);
-define('ENGINES', 'bors_cache_memcache bors_cache_mysql bors_cache_smart bors_cache_zend_file bors_cache_redis');
+define('LOOPS', 1000000);
+define('WAIT', 1000);
+define('ENGINES', 'bors_cache_redis bors_cache_mysql');
+//define('ENGINES', 'bors_cache_memcache bors_cache_mysql bors_cache_smart bors_cache_zend_file bors_cache_redis');
+//define('ENGINES', 'bors_cache_zend_file');
 
 function do_test($cache_engine, $verbose = false)
 {
@@ -23,7 +26,7 @@ function do_test($cache_engine, $verbose = false)
 	{
 		$ch->get($uniq, md5($i));
 		// Храним чётные числа 2 секунды, нечётные — 6 сек.
-		$ch->set(str_repeat(md5($i*2), 10), $i % 2 ? 6 : 2);
+		$ch->set(str_repeat(md5($i*2), 10), $i % 2 ? WAIT*10 : WAIT);
 	}
 
 	// Проверяем, должны быть все значения.
@@ -39,37 +42,44 @@ function do_test($cache_engine, $verbose = false)
 
 	// Очищаем кеш в памяти
 	global_keys_clean();
-	// Ждём три секунды - кеш чётных чисел должен очиститься.
+	// Ждём WAIT секунд - кеш чётных чисел должен очиститься.
 	if($verbose)
-		echo "\tWait 3 seconds\n";
-	sleep(3);
+		echo "\tWait ".WAIT." seconds\n";
 
-	// Проверяем, должны быть только нечётные значения.
+	sleep(WAIT);
+
 	if($verbose)
 		echo "\tCheck expire values\n";
-	for($i=0; $i<LOOPS; $i++)
+
+	for($j=0; $j<10; $j++)
 	{
-		$res = $ch->get($uniq, md5($i), $def = 'none'.$i);
-		if($i % 2 == 0)
+		echo ".";
+		// Проверяем, должны быть только нечётные значения.
+		for($i=0; $i<LOOPS; $i++)
 		{
-			// Чётные должны отсутствовать, точнее — равняться $def.
-			if($res == $def)
-				continue;
+			$res = $ch->get($uniq, md5($i), $def = 'none'.$i);
+			if($i % 2 == 0)
+			{
+				// Чётные должны отсутствовать, точнее — равняться $def.
+				if($res == $def)
+					continue;
 
-			return error($verbose, $cache_engine, $i, $res, $def);
-		}
+				return error($verbose, $cache_engine, $i, $res, $def);
+			}
 
-		if($i % 2)
-		{
-			// Нечётные должны быть равны тестовому числу.
-			if($res == ($expect = str_repeat(md5($i*2), 10)))
-				continue;
+			if($i % 2)
+			{
+				// Нечётные должны быть равны тестовому числу.
+				if($res == ($expect = str_repeat(md5($i*2), 10)))
+					continue;
 
-			return error($verbose, $cache_engine, $i, $res, $expect);
+				return error($verbose, $cache_engine, $i, $res, $expect);
+			}
 		}
 	}
+	echo "\n";
 
-	$time = microtime(true) - $start - 3;
+	$time = microtime(true) - $start - WAIT;
 	if($verbose)
 		echo "\tAll right. Test '$cache_engine' done in ".sprintf("%.3f", $time)."!\n";
 

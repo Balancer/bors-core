@@ -5,7 +5,7 @@
 require_once('_routine.php');
 require_once('../../benchmarks/sharedMemoryStore.php');
 
-define('THREADS', 5);
+define('THREADS', 10);
 
 config_set('cache_zend_file_dir', __DIR__.'/cache');
 

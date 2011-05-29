@@ -6,6 +6,9 @@
 
 class bors_view extends bors_page
 {
+	function can_be_empty() { return false; }
+	function loaded() { return !!$this->target(); }
+
 	// Класс отображаемого объекта
 	function main_class()
 	{
@@ -20,6 +23,7 @@ class bors_view extends bors_page
 	function referent_class() { return $this->main_class(); }
 
 	function title($exact = false) { return $this->object()->title($exact); }
+	function nav_name($exact = false) { return $this->object()->nav_name($exact); }
 	function create_time($exact = false) { return $this->object()->create_time($exact); }
 	function modify_time($exact = false) { return $this->object()->modify_time($exact); }
 
@@ -27,6 +31,7 @@ class bors_view extends bors_page
 	{
 		return array_merge(parent::auto_targets(), array(
 			'object' => 'main_class(id)',
+			'target' => 'main_class(id)',
 		));
 	}
 
@@ -34,6 +39,8 @@ class bors_view extends bors_page
 	{
 		return array_merge(parent::body_data(), array(
 			$this->item_name() => $this->object(),
-		), $this->object()->data);
+		), $this->target()->data);
 	}
+
+	function url($page = NULL) { return $this->target()->url($page); }
 }

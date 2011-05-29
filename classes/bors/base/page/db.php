@@ -4,13 +4,13 @@ class base_page_db extends base_page
 {
 	function can_be_empty() { return false; }
 	function can_cached() { return true; } //TODO: пока не разберусь, откуда глюки сохранения memcache
-
+/*
 	function id_field()
 	{
 		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
 		return defval($ff, 'id', 'id');
 	}
-
+*/
 	function new_instance() { bors_object_new_instance_db($this); }
 
 	function uri2id($id) { return $id; }

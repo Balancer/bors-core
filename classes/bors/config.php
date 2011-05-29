@@ -4,7 +4,7 @@ class bors_config extends base_config
 {
 	function config_class() { return NULL; } // Workaround ошибки, когда для конфиг-класса пытается грузиться конфиг-класс.
 
-	var $object_data = array();
+	function object_data() { return array(); }
 
 	function __construct(&$object)
 	{

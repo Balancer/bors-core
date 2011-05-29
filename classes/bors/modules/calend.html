@@ -23,7 +23,6 @@ $(function() {
 <div id="module_{$this->class_name()}_{$year}_{$month}">
 <table class="{$table_class}">
 {if $ajax}
-<caption class="nobr center">
 <select id="bmc_month">
 <option value="1">январь</option>
 <option value="2">февраль</option>
@@ -38,7 +37,6 @@ $(function() {
 <option value="11">ноябрь</option>
 <option value="12">декабрь</option>
 </select><a href="#" id="bmc_yprev">«</a><input size="4" maxlength="4" id="bmc_year" value="{$year}" /><a href="#" id="bmc_ynext">»</a>
-</caption>
 {else}
 {if $show_caption}<caption>{$month|month_name} {$year}</caption>{/if}
 {/if}

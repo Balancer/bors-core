@@ -66,7 +66,8 @@ class bors_tools_search_result extends bors_tools_search
 				$weights = array ('blog_titles' => 100 , 'blog_keywords' => 1000, 'blog_sources' => 10);
 				break;
 			default:
-				$index = "topics";
+				$index = "topic_titles,topic_descriptions";
+				$weights = array ('topic_titles' => 1000 , 'topic_descriptions' => 100);
 				break;
 		}
 //		$groupby = "topic_id";
@@ -84,8 +85,8 @@ class bors_tools_search_result extends bors_tools_search
 //		$cl->SetWeights ( array ( 100, 1 ) );
 		if($weights)
 			$cl->SetIndexWeights ( $weights );
-		else
-			$cl->SetIndexWeights ( array ( 'topics' => 1000 , 'posts' => 100) );
+//		else
+//			$cl->SetIndexWeights ( array ( 'topics' => 1000 , 'posts' => 100) );
 
 		if($this->x())
 			$cl->SetMatchMode (SPH_MATCH_PHRASE);
@@ -114,7 +115,7 @@ class bors_tools_search_result extends bors_tools_search
 
 		if($this->u())
 		{
-			$user = objects_first('balancer_board_user', array('username' => $this->u()));
+			$user = bors_find_first('balancer_board_user', array('username' => $this->u()));
 			if($user)
 			$cl->SetFilter('owner_id', array($user->id()));
 		}
@@ -126,6 +127,9 @@ class bors_tools_search_result extends bors_tools_search
 		{
 			case 'c':
 				$cl->SetSortMode (SPH_SORT_ATTR_DESC, 'create_time' );
+				break;
+			case 'u':
+				$cl->SetSortMode (SPH_SORT_ATTR_DESC, 'modify_time' );
 				break;
 			case 'co':
 				$cl->SetSortMode (SPH_SORT_ATTR_ASC, 'create_time' );
@@ -188,7 +192,7 @@ class bors_tools_search_result extends bors_tools_search
 //print_d($post_ids);
 			$this->_data['posts'] = array();
 			if($post_ids)
-				$x = objects_array('forum_post', array('id IN' => array_unique($post_ids), 'by_id' => true));
+				$x = bors_find_all('balancer_board_post', array('id IN' => array_unique($post_ids), 'by_id' => true));
 //print_d($x);
 			foreach($post_ids as $id)
 				$this->_data['posts'][$id] = $x[$id];
@@ -196,7 +200,7 @@ class bors_tools_search_result extends bors_tools_search
 			$this->_data['topics'] = array();
 			if($topic_ids)
 			{
-				$x = objects_array('forum_topic', array('id IN' => array_unique($topic_ids), 'by_id' => true));
+				$x = objects_array('balancer_board_topic', array('id IN' => array_unique($topic_ids), 'by_id' => true));
 				foreach($topic_ids as $id)
 					if(!empty($x[$id]))
 						$this->_data['topics'][$id] = $x[$id];

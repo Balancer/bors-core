@@ -14,8 +14,8 @@ class bors_admin_reports_ip extends bors_admin_page
 		$ip = $this->ip();
 		list($country_code, $country_name, $city_name, $city_object) = geoip_info($ip);
 
-		require_once "Net/Whois.php";
-		$server = "whois.ripe.net";
+		require_once "Net/Whois.php"; // http://pear.php.net/manual/en/package.networking.net-whois.query.php
+		$server = "whois.ripe.net"; // whois.arin.net
 		$query  = $ip;     // get information about
                                // this domain
 		$whois = new Net_Whois;

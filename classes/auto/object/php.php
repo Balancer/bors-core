@@ -36,7 +36,7 @@ class auto_object_php extends base_object
 		$class_path = str_replace('/', '_', trim($path, '/'));
 		$class_base = config('classes_auto_base', 'auto_php');
 
-		if(preg_match('!^(.+)_(\d+)$!', $class_path, $m))
+		if(preg_match('!^(.+)_(\d+|new)$!', $class_path, $m))
 		{
 			if(class_include($class_base.'_'.($cp = $m[1].'_edit')))
 			{
@@ -52,10 +52,13 @@ class auto_object_php extends base_object
 		else
 			$object_id = $this->id();
 
-		if(!($object = object_load($class_base.'_'.$class_path, $object_id)))
+		if($object_id == 'new')
+			$object_id = NULL;
+
+		if(!($object = bors_load($class_base.'_'.$class_path, $object_id)))
 		{
 			$class_path = $class_path ? $class_path . '_main' : 'main';
-			$object = object_load($class_base.'_'.$class_path, $this->id());
+			$object = bors_load($class_base.'_'.$class_path, $this->id());
 		}
 
 		if(!config('classes_auto_full_enabled') && !object_property($object, 'is_auto_url_mapped_class'))

@@ -90,12 +90,15 @@ function smarty_function_input_date($params, &$smarty)
 	else
 		$shown_days = false;
 
-	echo "<select name=\"{$name}_month\">\n";
-	if($can_drop || !$mon)
-		echo "<option value=\"0\">-----</option>\n";
-	for($i = 1; $i<=12; $i++)
-		echo "<option value=\"$i\"".($i==$mon?' selected="true"':'').">".($shown_days ? bors_lower(month_name_rp($i)) : month_name($i))."</option>";
-	echo "</select>\n";
+	if(in_array('m', $shown))
+	{
+		echo "<select name=\"{$name}_month\">\n";
+		if($can_drop || !$mon)
+			echo "<option value=\"0\">-----</option>\n";
+		for($i = 1; $i<=12; $i++)
+			echo "<option value=\"$i\"".($i==$mon?' selected="true"':'').">".($shown_days ? bors_lower(month_name_rp($i)) : month_name($i))."</option>";
+		echo "</select>\n";
+	}
 
 	echo "<select name=\"{$name}_year\">\n";
 	if($can_drop || !$yea)

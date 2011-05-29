@@ -20,7 +20,8 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 
 	if(config('debug_redirect_trace'))
 	{
-		echo '<pre>$_SESSION:</pre>';	var_dump(@$_SESSION);
+		echo ec("Это режим отладки переходов. При его отключении Вы автоматически будете перемещены по ссылке <a href=\"{$uri}\">{$uri}</a>");
+//		echo '<pre>$_SESSION:</pre>'; var_dump(@$_SESSION);
 		return debug_exit("Go to <a href=\"{$uri}\">{$uri}</a>");
 	}
 

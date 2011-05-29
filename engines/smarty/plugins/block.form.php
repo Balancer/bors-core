@@ -38,7 +38,7 @@ function smarty_block_form($params, $content, &$smarty)
 
 	$object_class_name = $name;
 
-	$form = object_load($object_class_name, $id);
+	$form = bors_load($object_class_name, $id);
 	if(is_object($form))
 		$foo = $form;
 	elseif($object_class_name && $object_class_name != 'NULL')
@@ -113,6 +113,9 @@ function smarty_block_form($params, $content, &$smarty)
 		else
 			$th = false;
 
+		if($fields == 'auto')
+			$fields = array_keys($object_fields);
+
 		if($th || !empty($fields))
 		{
 			echo "<table class=\"btab\" style=\"width: 90%\">";
@@ -140,6 +143,9 @@ function smarty_block_form($params, $content, &$smarty)
 						if($f['name'] == $property_name)
 							$data = $f;
 
+				if(!defval($data, 'is_editable', true))
+					continue;
+
 				$type = $data['type'];
 				$title = $data['title'];
 				if(!empty($data['class']))
@@ -156,7 +162,11 @@ function smarty_block_form($params, $content, &$smarty)
 				if($type != 'bool')
 					echo "<tr><th class=\"w33p\">{$title}</th><td>";
 
-				$data['value'] = object_property($form, $property_name);
+				if(!empty($data['arg']))
+					$data['value'] = object_property_args($form, $property_name, array($data['arg']));
+				else
+					$data['value'] = object_property($form, $property_name);
+
 				$data['class'] = 'w100p';
 //				echo "property=$property_name, type=$type, data=".print_d($data).", field=".print_d($field)."<Br/>\n";
 				switch($type)
@@ -180,6 +190,7 @@ function smarty_block_form($params, $content, &$smarty)
 							$data = array_merge($data, $data['args']);
 						smarty_function_input_date($data, $smarty);
 						break;
+					case 'bbcode':
 					case 'text':
 					case 'textarea':
 						require_once('function.textarea.php');

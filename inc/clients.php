@@ -21,6 +21,7 @@ function bors_bot_detect($user_agent)
 			'Nutch'	=> 'Nutch',			// gh-index-bot/Nutch-1.0 (GH Web Search.; lucene.apache.org; gh_email at someplace dot com)
 			'OOZBOT' => 'OOZBOT', 		// OOZBOT/0.20 ( http://www.setooz.com/oozbot.html ; agentname at setooz dot_com )
 			'ovalebot' => 'ovalebot',	// ovalebot3.ovale.ru facepage
+			'psbot'	=> 'Picsearch bot',	// psbot/0.1 (+http://www.picsearch.com/bot.html)
 			'princeton crawler' => 'princeton crawler',	// nu_tch-princeton/Nu_tch-1.0-dev (princeton crawler for cass project; http://www.cs.princeton.edu/cass/; zhewang a_t cs ddot princeton dot edu)
 			'rambler' => 'Rambler',
 			'robotgenius' => 'robotgenius', // robotgenius (http://robotgenius.net)

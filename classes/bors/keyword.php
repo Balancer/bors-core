@@ -4,7 +4,7 @@ require_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
 
 class bors_keyword extends base_object_db
 {
-	function table_name(){ return bors_throw(ec('Вы не можете использовать bors_keyword непосредственно! Расширяйте класс.')); }
+	function table_name() { return bors_throw(ec('Вы не можете использовать bors_keyword непосредственно! Расширяйте класс.')); }
 
     function main_table_fields()
 	{

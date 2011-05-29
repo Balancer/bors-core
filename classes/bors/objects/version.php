@@ -25,6 +25,11 @@ class bors_objects_version extends base_object_db
 
 	static function load($class_name, $object_id, $version)
 	{
+		static $cache = array();
+		$hash = '__load:'.$class_name.'-'.$object_id.'-'.$version;
+		if(!empty($cache[$hash]))
+			return $cache[$hash];
+
 		$object = bors_load($class_name, $object_id);
 //		echo $object;
 		foreach(bors_find_all(__CLASS__, array(
@@ -45,7 +50,7 @@ class bors_objects_version extends base_object_db
 //			$object->set_attr('versioning_property', $x->property_name());
 		}
 
-		return $object;
+		return $cache[$hash] = $object;
 	}
 
 	static function remove_all($object)

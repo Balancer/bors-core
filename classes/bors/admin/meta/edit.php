@@ -14,7 +14,28 @@ class bors_admin_meta_edit extends bors_page
 	}
 
 	function target() { return bors_load($this->main_class(), $this->id()); }
-	function admin_target() { return bors_load($this->main_admin_class(), $this->id()); }
+	function admin_target()
+	{
+		if($this->__havefc())
+			return $this->__lastc();
+
+		if(method_exists($this->main_admin_class(), 'versioning_type'))
+		{
+//			var_dump(call_user_func(array($this->main_admin_class(), 'versioning_type')));
+			switch(call_user_func(array($this->main_admin_class(), 'versioning_type')))
+			{
+				case 'premoderate':
+					$obj = bors_objects_version::load($this->main_admin_class(), $this->id(), -1);
+					if($obj && $obj->get('versioning_properties'))
+						return $this->__setc($obj);
+
+					return $this->__setc(bors_objects_version::load($this->main_class(), $this->id(), -1));
+					break;
+			}
+		}
+
+		return $this->__setc(bors_load($this->main_admin_class(), $this->id()));
+	}
 
 	function item_name()
 	{

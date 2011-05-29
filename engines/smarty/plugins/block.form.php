@@ -24,6 +24,7 @@ function smarty_block_form($params, $content, &$smarty)
 	{
 		$name = $object->class_name();
 		$id   = $object->id();
+		$form = $object;
 	}
 
 	if(empty($name) || $name == 'this')
@@ -38,7 +39,9 @@ function smarty_block_form($params, $content, &$smarty)
 
 	$object_class_name = $name;
 
-	$form = bors_load($object_class_name, $id);
+	if(empty($form))
+		$form = bors_load($object_class_name, $id);
+
 	if(is_object($form))
 		$foo = $form;
 	elseif($object_class_name && $object_class_name != 'NULL')

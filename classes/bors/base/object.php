@@ -352,7 +352,12 @@ class base_object extends base_empty
 	function set_template($template, $db_update) { $this->set('template', $template, $db_update); }
 
 	function parents_string() { return join("\n", $this->parents());  }
-	function set_parents_string($string, $dbup) { $this->set_parents(array_filter(explode("\n", $string)), $dbup); return $string;  }
+	function set_parents_string($string, $dbup)
+	{
+		$this->set_parents($x = array_filter(explode("\n", $string)), $dbup);
+		$this->set('parents_string', join("\n", $x), $dbup);
+		return $string;
+	}
 
 	function children_string() { return ($cs = $this->children()) ? join("\n", $cs) : '';  }
 	function set_children_string($string, $dbup) { $this->set_children(array_filter(explode("\n", $string)), $dbup); return $string;  }

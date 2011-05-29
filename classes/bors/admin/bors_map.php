@@ -16,6 +16,9 @@ bors_url_submap(array(
 	'/reports/ip\?ip=(.+) => _reports_ip(1)',
 	'/reports/load/? => _reports_load',
 
+	'/tags/? => _tags_main',
+	'(/)tags/(\d+)\.html => _tags_main(NULL,2)',
+
 	'/cross_chtype\?.* => _cross_chtype',
 	'/cross_unlink\?.* => _cross_unlink',
 

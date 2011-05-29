@@ -4,9 +4,9 @@ function smarty_function_input($params, &$smarty)
 {
 		extract($params);
 
+		$obj = $smarty->get_template_vars('form');
 		if(!array_key_exists('value', $params))
 		{
-			$obj = $smarty->get_template_vars('form');
 			if(($obj && $obj->id()))
 				$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($obj?$obj->$name():NULL)) : '';
 			else
@@ -47,8 +47,8 @@ function smarty_function_input($params, &$smarty)
 		}
 
 //		class="validate[required,custom[noSpecialCaracters],length[5,20]]"
-
 		$versioning = object_property($obj, 'versioning_properties', array());
+
 		if(array_key_exists($name, $versioning))
 		{
 			$has_versioning = true;
@@ -77,7 +77,7 @@ function smarty_function_input($params, &$smarty)
 		echo " />\n";
 
 		if($has_versioning)
-			echo "<br/><small>".ec("Исходное значение: ").$previous."</small>\n";
+			echo "<br/><small>".ec("Предыдущее значение: ").$previous."</small>\n";
 
 		if($th)
 			echo "</td></tr>\n";

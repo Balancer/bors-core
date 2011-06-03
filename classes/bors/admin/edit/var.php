@@ -6,6 +6,8 @@ class bors_admin_edit_var extends base_page
 
 	function config_class() { return config('admin_config_class'); }
 
+	function template() { return 'xfile:default/popup.html'; }
+
 	function variable()
 	{
 		$name = $this->id();

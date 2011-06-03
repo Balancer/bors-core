@@ -44,10 +44,16 @@ class bors_var
 		return $value;
 	}
 
-	static function edit_html_code($name)
+	static function edit_html_code($name, $title = NULL)
 	{
 		$url = "/_bors/admin/edit-var?var={$name}";
+
+		if($title)
+			$title = "$title&nbsp;";
+		else
+			$title = "";
+
 		return "<a href=\"$url\"
-			onclick=\"popupWin = window.open('$url&is_popup=1', 'edit', 'width=600,height=400,top=0'); popupWin.focus(); return false;\"><img src=\"/_bors/i16/edit.png\" style=\"vertical-align: middle\" /></a>";
+			onclick=\"popupWin = window.open('$url&is_popup=1', 'edit', 'width=600,height=400,top=0'); popupWin.focus(); return false;\">$title<img src=\"/_bors/i16/edit.png\" style=\"vertical-align: middle\" /></a>";
 	}
 }

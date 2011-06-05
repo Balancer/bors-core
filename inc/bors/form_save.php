@@ -141,18 +141,24 @@ function bors_form_save(&$obj)
 		if($form === true)
 			return true;
 
-		if($post_message = pop_session_var('post_message'))
+		if($form->has_changed())
 		{
-			$link_url = bors_form_parse_vars(pop_session_var('post_message_link_url'), $form);
-			$post_message = bors_form_parse_vars($post_message, $form);
-			return bors_message($post_message, array(
-				'title' => ec('Данные сохранены'),
-				'link_text' => pop_session_var('post_message_link_text'),
-				'link_url' => $link_url,
-				'data' => array(
-					'target_admin_url' => $form->admin_url(1),
-				)
-			));
+			if($post_message = pop_session_var('post_message'))
+			{
+				$link_url = bors_form_parse_vars(pop_session_var('post_message_link_url'), $form);
+				$post_message = bors_form_parse_vars($post_message, $form);
+				return bors_message($post_message, array(
+					'title' => ec('Данные сохранены'),
+					'link_text' => pop_session_var('post_message_link_text'),
+					'link_url' => $link_url,
+					'data' => array(
+						'target_admin_url' => $form->admin_url(1),
+					)
+				));
+			}
+
+			if(!empty($_GET['go_on_update']))
+				$_GET['go'] = $_GET['go_on_update'];
 		}
 
 		if(!empty($_GET['go']))
@@ -284,6 +290,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 		$object->post_save($data);
 
 	$_GET['go'] = defval($data, 'go', @$_GET['go']);
+	$_GET['go_on_update'] = defval($data, 'go_on_update', @$_GET['go_on_update']);
 
 	if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 		$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));

@@ -133,7 +133,6 @@ function template_description($text)
 
 function template_jquery_markitup($id)
 {
-
 	template_jquery();
 	$base = config('jquery.markitup.base');
 

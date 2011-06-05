@@ -61,6 +61,7 @@ class bors_external_twitter extends bors_object
 
 	static function parse($data)
 	{
+//		var_dump($data); exit();
 		extract($data);
 		// Фикс ошибок вида http://bit.ly/gNE1ZE/ - последний слеш - ошибка.
 		$text = preg_replace('!(http://bit.ly/\w+?)/!', '$1', $text);
@@ -116,6 +117,22 @@ class bors_external_twitter extends bors_object
 //			'origin_url' => $link,
 			'strip_forms' => true,
 		));
+
+		// К этому месту у нас готовое текстовое сообщение. Нужно извлечь из него всё, что можно
+		// Первый вариант — это ссылка с примечанием:
+		if(preg_match('!^(http\S+)\s*(.+)$!', $text, $m))
+		{
+			$url = $m[1];
+			$msg_text = $m[2];
+			$content = bors_external_other::content_short_extract($url);
+//			$content = html2bb($content, array(
+//				'strip_forms' => true,
+//			));
+
+			$text = "[b]{$msg_text}[/b]\n\n[quote]\n{$content}\n[/quote]";
+
+//			print_dd($text); exit();
+		}
 
 		return array(
 			'text' => $text,

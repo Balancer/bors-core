@@ -221,7 +221,7 @@ function query_explode($query_string)
 	{
 		if(preg_match('/^(.+)=(.+)$/', $pair, $m))
 		{
-			if(preg_match('/^(\w+)\[\]$/', $var, $mm))
+			if(preg_match('/^(\w+)\[\]$/', $m[1], $mm))
 				$data[urldecode($mm[1])][] = urldecode($m[2]);
 			else
 				$data[urldecode($m[1])] = urldecode($m[2]);

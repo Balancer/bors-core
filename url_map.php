@@ -74,3 +74,5 @@ $map = array(
 	'.* => bors_page_fs_markdown(url)',
 	'.* => bors_page_fs_htsu(url)',
 );
+
+bors_objects_loaders_yaml::register();

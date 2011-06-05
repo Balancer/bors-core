@@ -44,8 +44,13 @@ class bors_admin_meta_edit extends bors_page
 
 	function body_data()
 	{
-		return array_merge(parent::body_data(), array(
-			$this->item_name() => $this->target(),
-		), object_property($this->target(), 'data'));
+		return array_merge(
+			object_property($this->target(), 'data', array()),
+			parent::body_data(),
+			array(
+				$this->item_name() => $this->target(),
+				'form_fields' => ($f=$this->get('form')) ? $f : 'auto',
+			)
+		);
 	}
 }

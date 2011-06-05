@@ -141,6 +141,20 @@ function bors_form_save(&$obj)
 		if($form === true)
 			return true;
 
+		if($post_message = pop_session_var('post_message'))
+		{
+			$link_url = bors_form_parse_vars(pop_session_var('post_message_link_url'), $form);
+			$post_message = bors_form_parse_vars($post_message, $form);
+			return bors_message($post_message, array(
+				'title' => ec('Данные сохранены'),
+				'link_text' => pop_session_var('post_message_link_text'),
+				'link_url' => $link_url,
+				'data' => array(
+					'target_admin_url' => $form->admin_url(1),
+				)
+			));
+		}
+
 		if(!empty($_GET['go']))
 		{
 			if($_GET['go'] == "newpage")
@@ -331,4 +345,11 @@ function bors_form_errors($data, $conditions = array())
 	}
 
 	return NULL;
+}
+
+function bors_form_parse_vars($text, $object)
+{
+	$text = str_replace('{$target_admin_url}', $object->admin()->url(1), $text);
+	$text = str_replace('$target_admin_url', $object->admin()->url(1), $text);
+	return $text;
 }

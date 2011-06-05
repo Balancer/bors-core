@@ -55,10 +55,13 @@ class auto_object_php extends base_object
 		if($object_id == 'new')
 			$object_id = NULL;
 
+		if($object_id == $this->called_url())
+			$object_id = NULL;
+
 		if(!($object = bors_load($class_base.'_'.$class_path, $object_id)))
 		{
 			$class_path = $class_path ? $class_path . '_main' : 'main';
-			$object = bors_load($class_base.'_'.$class_path, $this->id());
+			$object = bors_load($class_base.'_'.$class_path, $object_id);
 		}
 
 		if(!config('classes_auto_full_enabled') && !object_property($object, 'is_auto_url_mapped_class'))

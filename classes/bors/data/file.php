@@ -27,7 +27,7 @@ class bors_data_file extends bors_object
 	//		2. По контенту
 	static function load($file, $markup = NULL)
 	{
-		$text = self::read($file);
+		$text = self::read($file, '/data');
 		if(is_null($text))
 			return NULL;
 

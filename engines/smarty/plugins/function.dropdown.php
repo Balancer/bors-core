@@ -38,7 +38,6 @@ function smarty_function_dropdown($params, &$smarty)
 	echo ">\n";
 
 //	echo "==={$list}===";
-
 	if(!is_array($list))
 	{
 		if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))
@@ -69,6 +68,9 @@ function smarty_function_dropdown($params, &$smarty)
 	$have_null = in_array(NULL, $list);
 	$strict = defval($params, 'strict', $have_null);
 	$is_int = defval($params, 'is_int');
+
+	if(is_null($is_int) && !$strict)
+		$is_int = true;
 
 	if(empty($get))
 	{

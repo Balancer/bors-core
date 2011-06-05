@@ -36,7 +36,13 @@ function object_load($class, $object_id=NULL, $args=array())
 	}
 
 //	echo "class_load($class, $object_id);<br/>\n";
-	return class_load($class, $object_id, $args);
+	if($object = class_load($class, $object_id, $args))
+		return $object;
+
+	if($object = bors_objects_loaders_meta::find($class, $object_id))
+		return $object;
+
+	return NULL;
 }
 
 function &object_new($class, $id = NULL)

@@ -18,7 +18,12 @@ if(!defined('BORS_HOST'))
 	define('BORS_HOST', realpath(@$_SERVER['DOCUMENT_ROOT'].'/../bors-host'));
 
 if(!defined('BORS_SITE'))
-	define('BORS_SITE', realpath(@$_SERVER['DOCUMENT_ROOT'].'/../bors-site'));
+{
+	$path = realpath(@$_SERVER['DOCUMENT_ROOT'].'/../bors-site');
+	if(!$path)
+		$path = dirname(@$_SERVER['DOCUMENT_ROOT']).'/bors-site';
+	define('BORS_SITE', $path);
+}
 
 if(!defined('BORS_3RD_PARTY'))
 	define('BORS_3RD_PARTY', dirname(BORS_CORE).'/bors-third-party');

@@ -16,6 +16,9 @@ function bors_message($text, $params=array())
 	$timeout = defval($params, 'timeout', -1);
 	$hidden_log = defval($params, 'hidden_log');
 
+	if(!empty($params['link_url']))
+		$redir = 'true';
+
 	if(!$redir)
 	{
 		if(bors()->client()->referer())

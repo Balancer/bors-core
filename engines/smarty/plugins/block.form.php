@@ -93,6 +93,13 @@ function smarty_block_form($params, $content, &$smarty)
 		if($action == 'target')
 			$action = $form->url();
 
+		if(!empty($calling_object))
+		{
+			set_session_var('post_message', $calling_object->get('post_message'));
+			set_session_var('post_message_link_text', $calling_object->get('post_message_link_text'));
+			set_session_var('post_message_link_url', $calling_object->get('post_message_link_url'));
+		}
+
 		echo "<form enctype=\"multipart/form-data\"";
 
 		foreach(explode(' ', 'action method name class style enctype onclick onsubmit target') as $p)
@@ -150,7 +157,18 @@ function smarty_block_form($params, $content, &$smarty)
 					continue;
 
 				$type = $data['type'];
+				$type_arg = NULL;
+
+				if(preg_match('/^(\w+):(\w+)$/', $type, $m))
+				{
+					$type = $data['type'] = $m[1];
+					$type_arg = $m[2];
+				}
+
 				$title = $data['title'];
+				if($comment = @$data['comment'])
+					$title .="<br/><small class=\"gray\">{$comment}</small>";
+
 				if(!empty($data['class']))
 				{
 					$type = 'dropdown';
@@ -171,17 +189,21 @@ function smarty_block_form($params, $content, &$smarty)
 					$data['value'] = object_property($form, $property_name);
 
 				$data['class'] = 'w100p';
-//				echo "property=$property_name, type=$type, data=".print_d($data).", field=".print_d($field)."<Br/>\n";
+
+				if(!empty($data['property']))
+					$data['name'] = $data['property'];
+
+//				echo "property=$property_name, type=$type, data=".print_dd($data).", field=".print_dd($field)."<br/>\n";
+
 				switch($type)
 				{
 					case 'string':
 					case 'input':
-						if(!empty($data['property']))
-							$data['name'] = $data['property'];
 						require_once('function.input.php');
 						smarty_function_input($data, $smarty);
 						break;
 					case 'input_date':
+					case 'date':
 						require_once('function.input_date.php');
 						smarty_function_input_date(array_merge($data, @$data['args']), $smarty);
 						break;
@@ -196,6 +218,7 @@ function smarty_block_form($params, $content, &$smarty)
 					case 'bbcode':
 					case 'text':
 					case 'textarea':
+						$data['rows'] = $type_arg;
 						require_once('function.textarea.php');
 						smarty_function_textarea($data, $smarty);
 						break;
@@ -205,6 +228,7 @@ function smarty_block_form($params, $content, &$smarty)
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);
 						break;
+
 					case 'dropdown':
 						if(array_key_exists('named_list', $data))
 						{
@@ -231,18 +255,22 @@ function smarty_block_form($params, $content, &$smarty)
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);
 						break;
+
 					case 'timestamp_date_droppable':
 						$data['can_drop'] = true;
 						require_once('function.input_date.php');
 						smarty_function_input_date($data, $smarty);
 						break;
+
 					case 'image':
 						$image = object_load('bors_image', $data['value']);
 						echo $image->thumbnail($data['geometry'])->html_code();
 						break;
+
 					case 'bool':
 						$data['label'] = $title;
 						$labels[$property_name] = $data;
+
 					default:
 //						print_dd($data);
 //						echo defval($data, 'value');

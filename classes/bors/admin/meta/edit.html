@@ -1,0 +1,13 @@
+{form
+	class=$this->main_admin_class()
+	id=$this->id()
+	object=$this->target()
+	fields=$form_fields
+	calling_object=$this
+}
+{if $this->id()}
+{submit th='Сохранить'}
+{else}
+{submit th='Добавить'}
+{/if}
+{/form}

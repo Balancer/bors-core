@@ -297,7 +297,19 @@ class base_object extends base_empty
 	}
 
 	function have_data() { return !empty($this->data); }
-	function has_changed() { return !empty($this->changed_fields); }
+	function has_changed()
+	{
+		foreach($this->changed_fields as $property => $value)
+		{
+			if($property == 'modify_time')
+				continue;
+
+			if($value && $value != $this->get($property))
+				return true;
+		}
+
+		return false;
+	}
 
 	function render_engine() { return config('render_engine', false); }
 

@@ -27,10 +27,11 @@ class bors_view extends bors_page
 	function create_time($exact = false) { return $this->object()->create_time($exact); }
 	function modify_time($exact = false) { return $this->object()->modify_time($exact); }
 
+	function object() { return $this->target(); } // Для совместимости
+
 	function auto_targets()
 	{
 		return array_merge(parent::auto_targets(), array(
-			'object' => 'main_class(id)',
 			'target' => 'main_class(id)',
 		));
 	}

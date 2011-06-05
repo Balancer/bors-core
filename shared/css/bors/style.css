@@ -8,9 +8,12 @@ form.big label { font-size: 20pt; }
 form.big input { font-size: 20pt; }
 
 .wa { width: auto !important }
-.w100p { width: 98% !important }
-.w50p, .half  { width: 49% !important }
-.w33p, .third { width: 32% !important }
+.w100p { width: 100% !important }
+.ie .w100p { width: 98% !important }
+.w50p, .half  { width: 50% !important }
+.ie .w50p, .ie .half  { width: 49% !important }
+.w33p, .third { width: 33.3% !important }
+.ie .w33p, .ie .third { width: 32% !important }
 .right { text-align: right; }
 small, .small { font-size: 0.8em !important; }
 .f8pt { font-size: 8pt !important; }

@@ -9,9 +9,9 @@ class body_smart extends base_null
 		$data = array();
 
 		//TODO: Вычистить все _queries.
-		if($qlist = $obj->_queries())
+		if($qlist = $obj->get('_queries'))
 		{
-			$db = new DataBase($obj->db_name());
+			$db = new driver_mysql($obj->db_name());
 
 			foreach($qlist as $qname => $q)
 			{

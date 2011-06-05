@@ -40,7 +40,12 @@
 {/foreach}
 </head>
 
-<body>
+<!--[if lt IE 7]><body class="ie ie6 ltie9 ltie8 ltie7"><![endif]-->
+<!--[if IE 7]><body class="ie ie7 ltie9 ltie8"><![endif]-->
+<!--[if IE 8]><body class="ie ie8 ltie9"><![endif]-->
+<!--[if IE 9]><body class="ie ie9"><![endif]-->
+<!--[if gt IE 9]><body class="ie"><![endif]-->
+<!--[if !IE]><!--><body><!--<![endif]-->
 
 {if $template_top_menu}
 <div class="header">

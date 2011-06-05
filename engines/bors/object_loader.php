@@ -343,6 +343,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	else
 		$args['page'] = $page;
 
+//	echo "object_init($check_class, $id, $args)<br/>\n";
 	$obj = object_init($check_class, $id, $args);
 	if(!$obj)
 		return NULL;
@@ -402,7 +403,7 @@ function class_load_by_local_url($url, $args)
 		else
 			$test_url = $check_url;
 
-//		echo $host_helper.$url_pattern.'$!i<br/>'.$check_url."<Br/>$url_pattern<br/><br/>";
+//		echo 'regexp="'.$host_helper.$url_pattern.'$!i" for '.$test_url.'<br/>'.$check_url."<Br/>$url_pattern, class_path=$class_path<br/><br/>";
 		if(preg_match($host_helper.$url_pattern.'$!i', $test_url, $match))
 		{
 			if(($obj = try_object_load_by_map($url, $url_data, $test_url, $class_path, $match, $url_pattern, 1)))
@@ -580,6 +581,7 @@ function object_init($class_name, $object_id, $args = array())
 	}
 	elseif(empty($args['no_load_cache']))
 	{
+//		echo "load_cached_object($class_name, $object_id, $args, $found);<Br/>\n";
 		$obj = &load_cached_object($class_name, $object_id, $args, $found);
 //		echo "cache loaded: $obj<br/>\n";
 		if($obj && ($obj->id() != $object_id))

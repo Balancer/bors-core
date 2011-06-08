@@ -1,4 +1,7 @@
 <?php
+
+function lp_translate($s) { return lp_tr($s); }
+
 function lp_tr($s)
 {
     $s=str_replace("&#39;","'",$s);
@@ -78,4 +81,3 @@ function lp_tr($s)
 
     return $s;
 }
-?>

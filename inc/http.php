@@ -34,7 +34,7 @@ function http_get_content($url, $raw = false)
 	$original_url = $url;
 	$anchor = "";
 
-	if(preg_match("!^(.+)#(.+?)$!", $url, $m))
+	if(preg_match("!^(.+?)#(.+)$!", $url, $m))
 	{
 		$url = $m[1];
 		$anchor = $m[2];
@@ -179,7 +179,12 @@ function http_get_ex($url, $raw = true)
 
 	$data = curl_exec($ch);
 	if($data === false)
-		bors_exit('Curl error: ' . curl_error($ch));
+	{
+		//TODO: оформить хорошо. Например, отправить отложенную задачу по пересчёту
+		//И выше есть такой же блок.
+		echo 'Curl error: ' . curl_error($ch);
+		return '';
+	}
 
 	if(!$raw)
 		$data = trim($data);

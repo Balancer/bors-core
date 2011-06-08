@@ -205,6 +205,9 @@ class bors_external_feeds_entry extends base_object_db
 			'forum_id' => $topic->forum_id(),
 			'blogged_time' => $this->pub_date(),
 			'is_public' => true,
+			'is_microblog' => $this->feed()->is_microblog(),
+			'blog_source_class' => $this->new_class_name(),
+			'blog_source_id'    => $this->id(),
 		));
 
 		echo "\tnew blog {$blog->debug_title()}\n";

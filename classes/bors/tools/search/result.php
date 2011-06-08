@@ -14,7 +14,14 @@ class bors_tools_search_result extends bors_tools_search
 	function parents() { return array('/tools/search/'); }
 
 	function q() { return urldecode(@$_GET['q']); }
-	function s() { return empty($_GET['s']) ? 't' : $_GET['s']; }
+	function s()
+	{
+		$s = empty($_GET['s']) ? 't' : $_GET['s'];
+		if(($this->w() == 'a' || $this->w() == 'b') && $s == 'u')
+			$s = 'c';
+		return $s;
+	}
+
 	function t() { return @$_GET['t']; }
 	function u() { return urldecode(@$_GET['u']); }
 	function x() { return !empty($_GET['x']); }
@@ -270,7 +277,7 @@ class bors_tools_search_result extends bors_tools_search
 			't' => $this->t(),
 			'u' => $this->u(),
 			'x' => $this->x(),
-			'w' => $this->w(),
+			'w' => 'x'.$this->w(),
 			'p' => $page > 1 ? $page : NULL,
 		)) : '');
 	}

@@ -1,9 +1,15 @@
 <?php
-    function lp_size($txt,$params)
-    {
-		$params['orig'] = trim($params['orig']);
-		if("".intval($params['orig']) == $params['orig'])
-			$params['orig'] .= "pt";
-        return "<div style=\"font-size: ".addslashes($params['orig']).";\">".lcml($txt)."</div>";
-    }
-?>
+
+function lp_size($txt,$params)
+{
+	$size = trim($params['orig']);
+	if($size == "".intval($size))
+	{
+		if($size > 30)
+			$size .= "%";
+		else
+			$size .= "pt";
+	}
+
+	return "<div style=\"font-size: ".addslashes($size).";\">".lcml($txt)."</div>";
+}

@@ -4,6 +4,9 @@ require_once('inc/urls.php');
 
 function lt_img($params) 
 {
+	if(!trim($params['orig']))
+		return '[img]';
+
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
 		return lt_img_bors($params);
 

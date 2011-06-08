@@ -67,16 +67,16 @@ class bors_external_twitter extends bors_object
 		$text = preg_replace('!(http://bit.ly/\w+?)/!', '$1', $text);
 
 		// http://bit.ly/gNE1ZE
-		$text = preg_replace('!(http://(lnk\.ms|bit\.ly)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
+		$text = preg_replace('!(http://(lnk\.ms|bit\.ly|is\.gd)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
 
 		// http://youtu.be/sdUUx5FdySs?a
 		// http://youtu.be/1SBkx-sn9i8?a
 		$text = preg_replace('!(http://(youtu.be)/[^\?]+\?a)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
 
 		$tags = array();
-		if(preg_match_all('/( |^)#([\wа-яА-ЯёЁ]+)/um', $text, $matches))
+		if(preg_match_all('/( |^|"|«)#([\wа-яА-ЯёЁ]+)/um', $text, $matches))
 			foreach($matches[2] as $m)
-				$tags[] = $m;
+				$tags[] = common_keyword::loader($m)->title();
 
 		if(preg_match('!(http://(www\.)?fresher\.ru/\d+/\d+/\d+/[^/]+/) \((.+)\)!', $text, $m))
 		{
@@ -129,7 +129,10 @@ class bors_external_twitter extends bors_object
 //				'strip_forms' => true,
 //			));
 
-			$text = "[b]{$msg_text}[/b]\n\n[quote]\n{$content}\n[/quote]";
+			if($content)
+				$text = "[quote]\n{$content}\n[/quote]";
+			else
+				$text = "[url={$url}]{$msg_text}[/url]";
 
 //			print_dd($text); exit();
 		}

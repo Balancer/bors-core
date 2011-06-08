@@ -18,6 +18,7 @@ class bors_external_feed extends base_object_db
 			'target_topic_id',
 			'para_limit',
 			'is_suspended',
+			'is_microblog',
 			'id_extract_regexp',
 			'skip_entry_content_regexp',
 			'keywords_in_sqbr',

@@ -115,12 +115,13 @@ function http_get_content($url, $raw = false)
     if(!$charset)
 		$charset = config('lcml_request_charset_default');
 /*
-	if(config('is_debug'))
+	if(config('is_developer'))
 	{
 		echo "url = '$url'";
-		echo print_d(substr($data, 0, 100));
 		echo "Content-type = '$content_type'<br/>";
 		echo "charset = '$charset'<br/>";
+		echo print_d(substr($data, 0, 1000));
+		print_d(iconv($charset, config('internal_charset').'//IGNORE', $data));
 	}
 */
 	if($charset)

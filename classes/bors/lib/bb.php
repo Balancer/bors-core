@@ -8,18 +8,46 @@ class bors_lib_bb
 		'br' => array('bb' => '', 'after_cr' => true),
 		'div' => array('bb' => '', 'before_cr' => true, 'after_cr' => true),
 		'em' => array('bb' => 'i'),
+		'i' => array('bb' => 'i'),
+		'b' => array('bb' => 'b'),
 		'embed' => array('bb' => 'embed', 'save_attrs' => true, 'urls'=>'src'),
+		'iframe' => array('bb' => 'iframe', 'save_attrs' => true, 'urls'=>'src'),
 		'h2' => array('bb' => 'h', 'before_cr' => true, 'after_cr' => true),
 		'p' => array('bb' => '', 'before_cr' => true, 'after_cr' => true),
 		'source' => array('bb' => 'html_source', 'save_attrs' => true, 'urls' => 'src'),
 		'span' => array('skip_all' => true),
 		'strong' => array('bb' => 'b'),
 		'style' => array('bb' => '', 'after_cr' => true),
+		'script' => array('bb' => '', 'skip_content' => true),
+		'input' => array('bb' => ''),
+		'form' => array('bb' => ''),
+		'table' => array('bb' => 'table'),
+		'tr' => array('bb' => 'tabtr'),
+		'td' => array('bb' => 'td'),
+		'like' => array('bb' => ''),
+		'html' => array('bb' => ''),
 		'video' => array('bb' => 'html_video', 'save_attrs' => true, 'urls' => 'poster'),
+		'plusone' =>  array('bb' => ''),
 	);
 
 	static function from_dom($element, $base_url = NULL, $bbmap = array())
 	{
+/*
+		$dom= new DOMDocument('1.0', 'utf-8');
+		$dom->loadXML( "<html></html>" );
+		$dom->documentElement->appendChild($dom->importNode($element, true));
+
+		$xpath = new DOMXPath($dom);
+
+		foreach(array(
+			'//script',
+			'//style',
+		) as $query)
+			foreach($xpath->query($query, $element) as $node)
+				$node->parentNode->removeChild($node);
+
+		$element = $dom->documentElement;
+*/
 		$tag_name = $element->tagName;
 		$bb = array_merge(
 			defval(self::$bb_map_glob, $tag_name, array()),
@@ -61,7 +89,7 @@ class bors_lib_bb
 		if($main_attr = defval($bb, 'main_attr'))
 		{
 			if(defval($bb, 'lcml0_style'))
-				$attrs = ' '.$element->getAttribute($main_attr);
+				$attrs = ' url="'.$element->getAttribute($main_attr).'"';
 			else
 				$attrs = '='.$element->getAttribute($main_attr);
 		}
@@ -75,17 +103,23 @@ class bors_lib_bb
 		else
 			$attrs = '';
 
+		if($append = defval($bb, 'append_attrs'))
+			$attrs .= ' '.$append;
+
 		if($bbtag = defval($bb, 'bb'))
 			if($bbtag != 'url' || $element->getAttribute('href'))
 				$bb_code .= "[{$bbtag}{$attrs}]";
 
-		$children = $element->childNodes;
-		foreach($children as $child)
+		if(!defval($bb, 'skip_content'))
 		{
-			if($child instanceof DOMElement)
-				$bb_code .= self::from_dom($child, $base_url, $bbmap);
-			else
-				$bb_code .= trim($child->nodeValue);
+			$children = $element->childNodes;
+			foreach($children as $child)
+			{
+				if($child instanceof DOMElement)
+					$bb_code .= self::from_dom($child, $base_url, $bbmap);
+				else
+					$bb_code .= trim($child->nodeValue);
+			}
 		}
 
 		if($bbtag && !defval($bb, 'no_ending'))

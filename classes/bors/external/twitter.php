@@ -74,9 +74,13 @@ class bors_external_twitter extends bors_object
 		$text = preg_replace('!(http://(youtu.be)/[^\?]+\?a)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
 
 		$tags = array();
-		if(preg_match_all('/( |^|"|«)#([\wа-яА-ЯёЁ]+)/um', $text, $matches))
+		if(preg_match_all('/( |^|"|«)#([\wа-яА-ЯёЁ\-]+)/um', $text, $matches))
 			foreach($matches[2] as $m)
 				$tags[] = common_keyword::loader($m)->title();
+
+		if(preg_match_all('/\s\*([\wа-яА-ЯёЁ]+)/u', $text, $matches))
+			foreach($matches[1] as $m)
+				$tags[] = $m;
 
 		if(preg_match('!(http://(www\.)?fresher\.ru/\d+/\d+/\d+/[^/]+/) \((.+)\)!', $text, $m))
 		{
@@ -124,7 +128,27 @@ class bors_external_twitter extends bors_object
 		{
 			$url = $m[1];
 			$msg_text = $m[2];
-			$content = bors_external_other::content_short_extract($url);
+			$udata = parse_url($url);
+			if(preg_match('/livejournal\.com$/', $udata['host']))
+				$parser = 'bors_external_livejournal';
+			elseif($udata['host'] == 'bash.org.ru')
+				$parser = 'bors_external_bashorgru';
+			elseif($udata['host'] == 'www.aviaport.ru')
+				$parser = 'bors_external_aviaport';
+			else
+				$parser = 'bors_external_other';
+
+			$parsed = $parser::content_extract($url);
+			if($parsed)
+			{
+//				var_dump($parsed); exit();
+				$content = $parsed['bbshort'];
+				if($ts = @$parsed['tags'])
+					$tags = array_merge($tags, $ts);
+			}
+			else
+				$content = NULL;
+
 //			$content = html2bb($content, array(
 //				'strip_forms' => true,
 //			));

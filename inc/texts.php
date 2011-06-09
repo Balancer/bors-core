@@ -93,6 +93,34 @@ function bors_close_tags($text)
    	return $text;
 }
 
+function bors_close_bbtags($text)
+{
+    $close_tags = explode(" ","a b blockquote dd div dl dt embed font i object option p param pre s select small span table td tr tt u xmp");
+
+   	for($i=0, $count = count($close_tags); $i<$count; $i++)
+    {
+		$tag = $close_tags[$i];
+       	$n = preg_match_all("!\[$tag(\s|\])!i", $text, $m) - preg_match_all("!\[/$tag(\s|\])!i", $text, $m);
+
+		if($n == 0)
+			continue;
+
+        if($n > 0)
+        {
+       	    while($n--)
+           	    $text .="[/$tag]";
+
+			return $text;
+		}
+
+		while($n++)
+			$text = "[$tag]" . $text;
+   	}
+
+   	return $text;
+}
+
+
 function to_one_string($s)
 {
     if(sizeof($s)>1) 
@@ -155,11 +183,9 @@ function clause_truncate_ceil($text, $limit, $max_limit = NULL)
 	if(is_null($max_limit))
 		$max_limit = $limit * 2;
 
-	$dcs = '['.preg_quote('.!?;', '/').']';
-
-	if(preg_match('/(.+?[\.\?!])($|\s)/m', substr($text, $limit), $m))
+	if(preg_match("/^(.{".$limit."}.+?[\.\?!])(\n|\s|$)/s", $text, $m))
 		if(bors_strlen($m[1]) <= $max_limit)
-			return substr($text, 0, $limit) . $m[1];
+			return $m[1];
 
 	return truncate($text, $limit, ec('…'));
 }

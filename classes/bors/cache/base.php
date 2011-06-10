@@ -19,7 +19,7 @@ class bors_cache_base
 		return $this->last = $default;
 	}
 
-	function set($value, $expire) { return $this->last = $value; }
+	function set($value, $expire, $cache_id = NULL) { return $this->last = $value; }
 
 	function last() { return $this->last; }
 
@@ -29,6 +29,6 @@ class bors_cache_base
 		if($value = $ch->get($type, $key))
 			return $value;
 
-		return $ch->set($function(), $ttl);
+		return $ch->set($function(), $ttl, $object ? $object->internal_uri() : NULL);
 	}
 }

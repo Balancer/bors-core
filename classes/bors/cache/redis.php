@@ -35,10 +35,11 @@ class bors_cache_redis extends bors_cache_base
 		{
 			$this->last = $key->getValue();
 		}
-		catch(Exception $e)
+		catch(Rediska_Serializer_Adapter_Exception $e)
 		{
-			var_dump($e->getMessage());
+//			var_dump($e->getMessage());
 			debug_count_inc('redis_unserialize_exception');
+			debug_hidden_log('redis_exception', $e->getMessage());
 			$this->last = NULL;
 		}
 

@@ -20,6 +20,8 @@ class bors_object_urls extends base_empty
 
 	function go($go)
 	{
+		$go = str_replace('%OBJECT_ID%', $this->object()->id(), $go);
+
 		if($go == "newpage_admin")
 			return $this->object()->admin_url(1);
 

@@ -17,4 +17,12 @@ class bors_object_urls extends base_empty
 		return 'http://www.facebook.com/sharer.php?u='.urlencode($x->url())
 			.'&t='.urlencode($x->title());
 	}
+
+	function go($go)
+	{
+		if($go == "newpage_admin")
+			return $this->object()->admin_url(1);
+
+		return $go;
+	}
 }

@@ -37,6 +37,43 @@ class base_object extends base_empty
 		return $this->data['parents'] = array($parent);
 	}
 
+	function parent_objects()
+	{
+		if($this->__havefc())
+			return $this->__lastc();
+
+		$parent_objects = array();
+		foreach($this->parents() as $p)
+		{
+			if(is_object($p))
+				$parent_object[] = $p;
+			else
+				$parent_object[] = bors_load_uri($p);
+		}
+
+		return $this->__setc($parent_object);
+	}
+
+	function child_objects()
+	{
+		if($this->__havefc())
+			return $this->__lastc();
+
+		$child_objects = array();
+		foreach($this->children() as $c)
+		{
+			if(is_object($c))
+				$child_object[] = $c;
+			else
+			{
+				if($c = bors_load_uri($c))
+					$child_object[] = $c;
+			}
+		}
+
+		return $this->__setc($child_object);
+	}
+
 	function rss_body()
 	{
 		if($image = object_property($this, 'image'))

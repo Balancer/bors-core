@@ -7,7 +7,7 @@ function smarty_function_input($params, &$smarty)
 		$obj = $smarty->get_template_vars('form');
 		if(!array_key_exists('value', $params))
 		{
-			if(($obj && $obj->id()))
+			if(($obj && ($obj->id() || !$obj->storage_engine())))
 				$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($obj?$obj->$name():NULL)) : '';
 			else
 				$value = NULL;

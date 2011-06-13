@@ -57,11 +57,14 @@ class bors_forms_saver extends base_empty
 		if(!$object->set_fields($data, true))
 			return true;
 
+		$was_new = false;
+
 		// Создаём новый объект, если это требуется
 		if(!$object->id())
 		{
 			$object->new_instance($data);
 			$object->on_new_instance($data);
+			$was_new = true;
 		}
 
 		if($file_vars)
@@ -70,7 +73,7 @@ class bors_forms_saver extends base_empty
 		if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 			$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));
 
-		if($object->has_changed())
+		if($was_new || $object->has_changed())
 		{
 			$object->set_modify_time(time(), true);
 			$object->set_last_editor_id(bors()->user_id(), true);

@@ -197,6 +197,8 @@ function smarty_block_form($params, $content, &$smarty)
 					$data['name'] = $data['property'];
 
 //				echo "property=$property_name, type=$type, data=".print_dd($data).", field=".print_dd($field)."<br/>\n";
+				if(!empty($property_name))
+					$data['name'] = $property_name;
 
 				switch($type)
 				{

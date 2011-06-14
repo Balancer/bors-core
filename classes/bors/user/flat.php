@@ -6,6 +6,8 @@ class bors_user_flat extends bors_user_base
 	function can_be_empty() { return false; }
 	function loaded() { return $this->cookie_hash(); }
 
+	function _read_only() { return true; }
+
 	static function _user_id_cookie_name() { return 'bors_user_flat_id'; }
 	static function _user_hash_cookie_name() { return 'bors_user_flat_hash'; }
 

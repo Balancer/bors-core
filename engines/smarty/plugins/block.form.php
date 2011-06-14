@@ -79,6 +79,9 @@ function smarty_block_form($params, $content, &$smarty)
 			$smarty->assign('ajax_validate', $ajax_validate);
 		}
 
+		if(!empty($no_session_vars))
+			$smarty->assign('no_session_vars', true);
+
 		$class = @$css_class;
 
 		if(empty($method))

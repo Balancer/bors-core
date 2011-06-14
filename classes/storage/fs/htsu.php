@@ -99,7 +99,9 @@ class storage_fs_htsu extends base_null
 
 	function load($object)
 	{
-		$file = $this->__find($object);
+		if(!($file = $object->get('htsu_file')))
+			$file = $this->__find($object);
+
 		if(!$file)
 			return $object->set_loaded(false);
 
@@ -124,7 +126,7 @@ class storage_fs_htsu extends base_null
 		$this->ext('page_title');
 
 		$parents = explode(' ', $this->ext('parents', '-'));
-		if(empty($parents[0]))
+		if(empty($parents[0]) && $object->get('url_engine'))
 		{
 			$data = url_parse($object->url());
 			if(($pd = dirname($data['path'])) != '/')
@@ -211,5 +213,14 @@ class storage_fs_htsu extends base_null
 	function save($object)
 	{
 		debug_exit("Try to save index.hts");
+	}
+
+	static function each($class_name, $where)
+	{
+		$iterator = new bors_storage_fs_htsuIterator;
+		$iterator->object = new $class_name(NULL);
+		$iterator->root = $where['root'];
+		$iterator->__class_name = $class_name;
+		return $iterator;
 	}
 }

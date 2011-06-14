@@ -147,12 +147,12 @@ class base_object extends base_empty
 		if(($config = $this->config_class()))
 		{
 //			if(config('is_debug')) debug_hidden_log('debug-config', "{$this}->config_class() = {$config}");
-			$this->config = object_load($config, $this);
+			$this->config = bors_load($config, $this);
 			//TODO: workaround странной ошибки на страницах вида http://balancer.ru/user/29251/aliases.html
 			//Call to undefined method airbase_forum_config::set() in /var/www/.bors/bors-core/classes/bors/base/config.php on line 13
 			get_class($this);
 			if(!$this->config)
-				debug_exit("Can't load config ".$this->config_class());
+				debug_exit("Can't load config class '{$config}'.");
 		}
 	}
 
@@ -664,6 +664,9 @@ class base_object extends base_empty
 		if(empty($this->changed_fields))
 			return;
 
+		if($this->get('_read_only'))
+			return;
+
 		include_once('engines/search.php');
 
 		if($cache_clean)
@@ -671,11 +674,14 @@ class base_object extends base_empty
 
 		if(!($storage = $this->storage_engine()))
 		{
-			$storage = 'storage_db_mysql_smart';
-//			debug_hidden_log('Not defined storage engine for '.$this->class_name());
+			$storage = config('storage_engine.default'); // 'storage_db_mysql_smart';
+			debug_hidden_log('storage_error', 'Not defined storage engine for '.$this->class_name());
+			return;
+//			var_dump($this->data);
+//			exit();
 		}
 
-		$storage = object_load($storage);
+		$storage = bors_load($storage, NULL);
 
 		//TODO: уже можно снести проверку в следующей строке?
 		if(!(method_exists($this, 'skip_save') && $this->skip_save())) //TODO: костыль для bors_admin_image_append

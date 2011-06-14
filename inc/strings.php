@@ -137,3 +137,8 @@ function bors_ends_with($string, $char)
     $length = strlen($char);
     return (substr($string, -$length, $length) === $char);
 }
+
+function bors_entity_decode($string)
+{
+	return html_entity_decode($string, ENT_COMPAT, config('internal_charset'));
+}

@@ -217,7 +217,7 @@ class storage_fs_htsu extends base_null
 
 	static function each($class_name, $where)
 	{
-		$iterator = new bors_storage_fs_htsuIterator;
+		$iterator = new bors_storage_htsuIterator;
 		$iterator->object = new $class_name(NULL);
 		$iterator->root = $where['root'];
 		$iterator->__class_name = $class_name;

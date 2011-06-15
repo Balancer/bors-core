@@ -1,0 +1,8 @@
+{foreach from=$images item="img"}
+<div class="img_common img_200x200">
+<a href="{$img->url()}">{$img->thumbnail('200x200')|get:html_code}</a><br/>
+{$img->filemtime()|short_time}
+</div>
+{/foreach}
+
+<div class="clear">&nbsp;</div>

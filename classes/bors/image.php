@@ -244,7 +244,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 			return $img2;
 
 		$img->set_original_filename(basename($file), $new_instance);
-		$img->set_relative_path(dirname($file), $new_instance);
+		$img->set_relative_path(str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($file)), $new_instance);
 		$img->set_full_file_name($data['local_path'], $new_instance);
 		$img->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $img->original_filename()), $new_instance);
 		$img->set_file_name($img->original_filename(), $new_instance);

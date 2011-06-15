@@ -28,7 +28,7 @@ class bors_markup_markdown extends base_object
 
 	static function title_text_extract($text)
 	{
-		if(preg_match('/^(.+?)\n={3,}\n(.+)$/s', $text, $m))
+		if(preg_match('/^(.+?)\n={3,}\n(.*)$/s', $text, $m))
 			return array(trim($m[1]), trim($m[2]));
 
 		return array(NULL, $text);
@@ -42,12 +42,20 @@ class bors_markup_markdown extends base_object
 		return $text;
 	}
 
+	function title()
+	{
+		list($title, $text) = self::title_text_extract($this->source());
+
+		return $title;
+	}
+
 	function html()
 	{
 		list($title, $text) = self::title_text_extract($this->source());
 
 		return self::parse($text);
 	}
+
 
 	static function parse($text)
 	{

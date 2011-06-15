@@ -4,13 +4,14 @@ class bors_link extends base_object_db
 {
 	private $replace = false;
 
+	function storage_engine() { return 'bors_storage_mysql'; }
 	function main_table() { return 'bors_cross'; }
 	function main_table_fields()
 	{
 		return array(
 			'id',
 			'type_id',
-//			'is_auto',
+			'is_auto_raw' => 'is_auto',
 			'from_class',
 			'from_id',
 			'target_class_id' => 'to_class',
@@ -53,7 +54,8 @@ class bors_link extends base_object_db
 			.'&to='.$to->internal_uri_ascii(); 
 	}
 
-	function is_auto() { return $this->owner_id() < 0; }
+	function is_auto() { return $this->is_auto_raw() || $this->owner_id() < 0; }
+	function set_is_auto($flag, $up) { return $this->set('is_auto_raw', $flag, $up); }
 	function is_about() { return $this->type_id() == bors_links_types::ABOUT; }
 	function from_class_name() { return class_id_to_name($this->from_class()); }
 
@@ -165,6 +167,33 @@ class bors_link extends base_object_db
 		return objects_array('bors_link', $params);
 	}
 
+	static function links_each($object, $params = array())
+	{
+		self::_target_class_parse($params);
+
+		if(empty($params['order']))
+			$params['order'] = 'sort_order';
+
+		if(is_object($object))
+		{
+			$params['from_class'] = $object->class_id();
+			$params['from_id']    = $object->id();
+		}
+		else
+		{
+			$params['from_class'] = class_name_to_id($object);
+		}
+
+		if(!empty($params['to']))
+		{
+			$params['to_class'] = $params['to']->class_id();
+			$params['to_id']    = $params['to']->id();
+			unset($params['to']);
+		}
+
+		return bors_each('bors_link', $params);
+	}
+
 	// Возвращает список объектов, на которые ссылается данный объект.
 	// Если Объект - имя класса, то от всех объектов данного класса.
 	static function objects($object, $params = array())
@@ -204,6 +233,29 @@ class bors_link extends base_object_db
 		}
 
 		return $result;
+	}
+
+	static function object_ids($object, $params = array())
+	{
+		$result = array();
+		$objs = array();
+
+		$links = bors_link::links_each($object, $params);
+
+		foreach($links as $link)
+		{
+			if(!($x = $link->target()))
+			{
+				if(config('bors_link.lost_auto_delete'))
+					$link->delete();
+
+				continue;
+			}
+
+			$result[] = $x->id();
+		}
+
+		return array_unique($result);
 	}
 
 	static function links_count($object, $where = array())

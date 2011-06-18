@@ -572,7 +572,13 @@ class base_object extends base_empty
 	function admin() { return object_load($this->admin_engine(), $this); }
 	// Используется только при подключении BORS_EXT
 	function tools() { return bors_load('bors_object_tools', $this); }
-	function urls()  { return bors_load('bors_object_urls',  $this); }
+	function urls($type = NULL)
+	{
+		if(!$type)
+			return bors_load('bors_object_urls',  $this);
+
+		return NULL;
+	}
 
 	function admin_delete_link()
 	{

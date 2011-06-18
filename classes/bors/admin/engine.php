@@ -284,9 +284,10 @@ class bors_admin_engine extends bors_object
 		return "/admin/edit/crosslinks/?object={$this->real_object()->internal_uri()}&edit_class={$this->real_object()->admin()->url()}";
 	}
 
-	function urls($type)
+	function urls($type = NULL)
 	{
-		if(method_exists($obj = $this->object(), 'urls') && ($object_url = $obj->urls($type)))
+//var_dump($this->object());
+		if(method_exists($obj = $this->object(), 'urls') && ($object_url = $obj->urls($type)) && !is_object($object_url))
 			return $object_url;
 
 		switch($type)
@@ -297,6 +298,6 @@ class bors_admin_engine extends bors_object
 				return config('admin_host_url')."/_bors/admin/edit/synonyms/?object={$this->real_object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
 		}
 
-		return '';
+		return $type;
 	}
 }

@@ -7,7 +7,7 @@ class bors_page_fs_htsu extends bors_page
 	function can_cached() { return false; }
 	function can_be_empty() { return false; }
 
-	function storage_engine() { return 'storage_fs_htsu'; }
+	function storage_engine() { return 'bors_storage_htsu'; }
 
 	private $parents = array();
 	function parents() { return $this->parents ? $this->parents : parent::parents(); }

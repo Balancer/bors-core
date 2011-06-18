@@ -31,7 +31,6 @@ class bors_admin_mark_delete extends base_page
 				'comment' => @$data['note'],
 			));
 		}
-
 		$obj->set_is_deleted(true, true);
 		return go($data['ref']);
 	}

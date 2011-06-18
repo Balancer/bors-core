@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_engine extends base_empty
+class bors_admin_engine extends bors_object
 {
 	function object() { return $this->id(); }
 	function real_object()

@@ -8,7 +8,7 @@
 
 {form subaction="delete"}
 {if class_exists('bors_moderator_note')}
-{textarea name="note" value=""}
+{textarea name="note" value=""}<br/>
 {/if}
 {submit value="Отметить удалённым"}
 {hidden name="ref" value=$this->ref()}

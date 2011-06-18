@@ -484,15 +484,19 @@ class base_object extends base_empty
 
 	function titled_link_ex($params)
 	{
+		var_dump($params);
 		$title = defval($params, 'title');
 		if($title === NULL)
 			$title = $this->title();
+
+		if($popup = defval($params, 'popup'))
+			$popup = " title=\"".htmlspecialchars($popup)."\"";
 
 		$page = defval($params, 'page');
 		if($page === NULL)
 			$title = $this->page();
 
-		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."\">{$title}</a>"; 
+		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."{$popup}\">{$title}</a>"; 
 	}
 
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }

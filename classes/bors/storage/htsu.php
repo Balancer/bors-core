@@ -1,6 +1,6 @@
 <?php
 
-class storage_fs_htsu extends base_null
+class bors_storage_htsu extends bors_storage
 {
 	private $hts;
 	private $obj;
@@ -20,8 +20,8 @@ class storage_fs_htsu extends base_null
 
 		if($new_name == '-')
 			return $m[1];
-		else
-			return $this->obj->set($new_name, $m[1], false);
+
+		return $this->obj->set($new_name, $m[1], false);
 	}
 
 	private function __find($object)
@@ -144,7 +144,8 @@ class storage_fs_htsu extends base_null
 //    	$this->ext('author');
     	$this->ext('author','copyright');
     	$this->ext('type');
-    	$this->ext('create_time');
+    	$this->ext('create_time', NULL, false);
+    	$this->ext('modify_time', NULL, false);
     	$this->ext('style');
     	$this->ext('template');
     	$this->ext('color');
@@ -159,6 +160,16 @@ class storage_fs_htsu extends base_null
     	$this->ext('start');
     	$this->ext('file');
     	$this->ext('forum_id');
+
+		if(!$object->create_time(true))
+			// Внимание! Это не настоящий create time!
+			$object->set('create_time', filectime($file), false);
+
+		if(!$object->modify_time(true))
+			$object->set('modify_time', filemtime($file), false);
+
+		if(!$object->title())
+			$object->set('title', preg_replace('/\.htsu$/i', basename($file)).'.', false);
 
 		if($config_class = $this->ext('config', '-'))
 			$object->set_config_class($config_class, false);

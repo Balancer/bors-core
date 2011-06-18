@@ -73,8 +73,6 @@ class base_page extends bors_object
 	function getsort($t, $def = false)
 	{
 		$sort = @$_GET['s'];
-		if(!$sort)
-			$sort = $t;
 
 		$r = intval(@$_GET['r']);
 		if($t == $sort)

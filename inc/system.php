@@ -74,7 +74,10 @@ function __session_init()
 {
 	static $session_started = false;
 	if(!$session_started)
-		@session_start();
+	{
+		session_start();
+		$session_started = true;
+	}
 }
 
 function session_var($name, $def = NULL, $set = false)

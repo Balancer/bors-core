@@ -159,7 +159,7 @@ function debug($message,$comment='',$level=3)
 	@fclose($fh);
 }
 
-function debug_trace($skip = 0, $html = NULL, $level = -1)
+function debug_trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
 {
 	$MAXSTRLEN = 128;
 
@@ -171,8 +171,8 @@ function debug_trace($skip = 0, $html = NULL, $level = -1)
 	else
 		$s = '';
 
-	$traceArr = debug_backtrace();
-//	var_dump($traceArr);
+	if(is_null($traceArr))
+		$traceArr = debug_backtrace();
 
 	for($i = 1; $i <= $skip; $i++)
 		array_shift($traceArr);

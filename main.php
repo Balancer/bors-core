@@ -137,14 +137,45 @@ $GLOBALS['bors_full_request_url'] = $uri;
 /**********************************************************************************************************/
 // Собственно, самое главное. Грузим объект и показываем его.
 $res = false;
-if($object = bors_load_uri($uri))
+try
 {
-	// Новый метод вывода, полностью на самом объекте
-	$res = $object->show();
+	if($object = bors_load_uri($uri))
+	{
+		// Новый метод вывода, полностью на самом объекте
+		$res = $object->show();
 
-	if(!$res)	// Если новый метод не обработан, то выводим как раньше.
-		$res = bors_object_show($object);
+		if(!$res)	// Если новый метод не обработан, то выводим как раньше.
+			$res = bors_object_show($object);
+	}
 }
+catch(Exception $e)
+{
+		$trace = debug_trace(0, false, -1, $e->getTrace());
+		$message = $e->getMessage();
+		debug_hidden_log('exception', "$message\n\n$trace");
+		try
+		{
+			bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")
+				."<div class=\"red_box\">$message</div>\n"
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
+				."<!--\n\n$trace\n\n-->", array(
+//					'template' => 'xfile:default/popup.html',
+			));
+		}
+		catch(Exception $e2)
+		{
+			bors()->set_main_object(NULL);
+			bors_message(ec("При попытке просмотра этой страницы возникли ошибки:\n")
+				."<div class=\"red_box\">$message</div>\n"
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
+				."<!--\n\n$trace\n\n-->", array(
+				'template' => 'xfile:default/popup.html',
+			));
+		}
+
+		$res = true;
+}
+
 /**********************************************************************************************************/
 
 // Записываем, если нужно, кто получал объект и сколько ушло времени на его получение.

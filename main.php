@@ -192,7 +192,7 @@ if(config('access_log'))
 		'is_bot' => bors()->client()->is_bot(),
 	);
 
-	if($object)
+	if(!empty($object))
 	{
 		$data['object_class_name'] = $object->class_name();
 		$data['object_id'] = $object->id();

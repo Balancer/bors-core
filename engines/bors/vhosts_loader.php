@@ -49,6 +49,12 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 	if(file_exists($file = $bors_site.'/handlers/bors_map.php'))
 		include($file);
 
+	if(file_exists($file = $bors_site.'/bors_map.php'))
+		include($file);
+
+	if(file_exists($file = $bors_site.'/url_map.php'))
+		include($file);
+
 	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
 		include($file);
 

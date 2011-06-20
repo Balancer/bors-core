@@ -65,7 +65,7 @@ class DataBase extends base_object
 		set_global_key("DataBaseStartTime:{$server}", $db_name, $this->start_time = time());
 
 		if(!mysql_select_db($real_db, $this->dbh))
-			debug_exit(__FILE__.':'.__LINE__." Could not select database '{$real_db}' <= '{$db_name}' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<br />", 1);
+			bors_throw("Could not select database ".($real_db ? "'{$db_name}' as '{$real_db}'" : "'{$db_name}'. <br/>\nError ").mysql_errno($this->dbh).": ".mysql_error($this->dbh)." <br />\n", 1);
 
 		if($c = config('mysql_set_character_set'))
 		{

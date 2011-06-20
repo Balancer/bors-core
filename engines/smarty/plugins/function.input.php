@@ -64,7 +64,7 @@ function smarty_function_input($params, &$smarty)
 		if($th = defval($params, 'th'))
 		{
 			echo "<tr><th>{$th}</th><td>";
-			if(empty($tyle))
+			if(empty($style))
 				$style = "width: 99%";
 		}
 

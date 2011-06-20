@@ -351,6 +351,11 @@ function smarty_block_form($params, $content, &$smarty)
 	if($vars = base_object::template_data('form_file_vars'))
 		echo "<input type=\"hidden\" name=\"file_vars\" value=\"".join(',', array_unique(array_filter($vars)))."\" />\n";
 
+	foreach(explode(' ', 'linked_targets') as $n)
+		if($ss = base_object::template_data('form_'.$n))
+			echo "<input type=\"hidden\" name=\"$n\" value=\"".join(',', array_unique(array_filter($ss)))."\" />\n";
+
+
 	if(!base_object::template_data('form_have_go') && $go)
 		echo "<input type=\"hidden\" name=\"go\" value=\"$go\" />\n";
 

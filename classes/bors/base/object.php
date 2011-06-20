@@ -284,7 +284,7 @@ class base_object extends base_empty
 			return $this->set_attr($name, ec($this->$name_ec));
 
 		if($this->strict_auto_fields_check())
-			debug_exit("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>at {$this->class_file()}");
+			bors_throw("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>at {$this->class_file()}");
 
 		return NULL;
 	}
@@ -1079,7 +1079,20 @@ class base_object extends base_empty
 	function real_class_file() { return $this->class_file; }
 	function class_dir() { return dirname($this->class_file()); }
 
-	function pre_set() { }
+	function pre_set(&$data)
+	{
+		if($tgs = popval($data, 'linked_targets'))
+		{
+			foreach(explode(',', $tgs) as $t)
+			{
+				if($target_link = popval($data, $t))
+					$data[$t] = object_load($target_link);
+				else
+					$data[$t] = NULL;
+			}
+		}
+	}
+
 	function post_set() { }
 	function post_save() { }
 

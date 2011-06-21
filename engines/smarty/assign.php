@@ -53,7 +53,8 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 				$smarty->assign($key, $val);
 
 		//TODO: убрать user_id и user_name в старых шаблонах.
-		$me = bors()->user();
+		try { $me = bors()->user(); }
+		catch(Exception $e) { $me = NULL; }
 		$smarty->assign("me", $me);
 		if($me)
 		{

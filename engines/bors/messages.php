@@ -21,7 +21,12 @@ function bors_message($text, $params=array())
 
 	if(!$redir)
 	{
-		if(bors()->client()->referer())
+		$ref = bors()->client()->referer();
+		$ud = url_parse($ref);
+		if($ud['path'] == '/')
+			$ref = NULL;
+
+		if($ref)
 		{
 			$link_text = defval($params, 'link_text', ec('вернуться на предыдущую страницу'));
 			$link_url = defval($params, 'link_url', 'javascript:history.go(-1)');
@@ -88,7 +93,8 @@ function bors_message($text, $params=array())
 	$page_class_name = defval($params, 'page_class_name', 'base_page');
 	$page = new $page_class_name(NULL);
 	$page->_configure();
-	$page->template_data_fill();
+	try { $page->template_data_fill(); }
+	catch(Exception $e) { }
 	$page->set_fields($data, false);
 
 	$page->set_parents(array(@$_SERVER['REQUEST_URI']), false);

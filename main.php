@@ -153,7 +153,7 @@ catch(Exception $e)
 {
 		$trace = debug_trace(0, false, -1, $e->getTrace());
 		$message = $e->getMessage();
-		debug_hidden_log('exception', "$message\n\n$trace");
+		debug_hidden_log('exception', "$message\n\n$trace", true, array('dont_show_user' => true));
 		try
 		{
 			bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")

@@ -96,7 +96,7 @@ class DataBase extends base_object
 		$this->db_name = $base;
 
 		if(!$base)
-			debug_exit('Error: try to DataBase construct without database name');
+			bors_throw('MySQL driver error: try to DataBase construct without database name');
 
 		$this->x1 = $server;
 		$this->x2 = $login;

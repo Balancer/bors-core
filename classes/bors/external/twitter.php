@@ -67,7 +67,7 @@ class bors_external_twitter extends bors_object
 		$text = preg_replace('!(http://bit.ly/\w+?)/!', '$1', $text);
 
 		// http://bit.ly/gNE1ZE
-		$text = preg_replace('!(http://(lnk\.ms|bit\.ly|is\.gd)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
+		$text = preg_replace('!(http://(lnk\.ms|bit\.ly|is\.gd|t\.co)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
 
 		// http://youtu.be/sdUUx5FdySs?a
 		// http://youtu.be/1SBkx-sn9i8?a

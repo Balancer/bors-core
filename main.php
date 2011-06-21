@@ -142,7 +142,8 @@ try
 	if($object = bors_load_uri($uri))
 	{
 		// Новый метод вывода, полностью на самом объекте
-		$res = $object->show();
+		if(method_exists($object, 'show'))
+			$res = $object->show();
 
 		if(!$res)	// Если новый метод не обработан, то выводим как раньше.
 			$res = bors_object_show($object);

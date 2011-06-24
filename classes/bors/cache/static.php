@@ -78,8 +78,8 @@ class cache_static extends base_object_db
 
 		$cache = bors_new('cache_static', array(
 			'id' => $file,
-			'object_uri' => $object_uri,
-			'original_uri' => $original_uri,
+			'object_uri' => $object->url($object->page()),
+			'original_uri' => $object->called_url(),
 			'target_class_name' => $object->extends_class_name(),
 			'target_class_id' => $object->extends_class_id(),
 			'target_id' => $object->id(),

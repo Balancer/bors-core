@@ -136,7 +136,7 @@ class base_page extends bors_object
 		// Зарегистрируем сохранённый кеш в группах кеша, чтобы можно было чистить
 		// при обновлении данных, от которых зависит наш контент
 
-		foreach(explode(' ', $this->cache_groups()) as $group)
+		foreach(explode(' ', $this->cache_depends_on()) as $group)
 			if($group)
 				cache_group::register($group, $this);
 

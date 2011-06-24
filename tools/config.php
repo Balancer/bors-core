@@ -13,3 +13,6 @@ else
 #	exit("Use loop.sh BORS_CORE=...,BORS_HOST=...,....\n");
 
 include_once(BORS_CORE.'/init.php');
+config_set('system.use_sessions', false);
+
+

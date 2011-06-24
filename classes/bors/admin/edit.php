@@ -54,7 +54,7 @@ class bors_admin_edit extends bors_page
 
 		$admin_main_class = $this->main_class();
 		$extends_object = new $admin_main_class(NULL); // Чёрт, нельзя вызывать статически.
-		$real_main_class = $extends_object->extends_class();
+		$real_main_class = $extends_object->extends_class_name();
 
 		return $this->__setc(object_load($real_main_class, $this->id()));
 	}

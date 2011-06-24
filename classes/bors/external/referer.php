@@ -48,7 +48,7 @@ class bors_external_referer
 		if($object)
 		{
 			$data = array(
-				'target_class_name' => object_property($object->referent(), 'extends_class'),
+				'target_class_name' => object_property($object->referent(), 'extends_class_name'),
 				'target_object_id' => object_property($object->referent(), 'id'),
 				'target_page' => $object->args('page'),
 			);

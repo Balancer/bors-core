@@ -75,13 +75,17 @@ function __session_init()
 	static $session_started = false;
 	if(!$session_started)
 	{
-		session_start();
+		if(config('system.use_sessions'))
+			session_start();
 		$session_started = true;
 	}
 }
 
 function session_var($name, $def = NULL, $set = false)
 {
+	if(!config('system.use_sessions'))
+		return NULL;
+
 	__session_init();
 	return defval($_SESSION, $name, $def, $set);
 }

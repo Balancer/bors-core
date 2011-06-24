@@ -6,7 +6,7 @@ class bors_admin_engine extends bors_object
 	function real_object()
 	{
 		$obj = $this->object();
-		if($obj->class_name() != $obj->extends_class())
+		if($obj->class_name() != $obj->extends_class_name())
 			$obj = object_property($this->object(), 'real_object', $this->object());
 
 		return $obj;

@@ -67,7 +67,7 @@ class bors_admin_image_append extends base_object
 		switch(@$get['link_type'])
 		{
 			case 'cross':
-				bors_add_cross($obj->extends_class(), $obj->id(), $image_class, $img->id(), $sort_order);
+				bors_add_cross($obj->extends_class_name(), $obj->id(), $image_class, $img->id(), $sort_order);
 				break;
 			case 'parent':
 				$img->set_parent_class_id($obj->class_id(), true);

@@ -22,7 +22,7 @@ class cache_group extends base_object_db
 		$list = $this->db()->select_array('cache_groups', '*', array('cache_group' => $this->cache_group()));
 		$this->db()->query("DELETE FROM cache_groups WHERE cache_group = '".addslashes($this->id())."'");
 		foreach($list as $x)
-			if($obj = object_load($x['_target_class_id'], $x['_target_object_id']))
+			if($obj = bors_load($x['_target_class_id'], $x['_target_object_id']))
 				$obj->cache_clean_self();
 	}
 }

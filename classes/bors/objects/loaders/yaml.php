@@ -9,8 +9,8 @@ class bors_objects_loaders_yaml extends bors_objects_loaders_meta
 		if(!$data)
 			return NULL;
 
-		$extends_class = popval($data['data'], 'extends_class', 'bors_objects_meta');
-		$object = new $extends_class($object_id);
+		$extends_class_name = popval($data['data'], 'extends_class_name', 'bors_objects_meta');
+		$object = new $extends_class_name($object_id);
 		$object->data = $data['data'];
 		$object->attrs = $data['attrs'];
 		$object->class_file = @$data['attrs']['file'];

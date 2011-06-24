@@ -19,7 +19,7 @@ class bors_admin_links_classNames extends base_list
 
 			$class = new $class_name(NULL);
 
-			$extends_class_name = $class->extends_class();
+			$extends_class_name = $class->extends_class_name();
 			if($extends_class_name != $class_name)
 			{
 				add_session_message(ec("Связь с подменяемым классом: {$class_name}($class_id) -> {$extends_class_name}"), array('type' => 'notice'));

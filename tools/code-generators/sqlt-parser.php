@@ -311,7 +311,7 @@ if($admin_class_name)
 // Генерация админ-класса
 $php = "<?php\n\nclass $admin_class_name extends $class_name
 {
-	function extends_class() { return '$class_name'; }
+	function extends_class_name() { return '$class_name'; }
 	function acl_edit_sections() { return array('*' => 4); }
 	function real_object() { return \$this->__havec('real_object') ? \$this->__lastc() : \$this->__setc(object_load('$class_name', \$this->id())); }
 	function is_auto_url_mapped_class() { return true; }

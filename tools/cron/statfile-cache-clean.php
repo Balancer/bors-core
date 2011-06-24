@@ -16,22 +16,15 @@ require_once(BORS_CORE.'/init.php');
 
 	$db = new driver_mysql(config('cache_database'));
 
-	foreach($db->get_array("SELECT file, recreate, class_id, object_id, original_uri FROM cached_files WHERE expire_time BETWEEN 0 AND ".time()) as $x)
+	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time())) as $x)
 	{
-		echo "{$x['original_uri']}, {$x['file']} [recreate={$x['recreate']}]: ";
+		echo "{$x->original_uri()}, {$x->id()} [recreate={$x->recreate()}]: ";
 
+		$obj = $x->target();
 
-		if(!$obj = object_load($x['original_uri']))
-			$obj = object_load($x['class_id'], $x['object_id']);
-
-		if($obj)
-			$db->delete('cache_groups', array('_target_class_id' => $obj->class_id(), '_target_object_id' => $obj->id()));
-
-		$db->query("DELETE FROM cached_files WHERE file = '".addslashes($x['file'])."'");
-
-		if($x['recreate'] && config('cache_static'))
+		if($x->recreate() && config('cache_static'))
 		{
-			$data = url_parse($x['original_uri']);
+			$data = url_parse($x->original_uri());
 			if(!empty($data['root']))
 			{
 				unset($_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT']);
@@ -41,28 +34,30 @@ require_once(BORS_CORE.'/init.php');
 
 			if($obj)
 			{
-				$obj->set_attr('static_recreate_data', $x);
+				$obj->set_attr('static_recreate_object', $x);
 				bors_object_create($obj);
 			}
 			else
-				debug_hidden_log('static-cache', "Can't load recreateable object {$x['class_id']}({$x['object_id']}, url={$x['original_uri']}, file={$x['file']}");
+				debug_hidden_log('static-cache', "Can't load recreateable object {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
 			echo "Recreated";
 		}
 		else
 		{
-			@unlink($x['file']);
-			if(file_exists($x['file']))
+			@unlink($x->file());
+			if(file_exists($x->id()))
 			{
-				debug_hidden_log('static-cache', "Can't delete file {$x['class_id']}({$x['object_id']}, url={$x['original_uri']}, file={$x['file']}");
+				debug_hidden_log('static-cache', "Can't delete file {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
 				echo "Can't delete";
 			}
 			else
 			{
 				echo 'Deleted';
-				@rmdir(dirname($x['file']));
-				@rmdir(dirname(dirname($x['file'])));
-				@rmdir(dirname(dirname(dirname($x['file']))));
+				@rmdir(dirname($x->id()));
+				@rmdir(dirname(dirname($x->id())));
+				@rmdir(dirname(dirname(dirname($x->id()))));
 			}
+
+			$x->delete();
 		}
 
 		echo "<br/>\n";

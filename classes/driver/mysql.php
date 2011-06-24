@@ -82,7 +82,7 @@ class driver_mysql extends DataBase implements Iterator
     {
     	$query = "SELECT $fields FROM {$table} ".mysql_args_compile($where);
 //    	echo "$query\n";
-		$this->query($query);
+		$this->each_result = $this->query($query);
 		return $this;
     }
 
@@ -94,7 +94,11 @@ class driver_mysql extends DataBase implements Iterator
 
     public function rewind()
     {
-		mysql_data_seek($this->result, 0);
+		if(!$this->each_result)
+			return false;
+
+		mysql_data_seek($this->each_result, 0);
+
         return $this->fetch();
     }
 

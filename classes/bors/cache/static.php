@@ -68,6 +68,7 @@ class cache_static extends base_object_db
 		$object_id = $object->id();
 
 		$file = $object->static_file();
+
 		if(!$file) // TODO: отловить
 			return;
 
@@ -75,20 +76,17 @@ class cache_static extends base_object_db
 
 		bors()->changed_save();
 
-		$cache = new cache_static($file);
-
-		$cache->set_object_uri($object->url($object->page()), true);
-		$cache->set_original_uri($object->called_url(), true);
-		$cache->set_target_class_name($object->extends_class_name(), true);
-		$cache->set_target_class_id($object->extends_class_id(), true);
-		$cache->set_target_id($object->id(), true);
-		$cache->set_last_compile(time(), true);
-		$cache->set_expire_time(time() + ($expire_time === false ? $object->cache_static() : $expire_time), true);
-		$cache->set_recreate($object->cache_static_recreate(), true);
-
-		$cache->new_instance();
-//		print_d($cache);
-		storage_db_mysql_smart::save($cache);
+		$cache = bors_new('cache_static', array(
+			'id' => $file,
+			'object_uri' => $object_uri,
+			'original_uri' => $original_uri,
+			'target_class_name' => $object->extends_class_name(),
+			'target_class_id' => $object->extends_class_id(),
+			'target_id' => $object->id(),
+			'last_compile' => time(),
+			'expire_time' => time() + ($expire_time === false ? $object->cache_static() : $expire_time),
+			'recreate' => $object->cache_static_recreate(),
+		));
 
 		foreach(explode(' ', $object->cache_depends_on()) as $group_name)
 			if($group_name)
@@ -103,7 +101,6 @@ class cache_static extends base_object_db
 		}
 
 		mkpath($dir = dirname($file), 0777);
-//		@chmod(dirname($file), 0777);
 
 		if(is_writable($dir)) //TODO: проверить скорость. Быстрее проверка или маскировка собакой
 		{

@@ -336,6 +336,9 @@ class base_object extends base_empty
 	function have_data() { return !empty($this->data); }
 	function has_changed()
 	{
+		if(empty($this->changed_fields))
+			return false;
+
 		foreach($this->changed_fields as $property => $value)
 		{
 			if($property == 'modify_time')
@@ -380,7 +383,7 @@ class base_object extends base_empty
 
 	function set_title($new_title, $db_update) { return $this->set('title', $new_title, $db_update); }
 
-	function debug_title() { return "'{$this->title()}' {$this->class_name()}({$this->id()})"; }
+	function debug_title() { return "'".object_property($this, 'title')."' {$this->class_name()}({$this->id()})"; }
 	function debug_titled_link() { return "<a href=\"{$this->url()}\">'{$this->title()}' {$this->class_name()}({$this->id()})</a>"; }
 	function debug_title_dc() { return dc("'{$this->title()}' {$this->class_name()}({$this->id()})"); }
 
@@ -666,7 +669,7 @@ class base_object extends base_empty
 
 	function check_value_conditions() { return array(); }
 
-	function store($cache_clean = true)
+	function store()
 	{
 		if(!$this->id())
 			return;
@@ -679,16 +682,13 @@ class base_object extends base_empty
 
 		include_once('engines/search.php');
 
-		if($cache_clean)
-			$this->cache_clean();
+		$this->cache_clean();
 
 		if(!($storage = $this->storage_engine()))
 		{
 			$storage = config('storage_engine.default'); // 'storage_db_mysql_smart';
 			debug_hidden_log('storage_error', 'Not defined storage engine for '.$this->class_name());
 			return;
-//			var_dump($this->data);
-//			exit();
 		}
 
 		$storage = bors_load($storage, NULL);
@@ -869,7 +869,10 @@ class base_object extends base_empty
 	function cache_static_can_be_dropped() { return true; }
 
 	function cache_groups() { return ''; }
+	function cache_depends_on() { return $this->cache_groups(); }
+
 	function cache_groups_parent() { return ''; }
+	function cache_provides() { return $this->cache_groups_parent(); }
 
 	function uid() { return md5($this->class_id().'://'.$this->id().','.$this->page()); }
 	function can_cached() { return true; }
@@ -963,9 +966,6 @@ class base_object extends base_empty
 
 	function cache_clean_self()
 	{
-//		echo debug_trace();
-//		exit('cache_clean_self');
-
 		if($this->was_cleaned())
 			return;
 
@@ -976,31 +976,23 @@ class base_object extends base_empty
 
 		// Чистка memcache и Cache.
 		delete_cached_object($this);
-
-		foreach(explode(' ', $this->cache_groups_parent()) as $group_name)
-			if($group_name)
-				foreach(objects_array('cache_group', array('cache_group' => $group_name)) as $group)
-					if($group)
-						$group->clean();
 	}
 
 	function cache_children() { return array(); }
-	function cache_children_soft() { return array(); }
 
-	function cache_clean($clean_object = NULL)
+	function cache_clean()
 	{
-		if(!$clean_object)
-			$clean_object = $this;
-
 		$this->cache_clean_self();
 
 		foreach($this->cache_children() as $child_cache)
 			if($child_cache && !$child_cache->was_cleaned())
-				$child_cache->cache_clean($clean_object);
+				$child_cache->cache_clean_self();
 
-		foreach($this->cache_children_soft() as $child_cache)
-			if($child_cache && !$child_cache->was_cleaned())
-				$child_cache->cache_clean_self($clean_object);
+		foreach(explode(' ', $this->cache_provides()) as $group_name)
+			if($group_name)
+				foreach(bors_find_all('cache_group', array('cache_group' => $group_name)) as $group)
+					if($group)
+						$group->clean();
 	}
 
 	function touch() { }
@@ -1018,6 +1010,8 @@ class base_object extends base_empty
 			$this->set_first_visit_time($time, true);
 
 		$this->set_visits(intval($this->visits()) + intval($inc), true);
+		echo "set visit";
+		echo debug_trace();
 		$this->set_last_visit_time($time, true);
 	}
 
@@ -1115,7 +1109,6 @@ class base_object extends base_empty
 	// вызывается view, то $base_class = $view->referent();
 	function referent_class() { return $this->class_name(); }
 
-	function extends_class() { return $this->class_name(); }
 	function extends_class_name() { return $this->class_name(); }
 	function new_class_name() { return $this->class_name(); }
 
@@ -1124,7 +1117,7 @@ class base_object extends base_empty
 		if($this->__havefc())
 			return $this->__lastc();
 
-		return $this->__setc(class_name_to_id($this->extends_class()));
+		return $this->__setc(class_name_to_id($this->extends_class_name()));
 	}
 
 	function direct_content()
@@ -1267,9 +1260,13 @@ class base_object extends base_empty
 	function cross_ids($to_class) { return bors_get_cross_ids($this, $to_class); }
 	function cross_objs($to_class = '') { return bors_get_cross_objs($this, $to_class); }
 	function cross_objects($to_class = '') { return bors_get_cross_objs($this, $to_class); }
-	function add_cross($class, $id, $order = 0) { return bors_add_cross($this->class_id(), $this->id(), $class, $id, $order); }
+	function add_cross($class, $id, $order = 0) { return bors_add_cross($this->extends_class_id(), $this->id(), $class, $id, $order); }
 	function add_cross_object($object, $order = 0) { return bors_add_cross_obj($this, $object, $order); }
-	function cross_remove_object($obj) { bors_remove_cross_pair($this->class_id(), $this->id(), $obj->class_id(), $obj->id()); }
+	function cross_remove_object($obj)
+	{
+		bors_remove_cross_pair($this->class_id(), $this->id(), $obj->class_id(), $obj->id());
+		bors_remove_cross_pair($this->extends_class_id(), $this->id(), $obj->extends_class_id(), $obj->id());
+	}
 
 	function add_link_to($target, $params = array()) { bors_link::link_object_to($this, $target, $params); }
 

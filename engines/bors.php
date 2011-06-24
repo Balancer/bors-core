@@ -284,7 +284,7 @@ function object_property_args($object, $property, $args = array(), $def = NULL)
 */
 function bors_eq($object1, $object2)
 {
-	return $object1->extends_class() == $object2->extends_class() && $object1->id() == $object2->id();
+	return $object1->extends_class_name() == $object2->extends_class_name() && $object1->id() == $object2->id();
 }
 
 function bors_count($class_name, $where) { return objects_count($class_name, $where); }

@@ -70,7 +70,7 @@ class bors_synonym extends base_object_db
 			object_new_instance('bors_synonym', array(
 				'title' => $title,
 				'norm_title' => $norm_title,
-				'target_class_name' => $object->extends_class(),
+				'target_class_name' => $object->extends_class_name(),
 				'target_object_id' => $object->id(),
 				'is_exactly' => $is_exactly,
 				'is_auto' => defval($params, 'is_auto'),
@@ -87,7 +87,7 @@ class bors_synonym extends base_object_db
 			$synonym_class_name = 'bors_synonym';
 
 		$where = array(
-			'target_class_name' => $object->extends_class(),
+			'target_class_name' => $object->extends_class_name(),
 			'target_object_id' => $object->id(),
 			'order' => 'title',
 		);
@@ -100,7 +100,7 @@ class bors_synonym extends base_object_db
 
 	function check_data(&$data)
 	{
-		if($obj = objects_first($this->extends_class(), array('title' => $data['title'], 'target_class_name' => $data['target_class_name'], 'target_object_id' => $data['target_object_id'])))
+		if($obj = objects_first($this->extends_class_name(), array('title' => $data['title'], 'target_class_name' => $data['target_class_name'], 'target_object_id' => $data['target_object_id'])))
 			return bors_message(ec('Такой синоним уже прописан у этого объекта'));
 
 		return parent::check_data($data);

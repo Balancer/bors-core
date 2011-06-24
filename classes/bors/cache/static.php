@@ -12,21 +12,26 @@ class cache_static extends base_object_db
 			'original_uri',
 			'last_compile',
 			'expire_time',
-			'class_name_db' => 'class_name',
-			'class_id_db' => 'class_id',
-			'object_id_db' => 'object_id',
+			'target_class_name' => 'class_name',
+			'target_class_id' => 'class_id',
+			'target_id' => 'object_id',
 			'recreate',
 		);
 	}
 
-	function object() { return object_load($this->class_id(), $this->object_id()); }
+	function auto_targets()
+	{
+		return array_merge(parent::auto_targets(), array(
+			'target' => 'target_class_id(target_id)',
+		));
+	}
 
 	static function drop($object)
 	{
 		if(!$object || !config('cache_database'))
 			return;
 
-		$caches = objects_array('cache_static', array('class_id=' => $object->class_id(), 'object_id=' => $object->id()));
+		$caches = bors_find_all('cache_static', array('target_class_id' => $object->extends_class_id(), 'target_id' => $object->id()));
 
 		if(file_exists($object->static_file()))
 			if($cache = object_load('cache_static', $object->static_file()))
@@ -35,6 +40,13 @@ class cache_static extends base_object_db
 		foreach($caches as $cache)
 		{
 			@unlink($cache->id());
+			$d = dirname($cache->id());
+			while($d && $d != '/')
+			{
+				@rmdir($d);
+				$d = dirname($d);
+			}
+
 			if(!file_exists($cache->id()))
 				$cache->delete(false);
 		}
@@ -53,10 +65,7 @@ class cache_static extends base_object_db
 	//TODO: можно делать static, если static будет у родителя. Или переименовать.
 	function save($object, $content, $expire_time = false)
 	{
-//		echo "Save static $object<Br/>";
 		$object_id = $object->id();
-//		if($object_id && !is_numeric($object_id))
-//			return;
 
 		$file = $object->static_file();
 		if(!$file) // TODO: отловить
@@ -70,10 +79,9 @@ class cache_static extends base_object_db
 
 		$cache->set_object_uri($object->url($object->page()), true);
 		$cache->set_original_uri($object->called_url(), true);
-		$cache->set_class_id_db($object->class_id(), true);
-		$cache->set_class_name_db($object->class_name(), true);
-
-		$cache->set_object_id_db($object->id(), true);
+		$cache->set_target_class_name($object->extends_class_name(), true);
+		$cache->set_target_class_id($object->extends_class_id(), true);
+		$cache->set_target_id($object->id(), true);
 		$cache->set_last_compile(time(), true);
 		$cache->set_expire_time(time() + ($expire_time === false ? $object->cache_static() : $expire_time), true);
 		$cache->set_recreate($object->cache_static_recreate(), true);
@@ -82,7 +90,7 @@ class cache_static extends base_object_db
 //		print_d($cache);
 		storage_db_mysql_smart::save($cache);
 
-		foreach(explode(' ', $object->cache_groups()) as $group_name)
+		foreach(explode(' ', $object->cache_depends_on()) as $group_name)
 			if($group_name)
 				cache_group::register($group_name, $object);
 

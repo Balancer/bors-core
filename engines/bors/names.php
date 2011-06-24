@@ -23,7 +23,7 @@ function bors_class_names_load($reload = false)
 function class_name_to_id($object)
 {
 	if(is_object($object))
-		$class_name = $object->extends_class();
+		$class_name = $object->extends_class_name();
 	else
 		$class_name = $object;
 

@@ -31,13 +31,19 @@ require_once(BORS_CORE.'/init.php');
 
 		if($x['recreate'] && config('cache_static'))
 		{
-			unset($_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT']);
 			$data = url_parse($x['original_uri']);
-			$_SERVER['HTTP_HOST'] = $data['host'];
-			$_SERVER['DOCUMENT_ROOT'] = $data['root'];
+			if(!empty($data['root']))
+			{
+				unset($_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT']);
+				$_SERVER['HTTP_HOST'] = $data['host'];
+				$_SERVER['DOCUMENT_ROOT'] = $data['root'];
+			}
 
 			if($obj)
+			{
+				$obj->set_attr('static_recreate_data', $x);
 				bors_object_create($obj);
+			}
 			else
 				debug_hidden_log('static-cache', "Can't load recreateable object {$x['class_id']}({$x['object_id']}, url={$x['original_uri']}, file={$x['file']}");
 			echo "Recreated";

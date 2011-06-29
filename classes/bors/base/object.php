@@ -254,14 +254,32 @@ class base_object extends base_empty
 		if(@array_key_exists($method, $this->attr))
 			return $this->attr[$method];
 
+		// Проверяем нет ли уже загруженного значения автообъекта
+		if(@array_key_exists($method, $this->__auto_objects))
+		{
+			$x = $this->__auto_objects[$method];
+			if($x['property_value'] == $this->get($x['property']))
+				return $x['value'];
+		}
+
 		// Проверяем автоматические объекты.
 		$auto_objs = $this->auto_objects();
 		if(($f = @$auto_objs[$method]))
+		{
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+			{
+				$property = $m[2];
 				if(config('orm.auto.cache_attr_skip'))
-					return object_load($m[1], $this->$m[2]());
+					return bors_load($m[1], $this->get($property));
 				else
-					return $this->attr[$method] = object_load($m[1], $this->$m[2]());
+				{
+					$property_value = $this->get($property);
+					$value = bors_load($m[1], $property_value);
+					$this->__auto_objects[$method] = compact('property', 'property_value', 'value');
+					return $value;
+				}
+			}
+		}
 
 		// Автоматические целевые объекты (имя класса задаётся)
 		$auto_targs = $this->auto_targets();

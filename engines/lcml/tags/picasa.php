@@ -2,7 +2,7 @@
 
 function lp_picasa($id, $params)
 {
-	if(preg_match('!http://picasaweb.google.com/lh/photo/(\w+)$!', $id, $m))
+	if(preg_match('!https?://picasaweb.google.com/lh/photo/(\w+)$!', $id, $m))
 		$id = $m[1];
 
 	if(strlen($id) > 20) // Это фотография

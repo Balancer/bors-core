@@ -17,8 +17,9 @@ class bors_tools_search_result extends bors_tools_search
 	function s()
 	{
 		$s = empty($_GET['s']) ? 't' : $_GET['s'];
-		if(($this->w() == 'a' || $this->w() == 'b') && $s == 'u')
+		if(in_array($this->w(), array('a', 'b')) && $s == 'u')
 			$s = 'c';
+
 		return $s;
 	}
 
@@ -239,7 +240,7 @@ class bors_tools_search_result extends bors_tools_search
 		return false;
 	}
 
-	function local_data()
+	function body_data()
 	{
 		return $this->_data;
 	}
@@ -277,7 +278,7 @@ class bors_tools_search_result extends bors_tools_search
 			't' => $this->t(),
 			'u' => $this->u(),
 			'x' => $this->x(),
-			'w' => 'x'.$this->w(),
+			'w' => $this->w(),
 			'p' => $page > 1 ? $page : NULL,
 		)) : '');
 	}

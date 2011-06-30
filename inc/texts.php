@@ -68,7 +68,7 @@ require_once('strings.php');
 
 function bors_close_tags($text)
 {
-    $close_tags = explode(" ","a b blockquote dd div dl dt embed font i object option p param pre s select small span table td tr tt u xmp");
+    $close_tags = explode(" ","a b blockquote dd div dl dt embed font i iframe object option p param pre s select small span table td tr tt u xmp");
 
    	for($i=0, $count = count($close_tags); $i<$count; $i++)
     {
@@ -95,7 +95,7 @@ function bors_close_tags($text)
 
 function bors_close_bbtags($text)
 {
-    $close_tags = explode(" ","a b blockquote dd div dl dt embed font i object option p param pre s select small span table td tr tt u xmp");
+    $close_tags = explode(" ","a b blockquote dd div dl dt embed font i iframe object option p param pre s select small span table td tr tt u xmp");
 
    	for($i=0, $count = count($close_tags); $i<$count; $i++)
     {

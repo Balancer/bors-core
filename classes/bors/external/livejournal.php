@@ -67,4 +67,72 @@ class bors_external_livejournal extends bors_object
 
 		return compact('tags', 'bbshort');
 	}
+
+	static function post($params)
+	{
+		$title = defval($params, 'title');
+		$html  = defval($params, 'html');
+		$keywords = defval($params, 'keywords', array());
+		$description = defval($params, 'decription');
+		$time = defval($params, 'time', time());
+		$user = defval($params, 'user');
+		$object = defval($params, 'object');
+
+		$blog = bors_find_first('bors_users_blog', array(
+			'bors_user_id' => $user->id(),
+			'blog' => 'livejournal.com',
+			'active' => true,
+		));
+
+		if(empty($blog))
+			return;
+
+		if($description)
+			$title .= " ($description)";
+
+		$client = new xmlrpc_client("/interface/xmlrpc", "www.livejournal.com", 80);
+
+	    $params = new xmlrpcval( array(
+			'username' => new xmlrpcval($blog->login(), 'string'),
+			'password' => new xmlrpcval($blog->password(), 'string'),
+			'ver' => new xmlrpcval('1', 'string'),
+			'lineendings' => new xmlrpcval('unix', 'string'),
+			'event' => new xmlrpcval($html, 'string'),
+			'subject' => new xmlrpcval($title, 'string'),
+			'year' => new xmlrpcval(date('Y', $time), 'int'),
+			'mon' => new xmlrpcval(date('m', $time), 'int'),
+			'day' => new xmlrpcval(date('d', $time),'int'),
+			'hour' => new xmlrpcval(date('H', $time), 'int'),
+			'min' => new xmlrpcval(date('i', $time),'int'),
+			'props' => new xmlrpcval( array(
+//				'opt_backdated' => new xmlrpcval(1, 'boolean'),
+				'taglist' => new xmlrpcval(join(', ', $keywords), 'string'),
+				'opt_preformatted' => new xmlrpcval(1, 'boolean'),
+			), 'struct'),
+		),'struct');
+
+		$msg = new xmlrpcmsg('LJ.XMLRPC.postevent');
+		$msg->addparam($params);
+		$client->setDebug(0);
+		$result = $client->send($msg);
+		if ($result->faultCode() != 0)
+		{
+			debug_hidden_log('error_blog', 'Ошибка добавления в ЖЖ: ' . $result->faultString());
+			return;
+		}
+
+		$v = $result->value();
+
+		$itemid_xml = $v->structMem('itemid');
+		$itemid = $itemid_xml->scalarVal();
+
+		bors_new('bors_users_blogs_map', array(
+			'target_class_id' => object_property($object, 'class_id'),
+			'target_object_id' => object_property($object, 'id'),
+			'blog_class_id' => 1,
+			'blog_object_id' => $itemid,
+		));
+
+		return $itemid;
+	}
 }

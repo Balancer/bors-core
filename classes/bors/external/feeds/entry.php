@@ -29,7 +29,10 @@ class bors_external_feeds_entry extends base_object_db
 
 	function auto_objects()
 	{
-		return array('feed' => 'bors_external_feed(feed_id)');
+		return array(
+			'feed' => 'bors_external_feed(feed_id)',
+			'blog' => 'balancer_board_blog(target_object_id)',
+		);
 	}
 
 	function auto_targets()
@@ -105,9 +108,11 @@ class bors_external_feeds_entry extends base_object_db
 			));
 
 			$source	= @$data['bb_code'];
+			$markup	= @$data['markup'];
 			$tags	= @$data['tags'];
 			$title	= @$data['title'];
-			$source .= "\n\n[span class=\"transgray\"]// Транслировано с ".$this->url_host_link($this->entry_url())."[/span]\n";
+			if(!$markup)
+				$source .= "\n\n[span class=\"transgray\"]// Транслировано с ".$this->url_host_link($this->entry_url())."[/span]\n";
 		}
 		else
 		{
@@ -132,6 +137,7 @@ class bors_external_feeds_entry extends base_object_db
 
 			$post->set_owner_id($owner_id, true);
 			$post->set_author_name($owner_name, true);
+			$post->set_markup_class_name($markup, true);
 			$post->set_source($source, true);
 			$post->set_body(NULL, true);
 			$post->set_post_body(NULL, true);
@@ -167,6 +173,7 @@ class bors_external_feeds_entry extends base_object_db
 				$blog->set_blogged_time($this->pub_date(), true);
 				$blog->set_keywords(explode(',', $keywords), true);
 				$blog->set_title($title, true);
+				$blog->set_is_microblog($feed->is_microblog(), true);
 			}
 			else
 			{

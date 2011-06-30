@@ -89,7 +89,6 @@ class bors_external_feed extends base_object_db
 			if($entry && $pub_date <= $entry->pub_date())
 				continue;
 
-			echo "=== $title ===\n";
 			$tags = array(); // explode(',', $this->append_keywords());
 
 			if(!empty($item['category']))
@@ -132,6 +131,8 @@ class bors_external_feed extends base_object_db
 				}
 			}
 
+			echo "=== $title ===\n";
+
 			$keywords_string = join(', ', $tags);
 
 //			echo "=== $title ===\ntags: ".join(', ', $tags)."\n// $link\n".$forum->debug_title()."\n\n";
@@ -139,14 +140,23 @@ class bors_external_feed extends base_object_db
 
 			if($is_test)
 			{
-				echo "title = '$title'\n";
-				echo "keywords string = '$keywords_string'\n";
-				continue;
+				if($is_suspended)
+				{
+					echo "\t>>>suspended'\n\n";
+				}
+				else
+				{
+					echo "keywords string = '$keywords_string'\n";
+					$topic_id = common_keyword::best_topic($keywords_string, $this->target_topic_id(), true);
+					$topic = bors_load('balancer_board_topic', $topic_id);
+					echo 'Found topic [def='.$this->target_topic_id()."]: {$topic->debug_title()}, w={$GLOBALS['__debug_last_topic_weight']}\n\n";
+					continue;
+				}
 			}
 
 			if($entry)
 			{
-				$entry->set_pub_date($pub_date, true);
+//				$entry->set_pub_date($pub_date, true);
 				$entry->set_title($title, true);
 				$entry->set_author_name($author_name, true);
 				$entry->set_keywords_string($keywords_string, true);
@@ -157,7 +167,7 @@ class bors_external_feed extends base_object_db
 			{
 				$entry = object_new_instance('bors_external_feeds_entry', array(
 					'entry_url' => $link,
-					'pub_date' => $pub_date,
+					'pub_date' => time(), // $pub_date,
 					'title' => $title,
 					'keywords_string' => $keywords_string,
 					'text' => $description,

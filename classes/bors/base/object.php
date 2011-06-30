@@ -401,7 +401,7 @@ class base_object extends base_empty
 
 	function set_title($new_title, $db_update) { return $this->set('title', $new_title, $db_update); }
 
-	function debug_title() { return "'".object_property($this, 'title')."' {$this->class_name()}({$this->id()})"; }
+	function debug_title() { return "'".trim(object_property($this, 'title'))."' {$this->class_name()}({$this->id()})"; }
 	function debug_titled_link() { return "<a href=\"{$this->url()}\">'{$this->title()}' {$this->class_name()}({$this->id()})</a>"; }
 	function debug_title_dc() { return dc("'{$this->title()}' {$this->class_name()}({$this->id()})"); }
 

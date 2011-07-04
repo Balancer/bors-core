@@ -7,6 +7,15 @@ class bors_module extends bors_page
 {
 	function html_code()
 	{
-		return $this->body();
+		try
+		{
+			$content = $this->body();
+		}
+		catch(Exception $e)
+		{
+			$content = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка модуля ").$this->class_name()."</div>");
+		}
+
+		return $content;
 	}
 }

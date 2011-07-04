@@ -20,13 +20,16 @@ function smarty_function_module($params, &$smarty)
 		if(!$id)
 			$id = bors()->main_object();
 
-		$obj = object_load('module_'.$class, $id, $params);
+		$obj = bors_load('module_'.$class, $id, $params);
 
 		if(!$obj)
-			$obj = object_load($class, $id, $params);
+			$obj = bors_load($class, $id, $params);
 
 		if(!$obj)
 			return "Can't load class module '{$class}'";
+
+		if(method_exists($obj, 'html_code'))
+			return $obj->html_code();
 
 		return $obj->body();
 	}

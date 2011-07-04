@@ -58,7 +58,7 @@ class DataBase extends base_object
 			if(($err_msg_header = config('error_message_header')))
 				echo $err_msg_header;
 
-			debug_exit("mysql_connect({$server}, {$login}) to DB '{$db_name} => {$real_db}' failed ".mysql_errno().": ".mysql_error()."<br />");
+			bors_throw("mysql_connect({$server}, {$login}) to DB '{$db_name} => {$real_db}' failed ".mysql_errno().": ".mysql_error()."<br />");
 		}
 
 		set_global_key("DataBaseHandler:{$server}", $db_name, $this->dbh);

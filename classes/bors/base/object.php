@@ -976,7 +976,7 @@ class base_object extends base_empty
 	var $___args = array();
 	function set_args($args) { return $this->___args = $args; }
 	function _set_arg($name, $value) { return $this->___args[$name] = $value; }
-	function args($name=false, $def = NULL) { return $name ? (array_key_exists($name, $this->___args) ? $this->___args[$name] : $def) : $this->___args; }
+	function args($name=false, $def = NULL) { return $name ? $this->arg($name, $def) : $this->___args; }
 	function arg($name, $def = NULL) { return array_key_exists($name, $this->___args) ? $this->___args[$name] : $def; }
 
 	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }

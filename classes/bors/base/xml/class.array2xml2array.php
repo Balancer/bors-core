@@ -138,7 +138,7 @@ class CArray2xml2array {
 		foreach ($arr as $key => $val){
 			if (is_int($key)){
 				if (strlen($name)>1){
-					$newKey = substr($name, 0, strlen($name)-1);
+					$newKey = bors_unplural($name); //substr($name, 0, strlen($name)-1);
 				}else{
 					$newKey="item";
 				}

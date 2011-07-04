@@ -16,12 +16,13 @@ class base_xml_array extends base_page
 
 		$array2XML = new CArray2xml2array();
 
-		$array2XML->setArray(array('data' => $obj->local_data()));
-		return $array2XML->array2xml('data');
+		$array2XML->setArray(array($obj->root_name() => $obj->body_data()));
+		return $array2XML->array2xml($obj->root_name());
 	}
 
 	//TODO: Реализовать статическое кеширование файлов, отличных от index.html / text/html
 	function cache_static() { return 0; }
 	function index_file() { return 'index.xml'; }
 	function use_temporary_static_file() { return false; }
+	function root_name() { return 'data'; }
 }

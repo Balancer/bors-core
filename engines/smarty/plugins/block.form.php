@@ -178,7 +178,7 @@ function smarty_block_form($params, $content, &$smarty)
 					$class = $data['class'];
 				}
 
-				$property_name = $data['name'];
+				$property_name = defval($data, 'property', $data['name']);
 
 				if(!$title)
 					$title = $property_name;
@@ -213,6 +213,7 @@ function smarty_block_form($params, $content, &$smarty)
 						smarty_function_input_date(array_merge($data, @$data['args']), $smarty);
 						break;
 					case 'utime': // UNIX_TIMESTAMP в UTC
+						$data['name'] = popval($data, 'property');
 						require_once('function.input_date.php');
 						set_def($data, 'is_utc', true);
 						set_def($data, 'time', true);

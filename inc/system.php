@@ -167,7 +167,7 @@ function add_session_message($message, $params = array())
 function clean_all_session_vars()
 {
 	__session_init();
-	foreach($_SESSION as $key => $value)
+	foreach(@$_SESSION as $key => $value)
 		unset($_SESSION[$key]);
 }
 

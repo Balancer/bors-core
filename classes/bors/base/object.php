@@ -194,7 +194,7 @@ class base_object extends base_empty
 		return $this->__setc(class_name_to_id($this));
 	}
 
-	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
+	function class_title()    { return ec('Объект ').get_class($this); }	// Именительный: Кто? Что?
 	function class_title_rp() { return ec('объекта ').get_class($this); }	// РодительныйГенитив Кого? Чего?
 	function class_title_dp() { return ec('объекту ').get_class($this); }	// Дательный Кому? Чему?
 	function class_title_vp() { return ec('объект ').get_class($this); }	// Винительный Кого? Что?

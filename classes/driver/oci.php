@@ -29,9 +29,9 @@ class driver_oci
 
 		if(!$this->connection)
 		{
-			var_dump(oci_error());
 			$error = oci_error();
-			print_d($error);
+//			var_dump(oci_error());
+//			print_d($error);
 			bors_throw('oci_connection error: '.print_r($error, true));
 		}
 	}

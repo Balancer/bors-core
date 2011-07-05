@@ -224,7 +224,7 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 	require_once('bors_smarty_common.php');
 
 	if(!$smarty->template_exists($template_uri))
-		debug_exit('Not found template '.$assign_template);
+		bors_throw('Not found template '.$assign_template);
 
 	if(!$smarty->template_exists($template_uri))
 		$template_uri = $assign_template;

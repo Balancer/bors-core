@@ -1028,8 +1028,8 @@ class base_object extends base_empty
 			$this->set_first_visit_time($time, true);
 
 		$this->set_visits(intval($this->visits()) + intval($inc), true);
-		echo "set visit";
-		echo debug_trace();
+//		echo "set visit";
+//		echo debug_trace();
 		$this->set_last_visit_time($time, true);
 	}
 

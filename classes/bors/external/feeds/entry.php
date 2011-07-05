@@ -95,6 +95,14 @@ class bors_external_feeds_entry extends base_object_db
 		return "[url]{$url}[/url]";
 	}
 
+	static function url_host_link_html($url)
+	{
+		if(preg_match('!http://([^/]+)!', $url, $m))
+			return "<a href=\"{$url}\">{$m[1]}</a>";
+
+		return "<a href=\"{$url}\">{$url}</a>";
+	}
+
 	function update_target($update_lcml = false)
 	{
 		$feed = $this->feed();
@@ -105,6 +113,7 @@ class bors_external_feeds_entry extends base_object_db
 			$parser = new $parser_class_name(NULL);
 			$data = $parser->parse(array(
 				'text' => $this->text(),
+				'link' => $this->entry_url(),
 			));
 
 			$source	= @$data['bb_code'];
@@ -137,7 +146,7 @@ class bors_external_feeds_entry extends base_object_db
 
 			$post->set_owner_id($owner_id, true);
 			$post->set_author_name($owner_name, true);
-			$post->set_markup_class_name($markup, true);
+			$post->set_markup_class_name(@$markup, true);
 			$post->set_source($source, true);
 			$post->set_body(NULL, true);
 			$post->set_post_body(NULL, true);

@@ -127,3 +127,37 @@ div.img_200x200 {
 	display: inline;
 	float: left;
 }
+
+.snip {
+	color: #999;
+	font-size: 8pt;
+	font-family: sans-serif;
+}
+
+div.dated_list {
+	clear:both;
+	margin-bottom: 8px;
+}
+
+div.dated_list div.timestamp {
+	float: left;
+	font: bold 10px sans-serif;
+	padding-top: 8px;
+}
+
+div.dated_list div.title {
+	margin-left: 8ex;
+}
+
+div.dated_list div.snip {
+	margin-left: 20ex;
+}
+
+div.thumb_up, div.thumb_down {
+	background-position: left 6px;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+}
+
+div.thumb_up { background-image: url(http://balancer.ru/_bors/i/thumb_up.gif) }
+div.thumb_down { background-image: url(http://balancer.ru/_bors/i/thumb_down.gif) }

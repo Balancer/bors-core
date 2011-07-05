@@ -2,8 +2,9 @@
 
 class bors_external_content extends base_object_db
 {
-	function main_table() { return 'external_content'; }
-	function main_table_fields()
+	function storage_engine() { return 'bors_storage_mysql'; }
+	function table_name() { return 'external_content'; }
+	function table_fields()
 	{
 		return array(
 			'id',

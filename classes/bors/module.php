@@ -19,9 +19,9 @@ class bors_module extends bors_page
 		return $content;
 	}
 
-	static function show($class_name, $args)
+	static function show_mod($class_name, $args)
 	{
-		echo $mod = bors_load_ex($class_name, NULL, $args);
+		$mod = bors_load_ex($class_name, NULL, $args);
 		echo $mod->html_code();
 	}
 }

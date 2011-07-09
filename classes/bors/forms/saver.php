@@ -162,11 +162,20 @@ class bors_forms_saver extends base_empty
 				$file_class_name = $m[2];		// Имя поля объекта, где хранится класс файла
 				$file_id_field = $m[3];				// Имя поля объекта, где хранится id файла
 			}
+			elseif(preg_match('!^(\w+)=(\w+)/(\w+)\((\w+)/(\w+)\)$!', $f, $m))
+			{
+				$file_name = $file_field = $m[1];	// Собственное имя файла, оно же имя поля объекта файла
+				$file_class_name_field = $m[2];		// Имя поля объекта, где хранится имя класс файла
+				$file_class_id_field = $m[3];		// Имя поля объекта, где хранится id класса файла
+				$file_class_name = $m[4];			// Имя класса файла по умолчанию
+				$file_id_field = $m[5];				// Имя поля объекта, где хранится id файла
+			}
 			else
 			{
 				debug_hidden_log('errors.forms.files', $msg = "Unknown file var format: '$f' for {$object}");
 				bors_exit($msg);
 			}
+
 			// Удаляем старый файл, если есть пометка к его удалению.
 			if(!empty($data['file_'.$file_name.'_delete_do']))
 			{
@@ -263,7 +272,7 @@ class bors_forms_saver extends base_empty
 				$old_file->set('parent_object_id', NULL, true);
 			}
 
-//			echo "file_name = $file_name, class_name = $file_class_name, id_field = $file_id_field";
+//			echo "file_name = $file_name, class_name = $file_class_name, id_field = $file_id_field, file_class_name_field=$file_class_name_field";
 //			var_dump($data); exit();
 			$file_data['upload_dir'] = popval($data, "{$file_name}___upload_dir");
 			$file_data['no_subdirs'] = popval($data, "{$file_name}___no_subdirs");
@@ -272,8 +281,13 @@ class bors_forms_saver extends base_empty
 			$file_data['parent'] = bors_load_uri(popval($data, "{$file_name}___parent"));
 			$file = new $file_class_name(NULL);
 			$file->upload($file_data);
+			if(!file_exists($file->file_name_with_path()))
+				bors_throw(ec('Не могу сохранить файл ').$file." ({$file->file_name_with_path()})");
+
 			if($file_class_name_field)
-				$object->set($file_class_name_field, $file->extends_class_name(), false);
+				$object->set($file_class_name_field, $file->extends_class_name(), true);
+			if($file_class_id_field)
+				$object->set($file_class_id_field, $file->extends_class_id(), true);
 			$object->set($file_id_field, $file->id(), true);
 			$file->set('parent_class_id', $object->class_id(), true);
 			$file->set('parent_class_name', $object->extends_class_name(), true);

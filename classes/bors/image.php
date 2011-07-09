@@ -125,7 +125,12 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 	}
 
 	function thumbnail_class() { return 'bors_image_thumb'; }
-	function thumbnail($geometry) { return object_load($this->thumbnail_class(), $this->id().','.$geometry); }
+	function thumbnail($geometry)
+	{
+		return bors_load_ex($this->thumbnail_class(), $this->id().','.$geometry, array(
+			'image_class_name' => $this->class_name(),
+		));
+	}
 
 	function init()
 	{
@@ -184,7 +189,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 		if(!$this->id())
 		{
-			debug_hidden_log('new-instance-errors', 'empty image id, try to create new by store');
+//			debug_hidden_log('new-instance-errors', 'empty image id, try to create new by store');
 			$this->new_instance();
 		}
 
@@ -207,12 +212,19 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 			case 'image/jpeg':
 				$ext = 'jpg';
 				break;
+			case 'image/png':
+				$ext = 'png';
+				break;
+			case 'image/gif':
+				$ext = 'gif';
+				break;
 			default:
 				debug_hidden_log('image-upload-error', "Unknown mime: {$data['mime']}");
 				return NULL;
 		}
 
 		$this->set_extension($ext, true);
+		$this->set_image_type($data['mime'], true);
 
 		$original_name = translite_uri_simple(preg_replace('/\.\w+$/', '', $this->original_filename()));
 		$upload_file_name = defval($data, 'file_name', sprintf('%06d', $this->id()).'-'.$original_name.'.'.$this->extension());
@@ -220,11 +232,11 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 		mkpath($this->image_dir(), 0777);
 		if(!file_exists($this->image_dir()))
-			debug_exit("Can't create dir '{$this->image_dir()}'<br/>");
+			bors_throw("Can't create dir '{$this->image_dir()}'<br/>");
 		if(!is_writable($this->image_dir()))
-			debug_exit("Can't write dir '{$this->image_dir()}'<br/>");
+			bors_throw("Can't write dir '{$this->image_dir()}'<br/>");
 		if(!move_uploaded_file($file, $this->file_name_with_path()))
-			debug_exit("Can't load image {$data['name']}<br/>");
+			bors_throw("Can't load image {$data['name']}<br/>");
 		@chmod($this->file_name_with_path(), 0664);
 
 		$this->recalculate(true);
@@ -236,6 +248,9 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 	// Возвращает объект изображения.
 	static function register_file($file, $new_instance = true, $exists_check = true)
 	{
+//		echo debug_trace();
+//		bors_exit(debug_trace());
+
 		$img = object_new('bors_image');
 
 		$data = url_parse($file);

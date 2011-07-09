@@ -62,7 +62,7 @@ class bors_image_thumb extends bors_image
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_loaded(true);
 
-		$this->original = object_load($this->image_class(), $id);
+		$this->original = object_load($this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
 			return $this->set_loaded(false);

@@ -2,14 +2,13 @@
 
 function lp_youtube($id, &$params)
 {
-	$width  = @$params['width']  ? $params['width']  : '425';
-	$height = @$params['height'] ? $params['height'] : '344';
+	$width  = @$params['width']  ? $params['width']  : '640';
+	$height = @$params['height'] ? $params['height'] : '390';
 
 	if(($self = defval($params, 'self')) && ($self->class_name() == 'balancer_board_post' || $self->class_name() == 'forum_post'))
 	{
 		if(!bors_find_first('balancer_board_posts_object', array(
 				'post_id' => $self->id(),
-//				'target_class_id' => class_name_to_id('bors_external_youtube'),
 				'target_class_name' => 'bors_external_youtube',
 				'target_object_id' => $id,
 		)))
@@ -23,5 +22,5 @@ function lp_youtube($id, &$params)
 		));
 	}
 
-	return "<object width=\"{$width}\" height=\"{$height}\"><param name=\"movie\" value=\"http://www.youtube.com/v/{$id}&hl=ru&fs=1&\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"http://www.youtube.com/v/{$id}&hl=ru&fs=1\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"{$width}\" height=\"{$height}\"></embed></object>\n";
+	return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"http://www.youtube.com/embed/{$id}\" frameborder=\"0\" allowfullscreen></iframe>\n";
 }

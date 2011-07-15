@@ -32,9 +32,12 @@ if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 	exit("Do not use direct bors-call!\n");
 }
 
+$is_bot = bors()->client()->is_bot();
+
 // Если это бот и включён лимит максимальной загрузки сервера
 // то проверяем. И если загрузка превышает допустимую - просим подождать
-if(bors()->client()->is_bot() && config('bot_lavg_limit'))
+//if($bot && config('bot_lavg_limit') && !in_array($bot, config('bot_whitelist', array())))
+if($is_bot && config('bot_lavg_limit'))
 {
 	$cache = new BorsMemCache();
 	if(!($load_avg = $cache->get('system-load-average')))
@@ -50,8 +53,9 @@ if(bors()->client()->is_bot() && config('bot_lavg_limit'))
 		header('Status: 503 Service Temporarily Unavailable');
 		header('Retry-After: 600');
 
-		@file_put_contents($file = config('debug_hidden_log_dir')."/blocked-bots.log", $_SERVER['REQUEST_URI']."/".@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."; LA={$load_avg}\n", FILE_APPEND);
-		@chmod($file, 0666);
+		debug_hidden_log('system_overload_bots', $loadavg, false);
+//		@file_put_contents($file = config('debug_hidden_log_dir')."/blocked-bots.log", $_SERVER['REQUEST_URI']."/".@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."; LA={$load_avg}\n", FILE_APPEND);
+//		@chmod($file, 0666);
 		exit("Service Temporarily Unavailable");
 	}
 }
@@ -60,7 +64,7 @@ if(bors()->client()->is_bot() && config('bot_lavg_limit'))
 // то шлём его нафиг. Соответственно, /_bors/trap/ должен быть запрещённ в robots.txt
 if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect_trap'))
 {
-	if(bors()->client()->is_bot())
+	if($is_bot)
 		if(config('404_page_url'))
 			return go(config('404_page_url'), true);
 
@@ -92,23 +96,42 @@ if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY
 
 $_GET = array_merge($_GET, $_POST); // но, вообще, нужно с этим завязывать
 
-// Проверка на загрузку системы данным пользователем.
+// Проверка на загрузку системы данным пользователем или ботом
 // Если делает много тяжёлых запросов - просим подождать.
-if(config('access_log') && config('overload_time') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
+
+if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 {
-	$dbh = new driver_mysql(config('main_bors_db'));
-	$total = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
-		'user_ip' => $_SERVER['REMOTE_ADDR'],
-		'access_time>' => time() - 600,
-	));
+	$common_overload = config('overload_time', 0);
+	$user_overload = config('user_overload_time', $common_overload);
+	$bot_overload = config('bot_overload_time', $common_overload);
 
-	if($total > config('overload_time'))
+	if($user_overload || $bot_overload)
 	{
-		debug_hidden_log('system_overload', $total);
+		$dbh = new driver_mysql(config('main_bors_db'));
+		$total = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
+			'user_ip' => $_SERVER['REMOTE_ADDR'],
+			'access_time>' => time() - 600,
+		));
 
-		header('Status: 503 Service Temporarily Unavailable');
-		header('Retry-After: 600');
-		exit("Service Temporarily Unavailable");
+//		debug_hidden_log('system_overload_test', $total, 0);
+
+		if(!$is_bot && $user_overload && $total > $user_overload)
+		{
+			debug_hidden_log('system_overload_users', $total.' of '.$user_overload, 0);
+
+			header('Status: 503 Service Temporarily Unavailable');
+			header('Retry-After: 600');
+			exit("Service Temporarily Unavailable");
+		}
+
+		if($is_bot && $bot_overload && $total > $bot_overload)
+		{
+			debug_hidden_log('system_overload_bots', $total.' of '.$bot_overload, 0);
+
+			header('Status: 503 Service Temporarily Unavailable');
+			header('Retry-After: 600');
+			exit("Service Temporarily Unavailable");
+		}
 	}
 }
 
@@ -190,10 +213,14 @@ if(config('access_log'))
 		'access_time' => $GLOBALS['stat']['start_time'],
 		'operation_time' =>  str_replace(',', '.', microtime(true) - $GLOBALS['stat']['start_microtime']),
 		'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
-		'is_bot' => bors()->client()->is_bot(),
+		'is_bot' => $is_bot,
 	);
 
-	if(!empty($object))
+	if(empty($object))
+	{
+		$data['object_class_name'] = $_SERVER['REQUEST_URI'];
+	}
+	else
 	{
 		$data['object_class_name'] = $object->class_name();
 		$data['object_id'] = $object->id();

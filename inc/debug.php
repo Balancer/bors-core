@@ -369,15 +369,24 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 		$user = object_property(bors(), 'user');
 
 	$out = strftime('%Y-%m-%d %H:%M:%S: ') . $message . "\n";
-	if($trace)
+	if($trace !== false)
+	{
+		if($trace === true)
+			$trace_out = debug_trace();
+		elseif($trace >= 1)
+			$trace_out = debug_trace(0, false, $trace);
+		else
+			$trace_out = '';
+
 		$out .= "url: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
 			.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
 			. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
 			. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
 			. (!empty($_SERVER['HTTP_USER_AGENT']) ? "user agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"
 			. (@$user ? 'user = '.dc($user->title()) . ' [' .bors()->user_id()."]\n": '')
-			. debug_trace(1, false, $trace)
+			. $trace_out
 			. "\n---------------------------\n\n";
+	}
 
 //	if(!empty($args['mkpath']))
 //		mkpath(dirname("{$out_dir}/{$type}.log"));

@@ -179,6 +179,9 @@ class DataBase extends base_object
 			);
 		}
 
+//		if(config('debug_mysql_queries_trace'))
+//			@$GLOBALS['debug_mysql_queries_trace'][] = "[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query;
+
 		if($this->result)
 		{
 			$this->last_query_time = microtime(true);

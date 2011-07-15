@@ -2,17 +2,21 @@
 <?php
 $start = time();
 
+
 require_once('../config.php');
 require_once(BORS_CORE.'/init.php');
 
-	require_once('obsolete/DataBase.php');
-	require_once('inc/processes.php');
+require_once('obsolete/DataBase.php');
+require_once('inc/processes.php');
 
-	if(!bors_thread_lock('statfile-cache-clean', 600))
-		exit("Locked\n");
+if(!bors_thread_lock('statfile-cache-clean', 600))
+	exit("Locked\n");
 
-	if(!config('cache_database'))
-		exit();
+if(!config('cache_database'))
+	exit();
+
+try
+{
 
 	$db = new driver_mysql(config('cache_database'));
 
@@ -43,7 +47,9 @@ require_once(BORS_CORE.'/init.php');
 		}
 		else
 		{
-			@unlink($x->file());
+			if($fx = object_property($x, 'file'))
+				@unlink($fx);
+
 			if(file_exists($x->id()))
 			{
 				debug_hidden_log('static-cache', "Can't delete file {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
@@ -63,5 +69,11 @@ require_once(BORS_CORE.'/init.php');
 		echo "<br/>\n";
 	}
 
-	bors_thread_unlock('statfile-cache-clean');
-	echo "In ".(time()-$start)." sec<br/>\n";
+}
+catch(Exception $e)
+{
+	debug_hidden_log('exception-static', "Exception: ".bors_lib_exception::catch_trace($e));
+}
+
+bors_thread_unlock('statfile-cache-clean');
+echo "In ".(time()-$start)." sec<br/>\n";

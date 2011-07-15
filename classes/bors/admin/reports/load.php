@@ -13,6 +13,7 @@ class bors_admin_reports_load extends base_page
 		$dbh = new driver_mysql(config('bors_core_db'));
 		return array(
 			'total_time' => $dbh->select('bors_access_log', 'SUM(operation_time)', array()),
+			'period' => time() - $dbh->select('bors_access_log', 'MIN(access_time)', array()),
 
 			'max_cpu_by_user' => $dbh->select_array('bors_access_log',
 				'user_ip, user_id, count(user_ip) as cnt, sum(operation_time) as su, is_bot, user_agent',
@@ -21,8 +22,9 @@ class bors_admin_reports_load extends base_page
 					'limit' => 20,
 				)
 			),
+
 			'max_cpu_by_classes' => $dbh->select_array('bors_access_log',
-				'class_name, count(class_name) as cnt, sum(operation_time) as su',
+				'class_name, count(class_name) as cnt, sum(operation_time) as su, MAX(`server_uri`) AS `uri`, MAX(`referer`) AS `referer`',
 				array('group'=>'class_name',
 					'order' => '-su',
 					'limit' => 20,

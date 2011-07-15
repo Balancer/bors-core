@@ -29,6 +29,13 @@ class bors_lib_exception extends bors_object
 		}
 	}
 
+	static function catch_trace($e)
+	{
+		$trace = debug_trace(0, false, -1, $e->getTrace());
+		$message = $e->getMessage();
+		return "$message\n$trace";
+	}
+
 	static function catch_html_code($e, $message = NULL)
 	{
 		$trace = debug_trace(0, false, -1, $e->getTrace());

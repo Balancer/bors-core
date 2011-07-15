@@ -101,7 +101,7 @@ class cache_static extends base_object_db
 		$object_id = $object->id();
 
 		$file = $object->static_file();
-
+//		echo "Save $file\n";
 		if(!$file) // TODO: отловить
 			return;
 
@@ -157,10 +157,7 @@ class cache_static extends base_object_db
 		$object->set_was_cleaned(false, false);
 
 		if(($ic=config('internal_charset')) != ($oc=config('output_charset')))
-		{
-			debug_hidden_log('iconv', "$ic -> $oc");
 			$content = iconv($ic, $oc.'//translit', $content);
-		}
 
 		mkpath($dir = dirname($file), 0777);
 

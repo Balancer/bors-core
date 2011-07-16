@@ -97,7 +97,7 @@ class bors_external_feeds_entry extends base_object_db
 
 	static function url_host_link_html($url)
 	{
-		if(preg_match('!http://([^/]+)!', $url, $m))
+		if(preg_match('!https?://([^/]+)!', $url, $m))
 			return "<a href=\"{$url}\">{$m[1]}</a>";
 
 		return "<a href=\"{$url}\">{$url}</a>";
@@ -112,6 +112,7 @@ class bors_external_feeds_entry extends base_object_db
 //			exit($parser_class_name);
 			$parser = new $parser_class_name(NULL);
 			$data = $parser->parse(array(
+				'title' => $this->title(),
 				'text' => $this->text(),
 				'link' => $this->entry_url(),
 			));
@@ -205,6 +206,7 @@ class bors_external_feeds_entry extends base_object_db
 			'author_name' => $owner_name,
 			'source' => $source,
 			'create_time' => $this->pub_date(),
+			'markup_class_name' => @$markup,
 		));
 
 		$topic->recalculate();

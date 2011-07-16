@@ -60,4 +60,48 @@ class bors_lib_http
 //		echo "Headers:"; var_dump($parsed_headers);
 		return $parsed_headers;
 	}
+
+	/**
+		Возвращает бинарные данные со ссылки с вспомогательными
+		данными, такими, как тип MIME, имя файла и расширение, если
+		есть и т.д. По умолчанию использует кеширование в течении
+		1 часа.
+	*/
+	static function get_bin($url, $curl_options = array())
+	{
+		$ch = curl_init($url);
+		curl_setopt_array($ch, array(
+			CURLOPT_TIMEOUT => defval($curl_options, 'timeout', 15),
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_ENCODING => 'gzip, deflate',
+//			CURLOPT_REFERER => defval($curl_options, 'referer'),
+			CURLOPT_AUTOREFERER => true,
+//			CURLOPT_HTTPHEADER => $header,
+			CURLOPT_USERAGENT => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; FunWebProducts; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
+			CURLOPT_RETURNTRANSFER => true,
+		));
+
+//	if(preg_match("!lenta\.ru!", $url))
+//		curl_setopt($ch, CURLOPT_PROXY, 'home.balancer.ru:3128');
+
+		$content = curl_exec($ch);
+		$info = curl_getinfo($ch);
+		curl_close($ch);
+
+		switch($info['content_type'])
+		{
+			case 'image/png':
+				$ext = 'png';
+				break;
+			default:
+				$ext = NULL;
+				break;
+		}
+		$info['ext'] = $ext;
+
+		$info['content'] = $content;
+
+		return $info;
+	}
 }

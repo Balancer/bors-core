@@ -249,6 +249,19 @@ function url_parse($url)
         return $uri;        
     }
 
+    function translite_path_simple($path)
+    {
+        $path = to_translit($path);
+        $path = strtolower($path);
+		$path = str_replace("'", '', $path);
+		$path = str_replace('_', '-', $path);
+		$path = preg_replace('/[^\w\/\.]/', '-', $path);
+		$path = preg_replace('/\-+/', '-', $path);
+		$path = trim($path, '-');
+
+		return $path;
+	}
+
 // Источник: http://ru.php.net/manual/ru/function.curl-setopt.php#79787
 function curl_redir_exec($ch,$debug="")
 {

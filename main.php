@@ -12,6 +12,10 @@ if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 		$_SERVER['QUERY_STRING'] = $m[2];
 }
 
+// Если в имени хоста есть порт, то вырезаем
+if(preg_match('!^(.+):\d+$!', $_SERVER['HTTP_HOST'], $m))
+	$_SERVER['HTTP_HOST'] = $m[1];
+
 // DOCUMENT_ROOT должен быть без слеша в конце.
 if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 	$_SERVER['DOCUMENT_ROOT'] = $m[1];

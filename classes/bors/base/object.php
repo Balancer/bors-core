@@ -484,6 +484,7 @@ class base_object extends base_empty
 	}
 
 	function url_in_container() { return $this->url(); }
+	function url_for_igo() { return $this->url_in_container(); }
 	function title_in_container() { return $this->title(); }
 
 	function titled_url_in_container()
@@ -831,13 +832,13 @@ class base_object extends base_empty
 	 * @param  $page - опциональный параметр номера страницы при многостраничной разбивке объекта при выводе
 	 * @return Строка со ссылкой
 	 */
-	function url($page = NULL)
+	function url($page = NULL, $exactly = false)
 	{
 		if(empty($this->attr['_url_engine_object'])/* || !$this->_url_engine->id() ?? */)
 			if(!($this->attr['_url_engine_object'] = object_load($this->get('url_engine'), $this)))
 				debug_exit("Can't load url engine '{$this->get('url_engine')}' for class {$this}");
 
-		return $this->attr['_url_engine_object']->url($page);
+		return $this->attr['_url_engine_object']->url($page, $exactly);
 	}
 
 	function url_ex($args)

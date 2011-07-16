@@ -39,4 +39,20 @@ class bors_votes_thumb extends base_object_db
 		else
 			return "<span style=\"color:red\">".$this->score()."</span>";
 	}
+
+	static function colorize_pm($plus, $minus)
+	{
+		if(!$plus && !$minus)
+			return '';
+
+		$result = array();
+		if($plus)
+			$result[] = "<span style=\"color:green\">+".intval($plus)."</span>";
+		if($plus && $minus)
+			$result[] = ' / ';
+		if($minus)
+			$result[] = "<span style=\"color:red\">".intval($minus)."</span>";
+
+		return join('', $result);
+	}
 }

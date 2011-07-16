@@ -103,7 +103,7 @@ class bors_external_feeds_entry extends base_object_db
 		return "<a href=\"{$url}\">{$url}</a>";
 	}
 
-	function update_target($update_lcml = false)
+	function update_target($update_lcml = false, $find_topic = true)
 	{
 		$feed = $this->feed();
 
@@ -196,8 +196,20 @@ class bors_external_feeds_entry extends base_object_db
 		}
 
 		// Не были запощены. Ищем топик и форум.
+		if(!$find_topic)
+		{
+			// Топик не ищем!
+			if($feed->target_topic_id())
+				$topic = bors_load('balancer_board_topic', $feed->target_topic_id());
+			else
+				$topic = bors_load('balancer_board_topic', 66326); // Флуд, флейм, кто что делает... / За жизнь
+		}
+		else
+		{
+			// Ищем подходящий.
+			$topic = $this->find_topic();
+		}
 
-		$topic = $this->find_topic();
 		$forum = $topic->forum();
 
 		$post = object_new_instance('balancer_board_post', array(

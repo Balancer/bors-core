@@ -175,6 +175,8 @@ class bors_external_feed extends base_object_db
 				continue;
 			}
 
+			$find_topic = !!$tags;
+
 			$tags = array_merge(array_map('trim', explode(',', $this->append_keywords())), $tags);
 
 			if($entry)
@@ -206,7 +208,7 @@ class bors_external_feed extends base_object_db
 //			if(!$entry->target_object_id() && $this->target_topic_id())
 
 			if(!$is_skipped && !$is_test)
-				$entry->update_target();
+				$entry->update_target(true, $find_topic);
 //			echo "update_target($forum_id, {$this->target_topic_id()});\n";
 //			if(!$is_skipped)
 //				return;

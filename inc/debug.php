@@ -179,8 +179,8 @@ function debug_trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
 
 	if(is_numeric($level) && $level > 0)
 		$traceArr = array_slice($traceArr, 0, $level);
-	if(is_numeric($level) && $level < 0)
-		$traceArr = array_slice($traceArr, -$level);
+//	if(is_numeric($level) && $level < 0)
+//		$traceArr = array_slice($traceArr, -$level);
 
 	$tabs = 0; //sizeof($traceArr)-1;
 	for($pos=0, $stop=sizeof($traceArr); $pos<$stop; $pos++)

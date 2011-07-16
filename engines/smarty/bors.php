@@ -73,7 +73,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	if(!$smarty->template_exists($template))
 	{
 		debug_timing_stop('template_smarty_bors');
-		return "Not existing template {$template} for $obj<br />";
+		bors_throw("[3] Not existing template {$template} for $obj");
 	}
 
 	$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));

@@ -159,9 +159,16 @@ function http_get_ex($url, $raw = true)
 		$header[] = "Accept-Charset: ".$cs;
 	$header[] = "Accept-Language: ru, en";
 
+	$timeout = 15;
+	if(preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru)/', $url))
+		$timeout = 40;
+
+	if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация
+		$timeout = 60;
+
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru)/', $url) ? 40 : 15,
+		CURLOPT_TIMEOUT => $timeout,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 5,
 		CURLOPT_ENCODING => 'gzip,deflate',

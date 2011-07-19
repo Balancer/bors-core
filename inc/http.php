@@ -83,7 +83,8 @@ function http_get_content($url, $raw = false)
 	$data = curl_exec($ch);
 	if($data === false)
 	{
-		echo 'Curl error: ' . curl_error($ch);
+		echo '[1] Curl error: ' . curl_error($ch);
+//		echo debug_trace();
 		return '';
 	}
 	$data = trim($data);
@@ -183,7 +184,7 @@ function http_get_ex($url, $raw = true)
 	{
 		//TODO: оформить хорошо. Например, отправить отложенную задачу по пересчёту
 		//И выше есть такой же блок.
-		echo 'Curl error: ' . curl_error($ch);
+		echo '[2] Curl error: ' . curl_error($ch);
 		return '';
 	}
 

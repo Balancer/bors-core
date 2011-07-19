@@ -67,13 +67,7 @@ function lt_img($params)
 				}
 			}
 
-//var_dump($uri);
-//			return $uri;
-
-//			$uri = $hts->normalize_uri($uri, $GLOBALS['lcml']['uri']);
-
 			$data = url_parse($uri);
-//			if(config('is_debug')) { echo "Parse '$uri'"; var_dump($data); }
 
 			if(!file_exists($path) && $data['local'])
 			{
@@ -238,9 +232,10 @@ function lt_img($params)
 __EOT__;
 				}
 
-				$description = stripslashes(!empty($params['description']) ? "<div style=\"text-align: center\"><small>".lcml($params['description'])."</small></div>" : '');
-
-//				print_d($params); exit();
+				if(empty($params['no_lcml_description']))
+					$description = stripslashes(!empty($params['description']) ? "<div style=\"text-align: center\"><small>".lcml($params['description'])."</small></div>" : '');
+				else
+					$description = stripslashes(!empty($params['description']) ? "<div style=\"text-align: center\"><small>".$params['description']."</small></div>" : '');
 
 				$a_href_b = "";
 				$a_href_e = "";
@@ -276,7 +271,7 @@ __EOT__;
 
 				$out .= '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" alt=\"\" />{$a_href_e}";
 				if($description)
-					$out .= "<div style=\"font-size: xx-small;\">".lcml($description, array('html'=>'safe'))."</div>";
+					$out .= "<div style=\"font-size: xx-small;\">".$description."</div>";
 				$out .= '</div>';
 
 				return $out;

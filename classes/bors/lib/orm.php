@@ -111,41 +111,40 @@ class bors_lib_orm
 
 		$fields_array = array();
 
-		if(method_exists($object, '_properties'))
-		{
-			// Новый формат полей
-			$properties = $object->_properties();
-			$defaults = true;
+		$defaults = true;
 
-			foreach($properties as $property => $field)
+		$properties_parsed = array();
+		foreach($object->table_fields() as $property => $field)
+		{
+			if($field != '*no_defaults')
 			{
-				if($field != '*no_defaults')
-					$fields_array[] = self::field($property, $field);
-				else
+				$f = self::field($property, $field);
+				$properties_parsed[] = $f['property'];
+				if($f['property'] == 'id')
 					$defaults = false;
+				$fields_array[] = $f;
 			}
-
-			if($defaults)
-			{
-				$x = 'id';
-				array_unshift($fields_array, self::field(0, $x));
-
-				foreach(array(
-					'modify_time' => array('name' => 'UNIX_TIMESTAMP(`modify_time`)', 'type' => 'timestamp', 'index' => true),
-					'create_time' => array('name' => 'UNIX_TIMESTAMP(`create_time`)', 'type' => 'timestamp', 'index' => true),
-					'owner_id',
-					'last_editor_id'
-				) as $property => $data)
-					$fields_array[] = self::field($property, $data);
-			}
+			else
+				$defaults = false;
 		}
-		else
+
+		if($defaults)
 		{
-			// Старый формат
-			foreach($object->table_fields() as $property => $field)
-				$fields_array[] = self::field($property, $field);
-		}
+			$x = 'id';
+			array_unshift($fields_array, self::field(0, $x));
 
+			foreach(array(
+				'modify_time' => array('name' => 'UNIX_TIMESTAMP(`modify_time`)', 'type' => 'timestamp', 'index' => true),
+				'create_time' => array('name' => 'UNIX_TIMESTAMP(`create_time`)', 'type' => 'timestamp', 'index' => true),
+				'owner_id',
+				'last_editor_id'
+			) as $property => $data)
+			{
+				$f = self::field($property, $data);
+				if(!in_array($f['property'], $properties_parsed))
+					$fields_array[] = $f;
+			}
+		}
 
 		return set_global_key('___main_fields', $class_name, $fields_array);
 	}

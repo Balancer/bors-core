@@ -109,4 +109,6 @@ class driver_mysql extends DataBase implements Iterator
 		$x = $this->get("SHOW TABLE STATUS LIKE '".addslashes($table)."'");
 		return $x['Rows'];
 	}
+
+	function escape($string) { return mysql_real_escape_string($string, $this->dbh); }
 }

@@ -785,7 +785,7 @@ class base_object extends base_empty
 	function storage()
 	{
 		if($storage_class_name = $this->get('storage_engine', config('storage.default.class_name')))
-			return new $storage_class_name(NULL);
+			return new $storage_class_name($this);
 		else
 			return NULL;
 	}

@@ -489,7 +489,7 @@ class base_object extends base_empty
 
 	function titled_url_in_container()
 	{
-		return '<a href="'.$this->url_in_container()."\"{$target}>{$this->title_in_container()}</a>";
+		return '<a href="'.$this->url_in_container()."\">{$this->title_in_container()}</a>";
 	}
 
 	function titled_link($append = '') { return $this->titled_url($append); }
@@ -676,8 +676,9 @@ class base_object extends base_empty
 		else
 			$message = ec('Ошибка параметра ').$field;
 
+		$res = NULL;
 		eval("\$res = ('".addslashes($value)."' $assert);");
-		if(!$res)
+		if(empty($res))
 		{
 			bors_message($message);
 			return false;
@@ -925,7 +926,7 @@ class base_object extends base_empty
 	function id_field()
 	{
 		if(@array_key_exists($this->attr, '__id_field_name'))
-			return $object->attr['__id_field_name'];
+			return $this->attr['__id_field_name'];
 
 		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
 

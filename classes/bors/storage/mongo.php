@@ -45,13 +45,20 @@ class bors_storage_mongo extends bors_storage
 	function create($object)
 	{
 		$m = new Mongo();
-		$db = $m->selectDB('BORS');
-		$c = $db->createCollection('objects');
-		$c->insert(array_merge(array(
-			'_id' => $object->internal_uri_ascii(),
+		$db = $m->selectDB($object->get('db_name', 'BORS'));
+		$c = $db->createCollection($object->get('table_name', 'objects'));
+
+		$data = array_merge($object->data, array(
+//			'_id' => $object->internal_uri_ascii(),
 			'class_name' => $object->class_name(),
-			'object_id' => $object->id()
-		), $object->data));
+			'object_id' => $object->id(),
+			'create_time' => new MongoDate(),
+			'modify_time' => new MongoDate(),
+		));
+
+		$c->insert($data);
+		echo $data['_id']->{'$id'}."\n";
+		echo $object->set_id($data['_id']->{'$id'}, false), "\n";
 
 		return $object;
 	}

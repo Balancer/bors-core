@@ -20,15 +20,23 @@ class bors_lib_orm
 			else // просто строка вида 'property' => 'field',
 				$field = array('name' => $field);
 		}
-		elseif(empty($field['name']))
-			$field['name'] = defval($field, 'field', $property);
+		else // Описание — массив параметров
+		{
+			if(empty($field['name']))
+				$field['name'] = defval($field, 'field', $property);
+			if(preg_match('!^(\w+)\(`(\w+)`\)$!', $field['name'], $m))
+			{
+				$field['name'] = $m[2];
+				$field['sql_function'] = $m[1];
+			}
+		}
 
 		$field['property'] = $property;
 
 		if(empty($field['type']))
 		{
 			if(preg_match('/^\w+_id$/', $property) || $property == 'id')
-				$field['type'] = 'int';
+				$field['type'] = 'uint';
 			elseif(preg_match('/^is_\w+$/', $property))
 				$field['type'] = 'bool';
 			elseif(preg_match('/^\w+_date$/', $property))
@@ -102,8 +110,42 @@ class bors_lib_orm
 			return $fields;
 
 		$fields_array = array();
-		foreach($object->table_fields() as $property => $field)
-			$fields_array[] = self::field($property, $field);
+
+		if(method_exists($object, '_properties'))
+		{
+			// Новый формат полей
+			$properties = $object->_properties();
+			$defaults = true;
+
+			foreach($properties as $property => $field)
+			{
+				if($field != '*no_defaults')
+					$fields_array[] = self::field($property, $field);
+				else
+					$defaults = false;
+			}
+
+			if($defaults)
+			{
+				$x = 'id';
+				array_unshift($fields_array, self::field(0, $x));
+
+				foreach(array(
+					'modify_time' => array('name' => 'UNIX_TIMESTAMP(`modify_time`)', 'type' => 'timestamp', 'index' => true),
+					'create_time' => array('name' => 'UNIX_TIMESTAMP(`create_time`)', 'type' => 'timestamp', 'index' => true),
+					'owner_id',
+					'last_editor_id'
+				) as $property => $data)
+					$fields_array[] = self::field($property, $data);
+			}
+		}
+		else
+		{
+			// Старый формат
+			foreach($object->table_fields() as $property => $field)
+				$fields_array[] = self::field($property, $field);
+		}
+
 
 		return set_global_key('___main_fields', $class_name, $fields_array);
 	}

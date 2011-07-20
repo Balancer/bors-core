@@ -2,6 +2,24 @@
 
 class bors_storage_mysql extends bors_storage implements Iterator
 {
+	function __construct($object = NULL)
+	{
+		if($object)
+		{
+			$this->__object = $object;
+			$this->__db_name = $object->db_name();
+			$this->__table_name = $object->table_name();
+		}
+	}
+
+	function db()
+	{
+		if($this->__dbh)
+			return $this->__dbh;
+
+		return $this->__dbh = new driver_mysql($this->__db_name);
+	}
+
 	static private function __query_data_prepare($object, $where)
 	{
 		$select = array();
@@ -68,7 +86,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 //			if(!empty($f['post_function']))
 //				$post_functions[$f['property']] = $f['post_function'];
 
-			if(preg_match('/^(\w+)\(([\w`]+)\)$/', $field_name, $m))
+			if(!empty($f['sql_function']))
+				$sql = $_back_functions[$f['sql_function']];
+			elseif(preg_match('/^(\w+)\(([\w`]+)\)$/', $field_name, $m))
 			{
 				$field_name = $m[2];
 				$sql = $_back_functions[$m[1]];
@@ -405,6 +425,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 //				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
 
+				$object->storage()->storage_create();
+
 				if($object->replace_on_new_instance() || $object->attr('__replace_on_new_instance'))
 					$dbh->replace($table_name, $fields);
 				elseif($object->ignore_on_new_instance())
@@ -452,11 +474,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$dbh->delete($object->table_name(), array($object->id_field() => $object->id()));
 	}
 
-	static function create_table($class_name)
+	function create_table($class_name = NULL)
 	{
 		$map = array(
 			'string'	=>	'VARCHAR(255)',
 			'text'		=>	'TEXT',
+			'timestamp'	=>	'TIMESTAMP',
 			'int'		=>	'INT',
 			'uint'		=>	'INT UNSIGNED',
 			'bool'		=>	'TINYINT(1) UNSIGNED',
@@ -466,19 +489,28 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$db_fields = array();
 
-		$class = new $class_name(NULL);
+		if($class_name)
+		{
+			$object = new $class_name(NULL);
+			$db_name = $object->db_name();
+			$table_name = $object->table_name();
+			$db = new driver_mysql($db_name);
+		}
+		else
+		{
+			$object = $this->__object;
+			$db_name = $this->__db_name;
+			$table_name = $this->__table_name;
+			$db =$this->__dbh;
+		}
 
-		$db_name = $class->db_name();
-		$table_name = $class->table_name();
-		$fields = $class->table_fields();
-
-		$object_fields = array_smart_expand($fields);
 		$db_fields = array();
 		$primary = false;
 
-		foreach(bors_lib_orm::main_fields($class) as $field)
+		$fields = bors_lib_orm::main_fields($object);
+//		var_dump($fields);
+		foreach($fields as $field)
 		{
-//			var_dump($field);
 			$db_field = '`'.$field['name'].'` '.$map[$field['type']];
 			if($field['property'] == 'id')
 			{
@@ -486,17 +518,19 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$primary = $field['name'];
 			}
 
+			if(@$field['index'])
+				$db_fields[] = "KEY (`{$field['name']}`)";
+
 			$db_fields[$db_field] = $db_field;
 		}
 
 		if(empty($primary))
-			return bors_throw(ec("Не найден первичный индекс для ").print_r($object_fields, true));
+			return bors_throw(ec("Не найден первичный индекс для ").print_r($fields, true));
 
 		$db_fields[] = "PRIMARY KEY (`$primary`)";
 
 		$query = "CREATE TABLE IF NOT EXISTS `$table_name` (".join(', ', array_values($db_fields)).");";
 
-		$db = new driver_mysql($db_name);
 		$db->query($query);
 //		$db->close();
 
@@ -521,5 +555,23 @@ class bors_storage_mysql extends bors_storage implements Iterator
 //				$db->close();
 			}
 		}
+	}
+
+	function storage_exists()
+	{
+		static $exists = array();
+		$table = $this->__table_name;
+
+		if(array_key_exists($table, $exists))
+			return $exists[$table];
+
+		$db = $this->db();
+		return $exists[$table] = count($db->get_array("SHOW TABLES LIKE '".$db->escape($table)."'")) > 0;
+	}
+
+	function storage_create()
+	{
+		if(!$this->storage_exists())
+			$this->create_table();
 	}
 }

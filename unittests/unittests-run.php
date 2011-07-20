@@ -26,8 +26,8 @@ class BorsTests
 		foreach(search_dir(dirname(__FILE__).'/tests', $mask='\.php$') as $file)
 		{
 			require_once($file);
-			if(preg_match('!.+/(\w+)\.php$!', $file, $m))
-				$suite->addTestSuite($m[1].'_unittest');
+			if(preg_match('!unittests/tests/(.+)\.php$!', $file, $m))
+				$suite->addTestSuite(str_replace('/','_', $m[1]).'_unittest');
 		}
 
 		return $suite;

@@ -151,7 +151,14 @@ function bors_exit($message = '')
 	if(config('cache_static') && $message)
 		cache_static::drop(bors()->main_object());
 
-	bors()->changed_save();
+	try
+	{
+		bors()->changed_save();
+	}
+	catch(Exception $e)
+	{
+		$error = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка сохранения</div>"));
+	}
 
 	if(function_exists('error_get_last')) // Заразо. Оно только с PHP 5 >= 5.2.0
 		$error = error_get_last();

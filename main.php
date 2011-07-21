@@ -236,7 +236,14 @@ if(config('access_log'))
 	bors_new('bors_access_log', $data);
 }
 
-bors()->changed_save();
+try
+{
+	bors()->changed_save();
+}
+catch(Exception $e)
+{
+	$error = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка сохранения</div>"));
+}
 
 // Общее время работы
 $time = microtime(true) - $GLOBALS['stat']['start_microtime'];

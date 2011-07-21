@@ -946,7 +946,7 @@ class base_object extends base_empty
 		}
 
 		//FIXME: исправить на возможность id в ненулевой позиции
-		return $ff[0] == 'id' ? 'id' : NULL;
+		return @$ff[0] == 'id' ? 'id' : NULL;
 	}
 
 	function title_field()

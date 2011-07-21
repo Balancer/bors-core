@@ -41,6 +41,7 @@ function class_include($class_name, &$args = array())
 			return $file_name;
 		}
 
+//		echo "Find {$dir}/classes/{$class_path}{$class_file}.yaml<br/>\n";
 		if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.yaml"))
 		{
 			bors_classes_loaders_yaml::load($class_name, $file_name);

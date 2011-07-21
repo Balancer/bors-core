@@ -24,11 +24,17 @@ class base_page_paged extends base_page
 		if(!is_null($this->_items))
 			return $this->_items;
 
+		try {
 		$this->_items = objects_array($this->main_class(), $this->_where(array(
 			'page' => $this->page(),
 			'per_page' => $this->items_per_page(),
 			'order' => $this->order(),
 		)));
+		}
+		catch(Exception $e)
+		{
+			$this->_items = array();
+		}
 
 		if($this->is_reversed())
 			$this->_items = array_reverse($this->_items);
@@ -44,7 +50,16 @@ class base_page_paged extends base_page
 		if(!is_null($this->_total))
 			return $this->_total;
 
-		return $this->_total = objects_count($this->main_class(), $this->_where());
+		try
+		{
+			$count = $this->_total = objects_count($this->main_class(), $this->_where());
+		}
+		catch(Exception $e)
+		{
+			$count = 0;
+		}
+
+		return $count;
 	}
 
 	function template_local_vars() { return parent::template_local_vars().' items'; }

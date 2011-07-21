@@ -63,9 +63,12 @@ class bors_lib_orm
 			foreach($tables as $table => $fields)
 				foreach($fields as $property => $field)
 				{
-					$field = self::field($property, $field);
+					if($field != '*no_defaults')
+					{
+						$field = self::field($property, $field);
 //					if($field['name'] != 'id')
-						$fields_array[] = $field;
+							$fields_array[] = $field;
+					}
 				}
 		}
 
@@ -130,6 +133,8 @@ class bors_lib_orm
 
 		if($defaults)
 		{
+			debug_hidden_log('__defaults', "Found defaults for {$object->debug_title()}");
+
 			$x = 'id';
 			array_unshift($fields_array, self::field(0, $x));
 

@@ -160,7 +160,11 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 			$this->set_size(intval(@filesize($this->file_name_with_path())), $db_update);
 			$this->set_mime_type($x['mime'], $db_update);
 			$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), $db_update);
-			$this->store();
+			try
+			{
+				$this->store();
+			}
+			catch(Exception $e) { }
 		}
 		debug_timing_stop('image_recalculate');
 		if(($dura = (microtime(true) - $start)) > 0.5)

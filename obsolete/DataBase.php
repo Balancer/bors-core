@@ -204,6 +204,7 @@ class DataBase extends base_object
 			if(($err_msg_header = config('error_message_header')))
 				echo $err_msg_header;
 //			echo debug_trace();
+/*
 			echo "<!-- MySQL Error: driver class=".get_class($this)."<br>\n"
 				."now=".date('r')."<br>\n"
 				."dbh={$this->dbh}; <br/>\n"
@@ -212,7 +213,7 @@ class DataBase extends base_object
 				."db name={$this->db_name}<br/>\n"
 				.'time from last query: '.((microtime(true) - $this->last_query_time)/1000000)."<br/>\n"
 				.'was connected at '.date('r', $this->start_time)." ({$this->start_time})-->";
-
+*/
 			bors_throw(ec("Ошибка MySQL: ").mysql_error($this->dbh));
 		}
 

@@ -1,0 +1,7 @@
+extends: base_object_db
+storage_engine: bors_storage_mysql
+table_name: yaml_test2
+
+table_fields:
+	- title
+	- text

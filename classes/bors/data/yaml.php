@@ -19,7 +19,14 @@ class bors_data_yaml extends bors_data_meta
 		// yaml_parse не понимает табы в начале строк. Меняем все табы на 4 пробела
 		$content = str_replace("\t", '    ', $content);
 
-		$data = yaml_parse($content);
+		if(function_exists('yaml_parse'))
+			$data = yaml_parse($content);
+		else
+		{
+			require_once '/usr/share/php/SymfonyComponents/YAML/sfYamlParser.php';
+			$yaml = new sfYamlParser();
+			$data = $yaml->parse($content);
+		}
 
 		return array(
 			'data' => $data,

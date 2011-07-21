@@ -67,7 +67,11 @@ class bors_admin_engine extends bors_object
 		$obj = $this->real_object();
 		if(is_null($title))
 			$title =$obj->title();
-		return "<a href=\"{$obj->admin()->url()}\">{$title}</a>&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+		$res = "<a href=\"{$obj->admin()->url()}\">{$title}</a>";
+		if($obj->get('url_engine'))
+			$res .= "&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+
+		return $res;
 	}
 
 	function imaged_link($type, $image)

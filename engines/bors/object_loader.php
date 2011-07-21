@@ -40,6 +40,13 @@ function class_include($class_name, &$args = array())
 			$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
 			return $file_name;
 		}
+
+		if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.yaml"))
+		{
+			bors_classes_loaders_yaml::load($class_name, $file_name);
+			$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
+			return $file_name;
+		}
 	}
 
 	if(class_exists($class_name))

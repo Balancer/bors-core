@@ -26,10 +26,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$post_functions = array();
 
 		$table = $object->table_name();
-
+//		var_dump(bors_lib_orm::main_fields($object));
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
-			if(preg_match('/^(\w+)\((\w+)\)$/', $field_name = $f['name'], $m))
+			if(!empty($f['sql_function']))
+				$x = $f['sql_function']."(`{$table}`.`{$f['name']}`)";
+			elseif(preg_match('/^(\w+)\((\w+)\)$/', $field_name = $f['name'], $m))
 				$x = $m[1].'('.$table.'.'.$m[2].')';
 			elseif(preg_match('/^\w+\(.+\)$/', $field_name)) // id => CONCAT(keyword,":",keyword_id)
 				$x = $field_name;
@@ -53,7 +55,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			if(!empty($f['post_function']))
 				$post_functions[$f['property']] = $f['post_function'];
 		}
-
+//		var_dump($select);
 		$dummy = array();
 		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
 		self::__join('left',  $object, $select, $where, $post_functions, $dummy);

@@ -24,6 +24,9 @@ class bors_lib_orm
 		{
 			if(empty($field['name']))
 				$field['name'] = defval($field, 'field', $property);
+
+			$field['sql_name'] = $field['name'];
+
 			if(preg_match('!^(\w+)\(`(\w+)`\)$!', $field['name'], $m))
 			{
 				$field['name'] = $m[2];
@@ -181,7 +184,7 @@ class bors_lib_orm
 		foreach(self::all_fields($object) as $f)
 		{
 			if($f['property'] == $property)
-				return $f['name'];
+				return $f['sql_name'];
 		}
 
 		return NULL;

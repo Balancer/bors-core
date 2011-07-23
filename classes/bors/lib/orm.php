@@ -19,6 +19,8 @@ class bors_lib_orm
 				$field = array('name' => $m[1], 'post_function' => $m[2]);
 			else // просто строка вида 'property' => 'field',
 				$field = array('name' => $field);
+
+			$field['sql_name'] = $field['name'];
 		}
 		else // Описание — массив параметров
 		{

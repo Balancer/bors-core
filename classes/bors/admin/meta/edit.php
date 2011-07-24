@@ -13,9 +13,13 @@ class bors_admin_meta_edit extends bors_page
 		;
 	}
 
-	function target() { return bors_load($this->main_class(), $this->id()); }
+	function target() { return $this->id() ? bors_load($this->main_class(), $this->id()) : NULL; }
+
 	function admin_target()
 	{
+		if(!$this->id())
+			return NULL;
+
 		if($this->__havefc())
 			return $this->__lastc();
 
@@ -44,11 +48,16 @@ class bors_admin_meta_edit extends bors_page
 
 	function body_data()
 	{
+		if($this->id())
+			$data = object_property($this->target(), 'data', array());
+		else
+			$data = array();
+
 		return array_merge(
-			object_property($this->target(), 'data', array()),
+			$data,
 			parent::body_data(),
 			array(
-				$this->item_name() => $this->target(),
+				$this->item_name() => $this->id() ? $this->target() : NULL,
 				'form_fields' => ($f=$this->get('form')) ? $f : 'auto',
 			)
 		);

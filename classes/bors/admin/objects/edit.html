@@ -1,0 +1,7 @@
+{form class=$this->main_admin_class() id=$this->id() fields='auto' object=$this->admin_target()}
+{if $this->id()}
+{submit th="Сохранить"}
+{else}
+{submit th="Добавить"}
+{/if}
+{/form}

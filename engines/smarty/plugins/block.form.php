@@ -40,7 +40,7 @@ function smarty_block_form($params, $content, &$smarty)
 	$object_class_name = $name;
 
 	if(empty($form))
-		$form = bors_load($object_class_name, $id);
+		$form = $id ? bors_load($object_class_name, $id) : NULL;
 
 	if(is_object($form))
 		$foo = $form;

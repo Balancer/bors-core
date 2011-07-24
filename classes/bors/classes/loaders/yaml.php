@@ -72,8 +72,8 @@ class bors_classes_loaders_yaml extends bors_classes_loaders_meta
 			debug_hidden_log('__generated', "File $generated_name already exists for {$class_name}");
 		else
 		{
-			file_put_contents($generated_name, "<?php\n// Этот файт является автоматически сгенерированным.\n// Будьте осторожны при модификациях, чтобы ничего не потерять\n\n".$class);
-			chmod($generated_name, 0666);
+			@file_put_contents($generated_name, "<?php\n// Этот файт является автоматически сгенерированным.\n// Будьте осторожны при модификациях, чтобы ничего не потерять\n\n".$class);
+			@chmod($generated_name, 0666);
 		}
 		eval($class);
 	}

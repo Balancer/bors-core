@@ -68,8 +68,13 @@ class bors_admin_engine extends bors_object
 		if(is_null($title))
 			$title =$obj->title();
 		$res = "<a href=\"{$obj->admin()->url()}\">{$title}</a>";
-		if($obj->get('url_engine'))
-			$res .= "&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+
+		try
+		{
+			if($obj->url())
+				$res .= "&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+		}
+		catch(Exception $e) { }
 
 		return $res;
 	}

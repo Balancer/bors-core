@@ -16,6 +16,7 @@ class DataBase extends base_object
 	private $icst;
 	private $dcs;
 	private $need_encode;
+	private $charset = NULL;
 
 	function reconnect()
 	{
@@ -74,7 +75,7 @@ class DataBase extends base_object
 			debug_timing_stop('mysql_set_character_set');
 		}
 
-		if($c = config('mysql_set_names_charset'))
+		if(($c = config('mysql_set_names_charset')) && $this->charset != $c)
 		{
 			debug_timing_start('mysql_set_names');
 			mysql_set_charset($c, $this->dbh);
@@ -176,6 +177,15 @@ class DataBase extends base_object
 				"[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query,
 				$cdmql,
 				array('dont_show_user' => true)
+			);
+		}
+
+		if(config('debug_mysql_trace'))
+		{
+			$GLOBALS['debug_mysql_trace'][] = array(
+				'query' => $query,
+				'time' => $qtime,
+				'trace' => debug_trace(),
 			);
 		}
 

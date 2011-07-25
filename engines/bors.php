@@ -194,6 +194,13 @@ function bors_exit($message = '')
 		echo $deb."\n";
 	}
 
+	if(config('debug_mysql_trace'))
+	{
+		@mkdir(config('debug_hidden_log_dir').'/mysql-trace');
+		if(file_exists(config('debug_hidden_log_dir').'/mysql-trace'))
+			debug_hidden_log('mysql-trace/'.date('c').'-'.rand(0,999999), print_r(@$GLOBALS['debug_mysql_trace'], true));
+	}
+
 	if(!config('do_not_exit'))
 		exit();
 

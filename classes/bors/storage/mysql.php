@@ -326,7 +326,26 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$count = $dbh->select($table_name, 'COUNT(*)', $where, $class_name);
 		else
 		{
-			$dbh->select_array($table_name, 'COUNT(*)', $where, $class_name);
+			$select = array('COUNT(*)');
+			$grouped = false;
+			if(preg_match('/^\*BY(DAYS)\((\w+)\)\*$/', @$where['group'], $m))
+			{
+				// тестировать на http://dev.forexpf.ru/news_arch/2010/10/01/
+				switch($m[1])
+				{
+					case 'DAYS':
+						$where['group'] = "YEAR(FROM_UNIXTIME({$m[2]})),MONTH(FROM_UNIXTIME({$m[2]})),DAY(FROM_UNIXTIME({$m[2]}))";
+						$select[] = "DATE(FROM_UNIXTIME({$m[2]})) AS group_date";
+						$where['*select_index_field*'] = 'group_date';
+						$grouped = true;
+					break;
+				}
+			}
+
+			if($grouped)
+				return $dbh->select_array($table_name, join(',',$select), $where, $class_name);
+
+			$dbh->select_array($table_name, join(',',$select), $where, $class_name);
 			$count = intval($dbh->get('SELECT FOUND_ROWS()'));
 		}
 

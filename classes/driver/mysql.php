@@ -24,7 +24,8 @@ class driver_mysql extends DataBase implements Iterator
 		if($field === NULL)
 		{
 			$field = $table;
-			return $this->get("SELECT $field FROM {$this->table} ".mysql_args_compile($this->where, $class_name));
+			$query = "SELECT $field FROM {$this->table} ".mysql_args_compile($this->where, $class_name);
+			return $this->get($query);
 		}
 
 		if(!empty($where_map['table']))
@@ -53,7 +54,10 @@ class driver_mysql extends DataBase implements Iterator
 			unset($where_map['table']);
 		}
 
-		return $this->get_array("SELECT $field FROM $table ".mysql_args_compile($where_map, $class), false);
+		$index_field = popval($where_map, '*select_index_field*');
+
+		$query = "SELECT $field FROM $table ".mysql_args_compile($where_map, $class);
+		return $this->get_array($query, false, false, $index_field);
 	}
 
 	function update($table, $where, $fields)

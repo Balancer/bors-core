@@ -89,7 +89,7 @@ class base_rss extends base_page
 		}
 
 		$result = $feed->createFeed($type);
-		header("Content-Type: ".$feed->contentType."; charset=".$feed->encoding);
+		@header("Content-Type: ".$feed->contentType."; charset=".$feed->encoding);
 		return $result;
 	}
 

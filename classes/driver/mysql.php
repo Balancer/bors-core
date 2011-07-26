@@ -82,7 +82,8 @@ class driver_mysql extends DataBase implements Iterator
     {
     	$query = "SELECT $fields FROM {$table} ".mysql_args_compile($where);
 //    	echo "$query\n";
-		$this->each_result = $this->query($query);
+		$this->query($query);
+		$this->each_result = $this->result;
 		return $this;
     }
 

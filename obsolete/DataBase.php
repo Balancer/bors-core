@@ -185,7 +185,7 @@ class DataBase extends base_object
 			$GLOBALS['debug_mysql_trace'][] = array(
 				'query' => $query,
 				'time' => $qtime,
-				'trace' => debug_trace(),
+				'trace' => debug_trace(0, false),
 			);
 		}
 

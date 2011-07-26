@@ -28,7 +28,8 @@ class bors_modules_calend extends bors_module
 			template_js_include('/_bors3rdp/js/strftime-min.js');
 		}
 
-		$begin = strtotime("$year-$month-1 00:00:00");
+		$begin = strtotime("$year-$month-01 00:00:00");
+		$month_end   = ($month == 12 ? strtotime(($year+1)."-01-01 00:00:00") : strtotime("$year-".($month+1)."-1 00:00:00"))-1;
 
 		$first_weekday = date('N', $begin);
 		$days_in_month = date('t', $begin);
@@ -43,14 +44,21 @@ class bors_modules_calend extends bors_module
 				'count' => 0,
 			);
 
+		$counts = bors_count($target_count_class_name, array_merge($where, array(
+			'create_time BETWEEN' => array($begin, $month_end),
+			'group' => '*BYDAYS(create_time)*',
+		)));
+
 		for($d = 1; $d <= $days_in_month; $d++)
 		{
 			$day_begin = strtotime("$year-$month-$d 00:00:00");
-			$day_end   = strtotime("$year-$month-$d 23:59:59");
+//			$day_end   = strtotime("$year-$month-$d 23:59:59");
 
-			$count = bors_count($target_count_class_name, array_merge($where, array(
-				'create_time BETWEEN' => array($day_begin, $day_end)
-			)));
+//			$count = bors_count($target_count_class_name, array_merge($where, array(
+//				'create_time BETWEEN' => array($day_begin, $day_end)
+//			)));
+
+			$count = intval(@$counts[sprintf('%04d-%02d-%02d', $year, $month, $d)]);
 
 			$class = $count ? 'bc_normal' : 'bc_empty';
 			if(date('d.m.Y', $show_date) == "$d.$month.$year")

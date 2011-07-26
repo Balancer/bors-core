@@ -267,6 +267,7 @@ class DataBase extends base_object
 			{
 				if($this->need_encode)
 				{
+//					echo "{$this->dcs} -> {$this->icsi}<br/>";
 					$dcs  = $this->dcs;
 					$icsi = $this->icsi;
 //					Вариант с array_map получается НАМНОГО медленнее цикла.
@@ -373,7 +374,7 @@ class DataBase extends base_object
 		$this->free();
 	}
 
-	function get_array($query, $ignore_error=false, $cached=false)
+	function get_array($query, $ignore_error=false, $cached=false, $index_field = NULL)
 	{
 		include_once("classes/Cache.php");
 		$ch = NULL;
@@ -388,8 +389,22 @@ class DataBase extends base_object
 
 		$this->query($query, $ignore_error);
 
-		while(($row = $this->fetch()) !== false)
-			$res[] = $row;
+		if($index_field)
+		{
+			while(($row = $this->fetch()) !== false)
+			{
+				$idx = popval($row, $index_field);
+				if(count($row) == 1)
+					$row = array_pop($row);
+
+				$res[$idx] = $row;
+			}
+		}
+		else
+		{
+			while(($row = $this->fetch()) !== false)
+				$res[] = $row;
+		}
 
 		$this->free();
 

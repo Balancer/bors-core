@@ -15,6 +15,9 @@ config_set('bors_core_db', config('unit-test.mysql.db')); // Этим опери
 
 config_set('debug.show_variables', true);
 
+config_set('mysql_tables_autocreate', true);
+config_set('smarty3_enable', true);
+
 require_once(dirname(__FILE__).'/config-host.php');
 
 function bors_unit_test_up()

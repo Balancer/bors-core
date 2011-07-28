@@ -14,5 +14,9 @@ class bors_page extends base_page
 //		return defval($this->data, 'template', defval($this->attr, 'template', config('default_template')));
 	}
 
-	function render_class() { return 'bors_render_page'; }
+	function renderer_class() { return 'bors_renderers_page'; }
+
+	function body_class() { return $this->body_engine(); }
+	// Для совместимости
+	function body_engine() { return 'bors_bodies_page'; }
 }

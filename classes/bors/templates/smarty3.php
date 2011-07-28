@@ -1,5 +1,9 @@
 <?php
 
+if(class_exists('bors_templates_smarty') && !config('smarty3_enable'))
+{
+	bors_throw(ec('Уже используется Smarty2. Использвание Smarty3 невозможно. Используйте config_set(\'smarty3_enable\', true);'));
+}
 
 class bors_templates_smarty3 extends bors_templates_meta
 {

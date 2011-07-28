@@ -598,7 +598,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function storage_create()
 	{
-		if(!$this->storage_exists())
+		if(config('mysql_tables_autocreate') && !$this->storage_exists())
 			$this->create_table();
 	}
 }

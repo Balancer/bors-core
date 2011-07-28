@@ -44,6 +44,9 @@ class bors_render_page extends base_null
 			$data['my_name'] = $me->title();
 		}
 
+		foreach(explode(' ', $object->template_vars()) as $var)
+			$data[$var] = $object->$var();
+
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$data[$var] = $object->$var();
 
@@ -57,10 +60,6 @@ class bors_render_page extends base_null
 			foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
 				$data[$key] = $value;
 
-//	$smarty->assign("views_average", sprintf("%.1f",86400*$views/($views_last-$views_first+1)));
-
-//		echo "page_template={$object->page_template()}\n";
-//		echo "page_template_class={$object->page_template_class()}\n";
 		$page_template = call_user_func(
 			array($object->page_template_class(), 'find_template'),
 			$object,

@@ -44,7 +44,7 @@ $(function() {
 {foreach from=$calend item="week"}
 <tr>
 {foreach from=$week item="day"}
-<td style="text-align: right" class="{$day.class}">{if $day.url && $day.count}<a href="{$day.url}" title="{$day.title|htmlspecialchars} ({$day.count})">{$day.number}</a>{else}{$day.number}{/if}</td>
+<td style="text-align: right" class="{$day.class}">{if !empty($day.url) && !empty($day.count)}<a href="{$day.url}" title="({$day.count})">{$day.number}</a>{else}{$day.number}{/if}</td>
 {/foreach}
 </tr>
 {/foreach}

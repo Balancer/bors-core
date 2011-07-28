@@ -103,7 +103,7 @@ class base_page extends bors_object
 
 		if($body_engine = $this->body_engine())
 		{
-			$be = class_load($body_engine);
+			$be = bors_load($body_engine, NULL);
 			if(!$be)
 				debug_exit("Can't load body engine {$body_engine} for class {$this}");
 

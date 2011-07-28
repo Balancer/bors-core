@@ -101,7 +101,7 @@ function week_day_name($day_num) { return ec($GLOBALS['day_names'][$day_num-1]);
 
 function text_date($date)
 {
-	return date('j', $date).' '.strtolower(month_name_rp(date('n', $date))).' '.date('Y', $date);
+	return date('j', $date).' '.bors_lower(month_name_rp(date('n', $date))).' '.date('Y', $date);
 }
 
 function full_hdate($date, $show_year = true)
@@ -109,14 +109,16 @@ function full_hdate($date, $show_year = true)
 	if(!$date)
 		$date = time();
 
-	return date('j', $date).' '.strtolower(month_name_rp(date('n', $date))).($show_year ? ec(strftime(' %Y года', $date)) : '');
+	return date('j', $date).' '.bors_lower(month_name_rp(date('n', $date))).($show_year ? ec(strftime(' %Y года', $date)) : '');
 }
 
 function date_format_mysqltime($time) { return $time ? strftime('\'%Y-%m-%d %H:%M:%S\'', $time) : NULL; }
 function date_format_mysql($time) { return $time ? strftime('\'%Y-%m-%d\'', $time) : NULL; }
 
 function date_day_begin($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time())); }
-function date_day_next($time) { return strtotime(date('Y-m-d', $time).' +1 day'); }
+function date_day_next($time)   { return strtotime(date('Y-m-d', $time).' +1 day');  }
+function date_month_next($time) { return strtotime(date('Y-m-d', $time).' +1 month');}
+function date_year_next($time)  { return strtotime(date('Y-m-d', $time).' +1 year'); }
 
 function date_today($time = 0)     { return strtotime(date('Y-m-d', $time ? $time : time())); }
 function date_yesterday($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' -1 day'); }

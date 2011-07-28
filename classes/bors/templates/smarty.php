@@ -1,7 +1,5 @@
 <?php
 
-require_once(config('smarty_path').'/Smarty.class.php');
-
 class bors_templates_smarty extends bors_templates_abstract
 {
 	static function find_template($object, $template_name)
@@ -20,6 +18,8 @@ class bors_templates_smarty extends bors_templates_abstract
 
 	static function fetch($template, $data)
 	{
+		require_once(config('smarty_include'));
+
 		$smarty = new Smarty;
 		require('smarty-register.php');
 

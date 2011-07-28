@@ -6,7 +6,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 {
 	debug_timing_start('template_smarty_bors');
 
-	require_once(config('smarty_path').'/Smarty.class.php');
+	require_once(config('smarty_include'));
 	$smarty = new Smarty;
 	require('smarty-register.php');
 

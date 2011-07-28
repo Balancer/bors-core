@@ -5,6 +5,8 @@ require_once('inc/bors/lists.php');
 // Класс-заглушка (временная), так как пока модули по сути - обычные страницы.
 class bors_module extends bors_page
 {
+	function body_engine()	{ return 'bors_bodies_page'; }
+
 	function html_code()
 	{
 		try

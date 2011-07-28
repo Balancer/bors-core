@@ -6,7 +6,10 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 
 	unset($GLOBALS['module_data']);
 
-	require_once(config('smarty_path').'/Smarty.class.php');
+	if(config('page_template_class') == 'bors_templates_smarty3')
+		bors_throw(ec('Попытка использования Smarty2 при активном Smarty3'));
+
+	require_once(config('smarty_include'));
 	$smarty = new Smarty;
 	require('smarty-register.php');
 
@@ -37,7 +40,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 			;
 
 		$smarty->caching = $caching;
-		$smarty->compile_check = true; 
+		$smarty->compile_check = true;
 		$smarty->php_handling = SMARTY_PHP_QUOTE; //SMARTY_PHP_PASSTHRU;
 		$smarty->security = false;
 		$smarty->cache_modified_check = true;

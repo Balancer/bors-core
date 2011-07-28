@@ -44,6 +44,9 @@ class bors_renderers_page extends base_null
 			$data['my_name'] = $me->title();
 		}
 
+		foreach(explode(' ', $object->template_vars()) as $var)
+			$data[$var] = $object->$var();
+
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$data[$var] = $object->$var();
 

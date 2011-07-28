@@ -290,4 +290,5 @@ if(get_magic_quotes_gpc() && $_POST)
 
 bors_init();
 register_shutdown_function('bors_exit');
+//stream_wrapper_register('xfile', 'bors_wrappers_xfile') or die('Failed to register protocol xfile');
 bors_client_analyze();

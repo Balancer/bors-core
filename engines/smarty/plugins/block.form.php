@@ -178,6 +178,12 @@ function smarty_block_form($params, $content, &$smarty)
 					$class = $data['class'];
 				}
 
+				if(!empty($data['named_list']))
+				{
+					$type = 'dropdown';
+					$class = $data['named_list'];
+				}
+
 				$property_name = defval($data, 'property', $data['name']);
 
 				if(!$title)
@@ -191,10 +197,12 @@ function smarty_block_form($params, $content, &$smarty)
 				else
 					$data['value'] = object_property($form, $property_name);
 
-				$data['class'] = 'w100p';
+				$data['class'] = defval($data, 'form_css_class', 'w100p');
 
 				if(!empty($data['property']))
 					$data['name'] = $data['property'];
+
+				$type = defval($data, 'form_type', $type);
 
 //				echo "property=$property_name, type=$type, data=".print_dd($data).", field=".print_dd($field)."<br/>\n";
 				if(!empty($property_name))
@@ -204,13 +212,23 @@ function smarty_block_form($params, $content, &$smarty)
 				{
 					case 'string':
 					case 'input':
+					case 'int':
+					case 'uint':
 						require_once('function.input.php');
 						smarty_function_input($data, $smarty);
 						break;
 					case 'input_date':
 					case 'date':
+					case 'freedate':
+						if($type == 'freedate')
+						{
+							$data['can_drop'] = true;
+							$data['is_integer'] = 8;
+						}
 						require_once('function.input_date.php');
-						smarty_function_input_date(array_merge($data, @$data['args']), $smarty);
+						if($args = popval($data, 'args'))
+							$data = array_merge($data, $args);
+						smarty_function_input_date(array_merge($data), $smarty);
 						break;
 					case 'utime': // UNIX_TIMESTAMP в UTC
 						$data['name'] = popval($data, 'property');
@@ -236,6 +254,27 @@ function smarty_block_form($params, $content, &$smarty)
 						break;
 
 					case 'dropdown':
+					case 'dropdown_id':
+						if($type == 'dropdown_id')
+						{
+							$saveclass = @$data['class'];
+							$data['class'] = 'wa';
+							$data['input_name'] = '_'.$data['name'];
+							if($chars = defval($data, 'form_chars'))
+								$data['maxlength'] = $data['size'] = $chars;
+							bors_templates_smarty::append_data('form_override_fields', $data['name']);
+							require_once('function.input.php');
+							echo "ID:";
+							smarty_function_input($data, $smarty);
+							template_js("\$(function() {
+	\$('select[name={$data['name']}]').change(function(){
+		\$('input[name={$data['input_name']}]').val(\$(this).val())
+	});
+});");
+							unset($data['maxlength'], $data['size']);
+							$data['class'] = $saveclass;
+						}
+
 						if(array_key_exists('named_list', $data))
 						{
 							if(preg_match('/^(\w+):(\w+)$/', $data['named_list'], $m))
@@ -278,6 +317,7 @@ function smarty_block_form($params, $content, &$smarty)
 						$labels[$property_name] = $data;
 
 					default:
+						echo ec("Неизвестный тип {$type}");
 //						print_dd($data);
 //						echo defval($data, 'value');
 //						echo defval($data, 'value');
@@ -351,6 +391,8 @@ function smarty_block_form($params, $content, &$smarty)
 		echo "<input type=\"hidden\" name=\"time_vars\" value=\"".join(',', array_unique(array_filter($tmv)))."\" />\n";
 	if($vars = base_object::template_data('form_file_vars'))
 		echo "<input type=\"hidden\" name=\"file_vars\" value=\"".join(',', array_unique(array_filter($vars)))."\" />\n";
+
+	echo bors_templates_smarty::form_hidden_data('form_override_fields');
 
 	foreach(explode(' ', 'linked_targets') as $n)
 		if($ss = base_object::template_data('form_'.$n))

@@ -1,0 +1,18 @@
+{$this->pages_links_nul()}
+
+<table class="btab w100p">
+<tr>
+	<th>Дата модификации</th>
+	<th>Название</th>
+	<th>ID</th>
+</tr>
+{foreach from=$items item="x"}
+<tr>
+	<td>{$x->get('modify_time')|short_time}</td>
+	<td>{$x->admin()->imaged_titled_link()}</td>
+	<td>{$x->id()}</td>
+</tr>
+{/foreach}
+</table>
+
+{$this->pages_links_nul()}

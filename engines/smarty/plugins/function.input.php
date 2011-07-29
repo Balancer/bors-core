@@ -68,7 +68,9 @@ function smarty_function_input($params, &$smarty)
 				$style = "width: 99%";
 		}
 
-		echo "<input type=\"text\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
+		$input_name = defval($params, 'input_name', $name);
+
+		echo "<input type=\"text\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
 
 		foreach(explode(' ', 'class id maxlength size style') as $p)
 			if(!empty($$p))

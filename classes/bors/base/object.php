@@ -1105,6 +1105,13 @@ class base_object extends base_empty
 					$data[$t] = NULL;
 			}
 		}
+
+		// «Перезаписывающие» поля
+		if($overrides = popval($data, 'override_fields'))
+		{
+			foreach(explode(',', $overrides) as $name)
+				$data[$name] = $data['_'.$name];
+		}
 	}
 
 	function post_set() { }

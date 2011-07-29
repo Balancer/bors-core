@@ -4,18 +4,20 @@ class bors_forms_input extends bors_forms_element
 {
 	static function html($params, &$form)
 	{
+		$name = defval($params, 'name');
+		$maxlength = defval($params, 'maxlength', 255);
+
 		$object = $form->object();
 
 		$value = self::value($params, $form);
-
-		$maxlength = defval($params, 'maxlength', 255);
+//		echo 'val=',$value,"\n";
 
 		$class = empty($class) ? array() : explode(' ', $class);
 		if(in_array($name, explode(',', session_var('error_fields'))))
 			$class[] = "error";
 
 		// Если у нас используется валидация данных формы
-		if($smarty->get_template_vars('ajax_validate'))
+		if($form->attr('ajax_validate'))
 		{
 			if(empty($id))
 			{

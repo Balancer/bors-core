@@ -6,6 +6,8 @@ class bors_forms_element
 	{
 		$name = defval($params, 'name');
 		$def  = defval($params, 'def');
+		$value = defval($params, 'value');
+
 		$object = $form->object();
 
 		if(!array_key_exists('value', $params))
@@ -16,7 +18,7 @@ class bors_forms_element
 				$value = NULL;
 		}
 
-		if(empty($value) && !$form->no_session_vars())
+		if(empty($value) && !$form->attr('no_session_vars'))
 			$value = session_var("form_value_{$name}");
 
 //		echo "===$value===".session_var("form_value_{$name}");

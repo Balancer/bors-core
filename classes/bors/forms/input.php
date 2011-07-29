@@ -4,7 +4,7 @@ class bors_forms_input extends bors_forms_element
 {
 	static function html($params, &$form)
 	{
-		$name = defval($params, 'name');
+		extract($params);
 		$maxlength = defval($params, 'maxlength', 255);
 
 		$object = $form->object();
@@ -12,7 +12,7 @@ class bors_forms_input extends bors_forms_element
 		$value = self::value($params, $form);
 //		echo 'val=',$value,"\n";
 
-		$class = empty($class) ? array() : explode(' ', $class);
+		$class = explode(' ', defval($params, 'class'));
 		if(in_array($name, explode(',', session_var('error_fields'))))
 			$class[] = "error";
 

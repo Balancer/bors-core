@@ -2,7 +2,6 @@
 
 if(config('smarty3_enable'))
 {
-	var_dump(class_include('bors_templates_smarty3'));
 	eval('class bors_templates_smarty extends bors_templates_smarty3 { }');
 	return;
 }

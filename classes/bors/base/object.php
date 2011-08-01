@@ -928,7 +928,7 @@ class base_object extends base_empty
 		if(@array_key_exists($this->attr, '__id_field_name'))
 			return $this->attr['__id_field_name'];
 
-		if(method_exists($this, 'table_fields'))
+		if(method_exists($this, 'table_fields') && $this->storage_engine() != 'storage_db_mysql_smart')
 		{
 			// Новый формат
 			foreach(bors_lib_orm::main_fields($this) as $f)

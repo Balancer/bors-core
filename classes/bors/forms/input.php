@@ -8,9 +8,7 @@ class bors_forms_input extends bors_forms_element
 		$maxlength = defval($params, 'maxlength', 255);
 
 		$object = $form->object();
-
 		$value = self::value($params, $form);
-//		echo 'val=',$value,"\n";
 
 		$class = explode(' ', defval($params, 'class'));
 		if(in_array($name, explode(',', session_var('error_fields'))))

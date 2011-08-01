@@ -1,6 +1,6 @@
 <?php
 
-class bors_templates_abstract extends base_null
+class bors_templates_abstract extends bors_template
 {
 	private $object;
 	protected $template;

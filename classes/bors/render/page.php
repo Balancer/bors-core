@@ -62,8 +62,8 @@ class bors_render_page extends base_null
 
 		$page_template = call_user_func(
 			array($object->page_template_class(), 'find_template'),
-			$object,
-			$object->page_template());
+				$object->page_template(), $object
+		);
 
 		return call_user_func(
 			array($object->page_template_class(), 'fetch'),

@@ -1,5 +1,11 @@
 <?php
 
+if(config('smarty3_enabled'))
+{
+	bors_hidden_log('__obsolete', "Call obsolete smarty2");
+	bors_throw(ec('Попытка использования Smarty2 при активном Smarty3'));
+}
+
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 {
 	debug_timing_start('template_smarty_assign');
@@ -10,6 +16,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		bors_throw(ec('Попытка использования Smarty2 при активном Smarty3'));
 
 	require_once(config('smarty_include'));
+
 	$smarty = new Smarty;
 	require('smarty-register.php');
 

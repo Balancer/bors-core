@@ -21,8 +21,6 @@ class bors_forms_element
 		if(empty($value) && !$form->attr('no_session_vars'))
 			$value = session_var("form_value_{$name}");
 
-//		echo "===$value===".session_var("form_value_{$name}");
-
 		set_session_var("form_value_{$name}", NULL);
 
 		if(!isset($value) && isset($def))

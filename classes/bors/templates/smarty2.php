@@ -2,7 +2,7 @@
 
 class bors_templates_smarty2 extends bors_templates_abstract
 {
-	static function find_template($object, $template_name)
+	static function find_template($template_name, $object = NULL)
 	{
 		foreach(bors_dirs(true) as $dir)
 		{
@@ -69,20 +69,5 @@ class bors_templates_smarty2 extends bors_templates_abstract
 		$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripq('$1'))", $out);
 
 		return $out;
-	}
-
-	static function append_data($name, $value)
-	{
-		$data = base_object::template_data($name);
-		$data[] = $value;
-		base_object::add_template_data($name, $data);
-	}
-
-	static function form_hidden_data($name)
-	{
-		if($vars = base_object::template_data($name))
-			return "<input type=\"hidden\" name=\"".str_replace('form_', '', $name)."\" value=\"".join(',', array_unique(array_filter($vars)))."\" />\n";
-
-		base_object::add_template_data($name, NULL);
 	}
 }

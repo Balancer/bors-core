@@ -1,11 +1,6 @@
 <?php
 
-if(!config('smarty3_enable') && class_exists('bors_templates_smarty'))
-{
-	bors_throw(ec('Уже используется Smarty2. Использвание Smarty3 невозможно. Используйте config_set(\'smarty3_enable\', true);'));
-}
-
-class bors_templates_smarty3 extends bors_templates_meta
+class bors_templates_smarty3 extends bors_template
 {
 	function render_body($object)
 	{
@@ -70,12 +65,16 @@ class bors_templates_smarty3 extends bors_templates_meta
 
 		$smarty->assign($data);
 
+		if(!$smarty->templateExists($template))
+			$template = self::find_template($template);
+
 //		$smarty->debugging = true;
 		return $smarty->fetch($template);
 	}
 
-	static function find_template($object, $template_name)
+	static function find_template($template_name, $object = NULL)
 	{
+		$template_name = preg_replace('!^xfile:!', '', $template_name);
 		foreach(bors_dirs(true) as $dir)
 		{
 			if(file_exists($file = $dir.'/templates/'.$template_name))
@@ -84,6 +83,12 @@ class bors_templates_smarty3 extends bors_templates_meta
 			if(file_exists($file = $dir.'/templates/'.$template_name.'/index.html'))
 				return $file;
 		}
+
+		$trace = debug_backtrace();
+		$called_file = $trace[1]['file'];
+		$called_dirname = dirname($called_file);
+		if(file_exists($file = $called_dirname.'/'.$template_name))
+			return $file;
 
 		return $template_name;
 	}

@@ -1,4 +1,10 @@
-<?php  
+<?php
+
+if(config('smarty3_enabled'))
+{
+	bors_hidden_log('__obsolete', "Call obsolete smarty2");
+	bors_throw(ec('Попытка использования Smarty2 при активном Smarty3'));
+}
 
 require_once("bors_smarty_common.php");
 

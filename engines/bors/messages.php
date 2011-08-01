@@ -85,8 +85,13 @@ function bors_message($text, $params=array())
 		$data['choises'] = $choises;
 	}
 
-	require_once('engines/smarty/assign.php');
-	$body = template_assign_data($body_template, $data);
+	if(config('smarty3_enable'))
+		$body = bors_templates_smarty::fetch($body_template, $data);
+	else
+	{
+		require_once('engines/smarty/assign.php');
+		$body = template_assign_data($body_template, $data);
+	}
 
 	$data['url_engine'] = 'url_calling';
 
@@ -118,7 +123,12 @@ function bors_message($text, $params=array())
 	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 		$template = "xfile:$template";
 
-	$message = template_assign_data($template, $data);
+
+	if(config('smarty3_enable'))
+		$message = bors_templates_smarty::fetch($template, $data);
+	else
+		$message = template_assign_data($template, $data);
+
 
 	//TODO: исправить!!
 	if($ics != $ocs)

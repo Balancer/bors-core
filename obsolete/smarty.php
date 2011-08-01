@@ -1,5 +1,8 @@
 <?php
 
+debug_hidden_log('__obsolete_catch', "Call obsolete code smarty.php");
+return;
+
 require_once(config('smarty_path').'/Smarty.class.php');
 require_once('engines/smarty/bors_smarty_common.php');
 
@@ -15,7 +18,7 @@ function show_page($uri, $data = true)
 			$do_print = $data;
 			$data = array();
 		}
-		
+
         $hts  = new DataBaseHTS();
 
         $page = $hts->normalize_uri($uri);

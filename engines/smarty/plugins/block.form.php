@@ -232,12 +232,20 @@ function smarty_block_form($params, $content, &$smarty)
 						break;
 					case 'utime': // UNIX_TIMESTAMP в UTC
 						$data['name'] = popval($data, 'property');
-						require_once('function.input_date.php');
 						set_def($data, 'is_utc', true);
 						set_def($data, 'time', true);
 						if(!empty($data['args']))
 							$data = array_merge($data, $data['args']);
-						smarty_function_input_date($data, $smarty);
+						if(popval($data, 'subtype') == 'simple')
+						{
+							require_once('function.input_date_simple.php');
+							smarty_function_input_date_simple($data, $smarty);
+						}
+						else
+						{
+							require_once('function.input_date.php');
+							smarty_function_input_date($data, $smarty);
+						}
 						break;
 					case 'bbcode':
 					case 'text':

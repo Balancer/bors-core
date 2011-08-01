@@ -195,7 +195,7 @@ class base_object extends base_empty
 	}
 
 	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
-	function class_title_rp() { return ec('объекта ').get_class($this); }	// РодительныйГенитив Кого? Чего?
+	function class_title_rp() { return ec('объекта ').@get_class($this); }	// РодительныйГенитив Кого? Чего?
 	function class_title_dp() { return ec('объекту ').get_class($this); }	// Дательный Кому? Чему?
 	function class_title_vp() { return ec('объект ').get_class($this); }	// Винительный Кого? Что?
 	function class_title_tp() { return ec('объектом ').get_class($this); }	// Творительный Кем? Чем?
@@ -928,7 +928,17 @@ class base_object extends base_empty
 		if(@array_key_exists($this->attr, '__id_field_name'))
 			return $this->attr['__id_field_name'];
 
-		$ff = method_exists($this, 'table_fields') ? $this->table_fields() : $this->fields_map();
+		if(method_exists($this, 'table_fields'))
+		{
+			// Новый формат
+			foreach(bors_lib_orm::main_fields($this) as $f)
+			{
+				if($f['property'] == 'id')
+					return $f['name'];
+			}
+		}
+
+		$ff = $this->fields_map();
 
 		if(count($ff) == 1) //FIXME: костыль для поддержки древних field() методов.
 							//В списке полей одна запись, если по дефолту прочиталось function main_table_fields() { return array('id'); }

@@ -120,8 +120,6 @@ function bors_message($text, $params=array())
 
 	$message = template_assign_data($template, $data);
 
-//	show_page(@$GLOBALS['main_uri']);
-
 	//TODO: исправить!!
 	if($ics != $ocs)
 		echo iconv($ics, $ocs, $message);

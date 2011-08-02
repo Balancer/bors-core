@@ -17,6 +17,8 @@ bors_tests_xml_xml2array
 
 bors_tests_templates_smarty2
 bors_tests_templates_smarty3
+bors_tests_templates_ext_smarty3
+
 
 
 

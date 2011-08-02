@@ -2,8 +2,11 @@
 
 class bors_forms_input extends bors_forms_element
 {
-	static function html($params, &$form)
+	static function html($params, &$form = NULL)
 	{
+		if(!$form)
+			$form = bors_form::$_current_form;
+
 		extract($params);
 		$maxlength = defval($params, 'maxlength', 255);
 

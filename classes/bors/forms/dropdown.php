@@ -27,82 +27,82 @@ class bors_forms_dropdown extends bors_forms_element
 				$style = "width: 99%";
 		}
 
-	$html .= "<select";
+		$html .= "<select";
 
-	foreach(explode(' ', 'id size style multiple class onchange') as $p)
-		if(!empty($$p))
-			$html .= " $p=\"{$$p}\"";
+		foreach(explode(' ', 'id size style multiple class onchange') as $p)
+			if(!empty($$p))
+				$html .= " $p=\"{$$p}\"";
 
-	if(empty($multiple))
-		$html .= " name=\"{$name}\"";
-	else
-		$html .= " name=\"{$name}[]\"";
+		if(empty($multiple))
+			$html .= " name=\"{$name}\"";
+		else
+			$html .= " name=\"{$name}[]\"";
 
-	$html .= ">\n";
+		$html .= ">\n";
 
 //	$html .= "==={$list}===";
-	if(!is_array($list))
-	{
-		if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))
+		if(!is_array($list))
 		{
-			if($m[1] == 'this')
-				$list = $obj->$m[2]();
+			if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))
+			{
+				if($m[1] == 'this')
+					$list = $object->$m[2]();
+				else
+					$list = object_load($m[1])->$m[2]();
+			}
+			elseif(preg_match("!^(\w+)\->(\w+)\('(.+)'\)!", $list, $m))
+			{
+				if($m[1] == 'this')
+					$list = $object->$m[2]($m[3]);
+				else
+					$list = object_load($m[1])->$m[2]($m[3]);
+			}
+			elseif(preg_match("!^\w+$!", $list))
+			{
+				$list = new $list(@$args);
+				$list = $list->named_list();
+			}
 			else
-				$list = object_load($m[1])->$m[2]();
+			{
+				eval('$list='.$list);
+			}
 		}
-		elseif(preg_match("!^(\w+)\->(\w+)\('(.+)'\)!", $list, $m))
+
+		$have_null = in_array(NULL, $list);
+		$strict = defval($params, 'strict', $have_null);
+		$is_int = defval($params, 'is_int');
+
+		if(is_null($is_int) && !$strict)
+			$is_int = true;
+
+		if(empty($get))
 		{
-			if($m[1] == 'this')
-				$list = $obj->$m[2]($m[3]);
+			if(preg_match('!^\w+$!', $name))
+				$current =  isset($value) ? $value : ($object ? $object->$name() : NULL);
 			else
-				$list = object_load($m[1])->$m[2]($m[3]);
-		}
-		elseif(preg_match("!^\w+$!", $list))
-		{
-			$list = new $list(@$args);
-			$list = $list->named_list();
+				$current =  isset($value) ? $value : 0;
 		}
 		else
-		{
-			eval('$list='.$list);
-		}
-	}
+			$current = $object->$get();
 
-	$have_null = in_array(NULL, $list);
-	$strict = defval($params, 'strict', $have_null);
-	$is_int = defval($params, 'is_int');
+		if(!$current && !empty($list['default']))
+			$current = $list['default'];
 
-	if(is_null($is_int) && !$strict)
-		$is_int = true;
+		if(empty($current))
+			$current = session_var("form_value_{$name}");
 
-	if(empty($get))
-	{
-		if(preg_match('!^\w+$!', $name))
-			$current =  isset($value) ? $value : ($obj ? $obj->$name() : NULL);
-		else
-			$current =  isset($value) ? $value : 0;
-	}
-	else
-		$current = $obj->$get();
+		set_session_var("form_value_{$name}", NULL);
 
-	if(!$current && !empty($list['default']))
-		$current = $list['default'];
+		if(!is_array($current))
+			$current = array($current);
 
-	if(empty($current))
-		$current = session_var("form_value_{$name}");
+		if($is_int)
+			for($i=0; $i<count($current); $i++)
+				$current[$i] = ($have_null && is_null($current[$i])) ?  NULL : intval($current[$i]);
 
-	set_session_var("form_value_{$name}", NULL);
-
-	if(!is_array($current))
-		$current = array($current);
-
-	if($is_int)
-		for($i=0; $i<count($current); $i++)
-			$current[$i] = ($have_null && is_null($current[$i])) ?  NULL : intval($current[$i]);
-
-	foreach($list as $id => $iname)
-		if($id !== 'default')
-			$html .= "\t\t\t<option value=\"$id\"".(in_array($id, $current, $strict) ? " selected=\"selected\"" : "").">$iname</option>\n";
+		foreach($list as $id => $iname)
+			if($id !== 'default')
+				$html .= "\t\t\t<option value=\"$id\"".(in_array($id, $current, $strict) ? " selected=\"selected\"" : "").">$iname</option>\n";
 
 		$html .= "\t\t</select>\n";
 

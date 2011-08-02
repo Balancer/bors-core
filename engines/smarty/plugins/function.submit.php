@@ -21,7 +21,7 @@ function smarty_function_submit($params, &$smarty)
 
 	$out .= " />";
 
-	if($th || $smarty->get_template_vars('has_autofields'))
+	if($th || @$smarty->get_template_vars('has_autofields'))
 		$out = "<tr><th colspan=\"2\">{$out}</th></tr>\n";
 
 	echo $out;

@@ -147,12 +147,16 @@ class base_object extends base_empty
 		if(($config = $this->config_class()))
 		{
 //			if(config('is_debug')) debug_hidden_log('debug-config', "{$this}->config_class() = {$config}");
-			$this->config = bors_load($config, $this);
+			$this->config = new $config($this);
+
 			//TODO: workaround странной ошибки на страницах вида http://balancer.ru/user/29251/aliases.html
 			//Call to undefined method airbase_forum_config::set() in /var/www/.bors/bors-core/classes/bors/base/config.php on line 13
-			get_class($this);
+//			get_class($this);
+
 			if(!$this->config)
 				debug_exit("Can't load config class '{$config}'.");
+
+			$this->config->target_configure();
 		}
 	}
 
@@ -175,9 +179,10 @@ class base_object extends base_empty
 
 		if(!$this->config && ($config = $this->config_class()))
 		{
-			$this->config = object_load($config, $this);
+			$this->config = new $config($this);
 			if(!$this->config)
 				debug_exit("Can't load config ".$this->config_class());
+			$this->config->target_configure();
 		}
 
 		if(($data_provider = $this->data_provider()))
@@ -302,7 +307,13 @@ class base_object extends base_empty
 			return $this->set_attr($name, ec($this->$name_ec));
 
 		if($this->strict_auto_fields_check())
-			bors_throw("__call[".__LINE__."]: undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>at {$this->class_file()}");
+		{
+			$trace = array_shift(debug_backtrace());
+			bors_throw("__call[".__LINE__."]:
+undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>
+defined at {$this->class_file()}<br/>
+". (!empty($trace['file']) ? "called from {$trace['file']}:{$trace['line']}" : ''));
+		}
 
 		return NULL;
 	}
@@ -961,8 +972,15 @@ class base_object extends base_empty
 
 	function title_field()
 	{
-		if(method_exists($this, 'table_fields'))
-			return defval($this->table_fields(), 'title', 'title');
+		if(method_exists($this, 'table_fields') && $this->storage_engine() != 'storage_db_mysql_smart')
+		{
+			// Новый формат
+			foreach(bors_lib_orm::main_fields($this) as $f)
+			{
+				if($f['property'] == 'title')
+					return $f['name'];
+			}
+		}
 
 		return defval($this->fields_map(), 'title', 'title');
 	}

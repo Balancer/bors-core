@@ -41,20 +41,28 @@ class base_db_list extends base_object
 			return;
 		}
 
-		if(preg_match('!^(\w+)\((\w+)\)(\|.+)?$!', $item_class->title_field(), $m))
+		$title_field = $item_class->title_field();
+
+		if(preg_match('!^\w+$!', $title_field, $m))
+		{
+			$this->_title_field = $title_field;
+			$this->_id_field = $item_class->id_field();
+			$this->_table = $item_class->table_name();
+		}
+		elseif(preg_match('!^(\w+)\((\w+)\)(\|.+)?$!', $title_field, $m))
 		{
 			$this->_title_field = $m[1];
 			$this->_id_field = $m[2];
 			$this->_table = $item_class->table_name();
 		}
-		elseif(preg_match('!^(\w+)\.(\w+)\((\w+)\)(\|.+)?$!', $item_class->title_field(), $m))
+		elseif(preg_match('!^(\w+)\.(\w+)\((\w+)\)(\|.+)?$!', $title_field, $m))
 		{
 			$this->_table = $m[1];
 			$this->_title_field = $m[2];
 			$this->_id_field = $m[3];
 		}
 		else
-			debug_exit("Error: unknown title field format {$this->item_class()}->({$item_class->title_field()})");
+			debug_exit("Error: unknown title field format {$this->item_class()}->{$item_class->title_field()}");
 	}
 
 	function named_list()
@@ -107,10 +115,10 @@ class base_db_list extends base_object
 				$limit
 			") as $x)
 			$list[$x['id']] = $x['title'];
-		
+
 		return $list;
 	}
-	
+
 	function id_to_name($id)
 	{
 		$list = $this->named_list();

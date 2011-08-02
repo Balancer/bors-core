@@ -2,16 +2,18 @@
 
 class base_config extends base_object
 {
-	function __construct(&$object)
+	function target_configure()
 	{
-		parent::__construct($object);
+		$object = $this->id();
 
+		// Внимание. Установка параметров через атрибуты, а не через данные,
+		// так как данные будут перезаписаны при загрузке через ORM.
 		foreach($this->config_data() as $key => $value)
-			$object->set($key, $value, false);
+			$object->set_attr($key, $value);
 
 		foreach($this->config_defaults() as $key => $value)
 			if(!$object->is_set($key))
-				$object->set($key, $value, false);
+				$object->set_attr($key, $value);
 	}
 
 	function template_init()

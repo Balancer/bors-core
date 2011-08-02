@@ -7,13 +7,13 @@ class bors_templates_smarty3 extends bors_template
 		$template = $object->body_template();
 		$data = $object->data;
 
-		foreach(explode(' ', $obj->template_vars()) as $var)
-			$$var = $obj->$var();
+		foreach(explode(' ', $object->template_vars()) as $var)
+			$$var = $object->$var();
 
-		foreach(explode(' ', $obj->template_local_vars()) as $var)
-			$data[$var] = $obj->$var();
+		foreach(explode(' ', $object->template_local_vars()) as $var)
+			$data[$var] = $object->$var();
 
-		$data = array_merge($data, $obj->body_data());
+		$data = array_merge($data, $object->body_data());
 
 		return self::fetch($template, $data);
 	}
@@ -58,7 +58,7 @@ class bors_templates_smarty3 extends bors_template
 		return $smarty;
 	}
 
-	static function fetch($template, $data, $smarty = NULL)
+	static function fetch($template, $data = array(), $smarty = NULL)
 	{
 		if(!$smarty)
 			$smarty = self::factory();
@@ -69,6 +69,7 @@ class bors_templates_smarty3 extends bors_template
 			$template = self::find_template($template);
 
 //		$smarty->debugging = true;
+		$smarty->error_reporting = E_ALL & ~E_NOTICE;
 		return $smarty->fetch($template);
 	}
 

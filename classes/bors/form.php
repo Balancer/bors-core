@@ -5,7 +5,7 @@ class bors_form extends bors_object
 	var $_attrs = array();
 	static $_current_form = NULL;
 
-	function object() { return $this->id(); }
+	function object() { return $this->attr['object']; }
 
 	function append_attr($name, $value)
 	{
@@ -40,7 +40,7 @@ class bors_form extends bors_object
 			fields		— редактируемые поля формы
 			calling_object	— объект, отображающий форму. Для навигации и т.п.(?)
 			css_class	— класс CSS-стиля формы
-			dom_id		— DOM ID формы (уст: form_id)
+			dom_form_id		— DOM ID формы (уст: form_id)
 			style		— CSS-стиль формы
 	*/
 
@@ -51,11 +51,11 @@ class bors_form extends bors_object
 		if(empty($name))
 			$name = @$class;
 
-		if(empty($calling_name))
-			$calling_name = bors()->main_object();
+		if(empty($calling_object))
+			$calling_object = bors()->main_object();
 
-		if(empty($dom_id))
-			$dom_id = @$form_id;
+		if(empty($dom_form_id))
+			$dom_form_id = @$form_id;
 
 		if(empty($object) && is_object(@$form)) // obsolete
 			$object = $form;
@@ -89,7 +89,7 @@ class bors_form extends bors_object
 			$object_id	= $object->id();
 		}
 
-		$this->_object = $object;
+		$this->set_attr('object', $object);
 
 		if(!isset($uri))
 		{
@@ -104,13 +104,13 @@ class bors_form extends bors_object
 
 		if(!empty($ajax_validate))
 		{
-			$form_id = 'form_'.md5(rand());
+			$dom_form_id = 'form_'.md5(rand());
 
 			template_jquery();
 			template_jquery_plugin_css('formvalidator/css/validationEngine.jquery.css');
 			template_jquery_plugin('formvalidator/js/jquery.validationEngine-ru.js');
 			template_jquery_plugin('formvalidator/js/jquery.validationEngine.js');
-			template_js("jQuery(document).ready(function() { jQuery('#{$form_id}').validationEngine()})");
+			template_js("jQuery(document).ready(function() { jQuery('#{$dom_form_id}').validationEngine()})");
 
 			$this->set_attr('ajax_validate', $ajax_validate);
 		}
@@ -140,6 +140,9 @@ class bors_form extends bors_object
 			set_session_var('post_message_link_url', $calling_object->get('post_message_link_url'));
 		}
 
+		foreach(explode(' ', 'class_name object_id uri ref act inframe subaction') as $name)
+			$this->set_attr($name, @$$name);
+
 		$html = "<form enctype=\"multipart/form-data\"";
 
 		foreach(explode(' ', 'action method name style enctype onclick onsubmit target') as $p)
@@ -150,8 +153,8 @@ class bors_form extends bors_object
 			if(!empty($$v) && ($$v != 'NULL'))
 				$html .= " $p=\"{$$v}\"";
 
-		if(!empty($dom_id))
-			$html .= " id=\"$form_id\"";
+		if(!empty($dom_form_id))
+			$html .= " id=\"$dom_form_id\"";
 
 		$html .= ">\n";
 
@@ -189,9 +192,15 @@ class bors_form extends bors_object
 			if(!is_array($fields))
 				$fields = explode(',', $fields);
 
-			foreach($fields as $property_name)
+			foreach($fields as $property_name => $data)
 			{
-				$data = $object_fields[$property_name];
+				if(is_array($data))
+				{
+//					echo "prop_name = ",var_dump($property_name), "data=",var_dump($object_fields)."<br/>\n";
+					$property_name = $data['name'];
+				}
+				else
+					$data = $object_fields[$property_name];
 
 				if(!$data)
 					foreach($object_fields as $f)
@@ -234,10 +243,10 @@ class bors_form extends bors_object
 				if($type != 'bool')
 					$html .= "\t<tr><th class=\"w33p\">{$title}</th><td>\n\t\t";
 
-				if(!empty($data['arg']))
-					$data['value'] = object_property_args($form, $property_name, array($data['arg']));
-				else
-					$data['value'] = object_property($form, $property_name);
+//				if(!empty($data['arg']))
+//					$data['value'] = object_property_args($object, $property_name, array($data['arg']));
+//				else
+//					$data['value'] = object_property($object, $property_name);
 
 				$data['class'] = defval($data, 'form_css_class', 'w100p');
 
@@ -289,8 +298,7 @@ class bors_form extends bors_object
 					case 'text':
 					case 'textarea':
 						$data['rows'] = $type_arg;
-						require_once('function.textarea.php');
-						smarty_function_textarea($data, $smarty);
+						$html .= bors_forms_textarea::html($data, $this);
 						break;
 					case '3state':
 						$data['list'] = ec('array("NULL"=>"", 1=>"Да", 0=>"Нет");');
@@ -395,7 +403,7 @@ class bors_form extends bors_object
 //			unset($uri);
 //		}
 
-		foreach(explode(' ', 'class_name id uri ref act inrame subaction') as $name)
+		foreach(explode(' ', 'class_name object_id uri ref act inframe subaction') as $name)
 			$html .= $this->hidden_attr($name);
 
 		foreach(explode(' ', 'go class_name') as $name)

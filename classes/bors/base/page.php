@@ -28,7 +28,8 @@ class base_page extends bors_object
 	{
 		return array_merge(parent::attr_preset(), array(
 			'cr_type'	=> '',
-			'body_engine' => '',
+			'body_engine' => 'bors_bodies_page',
+			'body_template_class' => 'bors_templates_smarty',
 			'visits' => 0,
 			'num_replies' => 0,
 		));
@@ -98,17 +99,21 @@ class base_page extends bors_object
 
 	function body()
 	{
-		if(array_key_exists('body', $this->attr))
-			return $this->attr['body'];
+		if($this->__havefc())
+			return $this->__lastc();
 
-		if($body_engine = $this->body_engine())
+		if($body_class_name = $this->body_engine())
 		{
-			$be = bors_load($body_engine, NULL);
-			if(!$be)
-				debug_exit("Can't load body engine {$body_engine} for class {$this}");
+			$body_engine = bors_load($body_class_name, NULL);
+			if(!$body_engine)
+				bors_throw("Can't load body engine '{$body_class_name}' for class {$this}");
 
-			return $this->attr['body'] = $be->body($this);
+			return $this->__setc($body_engine->body($this));
 		}
+
+		bors_throw("Not defined body engine for class {$this}");
+
+		// Дальше — obsolete, пока не сносим, вдруг понадобится что-то
 
 		global $me;
 
@@ -143,7 +148,7 @@ class base_page extends bors_object
 		return $this->attr['body'] = $content;
 	}
 
-	function cacheable_body()
+	function dis_cacheable_body()
 	{
 		$data = array();
 
@@ -172,9 +177,9 @@ class base_page extends bors_object
 		$data['this'] = $this;
 
 		$this->template_data_fill();
-		require_once('engines/smarty/assign.php');
+//		require_once('engines/smarty/assign.php');
 		$data['compile_id'] = $this->class_name();
-		$result = template_assign_data($this->body_template(), $data);
+		$result = bors_templates_smarty::fetch_ex($this->body_template(), $data);// template_assign_data($this->body_template(), $data);
 		return $result;
 	}
 

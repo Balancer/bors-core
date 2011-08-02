@@ -5,7 +5,7 @@ class bors_form extends bors_object
 	var $_attrs = array();
 	static $_current_form = NULL;
 
-	function object() { return $this->attr['object']; }
+	function object() { return $this->id() ? $this->id() : $this->attr('object'); }
 
 	function append_attr($name, $value)
 	{
@@ -51,6 +51,8 @@ class bors_form extends bors_object
 		if(empty($name))
 			$name = @$class;
 
+		// Класс страницы с формой, но не объект, редактируемый формой.
+		// Для навигации, передачи прав доступа(?) и т.п.
 		if(empty($calling_object))
 			$calling_object = bors()->main_object();
 
@@ -59,6 +61,9 @@ class bors_form extends bors_object
 
 		if(empty($object) && is_object(@$form)) // obsolete
 			$object = $form;
+
+		if(empty($object) && is_object($this->id())) // obsolete
+			$object = $this->id();
 
 		if(empty($object))
 		{

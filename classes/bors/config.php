@@ -9,7 +9,7 @@ class bors_config extends base_config
 	function __construct(&$object)
 	{
 		foreach($this->object_data() as $key => $value)
-			$object->set($key, $value, false);
+			$object->set_attr($key, $value);
 
 		parent::__construct($object);
 	}

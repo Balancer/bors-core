@@ -4,12 +4,13 @@ class bors_forms_element
 {
 	static function value(&$params, &$form)
 	{
+//var_dump($params);
 		$name = defval($params, 'name');
 		$def  = defval($params, 'def');
 		$value = defval($params, 'value');
 
 		$object = $form->object();
-
+//var_dump($params);
 		if(!array_key_exists('value', $params))
 		{
 			if(($object && ($object->id() || !$object->storage_engine())))

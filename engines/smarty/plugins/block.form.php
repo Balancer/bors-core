@@ -8,12 +8,15 @@
 function smarty_block_form($params, $content, &$smarty)
 {
 	static $form = NULL;
-	$object = bors()->main_object();
+	$params['calling_object'] = defval($params, 'calling_object', bors()->main_object());
 
 	if($content == NULL) // Открытие формы
 	{
-		$form = new bors_form($object);
+		$form = new bors_form(NULL);
 		echo $form->html_open($params);
+		if($form->attr('has_autofields'))
+			$smarty->assign('has_autofields', true);
+
 		return;
 	}
 

@@ -33,9 +33,11 @@ class bors_admin_edit_smart extends base_page
 	{
 		if(!($me = bors()->user()) && !config('admin_can_nologin'))
 			return bors_message(ec('Вы не авторизованы'));
+
+		return parent::pre_parse();
 	}
 
-	function local_data()
+	function body_data()
 	{
 		template_noindex();
 

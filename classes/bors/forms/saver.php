@@ -13,14 +13,14 @@ class bors_forms_saver extends base_empty
 //		echo "Time vars parsed:"; print_d($data);
 
 		$object = NULL;
-		if(!empty($data['id']))	// Был передан ID, пытаемся загрузить
-			$object = bors_load($data['class_name'], $data['id']);
+		if(!empty($data['object_id']))	// Был передан ID, пытаемся загрузить
+			$object = bors_load($data['class_name'], $data['object_id']);
 
 		if(!$object) // Если не было объекта или нужно создать новый
 			$object = object_new($data['class_name']);
 
 		if(!$object) // Так и не получилось создать
-			return bors_throw(ec("Не получается создать объект для сохранения ")."{$data['class_name']}({$data['id']})");
+			return bors_throw(ec("Не получается создать объект для сохранения ")."{$data['class_name']}({$data['object_id']})");
 
 		// Проверяем не обрабатывает ли свои сохранения объект сам.
 		if($object->pre_action($data) === true)
@@ -31,7 +31,7 @@ class bors_forms_saver extends base_empty
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($object)."; access_engine=".$object->access_engine());
 
 		if(!$object->access()->can_action(@$data['act'], $data))
-			return bors_message(ec("[2] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($object).", access=".($object->access_engine())."/".get_class($object->access()).", method=can_action)"));
+			return bors_message(ec("[FS] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($object).", access=".($object->access_engine())."/".get_class($object->access()).", method=can_action)"));
 
 		if(empty($data['subaction']))
 			$method = '';

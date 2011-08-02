@@ -119,5 +119,5 @@ class bors_user_flat extends bors_user_base
 	}
 
 	function is_admin() { return $this->data('access_level') > 2; }
-	function can_edit($object) { return $this->data('access_level') > 2; }
+	function can_edit_object($object) { return $this->data('access_level') > 2; }
 }

@@ -88,18 +88,18 @@ class bors_templates_smarty3 extends bors_template
 				return $file;
 		}
 
-		$trace = debug_backtrace();
-		$called_file = @$trace[1]['file'];
-		$called_dirname = dirname($called_file);
-		if(file_exists($file = $called_dirname.'/'.$template_name))
-			return $file;
-
 		if($object)
 		{
 			$object_dirname = dirname($object->class_file());
 			if(file_exists($file = $object_dirname.'/'.$template_name))
 				return $file;
 		}
+
+		$trace = debug_backtrace();
+		$called_file = @$trace[1]['file'];
+		$called_dirname = dirname($called_file);
+		if(file_exists($file = $called_dirname.'/'.$template_name))
+			return $file;
 
 		return $template_name;
 	}

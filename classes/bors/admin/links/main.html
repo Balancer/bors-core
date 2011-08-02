@@ -33,7 +33,7 @@
 		{icon image='relationship.png' link=$link->target()->admin()->urls('links') title="Редактировать все связи этого объекта"}
 	</td>
 	<td class="nobr">{$link->modify_time(true)|smart_time}</td>
-	<td class="nobr">{$link->type()->title()|lower}, {if $link->is_auto()}авто{else}ручной{/if}</td>
+	<td class="nobr">{$link->type()->title()|bors_lower}, {if $link->is_auto()}авто{else}ручной{/if}</td>
 	<td>
 		{$link->admin()->imaged_edit_link('')}
 		{$link->admin()->imaged_link('unlink', 'delete.png')}

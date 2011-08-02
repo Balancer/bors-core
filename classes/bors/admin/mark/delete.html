@@ -1,7 +1,7 @@
 {if class_exists('bors_moderator_note')}
 <p title="{$this->id()}">
 Укажите причину, по которой Вы хотите скрыть
-{$this->object()|get:class_title_vp|lower} 
+{$this->object()|get:class_title_vp|bors_lower} 
 &laquo;{$this->object()|get:titled_url}&raquo;?
 </p>
 {/if}

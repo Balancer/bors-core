@@ -80,6 +80,9 @@ class bors_form extends bors_object
 			if(empty($object_id) || $object_id == 'NULL')
 				$object_id = NULL;
 
+			if($class_name == 'NULL')
+				$class_name = NULL;
+
 			if($class_name && $object_id)
 				$object = bors_load($class_name, $object_id);
 		}
@@ -194,13 +197,13 @@ class bors_form extends bors_object
 
 			foreach($fields as $property_name => $data)
 			{
+//				echo "prop_name = ",var_dump($property_name), "data=",var_dump($data)."<br/>\n";
 				if(is_array($data))
 				{
-//					echo "prop_name = ",var_dump($property_name), "data=",var_dump($object_fields)."<br/>\n";
 					$property_name = $data['name'];
 				}
 				else
-					$data = $object_fields[$property_name];
+					$data = $object_fields[$data];
 
 				if(!$data)
 					foreach($object_fields as $f)

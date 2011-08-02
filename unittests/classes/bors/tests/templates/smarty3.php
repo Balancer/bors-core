@@ -10,6 +10,7 @@ class bors_tests_templates_smarty3 extends bors_page
 		return array_merge(parent::body_data(), array(
 			'var1' => ec('значение переменной 1'),
 			'var3' => array(1,2,3),
+			'var11' => ec('значение переменной 11'),
 		));
 	}
 
@@ -18,5 +19,13 @@ class bors_tests_templates_smarty3 extends bors_page
 		return array_merge(parent::page_data(), array(
 			'glob_var2' => ec('значение глобальной переменной 2'),
 		));
+	}
+
+	function body_template()
+	{
+		if($this->id())
+			return $this->id();
+
+		return parent::body_template();
 	}
 }

@@ -75,7 +75,7 @@ class bors_templates_smarty3 extends bors_template
 
 	static function find_template($template_name, $object = NULL)
 	{
-//		echo "Find $template_name for {$object}<br/>\n";
+//		echo "\nFind $template_name for {$object} defined in {$object->class_file()}<br/>\n";
 //		echo debug_trace();
 //		echo $object->class_file();
 		$template_name = preg_replace('!^xfile:!', '', $template_name);
@@ -93,6 +93,16 @@ class bors_templates_smarty3 extends bors_template
 			$object_dirname = dirname($object->class_file());
 			if(file_exists($file = $object_dirname.'/'.$template_name))
 				return $file;
+
+			$parent = get_parent_class($object);
+
+			while($parent)
+			{
+				if(file_exists($file = dirname(class_include($parent)).'/'.$template_name))
+					return $file;
+
+				$parent = get_parent_class($object);
+			}
 		}
 
 		$trace = debug_backtrace();

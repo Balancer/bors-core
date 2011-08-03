@@ -28,6 +28,7 @@ class bors_templates_smarty3 extends bors_template
 //		$smarty->config_dir   = '/web/www.example.com/guestbook/configs/';
 
 		$smarty->compile_dir = secure_path(config('cache_dir').'/smarty3-templates_c_'.config('internal_charset').'/');
+		$smarty->auto_literal = false; //TODO: придумать, как сделать разрешение для отдельных шаблонов.
 /*
 		$smarty->compile_id = defval($data, 'compile_id');
 		if(strlen($smarty->compile_id) > 128)
@@ -63,7 +64,13 @@ class bors_templates_smarty3 extends bors_template
 		if(!$smarty)
 			$smarty = self::factory();
 
+		if(!empty($GLOBALS['cms']['templates']['data']))
+            foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
+       	        $smarty->assign($key, $value);
+
 		$smarty->assign($data);
+		$trace = debug_backtrace();
+		$smarty->assign("template_dirname", dirname($trace[1]['file']));
 
 		if(!$smarty->templateExists($template))
 			$template = self::find_template($template, @$data['this']);
@@ -71,46 +78,5 @@ class bors_templates_smarty3 extends bors_template
 //		$smarty->debugging = true;
 		$smarty->error_reporting = E_ALL & ~E_NOTICE;
 		return $smarty->fetch($template);
-	}
-
-	static function find_template($template_name, $object = NULL)
-	{
-//		echo "\nFind $template_name for {$object} defined in {$object->class_file()}<br/>\n";
-//		echo debug_trace();
-//		echo $object->class_file();
-		$template_name = preg_replace('!^xfile:!', '', $template_name);
-		foreach(bors_dirs(true) as $dir)
-		{
-			if(file_exists($file = $dir.'/templates/'.$template_name))
-				return $file;
-
-			if(file_exists($file = $dir.'/templates/'.$template_name.'/index.html'))
-				return $file;
-		}
-
-		if($object)
-		{
-			$object_dirname = dirname($object->class_file());
-			if(file_exists($file = $object_dirname.'/'.$template_name))
-				return $file;
-
-			$parent = get_parent_class($object);
-
-			while($parent)
-			{
-				if(file_exists($file = dirname(class_include($parent)).'/'.$template_name))
-					return $file;
-
-				$parent = get_parent_class($object);
-			}
-		}
-
-		$trace = debug_backtrace();
-		$called_file = @$trace[1]['file'];
-		$called_dirname = dirname($called_file);
-		if(file_exists($file = $called_dirname.'/'.$template_name))
-			return $file;
-
-		return $template_name;
 	}
 }

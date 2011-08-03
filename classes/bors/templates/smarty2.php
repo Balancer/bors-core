@@ -2,20 +2,6 @@
 
 class bors_templates_smarty2 extends bors_templates_abstract
 {
-	static function find_template($template_name, $object = NULL)
-	{
-		foreach(bors_dirs(true) as $dir)
-		{
-			if(file_exists($file = $dir.'/templates/'.$template_name))
-				return $file;
-
-			if(file_exists($file = $dir.'/templates/'.$template_name.'/index.html'))
-				return $file;
-		}
-
-		return $template_name;
-	}
-
 	static function fetch($template, $data)
 	{
 		require_once(config('smarty_include'));
@@ -53,6 +39,9 @@ class bors_templates_smarty2 extends bors_templates_abstract
 		$smarty->security = false;
 		$smarty->cache_modified_check = true;
 		$smarty->cache_lifetime = 86400*7;
+
+		if(!$smarty->template_exists($template))
+			$template = self::find_template($template, @$data['this']);
 
 		if(!$smarty->template_exists($template))
 			$template = smarty_template($template);

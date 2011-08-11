@@ -63,15 +63,15 @@ class base_object extends base_empty
 		foreach($this->children() as $c)
 		{
 			if(is_object($c))
-				$child_object[] = $c;
+				$child_objects[] = $c;
 			else
 			{
 				if($c = bors_load_uri($c))
-					$child_object[] = $c;
+					$child_objects[] = $c;
 			}
 		}
 
-		return $this->__setc($child_object);
+		return $this->__setc($child_objects);
 	}
 
 	function rss_body()

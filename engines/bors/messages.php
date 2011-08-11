@@ -86,7 +86,9 @@ function bors_message($text, $params=array())
 	}
 
 	if(config('smarty3_enable'))
+	{
 		$body = bors_templates_smarty::fetch($body_template, $data);
+	}
 	else
 	{
 		require_once('engines/smarty/assign.php');

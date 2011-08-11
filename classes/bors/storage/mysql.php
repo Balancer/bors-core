@@ -197,14 +197,15 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$must_be_configured = $object->get('must_be_configured');
 		$select = array();
 		$post_functions = array();
+
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
-			if(preg_match('/^\w+$/', $name = $f['name']))
-				$x = '`'.$name.'`'; // убирать апострофы нельзя, иначе тупо не работабт поля с некорректными именами
+			if(preg_match('/^\w+$/', $sql_name = $f['sql_name']))
+				$x = '`'.$sql_name.'`'; // убирать апострофы нельзя, иначе тупо не работабт поля с некорректными именами
 			else
-				$x = $name;
+				$x = $sql_name;
 
-			if($f['name'] != ($property = $f['property']))
+			if($f['sql_name'] != ($property = $f['property']))
 				$x .= " AS `{$property}`";
 
 			$select[] = $x;

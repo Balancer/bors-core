@@ -111,7 +111,7 @@ class base_page extends bors_object
 			return $this->__setc($body_engine->body($this));
 		}
 
-		bors_throw("Not defined body engine for class {$this}");
+		bors_throw("Not defined body engine for class '{$this}'");
 
 		// Дальше — obsolete, пока не сносим, вдруг понадобится что-то
 

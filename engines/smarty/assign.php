@@ -3,7 +3,7 @@
 if(config('smarty3_enable'))
 {
 	debug_hidden_log('__obsolete', "Call obsolete smarty2");
-	bors_throw(ec('Попытка использования Smarty2 при активном Smarty3'));
+	bors_throw(ec('[assign load] Попытка использования Smarty2 при активном Smarty3'));
 }
 
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
@@ -13,7 +13,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 	unset($GLOBALS['module_data']);
 
 	if(config('page_template_class') == 'bors_templates_smarty3')
-		bors_throw(ec('Попытка использования Smarty2 при активном Smarty3'));
+		bors_throw(ec('[assign fetch] Попытка использования Smarty2 при активном Smarty3'));
 
 	require_once(config('smarty_include'));
 

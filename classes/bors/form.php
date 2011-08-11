@@ -376,9 +376,10 @@ class bors_form extends bors_object
 					case 'bool':
 						$data['label'] = $title;
 						$labels[$property_name] = $data;
+						break;
 
 					default:
-						$html .= ec("Неизвестный тип {$type}");
+						$html .= ec("Неизвестный тип '{$type}'");
 //						print_dd($data);
 //						echo defval($data, 'value');
 //						echo defval($data, 'value');
@@ -389,9 +390,10 @@ class bors_form extends bors_object
 			if($labels)
 			{
 				$html .= "<tr><th>Метки</th><td>";
-				require_once('function.checkbox.php');
+//				require_once('function.checkbox.php');
 				foreach($labels as $name => $data)
-					smarty_function_checkbox($data, $smarty);
+					$html .= bors_forms_checkbox::html($data, $this);
+//					smarty_function_checkbox($data, $smarty);
 				$html .= "</td></tr>\n";
 			}
 		}

@@ -4,7 +4,7 @@ class bors_objects_visit extends base_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
 
-	function db_name() { return 'BORS'; }
+//	function db_name() { return 'BORS'; }
 	function table_name() { return 'bors_views_count'; }
 	function table_fields()
 	{

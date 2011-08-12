@@ -3,7 +3,9 @@
     {
 		if($class_name = @$params['class'])
 		{
-			$class_name = "module_{$class_name}";
+			if(class_include($mcn = "module_{$class_name}"))
+				$class_name = $mcn;
+
 			foreach(explode(' ', 'id page') as $name)
 			{
 				$$name = @$params[$name];
@@ -11,7 +13,7 @@
 			}
 
 			$params['page'] = $page;
-		
+
 			if(!$id)
 				$id = bors()->main_object();
 
@@ -20,15 +22,15 @@
 				$ps[] = '"'.addslashes($k).'" => "'.addslashes($v).'"';
 
 			$result = "<?php
-\$obj = object_load(\"$class_name\", \"$id\", array(".join(',', $ps)."));
+\$obj = bors_load_ex(\"$class_name\", \"$id\", array(".join(',', $ps)."));
 if(\$obj)
 	\$content = \$obj->body();
 else
-	\$content = ec('Неизвестный класс ').\"$class_name\";
+	\$content = ec('Неизвестный класс «').\"$class_name\".ec(\"»\");
 ?>";
-			return $result;
+			return save_format($result);
 		}
-	
+
 //        if(!check_lcml_access('usemodules',true))
 //            return $txt;
 
@@ -38,8 +40,8 @@ else
 			$ps .= "\$GLOBALS['module_data']['$key'] = '".addslashes($value)."'; ";
 
 		$out = "<?php ob_start(); $ps include(\"modules/{$params['url']}.php\"); \$content = ob_get_contents(); ob_clean(); ?>";
-		
+
 		unset($GLOBALS['module_data']);
-		
-		return $out;
+
+		return save_format($out);
     }

@@ -279,7 +279,7 @@
 			}
         }
 
-//		print_d($in);
+//		print_dd($in);
 
 		if(preg_match_all("!(?<=^|\s)(\w+)=\"([^\"]+)\"(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{

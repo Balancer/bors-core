@@ -2,6 +2,9 @@
 
 class bors_templates_smarty2 extends bors_templates_abstract
 {
+	// Нужно запомнить и убедиться в унификации — обычно метод fetch()
+	// не должен заниматься поиском нечётко заданного шаблона,
+	// это задача вызывающего. Например, bors_template->render_page($template, $object);
 	static function fetch($template, $data)
 	{
 		require_once(config('smarty_include'));

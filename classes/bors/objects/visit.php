@@ -9,8 +9,12 @@ class bors_objects_visit extends base_object_db
 	function table_fields()
 	{
 		return array(
+			'*no_defaults',
+//			'id' => 'CONCAT(`target_class_name`,":",`target_id`)',
+			'id',
 			'target_class_name',
 			'target_id',
+			'target_page',
 			'views_count',
 			'first_visit' => 'UNIX_TIMESTAMP(`first_visit`)',
 			'last_visit' => 'UNIX_TIMESTAMP(`last_visit`)',
@@ -44,6 +48,7 @@ class bors_objects_visit extends base_object_db
 		$count = bors_find_first(__CLASS__, array(
 			'target_class_name' => $object->extends_class_name(),
 			'target_id' => $object->id(),
+			'target_page' => $object->page(),
 		));
 
 		if($count)
@@ -60,6 +65,7 @@ class bors_objects_visit extends base_object_db
 			$count = bors_new(__CLASS__, array(
 				'target_class_name' => $object->extends_class_name(),
 				'target_id' => $object->id(),
+				'target_page' => $object->page(),
 				'first_visit' => $now,
 				'last_visit' => $now,
 				'views_count' => $inc,

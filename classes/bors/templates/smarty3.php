@@ -59,6 +59,9 @@ class bors_templates_smarty3 extends bors_template
 		return $smarty;
 	}
 
+	// Нужно запомнить и убедиться в унификации — обычно метод fetch()
+	// не должен заниматься поиском нечётко заданного шаблона,
+	// это задача вызывающего. Например, bors_template->render_page($template, $object);
 	static function fetch($template, $data = array(), $smarty = NULL)
 	{
 		if(!$smarty)
@@ -72,6 +75,7 @@ class bors_templates_smarty3 extends bors_template
 		$trace = debug_backtrace();
 		$smarty->assign("template_dirname", dirname($trace[1]['file']));
 
+		// Снести в пользу render_page(), наверное.
 		if(!$smarty->templateExists($template))
 			$template = self::find_template($template, @$data['this']);
 

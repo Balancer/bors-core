@@ -362,7 +362,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 	function save($object)
 	{
 //		var_dump($object->id());
+//		var_dump($object->id_field());
 		$where = array($object->id_field() => $object->id());
+//		var_dump($where);
 		list($update, $where) = self::__update_data_prepare($object, $where);
 
 		$update_plain = array();

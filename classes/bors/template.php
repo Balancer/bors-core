@@ -12,7 +12,7 @@ class bors_template
 
 		$data['this'] = $object;
 
-		return $this->fetch($template, $data);
+		return $this->fetch(self::find_template($template), $data);
 	}
 
 	static function find_template($template_name, $object = NULL)

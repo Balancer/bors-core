@@ -319,7 +319,14 @@ defined at {$this->class_file()}<br/>
 	}
 
 	function pre_parse() { return false; }
-	function pre_show() { return false; }
+
+	function pre_show()
+	{
+		if(config('objects_visits_counting'))
+			bors_objects_visit::inc($this);
+
+		return false;
+	}
 
 	private $__mutex;
 	private function __mutex_lock()

@@ -47,7 +47,7 @@ function smarty_function_input_file($params, &$smarty)
 	echo "<input type=\"hidden\" name=\"{$name}___upload_dir\" value=\"".defval($params, 'upload_dir', config('upload_dir').'/files')."\"/>\n";
 	echo "<input type=\"hidden\" name=\"{$name}___no_subdirs\" value=\"".defval($params, 'no_subdirs', config('no_subdirs'))."\"/>\n";
 	echo "<input type=\"hidden\" name=\"{$name}___link_type\" value=\"" .defval($params, 'link_type', 'cross')."\"/>\n";
-	echo "<input type=\"hidden\" name=\"{$name}___parent\" value=\"" .defval($params, 'object', $obj)->internal_uri_ascii()."\"/>\n";
+	echo "<input type=\"hidden\" name=\"{$name}___parent\" value=\"" .object_property(defval($params, 'object', $obj), 'internal_uri_ascii')."\"/>\n";
 	if($th)
 		echo "</td></tr>\n";
 }

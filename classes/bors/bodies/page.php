@@ -15,7 +15,10 @@ class bors_bodies_page extends base_null
 
 		$body_template = $object->body_template();
 
-		$data = array_merge($data, $GLOBALS['cms']['templates']['data'], $object->local_template_data_array());
+		$data = array_merge($data,
+			defval(@$GLOBALS['cms']['templates'], 'data', array()),
+			$object->local_template_data_array()
+		);
 
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$data[$var] = $object->$var();

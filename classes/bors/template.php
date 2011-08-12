@@ -24,24 +24,24 @@ class bors_template
 		foreach(bors_dirs(true) as $dir)
 		{
 			if(file_exists($file = $dir.'/templates/'.$template_name))
-				return $file;
+				return 'xfile:'.$file;
 
 			if(file_exists($file = $dir.'/templates/'.$template_name.'/index.html'))
-				return $file;
+				return 'xfile:'.$file;
 		}
 
 		if($object)
 		{
 			$object_dirname = dirname($object->class_file());
 			if(file_exists($file = $object_dirname.'/'.$template_name))
-				return $file;
+				return 'xfile:'.$file;
 
 			$parent = get_parent_class($object);
 
 			while($parent)
 			{
 				if(file_exists($file = dirname(class_include($parent)).'/'.$template_name))
-					return $file;
+					return 'xfile:'.$file;
 
 				$parent = get_parent_class($parent);
 			}
@@ -51,7 +51,7 @@ class bors_template
 		$called_file = @$trace[1]['file'];
 		$called_dirname = dirname($called_file);
 		if(file_exists($file = $called_dirname.'/'.$template_name))
-			return $file;
+			return 'xfile:'.$file;
 
 		return $template_name;
 	}

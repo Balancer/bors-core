@@ -273,14 +273,21 @@ function object_property($object, $property, $def = NULL)
 {
 	if(is_object($object))
 	{
-		if(preg_match('/^\w+$/', $property))
-			return $object->get($property, $def);
-		else
+		try
 		{
-//			echo debug_trace();
-//			echo "\$x = \$object->{$property};";
-			eval("\$x = \$object->{$property};");
-			return $x;
+			if(preg_match('/^\w+$/', $property))
+				return $object->get($property, $def);
+			else
+			{
+//				echo debug_trace();
+//				echo "\$x = \$object->{$property};";
+				eval("\$x = \$object->{$property};");
+				return $x;
+			}
+		}
+		catch(Exception $e)
+		{
+			return $def;
 		}
 	}
 

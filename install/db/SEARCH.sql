@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_0` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_source_1` (
@@ -13,7 +14,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_1` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_source_2` (
@@ -22,7 +24,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_2` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_source_3` (
@@ -31,7 +34,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_3` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_source_4` (
@@ -40,7 +44,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_4` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_source_5` (
@@ -49,7 +54,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_5` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_source_6` (
@@ -58,7 +64,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_6` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_source_7` (
@@ -67,7 +74,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_7` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_source_8` (
@@ -76,7 +84,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_8` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_source_9` (
@@ -85,7 +94,8 @@ CREATE TABLE IF NOT EXISTS `bors_search_source_9` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
-  `count` int(11) NOT NULL
+  `count` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bors_search_titles` (
@@ -94,6 +104,7 @@ CREATE TABLE IF NOT EXISTS `bors_search_titles` (
   `target_object_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `target_create_time` int(11) NOT NULL,
   `target_modify_time` int(11) NOT NULL,
+  `target_weight` int(11) NOT NULL,
   KEY `word_id` (`word_id`,`target_class_id`,`target_object_id`),
   KEY `word_id_2` (`word_id`,`target_class_id`,`target_object_id`,`target_create_time`),
   KEY `word_id_3` (`word_id`,`target_class_id`,`target_object_id`,`target_modify_time`)

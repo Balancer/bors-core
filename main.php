@@ -263,15 +263,21 @@ if(config('debug_timing') && is_string($res))
 
 	if($object)
 	{
-		$deb .= "class = {$object->class_name()}\n"
-			."class_file = {$object->class_file()}\n";
+		foreach(explode(' ', 'class_name class_file template body_template') as $var)
+			if($val = $object->get($var))
+				$deb .= "$var = $val\n";
+
 		if($cs = $object->cache_static())
 			$deb .= "cache static expire = ". date('r', time()+$cs)."\n";
-			$deb .= "class_template = {$object->template()}\n";
 	}
 
-	$deb .= "\n=== debug vars: ===\n";
-	$deb .= debug_vars_info();
+	$deb .= "smarty = ".(config('smarty3_enable') ? 3 : 2)."\n";
+
+	if($deb_vars = debug_vars_info())
+	{
+		$deb .= "\n=== debug vars: ===\n";
+		$deb .= $deb_vars;
+	}
 
 	$deb .= "\n=== debug counting: ===\n";
 	$deb .= debug_count_info_all();

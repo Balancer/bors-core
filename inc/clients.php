@@ -3,6 +3,7 @@
 function bors_bot_detect($user_agent)
 {
 	foreach(array(
+			'Baiduspider\+' => 'Baiduspider+',	// Baiduspider+(+http://www.baidu.com/search/spider.htm)
 			'Begun Robot Crawler' => 'Begun Robot Crawler',
 			'bingbot' => 'BingBot',		// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
 			'DotBot' => 'DotBot',		// Mozilla/5.0 (compatible; DotBot/1.1; http://www.dotnetdotcom.org/, crawler@dotnetdotcom.org)
@@ -89,6 +90,9 @@ function im_client_detect($client_id, $type)
 	if(preg_match('/qip/i', $client_id))
 		return array('QIP', 'Windows');
 
+	if(preg_match('!gmail\.com/gmail!i', $client_id))
+		return array('GTalk/GMail', NULL);
+
 	switch($type)
 	{
 		case 'jabber':
@@ -114,6 +118,8 @@ function im_client_image($client_name)
 			return 'http://s.wrk.ru/i16/im/gajim.png';
 		case 'QIP':
 			return 'http://s.wrk.ru/i16/im/qipinfium.png';
+		case 'GTalk/GMail':
+			return 'http://s.wrk.ru/i16/im/gtalk.gif';
 	}
 
 	debug_hidden_log('append_data', "Unknown IM type $name for $client_id (of $type)");

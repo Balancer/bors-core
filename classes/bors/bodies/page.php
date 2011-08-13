@@ -11,17 +11,17 @@ class bors_bodies_page extends base_null
 		$data['template_dir'] = $object->class_dir();
 		$data['this'] = $object;
 
+		$body_template = $object->body_template();
+
 		$object->template_data_fill();
 
-		$body_template = $object->body_template();
+		foreach(explode(' ', $object->template_local_vars()) as $var)
+			$data[$var] = $object->$var();
 
 		$data = array_merge($data,
 			defval(@$GLOBALS['cms']['templates'], 'data', array()),
 			$object->local_template_data_array()
 		);
-
-		foreach(explode(' ', $object->template_local_vars()) as $var)
-			$data[$var] = $object->$var();
 
 		return call_user_func(
 			array($object->body_template_class(), 'fetch'),

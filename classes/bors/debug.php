@@ -15,13 +15,13 @@ class bors_debug
 			'title' => $message,
 			'category' => $category,
 			'level' => $level,
-			'trace' => json_encode(debug_backtrace()),
+			'trace' => serialize(array_slice(debug_backtrace(), 0, 100)),
 			'owner_id' => bors()->user_id(),
 			'request_uri' => bors()->request()->url(),
 			'get_vars' => json_encode(@$_GET),
 			'referer' => bors()->request()->referer(),
 			'remote_addr' => @$_SERVER['REMOTE_ADDR'],
-			'server_data' => json_encode(@$_SERVER),
+			'server_data' => strlen(serialize($_SERVER)),
 		));
 
 		$enter = false;

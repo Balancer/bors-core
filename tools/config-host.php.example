@@ -1,0 +1,6 @@
+<?php
+
+mysql_access('BORS_DB', 'bors_user', 'xxxxxxxxxxxxxxxx');
+
+
+

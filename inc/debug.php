@@ -362,6 +362,8 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 		$type = 'common';
 	}
 
+//	bors_debug::log($type, $message, 'hidden');
+
 	if(!($out_dir = config('debug_hidden_log_dir')))
 		return;
 

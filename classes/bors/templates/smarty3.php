@@ -74,6 +74,7 @@ class bors_templates_smarty3 extends bors_template
 		$smarty->assign($data);
 		$trace = debug_backtrace();
 		$smarty->assign("template_dirname", dirname($trace[1]['file']));
+		$smarty->assign('me', bors()->user());
 
 		// Снести в пользу render_page(), наверное.
 		if(!$smarty->templateExists($template))

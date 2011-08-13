@@ -15,6 +15,9 @@ function lcml_external_code($text)
 	}
 
 	$text = preg_replace('!(^|\s)http://rutube\.ru/tracks/\d+\.html\?v=(\w+)(\s|$)!m', "\n[rutube]$2[/rutube]\n", $text);
+	$text = preg_replace('!(^|\s)(http://rutube\.ru/tracks/(\d+)\.html\?kot=\d)(\s|$)!m', "\n[rutube original_url=\"$2\"]$3[/rutube]\n", $text);
+
+	$text = preg_replace('!(^|\s)http://prostopleer.com/tracks/(\w+)(\s|$)!m', "\n[prostopleer]$2[/prostopleer]\n", $text);
 
 	// PicasaWeb
 	// http://picasaweb.google.com/lh/photo/Ds6wIz_ClELVCBg84Q7-6Q?feat=directlink

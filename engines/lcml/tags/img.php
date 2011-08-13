@@ -7,6 +7,8 @@ function lt_img($params)
 	if(!trim($params['orig']))
 		return '[img]';
 
+//	if(config('is_debug')) var_dump($params);
+
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
 		return lt_img_bors($params);
 

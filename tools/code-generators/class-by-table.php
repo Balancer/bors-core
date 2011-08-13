@@ -26,8 +26,23 @@ function main($argv)
 	echo "\tfunction table_fields()\n\t{\n\t\treturn array(\n";
 	foreach(explode("\n", $x['Create Table']) as $s)
 	{
-		if(preg_match('/^\s+`(\w+)`/', $s, $m))
-			echo "\t\t\t'{$m[1]}',\n";
+		if(preg_match('/^\s+`(\w+)`(.*)$/', $s, $m))
+		{
+			$field = $m[1];
+			$type = trim($m[2]);
+			if(preg_match('/^(\w+)/', $type, $mm))
+				$type = $mm[1];
+			switch($type)
+			{
+				case 'timestamp':
+					$append = " => 'UNIX_TIMESTAMP(`$field`)'";
+					break;
+				default:
+					$append = '';
+					break;
+			}
+			echo "\t\t\t'{$field}'$append,\n";
+		}
 	}
 	echo "\t\t);\n";
 	echo "\t}\n";

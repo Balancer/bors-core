@@ -19,6 +19,7 @@ config_set('default_template', 'default/index.html');
 
 config_set('main_bors_db', 'BORS');
 config_set('bors_core_db', 'BORS');
+config_set('bors_logs_db', 'BORS_LOGS');
 
 config_set('bors_version_show', false);
 

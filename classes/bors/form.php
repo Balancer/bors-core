@@ -3,6 +3,7 @@
 class bors_form extends bors_object
 {
 	var $_attrs = array();
+	var $_params;
 	static $_current_form = NULL;
 
 	function object() { return $this->id() ? $this->id() : $this->attr('object'); }
@@ -46,6 +47,7 @@ class bors_form extends bors_object
 
 	function html_open($params)
 	{
+		$this->_params = $params;
 		extract($params);
 
 		if(empty($name))
@@ -58,6 +60,9 @@ class bors_form extends bors_object
 
 		if(empty($dom_form_id))
 			$dom_form_id = @$form_id;
+
+		if(empty($object) && @$class == 'this') // obsolete
+			$object = bors()->main_object();
 
 		if(empty($object) && is_object(@$form)) // obsolete
 			$object = $form;
@@ -413,26 +418,25 @@ class bors_form extends bors_object
 //			unset($uri);
 //		}
 
-		foreach(explode(' ', 'class_name object_id uri ref act inframe subaction') as $name)
-			$html .= $this->hidden_attr($name);
+		if(empty($this->_params['class_name']))
+		{
+//			$this->_params['class_name'] = $name;
+			$go2 = $uri;
+		}
+		else
+			$go2 = 'newpage_admin';
+
+		if($class_name && !$id)
+			$go2 = 'newpage_admin';
+
+		if(empty($this->_params['go']))
+			$this->_params['go'] = $go2;
 
 		foreach(explode(' ', 'go class_name') as $name)
 			$$name = $this->attr($name);
 
-		if(!$class_name)
-		{
-			$class_name = $name;
-			$go = $uri;
-		}
-		else
-			$go = 'newpage_admin';
-
-		if($class_name && !$id)
-			$go = 'newpage_admin';
-
-		if(defval($params, 'go') == 'NULL')	
-			$go = NULL;
-
+		foreach(explode(' ', 'class_name object_id uri ref act inframe subaction') as $name)
+			$html .= $this->hidden_attr($name);
 
 		foreach(explode(' ', 'checkboxes checkboxes_list time_vars file_vars linked_targets override_fields') as $name)
 			$html .= $this->hidden_array($name);

@@ -8,6 +8,7 @@ class bors_templates_smarty2 extends bors_templates_abstract
 	static function fetch($template, $data)
 	{
 		require_once(config('smarty_include'));
+		require_once('engines/smarty/bors_smarty_common.php');
 
 		$smarty = new Smarty;
 		require('smarty-register.php');

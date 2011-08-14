@@ -127,7 +127,7 @@ function bors_form_save(&$obj)
 			{
 				$last = (++$count == $total);
 				$data = array_merge($objects_common_data, $data);
-				$result = bors_form_save_object($data['class_name'], @$data['id'], $data, $first, $last);
+				$result = bors_form_save_object($data['class_name'], @$data['object_id'], $data, $first, $last);
 				if($result === true || is_object($result))
 					$form = $result;
 				if(true === $result)
@@ -136,7 +136,7 @@ function bors_form_save(&$obj)
 			}
 		}
 		else
-			$form = bors_form_save_object($_GET['class_name'], @$_GET['id'], $objects_common_data, true, true);
+			$form = bors_form_save_object($_GET['class_name'], @$_GET['object_id'], $objects_common_data, true, true);
 
 		if($form === true)
 			return true;

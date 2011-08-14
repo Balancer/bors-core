@@ -104,7 +104,7 @@ function bors_form_save(&$obj)
 
 //		print_d($data);
 
-		$form = bors_form_save_object($_GET['class_name'], @$_GET['id'], $data);
+		$form = bors_form_save_object($_GET['class_name'], @$_GET['object_id'], $data);
 
 		if($form === true)
 			return true;

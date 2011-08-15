@@ -54,7 +54,9 @@ class bors_forms_input extends bors_forms_element
 				$style = "width: 99%";
 		}
 
-		$result .= "<input type=\"text\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
+		if(empty($input_name))
+			$input_name = $name;
+		$result .= "<input type=\"text\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
 
 		foreach(explode(' ', 'class id maxlength size style') as $p)
 			if(!empty($$p))

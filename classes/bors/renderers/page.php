@@ -62,8 +62,6 @@ class bors_renderers_page extends base_null
 
 //	$smarty->assign("views_average", sprintf("%.1f",86400*$views/($views_last-$views_first+1)));
 
-//		echo "page_template={$object->page_template()}\n";
-//		echo "page_template_class={$object->page_template_class()}\n";
 		$page_template = call_user_func(
 			array($object->page_template_class(), 'find_template'),
 				$object->page_template(), $object
@@ -72,6 +70,7 @@ class bors_renderers_page extends base_null
 		return call_user_func(
 			array($object->page_template_class(), 'fetch'),
 			$page_template,
-			$data);
+			$data
+		);
 	}
 }

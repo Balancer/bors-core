@@ -17,16 +17,13 @@ class bors_template
 
 	static function find_template($template_name, $object = NULL)
 	{
-//		echo "\nFind <b>$template_name</b> for '{$object}'".($object ? " defined in {$object->class_file()}" : '')."<br/>\n";
-//		echo debug_trace();
-//		echo $object->class_file();
 		$template_name = preg_replace('!^xfile:!', '', $template_name);
 		foreach(bors_dirs(true) as $dir)
 		{
-			if(file_exists($file = $dir.'/templates/'.$template_name))
+			if(is_file($file = $dir.'/templates/'.$template_name))
 				return 'xfile:'.$file;
 
-			if(file_exists($file = $dir.'/templates/'.$template_name.'/index.html'))
+			if(is_file($file = $dir.'/templates/'.$template_name.'/index.html'))
 				return 'xfile:'.$file;
 		}
 

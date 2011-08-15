@@ -260,7 +260,10 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if($first)
 		$object->pre_set($data);
 
-	if(method_exists($object, 'skip_save') && $object->skip_save()) //TODO: костыль для bors_admin_image_append
+	//TODO: костыль для bors_admin_image_append
+	// Для исправной работы старых кривых ссылоки вида http://balancer.ru/tools/search/result/?q=%D1%82%D1%8D%D0%BC2%D1%83&w=a&s=r&class_name=bors_tools_search
+	// Проверка: bors_tools_search
+	if(method_exists($object, 'skip_save') && $object->skip_save())
 	{
 		if(!$object->set_fields($data, true))
 			return true;

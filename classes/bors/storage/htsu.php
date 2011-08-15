@@ -39,7 +39,6 @@ class bors_storage_htsu extends bors_storage
 			$rel = preg_replace("!/$ut(/|$)!", '', $rel);
 		}
 
-
 		if($base && file_exists($file = "{$dir}/{$base}.htsu"))
 			return $file;
 

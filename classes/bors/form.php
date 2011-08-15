@@ -329,10 +329,9 @@ class bors_form extends bors_object
 							$data['input_name'] = '_'.$data['name'];
 							if($chars = defval($data, 'form_chars'))
 								$data['maxlength'] = $data['size'] = $chars;
-							bors_form::append_data('form_override_fields', $data['name']);
-							require_once('function.input.php');
+							$this->append_attr('override_fields', $data['name']);
 							$html .= "ID:";
-							smarty_function_input($data, $smarty);
+							$html .= bors_forms_input::html($data, $this);
 							template_js("\$(function() {
 	\$('select[name={$data['name']}]').change(function(){
 		\$('input[name={$data['input_name']}]').val(\$(this).val())

@@ -96,7 +96,7 @@ class bors_form extends bors_object
 			if($class_name && $object_id)
 				$object = bors_load($class_name, $object_id);
 		}
-		else
+		elseif($class_name != 'NULL')
 		{
 			$class_name	= $object->class_name();
 			$object_id	= $object->id();

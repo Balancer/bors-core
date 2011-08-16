@@ -495,10 +495,21 @@ defined at {$this->class_file()}<br/>
 		else
 			$target = '';
 
-		if($append)
-			$append = ' '.$append;
+		if($append == 'new')
+		{
+			$url = $this->url('new');
+		}
+		else
+		{
+			if($append)
+				$append = ' '.$append;
+			$url = $this->url($this->page());
+		}
+		$title = $this->title();
+		if(!$title)
+			$title = '???';
 
-		return '<a href="'.$this->url($this->page())."\"{$target}{$append}>{$this->title()}</a>";
+		return "<a href=\"{$url}\"{$target}{$append}>{$title}</a>";
 	}
 
 	function url_in_container() { return $this->url(); }
@@ -522,21 +533,23 @@ defined at {$this->class_file()}<br/>
 		return '<a href="'.$this->url($this->page()).$url_append.'"'.($append?' '.$append:'').">{$title}</a>"; 
 	}
 
-	function titled_link_ex($params)
+	function titled_link_ex($params = array())
 	{
-		var_dump($params);
 		$title = defval($params, 'title');
 		if($title === NULL)
 			$title = $this->title();
+
+		if(!$title)
+			$title = '???';
 
 		if($popup = defval($params, 'popup'))
 			$popup = " title=\"".htmlspecialchars($popup)."\"";
 
 		$page = defval($params, 'page');
-		if($page === NULL)
-			$title = $this->page();
+//		if($page === NULL) //TODO: WTF? Изучить все вызовы.
+//			$title = $this->page();
 
-		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."{$popup}\">{$title}</a>"; 
+		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."\"{$popup}>{$title}</a>"; 
 	}
 
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
@@ -862,6 +875,9 @@ defined at {$this->class_file()}<br/>
 
 	function url_ex($args)
 	{
+		if(method_exists($this, 'url'))
+			return $this->url(defval($args, 'page'));
+
 		if(!($url_engine = defval($args, 'url_engine')))
 			$url_engine = $this->get('url_engine');
 

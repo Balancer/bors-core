@@ -2,6 +2,8 @@
 
 function bors_image_message($message, $params = array())
 {
+	debug_hidden_log('image-messages', $message);
+
 	$ww = intval(defval($params, 'width', 100));
 	$hh = intval(defval($params, 'height', 100));
 
@@ -12,13 +14,12 @@ function bors_image_message($message, $params = array())
 	$black = imagecolorallocate($img,   0,   0,   0);
 	$white = imagecolorallocate($img, 255, 255, 255);
 	$gray  = imagecolorallocate($img, 128, 128, 128);
-		
+
 //	$transparent = imagecolorallocate($img, 255,99,140);
 //  imagecolortransparent($img, $transparent);
 //	imagefill($img, 0, 0, $transparent);
 
 	imagefill($img, 0, 0, $gray);
-		
 
 	$x = 4;
 	$y = $hh/2;

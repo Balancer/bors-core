@@ -16,6 +16,13 @@ class bors_forms_date_simple extends bors_forms_element
 
 		$html = '';
 
+		if($th = defval($params, 'th'))
+		{
+			$html .= "<tr><th>{$th}</th><td>";
+			if(empty($style))
+				$style = "width: 99%";
+		}
+
 		$date = $value;
 
 		$can_drop = @$can_drop;
@@ -48,6 +55,9 @@ class bors_forms_date_simple extends bors_forms_element
 			$html .= ec("&nbsp;<label><input name=\"time_on_post\" type=\"checkbox\" checked=\"checked\" />&nbsp;использовать время отсылки</label>");
 			template_js("$(function () { $('input[name=\"time_on_post\"]').change(function() { x=$('input[name=\"$name\"]'); if($(this).attr('checked')) x.attr('disabled', 'disabled'); else x.removeAttr('disabled') }); })");
 		}
+
+		if($th)
+			$html .=  "</td></tr>";
 
 		$html .= "\n";
 

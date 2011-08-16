@@ -1,9 +1,12 @@
 <?php
 
-class bors_forms_textarea extends bors_forms_element
+class bors_forms_submit extends bors_forms_element
 {
-	static function html($params, &$form)
+	static function html($params, &$form = NULL)
 	{
+		if(!$form)
+			$form = bors_form::$_current_form;
+
 		extract($params);
 
 		$html = "";
@@ -23,7 +26,7 @@ class bors_forms_textarea extends bors_forms_element
 
 		$html .= " />";
 
-		if($th || $form->attr('has_autofields'))
+		if($th || $form->attr('has_form_table'))
 			$html = "<tr><th colspan=\"2\">{$html}</th></tr>\n";
 
 		echo $html;

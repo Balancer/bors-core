@@ -201,10 +201,13 @@ class base_object extends base_empty
 
 	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
 	function class_title_rp() { return ec('объекта ').@get_class($this); }	// РодительныйГенитив Кого? Чего?
-	function class_title_dp() { return ec('объекту ').get_class($this); }	// Дательный Кому? Чему?
-	function class_title_vp() { return ec('объект ').get_class($this); }	// Винительный Кого? Что?
-	function class_title_tp() { return ec('объектом ').get_class($this); }	// Творительный Кем? Чем?
-	function class_title_pp() { return ec('объекте ').get_class($this); }	// Предложный О ком? О чём?
+	function class_title_dp() { return ec('объекту ').@get_class($this); }	// Дательный Кому? Чему?
+	function class_title_vp() { return ec('объект ').@get_class($this); }	// Винительный Кого? Что?
+	function class_title_tp() { return ec('объектом ').@get_class($this); }	// Творительный Кем? Чем?
+	function class_title_pp() { return ec('объекте ').@get_class($this); }	// Предложный О ком? О чём?
+
+	function class_title_m() { return ec('объекты ').@get_class($this); }	// Множественный именительный
+	function class_title_tpm() { return ec('объектами ').@get_class($this); }	// Множественный Творительный Кем? Чем?
 
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 

@@ -273,7 +273,7 @@ __EOT__;
 
 				$out .= '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" alt=\"\" />{$a_href_e}";
 				if($description)
-					$out .= "<div style=\"font-size: xx-small;\">".$description."</div>";
+					$out .= "<div class=\"block_description\"><small>".$description."</small></div>";
 				$out .= '</div>';
 
 				return $out;

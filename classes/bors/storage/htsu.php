@@ -160,6 +160,13 @@ class bors_storage_htsu extends bors_storage
     	$this->ext('file');
     	$this->ext('forum_id');
 
+		$this->ext('tags', 'keywords_string');
+		$this->ext('desc', 'description');
+		$this->ext('nav', 'nav_name');
+
+		if(!$object->create_time(true))
+			$this->ext('created', 'create_time');
+
 		if(!$object->create_time(true))
 			// Внимание! Это не настоящий create time!
 			$object->set('create_time', filectime($file), false);
@@ -167,8 +174,16 @@ class bors_storage_htsu extends bors_storage
 		if(!$object->modify_time(true))
 			$object->set('modify_time', filemtime($file), false);
 
-		if(!$object->title())
-			$object->set('title', preg_replace('/\.htsu$/i', basename($file)).'.', false);
+		if(!$object->title_true())
+			if(preg_match("/(^|\n)([^\n]+?)\n(==+)\n/su", $this->hts, $m))
+			{
+//				var_dump($m);
+				$this->hts = preg_replace("/(^|\n)([^\n]+?)\n(==+)\n/su", "$1\n", $this->hts);
+				$object->set_title($m[2], false);
+			}
+
+		if(!$object->title_true())
+			$object->set('title', preg_replace('/\.htsu$/i', '', basename($file)).'.', false);
 
 		if($config_class = $this->ext('config', '-'))
 			$object->set_config_class($config_class, false);

@@ -16,7 +16,7 @@ class bors_lcml_tags_pairs_youtube extends bors_lcml_tags_pair
 	{
 		self::register($id, $params);
 
-		return ec("Видео на YouTube: $id\n");
+		return ec("http://www.youtube.com/watch?v={$id}\n");
 	}
 
 	static function register($id, $params)

@@ -42,7 +42,6 @@ class bors_forms_saver extends base_empty
 			if($object->$method($data))
 				return true;
 
-
 		$object->pre_set($data);
 
 		// Чистим служебные переменные
@@ -146,7 +145,7 @@ class bors_forms_saver extends base_empty
 				// Обработчик загрузки целиком на совести самого объекта
 				// Используются методы upload_<file_name>_file($file_data, $object_data)
 
-				if(!method_exists($object, $method_name = "upload_{$f}_file"))
+				if(!method_exists($object, $method_name = "upload_{$f}_file") && !method_exists($object, $method_name = "upload_file"))
 				{
 					debug_hidden_log('errors.forms.files', $msg = "Undefined upload method '$method_name' for {$object}");
 					bors_exit($msg);

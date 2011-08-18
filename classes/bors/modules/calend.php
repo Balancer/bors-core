@@ -21,6 +21,9 @@ class bors_modules_calend extends bors_module
 		$table_class		= $this->args('table_class', 'btab');
 		$show_caption		= $this->args('show_caption', true);
 
+		$time_field	= $this->args('time_field', 'create_time');
+		$link_all_days = $this->args('link_all_days', false);
+
 		$ajax				= $this->args('ajax', true);
 		if($ajax)
 		{
@@ -45,8 +48,8 @@ class bors_modules_calend extends bors_module
 			);
 
 		$counts = bors_count($target_count_class_name, array_merge($where, array(
-			'create_time BETWEEN' => array($begin, $month_end),
-			'group' => '*BYDAYS(create_time)*',
+			$time_field.' BETWEEN' => array($begin, $month_end),
+			'group' => '*BYDAYS('.$time_field.')*',
 		)));
 
 		for($d = 1; $d <= $days_in_month; $d++)
@@ -64,10 +67,19 @@ class bors_modules_calend extends bors_module
 			if(date('d.m.Y', $show_date) == "$d.$month.$year")
 				$class .= $class.' bc_now';
 
+			$day_url = NULL;
+			if($count || $link_all_days)
+			{
+				if($calend_mask)
+					$day_url = strftime($calend_mask, $day_begin);
+				else
+					$day_url = bors_load($calend_class_name, $day_begin)->url();
+			}
+
 			$days[] = array(
 				'number' => $d,
 				'count' => $count,
-				'url' => $count ? ($calend_mask ? strftime($calend_mask, $day_begin) : bors_load($calend_class_name, $day_begin)->url()) : NULL,
+				'url' => $day_url,
 				'class' => $class,
 			);
 

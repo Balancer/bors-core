@@ -348,6 +348,24 @@ class bors_storage_mysql extends bors_storage implements Iterator
 						break;
 				}
 			}
+			elseif(preg_match('/^\*BY([A-Z]+)\(UNIX_TIMESTAMP\((`\w+`)\)\)\*$/', @$where['group'], $m))
+			{
+				switch($m[1])
+				{
+					case 'DAYS':
+						$where['group'] = "YEAR({$m[2]}),MONTH({$m[2]}),DAY({$m[2]})";
+						$select[] = "DATE({$m[2]}) AS group_date";
+						$where['*select_index_field*'] = 'group_date';
+						$grouped = true;
+						break;
+					case 'MONTHS':
+						$where['group'] = "YEAR({$m[2]}),MONTH({$m[2]})";
+						$select[] = "CONCAT(YEAR({$m[2]}),'-',MONTH({$m[2]})) AS group_date";
+						$where['*select_index_field*'] = 'group_date';
+						$grouped = true;
+						break;
+				}
+			}
 
 			if($grouped)
 				return $dbh->select_array($table_name, join(',',$select), $where, $class_name);

@@ -28,9 +28,9 @@ class bors_page extends base_page
 		{
 			$class_file_base = str_replace('.php', '', $this->class_file());
 			if(file_exists($f="$class_file_base.inc.css"))
-				$this->add_template_data_array('style', file_get_contents($f));
+				$this->add_template_data_array('style', ec(file_get_contents($f)));
 			if(file_exists($f="$class_file_base.inc.js"))
-				$this->add_template_data_array('javascript', file_get_contents($f));
+				$this->add_template_data_array('javascript', ec(file_get_contents($f)));
 		}
 
 		return parent::pre_show();

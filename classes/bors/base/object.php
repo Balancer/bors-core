@@ -450,6 +450,7 @@ defined at {$this->class_file()}<br/>
 		return $string;
 	}
 
+	function children() { return array();  }
 	function children_string() { return ($cs = $this->children()) ? join("\n", $cs) : '';  }
 	function set_children_string($string, $dbup) { $this->set_children(array_filter(explode("\n", $string)), $dbup); return $string;  }
 

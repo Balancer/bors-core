@@ -382,6 +382,10 @@ class bors_form extends bors_object
 						$labels[$property_name] = $data;
 						break;
 
+					case 'file':
+						$html .= bors_forms_file::html($data, $this);
+						break;
+
 					default:
 						$html .= ec("Неизвестный тип '{$type}'");
 //						print_dd($data);

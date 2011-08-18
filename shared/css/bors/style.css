@@ -161,3 +161,5 @@ div.thumb_up, div.thumb_down {
 
 div.thumb_up { background-image: url(http://balancer.ru/_bors/i/thumb_up.gif) }
 div.thumb_down { background-image: url(http://balancer.ru/_bors/i/thumb_down.gif) }
+
+input { border: 1px solid; }

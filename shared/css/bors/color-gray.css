@@ -250,3 +250,5 @@ div.separated_menu {
 	border: 1px solid #ccc;
 	padding: 4px 10px;
 }
+
+input { border-color: #ccc; }

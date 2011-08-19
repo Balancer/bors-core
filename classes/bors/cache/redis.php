@@ -22,6 +22,41 @@ class bors_cache_redis extends bors_cache_base
 		$_rediska = new Rediska($options);
 	}
 
+	function check($type, $idx, $default = NULL)
+	{
+		parent::check($type, $idx, $default);
+
+		if(config('cache_disabled'))
+		{
+			$this->last = $default;
+			return false;
+		}
+
+		$key = new Rediska_Key($this->hmd);
+
+		try
+		{
+			$this->last = $key->getValue();
+		}
+		catch(Rediska_Serializer_Adapter_Exception $e)
+		{
+//			var_dump($e->getMessage());
+			debug_count_inc('redis_unserialize_exception');
+			debug_hidden_log('redis_exception', $e->getMessage());
+			$this->last = $default;
+		}
+
+		if($key->isExists())
+		{
+			debug_count_inc('redis_cache_check_hit');
+			return true;
+		}
+
+		debug_count_inc('redis_cache_check_miss');
+		$this->last = $default;
+		return false;
+	}
+
 	function get($type, $key, $default = NULL)
 	{
 		parent::get($type, $key, $default);

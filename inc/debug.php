@@ -339,6 +339,8 @@ function debug_vars_info()
 		}
 	}
 
+	$result .= 'user='.@$_SERVER['USER']."\n";
+
 	return $result;
 }
 

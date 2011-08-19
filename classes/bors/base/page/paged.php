@@ -66,4 +66,16 @@ class base_page_paged extends base_page
 	function url_engine() { return 'url_calling2'; }
 
 	function default_page() { return $this->is_reversed() ? $this->total_pages() : 1; }
+
+	function item_name()
+	{
+		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
+	}
+
+	function auto_objects()
+	{
+		return array_merge(parent::auto_objects(), array(
+			bors_plural($this->item_name()) => $this->items(),
+		));
+	}
 }

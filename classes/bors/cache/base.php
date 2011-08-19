@@ -19,6 +19,14 @@ class bors_cache_base
 		return $this->last = $default;
 	}
 
+	function check($type, $key, $default = NULL, $object = NULL)
+	{
+		$this->type = $type;
+		$this->key  = $key;
+		$this->hmd  = md5($type.':'.$key);
+		return $this->last = $default;
+	}
+
 	function set($value, $expire, $cache_id = NULL) { return $this->last = $value; }
 
 	function last() { return $this->last; }

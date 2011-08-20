@@ -15,12 +15,12 @@ class bors_forms_textarea extends bors_forms_element
 		if(empty($rows))
 			$rows = 7;
 
-		if(empty($cols))
-			$cols = 50;
-
 		$class = empty($class) ? array() : explode(' ', $class);
 		if(in_array($name, explode(',', session_var('error_fields'))))
 			$class[] = "error";
+
+		if(empty($cols))
+			$cols = 60;
 
 		$versioning = object_property($obj, 'versioning_properties', array());
 		if(array_key_exists($name, $versioning))

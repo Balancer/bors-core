@@ -191,7 +191,7 @@ class bors_form extends bors_object
 
 		if($th || !empty($fields))
 		{
-			$html .= "<table class=\"btab\" class=\"w100p\">\n";
+			$html .= "<table class=\"btab w100p\">\n";
 			$this->set_attr('has_form_table', true);
 		}
 
@@ -310,7 +310,7 @@ class bors_form extends bors_object
 					case 'bbcode':
 					case 'text':
 					case 'textarea':
-						$data['rows'] = $type_arg;
+						$data['rows'] = defval($data, 'rows', $type_arg);
 						$html .= bors_forms_textarea::html($data, $this);
 						break;
 					case '3state':

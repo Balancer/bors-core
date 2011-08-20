@@ -24,7 +24,7 @@ class bors_admin_edit_smart extends base_page
 		if(preg_match('!^/!', $id))
 			$id = 'http://'.$_SERVER['HTTP_HOST'].$id;
 
-		return object_load($id); 
+		return object_load($id);
 	}
 
 	function fields() { return explode(',', $this->args('fields')); }
@@ -64,7 +64,6 @@ class bors_admin_edit_smart extends base_page
 					if(preg_match('/^(\w+)=(.+)$/', $pair, $mm))
 						$args[$mm[1]] = $mm[2];
 			}
-
 			if(preg_match('/^(\w+)=(.+)$/', $type, $m))
 			{
 				$type = $m[1];
@@ -75,6 +74,10 @@ class bors_admin_edit_smart extends base_page
 						break;
 					case 'image':
 						$data['geometry'] = $m[2];
+						break;
+					case 'textarea':
+					case 'bbcode':
+						$data['rows'] = $m[2];
 						break;
 				}
 			}
@@ -102,4 +105,6 @@ class bors_admin_edit_smart extends base_page
 
 //	function url() { return '/admin/edit-smart/?object='.$this->object()->internal_uri(); }
 	function admin() { return $this->object()->admin(); }
+
+//	function template() { return 
 }

@@ -6,6 +6,7 @@ class bors_admin_config extends base_config
 	{
 		return array(
 			'access_engine' => config('access_default', 'access_airbase'),
+//			'template' => config('admin_template', 'default'),
 		);
 	}
 }

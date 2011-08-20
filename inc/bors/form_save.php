@@ -223,7 +223,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($object)."; access_engine=".$object->access_engine());
 
 		if(!$object->access()->can_action(@$data['act'], $data))
-			return bors_message(ec("[2] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($object).", access=".($object->access_engine())."/".get_class($object->access()).", method=can_action)"));
+			return bors_message(ec("[2fs] Извините, Вы не можете производить операции с этим ресурсом<br/><small>(class=".get_class($object).", access=".($object->access_engine())."/".get_class($object->access()).", method=can_action)</small>"));
 
 		if(empty($data['subaction']))
 			$method = '';

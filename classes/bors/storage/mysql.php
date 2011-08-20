@@ -69,6 +69,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$_back_functions = array(
 			'html_entity_decode' => 'htmlspecialchars',
 			'UNIX_TIMESTAMP' => 'FROM_UNIXTIME',
+			'FROM_UNIXTIME' => 'UNIX_TIMESTAMP',
 			'aviaport_old_denormalize' => 'aviaport_old_normalize',
 			'stripslashes' => 'addslashes',
 		);
@@ -194,6 +195,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function load($object)
 	{
+		$set    = popval($where, '*set');
 		$must_be_configured = $object->get('must_be_configured');
 		$select = array();
 		$post_functions = array();
@@ -219,6 +221,11 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$dummy = array();
 		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
 		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
+
+		// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')
+		if($set)
+			foreach(preg_split('/,\s*/', $set) as $s)
+				$select[] = $s;
 
 		$dbh = new driver_mysql($object->db_name());
 		$data = $dbh->select($object->table_name(), join(',', $select), $where);

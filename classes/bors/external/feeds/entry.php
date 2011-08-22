@@ -3,6 +3,7 @@
 class bors_external_feeds_entry extends base_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
+	function ignore_on_new_instance() { return true; }
 
 	function table_name() { return 'external_feeds_entries'; }
 	function table_fields()

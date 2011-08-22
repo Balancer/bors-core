@@ -11,6 +11,7 @@ class bors_page_fs_bbh extends base_page
 	function pre_show()
 	{
 		config_set('cache_disabled', true);
+		config_set('lcml_markdown', true);
 		return parent::pre_show();
 	}
 
@@ -19,4 +20,6 @@ class bors_page_fs_bbh extends base_page
 		require_once('engines/lcml/main.php');
 		return lcml_bbh($this->source());
 	}
+
+	function nav_name() { return bors_lower(bors_truncate($this->title(), 30)); }
 }

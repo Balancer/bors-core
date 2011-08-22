@@ -117,6 +117,8 @@ class bors_external_feed extends base_object_db
 			else
 				$feed_entry_id = $guid;
 
+			$guid = bors_substr($guid, 0, 255);
+
 			$entry = bors_find_first('bors_external_feeds_entry', array(
 				'entry_url' => $guid,
 			));

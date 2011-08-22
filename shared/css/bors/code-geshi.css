@@ -22,4 +22,10 @@
 .code .sy0  { color: #66cc66; }
 
 .code { font-family: monospace; }
-.inline-code { margin: 0!important; padding: 0!important; white-space: nowrap; }
+.inline-code {
+	margin: 0 !important;
+	padding: 0 !important;
+	white-space: nowrap;
+	border: none !important;
+	background-color: transparent !important;
+}

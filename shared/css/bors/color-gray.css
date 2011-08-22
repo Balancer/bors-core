@@ -224,11 +224,15 @@ h3 {
 	margin: 0 0 2px 0;
 }
 
-code {
+code, .code, .code-head {
 	background-color: #f0f0f0;
 	border: 1px solid #e0e0e0;
 	padding: 4px 10px;
 }
+
+.code { border-top: none; }
+.code-head { border-bottom: none; color: #999; }
+
 
 input.error, textarea.error, select.error {
 	background-color: #ffcccc;

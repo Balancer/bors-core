@@ -3,6 +3,9 @@
 .code {
 	margin-top: 0;
 	padding: 4px;
+	border-left: 1px solid;
+	border-right: 1px solid;
+	border-bottom: 1px solid;
 }
 
 ol.code {
@@ -13,5 +16,8 @@ ol.code {
 	margin-bottom: 0;
 	font-weight: bold;
 	padding-left: 40px;
-	font-size: 0.9em;
+	font-size: 0.8em;
+	border-left: 1px solid;
+	border-right: 1px solid;
+	border-top: 1px solid;
 }

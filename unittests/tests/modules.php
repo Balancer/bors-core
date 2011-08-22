@@ -21,7 +21,7 @@ class modules_unittest extends PHPUnit_Framework_TestCase
 {
     public function test_modules()
     {
-		bors_debug::log('test', 'hello world!', 'debug');
+//		bors_debug::log('test', 'hello world!', 'debug');
 
 		$x = bors_load_ex('modules_unittest_helper', NULL, array(
 		));

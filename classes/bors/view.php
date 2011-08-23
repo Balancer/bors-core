@@ -29,10 +29,16 @@ class bors_view extends bors_page
 
 	function object() { return $this->target(); } // Для совместимости
 
+	function target_name()
+	{
+		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
+	}
+
 	function auto_targets()
 	{
 		return array_merge(parent::auto_targets(), array(
 			'target' => 'main_class(id)',
+			$this->target_name() => 'main_class(id)',
 		));
 	}
 

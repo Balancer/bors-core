@@ -71,4 +71,15 @@ class bors_object extends base_object
 	}
 
 	function direct_content() { return $this->renderer()->render($this); }
+
+	function description_or_title()
+	{
+		if($desc = $this->description())
+			return $desc;
+
+		if($title = $this->title())
+			return $title;
+
+		return ec('[без имени]');
+	}
 }

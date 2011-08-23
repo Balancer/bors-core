@@ -228,6 +228,24 @@ function lcml_h($string)
 	return $result;
 }
 
+// lcml с поддержкой html и пустая строка — параграф
+function lcml_hp($string)
+{
+	$se = config('lcml_tags_enabled');
+	$sd = config('lcml_tags_disabled');
+	config_set('lcml_tags_enabled', NULL);
+	config_set('lcml_tags_disabled', NULL);
+	$result = lcml($string, array(
+			'cr_type' => 'empty_as_para',
+			'sharp_not_comment' => true,
+			'html_disable' => false,
+			'nocache' => true,
+	));
+	config_set('lcml_tags_enabled', $se);
+	config_set('lcml_tags_disabled', $sd);
+	return $result;
+}
+
 function lcmlbb($string) { return lcml_bb($string); } // Нужно для совместимости со старым кодом.
 function lcml_bb($string)
 {

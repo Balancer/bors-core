@@ -126,10 +126,11 @@ class bors_forms_saver extends base_empty
 				Короткий: file_vars: image1,image2...
 		*/
 
-//		echo "Сохранение файлов для {$object->debug_title()}"; var_dump($data); var_dump($files);
+//		echo "Сохранение файлов для {$object->debug_title()}"; print_dd($data); print_dd($files);
 
 		foreach(explode(',', $file_vars) as $f)
 		{
+//			echo "File var '$f'<br/>";
 			$method_name = NULL;
 
 			// Метод, возвращающий объект старого файла, используется
@@ -138,6 +139,10 @@ class bors_forms_saver extends base_empty
 
 			// Поле объекта, куда записывается имя класса файла
 			$file_class_name_field = NULL;
+
+			// Массивы файлов грузим как одиночные файлы
+			if(preg_match('/^(\w+)\[\]$/', $f, $m))
+				$f = $m[1];
 
 			if(preg_match('/^\w+$/', $f))
 			{
@@ -172,7 +177,7 @@ class bors_forms_saver extends base_empty
 			else
 			{
 				debug_hidden_log('errors.forms.files', $msg = "Unknown file var format: '$f' for {$object}");
-				bors_exit($msg);
+				bors_throw($msg);
 			}
 
 			// Удаляем старый файл, если есть пометка к его удалению.

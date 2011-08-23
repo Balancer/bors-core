@@ -20,6 +20,6 @@ function smarty_function_defval($params, &$smarty)
         return;
     }
 
-	if(empty($var))
+	if(!$smarty->get_template_vars($var))
 	    $smarty->assign($var, $value);
 }

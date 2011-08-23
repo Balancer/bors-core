@@ -27,10 +27,10 @@ $map = array(
 	'/_bors/admin/edit\-smart/\?object=([^&]+).* => bors_admin_edit_smart(1)',
 	'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
-	'(.*/)\?edit => bors_admin_edit_page(1)',
-//	'(.*/)\?edit => bors_admin_edit_smart(1)',
-	'(.*/)\?prop  => bors_admin_property(1)',
-	'(.*/)\?new  => bors_admin_append_child(1)',
+//	'(.*)\?edit => bors_admin_edit_page(1)',
+	'(.*)\?edit => bors_admin_edit_smart(1)',
+	'(.*)\?prop  => bors_admin_property(1)',
+	'(.*)\?new  => bors_admin_append_child(1)',
 	'(.*)\?cdrop  => bors_admin_tools_clean(1)',
 
 

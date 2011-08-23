@@ -131,4 +131,19 @@ class bors_file extends base_object_db
 		$file->store();
 		return $file;
 	}
+
+	function on_delete_pre()
+	{
+		$file = $this->full_file_name();
+
+		@unlink($file);
+		$dir = dirname($file);
+
+		do
+		{
+			@rmdir($dir);
+		} while(!is_dir($dir) && ($dir = dirname($dir)) && $dir != '/');
+
+		return parent::on_delete_pre();
+	}
 }

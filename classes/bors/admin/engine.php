@@ -24,12 +24,12 @@ class bors_admin_engine extends bors_object
 	function admin_url()
 	{
 		$obj = $this->real_object();
-//		echo $obj->admin_url()."<br/>";
-		if(method_exists($obj, 'admin_url'))
-			return $obj->admin_url();
 
-		if(method_exists($obj, 'edit_url'))
-			return $obj->edit_url();
+		if($url = $obj->get('admin_url'))
+			return $url;
+
+		if($url = $obj->get('edit_url'))
+			return $url;
 
 		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
 	}

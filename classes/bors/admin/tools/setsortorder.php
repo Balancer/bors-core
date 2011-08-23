@@ -19,7 +19,8 @@ class bors_admin_tools_setsortorder extends base_page
 		else
 			$child->set_sort_order($_GET['sort_order'], true);
 
-		$parent = $child->parent_object();
+		if(!$parent)
+			$parent = $child->parent_object();
 		return go_ref($parent ? $parent->admin_url() : NULL);
 	}
 }

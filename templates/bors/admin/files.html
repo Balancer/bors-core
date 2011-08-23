@@ -1,0 +1,68 @@
+{*
+	$object - главный объект
+	$upload_dir - относительный путь загрузки, напр. /uploads/docs/
+	$files_list - список файлов
+	$link_type - тип связывания, parent или cross
+	$upload_files_count = 4 - сколько файлов предлагать к аплоаду
+	$file_class = 'bors_file' - класс файла
+*}
+{defval var="file_class" value="bors_file"}
+{defval var="upload_files_count" value="4"}
+{defval var="link_type" value="cross"}
+{defval var="upload_dir" value="uploads/files"}
+<div class="clear">&nbsp;</div>
+
+<h2>Файлы</h2>
+
+{foreach from=$files_list item="i"}
+{assign var="order" value=$i->sort_order()}
+{/foreach}
+
+<h3>Добавить файлы:</h3>
+{form class="bors_admin_files_append"}
+<table class="btab w100p">
+<tr>
+	<th>Название</th>
+	<th>Описание</th>
+	<th>Файл</th>
+	<th>Порядок сортировки</th>
+</tr>
+{assign_adv var="range" value="range(1,$upload_files_count)"}
+{foreach from=$range item="i"}
+{assign var="order" value=$order+10}
+<tr>
+	<td>{input name="file_titles[]" class="w100p" size="40"}</td>
+	<td>{input name="file_descriptions[]" class="w100p" size="40"}</td>
+	<td>{file name="files[]"}</td>
+	<td>{input name="sort_orders[]" value=$order size="4"}</td>
+</tr>
+{/foreach}
+</td></tr>
+{hidden name="object_to_link" value=$object|get:internal_uri}
+{hidden name="link_type" value=$link_type}
+{hidden name="file_class" value=$file_class}
+{hidden name="upload_dir" value=$upload_dir}
+{go value=$this->url()}
+</table>
+{submit value="Загрузить"}<br/><br/>
+{/form}
+
+{if $files_list}
+<h3>Связанные файлы:</h3>
+<table class="btab w100p">
+<tr><th>Файл</th><th>Описание</th><th>Операции</th></tr>
+{foreach from=$files_list item="i"}{if $i}
+<tr>
+<td>{$i->admin()->titled_link()}</td>
+<td>{$i->admin()->imaged_titled_link($i->description_or_title())}</td>
+<td class="nobr">
+	{$i->admin()->imaged_edit_link('редактировать')}<br/>
+	<form action="/admin/tools/set-sort-order/?child={$file_class}://{$i->id()}{if $link_type=='cross'}&parent={$object|get:internal_uri}{/if}" method="post" style="display: inline"><input name="sort_order" value="{$i->sort_order()}" title="Порядок сортировки" size="5" style="width: auto !important;"/>&nbsp;Сортировка</form><br/>
+	{if $i->cross_objects()|@count < 2}{$i->admin()->imaged_delete_link('удалить')}<br/>{/if}
+</td>
+</tr>
+{/if}{/foreach}
+</table>
+{/if}
+
+<div class="clear">&nbsp;</div>

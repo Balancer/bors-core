@@ -31,6 +31,16 @@ class bors_file extends base_object_db
 		);
 	}
 
+	function url()
+	{
+		return '/'.$this->relative_path().'/'.basename($this->full_file_name());
+	}
+
+	function size_smart()
+	{
+		return round($this->size()/1024).ec(' кб');
+	}
+
 	// Жизненно необходимо, так как при создании новой записи в БД ещё не залитый файл
 	// имеет пустое поле full_file_name, которое UNIQUE. При сбоях пустая запись
 	// не должна нам помешать залить новый файл.
@@ -70,7 +80,7 @@ class bors_file extends base_object_db
 		return bors_new($class_name, $data);
 	}
 
-	function upload_file($file_data, &$object_data)
+	static function upload($file_data)
 	{
 		if(!file_exists($tmp_file = $file_data['tmp_name']))
 		{
@@ -78,31 +88,36 @@ class bors_file extends base_object_db
 			bors_throw("Can't load file {$file_data['name']}: File not exists<br/>");
 		}
 
-		$original_filename = $this->set_original_filename($file_data['name'], true);
-		$mime_type = $this->set_mime_type($file_data['type'], true);
-		$this->set_size($file_data['size'], true);
+		$original_filename = $file_data['name'];
+		$mime_type = $file_data['type'];
 
-		if(!$this->id())
-			bors_throw('File upload error: empty file id');
+		$base_dir   = config('file_upload.base_dir', bors()->server()->document_root());
+		$upload_dir = popval($file_data, 'upload_dir', 'uploads/common');
 
-		$base_dir   = config('file_upload.base_dir', bors()->server()->document_root().'/uploads');
-		$upload_dir = popval($file_data, 'upload_dir', 'common');
-
-		if(config('file_upload.skip_subdirs') || !empty($file_data['no_subdirs']))
-			$relative_path = $this->set_relative_path(secure_path($upload_dir), true);
-		else
-			$relative_path = $this->set_relative_path(secure_path($upload_dir.'/'.date('Ym').sprintf("_%03d", intval($this->id()/1000))), true);
-
-		$dir = $base_dir.'/'.$relative_path;
+		$ext = preg_replace('!^.+\.([^\.]+)$!', '$1', $original_filename);
 
 		$translated_name = translite_uri_simple(preg_replace('/\.\w+$/', '', $original_filename));
-		$ext = $this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $original_filename), true);
+
+		$file = bors_new(__CLASS__, array(
+			'original_filename' => $original_filename,
+			'mime_type' => $mime_type,
+			'size' => $file_data['size'],
+			'extension' => $ext,
+		));
+
+		if(config('file_upload.skip_subdirs') || !empty($file_data['no_subdirs']))
+			$relative_path = secure_path($upload_dir);
+		else
+			$relative_path = secure_path($upload_dir.'/'.date('Ym').sprintf("_%03d", intval($file->id()/1000)));
+
+		$file->set_relative_path($relative_path, true);
+
+		$dir = $base_dir.'/'.$relative_path;
 
 		if(!preg_match('/^\w+$/', $ext))
 			$ext = array_pop(explode('/', $mime_type));
 
-		$upload_file_name = $dir.'/'.defval($file_data, 'file_name', sprintf('%06d', $this->id()).'-'.$translated_name.'.'.$ext);
-
+		$upload_file_name = $dir.'/'.defval($file_data, 'file_name', sprintf('%06d', $file->id()).'-'.$translated_name.'.'.$ext);
 		mkpath($dir, 0777);
 		if(!is_dir($dir))
 			bors_throw("Can't create dir '{$dir}' for upload file {$file_data['name']}");
@@ -112,11 +127,8 @@ class bors_file extends base_object_db
 			bors_throw("Can't upload image {$file_data['name']} as {$upload_file_name}");
 
 		@chmod($upload_file_name, 0664);
-
-		$this->set_full_file_name($upload_file_name, true);
-
-		$this->store();
-
-		return $this;
+		$file->set_full_file_name($upload_file_name, true);
+		$file->store();
+		return $file;
 	}
 }

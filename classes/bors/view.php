@@ -50,4 +50,5 @@ class bors_view extends bors_page
 	}
 
 	function url($page = NULL) { return $this->target()->url($page); }
+	function admin_url() { return $this->target()->get('admin_url'); }
 }

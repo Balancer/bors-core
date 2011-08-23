@@ -73,11 +73,12 @@ class base_object_db extends bors_object
 	function inner_join_fields() { return array(); }
 	function left_join_fields()  { return array(); }
 
+	function on_delete_pre() { return false; }
+
 	function delete($remove_cross = true)
 	{
-		if(method_exists($this, 'on_delete_pre'))
-			if($this->on_delete_pre() === true)
-				return true;
+		if($this->on_delete_pre() === true)
+			return true;
 
 		$tab = $this->table_name();
 		if(!$tab)

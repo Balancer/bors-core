@@ -44,6 +44,8 @@
 					$txt = '<p>'.join("</p>\n\n<p>", $txt).'</p>';
 				else
 					$txt = $txt[0];
+				$txt = str_replace('<p><h', '<h', $txt);
+				$txt = preg_replace('!(</h\d>)</p>!', '\1', $txt);
                 break;
         }
 

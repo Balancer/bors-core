@@ -67,6 +67,10 @@ class bors_admin_engine extends bors_object
 		$obj = $this->real_object();
 		if(is_null($title))
 			$title =$obj->title();
+
+		if(!$title)
+			$title = ec('[без имени]');
+
 		$res = "<a href=\"{$obj->admin()->url()}\">{$title}</a>";
 
 		try
@@ -215,8 +219,7 @@ class bors_admin_engine extends bors_object
 		if(is_null($title))
 			$title = ec('Удаление ')
 				.bors_lower($obj->class_title_rp())
-				.' '
-				.$obj->title();
+				.ec(' «').$obj->title().ec('»');
 
 		$x = $title ? '&nbsp;' : '';
 		$url = $this->delete_url();

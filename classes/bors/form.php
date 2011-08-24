@@ -382,7 +382,7 @@ class bors_form extends bors_object
 						$labels[$property_name] = $data;
 						break;
 
-					case 'file':
+					case 'file_name':
 						$html .= bors_forms_file::html($data, $this);
 						break;
 

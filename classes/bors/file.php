@@ -27,7 +27,7 @@ class bors_file extends base_object_db
 			'size' => array('is_editable' => false),
 			'owner_id' => array('is_editable' => false),
 			'last_editor_id' => array('is_editable' => false),
-			'full_file_name' => array('title' => ec('Файл'), 'type' => 'file'),
+			'full_file_name' => array('title' => ec('Файл'), 'type' => 'file_name'),
 		);
 	}
 
@@ -146,4 +146,39 @@ class bors_file extends base_object_db
 
 		return parent::on_delete_pre();
 	}
+
+	function title_smart()
+	{
+		if($this->title(true))
+			return $this->title();
+
+		if($this->original_filename())
+			return $this->original_filename();
+
+		if($this->description())
+			return $this->description();
+
+		return basename($this->full_file_name());
+	}
+
+	function html()
+	{
+		return ec('скачать файл ')."<a href=\"{$this->url()}\">{$this->title_smart()} [{$this->size_smart()}]</a>";
+	}
+
+	function upload_file($file_data, $object_data)
+	{
+		@unlink($this->full_file_name());
+		if(file_exists($this->full_file_name()))
+			bors_throw(ec('Не могу удалить старый файл ').$this->full_file_name());
+
+		if(!move_uploaded_file($file_data['tmp_name'], $this->full_file_name()))
+			bors_throw("Can't upload image {$file_data['name']} as {$this->full_file_name()}");
+
+		$this->set_original_filename($file_data['name'], true);
+		$this->set_size($file_data['size'], true);
+		$this->set_mime_type($file_data['type'], true);
+	}
+
+	function skip_auto_admin_new() { return true; }
 }

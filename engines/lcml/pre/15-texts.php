@@ -5,8 +5,8 @@ function lcml_texts($text)
 	if(config('lcml_markdown'))
 	{
 		// markdown-like заголовки
-		$text = preg_replace("!(\n|^)([^\n]+)\n={5,}\n!s", "$1[h2]$2[/h2]\n", $text);
-		$text = preg_replace("!(\n|^)([^\n]+)\n-{5,}\n!s", "$1[h3]$2[/h3]\n", $text);
+		$text = preg_replace("!(\n|^)([^\n]+)\n={5,}\n!s", "$1[h1]$2[/h1]\n", $text);
+		$text = preg_replace("!(\n|^)([^\n]+)\n-{5,}\n!s", "$1[h2]$2[/h2]\n", $text);
 	}
 
 	// Горизонтальный отчерк минусами, hr.

@@ -37,3 +37,9 @@
 </ul>
 {/foreach}
 {/if}
+
+{if $object->id()}
+<div align="center">
+[ <b>{$object->admin()->imaged_delete_link()}</b> ]
+</div>
+{/if}

@@ -58,10 +58,12 @@
 			$query = $m[2];
 		}
 
+		$data = url_parse($pure_url);
+		$external = @$url_data['local'] ? '' : ' class="external"';
+
 		if(config('lcml_balancer'))
 		{
 			//TODO: придумать хук вместо хардкода
-			$data = url_parse($pure_url);
 			if(in_array($data['host'], array('airbase.ru', 'balabot.balancer.ru', 'balancer.ru', 'bors.balancer.ru', 'forums.airbase.ru', 'forums.balancer.ru')))
 			{
 				$anchor = NULL;
@@ -76,11 +78,13 @@
 			}
 		}
 
+		$blacklist = $external || preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $url_data['host']);
+
 		if(preg_match("!/[^/]+\.[^/]+$!", $pure_url) 
 				&& !preg_match("!\.(html|htm|phtml|shtml|jsp|pl|php|php4|php5|cgi)$!i", $pure_url)
 				&& !preg_match("!^http://[^/]+/?$!i", $pure_url)
 		)
-			return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";
+			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
 		if(!$query && class_exists('DataBaseHTS') && config('hts_db'))
         {
@@ -89,7 +93,7 @@
                 return "<a href=\"{$original_url}\">$title</a>";
         }
 		if(!function_exists('curl_init'))
-	        return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";
+			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
 		$header = array();
 		$header[] = "Accept-Charset: {$GLOBALS['lcml_request_charset_default']}";
@@ -104,10 +108,10 @@
 			if(!$title)
 				$title = $url;
 
-            return "<a href=\"{$original_url}\" class=\"external\">{$title}</a>";
+            return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>{$title}</a>";
         }
 
-        return "<a href=\"{$original_url}\" class=\"external\">".lcml_strip_url($original_url)."</a>";
+        return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
     }
 
     function lcml_urls($txt)

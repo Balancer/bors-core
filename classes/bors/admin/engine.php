@@ -71,12 +71,12 @@ class bors_admin_engine extends bors_object
 		if(!$title)
 			$title = ec('[без имени]');
 
-		$res = "<a href=\"{$obj->admin()->url()}\">{$title}</a>";
+		$res = "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$title}</a>";
 
 		try
 		{
 			if($obj->url())
-				$res .= "&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+				$res .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
 		}
 		catch(Exception $e) { }
 
@@ -95,13 +95,13 @@ class bors_admin_engine extends bors_object
 		$obj = $this->real_object();
 		if(is_null($title))
 			$title = $obj->title();
-		return "<a href=\"{$obj->admin()->url()}\">{$title}</a>\n";
+		return "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$title}</a>\n";
 	}
 
 	function imaged_nav_named_link()
 	{
 		$obj = $this->real_object();
-		return "<a href=\"{$obj->admin()->url()}\">{$obj->nav_name()}</a>&nbsp;<a href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+		return "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$obj->nav_name()}</a>&nbsp;<a rel=\"nofollow\" href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
 	}
 
 	function imaged_edit_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
@@ -123,7 +123,7 @@ class bors_admin_engine extends bors_object
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+			return "<a rel=\"nofollow\" href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a rel=\"nofollow\" href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -145,7 +145,7 @@ class bors_admin_engine extends bors_object
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/new-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/new-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a rel=\"nofollow\" href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/new-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -170,7 +170,7 @@ class bors_admin_engine extends bors_object
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/property-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+			return "<a rel=\"nofollow\" href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/property-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a rel=\"nofollow\" href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/property-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -207,7 +207,7 @@ class bors_admin_engine extends bors_object
 		$alt = $obj->is_hidden() ? 'show' : 'hide';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+			return "<a rel=\"nofollow\" href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a rel=\"nofollow\" href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/$img-16.gif\" width=\"16\" height=\"16\" alt=\"$alt\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -235,7 +235,7 @@ class bors_admin_engine extends bors_object
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i16/delete.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+			return "<a rel=\"nofollow\" href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i16/delete.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a rel=\"nofollow\" href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i16/delete.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -258,7 +258,7 @@ class bors_admin_engine extends bors_object
 			$url = '';
 
 		if($url)
-			return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/login-16.gif\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+			return "<a rel=\"nofollow\" href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/login-16.gif\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a rel=\"nofollow\" href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 		else
 			return "<img src=\"/_bors/i/login-16.gif\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/>{$x}{$title}";
 	}
@@ -275,7 +275,7 @@ class bors_admin_engine extends bors_object
 		if(is_null($popup))
 			$popup = $title;
 
-		return "<a href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/logout-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
+		return "<a rel=\"nofollow\" href=\"{$url}\" style=\"text-decoration: none\"><img src=\"/_bors/i/logout-16.png\" width=\"16\" height=\"16\" alt=\"prop\" title=\"$popup\" style=\"vertical-align:middle\"/></a>{$x}".($title?"<a rel=\"nofollow\" href=\"{$url}\" title=\"$popup\">{$title}</a>":'');
 	}
 
 	function imaged_set_default_link($item, $title = NULL, $popup = NULL)
@@ -288,7 +288,7 @@ class bors_admin_engine extends bors_object
 		if($title)
 			$title = "&nbsp;$title";
 
-		return "<a href=\"".$this->object()->setdefaultfor_url($item)."\"><img src=\"/_bors/i/set-default-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$popup\"/>{$title}</a>";
+		return "<a rel=\"nofollow\" href=\"".$this->object()->setdefaultfor_url($item)."\"><img src=\"/_bors/i/set-default-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$popup\"/>{$title}</a>";
 	}
 
 	function edit_links()

@@ -568,21 +568,21 @@ defined at {$this->class_file()}<br/>
 			if(!$title)
 				$title = '---';
 		}
-		return '<a href="'.$this->admin_url($this->page()).'">'.$title.'</a>';
+		return '<a rel="nofollow" href="'.$this->admin_url($this->page()).'">'.$title.'</a>';
 	}
 
 	function titled_edit_url($title = NULL)
 	{
 		if($title === NULL)
 			$title = $this->title() ? $this->title() : '---';
-		return '<a href="'.$this->admin_url($this->page()).'">'.$title.'</a>';
+		return '<a rel="nofollow" href="'.$this->admin_url($this->page()).'">'.$title.'</a>';
 	}
 
 	function imaged_admin_link($title = NULL)
 	{
 		if($title === NULL)
 			$title = ec('Администрировать ').bors_lower($this->class_title_rp());
-		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/_bors/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
+		return "<a rel=\"nofollow\" href=\"{$this->admin_url($this->page())}\"><img src=\"/_bors/images/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
 	function imaged_edit_link($title = NULL) { return $this->imaged_edit_url($title); }
@@ -590,14 +590,14 @@ defined at {$this->class_file()}<br/>
 	{
 		if($title === NULL)
 			$title = ec('Редактировать ').bors_lower($this->class_title_rp());
-		return "<a href=\"{$this->admin_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
+		return "<a rel=\"nofollow\" href=\"{$this->admin_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
 	function titled_new_link($title = NULL)
 	{
 		if($title === NULL)
 			$title = $this->title() ? $this->title() : '---';
-		return '<a href="'.$this->new_url($this->page()).'">'.$title.'</a>';
+		return '<a rel="nofollow" href="'.$this->new_url($this->page()).'">'.$title.'</a>';
 	}
 
 	function imaged_delete_link($text = NULL, $title = NULL) { return $this->imaged_delete_url($title, $text); }
@@ -613,7 +613,7 @@ defined at {$this->class_file()}<br/>
 		if($text)
 			$text = '&nbsp;'.$text;
 
-		return "<a href=\"{$this->admin()->delete_url()}\"><img src=\"/_bors/images/drop-16.png\" width=\"16\" height=\"16\" alt=\"del\" title=\"$title\"/>{$text}</a>";
+		return "<a rel=\"nofollow\" href=\"{$this->admin()->delete_url()}\"><img src=\"/_bors/images/drop-16.png\" width=\"16\" height=\"16\" alt=\"del\" title=\"$title\"/>{$text}</a>";
 	}
 
 	private function _setdefaultfor_url($target_id, $field_for_def)  { return "/admin/tools/set-default/?object={$this->internal_uri()}&target_id={$target_id}&target_field=$field_for_def"; }
@@ -622,7 +622,7 @@ defined at {$this->class_file()}<br/>
 		if($title === NULL)
 			$title = ec('Сделать выбранным по умолчанию');
 
-		return "<a href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/_bors/i/set-default-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
+		return "<a rel=\"nofollow\" href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/_bors/i/set-default-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
 	}
 
 	function admin_engine() { return config('admin_engine', 'bors_admin_engine'); }

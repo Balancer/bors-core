@@ -15,7 +15,8 @@ function lt_url($params)
 	if(!preg_match("!^\w+://!",$url) && !preg_match("!^/!",$url))
 		$url = @$GLOBALS['main_uri'].$url;
 
-	$external = @$parse['local'] ? '' : ' class="external"';
+	$url_data = url_parse($url);
+	$external = @$url_data['local'] ? '' : ' class="external"';
 
 	if($hts && !$hts->get_data($url, 'create_time') && !$hts->get_data($url, 'title'))
 	{
@@ -32,5 +33,7 @@ function lt_url($params)
 			$params['description'] = $description;
 	}
 
-	return "<a href=\"$url\"$external>{$params['description']}</a>";
+	$blacklist = $external || preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $url_data['host']);
+
+	return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"$url\"$external>{$params['description']}</a>";
 }

@@ -1,4 +1,5 @@
 <?php
+
     require_once('error_log.php');
 
     class bcsTable
@@ -41,16 +42,16 @@
         function set_max()
         {
             if($this->col >= $this->cols)
-            { 
+            {
 //                if($this->row > 0)
 //                    error_log_translate_warning(__FILE__."[".__LINE__."] Cols (".($this->col+1).") in line {$this->row} greater then maximum in one of previous lines ({$this->cols})!<br />");
-       
+
 	            $this->cols = $this->col + 1;
 
                 if($this->rows == 0)
                     $this->rows = 1;
             }
-            
+
             if($this->row >= $this->rows)
                 $this->rows = $this->row + 1;
         }
@@ -93,7 +94,7 @@
         function setRowSpan($row_span)
         {
             $this->row_spans[$this->row][$this->col] = $row_span;
-			for($i=1; $i<=$row_span; $i++)
+			for($i=1; $i<$row_span; $i++)
 				$this->row_spans[$this->row+$i][$this->col] = -1;
         }
 
@@ -107,24 +108,31 @@
             $out = "<table{$this->table_width}{$this->table_border}>\n";
             for($r=0; $r < $this->rows; $r++)
             {
-                $out .= "<tr>";
-                for($c=0; $c < $this->cols-1; $c+=@$this->col_spans[$r][$c] > 1 ? $this->col_spans[$r][$c] : 1)
-                {
+				$out .= "<tr>";
+				$rspans = 0;
+				for($c=0; $c < $this->cols-1; $c++)
+					if(@$this->row_spans[$r][$c]<0)
+						$rspans++;
+                for($c=0; $c < $this->cols-1-$rspans; $c += @$this->col_spans[$r][$c] > 1 ? $this->col_spans[$r][$c] : 1)
+				{
+//					echo "$r, $c: rss={$this->row_spans[$r][$c]} ";
 
 //	Убрано из-за	http://balancer.ru/2007/12/10/post-1361199.html
 //					if(@$this->row_spans[$r][$c] < 0)
 //						continue;
-						
+// Тесты: http://balancer.ru/g/p2547411
+
 					$data = @$this->data[$r][$c];
 					if($data == '')
 						$data = '&nbsp;';
-							
+
                     $tx = !empty($this->heads[$r][$c]) ? 'th' : 'td';
-					$colspan = @$this->col_spans[$r][$c] > 1 ? " colSpan=\"".$this->col_spans[$r][$c]."\"" : "";
-					$rowspan = @$this->row_spans[$r][$c] > 1 ? " rowSpan=\"".$this->row_spans[$r][$c]."\"" : "";
+					$colspan = @$this->col_spans[$r][$c] > 1 ? " colspan=\"".$this->col_spans[$r][$c]."\"" : "";
+					$rowspan = @$this->row_spans[$r][$c] > 1 ? " rowspan=\"".$this->row_spans[$r][$c]."\"" : "";
                     $out .= "<{$tx}{$colspan}{$rowspan}>{$data}</{$tx}>";
                 }
                 $out .= "</tr>\n";
+//                echo "<br/>";
             }
             $out .= "</table>\n";
             return $out;

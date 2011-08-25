@@ -15,13 +15,10 @@ class bors_system_sitemap_index extends bors_page
 			foreach(explode(' ', config('sitemap_classes')) as $class_name)
 			{
 				$total = call_user_func(array($class_name, 'sitemap_total'), $_SERVER['HTTP_HOST']);
-				$pages = ceil($total/1000);
+				$pages = ceil($total/500);
 				for($p = $pages; $p>=1; $p--)
 				{
-//					$topics = call_user_func(array($class_name, 'sitemap_index'), $_SERVER['HTTP_HOST'], $p, 1000);
-//					$last = $topics[count($topics)-1];
-//					$time = date('c', $last->modify_time(true));
-					$time = call_user_func(array($class_name, 'sitemap_last_modify_time'), $_SERVER['HTTP_HOST'], $p, 1000);
+					$time = call_user_func(array($class_name, 'sitemap_last_modify_time'), $_SERVER['HTTP_HOST'], $p, 500);
 					echo "	<sitemap>
 		<loc>http://{$_SERVER['HTTP_HOST']}/sitemap-{$class_name}-{$p}.xml</loc>
 		<lastmod>".date('c', $time)."</lastmod>

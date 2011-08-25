@@ -13,7 +13,7 @@ class bors_system_sitemap_map extends bors_page
 		echo '<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ';
-		foreach(call_user_func(array($class_name, 'sitemap_index'), $_SERVER['HTTP_HOST'], $page, 1000) as $x)
+		foreach(call_user_func(array($class_name, 'sitemap_index'), $_SERVER['HTTP_HOST'], $page, 500) as $x)
 		{
 			$time = $x->modify_time();
 			$now = time();
@@ -28,20 +28,22 @@ class bors_system_sitemap_map extends bors_page
 					$freq = 'weekly';
 				else
 					$freq = 'monthly';
-
-			for($p=1, $total = $x->total_pages(); $p<=$total; $p++)
+			for($p=1, $total = max(1, intval($x->get('total_pages'))); $p<=$total; $p++)
 			{
-
-
-				echo "	<url>
+				if($url=$x->url($p))
+				{
+					echo "	<url>
 		<loc>".$x->url($p)."</loc>
 		<lastmod>".date('c', $time)."</lastmod>
 		<changefreq>{$freq}</changefreq>
 	</url>
 ";
+				}
 			}
 		}
 		echo "</urlset>\n";
 		return true;
 	}
+
+	function cache_static() { return rand(3600, 7200); }
 }

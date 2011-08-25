@@ -149,7 +149,7 @@ require_once('engines/bors/object_show.php');
 require_once('engines/bors/vhosts_loader.php');
 
 $uri = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
-
+header("X-request-url: $uri");
 if($_SERVER['QUERY_STRING'] == 'del')
 {
 	$_SERVER['QUERY_STRING'] = 'act=del';

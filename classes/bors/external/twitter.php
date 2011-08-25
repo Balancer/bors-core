@@ -78,6 +78,10 @@ class bors_external_twitter extends bors_object
 			foreach($matches[2] as $m)
 				$tags[] = common_keyword::loader($m)->title();
 
+		if(preg_match_all('/#(«[^»]+»)/um', $text, $matches))
+			foreach($matches[1] as $m)
+				$tags[] = $m;
+
 		if(preg_match_all('/\s\*([\wа-яА-ЯёЁ]+)/u', $text, $matches))
 			foreach($matches[1] as $m)
 				$tags[] = $m;

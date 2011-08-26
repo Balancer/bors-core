@@ -24,6 +24,7 @@ class bors_object extends base_object
 		return array(
 			'user'  => 'bors_user(user_id)',
 			'owner' => 'bors_user(owner_id)',
+			'last_editor' => 'bors_user(last_editor_id)',
 		);
 	}
 

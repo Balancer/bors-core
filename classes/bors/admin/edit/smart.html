@@ -1,3 +1,11 @@
+<ul>
+<li>Объект: {$object->class_title()} <i>{$object->titled_link()}</i>, ID: {$object->id()}</li>
+<li>Создан: {$object->create_time()|short_time} пользователем {$object->owner()->admin()->imaged_titled_link()}</li>
+{if $object->create_time() != $object->modify_time()}
+<li>Модифицирован {$object->modify_time()|short_time} пользователем {$object->last_editor()->admin()->imaged_titled_link()}</li>
+{/if}
+</ul>
+
 {form action=$this->url() class=$object->class_name() id=$object->id() fields=$auto_fields}
 
 {foreach from=$fields key="title" item="x"}
@@ -36,6 +44,15 @@
 {/foreach}
 </ul>
 {/foreach}
+{/if}
+
+{if $cross}
+<h4>Связанные материалы:</h4>
+<ul>
+{foreach from=$cross item="x"}
+<li>{$x->class_title()} {$x->admin()->imaged_titled_link()}</li>
+{/foreach}
+</ul>
 {/if}
 
 {if $object->id()}

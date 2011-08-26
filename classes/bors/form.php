@@ -367,9 +367,14 @@ class bors_form extends bors_object
 						break;
 
 					case 'timestamp_date_droppable':
-						$data['can_drop'] = true;
-						require_once('function.input_date.php');
-						smarty_function_input_date($data, $smarty);
+						$data['name'] = popval($data, 'property');
+						set_def($data, 'can_drop', true);
+						if(!empty($data['args']))
+							$data = array_merge($data, $data['args']);
+						if(popval($data, 'subtype') == 'simple')
+							$html .= bors_forms_date_simple::html($data, $this);
+						else
+							$html .= bors_forms_date::html($data, $this);
 						break;
 
 					case 'image':

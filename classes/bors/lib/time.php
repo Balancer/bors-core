@@ -31,6 +31,8 @@ class bors_lib_time
 		 - xxx_year[, xxx_month[, xxx__day[, ... ]]] - Неполный формат, только с xxx_is_fuzzy
 		 - нету xxx_year, но нет и xxx_is_fuzzy, значит, дата на входе в виде простой строки.
 
+		- параметр xxx_is_null указывает на то, что дата не задана, в каком бы виде не передавалась.
+
 		возможный выход:
 		 - unixtime		- по умолчанию
 		 - YYYY-MM-DD	- xxx_is_fuzzy
@@ -98,11 +100,14 @@ class bors_lib_time
 				}
 			}
 
+			if(!empty($array["{$var}_is_null"]))
+				$array[$var] = NULL;
+
 			// И почистим массив, оставив только результат.
 			unset($array["{$var}_hour"], $array["{$var}_minute"], $array["{$var}_second"],
 				$array["{$var}_month"], $array["{$var}_day"], $array["{$var}_year"],
 				$array["{$var}_is_fuzzy"], $array["{$var}_have_time"], $array["{$var}_is_integer"],
-				$array["{$var}_is_utc"], $array["{$var}_timezone"]);
+				$array["{$var}_is_utc"], $array["{$var}_timezone"], $array["{$var}_is_null"]);
 		}
 
 		unset($array['time_vars']);

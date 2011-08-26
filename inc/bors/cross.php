@@ -35,6 +35,38 @@ function bors_get_cross_ids($object, $to_class = '', $dbh = NULL)
 	return $result;
 }
 
+function bors_get_all_linked($class_name, $to_class = '')
+{
+	$dbh = new driver_mysql(config('bors_core_db'));
+
+	if($to_class)
+	{
+		if(!is_numeric($to_class))
+			$to_class = class_name_to_id($to_class);
+
+		$to_class_where = " AND to_class = {$to_class} ";
+		$from_class_where = " AND from_class = {$to_class} ";
+	}
+	else
+	{
+		$to_class_where = '';
+		$from_class_where = '';
+	}
+
+	$result = array();
+	$dbh->query("SELECT from_id, to_class, to_id FROM bors_cross WHERE from_class=".class_name_to_id($class_name)." {$to_class_where} ORDER BY `sort_order`, to_id");
+
+	while($row = $dbh->fetch_row())
+		$result[$row['from_id']] = $to_class ? $row['to_id'] : array($row['to_class'], $row['to_id']);
+
+	$dbh->query("SELECT to_id, from_class, from_id FROM bors_cross WHERE to_class=".class_name_to_id($class_name)." {$from_class_where} ORDER BY `sort_order`, from_id");
+
+	while($row = $dbh->fetch_row())
+		$result[$row['to_id']] = $to_class ? $row['from_id'] : array($row['from_class'], $row['from_id']);
+
+	return $result;
+}
+
 function bors_cross_object_init($row)
 {
 	$obj = object_load($row['class_id'], $row['object_id']);

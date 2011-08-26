@@ -16,7 +16,7 @@ class bors_admin_edit_smart extends base_page
 	}
 
 	function title() { return ec('Редактор ').($this->object()->class_title_rp()).ec(' «').($this->object()->title()).ec('»'); }
-	function nav_name() { return ec('редактор'); }
+	function nav_name() { return $this->object() ? $this->object()->nav_name() : ec('редактор'); }
 
 	function object()
 	{
@@ -91,16 +91,15 @@ class bors_admin_edit_smart extends base_page
 		if(!$fields)
 			$fields = bors_lib_orm::all_fields($this->object());
 
-//		var_dump($fields);
-
-		return array(
+		return array_merge(parent::body_data(), array(
 			'object' => $this->object(),
 //			'fields' => $fields,
 //			'fields' => $this->fields(),
 			'referer' => ($ref = bors()->referer()) ? $ref : 'newpage_admin',
 			'auto_fields' => $fields,
 			'items' => object_property($this->object(), 'edit_smart_items_append'),
-		);
+			'cross' => object_property($this->object(), 'cross_objs'),
+		));
 	}
 
 //	function url() { return '/admin/edit-smart/?object='.$this->object()->internal_uri(); }

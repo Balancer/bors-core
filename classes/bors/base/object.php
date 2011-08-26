@@ -1340,7 +1340,7 @@ defined at {$this->class_file()}<br/>
 	function object_titled_vp_link() { return $this->class_title_vp().ec(' «').$this->titled_link().ec('»'); }
 
 	function cross_ids($to_class) { return bors_get_cross_ids($this, $to_class); }
-	function cross_objs($to_class = '') { return bors_get_cross_objs($this, $to_class); }
+	function cross_objs($to_class = NULL) { return bors_get_cross_objs($this, $to_class); }
 	function cross_objects($to_class = '') { return bors_get_cross_objs($this, $to_class); }
 	function add_cross($class, $id, $order = 0) { return bors_add_cross($this->extends_class_id(), $this->id(), $class, $id, $order); }
 	function add_cross_object($object, $order = 0) { return bors_add_cross_obj($this, $object, $order); }

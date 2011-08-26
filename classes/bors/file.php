@@ -36,6 +36,11 @@ class bors_file extends base_object_db
 		return '/'.$this->relative_path().'/'.basename($this->full_file_name());
 	}
 
+	function bors_url()
+	{
+		return '/'.$this->relative_path().'/'.basename($this->full_file_name());
+	}
+
 	function size_smart()
 	{
 		return round($this->size()/1024).ec(' кб');
@@ -181,4 +186,9 @@ class bors_file extends base_object_db
 	}
 
 	function skip_auto_admin_new() { return true; }
+
+	function pre_show()
+	{
+		return go($this->bors_url(), true);
+	}
 }

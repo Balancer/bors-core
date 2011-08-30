@@ -50,15 +50,18 @@
 {if $files_list}
 <h3>Связанные файлы:</h3>
 <table class="btab w100p">
-<tr><th>Файл</th><th>Описание</th><th>Операции</th></tr>
-{foreach from=$files_list item="i"}{if $i}
+<tr><th>Файл</th><th>Порядок сортировки</th></tr>
+{foreach from=$files_list item="f"}{if $f}
 <tr>
-<td>{$i->admin()->titled_link()}</td>
-<td>{$i->admin()->imaged_titled_link($i->description_or_title())}</td>
+<td>{$f->admin()->imaged_titled_link()}
+        <a href="/admin/cross_unlink?from={$object->internal_uri()}&to={$f->internal_uri()}">{icon image="unlink" title="Убрать привязку" alt="[UNLINK]"}</a>
+{if $f->has_no_links($object)}{$f->admin()->imaged_delete_link('')}{/if}
+
+	{if $f->description() && $f->description() != $f->title()}
+		<br/><small>{$f->description()}</small>
+	{/if}</td>
 <td class="nobr">
-	{$i->admin()->imaged_edit_link('редактировать')}<br/>
-	<form action="/admin/tools/set-sort-order/?child={$file_class}://{$i->id()}{if $link_type=='cross'}&parent={$object|get:internal_uri}{/if}" method="post" style="display: inline"><input name="sort_order" value="{$i->sort_order()}" title="Порядок сортировки" size="5" style="width: auto !important;"/>&nbsp;Сортировка</form><br/>
-	{if $i->cross_objects()|@count < 2}{$i->admin()->imaged_delete_link('удалить')}<br/>{/if}
+	<form action="/admin/tools/set-sort-order/?child={$file_class}://{$f->id()}{if $link_type=='cross'}&parent={$object|get:internal_uri}{/if}" method="post" style="display: inline"><input name="sort_order" value="{$f->sort_order()}" title="Порядок сортировки" size="5" style="width: auto !important;"/></form>
 </td>
 </tr>
 {/if}{/foreach}

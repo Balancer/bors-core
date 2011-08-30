@@ -735,6 +735,9 @@ defined at {$this->class_file()}<br/>
 		if($this->get('_read_only'))
 			return;
 
+		if(method_exists($this, 'skip_save') && $this->skip_save()) //TODO: костыль для bors_admin_image_append
+			return;
+
 		include_once('engines/search.php');
 
 		$this->cache_clean();
@@ -747,14 +750,9 @@ defined at {$this->class_file()}<br/>
 		}
 
 		$storage = bors_load($storage, NULL);
-
-		//TODO: уже можно снести проверку в следующей строке?
-		if(!(method_exists($this, 'skip_save') && $this->skip_save())) //TODO: костыль для bors_admin_image_append
-		{
-			$storage->save($this);
-			if(config('debug_trace_changed_save'))
-				echo 'Save '.$this->debug_title()."\n";
-		}
+		$storage->save($this);
+		if(config('debug_trace_changed_save'))
+			echo 'Save '.$this->debug_title()."\n";
 
 		$this->__update_relations();
 		save_cached_object($this);

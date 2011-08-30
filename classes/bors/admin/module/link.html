@@ -1,0 +1,22 @@
+<div class="box">
+Привязка {$target->class_title_rp()} к другим объектам:
+<ul>
+{foreach from=$linked item="x"}
+<li>{$x->class_title()} «{$x->titled_url()}» [
+        {$x->titled_admin_url('администрировать')},
+        <a href="/admin/cross_unlink?from={$target->internal_uri()}&to={$x->internal_uri()}">убрать привязку</a>
+    ]</li>
+{foreachelse}
+<li>Привязок не найдено</li>
+{/foreach}
+</ul>
+
+{form act="link" object=$target}
+{dropdown name="link_class_name" list=$linkable value=""}
+№
+{input name="link_object_id" value=""}
+{hidden name="link_object_from" value=$target->internal_uri()}
+{go value=$this->url()}
+{submit value="Добавить привязку"}
+{/form}
+</div>

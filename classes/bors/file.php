@@ -36,6 +36,13 @@ class bors_file extends base_object_db
 		return '/'.$this->relative_path().'/'.basename($this->full_file_name());
 	}
 
+	function auto_targets()
+	{
+		return array_merge(parent::auto_targets(), array(
+			'parent_link' => 'parent_class_name(parent_id)',
+		));
+	}
+
 	function bors_url()
 	{
 		return '/'.$this->relative_path().'/'.basename($this->full_file_name());
@@ -190,5 +197,17 @@ class bors_file extends base_object_db
 	function pre_show()
 	{
 		return go($this->bors_url(), true);
+	}
+
+	function has_no_links($skip_object = NULL)
+	{
+		if(($p = $this->parent_link()) && !bors_eq($p, $skip_object))
+			return false;
+
+		foreach($this->cross_objs() as $p)
+			if(!bors_eq($p, $skip_object))
+				return false;
+
+		return true;
 	}
 }

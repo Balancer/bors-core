@@ -216,16 +216,18 @@ class bors_admin_engine extends bors_object
 	{
 		$obj = $this->real_object();
 
-		if(is_null($title))
-			$title = ec('Удаление ')
-				.bors_lower($obj->class_title_rp())
-				.ec(' «').$obj->title().ec('»');
+		$delete_text = ec('Удаление ')
+			.bors_lower($obj->class_title_rp())
+			.ec(' «').$obj->title().ec('»');
+
+		if($title === true)
+			$title = $delete_text;
 
 		$x = $title ? '&nbsp;' : '';
 		$url = $this->delete_url();
 
 		if(is_null($popup))
-			$popup = $title;
+			$popup = $delete_text;
 
 		if(!bors()->main_object() || 
 			($unlink_in_admin 

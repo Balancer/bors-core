@@ -13,7 +13,10 @@ config_set('bot_lavg_limit', 0);
 config_set('cache_dir', '/tmp/bors-cache-'.@$_SERVER['HTTP_HOST']);
 
 config_set('debug_class_load_trace', true);
-config_set('debug_hidden_log_dir', realpath($_SERVER['DOCUMENT_ROOT'].'/../logs'));
+if(empty($_SERVER['DOCUMENT_ROOT']))
+	config_set('debug_hidden_log_dir', realpath(BORS_SITE.'/logs'));
+else
+	config_set('debug_hidden_log_dir', realpath($_SERVER['DOCUMENT_ROOT'].'/../logs'));
 
 config_set('default_template', 'default/index.html');
 

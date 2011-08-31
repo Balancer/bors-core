@@ -44,6 +44,7 @@ function defval(&$data, $name, $default=NULL, $must_be_set = false)
 	if($data && array_key_exists($name, $data))
 		return $data[$name];
 
+	//TODO: вынести в отдельную функцию
 	if($must_be_set)
 		$data[$name] = $default;
 

@@ -10,7 +10,7 @@ class bors_storage_fs_bbh extends bors_storage
 	private function __find($object)
 	{
 		$dir = $object->dir();
-		$rel = secure_path(str_replace($_SERVER['DOCUMENT_ROOT'], '/', $dir));
+		$rel = secure_path(str_replace(bors()->server()->root(), '/', $dir));
 
 		if(file_exists($file = "{$dir}/index.bbh"))
 			return $file;

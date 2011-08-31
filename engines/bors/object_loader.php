@@ -205,8 +205,8 @@ function class_load($class, $id = NULL, $args=array())
 	if(preg_match("!^\w+$!", $class))
 		return object_init($class, $id, $args);
 
-	if(preg_match("!^/!", $class) && !empty($_SERVER['HTTP_HOST']))
-		$class = 'http://'.$_SERVER['HTTP_HOST'].$class;
+	if(preg_match("!^/!", $class) && bors()->server()->host())
+		$class = 'http://'.bors()->server()->host().$class;
 
 	if(!is_object($id) && preg_match("!^(\d+)/$!", $id, $m))
 		$id = $m[1];
@@ -411,7 +411,7 @@ function class_load_by_local_url($url, $args)
 		else
 			$test_url = $check_url;
 
-//		echo 'regexp="'.$host_helper.$url_pattern.'$!i" for '.$test_url.'<br/>'.$check_url."<Br/>$url_pattern, class_path=$class_path<br/><br/>";
+		if(config('debug_trace')) echo 'regexp="'.$host_helper.$url_pattern.'$!i" for '.$test_url.'<br/>'.$check_url."<Br/>$url_pattern, class_path=$class_path<br/><br/>";
 		if(preg_match($host_helper.$url_pattern.'$!i', $test_url, $match))
 		{
 			if(($obj = try_object_load_by_map($url, $url_data, $test_url, $class_path, $match, $url_pattern, 1)))
@@ -623,7 +623,15 @@ function object_init($class_name, $object_id, $args = array())
 		$obj->set_match($m);
 
 	if($url = defval($args, 'called_url'))
-		$obj->set_called_url(preg_replace('!\?$!', '', $url));
+	{
+		$called_url = preg_replace('!\?$!', '', $url);
+//		if($port = bors()->server()->port())
+//			$called_url = preg_replace('!^(http://[^/]+)(/.*)$!', "$1:$port$2", $called_url);
+//		echo "$called_url => ";
+		$called_url = preg_replace('!^http://'.preg_quote(bors()->server()->host(), '!').'/!', "/", $called_url);
+//		echo "$called_url<br/>\n";
+		$obj->set_called_url($called_url);
+	}
 
 	$obj->_configure();
 

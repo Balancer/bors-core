@@ -15,41 +15,41 @@ class bors_storage_fs_markdown extends bors_storage
 		if(preg_match('/\.php$/', $base)) // Хардкод, но что делать? :-/
 			return false;
 
-		$rel = secure_path(str_replace($_SERVER['DOCUMENT_ROOT'], '/', $dir));
+		$rel = secure_path(str_replace(bors()->server()->root(), '/', $dir));
 
-		if($base && file_exists($file = "{$dir}/{$base}.mdml"))
+		if($base && is_file($file = "{$dir}/{$base}.mdml"))
 			return $file;
 
-		if($base && file_exists($file = "{$dir}/{$base}"))
+		if($base && is_file($file = "{$dir}/{$base}"))
 			return $file;
 
-		if(file_exists($file = "{$dir}/index.markdown"))
+		if(is_file($file = "{$dir}/index.markdown"))
 			return $file;
 
-		if(file_exists($file = "{$dir}.mdml"))
+		if(is_file($file = "{$dir}.mdml"))
 			return $file;
 
-		if(file_exists($file = "{$dir}.markdown"))
+		if(is_file($file = "{$dir}.markdown"))
 			return $file;
 
 		foreach(bors_dirs() as $d)
 		{
-			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}.mdml")))
+			if(is_file($file = secure_path("{$d}/data/fs/{$rel}.mdml")))
 				return $file;
 
-			if($base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/{$base}.mdml")))
+			if($base && is_file($file = secure_path("{$d}/data/fs/{$rel}/{$base}.mdml")))
 				return $file;
 
-			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/main.mdml")))
+			if(is_file($file = secure_path("{$d}/data/fs/{$rel}/main.mdml")))
 				return $file;
 
-			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.mdml")))
+			if(is_file($file = secure_path("{$d}/data/fs/{$rel}/index.mdml")))
 				return $file;
 
-			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}.markdown")))
+			if(is_file($file = secure_path("{$d}/data/fs/{$rel}.markdown")))
 				return $file;
 
-			if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.markdown")))
+			if(is_file($file = secure_path("{$d}/data/fs/{$rel}/index.markdown")))
 				return $file;
 		}
 

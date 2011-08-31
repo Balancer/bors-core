@@ -429,6 +429,7 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 	if(!file_exists($dir))
 		return false;
 
+//	echo $errfile.':'.$errline;
 	debug_hidden_log('errors/'.date('c'), "Handled error:\n\t\terrno=$errno\n\t\terrstr=$errstr\n\t\terrfile=$errfile\n\t\terrline=$errline", -1, array('append' => "errcontext=".print_r($errcontext, true)));
 
 	return true;

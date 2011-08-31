@@ -194,8 +194,9 @@ function lt_img($params)
 					$response = $req->sendRequest(array('allowRedirects' => true,'maxRedirects' => 2,'timeout' => 8));
 				}
 
-				list($width, $height, $type, $attr) = @getimagesize($img_ico_uri);
-//				return "__$img_ico_uri:list($width, $height, $type, $attr)__";
+//				var_dump(getimagesize($img_ico_uri));
+				list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
+//				return "img_ico_uri=__$img_ico_uri, gis=($width, $height, $type, $attr)__";
 
 				if(!intval($width) || !intval($height))
 					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get WxH]";

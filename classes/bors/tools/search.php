@@ -29,7 +29,14 @@ class bors_tools_search extends base_page
 	function nav_name() { return ec('поиск'); }
 	function total_items() { return 0; }
 	function q() { return ''; }
-	function f() { return array(); }
+	function f()
+	{
+		$f = @$_GET['f'];
+		if(!is_array($f))
+			$f = explode(',', urldecode($f));
+
+		return $f;
+	}
 	function t() { return ''; }
 	function s() { return 'r'; }
 	function x() { return false; }

@@ -68,6 +68,9 @@ class bors_storage_fs_markdown extends bors_storage
 		if(preg_match('/(^|\n)(.+?)\n(=+)\n/s', $content, $m))
 			$object->set_title($m[2], false);
 
+		if(!$object->title_true())
+			return $object->set_loaded(false);
+
 		$object->set_source($content, false);
 
 		return $object->set_loaded(true);

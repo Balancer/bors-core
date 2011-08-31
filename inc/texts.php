@@ -141,10 +141,10 @@ function quote_fix($text)
 	return $text;
 }
 
-require_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
-
 function bors_text_clear($text, $morfology = true, $spacer = ' ')
 {
+	require_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
+
 	$text = preg_replace('/&\w+;/', ' ', $text);
 	$text = preg_replace('/&#\d+;/', ' ', $text);
 	$text = str_replace(

@@ -625,10 +625,10 @@ function object_init($class_name, $object_id, $args = array())
 	if($url = defval($args, 'called_url'))
 	{
 		$called_url = preg_replace('!\?$!', '', $url);
-//		if($port = bors()->server()->port())
-//			$called_url = preg_replace('!^(http://[^/]+)(/.*)$!', "$1:$port$2", $called_url);
+		if($port = bors()->server()->port())
+			$called_url = preg_replace('!^(http://[^/]+)(/.*)$!', "$1:$port$2", $called_url);
 //		echo "$called_url => ";
-		$called_url = preg_replace('!^http://'.preg_quote(bors()->server()->host(), '!').'/!', "/", $called_url);
+//		$called_url = preg_replace('!^http://'.preg_quote(bors()->server()->host(), '!').'/!', "/", $called_url);
 //		echo "$called_url<br/>\n";
 		$obj->set_called_url($called_url);
 	}

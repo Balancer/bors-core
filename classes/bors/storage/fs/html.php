@@ -40,7 +40,7 @@ class bors_storage_fs_html extends base_null
 		if(file_exists($file = "{$dir}.html"))
 			return $file;
 
-		if($object->host() == @$_SERVER['HTTP_HOST'])
+		if($object->host() == bors()->server()->host())
 		{
 			foreach(bors_dirs() as $d)
 			{

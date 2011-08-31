@@ -31,6 +31,8 @@ class bors_storage_htsu extends bors_storage
 		$base = $object->_basename();
 		$rel = secure_path(str_replace($root, '/', $dir));
 
+//		echo "Find htsu for dir=$dir, root=$root, base=$base, rel=$rel<br/>\n";
+
 		if(($ut = config('url_truncate')))
 		{
 			if(!preg_match("!/$ut(/|$)!", $rel))
@@ -57,7 +59,7 @@ class bors_storage_htsu extends bors_storage
 		if(!$base && file_exists($file = "{$dir}.htsu"))
 			return $file;
 
-		if($object->host() == @$_SERVER['HTTP_HOST'])
+		if($object->host() == bors()->server()->host())
 		{
 			foreach(bors_dirs() as $d)
 			{

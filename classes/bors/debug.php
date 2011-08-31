@@ -2,6 +2,11 @@
 
 class bors_debug
 {
+	static function syslog($type, $message, $trace = true, $args = array())
+	{
+		return debug_hidden_log($type, $message, $trace, $args);
+	}
+
 	static function log($category, $message = NULL, $level = 'info', $trace = true)
 	{
 		static $enter = false;

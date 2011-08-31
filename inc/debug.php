@@ -365,14 +365,19 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 	}
 
 //	bors_debug::log($type, $message, 'hidden');
-
 	if(!($out_dir = config('debug_hidden_log_dir')))
 		return;
 
 	if(empty($args['dont_show_user']))
 		$user = object_property(bors(), 'user');
 
-	$out = strftime('%Y-%m-%d %H:%M:%S: ') . $message . "\n";
+	if(popval($args, 'notime'))
+		$out = '';
+	else
+		$out = strftime('%Y-%m-%d %H:%M:%S: ');
+
+	$out .= $message . "\n";
+
 	if($trace !== false)
 	{
 		if($trace === true)

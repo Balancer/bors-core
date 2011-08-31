@@ -35,7 +35,6 @@ function object_load($class, $object_id=NULL, $args=array())
 		}
 	}
 
-//	echo "class_load($class, $object_id);<br/>\n";
 	if($object = class_load($class, $object_id, $args))
 		return $object;
 

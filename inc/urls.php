@@ -27,10 +27,10 @@ function url_truncate($url, $max_length)
 		{
 			$x = $chunks[$i];
 			$sx = strlen($x);
-	
+
 			if($left_length + $sx + 1 + $right_length > $limit)
 				$left_skipped = true;
-			
+
 			if(!$left_skipped)
 			{
 				$left[] = $x;
@@ -38,19 +38,19 @@ function url_truncate($url, $max_length)
 				$added[$i] = true;
 			}
 		}
-		
+
 		if($i<2)
 			continue;
-		
+
 		$j = --$right_pos;
 		if(empty($added[$j]))
 		{
 			$x = $chunks[$j];
 			$sx = strlen($x);
-	
+
 			if($right_length + $sx + 1 + $left_length > $limit)
 				$right_skipped = true;
-				
+
 			if(!$right_skipped)
 			{
 				array_unshift($right,  $x);
@@ -60,40 +60,40 @@ function url_truncate($url, $max_length)
 		}
 
 	}
-	
+
 	return join('/', $left).($right ? '/.../'.join('/',$right) : '/...');
 }
 
 function url_parse($url)
 {
 //	if(preg_match('!^/!', $url))
-//		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
+//		$url = 'http://'.bors()->server()->host().$url;
 
 	$data = @parse_url($url);
 	if(empty($data['path']))
 		$data['path'] = $url;
 
-	if(empty ($data['host']))
-		$data['host'] = @$_SERVER['HTTP_HOST'];
+	if(empty($data['host']))
+		$data['host'] = bors()->server()->host();
 
-	if(preg_match("!^".preg_quote(@$_SERVER['HTTP_HOST'])."$!", $data['host']))
-		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
+	if(bors()->server()->host() == $data['host'])
+		$data['root'] = bors()->server()->root();
 
 	$host = $data['host'].(empty($data['port']) ? '' : ':'.$data['port']);
 
 	require_once('engines/bors/vhosts_loader.php');
 	$vhost_data = bors_vhost_data($host);
-	if(empty($vhost_data) && $host == @$_SERVER['HTTP_HOST'])
+	if(empty($vhost_data) && $host == bors()->server()->host())
 		$vhost_data = array(
-			'document_root' => $_SERVER['DOCUMENT_ROOT'],
+			'document_root' => bors()->server()->root(),
 		);
 
 	if($root = @$vhost_data['document_root'])
 		$data['root'] = $root;
 
-	//TODO: а вот это теперь, наверное, можно будет снести благодаря {if(empty($vhost_data) && $host == $_SERVER['HTTP_HOST'])} ...
-//	if(empty($data['root']) && file_exists($_SERVER['DOCUMENT_ROOT'].$data['path']))
-//		$data['root'] = $_SERVER['DOCUMENT_ROOT'];
+	//TODO: а вот это теперь, наверное, можно будет снести благодаря {if(empty($vhost_data) && $host == bors()->server()->host())} ...
+//	if(empty($data['root']) && file_exists(bors()->server()->root().$data['path']))
+//		$data['root'] = bors()->server()->root();
 
 	if(preg_match('!^'.preg_quote($root, '!').'(/.+)$!', $data['path'], $m))
 		$data['path'] = $m[1];

@@ -41,10 +41,12 @@ class base_object extends base_empty
 	{
 		if($this->__havefc())
 			return $this->__lastc();
-
+			echo "parents=".print_dd($this->parents())."<br/>\n";
+config_set('debug_trace', true);
 		$parent_objects = array();
 		foreach($this->parents() as $p)
 		{
+			echo "load $p: ".bors_load_uri($p)."<br/>";
 			if(is_object($p))
 				$parent_object[] = $p;
 			else

@@ -541,8 +541,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			'enum'		=>	'ENUM(%)',
 		);
 
-		$db_fields = array();
-
 		if($class_name)
 		{
 			$object = new $class_name(NULL);

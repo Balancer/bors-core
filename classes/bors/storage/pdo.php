@@ -6,6 +6,25 @@
 
 class bors_storage_pdo extends bors_storage implements Iterator
 {
+	function __construct($object = NULL)
+	{
+		if($object)
+		{
+			$this->__object = $object;
+			$this->__db_name = $object->db_name();
+			$this->__table_name = $object->table_name();
+		}
+	}
+
+	function db()
+	{
+		if($this->__dbh)
+			return $this->__dbh;
+
+		$db_driver_name = $this->_db_driver_name();
+		return $this->__dbh = new $db_driver_name($this->__db_name);
+	}
+
 	function load($object)
 	{
 		$select = array();
@@ -65,9 +84,11 @@ class bors_storage_pdo extends bors_storage implements Iterator
 			list($select, $where) = self::__query_data_prepare($object, $where);
 		}
 
-		$dbh = new driver_pdo($db_name);
+		$db_driver_name = $this->_db_driver_name();
+		$dbh = new $db_driver_name($db_name);
 
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
+
 		$objects = array();
 
 		foreach($datas as $data)
@@ -114,10 +135,17 @@ class bors_storage_pdo extends bors_storage implements Iterator
 	{
 		$select = array();
 		$post_functions = array();
+		$db_driver_name = $object->storage()->_db_driver_name();
+
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
 			$x = $f['name'];
-			if($f['name'] != $f['property'])
+
+			if($load = $db_driver_name::load_sql_function($f['type']))
+			{
+				$x = sprintf($load, $f['name'])." AS {$f['property']}";
+			}
+			elseif($f['name'] != $f['property'])
 			{
 				$x .= " AS `{$f['property']}`";
 				if(array_key_exists($f['property'], $where))
@@ -141,23 +169,22 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		return array($select, $where, $post_functions);
 	}
 
-	static private function __update_data_prepare($object, $where)
+	static private function __update_data_prepare($object, $where, $dbh = NULL)
 	{
-		$_back_functions = array(
-			'html_entity_decode' => 'htmlspecialchars',
-			'UNIX_TIMESTAMP' => 'FROM_UNIXTIME',
-			'aviaport_old_denormalize' => 'aviaport_old_normalize',
-			'stripslashes' => 'addslashes',
-		);
-
 		$update = array();
 		$db_name = $object->db_name();
 		$table_name = $object->table_name();
 
+		$db_driver_name = $object->storage()->_db_driver_name();
+
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
-//			echo "{$f['property']} => {$f['name']}: ".$object->get($f['property'])."<br/>\n";
 			$x = $f['name'];
+
+			if($save = $db_driver_name::save_sql_function($f['type']))
+				$direct_sql = sprintf($save, $object->get($f['property']));
+			else
+				$direct_sql = false;
 
 //			Сюда сунуть обратное преобразование
 //			if(!empty($f['post_function']))
@@ -173,7 +200,9 @@ class bors_storage_pdo extends bors_storage implements Iterator
 
 			if(array_key_exists($f['property'], $object->changed_fields))
 			{
-				if($sql)
+				if($direct_sql)
+					$update[$db_name][$table_name]['raw '.$f['name']] = $direct_sql;
+				elseif($sql)
 					$update[$db_name][$table_name][$f['name']] = $sql.'('.$object->get($f['property']).')';
 				else
 					$update[$db_name][$table_name][$f['name']] = $object->get($f['property']);
@@ -302,7 +331,6 @@ class bors_storage_pdo extends bors_storage implements Iterator
 						if(!empty($field['post_function']))
 							$post_functions[$field['property']] = $field['post_function'];
 
-//						echo "{$field['property']} => {$field['name']}: ".$object->get($field['property'])."<br/>\n";
 						if(!empty($object->changed_fields) && array_key_exists($field['property'], $object->changed_fields))
 							$update[$db_name][$table_name][$field['name']] = $object->get($field['property']);
 					}
@@ -310,6 +338,8 @@ class bors_storage_pdo extends bors_storage implements Iterator
 			}
 		}
 	}
+
+	function _db_driver_name() { return 'driver_pdo'; }
 
 	function create($object)
 	{
@@ -320,10 +350,12 @@ class bors_storage_pdo extends bors_storage implements Iterator
 			return;
 
 		$main_table = true;
+		$db_driver_name = $this->_db_driver_name();
 
 		foreach($data as $db_name => $tables)
 		{
-			$dbh = new driver_pdo($db_name);
+
+			$dbh = new $db_driver_name($db_name);
 			foreach($tables as $table_name => $fields)
 			{
 				if($main_table)
@@ -337,7 +369,8 @@ class bors_storage_pdo extends bors_storage implements Iterator
 					$fields[$id_field] = $new_id;
 				}
 
-				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
+				$object->storage()->storage_create();
+
 				$dbh->insert($table_name, $fields);
 				if($main_table)
 				{
@@ -348,8 +381,6 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		}
 
 		$object->set_id($new_id);
-//		echo "New id=$new_id, {$object->id()}<br/>";
-//		exit();
 	}
 
 	function delete($object)
@@ -374,17 +405,14 @@ class bors_storage_pdo extends bors_storage implements Iterator
 			$dbh->delete($object->table_name(), array($object->id_field() => $object->id()));
 	}
 
-	static function create_table($class_name)
+	function _fields_types()
 	{
-		$class = new $class_name(NULL);
-		$dsn = driver_pdo::dsn($class->db_name());
+		return bors_throw("Undefined PDO fields map (dsn=$dsn) for class '$class_name'");
+	}
 
-		if(!preg_match('/^(\w+):/', $dsn, $m))
-			return bors_throw("Incorrect DSN '$dsn' for class '$class_name'");
-
-		switch($m[1])
-		{
-			case 'mysql':
+	function create_table($class_name = NULL)
+	{
+/*			case 'mysql':
 				$map = array(
 					'string'	=>	'VARCHAR(255)',
 					'text'		=>	'TEXT',
@@ -398,43 +426,39 @@ class bors_storage_pdo extends bors_storage implements Iterator
 					'*primary_in_field'	=> '',
 					'*primary_post_field'	=> 'PRIMARY KEY (%FIELD%)',
 				);
-				break;
-			case 'sqlite':
-				$map = array(
-					'string'	=>	'VARCHAR(255)',
-					'text'		=>	'TEXT',
-					'int'		=>	'INTEGER',
-					'uint'		=>	'INT UNSIGNED',
-					'bool'		=>	'TINYINT(1) UNSIGNED',
-					'float'		=>	'NUMERIC',
-					'enum'		=>	'ENUM(%)',
+				break; */
 
-					'*autoinc'	=>	'AUTOINCREMENT',
-					'*primary_in_field'	=> ' PRIMARY KEY',
-					'*primary_post_field'	=> '',
-				);
-				break;
-			default:
-				return bors_throw("Unknown PDO driver {$m[1]} (dsn=$dsn) for class '$class_name'");
+		$map = $this->_fields_types();
+
+		if($class_name)
+		{
+			$object = new $class_name(NULL);
+			$db_name = $object->db_name();
+			$table_name = $object->table_name();
+			$db_driver_name = $this->_db_driver_name();
+			$db = new $db_driver_name($db_name);
+		}
+		else
+		{
+			$object = $this->__object;
+			$db_name = $this->__db_name;
+			$table_name = $this->__table_name;
+			$db =$this->__dbh;
 		}
 
 		$db_fields = array();
-
-
-		$db_name = $class->db_name();
-		$table_name = $class->table_name();
-		$fields = $class->table_fields();
-
-		$object_fields = array_smart_expand($fields);
-		$db_fields = array();
 		$primary = false;
 
-		foreach(bors_lib_orm::main_fields($class) as $field)
+		$fields = bors_lib_orm::main_fields($object);
+
+		foreach($fields as $field)
 		{
 			$db_field = ''.$field['name'].' '.$map[$field['type']];
 			if($field['property'] == 'id')
 			{
-				$db_field .= $map['*primary_in_field'].' '.$map['*autoinc'];
+				if($decl = $map['*id_field_declaration'])
+					$db_field = sprintf($decl, $field['name']);
+				 //$map['*primary_in_field'].' '.$map['*autoinc'];
 				$primary = $field['name'];
 			}
 
@@ -449,10 +473,10 @@ class bors_storage_pdo extends bors_storage implements Iterator
 
 		$query = "CREATE TABLE IF NOT EXISTS $table_name (".join(', ', array_values($db_fields)).");";
 
-		$db = new driver_pdo($db_name);
-		$db->query($query);
+		$db_driver_name = $this->_db_driver_name();
+		$db = new $db_driver_name($db_name);
+		$db->exec($query);
 //		$db->close();
-
 	}
 
 	static function drop_table($class_name)
@@ -474,5 +498,35 @@ class bors_storage_pdo extends bors_storage implements Iterator
 //				$db->close();
 			}
 		}
+	}
+
+	function storage_create()
+	{
+		if(config('pdo_tables_autocreate', true) && !$this->storage_exists())
+			$this->create_table();
+	}
+
+	function storage_exists()
+	{
+		static $exists = array();
+		$table = $this->__table_name;
+
+		if(array_key_exists($table, $exists))
+			return $exists[$table];
+
+		$db = $this->db();
+		//FIXME: осторожно! Нужно придумать универсальный способ pdo-escape для имён, не значений!
+
+		try
+		{
+			$db->get("SELECT 1 FROM $table");
+			$exists = true;
+		}
+		catch(Exception $e)
+		{
+			$exists = false;
+		}
+
+		return $exists;
 	}
 }

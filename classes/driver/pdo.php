@@ -2,10 +2,9 @@
 
 class driver_pdo
 {
-	private $connection = NULL;
-	private $database = NULL;
+	protected $connection = NULL;
+	protected $database = NULL;
 	private $statement = NULL;
-	private $row;
 
 	function __construct($database = NULL)
 	{
@@ -27,7 +26,7 @@ class driver_pdo
 			';host='.configh('pdo_access', $db_name, 'host', '127.0.0.1').';';
 	}
 
-	private function _reconnect()
+	protected function _reconnect()
 	{
 		debug_timing_start('pdo_connect');
 
@@ -43,16 +42,28 @@ class driver_pdo
 
 	function query($query)
 	{
-		echo "query '$query'\n";
 		debug_timing_start('pdo_query');
-		$this->row = $this->connection->query($query);
+		$result = $this->connection->query($query);
 		debug_timing_stop('pdo_query');
 
 		$err = $this->connection->errorInfo();
-		if($err[0] != 0)
+		if($err[0] != "00000")
 			return bors_throw("PDO error on query «{$query}»: ".print_r($err, true));
 
-		return $this->row;
+		return $result;
+	}
+
+	function exec($query)
+	{
+		debug_timing_start('pdo_exec');
+		$result = $this->connection->exec($query);
+		debug_timing_stop('pdo_exec');
+
+		$err = $this->connection->errorInfo();
+		if($err[0] != "00000")
+			return bors_throw("PDO error on exec «{$query}»:\n".print_r($err, true));
+
+		return $result;
 	}
 
 	function prepare($sql, $driver_options = array())
@@ -69,7 +80,6 @@ class driver_pdo
 	{
 		debug_timing_start('pdo_fetch');
 		$row = $this->row;
-
 		$ics = config('internal_charset');
 		$dcs = configh('pdo_access', $this->database, 'charset');
 
@@ -84,34 +94,80 @@ class driver_pdo
 		return $row;
 	}
 
+	function get($query)
+	{
+		$row = NULL;
+		foreach($this->connection->query($query) as $row)
+			break;
+
+		$err = $this->connection->errorInfo();
+		if($err[0] != "00000")
+			return bors_throw("PDO error on query «{$query}»: ".print_r($err, true));
+
+		$ics = config('internal_charset');
+		$dcs = configh('pdo_access', $this->database, 'charset');
+
+		if($row && $ics != $dcs)
+		{
+			$ics .= '//IGNORE';
+			foreach($row as $k => $v)
+				$row[$k] = iconv($dcs, $ics, $v);
+		}
+
+		return $row;
+	}
+
+	function get_array($query)
+	{
+		$ics = config('internal_charset');
+		$icsi = $ics . '//IGNORE';
+		$dcs = configh('pdo_access', $this->database, 'charset');
+
+		$result = array();
+		$res = $this->connection->query($query);
+
+		$err = $this->connection->errorInfo();
+		if($err[0] != "00000")
+			return bors_throw("PDO error on query «{$query}»: ".print_r($err, true));
+
+		while($assoc = $res->fetch(PDO::FETCH_ASSOC))
+		{
+			if($ics == $dcs)
+				$result[] = $assoc;
+			else
+			{
+				$row = array();
+				foreach($assoc as $key => $value)
+					$row[$key] = iconv($dcs, $icsi, $value);
+				$result[] = $row;
+			}
+
+		}
+
+		return $result;
+	}
+
 	function close() { }
 
+	// Прочитать одну строку или одно значение
 	function select($table, $fields, $where)
 	{
 		$query = 'SELECT '.$fields.' FROM '.$table.' '.$this->args_compile($where);
 //		$query = str_replace('`', '"', $query);
 //		echo $query."\n";
-		$this->query($query);
-		return $this->fetch();
+		return $this->get($query);
 	}
 
 	function select_array($table, $fields, $where)
 	{
 		$query = 'SELECT '.$fields.' FROM '.$table.' '.$this->args_compile($where);
+//		echo "select array: $query\n";
 //		$query = str_replace('`', '"', $query);
-		$this->query($query);
-		$data = array();
-		while($row = $this->fetch())
-		{
-			$data[] = $row;
-		}
-
-		return $data;
+		return $this->get_array($query);
 	}
 
 	function args_compile($where)
 	{
-		var_dump($where);
 		return mysql_args_compile($where);
 	}
 
@@ -199,9 +255,15 @@ class driver_pdo
 
 	function insert($table, $fields)
 	{
-		echo "Insert:";
-		var_dump($fields);
-		$this->query("INSERT INTO $table ".$this->make_string_values($fields));
+// Шит. Нельзя использовать prepare, так как передаваться могут готовые SQL-функции.
+//		$keys = array_keys($fields);
+//		$query = "INSERT INTO $table (".join(',', $keys).") VALUES (".join(',', array_map(create_function('$name', 'return ":$name";'), $keys)).")";
+//		foreach($fields as $name => $value)
+//			$this->connection->bindParam(":$name", );
+//		$this->prepare($query);
+//		$this->execute(array_values($fields));
+//		echo "INSERT INTO $table ".$this->make_string_values($fields).PHP_EOL;
+		$this->exec("INSERT INTO $table ".$this->make_string_values($fields));
 	}
 
 	function update($table, $where, $fields)

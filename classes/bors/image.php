@@ -139,7 +139,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 			$this->recalculate(true);
 	}
 
-	function recalculate($db_update)
+	function recalculate()
 	{
 		if(!$this->file_name())
 		{
@@ -155,11 +155,11 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 
 		if(!empty($x[0]) && !empty($x['mime']))
 		{
-			$this->set_width(intval($x[0]), $db_update);
-			$this->set_height(intval($x[1]), $db_update);
-			$this->set_size(intval(@filesize($this->file_name_with_path())), $db_update);
-			$this->set_mime_type($x['mime'], $db_update);
-			$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()), $db_update);
+			$this->set_width(intval($x[0]));
+			$this->set_height(intval($x[1]));
+			$this->set_size(intval(@filesize($this->file_name_with_path())));
+			$this->set_mime_type($x['mime']);
+			$this->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $this->original_filename()));
 			try
 			{
 				$this->store();
@@ -200,15 +200,15 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		if(!$this->id())
 			debug_exit('Error: empty image id');
 
-		$this->set_original_filename($data['name'], true);
+		$this->set_original_filename($data['name']);
 
 		if(is_null($dir))
 			$dir = popval($data, 'upload_dir');
 
 		if(config('image_upload_skip_subdirs') || !empty($data['no_subdirs']))
-			$this->set_relative_path(secure_path($dir), true);
+			$this->set_relative_path(secure_path($dir));
 		else
-			$this->set_relative_path(secure_path($dir.'/'.sprintf("%03d", intval($this->id()/1000))), true);
+			$this->set_relative_path(secure_path($dir.'/'.sprintf("%03d", intval($this->id()/1000))));
 
 		$data = @getimagesize($file);
 		switch($data['mime'])
@@ -227,12 +227,12 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 				return NULL;
 		}
 
-		$this->set_extension($ext, true);
-		$this->set_image_type($data['mime'], true);
+		$this->set_extension($ext);
+		$this->set_image_type($data['mime']);
 
 		$original_name = translite_uri_simple(preg_replace('/\.\w+$/', '', $this->original_filename()));
 		$upload_file_name = defval($data, 'file_name', sprintf('%06d', $this->id()).'-'.$original_name.'.'.$this->extension());
-		$this->set_file_name($upload_file_name, true);
+		$this->set_file_name($upload_file_name);
 
 		mkpath($this->image_dir(), 0777);
 		if(!file_exists($this->image_dir()))
@@ -375,9 +375,9 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		return "[img bors_image://{$this->id()}".($append?' '.$append:'')."]";
 	}
 
-	function set_parent_object($object, $db_up)
+	function set_parent_object($object)
 	{
-		$this->set_parent_class_id($object->class_id(), $db_up);
-		$this->set_parent_object_id($object->id(), $db_up);
+		$this->set_parent_class_id($object->class_id());
+		$this->set_parent_object_id($object->id());
 	}
 }

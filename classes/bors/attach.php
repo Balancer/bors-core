@@ -62,24 +62,24 @@ class bors_attach extends base_object_db
 		if(!$this->id())
 			debug_exit('Error: empty attach id');
 
-		$this->set_original_name($data['name'], true);
+		$this->set_original_name($data['name']);
 
 		$dir = popval($data, 'upload_dir');
 
 		if(!empty($data['no_subdirs']))
-			$this->set_relative_path(secure_path($dir), true);
+			$this->set_relative_path(secure_path($dir));
 		else
-			$this->set_relative_path(secure_path($dir.'/'.sprintf("%03d", intval($this->id()/1000))), true);
+			$this->set_relative_path(secure_path($dir.'/'.sprintf("%03d", intval($this->id()/1000))));
 
 		$original_name = translite_uri_simple(preg_replace('/\.\w+$/', '', $this->original_name()));
 		$upload_file_name = $_SERVER['DOCUMENT_ROOT'] . '/' . $this->relative_path() . '/' . defval($data, 'file_name', sprintf('%06d', $this->id()).'-'.$original_name.'.'.$this->extension());
-		$this->set_full_file_name($upload_file_name, true);
-		$this->set_mime_type($data['type'], true);
+		$this->set_full_file_name($upload_file_name);
+		$this->set_mime_type($data['type']);
 
 		if($parent = popval($data, 'parent'))
 		{
-			$this->set_parent_class_name($parent->extends_class_name(), true);
-			$this->set_parent_id($parent->id(), true);
+			$this->set_parent_class_name($parent->extends_class_name());
+			$this->set_parent_id($parent->id());
 		}
 
 		mkpath($this->dirname(), 0777);

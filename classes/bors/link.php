@@ -59,21 +59,21 @@ class bors_link extends base_object_db
 	function is_about() { return $this->type_id() == bors_links_types::ABOUT; }
 	function from_class_name() { return class_id_to_name($this->from_class()); }
 
-	function set_from($obj_from, $db_up)
+	function set_from($obj_from)
 	{
-		$this->set_from_class($obj_from->class_id(), $db_up);
-		$this->set_from_id   ($obj_from->id(), $db_up);
+		$this->set_from_class($obj_from->class_id());
+		$this->set_from_id   ($obj_from->id());
 	}
 
-	function set_target($target, $db_up)
+	function set_target($target)
 	{
-		$this->set_target_class_id ($target->class_id(), $db_up);
-		$this->set_target_object_id($target->id(),       $db_up);
+		$this->set_target_class_id ($target->class_id());
+		$this->set_target_object_id($target->id());
 
-		$this->set_target_create_time($target->create_time(true), $db_up);
-		$this->set_target_modify_time($target->modify_time(true), $db_up);
-		$this->set_target_time1($target->link_time1(true), $db_up);
-		$this->set_target_time2($target->link_time2(true), $db_up);
+		$this->set_target_create_time($target->create_time(true));
+		$this->set_target_modify_time($target->modify_time(true));
+		$this->set_target_time1($target->link_time1(true));
+		$this->set_target_time2($target->link_time2(true));
 	}
 
 	function set_replace($bool) { $this->replace = $bool; }
@@ -94,14 +94,14 @@ class bors_link extends base_object_db
 		self::link_object_to($obj2, $obj1, $params);
 
 		if(method_exists($obj2, 'set_parent_object') && !$obj2->parent_object())
-			$obj2->set_parent_object($obj1, true);
+			$obj2->set_parent_object($obj1);
 	}
 
 	static function link_object_to($from, $to, $params = array())
 	{
 		$link = object_new('bors_link');
-		$link->set_from($from, true);
-		$link->set_target($to, true);
+		$link->set_from($from);
+		$link->set_target($to);
 
 		if(empty($params['owner_id']))
 			$params['owner_id'] = bors()->user_id();
@@ -113,7 +113,7 @@ class bors_link extends base_object_db
 		$link->store();
 
 		if(method_exists($to, 'set_parent_object') && !$to->parent_object())
-			$to->set_parent_object($from, true);
+			$to->set_parent_object($from);
 	}
 
 	private static function _target_class_parse(&$params)

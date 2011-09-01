@@ -78,7 +78,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	$object = &object_new($class, $id);
 
 	$object->set_owner_id(defval($data, 'owner_id', bors()->user_id()), true);
-	$object->set_last_editor_id(bors()->user_id(), true);
+	$object->set_last_editor_id(bors()->user_id());
 
 	$replace = popval($data, '*replace', false);
 
@@ -104,13 +104,13 @@ function bors_object_new_instance_db(&$object)
 //	debug_trace();
 
 	if(!$object->create_time(true))
-		$object->set_create_time(time(), true);
+		$object->set_create_time(time());
 
 	if(!$object->modify_time(true))
-		$object->set_modify_time(time(), true);
+		$object->set_modify_time(time());
 
-//	$object->set_owner_id(bors()->user_id(), true);
-	$object->set_last_editor_id(bors()->user_id(), true);
+//	$object->set_owner_id(bors()->user_id());
+	$object->set_last_editor_id(bors()->user_id());
 
 	$object->storage()->create($object);
 }
@@ -240,11 +240,11 @@ function bors_set_server_var($name, $value, $keep_alive = -1)
 	if(!$sv)
 	{
 		$sv = object_new_instance('bors_var_db');
-		$sv->set_name($name, true);
+		$sv->set_name($name);
 	}
 
-	$sv->set_value($value, true);
-	$sv->set_expire_time($keep_alive > 0 ? time() + $keep_alive : NULL, true);
+	$sv->set_value($value);
+	$sv->set_expire_time($keep_alive > 0 ? time() + $keep_alive : NULL);
 	$sv->store();
 }
 

@@ -198,7 +198,7 @@ function bors_search_sphinx_find_links($object, $delete_old = false)
 	foreach($synonyms as $synonym)
 	{
 		$is_exactly = $synonym->is_exactly();
-		$synonym->set_norm_title($is_exactly ? bors_lower($synonym->title()) : bors_text_clear($synonym->title(), false), true);
+		$synonym->set_norm_title($is_exactly ? bors_lower($synonym->title()) : bors_text_clear($synonym->title(), false));
 		$norm_title = $synonym->norm_title();
 		$ch = new Cache();
 //		$quoted_norm_title = '!\b'.preg_quote($norm_title, '\b!').'!';

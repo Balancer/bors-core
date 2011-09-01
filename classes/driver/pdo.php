@@ -269,7 +269,9 @@ class driver_pdo
 	function update($table, $where, $fields)
 	{
 		$where['*set'] = $this->make_string_set($fields);
-		return $this->query("UPDATE `".addslashes($table)."` ".$this->args_compile($where));
+		$query = "UPDATE `".addslashes($table)."` ".$this->args_compile($where);
+//		echo "Update: $query\n";
+		return $this->exec($query);
 	}
 
 	function last_id() { return $this->connection->lastInsertId(); }

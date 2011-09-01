@@ -23,7 +23,7 @@ class render_wordpress extends base_null
 			return false;
 		}
 
-		$object->set_template_wordpress_base_dir(dirname($tpl_file), false);
+		$object->set_template_wordpress_base_dir(dirname($tpl_file));
 		global $wp_object, $wp_render;
 		$wp_object = $object;
 		$wp_render = $this;

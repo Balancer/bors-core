@@ -227,16 +227,21 @@ class bors_storage_pdo extends bors_storage implements Iterator
 
 		$update_plain = array();
 		foreach($update as $db_name => $tables)
+		{
 			foreach($tables as $table_name => $fields)
 			{
 				unset($fields['*id_field']);
 				$update_plain = array_merge($update_plain, $fields);
 			}
+		}
+
+		unset($update_plain[$object->id_field()]);
 
 		if(!$update_plain)
 			return;
 
-		$dbh = new driver_pdo($object->db_name());
+		$db_driver_name = $object->storage()->_db_driver_name();
+		$dbh = new $db_driver_name($object->db_name());
 		$dbh->update($object->table_name(), $where, $update_plain);
 	}
 

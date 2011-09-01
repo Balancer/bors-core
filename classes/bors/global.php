@@ -60,10 +60,10 @@ class bors_global extends base_empty
 
 	function changed_save()
 	{
-		include_once('engines/search.php');
-
 		if(empty($this->changed_objects))
 			return;
+
+//		include_once('engines/search.php');
 
 		foreach($this->changed_objects as $name => $x)
 		{

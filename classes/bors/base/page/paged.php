@@ -24,12 +24,13 @@ class base_page_paged extends base_page
 		if(!is_null($this->_items))
 			return $this->_items;
 
-		try {
-		$this->_items = objects_array($this->main_class(), $this->_where(array(
-			'page' => $this->page(),
-			'per_page' => $this->items_per_page(),
-			'order' => $this->order(),
-		)));
+		try
+		{
+			$this->_items = bors_find_all($this->main_class(), $this->_where(array(
+				'page' => $this->page(),
+				'per_page' => $this->items_per_page(),
+				'order' => $this->order(),
+			)));
 		}
 		catch(Exception $e)
 		{
@@ -72,10 +73,17 @@ class base_page_paged extends base_page
 		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
 	}
 
-	function auto_objects()
+/*
+	// Использовать тут auto_objects — это был былинный отказ
+	// __call тоже нельзя использовать, ибо item_name может вызывать определённый
+	// как переменная main_class
+	//TODO: надо думать.
+	function __xcall($method, $params)
 	{
-		return array_merge(parent::auto_objects(), array(
-			bors_plural($this->item_name()) => $this->items(),
-		));
+		if($method == bors_plural($this->item_name()))
+			return $this->items();
+
+		return parent::__call($method, $params);
 	}
+*/
 }

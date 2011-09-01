@@ -12,7 +12,7 @@ function lcml_text($txt)
 //	$txt = preg_replace("!(\W)\*(\S[^*]*\S)\*(\W)!u", "$1<strong>$2</strong>$3",$txt);
 //	$txt = preg_replace("!(\W)_(\S[^_]*\S)_(\W)!u"  , "$1<em>$2</em>$3",$txt);
 
-	$txt = preg_replace("!^(//\s+.+)$!m","<small>$1 </small>",$txt);
+	$txt = preg_replace("!^(//\s+.+)$!m","<small>$1 </small><br/>",$txt);
 
 	$txt = preg_replace("!\^(\-?[\d\.]+)!","<sup>$1</sup>",$txt);
 	$txt = str_ireplace("^o","°",$txt);

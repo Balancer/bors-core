@@ -17,7 +17,7 @@ class bors_tests_storage_mysql_db_unittest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($first);
         $this->assertEquals('123', $first->id());
 		$time = '123456789';
-        $first->set_create_time($time, true);
+        $first->set_create_time($time);
         $first->store();
 
 		$object = bors_find_first('bors_tests_storage_mysql_db', array('create_time' => $time));

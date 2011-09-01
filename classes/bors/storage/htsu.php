@@ -239,7 +239,7 @@ class bors_storage_htsu extends bors_storage
 
 	function save($object)
 	{
-		debug_exit("Try to save index.hts");
+		bors_throw("Try to save index.hts:<br/>\n".print_dd($object->data, true));
 	}
 
 	static function each($class_name, $where)

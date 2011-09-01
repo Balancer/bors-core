@@ -276,8 +276,8 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 	if($last && $object->has_changed())
 	{
-		$object->set_modify_time(time(), true);
-		$object->set_last_editor_id(bors()->user_id(), true);
+		$object->set_modify_time(time());
+		$object->set_last_editor_id(bors()->user_id());
 
 		if($object->id()) // post_set() вызывается только для уже существующих объектов.
 			$object->post_set($data);

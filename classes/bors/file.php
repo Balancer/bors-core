@@ -122,7 +122,7 @@ class bors_file extends base_object_db
 		else
 			$relative_path = secure_path($upload_dir.'/'.date('Ym').sprintf("_%03d", intval($file->id()/1000)));
 
-		$file->set_relative_path($relative_path, true);
+		$file->set_relative_path($relative_path);
 
 		$dir = $base_dir.'/'.$relative_path;
 
@@ -139,7 +139,7 @@ class bors_file extends base_object_db
 			bors_throw("Can't upload image {$file_data['name']} as {$upload_file_name}");
 
 		@chmod($upload_file_name, 0664);
-		$file->set_full_file_name($upload_file_name, true);
+		$file->set_full_file_name($upload_file_name);
 		$file->store();
 		return $file;
 	}
@@ -187,9 +187,9 @@ class bors_file extends base_object_db
 		if(!move_uploaded_file($file_data['tmp_name'], $this->full_file_name()))
 			bors_throw("Can't upload image {$file_data['name']} as {$this->full_file_name()}");
 
-		$this->set_original_filename($file_data['name'], true);
-		$this->set_size($file_data['size'], true);
-		$this->set_mime_type($file_data['type'], true);
+		$this->set_original_filename($file_data['name']);
+		$this->set_size($file_data['size']);
+		$this->set_mime_type($file_data['type']);
 	}
 
 	function skip_auto_admin_new() { return true; }

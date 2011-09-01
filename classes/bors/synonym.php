@@ -24,7 +24,7 @@ class bors_synonym extends base_object_db
 
 	function post_set($data)
 	{
-		$this->set_norm_title(bors_text_clear($data['title'], true), true);
+		$this->set_norm_title(bors_text_clear($data['title'], true));
 	}
 
 	function auto_targets()

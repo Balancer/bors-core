@@ -24,7 +24,7 @@
 			$result = "<?php
 \$obj = bors_load_ex(\"$class_name\", \"$id\", array(".join(',', $ps)."));
 if(\$obj)
-	\$content = \$obj->body();
+	\$content = \$obj->html_code();
 else
 	\$content = ec('Неизвестный класс «').\"$class_name\".ec(\"»\");
 ?>";

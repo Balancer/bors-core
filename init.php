@@ -181,6 +181,12 @@ if(file_exists(BORS_HOST.'/config.php'))
 if(file_exists(BORS_SITE.'/config.php'))
 	include_once(BORS_SITE.'/config.php');
 
+if(file_exists(BORS_HOST.'/config-post.php'))
+	include_once(BORS_HOST.'/config-post.php');
+
+if(file_exists(BORS_LOCAL.'/config-post.php'))
+	include_once(BORS_LOCAL.'/config-post.php');
+
 if(config('debug_can_change_now'))
 {
 	$GLOBALS['now'] = empty($_GET['now']) ? time() : intval(strtotime($_GET['now']));
@@ -242,8 +248,8 @@ function bors_dirs($skip_config = false, $host = NULL)
 		$data = array_merge($data, explode(' ', BORS_APPEND));
 
 	foreach(array(
-		BORS_HOST,
 		BORS_SITE,
+		BORS_HOST,
 		BORS_LOCAL.$vhost,
 		BORS_LOCAL,
 		BORS_CORE,

@@ -107,7 +107,7 @@ class bors_form extends bors_object
 		if(!isset($uri))
 		{
 			if($calling_object)
-				$uri = $calling_object->called_url();
+				$uri = bors()->server()->portize($calling_object->called_url());
 			else
 				$uri = NULL;
 

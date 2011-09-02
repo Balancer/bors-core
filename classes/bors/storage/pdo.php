@@ -515,11 +515,11 @@ class bors_storage_pdo extends bors_storage implements Iterator
 
 	function storage_exists()
 	{
-		static $exists = array();
+		static $exists_map = array();
 		$table = $this->__table_name;
 
-		if(array_key_exists($table, $exists))
-			return $exists[$table];
+		if(array_key_exists($table, $exists_map))
+			return $exists_map[$table];
 
 		$db = $this->db();
 		//FIXME: осторожно! Нужно придумать универсальный способ pdo-escape для имён, не значений!
@@ -527,13 +527,13 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		try
 		{
 			$db->get("SELECT 1 FROM $table");
-			$exists = true;
+			$exists_map[$table] = true;
 		}
 		catch(Exception $e)
 		{
-			$exists = false;
+			$exists_map[$table] = false;
 		}
 
-		return $exists;
+		return $exists_map[$table];
 	}
 }

@@ -97,8 +97,13 @@ class driver_pdo
 	function get($query)
 	{
 		$row = NULL;
-		foreach($this->connection->query($query) as $row)
-			break;
+		if($q = $this->connection->query($query))
+		{
+			foreach($q as $row)
+				break;
+		}
+		else
+			$row = NULL;
 
 		$err = $this->connection->errorInfo();
 		if($err[0] != "00000")

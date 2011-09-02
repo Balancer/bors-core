@@ -168,4 +168,11 @@ $blog->set_title('Тест от '.date('r'));
 записей нашего блога. [../simple-blog-2/ Читать дальше »»»]
 
 // 01.09.2011 19:23
-// Обсудить материал и задать вопросы можно на [http://balancer.ru/support/2011/09/t82982--urok-1-prostejshij-blog-na-sqlite-bekende.779.html соответствующей теме форума].
+// Обсудить материал и задать вопросы можно на [http://balancer.ru/support/2011/09/t82982--urok-1-prostejshij-blog-na-sqlite-bekende.779.html соответствующей теме форума] (рекомендуется) или в комментариях внизу этой страницы.
+
+[module class="bors_module_multicomments"
+	disqus="borsc"
+	fb_app_id="258088860889406"
+	vk_api_id="2460610"
+	topic_id="82982"
+]

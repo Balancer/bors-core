@@ -11,6 +11,7 @@ class bors_module extends bors_page
 	{
 		try
 		{
+			$this->pre_show();
 			$content = $this->body();
 		}
 		catch(Exception $e)
@@ -25,5 +26,10 @@ class bors_module extends bors_page
 	{
 		$mod = bors_load_ex($class_name, NULL, $args);
 		echo $mod->html_code();
+	}
+
+	function body_data()
+	{
+		return array_merge(parent::body_data(), $this->args());
 	}
 }

@@ -149,3 +149,8 @@ function template_jquery_markitup($id)
 
 function template_rightjs() { template_js_include('/_bors3rdp/rightjs/right-safe.js'); }
 function template_rightjs_plugin($name) { template_rightjs(); template_js_include("/_bors3rdp/rightjs/right-{$name}.js"); }
+
+function template_meta_prop($name, $value)
+{
+	bors_page::add_template_data_array('head_append', "<meta property=\"{$name}\" content=\"".htmlspecialchars($value)."\"/>");
+}

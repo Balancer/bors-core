@@ -72,7 +72,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 		$data = false;
 
 	if(!class_exists($class))
-		throw new Exception("Class name '$class' not exists");
+		bors_throw("Class name '$class' not exists");
 
 	$id = call_user_func(array($class, 'id_prepare'), $id, $class);
 	$object = &object_new($class, $id);

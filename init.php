@@ -145,6 +145,7 @@ $includes = array(
 	BORS_HOST,
 	BORS_LOCAL.$vhost,
 	BORS_LOCAL,
+	BORS_EXT,
 	BORS_CORE,
 	BORS_CORE.'/PEAR',
 	BORS_3RD_PARTY,
@@ -171,6 +172,9 @@ require_once('inc/datetime.php');
 require_once('inc/clients.php');
 require_once('engines/bors.php');
 require_once('engines/bors/vhosts_loader.php');
+
+if(file_exists(BORS_EXT.'/config.php'))
+	include_once(BORS_EXT.'/config.php');
 
 if(file_exists(BORS_LOCAL.'/config.php'))
 	include_once(BORS_LOCAL.'/config.php');

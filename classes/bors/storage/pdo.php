@@ -67,6 +67,8 @@ class bors_storage_pdo extends bors_storage implements Iterator
 
 	function load_array($object, $where)
 	{
+		$object->storage()->storage_create();
+
 		if(is_null($object))
 		{
 			$db_name = $where['*db'];

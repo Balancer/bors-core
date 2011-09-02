@@ -252,7 +252,7 @@ class base_object extends base_empty
 	{
 		// Это был вызов $obj->set_XXX($value, $db_up)
 		if(preg_match('!^set_(\w+)$!', $method, $match))
-			return $this->set($match[1], $params[0], $params[1]);
+			return $this->set($match[1], $params[0], empty($params[1]) ? true : $params[1]);
 
 		// Проверяем нет ли уже загруженного значения данных объекта
 		if(@array_key_exists($method, $this->data))
@@ -396,7 +396,7 @@ defined at {$this->class_file()}<br/>
 	function template_vars() { return 'body source me me_id'; }
 	function template_local_vars() { return 'create_time description id modify_time nav_name title'; }
 
-	function set_create_time($unix_time, $db_update) { return $this->set('create_time', intval($unix_time), $db_update); }
+	function set_create_time($unix_time, $db_update = true) { return $this->set('create_time', intval($unix_time), $db_update); }
 	function create_time($exactly = false)
 	{
 		if($exactly || !empty($this->data['create_time']))
@@ -408,7 +408,7 @@ defined at {$this->class_file()}<br/>
 		return time();
 	}
 
-	function set_modify_time($unix_time, $db_update) { return $this->set('modify_time', $unix_time, $db_update); }
+	function set_modify_time($unix_time, $db_update = true) { return $this->set('modify_time', $unix_time, $db_update); }
 	function modify_time($exactly = false)
 	{
 		if($exactly || !empty($this->data['modify_time']))

@@ -274,7 +274,7 @@ class storage_db_mysql_smart extends base_null
 					if($need_convert && $value)
 						$value = $object->cs_d2i($value);
 
-//					echo "$object -> set_{$name}($value)<br/>";
+//					echo "set $name to $value\n";
 //					$object->data[$name] = $value;
 					$object->{"set_$name"}($value, false, true);
 //					$object->set($name, "$value", false, true);
@@ -323,7 +323,7 @@ class storage_db_mysql_smart extends base_null
 
 	function save($object)
 	{
-//		echo "Save ".get_class($object)."({$object->id()})<br/>";
+//		echo "Save ".get_class($object)."({$object->id()})<br/>\n";
 
 		if(!$object->id() || is_object($object->id()) || empty($object->changed_fields))
 			return false;
@@ -371,7 +371,7 @@ class storage_db_mysql_smart extends base_null
 						$def_id = $field;
 
 //					if(empty($object->changed_fields[$property]))
-					if(!@array_key_exists($property, $object->changed_fields))
+					if(!array_key_exists($property, $object->changed_fields))
 						continue;
 
 					$value = $object->$property();

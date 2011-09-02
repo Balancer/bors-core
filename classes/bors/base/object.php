@@ -252,7 +252,7 @@ class base_object extends base_empty
 	{
 		// Это был вызов $obj->set_XXX($value, $db_up)
 		if(preg_match('!^set_(\w+)$!', $method, $match))
-			return $this->set($match[1], $params[0], empty($params[1]) ? true : $params[1]);
+			return $this->set($match[1], $params[0], array_key_exists(1, $params) ? $params[1] : true);
 
 		// Проверяем нет ли уже загруженного значения данных объекта
 		if(@array_key_exists($method, $this->data))

@@ -71,7 +71,14 @@ class bors_object extends base_object
 		return $renderer_class ? bors_load($renderer_class, NULL) : NULL;
 	}
 
-	function direct_content() { return $this->renderer()->render($this); }
+	function direct_content()
+	{
+		$renderer = $this->renderer();
+		if(!$renderer)
+			bors_throw(ec('Отсутствует рендерер класса ').$this->class_name()." (renderer_class={$this->get('renderer_class')}, render_engine={$this->get('render_engine')})");
+
+		return $renderer->render($this);
+	}
 
 	function description_or_title()
 	{

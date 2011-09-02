@@ -175,4 +175,5 @@ $blog->set_title('Тест от '.date('r'));
 	fb_app_id="258088860889406"
 	vk_api_id="2460610"
 	topic_id="82982"
+	uid="http://bors.balancer.ru/doc/examples/simple-blog-1/"
 ]

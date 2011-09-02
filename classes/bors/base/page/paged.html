@@ -1,0 +1,11 @@
+{$this->pages_links_nul()}
+
+<ul>
+{foreach from=$items item="x"}
+<li>{$x->titled_url()}</li>
+{foreachelse}
+<li>Ничего не найдено</li>
+{/foreach}
+</ul>
+
+{$this->pages_links_nul()}

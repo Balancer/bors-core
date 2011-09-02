@@ -1,8 +1,8 @@
 <ul>
 <li>Объект: {$object->class_title()} <i>{$object->titled_link()}</i>, ID: {$object->id()}</li>
-<li>Создан: {$object->create_time()|short_time} пользователем {$object->owner()->admin()->imaged_titled_link()}</li>
+<li>Создан: {$object->create_time()|short_time}{if $object->owner()} пользователем {$object->owner()->admin()->imaged_titled_link()}{/if}</li>
 {if $object->create_time() != $object->modify_time()}
-<li>Модифицирован {$object->modify_time()|short_time} пользователем {$object->last_editor()->admin()->imaged_titled_link()}</li>
+<li>Модифицирован {$object->modify_time()|short_time}{if $object->last_editor()} пользователем {$object->last_editor()->admin()->imaged_titled_link()}{/if}</li>
 {/if}
 </ul>
 

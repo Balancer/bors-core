@@ -27,6 +27,8 @@ class bors_storage_pdo extends bors_storage implements Iterator
 
 	function load($object)
 	{
+		$object->storage()->storage_create();
+
 		$select = array();
 		$post_functions = array();
 		foreach(bors_lib_orm::main_fields($object) as $f)
@@ -47,7 +49,10 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
 		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
 
-		$dbh = new driver_pdo($object->db_name());
+		$db_name = $object->db_name();
+		$db_driver_name = $this->_db_driver_name();
+		$dbh = new $db_driver_name($db_name);
+
 		$data = $dbh->select($object->table_name(), join(',', $select), $where);
 
 		if(!$data)

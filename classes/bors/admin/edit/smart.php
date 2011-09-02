@@ -29,10 +29,14 @@ class bors_admin_edit_smart extends base_page
 
 	function fields() { return explode(',', $this->args('fields')); }
 
+	function access() { return $this->object()->access(); }
+
 	function pre_parse()
 	{
-		if(!($me = bors()->user()) && !config('admin_can_nologin'))
-			return bors_message(ec('Вы не авторизованы'));
+		if(!$this->object()->access()->can_edit())
+			return bors_message(ec('Вы не можете редактировать ').$this->object()->class_title_vp().ec(" «").$this->object()->title().ec("»"));
+//		if(!($me = bors()->user()) && !config('admin_can_nologin'))
+//			return bors_message(ec('Вы не авторизованы'));
 
 		return parent::pre_parse();
 	}

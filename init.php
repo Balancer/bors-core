@@ -11,6 +11,9 @@ if(empty($GLOBALS['stat']['start_microtime']))
 if(!defined('BORS_CORE'))
 	define('BORS_CORE', dirname(__FILE__));
 
+if(!defined('BORS_EXT'))
+	define('BORS_EXT', dirname(BORS_CORE).'/bors-ext');
+
 if(!defined('BORS_LOCAL'))
 	define('BORS_LOCAL', dirname(BORS_CORE).'/bors-local');
 
@@ -256,6 +259,7 @@ function bors_dirs($skip_config = false, $host = NULL)
 		BORS_HOST,
 		BORS_LOCAL.$vhost,
 		BORS_LOCAL,
+		BORS_EXT,
 		BORS_CORE,
 		BORS_3RD_PARTY,
 	) as $dir)

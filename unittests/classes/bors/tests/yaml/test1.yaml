@@ -1,9 +1,0 @@
-class: bors_tests_yaml_test1
-extends: base_object_db
-
-storage_engine: bors_storage_mysql
-
-table_fields:
-	- title
-	- text
-

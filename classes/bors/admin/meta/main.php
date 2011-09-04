@@ -8,6 +8,9 @@ class bors_admin_meta_main extends bors_paginated
 	function title() { return ec('Управление ').bors_lib_object::get_static($this->main_class(), 'class_title_tpm'); }
 	function nav_name() { return bors_lib_object::get_static($this->main_class(), 'class_title_m'); }
 
+	function main_class() { bors_throw(ec('Не определён главный класс')); }
+	function main_admin_class() { return $this->main_class(); }
+
 	function body_data()
 	{
 		if(bors_lib_object::get_static($this->main_class(), 'skip_auto_admin_new'))

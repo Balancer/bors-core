@@ -9,6 +9,7 @@
 {defval var="file_class" value="bors_file"}
 {defval var="upload_files_count" value="4"}
 {defval var="link_type" value="cross"}
+{defval var="go" value=$this->url()}
 {defval var="upload_dir" value="uploads/files"}
 <div class="clear">&nbsp;</div>
 
@@ -42,7 +43,7 @@
 {hidden name="link_type" value=$link_type}
 {hidden name="file_class" value=$file_class}
 {hidden name="upload_dir" value=$upload_dir}
-{go value=$this->url()}
+{go value=$go}
 </table>
 {submit value="Загрузить"}<br/><br/>
 {/form}

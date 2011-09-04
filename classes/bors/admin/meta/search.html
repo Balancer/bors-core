@@ -1,0 +1,22 @@
+<form class="search" action="{$this->url()}" method="post">
+<fieldset>
+<legend>Поиск:</legend>
+<center>
+<label>Искать:</label> <input type="test" name="q" size="40" value="{$query|htmlspecialchars}" />
+<select name="w">
+<option value="">в заголовках</option>
+<option value="a">всюду</option>
+</select>
+<input type="submit" class="search-submit" value="Найти" />
+</center>
+</fieldset>
+</form>
+
+{if $items}
+{if $this->get('append_template')}
+<br/>
+{include file=$this->get('append_template')}
+{else}
+??
+{/if}
+{/if}

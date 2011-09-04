@@ -90,4 +90,18 @@ class bors_object extends base_object
 
 		return ec('[без имени]');
 	}
+
+	static function called_class_name($self, $class_name = NULL)
+	{
+		if(function_exists('get_called_class'))
+			return get_called_class();
+
+		if($self)
+			return $self->class_name();
+
+		if($class_name)
+			return $class_name;
+
+		bors_throw(ec('Не указано имя вызывающего класса и его невозможно определить в текущей версии PHP. Укажите имя класса принудительно в $data[\'class_name\']'));
+	}
 }

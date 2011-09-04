@@ -65,7 +65,7 @@ class bors_file extends base_object_db
 
 	static function register($file, $data = array())
 	{
-		$class_name = popval($data, 'class_name', __CLASS__);
+		$class_name = self::called_class_name(NULL, popval($data, 'class_name'));
 
 		// Если файл с таким именем уже зарегистрирован — возвращаемся.
 		if($prev = bors_find_first($class_name, array(
@@ -94,6 +94,8 @@ class bors_file extends base_object_db
 
 	static function upload($file_data)
 	{
+		$class_name = self::called_class_name(NULL, popval($file_data, 'class_name'));
+
 		if(!file_exists($tmp_file = $file_data['tmp_name']))
 		{
 			debug_hidden_log('file-error', 'Upload not existens file '.$tmp_file);
@@ -110,7 +112,7 @@ class bors_file extends base_object_db
 
 		$translated_name = translite_uri_simple(preg_replace('/\.\w+$/', '', $original_filename));
 
-		$file = bors_new(__CLASS__, array(
+		$file = bors_new($class_name, array(
 			'original_filename' => $original_filename,
 			'mime_type' => $mime_type,
 			'size' => $file_data['size'],

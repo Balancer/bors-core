@@ -153,8 +153,9 @@ class bors_form extends bors_object
 			set_session_var('post_message_link_url', $calling_object->get('post_message_link_url'));
 		}
 
-		foreach(explode(' ', 'class_name object_id uri ref act inframe subaction') as $name)
-			$this->set_attr($name, @$$name);
+		foreach(explode(' ', 'class_name object_id uri ref act inframe subaction') as $x)
+			if(!empty($$x))
+				$this->set_attr($x, $$x);
 
 		$html = "<form enctype=\"multipart/form-data\"";
 

@@ -33,8 +33,13 @@ class bors_admin_edit_smart extends base_page
 
 	function pre_parse()
 	{
-		if(!$this->object()->access()->can_edit())
-			return bors_message(ec('Вы не можете редактировать ').$this->object()->class_title_vp().ec(" «").$this->object()->title().ec("»"));
+		$object = $this->object();
+		if(!$object->access()->can_edit())
+			return bors_message(ec('Вы не можете редактировать ')
+				.$object->class_title_vp()
+				.ec(" «").$object->title().ec("»")
+				."\n<!-- access={$object->access()} -->"
+			);
 //		if(!($me = bors()->user()) && !config('admin_can_nologin'))
 //			return bors_message(ec('Вы не авторизованы'));
 

@@ -5,5 +5,6 @@
 Репозиторий: hg.balancer.ru
 Автор: Balancer <balancer@balancer.ru>
 Лицензия: GPLv3
-Документация: встроенная, в подкаталоге data/fs/_bors/doc
-				Она же - http://bors.balancer.ru/_bors/doc/
+Документация: встроенная, в репозитории bors-ext
+				Она же - http://bors.balancer.ru/doc/
+

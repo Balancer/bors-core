@@ -82,7 +82,10 @@
 {if $page_tabs}
 <ul class="pages-tabs">
 {foreach from=$page_tabs key="u" item="t"}
-<li{if $main_uri|url_equals:$u or $current_page|url_equals:$u} class="selected"{/if}><a href="{$u}">{$t}</a></li>
+<li{if $main_uri|url_equals:$u
+	or $current_page|url_equals:$u
+	or $this->url()|url_equals:$u
+} class="selected"{/if}><a href="{$u}">{$t}</a></li>
 {/foreach}
 </ul>
 {/if}

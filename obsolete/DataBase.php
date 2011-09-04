@@ -224,7 +224,9 @@ class DataBase extends base_object
 				.'time from last query: '.((microtime(true) - $this->last_query_time)/1000000)."<br/>\n"
 				.'was connected at '.date('r', $this->start_time)." ({$this->start_time})-->";
 */
-			bors_throw(ec("Ошибка MySQL: ").mysql_error($this->dbh));
+			bors_throw(ec("Ошибка MySQL: ").mysql_error($this->dbh)
+				."<!-- DB={$this->db_name}\nquery={$query} -->"
+			);
 		}
 
 		$this->last_query_time = microtime(true);

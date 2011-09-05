@@ -35,13 +35,15 @@ class bors_storage_oci extends bors_storage
 
 		$object->set_loaded(true);
 
-		print_d($data);
+//		print_d($data);
 
 		return true;
 	}
 
 	function load_array($object, $where)
 	{
+		$by_id  = popval($where, 'by_id');
+
 		$select = array();
 		$post_functions = array();
 		foreach(bors_lib_orm::main_fields($object) as $f)
@@ -56,7 +58,7 @@ class bors_storage_oci extends bors_storage
 				$post_functions[$f['property']] = $f['post_function'];
 		}
 
-		$result = array();
+		$objects = array();
 		$class_name = $object->class_name();
 
 		$dbh = new driver_oci($object->db_name());
@@ -65,11 +67,18 @@ class bors_storage_oci extends bors_storage
 			$object->set_id($data['id']);
 			$object->data = $data;
 			$object->set_loaded(true);
-			$result[] = $object;
+
+			if($by_id === true)
+				$objects[$object->id()] = $object;
+			elseif($by_id)
+				$objects[$object->$by_id()] = $object;
+			else
+				$objects[] = $object;
+
 			$object = new $class_name(NULL);
 		}
 
-		return $result;
+		return $objects;
 	}
 
 }

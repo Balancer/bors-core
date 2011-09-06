@@ -23,7 +23,7 @@ class bors_forms_dropdown extends bors_forms_element
 		if($th = defval($params, 'th'))
 		{
 			$html .= "<tr><th>{$th}</th><td>";
-			if(empty($tyle))
+			if(empty($style))
 				$style = "width: 99%";
 		}
 

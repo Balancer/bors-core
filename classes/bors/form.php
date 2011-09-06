@@ -187,12 +187,14 @@ class bors_form extends bors_object
 		else
 			$th = false;
 
+		$table_css_class = defval($params, 'table_css_class', 'btab w100p');
+
 		if($fields == 'auto')
 			$fields = array_keys($object_fields);
 
 		if($th || !empty($fields))
 		{
-			$html .= "<table class=\"btab w100p\">\n";
+			$html .= "<table class=\"{$table_css_class}\">\n";
 			$this->set_attr('has_form_table', true);
 		}
 
@@ -262,7 +264,8 @@ class bors_form extends bors_object
 //				else
 //					$data['value'] = object_property($object, $property_name);
 
-				$data['class'] = defval($data, 'form_css_class', 'w100p');
+				$def_w = preg_match('/(w\d+p)/', $table_css_class, $m) ? $m[1] : NULL;
+				$data['class'] = defval($data, 'form_css_class', $def_w);
 
 				if(!empty($data['property']))
 					$data['name'] = $data['property'];
@@ -289,10 +292,9 @@ class bors_form extends bors_object
 							$data['can_drop'] = true;
 							$data['is_integer'] = 8;
 						}
-						require_once('function.input_date.php');
 						if($args = popval($data, 'args'))
 							$data = array_merge($data, $args);
-						smarty_function_input_date(array_merge($data), $smarty);
+						$html .= bors_forms_date::html($data, $this);
 						break;
 					case 'utime': // UNIX_TIMESTAMP в UTC
 						$data['name'] = popval($data, 'property');

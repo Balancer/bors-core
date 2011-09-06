@@ -33,7 +33,7 @@ class bors_forms_date extends bors_forms_element
 		$mm = 0;
 		$ss = 0;
 
-		if($date)
+		if($value || ($date && (empty($params['is_integer']))))
 		{
 			if(@$params['is_integer'])
 			{

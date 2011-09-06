@@ -23,5 +23,5 @@ function smarty_function_bors_class_load($params, &$smarty)
 
 //	echo "smarty: class_load($class, $id)<br />";
 
-	$smarty->assign_by_ref($var, class_load($class, $id));
+	$smarty->assign($var, bors_load($class, $id));
 }

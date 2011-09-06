@@ -46,59 +46,14 @@ class bors_lib_time
 
 		foreach(explode(',', $array['time_vars']) as $var)
 		{
-			$yyyy	= sprintf('%04d', @$array["{$var}_year"]);
-			$mm	= sprintf('%02d', @$array["{$var}_month"]);
-			$dd	= sprintf('%02d', @$array["{$var}_day"]);
-			$hh	= sprintf('%02d', @$array["{$var}_hour"]);
-			$ii	= sprintf('%02d', @$array["{$var}_minute"]);
-			$ss	= sprintf('%02d', @$array["{$var}_seconds"]);
 
 			$is_fuzzy = @$array["{$var}_is_fuzzy"];
 			$is_utc   = @$array["{$var}_is_utc"];
 
-			if(intval($yyyy))
-			{
-				if($is_fuzzy)
-				{
-					// YYYYMMDDHHIISS - xxx_is_fuzzy && xxx_have_time && xxx_is_integer
-					if(@$array["{$var}_have_time"] && @$array["{$var}_is_integer"])
-						$array[$var] = $yyyy.$mm.$dd.$hh.$ii.$ss;
+			$array[$var] = self::_join($var, $array);
 
-					// YYYY-MM-DD hh:ii:ss - xxx_is_fuzzy && xxx_have_time
-					elseif(@$array["{$var}_have_time"])
-						$array[$var] = $yyyy.'-'.$mm.'-'.$dd.' '.$hh.':'.$ii.':'.$ss;
-
-					// YYYYMMDD - xxx_is_fuzzy && xxx_is_integer
-					elseif(@$array["{$var}_is_integer"])
-						$array[$var] = $yyyy.$mm.$dd;
-
-					// YYYY-MM-DD - xxx_is_fuzzy
-					else
-						$array[$var] = $yyyy.'-'.$mm.'-'.$dd;
-
-					if($size = @$array["{$var}_is_integer"]) // is_integer - не только флаг, но и указание на длину последовательности.
-						$array[$var] = substr($array[$var], 0, $size);
-				}
-				else // unixtime - по умолчанию
-				{
-//					echo "****** {$yyyy}-{$mm}-{$dd} $hh:$ii:$ss -> ".strtotime("{$yyyy}-{$mm}-{$dd} $hh:$ii:$ss")."<br/>";
-					$tz_save = date_default_timezone_get();
-					if($tz = @$array["{$var}_timezone"])
-						date_default_timezone_set($tz);
-					$array[$var] = strtotime("{$yyyy}-{$mm}-{$dd} $hh:$ii:$ss");
-					date_default_timezone_set($tz_save);
-				}
-			}
-			else // Если год не указан...
-			{
-				if($is_fuzzy) // И формат плавающий, значит дата не указана совсем.
-					$array[$var] = NULL;
-				else // если формат фиксированный, значит нам передали простую строку с датой для strtotime:
-				{
-//					echo "====== {$array[$var]} -> ".strtotime($array[$var])."<br/>";
-					$array[$var] = strtotime(@$array[$var]);
-				}
-			}
+			if($size = @$array["{$var}_is_integer"]) // is_integer - не только флаг, но и указание на длину последовательности.
+				$array[$var] = substr($array[$var], 0, $size);
 
 			if(!empty($array["{$var}_is_null"]))
 				$array[$var] = NULL;
@@ -111,5 +66,51 @@ class bors_lib_time
 		}
 
 		unset($array['time_vars']);
+	}
+
+	private function _join($var, $data)
+	{
+		$yyyy	= sprintf('%04d', @$data["{$var}_year"]);
+		$mm	= sprintf('%02d', @$data["{$var}_month"]);
+		$dd	= sprintf('%02d', @$data["{$var}_day"]);
+		$hh	= sprintf('%02d', @$data["{$var}_hour"]);
+		$ii	= sprintf('%02d', @$data["{$var}_minute"]);
+		$ss	= sprintf('%02d', @$data["{$var}_seconds"]);
+
+		// YYYYMMDDHHIISS - xxx_have_time && xxx_is_integer, т.к. is_integer — всегда is_fuzzy
+		if(@$data["{$var}_have_time"] && @$data["{$var}_is_integer"])
+			return $yyyy.$mm.$dd.$hh.$ii.$ss;
+
+		// YYYYMMDD - xxx_is_integer
+		if(@$data["{$var}_is_integer"])
+			return $yyyy.$mm.$dd;
+
+		if(!empty($data["{$var}_is_fuzzy"]))
+		{
+			if(!$year) // Если формат плавающий и год не указан, то дата не задана
+				return NULL;
+
+			// YYYY-MM-DD hh:ii:ss - xxx_is_fuzzy && xxx_have_time
+			if(@$data["{$var}_have_time"])
+				return $yyyy.'-'.$mm.'-'.$dd.' '.$hh.':'.$ii.':'.$ss;
+
+			// YYYY-MM-DD - xxx_is_fuzzy
+			return $yyyy.'-'.$mm.'-'.$dd;
+		}
+
+		if(!$year) // если формат фиксированный и год не указан, значит нам передали простую строку с датой для strtotime:
+		{
+//			echo "====== {$array[$var]} -> ".strtotime($array[$var])."<br/>";
+			return strtotime(@$array[$var]);
+		}
+
+		// unixtime - по умолчанию
+//		echo "****** {$yyyy}-{$mm}-{$dd} $hh:$ii:$ss -> ".strtotime("{$yyyy}-{$mm}-{$dd} $hh:$ii:$ss")."<br/>";
+		$tz_save = date_default_timezone_get();
+		if($tz = @$data["{$var}_timezone"])
+			date_default_timezone_set($tz);
+		$time = strtotime("{$yyyy}-{$mm}-{$dd} $hh:$ii:$ss");
+		date_default_timezone_set($tz_save);
+		return $time;
 	}
 }

@@ -60,12 +60,12 @@ class bors_templates_smarty2 extends bors_templates_abstract
 		$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 		$smarty->assign("page_template", $template);
 		$smarty->assign('me', bors()->user());
-//		var_dump($data);
 //		if(config('is_developer')) echo debug_trace();
 		$smarty->assign($data);
 
 		$out = $smarty->fetch($template);
 
+//		print_d($out);
 		$out = preg_replace("!<\?php(.+?)\?>!es", "do_php(stripq('$1'))", $out);
 
 		return $out;

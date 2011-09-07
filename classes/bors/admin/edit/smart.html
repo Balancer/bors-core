@@ -4,6 +4,9 @@
 {if $object->create_time() != $object->modify_time()}
 <li>Изменён {$object->modify_time()|short_time}{if $object->last_editor()} пользователем {$object->last_editor()->admin()->imaged_titled_link()}{/if}</li>
 {/if}
+{foreach from=$object->admin_additional_info() key="title" item="value"}
+<li>{$title}: {$value}</li>
+{/foreach}
 </ul>
 
 {form action=$this->url() class=$object->class_name() id=$object->id() fields=$auto_fields}

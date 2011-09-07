@@ -104,4 +104,6 @@ class bors_object extends base_object
 
 		bors_throw(ec('Не указано имя вызывающего класса и его невозможно определить в текущей версии PHP. Укажите имя класса принудительно в $data[\'class_name\']'));
 	}
+
+	function admin_additional_info() { return array(); }
 }

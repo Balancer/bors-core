@@ -119,6 +119,7 @@ function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
 		return  "{$h} {$w} alt=\"[image]\" title=\"".htmlspecialchars($this->alt_or_description())."\"";
 	}
 
+	function html() { return $this->html_code(); }
 	function html_code($append = "")
 	{
 		return "<img src=\"{$this->url()}\" {$this->wxh()} $append />";

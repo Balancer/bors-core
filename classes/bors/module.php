@@ -7,6 +7,8 @@ class bors_module extends bors_page
 {
 	function body_engine()	{ return 'bors_bodies_page'; }
 
+	function html() { return $this->html_code(); }
+
 	function html_code()
 	{
 		try

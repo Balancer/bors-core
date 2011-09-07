@@ -79,6 +79,8 @@
 {if $notice_message}<div class="yellow_box">{$notice_message}</div>{/if}
 {if $success_message}<div class="green_box" >{$success_message}</div>{/if}
 
+{if $system_message}<div class="yellow_box">{$system_message}</div>{/if}
+
 {if $page_tabs}
 <ul class="pages-tabs">
 {foreach from=$page_tabs key="u" item="t"}

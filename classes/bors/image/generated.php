@@ -70,6 +70,7 @@ function set_last_editor_id($v, $dbup) { return $this->set('last_editor_id', $v,
 
 	function url() { return $this->image_url(); }
 
+	function html() { return $this->html_code(); }
 	function html_code()
 	{
 		$params = unserialize($this->id());

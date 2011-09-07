@@ -15,6 +15,7 @@ class base_image extends base_object
 		return  "{$h} {$w} alt=\"[image]\" title=\"".str_replace('&amp;#', '&#', htmlspecialchars($this->alt_or_description()))."\"";
 	}
 
+	function html() { return $this->html_code(); }
 	function html_code($append = "") { return "<img src=\"{$this->url()}\" {$this->wxh()} $append />"; }
 
 	function thumbnail($geometry) { return object_load('base_image_thumbnail', $this->id().','.$geometry); }

@@ -97,6 +97,7 @@ class bors_attach extends base_object_db
 		return $this;
 	}
 
+	function html() { return $this->html_code(); }
 	function html_code()
 	{
 		return "<a href=\"/{$this->relative_path()}/{$this->basename()}\">{$this->original_name()}</a>";

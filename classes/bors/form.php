@@ -391,6 +391,7 @@ class bors_form extends bors_object
 						break;
 
 					case 'file_name':
+						$data['file'] = $this->object();
 						$html .= bors_forms_file::html($data, $this);
 						break;
 

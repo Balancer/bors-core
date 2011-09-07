@@ -18,10 +18,8 @@ class bors_forms_file extends bors_forms_element
 				$html .= " $p=\"{$$p}\"";
 
 		$html .= " />\n";
-		if($obj)
-		{
-			$html .= $obj->html();
-		}
+		if(!empty($file))
+			$html .= $file->html();
 
 		if(!empty($id_field))
 			$name = "$name=".(empty($class_name_field) ? '' : $class_name_field)."($id_field)";

@@ -70,6 +70,7 @@ class bors_lib_time
 
 	private function _join($var, $data)
 	{
+
 		$yyyy	= sprintf('%04d', @$data["{$var}_year"]);
 		$mm	= sprintf('%02d', @$data["{$var}_month"]);
 		$dd	= sprintf('%02d', @$data["{$var}_day"]);
@@ -101,7 +102,7 @@ class bors_lib_time
 		if(!$year) // если формат фиксированный и год не указан, значит нам передали простую строку с датой для strtotime:
 		{
 //			echo "====== {$array[$var]} -> ".strtotime($array[$var])."<br/>";
-			return strtotime(@$array[$var]);
+			return strtotime(@$data[$var]);
 		}
 
 		// unixtime - по умолчанию

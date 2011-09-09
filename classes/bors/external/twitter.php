@@ -61,13 +61,17 @@ class bors_external_twitter extends bors_object
 
 	static function parse($data)
 	{
+		// text="balancer73: *Ливия *Россия *оружие *армия Новые ливийские власти заявили, что не будут покупать российское оружие http://t.co/cdGsGU9"
 //		var_dump($data); exit();
 		extract($data);
 		// Фикс ошибок вида http://bit.ly/gNE1ZE/ - последний слеш - ошибка.
 		$text = preg_replace('!(http://bit.ly/\w+?)/!', '$1', $text);
 
+		// Режем мусор
+		$text = preg_replace('!amazon: http://\S+$!', '', $text);
+
 		// http://bit.ly/gNE1ZE
-		$text = preg_replace('!(http://(lnk\.ms|bit\.ly|is\.gd|t\.co)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
+		$text = preg_replace('!(http://(amzn\.to|lnk\.ms|bit\.ly|is\.gd|t\.co)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
 
 		// http://youtu.be/sdUUx5FdySs?a
 		// http://youtu.be/1SBkx-sn9i8?a
@@ -76,15 +80,26 @@ class bors_external_twitter extends bors_object
 		$tags = array();
 		if(preg_match_all('/( |^|"|«)#([\wа-яА-ЯёЁ\-]+)/um', $text, $matches))
 			foreach($matches[2] as $m)
+			{
 				$tags[] = common_keyword::loader($m)->title();
+				$text = preg_replace('/( |^|"|«)#('.preg_quote($m).")/", '$1$2', $text);
+			}
 
-		if(preg_match_all('/#(«[^»]+»)/um', $text, $matches))
+		if(preg_match_all('/#[«"]([^»"]+)["»]/um', $text, $matches))
 			foreach($matches[1] as $m)
-				$tags[] = $m;
+			{
+				$tags[] = '«'.common_keyword::loader($m)->title().'»';
+				$text = preg_replace('/#[«"]('.preg_quote($m).')[»"]/', '«$1»', $text);
+			}
 
 		if(preg_match_all('/\s\*([\wа-яА-ЯёЁ]+)/u', $text, $matches))
+		{
 			foreach($matches[1] as $m)
+			{
 				$tags[] = $m;
+				$text = preg_replace("/(\S+ )\s*\*".preg_quote($m)."/", '$1', $text);
+			}
+		}
 
 		if(preg_match('!(http://(www\.)?fresher\.ru/\d+/\d+/\d+/[^/]+/) \((.+)\)!', $text, $m))
 		{
@@ -125,27 +140,14 @@ class bors_external_twitter extends bors_object
 //			'origin_url' => $link,
 			'strip_forms' => true,
 		));
-
 		// К этому месту у нас готовое текстовое сообщение. Нужно извлечь из него всё, что можно
 		// Первый вариант — это ссылка с примечанием:
 		if(preg_match('!^(http\S+)\s*(.+)$!', $text, $m))
 		{
 			$url = $m[1];
 			$msg_text = $m[2];
-			$udata = parse_url($url);
-			if(preg_match('/livejournal\.com$/', $udata['host']))
-				$parser = 'bors_external_livejournal';
-			elseif($udata['host'] == 'bash.org.ru')
-				$parser = 'bors_external_bashorgru';
-			elseif($udata['host'] == 'www.aviaport.ru')
-				$parser = 'bors_external_aviaport';
-			else
-				$parser = 'bors_external_other';
-
-			$parsed = $parser::content_extract($url);
-			if($parsed)
+			if($parsed = bors_external_common::find_and_extract($url, 1500))
 			{
-//				var_dump($parsed); exit();
 				$content = $parsed['bbshort'];
 				if($ts = @$parsed['tags'])
 					$tags = array_merge($tags, $ts);
@@ -153,17 +155,32 @@ class bors_external_twitter extends bors_object
 			else
 				$content = NULL;
 
-//			$content = html2bb($content, array(
-//				'strip_forms' => true,
-//			));
-
 			if($content)
-				$text = "[quote]\n{$content}\n[/quote]";
+				$text = "{$msg_text}\n[quote]\n{$content}\n[/quote]";
 			else
 				$text = "[url={$url}]{$msg_text}[/url]";
-
-//			print_dd($text); exit();
 		}
+		elseif(preg_match('!^(.+)\s+(http\S+)$!s', $text, $m))
+		// Другой вариант - текст, потом в конце ссылка
+		{
+			$url = $m[2];
+			$msg_text = $m[1];
+			if($parsed = bors_external_common::find_and_extract($url, 1500))
+			{
+				$content = $parsed['bbshort'];
+				if($ts = @$parsed['tags'])
+					$tags = array_merge($tags, $ts);
+			}
+			else
+				$content = NULL;
+
+			if($content)
+				$text = "{$msg_text}\n[quote]\n{$content}\n[/quote]";
+			else
+				$text = "[url={$url}]{$msg_text}[/url]";
+		}
+
+		$text = preg_replace('! (http://\S+)$!', "\n$1", $text);
 
 		return array(
 			'text' => $text,

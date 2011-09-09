@@ -30,7 +30,14 @@
 
 {if $topics}
 <table class="btab w100p">
-<tr><th>Тема</th><th>Автор</th><th>Форум</th><th>Создано</th><th>Обновлено</th></tr>
+<tr>
+	<th>Тема</th>
+	<th>Автор</th>
+	<th>Форум</th>
+	<th>Создано</th>
+	<th>Обновлено</th>
+	<th>Ответов</th>
+</tr>
 {foreach from=$topics item="t"}
 <tr><td><b>
 {if $me && $me_id}
@@ -46,6 +53,7 @@
 	<td>{$t->forum()|get:titled_url}</td>
 	<td>{$t->create_time()|airbase_time}</td>
 	<td>{$t->modify_time()|airbase_time}</td>
+	<td>{$t->num_replies()}</td>
 </tr>
 {/foreach}
 </table>

@@ -21,7 +21,16 @@ class bors_page extends base_page
 	function body_engine() { return 'bors_bodies_page'; }
 
 	function is_smart() { return true; }
+/*
+	function body_template_ext()
+	{
+		if(config('is_developer')) echo preg_replace("!\.php$!", "$1.bbh", $this->class_file());
+		if($this->is_smart() && file_exists(preg_replace("!\.php$!", "$1.bbh", $this->class_file()))
+			return 'bbh';
 
+		return parent::body_template_ext();
+	}
+*/
 	function pre_show()
 	{
 		if($this->is_smart())

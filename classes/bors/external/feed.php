@@ -8,6 +8,7 @@ class bors_external_feed extends base_object_db
 	{
 		return array(
 			'id',
+			'title',
 			'feed_url',
 			'append_keywords',
 			'post_as_topics',
@@ -61,6 +62,10 @@ class bors_external_feed extends base_object_db
 		if(!empty($data['feed'])) // Это ATOM
 		{
 			$feed = self::_atom_extract($data);
+
+			if(!$this->title_true() && $feed['title'])
+				$this->set_title($feed['title']);
+
 			foreach($feed['entries'] as $entry)
 				self::_check_entry($entry, $is_test);
 //	var_dump($dntries);

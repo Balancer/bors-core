@@ -6,32 +6,44 @@ class bors_lib_bb
 		'a' => array('bb' => 'url', 'main_attr' => 'href', 'urls' => 'href'),
 		'img' => array('bb' => 'img', 'main_attr' => 'src', 'urls' => 'src', 'no_ending' => true, 'lcml0_style' => true),
 		'br' => array('bb' => '', 'after_cr' => true),
+		'button' => array('bb' => ''),
 		'div' => array('bb' => '', 'before_cr' => true, 'after_cr' => true),
 		'em' => array('bb' => 'i'),
+		'font' => array('bb' => 'html_font', 'save_attrs' => true),
+		'form' => array('bb' => ''),
 		'i' => array('bb' => 'i'),
 		'b' => array('bb' => 'b'),
+		'center' => array('bb' => 'center'),
 		'embed' => array('bb' => 'embed', 'save_attrs' => true, 'urls'=>'src'),
-		'iframe' => array('bb' => 'iframe', 'save_attrs' => true, 'urls'=>'src'),
 		'h2' => array('bb' => 'h', 'before_cr' => true, 'after_cr' => true),
+		'html' => array('bb' => ''),
+		'iframe' => array('bb' => 'iframe', 'save_attrs' => true, 'urls'=>'src'),
+		'input' => array('bb' => ''),
+		'like' => array('bb' => ''),
+		'noindex' => array('bb' => ''),
 		'p' => array('bb' => '', 'before_cr' => true, 'after_cr' => true),
+		'param' => array('bb' => 'param', 'save_attrs' => true),
+		'plusone' =>  array('bb' => ''),
 		'source' => array('bb' => 'html_source', 'save_attrs' => true, 'urls' => 'src'),
 		'span' => array('skip_all' => true),
 		'strong' => array('bb' => 'b'),
 		'style' => array('bb' => '', 'after_cr' => true),
 		'script' => array('bb' => '', 'skip_content' => true),
-		'input' => array('bb' => ''),
-		'form' => array('bb' => ''),
 		'table' => array('bb' => 'table'),
-		'tr' => array('bb' => 'tabtr'),
 		'td' => array('bb' => 'td'),
-		'like' => array('bb' => ''),
-		'html' => array('bb' => ''),
+		'tr' => array('bb' => 'tabtr'),
+		'u' => array('bb' => 'u'),
 		'video' => array('bb' => 'html_video', 'save_attrs' => true, 'urls' => 'poster'),
-		'plusone' =>  array('bb' => ''),
+		'wbr' => array('bb' => ''),
 	);
 
 	static function from_dom($element, $base_url = NULL, $bbmap = array())
 	{
+		if(!$element)
+		{
+			debug_hidden_log('dom2bb', 'Empty element to from_dom()');
+			return '';
+		}
 /*
 		$dom= new DOMDocument('1.0', 'utf-8');
 		$dom->loadXML( "<html></html>" );
@@ -56,15 +68,15 @@ class bors_lib_bb
 
 		if(empty($bb))
 		{
-			debug_hidden_log('lcml-need-append-data', "from_dom: unknown tag ".$tag_name);
+			debug_hidden_log('lcml-need-append-data', "from_dom: unknown tag ".$tag_name.' for '.bors_lib_dom::element_html($element));
 			echo "unknown tag ".$tag_name."\n";
 		}
 
 		$bb_code = "";
 		if(defval($bb, 'before_cr'))
-			$bb_code .= "\n";
+			$bb_code .= "\n\n";
 
-		if($urls = defval($bb, 'urls') && $base_url)
+		if(($urls = defval($bb, 'urls')) && $base_url)
 		{
 			$udata = parse_url($base_url);
 			$usite = $udata['scheme'].'://'.$udata['host'];
@@ -108,7 +120,7 @@ class bors_lib_bb
 
 		if($bbtag = defval($bb, 'bb'))
 			if($bbtag != 'url' || $element->getAttribute('href'))
-				$bb_code .= "[{$bbtag}{$attrs}]";
+				$bb_code .= " [{$bbtag}{$attrs}]";
 
 		if(!defval($bb, 'skip_content'))
 		{
@@ -124,7 +136,7 @@ class bors_lib_bb
 
 		if($bbtag && !defval($bb, 'no_ending'))
 			if($bbtag != 'url' || $element->getAttribute('href'))
-				$bb_code .= "[/$bbtag]";
+				$bb_code .= "[/$bbtag] ";
 
 		if(defval($bb, 'after_cr'))
 			$bb_code .= "\n";

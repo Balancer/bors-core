@@ -4,7 +4,7 @@
 
 class bors_external_fresher extends bors_object
 {
-	static function parse($html)
+	static function parse($html, $limit=1500)
 	{
 		$html = preg_replace('!<script>[^>]*function.*?</script>!s', '', $html);
 
@@ -50,6 +50,12 @@ class bors_external_fresher extends bors_object
 
 		if(preg_match('/\[embed/', $bb_code))
 			$bb_code = preg_replace('!\[html_video.+?\[/html_video\]!s', '', $bb_code);
+
+		$len = bors_strlen($bb_code);
+		$bb_code = bors_close_bbtags(clause_truncate_ceil($bb_code, $limit));
+		if($len >= $limit)
+//			$bb_code .= "\n\n[url={$url}]".ec('… дальше »»»[/url]');
+			$bb_code .= "\n\n".ec('… дальше »»»');
 
 		return compact('title', 'bb_code', 'tags');
 	}

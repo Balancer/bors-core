@@ -6,7 +6,7 @@ function lp_pre($text, &$params)
 	$text = preg_replace("! {2}!","&nbsp; ",$text);
 	$text = preg_replace("!<br>!","\n",$text);
 	$params['skip_around_cr'] = true;
-	return "\n<pre>$text</pre>\n";
+	return "\n<pre>".save_format(lcml($text))."</pre>\n";
 }
 
 function lp_xmp($text, &$params)

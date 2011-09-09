@@ -2,7 +2,7 @@
 
 class bors_external_livejournal extends bors_object
 {
-	static function content_extract($url)
+	static function content_extract($url, $limit = 500)
 	{
 		$html = bors_lib_http::get_cached($url, 7200);
 		$dom = new DOMDocument('1.0', 'utf-8');
@@ -49,8 +49,8 @@ class bors_external_livejournal extends bors_object
 		$bbcode = preg_replace("/^\s+$/m", "", $bbcode);
 		$bbcode = preg_replace("/\n{2,}/", "\n\n", $bbcode);
 		$len = bors_strlen($bbcode);
-		$bbcode = bors_close_bbtags(clause_truncate_ceil($bbcode, 1500));
-		if($len >= 1500)
+		$bbcode = bors_close_bbtags(clause_truncate_ceil($bbcode, $limit));
+		if($len >= $limit)
 			$bbcode .= "\n\n[url={$url}]".ec('… дальше »»»[/url]');
 
 //		print_dd($bbcode); exit();

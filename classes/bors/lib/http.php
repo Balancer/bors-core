@@ -19,7 +19,7 @@ class bors_lib_http
 
 	static function url_unshort($url, $type, $loop = 0)
 	{
-		if($loop > 2)
+		if($loop > 3)
 			return $url;
 
 		switch($type)
@@ -31,7 +31,8 @@ class bors_lib_http
 
 		$head = self::get_header($url);
 		if(empty($head['Location']))
-			return $url;
+			return self::url_encode_lite($url);
+
 		return self::url_unshort($head['Location'], $type, $loop+1);
 	}
 
@@ -141,5 +142,11 @@ class bors_lib_http
 		}
 
 		return $a_data;
+	}
+
+	static function url_encode_lite($url)
+	{
+		$url = str_replace(' ', '+', $url);
+		return $url;
 	}
 }

@@ -18,6 +18,9 @@ class bors_admin_edit_smart extends base_page
 	function title() { return ec('Редактор ').($this->object()->class_title_rp()).ec(' «').($this->object()->title()).ec('»'); }
 	function nav_name() { return $this->object() ? $this->object()->nav_name() : ec('редактор'); }
 
+	function can_be_empty() { return false; }
+	function loaded() { return (bool)$this->object(); }
+
 	function object()
 	{
 		$id = urldecode($this->id());

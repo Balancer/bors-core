@@ -1,7 +1,7 @@
 <ul>
 <li>Объект: {$object->class_title()} <i>{$object->titled_link()}</i>, ID: {$object->id()}</li>
-<li>Создан: {$object->create_time()|short_time}{if $object->owner()} пользователем {$object->owner()->admin()->imaged_titled_link()}{/if}</li>
-{if $object->create_time() != $object->modify_time()}
+{if $object->create_time(true)}<li>Создан: {$object->create_time()|short_time}{if $object->owner()} пользователем {$object->owner()->admin()->imaged_titled_link()}{/if}</li>{/if}
+{if $object->create_time(true) != $object->modify_time(true) && $object->modify_time(true)}
 <li>Изменён {$object->modify_time()|short_time}{if $object->last_editor()} пользователем {$object->last_editor()->admin()->imaged_titled_link()}{/if}</li>
 {/if}
 {foreach from=$object->admin_additional_info() key="title" item="value"}

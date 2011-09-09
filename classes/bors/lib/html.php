@@ -16,15 +16,17 @@ class bors_lib_html
 		$content = str_replace("\n", " ", $content);
 		$content = preg_replace("!<meta !i", "\n<meta ", $content);
 		$content = preg_replace("!/>!", "/>\n", $content);
-//print_dd($content);
+
 		foreach(explode("\n", $content) as $s)
 		{
-//			echo "<xmp>=$s=</xmp>";
-			if(preg_match("!<meta[^>]+name=\"(\w+)\"[^>]+(content|value)=\"(.*?)\"!is", trim($s), $m))
-				$meta[bors_lower($m[1])] = html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
-
-			if(preg_match("!<meta[^>]+(http\-equiv|name)=['\"](\w+)['\"][^>]+(content|value)='([^']*)'!is", trim($s), $m))
+			if(preg_match("!<meta[^>]+(name|property)=\"([\w:]+)\"[^>]+(content|value)=\"(.*?)\"!is", trim($s), $m))
 				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
+
+			if(preg_match("!<meta[^>]+(http\-equiv|name)=['\"]([\w:]+)['\"][^>]+(content|value)='([^']*)'!is", trim($s), $m))
+				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
+
+			if(preg_match("!<meta[^>]+name=([\w:]+)[^>]+(content|value)=\"(.*?)\"!is", trim($s), $m))
+				$meta[bors_lower($m[1])] = html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
 		}
 
 

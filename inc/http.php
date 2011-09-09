@@ -6,7 +6,7 @@ function http_get($url)
 	curl_setopt_array($ch, array(
 		CURLOPT_TIMEOUT => 15,
 		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_MAXREDIRS => 3,
+		CURLOPT_MAXREDIRS => 5,
 		CURLOPT_ENCODING => 'gzip, deflate',
 //		CURLOPT_RANGE => '0-4095',
 //		CURLOPT_REFERER => $original_url,
@@ -61,7 +61,7 @@ function http_get_content($url, $raw = false)
 	debug_timing_start('http-get-total');
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => 15,
+		CURLOPT_TIMEOUT => 5,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 3,
 		CURLOPT_ENCODING => 'gzip,deflate',

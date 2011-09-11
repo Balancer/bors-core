@@ -50,7 +50,21 @@ class bors_file extends base_object_db
 
 	function size_smart()
 	{
-		return round($this->size()/1024).ec(' кб');
+		$size = $this->size();
+
+		if($size < 1024) // 1 ..55 ..999 ... 1000
+			return $size.ec(' байт');
+
+		if($size < 1024*10) // 1,2 .. 1,5 .. 9,8
+			return round($size/1024, 1).ec(' кб');
+
+		if($size < 1024*1024)
+			return round($size/1024).ec(' кб');
+
+		if($size < 1024*1024*10) // 2,5 Мб
+			return round($size/1024/1024, 1).ec(' Мб');
+
+		return round($size/1024/1024).ec(' Мб');
 	}
 
 	// Жизненно необходимо, так как при создании новой записи в БД ещё не залитый файл
@@ -212,4 +226,7 @@ class bors_file extends base_object_db
 
 		return true;
 	}
+
+	// Заглушки для legacy
+	function mime() { return $this->mime_type(); }
 }

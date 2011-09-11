@@ -26,6 +26,9 @@ class base_empty extends base_null
 		if(array_key_exists($name, $this->attr))
 			return $this->attr[$name];
 
+		if($name == 'this')
+			return $this;
+
 		// Проверяем автоматические объекты.
 		if(method_exists($this, 'auto_objects'))
 		{

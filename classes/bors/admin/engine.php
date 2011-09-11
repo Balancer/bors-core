@@ -66,7 +66,7 @@ class bors_admin_engine extends bors_object
 	{
 		$obj = $this->real_object();
 		if(is_null($title))
-			$title =$obj->title();
+			$title = $obj->title();
 
 		if(!$title)
 			$title = ec('[без имени]');

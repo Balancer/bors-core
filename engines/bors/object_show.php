@@ -31,7 +31,7 @@
 
 		$access_object = $obj->access();
 		if(!$access_object)
-			debug_exit("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
+			bors_throw("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
 
 		if(!$access_object->can_read())
 		{

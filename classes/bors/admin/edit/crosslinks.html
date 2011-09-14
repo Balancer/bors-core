@@ -1,8 +1,10 @@
+{if method_exists($object, 'common_themes')}
 {form act='theme'}
 {module class="aviaport_admin_common_themes_module" object=$this->real_object()}
 {submit value="Сохранить"}
 {go value=$this->url()}
 {/form}
+{/if}
 
 <br/><br/>
 <h3>Прямые связи</h3>
@@ -32,11 +34,13 @@
 {/form}
 <br />
 
+{if not $object->get('skip_auto_search_links')}
 {form act="search"}
 <input type="submit" value="Автоматический пересчёт и поиск связей"
 	onClick="return content_load('#crosslinks', '/get/crosslinks.bas', {ldelim} obj : '{$object_uri}' {rdelim} )"
 />
 {/form}
+{/if}
 
 {$this->pages_links_nul()}
 

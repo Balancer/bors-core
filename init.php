@@ -134,10 +134,10 @@ foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 
 require_once(dirname(__FILE__).'/config.php');
 
-if(config('system.use_sessions'))
+if(!config('system.session.skip'))
 {
-	ini_set('session.use_trans_sid', false);
-	@session_start();
+	require_once('inc/system.php');
+	__session_init();
 }
 
 $host = @$_SERVER['HTTP_HOST'];

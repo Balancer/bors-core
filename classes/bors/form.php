@@ -306,8 +306,7 @@ class bors_form extends bors_object
 							$html .= bors_forms_date_simple::html($data, $this);
 						else
 						{
-							require_once('function.input_date.php');
-							smarty_function_input_date($data, $smarty);
+							$html .= bors_forms_date::html($data, $this);
 						}
 						break;
 					case 'bbcode':

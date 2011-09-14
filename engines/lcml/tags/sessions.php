@@ -1,9 +1,11 @@
 <?php
     function lt_session($params)
     {
-		session_start();
+		__session_init();
+
 		foreach(explode(' ', $params['orig']) as $var)
 			session_register($var);
+
 		return "";
     }
 

@@ -28,6 +28,11 @@ class bors_link extends base_object_db
 		);
 	}
 
+	//FIXME: наверное, не нужно. Ошибка дублирования ключа вылезала в
+	//	http://admin2.aviaport.wrk.ru/_bors/admin/edit/crosslinks/?object=aviaport_digest_news__219001&edit_class=http://admin2.aviaport.wrk.ru/news/219001/
+	//	при AJAX-обновлении связей
+	function ignore_on_new_instance() { return true; }
+
 	function auto_targets()
 	{
 		return array_merge(parent::auto_targets(), array(
@@ -277,7 +282,7 @@ class bors_link extends base_object_db
 
 	static function drop_auto($object)
 	{
-		$dbh = new driver_mysql('WWW');
+		$dbh = new driver_mysql(config('main_bors_db'));
 		$tc = $object->class_id();
 		$ti = $object->id();
 		$dbh->delete(self::main_table(), array("owner_id < 0 AND ((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));

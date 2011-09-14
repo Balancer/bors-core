@@ -75,16 +75,19 @@ function __session_init()
 	static $session_started = false;
 	if(!$session_started)
 	{
-		if(config('system.use_sessions'))
-			session_start();
-		$session_started = true;
+		if(!config('system.session.skip'))
+		{
+			ini_set('session.use_trans_sid', false);
+			@session_start();
+			$session_started = true;
+		}
 	}
 }
 
 function session_var($name, $def = NULL, $set = false)
 {
-	if(!config('system.use_sessions'))
-		return NULL;
+	if(config('system.session.skip'))
+		return $def;
 
 	__session_init();
 	return defval($_SESSION, $name, $def, $set);

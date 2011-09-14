@@ -16,15 +16,15 @@ class bors_admin_edit_crosslinks extends bors_admin_edit
 	function items_per_page() { return 50; }
 	function total_items() { return bors_link::links_count($this->object()); }
 
-	function local_data()
+	function body_data()
 	{
 		if(!$this->object() || !$this->object()->id())
-			return array();
+			return parent::body_data();
 
 //		$cross = $this->object()->cross_objects();
 //		usort($cross, create_function('$x, $y', 'return $y->create_time() - $x->create_time();'));
 
-		return array(
+		return array_merge(parent::body_data(), array(
 			'object' => $this->object(),
 			'object_uri' => $this->object()->internal_uri_ascii(),
 			'cross' => bors_link::objects($this->object(), array(
@@ -32,7 +32,7 @@ class bors_admin_edit_crosslinks extends bors_admin_edit
 				'page' => $this->page(),
 				'per_page' => $this->items_per_page(),
 			)),
-		);
+		));
 	}
 
 	function pre_show()

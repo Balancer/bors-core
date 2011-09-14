@@ -191,7 +191,7 @@ function bors_search_sphinx_find_links($object, $delete_old = false)
 	static $loop_count = 0;
 	$verbose = 0;
 
-	$log = "<br/>\nSynonyms for {$object}: ".join(', ', $object->all_names());
+	$log = "<br/>\nSynonyms for {$object}: ".join(', ', $object->get('all_names'));
 	$synonyms = bors_synonym::synonyms($object, array('is_disabled' => 0));
 	$log .= " [".join(', ', bors_field_array_extract($synonyms, 'norm_title'))."]";
 

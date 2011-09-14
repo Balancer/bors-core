@@ -42,12 +42,15 @@ class bors_synonym extends base_object_db
 			$object = $x1;
 			$params = $x2;
 
-			foreach($object->all_names() as $name)
+			if(method_exists($object, 'all_names'))
 			{
-				if(preg_match('/^!(.+)$/', $name, $m))
-					self::add_object($m[1], $object, array_merge($params, array('is_exactly' => true)));
-				else
-					self::add_object($name, $object, array_merge($params, array('is_exactly' => false)));
+				foreach($object->all_names() as $name)
+				{
+					if(preg_match('/^!(.+)$/', $name, $m))
+						self::add_object($m[1], $object, array_merge($params, array('is_exactly' => true)));
+					else
+						self::add_object($name, $object, array_merge($params, array('is_exactly' => false)));
+				}
 			}
 
 			$title = $object->title();

@@ -259,8 +259,8 @@ class bors_form extends bors_object
 				if($type != 'bool')
 					$html .= "\t<tr><th class=\"w33p\">{$title}</th><td>\n\t\t";
 
-//				if(!empty($data['arg']))
-//					$data['value'] = object_property_args($object, $property_name, array($data['arg']));
+				if(!empty($data['arg']))
+					$data['value'] = object_property_args($object, $property_name, array($data['arg']));
 //				else
 //					$data['value'] = object_property($object, $property_name);
 

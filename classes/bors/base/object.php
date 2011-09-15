@@ -46,9 +46,16 @@ class base_object extends base_empty
 		foreach($this->parents() as $p)
 		{
 			if(is_object($p))
-				$parent_object[] = $p;
+			{
+				if(empty($parent_objects[$p->internal_uri_ascii()]))
+					$parent_object[$p->internal_uri_ascii()] = $p;
+			}
 			else
-				$parent_object[] = bors_load_uri($p);
+			{
+				if($p = bors_load_uri(trim($p)))
+					if(empty($parent_objects[$p->internal_uri_ascii()]))
+						$parent_object[$p->internal_uri_ascii()] = $p;
+			}
 		}
 
 		return $this->__setc($parent_object);
@@ -63,11 +70,15 @@ class base_object extends base_empty
 		foreach($this->children() as $c)
 		{
 			if(is_object($c))
-				$child_objects[] = $c;
+			{
+				if(empty($child_objects[$c->internal_uri_ascii()]))
+					$child_objects[$c->internal_uri_ascii()] = $c;
+			}
 			else
 			{
-				if($c = bors_load_uri($c))
-					$child_objects[] = $c;
+				if($c = bors_load_uri(trim($c)))
+					if(empty($child_objects[$c->internal_uri_ascii()]))
+						$child_objects[$c->internal_uri_ascii()] = $c;
 			}
 		}
 

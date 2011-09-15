@@ -143,7 +143,7 @@ class bors_form extends bors_object
 		if($action == 'this')
 			$action = $GLOBALS['main_uri'];
 
-		if($action == 'target')
+		if($action == 'target' && $object)
 			$action = $object->url();
 
 		if(!empty($calling_object))

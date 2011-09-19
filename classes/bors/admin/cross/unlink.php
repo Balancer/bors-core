@@ -43,12 +43,12 @@ class bors_admin_cross_unlink extends base_page
 		$to = $this->to();
 
 		if(is_object($to) && is_object($from))
-			bors_remove_cross_pair($from->class_id(), $from->id(), $to->class_id(), $to->id());
+			bors_link::drop_target($from, $to);
 		else
 		{
 			list($from_cid, $from_oid) = bors_parse_internal_uri(@$_GET['from']);
 			list($to_cid, $to_oid) = bors_parse_internal_uri(@$_GET['to']);
-			bors_remove_cross_pair($from_cid, $from_oid, $to_cid, $to_oid);
+			bors_link::drop($from_cid, $from_oid, $to_cid, $to_oid);
 		}
 
 		return go($_GET['ref']);

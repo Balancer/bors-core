@@ -110,7 +110,7 @@ class bors_admin_edit_smart extends base_page
 			'referer' => ($ref = bors()->referer()) ? $ref : 'newpage_admin',
 			'auto_fields' => $fields,
 			'items' => object_property($this->object(), 'edit_smart_items_append'),
-			'cross' => object_property($this->object(), 'cross_objs'),
+			'cross' => object_property($this->object(), 'cross_links'),
 		));
 	}
 

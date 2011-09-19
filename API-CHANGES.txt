@@ -1,6 +1,17 @@
 Изменения в API фреймворка
 ==========================
 
+2011-09-20
+----------
+По возможности все древние bors_cross методы заменить на bors_link.
+Дублирование непарных связей через bors-core/classes/bors/link.pair-updates.sql
+Варианты замены:
+ — bors_get_cross_objs($object, $to_class) -> bors_link::objects($object)
+ — bors_get_cross_ids($this, $to_class) -> bors_link::object_ids()
+ — bors_add_cross() -> bors_link::link()
+ — bors_add_cross_obj -> bors_link::link_objects
+ — bors_remove_cross_pair() -> bors_link::drop_target($o1, $o2)/bors_link::drop($c1,$i1,$c2,$i2)
+
 2011-09-14
 ----------
 Системная переменная 'system.use_sessions' переименована в 'system.session.skip'.

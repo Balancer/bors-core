@@ -49,9 +49,6 @@ class bors_admin_edit_crosslinks extends bors_admin_edit
 
 		$target = object_property($target, 'real_object', $target);
 
-//		bors_add_cross($data['link_class_name'], $data['link_object_id'], $this->object()->class_name(), $this->object()->id(), 0, $data['link_type_id']);
-//		echo "link {$this->object()->debug_title()} and {$target->debug_title()}<br/>";
-//		return true;
 		bors_link::link_objects($this->object(), $target, array(
 			'comment' => ec('Ручная привязка'),
 			'type_id' => $data['link_type_id'],

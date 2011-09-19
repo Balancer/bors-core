@@ -107,6 +107,7 @@ class bors_link extends base_object_db
 		$link = object_new('bors_link');
 		$link->set_from($from);
 		$link->set_target($to);
+		$link->set_sort_order(defval($params, 'sort_order', 0));
 
 		if(empty($params['owner_id']))
 			$params['owner_id'] = bors()->user_id();
@@ -169,7 +170,7 @@ class bors_link extends base_object_db
 			unset($params['to']);
 		}
 
-		return objects_array('bors_link', $params);
+		return bors_find_all('bors_link', $params);
 	}
 
 	static function links_each($object, $params = array())
@@ -304,6 +305,9 @@ class bors_link extends base_object_db
 		if(!$object->id())
 			return;
 
+		if(is_object($where))
+			$where = array('target_class' => $where->class_id(), 'target_id' => $where->id());
+
 		$dbh = new driver_mysql(config('main_bors_db'));
 		$fc = $object->class_id();
 		$fi = $object->id();
@@ -312,8 +316,34 @@ class bors_link extends base_object_db
 		if(!$tc)
 			return;
 
-		$dbh->delete(self::main_table(), array("((from_class=$fc AND from_id=$fi AND to_class=$tc) 
-			OR (to_class=$fc AND to_id=$fi AND from_class=$tc))"));
+		if($ti = class_name_to_id($where['target_id']))
+			$dbh->delete(self::main_table(), array("((from_class=$fc AND from_id=$fi AND to_class=$tc AND to_id=$ti)
+				OR (to_class=$fc AND to_id=$fi AND from_class=$tc AND from_id=$ti))"));
+		else
+			$dbh->delete(self::main_table(), array("((from_class=$fc AND from_id=$fi AND to_class=$tc) 
+				OR (to_class=$fc AND to_id=$fi AND from_class=$tc))"));
+	}
+
+	static function drop($from_class, $from_id, $to_class, $to_id = NULL)
+	{
+		$from_id = intval($from_id);
+		$to = intval($to_id);
+		if(!$from_id)
+			return;
+
+		$dbh = new driver_mysql(config('main_bors_db'));
+
+		$from_class = class_name_to_id($from_class);
+		$to_class = class_name_to_id($to_class);
+		if(!$to_class || !$from_class)
+			return;
+
+		if($to_id)
+			$dbh->delete(self::main_table(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class AND to_id=$to_id)
+				OR (to_class=$from_class AND to_id=$from_id AND from_class=$to_class AND from_id=$to_id))"));
+		else
+			$dbh->delete(self::main_table(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class)
+				OR (to_class=$from_class AND to_id=$from_id AND from_class=$to_class))"));
 	}
 
 	function urls($type)

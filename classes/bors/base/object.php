@@ -1350,16 +1350,14 @@ defined at {$this->class_file()}<br/>
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }
 	function object_titled_vp_link() { return $this->class_title_vp().ec(' «').$this->titled_link().ec('»'); }
 
-	function cross_ids($to_class) { return bors_get_cross_ids($this, $to_class); }
-	function cross_objs($to_class = NULL) { return bors_get_cross_objs($this, $to_class); }
-	function cross_objects($to_class = '') { return bors_get_cross_objs($this, $to_class); }
-	function add_cross($class, $id, $order = 0) { return bors_add_cross($this->extends_class_id(), $this->id(), $class, $id, $order); }
-	function add_cross_object($object, $order = 0) { return bors_add_cross_obj($this, $object, $order); }
-	function cross_remove_object($obj)
-	{
-		bors_remove_cross_pair($this->class_id(), $this->id(), $obj->class_id(), $obj->id());
-		bors_remove_cross_pair($this->extends_class_id(), $this->id(), $obj->extends_class_id(), $obj->id());
-	}
+	function cross_ids($to_class) { return bors_link::object_ids($this, $to_class); }
+	function cross_objs($to_class = NULL) { return bors_link::objects($this, $to_class); }
+	function cross_links($params = array()) { return bors_link::links($this, $params); }
+	function cross_objects($to_class = NULL) { return bors_link::objects($this, $to_class); }
+	function add_cross($class, $id, $order = 0) { return bors_link::link($this->extends_class_id(), $this->id(), $class, $id, array('sort_order' => $order)); }
+	function add_cross_object($object, $order = 0) { return bors_link::link_objects($this, $object, array('sort_order' => $order)); }
+
+	function cross_remove_object($obj) { bors_link::drop_target($this, $obj); }
 
 	function add_link_to($target, $params = array()) { bors_link::link_object_to($this, $target, $params); }
 

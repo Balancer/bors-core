@@ -53,7 +53,7 @@
 <h4>Связанные материалы:</h4>
 <ul>
 {foreach from=$cross item="x"}
-<li>{$x->class_title()} {$x->admin()->imaged_titled_link()}</li>
+<li>{$x->target()->class_title()}&nbsp;{$x->target()->admin()->imaged_titled_link()}{$x->admin()->imaged_link('unlink', 'unlink.gif', 'Убрать связь')}</li>
 {/foreach}
 </ul>
 {/if}

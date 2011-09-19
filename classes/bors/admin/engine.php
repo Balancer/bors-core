@@ -83,11 +83,11 @@ class bors_admin_engine extends bors_object
 		return $res;
 	}
 
-	function imaged_link($type, $image)
+	function imaged_link($type, $image, $title=NULL)
 	{
 		require_once('inc/images.php');
 		$url = $this->object()->urls($type);
-		return bors_icon($image, array('url' => $url));
+		return bors_icon($image, array('url' => $url, 'title' => $title));
 	}
 
 	function titled_link($title = NULL)

@@ -49,7 +49,7 @@ class base_image extends base_object
 		return $this;
 	}
 
-	function cross_objects() { return bors_get_cross_objs($this); }
+	function cross_objects() { return bors_link::objects($this); }
 
 	function delete()
 	{

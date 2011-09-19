@@ -1,3 +1,4 @@
+-- DB: SEARCH
 ALTER TABLE `bors_search_source_0` ADD `target_weight` INT NOT NULL AFTER `count` ;
 ALTER TABLE `bors_search_source_0` ADD INDEX ( `target_weight` ) ;
 ALTER TABLE `bors_search_source_1` ADD `target_weight` INT NOT NULL AFTER `count` ;

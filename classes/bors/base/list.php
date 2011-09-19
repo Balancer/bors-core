@@ -39,5 +39,11 @@ class base_list extends base_empty
 		return $list;
 	}
 
-	function __toString() { return $this->title(); }
+	function __toString()
+	{
+		if($t = $this->title())
+			return $t;
+
+		return '['.$this->id().']';
+	}
 }

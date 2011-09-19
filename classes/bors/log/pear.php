@@ -31,7 +31,7 @@ class bors_log_pear extends base_object_db
 	}
 
 	function storage_engine() { return 'bors_storage_mysql'; }
-	function db_name() { return 'WWW'; }
+//	function db_name() { return 'WWW'; }
 	function table_name() { return 'pear_log'; }
 	function table_fields()
 	{

@@ -12,8 +12,8 @@
 {form subaction="add"}
 {input name="title" value=""}
 <label>{checkbox name="is_exactly" checked="0"}&nbsp;точное соответствие</label>
-{hidden name="target_class_name" value=$this->object()->extends_class()}
-{hidden name="target_object_id" value=$this->object()->id()}
+{hidden name="target_class_name" value=$this->real_object()->extends_class_name()}
+{hidden name="target_object_id" value=$this->real_object()->id()}
 {submit value="Добавить синоним"}
 {/form}
 <br />

@@ -4,6 +4,9 @@ class bors_objects_loaders_yaml extends bors_objects_loaders_meta
 {
 	static function load($class_name, $object_id)
 	{
+		if(!preg_match('/^\w+$/', $class_name))
+			return NULL;
+
 		$file_base = 'classes/'.str_replace('_', '/', $class_name);
 		$data = bors_data_yaml::load($file_base.'.yaml');
 		if(!$data)

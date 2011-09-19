@@ -307,9 +307,9 @@ class bors_admin_engine extends bors_object
 		switch($type)
 		{
 			case 'links':
-				return config('admin_host_url')."/_bors/admin/edit/crosslinks/?object={$this->real_object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
+				return config('admin_host_url')."/_bors/admin/edit/crosslinks/?real_object={$this->real_object()->internal_uri_ascii()}&object={$this->object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
 			case 'synonyms':
-				return config('admin_host_url')."/_bors/admin/edit/synonyms/?object={$this->real_object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
+				return config('admin_host_url')."/_bors/admin/edit/synonyms/?real_object={$this->real_object()->internal_uri_ascii()}&object={$this->object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
 		}
 
 		return $type;

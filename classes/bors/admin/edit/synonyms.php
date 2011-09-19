@@ -4,22 +4,20 @@ class bors_admin_edit_synonyms extends bors_admin_edit
 {
 	function title() { return ($this->object() ? $this->object()->title() : '---').ec(': Синонимы'); }
 	function nav_name() { return ec('синонимы'); }
-	function object() { return $this->__havec('object') ? $this->__lastc() : $this->__setc(object_load(@$_GET['object'])); }
+	function object() { return ($this->__havec('object') && $this->__lastc()) ? $this->__lastc() : $this->__setc(object_load(@$_GET['object'])); }
+	function real_object() { return ($this->__havec('real_object') && $this->__lastc()) ? $this->__lastc() : $this->__setc(object_load(@$_GET['real_object'])); }
 	function parents() { return array($_GET['edit_class']); }
 
 	function admin_object() { return $this->object(); }
-	function real_object() { return $this->object(); }
 
-	function local_data()
+	function body_data()
 	{
 		if(!$this->object() || !$this->object()->id())
-			return array();
+			return parent::body_data();
 
-		return array(
-			'object' => $this->object(),
-			'object_uri' => $this->object()->internal_uri_ascii(),
+		return array_merge(parent::body_data(), array(
 			'list' => bors_synonym::synonyms($this->object()),
-		);
+		));
 	}
 
 	function pre_show()

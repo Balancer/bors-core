@@ -4,6 +4,8 @@ require_once('inc/bors/cross.php');
 
 class bors_admin_image_append extends base_object
 {
+	var $_last_image;
+
 	function config_class() { return config('admin_config_class');}
 	function acl_edit_sections() { return array('*' => 1); }
 	function auto_search_index() { return false; }
@@ -17,71 +19,79 @@ class bors_admin_image_append extends base_object
 
 		if(!$obj)
 			return;
-
-		$tmp_file = $data['tmp_name'];
-
-		$idata = getimagesize($tmp_file);
-		$maxw = config('image_upload_max_width', 2048);
-		$maxh = config('image_upload_max_height', 2048);
-		if(!$idata || !$idata[0] || $idata[0] > $maxw || $idata[1] > $maxh)
+var_dump($data);
+var_dump($get);
+		foreach($data['tmp_name'] as $idx => $tmp_file)
 		{
-			if(!is_array($idata) || empty($idata[0]) || empty($idata[1]))
-				$err = ec('не могу определить размеры изображения: ').print_r($idata, true);
-			else
-				$err = ec("размер изображения {$idata[0]}x{$idata[1]} при лимите {$maxw}x{$maxh}");
+			if(empty($tmp_file))
+				continue;
 
-			add_session_message(ec('Ошибка загрузки изображения: ').$err, array('type' => 'error'));
-			debug_hidden_log('image-upload-error', "Image upload error: if(!".print_r($idata, true)." || !{$idata[0]} || {$idata[0]} > ".config('image_upload_max_width', 2048).	" || {$idata[1]} > ".config('image_upload_max_height', 2048).')');
-			return;
-		}
+			$idata = getimagesize($tmp_file);
+			var_dump($idata);
 
-		$sort_order = intval($get['sort_order']);
+			$maxw = config('image_upload_max_width', 2048);
+			$maxh = config('image_upload_max_height', 2048);
+			if(!$idata || !$idata[0] || $idata[0] > $maxw || $idata[1] > $maxh)
+			{
+				if(!is_array($idata) || empty($idata[0]) || empty($idata[1]))
+					$err = ec('не могу определить размеры изображения: ').print_r($idata, true);
+				else
+					$err = ec("размер изображения {$idata[0]}x{$idata[1]} при лимите {$maxw}x{$maxh}");
 
-		$image_class = defval($get, 'image_class', 'bors_image');
+				add_session_message(ec('Ошибка загрузки изображения: ').$err, array('type' => 'error'));
+				debug_hidden_log('image-upload-error', "Image upload error: if(!".print_r($idata, true)." || !{$idata[0]} || {$idata[0]} > ".config('image_upload_max_width', 2048).	" || {$idata[1]} > ".config('image_upload_max_height', 2048).')');
+				return;
+			}
 
-		$img = object_new($image_class);
+			$sort_order = intval($get['sort_order'][$idx]);
+			$image_class = defval($get, 'image_class', 'bors_image');
 
-		if(!$sort_order)
-		{
-			$cross_order = $img->db()->select('bors_cross', 'MAX(`sort_order`)', array('from_class=' => $obj->class_id(), 'from_id=' => $obj->id()));
-			$parent_order = $img->db()->select('bors_images', 'MAX(`sort_order`)', array('parent_class_id=' => $obj->class_id(), 'parent_object_id=' => $obj->id()));
+			$img = object_new($image_class);
 
-			$sort_order = max($cross_order, $parent_order);
-		}
+			if(!$sort_order)
+			{
+				$cross_order = $img->db()->select('bors_cross', 'MAX(`sort_order`)', array('from_class=' => $obj->class_id(), 'from_id=' => $obj->id()));
+				$parent_order = $img->db()->select('bors_images', 'MAX(`sort_order`)', array('parent_class_id=' => $obj->class_id(), 'parent_object_id=' => $obj->id()));
 
-		$sort_order = (intval(($sort_order-1)/10)+1)*10;
+				$sort_order = max($cross_order, $parent_order);
+			}
 
-		$img->new_instance();
-		$img->upload(array(
-			'tmp_name' => $tmp_file,
-			'name' => $data['name'],
-		), $get['upload_dir']);
+			$sort_order = (intval(($sort_order-1)/10)+1)*10;
 
-		$img->set_title($obj->title(), true);
-		$img->set_description(@$get['image_title'], true);
-		$img->set_author_name(defval($get, 'author_name', object_property(bors()->user(), 'title')), true);
-		$img->set_resolution_limit(@$get['image_limit'], true);
-		$img->set_image_type(@$get['image_type'], true);
-		$img->set_original_filename($data['name'], true);
+			$img->new_instance();
+			$img->upload(array(
+				'tmp_name' => $tmp_file,
+				'name' => $data['name'][$idx],
+			), $get['upload_dir']);
 
-		switch(@$get['link_type'])
-		{
-			case 'cross':
-				bors_link::link($obj->extends_class_name(), $obj->id(), $image_class, $img->id(), array('sort_order' => $sort_order));
-				break;
-			case 'parent':
-				$img->set_parent_class_id($obj->class_id(), true);
-				$img->set_parent_object_id($obj->id(), true);
-				$img->set_sort_order($sort_order, true);
-				break;
-			default:
-				bors_exit('Append image with unknown link type');
-				break;
+			$img->set_title($obj->title(), true);
+			$img->set_description(@$get['image_title'], true);
+			$img->set_author_name(defval($get, 'author_name', object_property(bors()->user(), 'title')), true);
+			$img->set_resolution_limit(@$get['image_limit'], true);
+			$img->set_image_type(@$get['image_type'], true);
+			$img->set_original_filename($data['name'][$idx], true);
+
+			$this->_last_image = $img;
+
+			switch(@$get['link_type'])
+			{
+				case 'cross':
+					bors_link::link($obj->extends_class_name(), $obj->id(), $image_class, $img->id(), array('sort_order' => $sort_order));
+					break;
+				case 'parent':
+					$img->set_parent_class_id($obj->class_id(), true);
+					$img->set_parent_object_id($obj->id(), true);
+					$img->set_sort_order($sort_order, true);
+					break;
+				default:
+					bors_exit('Append image with unknown link type');
+					break;
+			}
 		}
 	}
 
 	function object() { return empty($_GET['object_to_link']) ? NULL : object_load($_GET['object_to_link']); }
 	function pre_show() { return go_ref($this->object()->admin_url()); }
 
-	function admin_url() { return $this->object()->admin_url(); }
+	function admin_url() { return $this->object() ? $this->object()->admin_url() : $this->_last_image->admin_url(); }
 }

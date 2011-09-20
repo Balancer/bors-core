@@ -263,9 +263,7 @@ class base_object extends base_empty
 	{
 		// Это был вызов $obj->set_XXX($value, $db_up)
 		if(preg_match('!^set_(\w+)$!', $method, $match))
-		{
 			return $this->set($match[1], $params[0], array_key_exists(1, $params) ? $params[1] : true);
-		}
 
 		// Проверяем нет ли уже загруженного значения данных объекта
 		if(@array_key_exists($method, $this->data))
@@ -363,7 +361,7 @@ defined at {$this->class_file()}<br/>
 		}
 	}
 
-	function set($field, $value, $db_update = true)
+	function set($field, $value, $db_update=true)
 	{
 		if($db_update && @$this->data[$field] != $value) // TODO: если без контроля типов, то !=, иначе - !==
 		{
@@ -433,14 +431,14 @@ defined at {$this->class_file()}<br/>
 	/** Истинный заголовок объекта. Метод или параметр объекта. */
 	function title_true() { return method_exists($this, 'title') ? $this->title() : @$this->data['title']; }
 
-	function set_title($new_title, $db_up = true) { return $this->set('title', $new_title, $db_up); }
+	function set_title($new_title, $db_up=true) { return $this->set('title', $new_title, $db_up); }
 
 	function debug_title() { return "'".trim(object_property($this, 'title'))."' {$this->class_name()}({$this->id()})"; }
 	function debug_titled_link() { return "<a href=\"{$this->url()}\">'{$this->title()}' {$this->class_name()}({$this->id()})</a>"; }
 	function debug_title_dc() { return dc("'{$this->title()}' {$this->class_name()}({$this->id()})"); }
 
 	function description() { return @$this->data['description']; }
-	function set_description($description, $db_update) { return $this->set('description', $description, $db_update); }
+	function set_description($description, $db_update=true) { return $this->set('description', $description, $db_update); }
 
 	function nav_name($exact = false)
 	{

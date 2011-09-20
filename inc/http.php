@@ -94,6 +94,8 @@ function http_get_content($url, $raw = false)
 
     if(preg_match("!charset=(\S+)!i", $content_type, $m))
         $charset = $m[1];
+    elseif(preg_match("!<\?xml version=\S+ encoding=\"(.+?)\"!i", $data, $m))
+        $charset = $m[1];
     else
         $charset = '';
 

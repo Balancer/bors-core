@@ -95,10 +95,6 @@
 		if(!function_exists('curl_init'))
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
-		$header = array();
-		$header[] = "Accept-Charset: {$GLOBALS['lcml_request_charset_default']}";
-		$header[] = "Accept-Language: ru, en";
-
 		$data = bors_lib_http::get($url);
 
         if(preg_match("!<title[^>]*>(.+?)</title>!is", $data, $m))

@@ -380,7 +380,9 @@ class bors_form extends bors_object
 						break;
 
 					case 'image':
-						$image = object_load('bors_image', $data['value']);
+						$image = bors_load('bors_image', $data['value']);
+						if(!$image)
+							$image = $object;
 						$html .= $image->thumbnail($data['geometry'])->html_code();
 						break;
 

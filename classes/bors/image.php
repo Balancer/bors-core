@@ -38,41 +38,41 @@ class bors_image extends base_object_db
 	}
 
 function alt() { return @$this->data['alt']; }
-function set_alt($v, $dbup) { return $this->set('alt', $v, $dbup); }
+function set_alt($v, $dbup=true) { return $this->set('alt', $v, $dbup); }
 function parent_class_id() { return @$this->data['parent_class_id']; }
-function set_parent_class_id($v, $dbup) { return $this->set('parent_class_id', $v, $dbup); }
+function set_parent_class_id($v, $dbup=true) { return $this->set('parent_class_id', $v, $dbup); }
 function parent_object_id() { return @$this->data['parent_object_id']; }
-function set_parent_object_id($v, $dbup) { return $this->set('parent_object_id', $v, $dbup); }
+function set_parent_object_id($v, $dbup=true) { return $this->set('parent_object_id', $v, $dbup); }
 function sort_order() { return @$this->data['sort_order']; }
-function set_sort_order($v, $dbup) { return $this->set('sort_order', $v, $dbup); }
+function set_sort_order($v, $dbup=true) { return $this->set('sort_order', $v, $dbup); }
 function author_name() { return @$this->data['author_name']; }
-function set_author_name($v, $dbup) { return $this->set('author_name', $v, $dbup); }
+function set_author_name($v, $dbup=true) { return $this->set('author_name', $v, $dbup); }
 function image_type() { return @$this->data['image_type']; }
-function set_image_type($v, $dbup) { return $this->set('image_type', $v, $dbup); }
+function set_image_type($v, $dbup=true) { return $this->set('image_type', $v, $dbup); }
 function relative_path() { return @$this->data['relative_path']; }
-function set_relative_path($v, $dbup) { return $this->set('relative_path', $v, $dbup); }
+function set_relative_path($v, $dbup=true) { return $this->set('relative_path', $v, $dbup); }
 function full_file_name() { return @$this->data['full_file_name']; }
-function set_full_file_name($v, $dbup) { return $this->set('full_file_name', $v, $dbup); }
+function set_full_file_name($v, $dbup=true) { return $this->set('full_file_name', $v, $dbup); }
 function file_name() { return @$this->data['file_name']; }
-function set_file_name($v, $dbup) { return $this->set('file_name', $v, $dbup); }
+function set_file_name($v, $dbup=true) { return $this->set('file_name', $v, $dbup); }
 function original_filename() { return @$this->data['original_filename']; }
-function set_original_filename($v, $dbup) { return $this->set('original_filename', $v, $dbup); }
+function set_original_filename($v, $dbup=true) { return $this->set('original_filename', $v, $dbup); }
 function resolution_limit() { return @$this->data['resolution_limit']; }
-function set_resolution_limit($v, $dbup) { return $this->set('resolution_limit', $v, $dbup); }
+function set_resolution_limit($v, $dbup=true) { return $this->set('resolution_limit', $v, $dbup); }
 function width() { return @$this->data['width']; }
-function set_width($v, $dbup) { return $this->set('width', $v, $dbup); }
+function set_width($v, $dbup=true) { return $this->set('width', $v, $dbup); }
 function height() { return @$this->data['height']; }
-function set_height($v, $dbup) { return $this->set('height', $v, $dbup); }
+function set_height($v, $dbup=true) { return $this->set('height', $v, $dbup); }
 function size() { return @$this->data['size']; }
-function set_size($v, $dbup) { return $this->set('size', $v, $dbup); }
+function set_size($v, $dbup=true) { return $this->set('size', $v, $dbup); }
 function extension() { return @$this->data['extension']; }
-function set_extension($v, $dbup) { return $this->set('extension', $v, $dbup); }
+function set_extension($v, $dbup=true) { return $this->set('extension', $v, $dbup); }
 function mime_type() { return @$this->data['mime_type']; }
-function set_mime_type($v, $dbup) { return $this->set('mime_type', $v, $dbup); }
+function set_mime_type($v, $dbup=true) { return $this->set('mime_type', $v, $dbup); }
 function created_from() { return @$this->data['created_from']; }
-function set_created_from($v, $dbup) { return $this->set('created_from', $v, $dbup); }
+function set_created_from($v, $dbup=true) { return $this->set('created_from', $v, $dbup); }
 function moderated() { return @$this->data['moderated']; }
-function set_moderated($v, $dbup) { return $this->set('moderated', $v, $dbup); }
+function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbup); }
 
 	function auto_targets()
 	{

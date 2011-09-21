@@ -2,6 +2,9 @@
 
 function smarty_function_input_date($params, &$smarty)
 {
+	echo bors_forms_date::html($params);
+	return;
+
 	include_once('inc/datetime.php');
 
 	extract($params);

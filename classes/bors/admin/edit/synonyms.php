@@ -1,12 +1,34 @@
 <?php
 
-class bors_admin_edit_synonyms extends bors_admin_edit
+class bors_admin_edit_synonyms extends bors_page
 {
-	function title() { return ($this->object() ? $this->object()->title() : '---').ec(': Синонимы'); }
+	function title() { return ($this->object() ? $this->object()->title() : '---').ec(': синонимы'); }
 	function nav_name() { return ec('синонимы'); }
-	function object() { return ($this->__havec('object') && $this->__lastc()) ? $this->__lastc() : $this->__setc(object_load(@$_GET['object'])); }
-	function real_object() { return ($this->__havec('real_object') && $this->__lastc()) ? $this->__lastc() : $this->__setc(object_load(@$_GET['real_object'])); }
-	function parents() { return array($_GET['edit_class']); }
+	function object()
+	{
+		if($this->__havec('object') && ($obj = $this->__lastc()))
+			return $obj;
+		$obj = object_load(@$_GET['object']);
+		if(!$obj)
+			$obj = object_load(@$_GET['real_object']);
+
+		return $this->__setc($obj);
+	}
+
+	function real_object()
+	{
+		if($this->__havec('real_object') && ($obj = $this->__lastc()))
+			return $obj;
+
+		$obj = object_load(@$_GET['real_object']);
+
+		if(!$obj)
+			$obj = $this->object();
+
+		return $this->__setc($obj);
+	}
+
+	function parents() { return array(empty($_GET['edit_class']) ? $this->object()->admin_url() : $_GET['edit_class']); }
 
 	function admin_object() { return $this->object(); }
 
@@ -46,7 +68,16 @@ class bors_admin_edit_synonyms extends bors_admin_edit
 
 	function url_engine() { return 'url_getp'; }
 
-	function parent_admin() { return object_load(@$_GET['edit_class']); }
+	function parent_admin()
+	{
+		$p = object_load(@$_GET['edit_class']);
+		if(!$p && ($obj = $this->object()))
+			$p = bors_load_uri($obj->admin()->url());
+		if(!$p && ($obj = $this->real_object()))
+			$p = bors_load_uri($obj->admin()->url());
+
+		return $p;
+	}
 
 	function config_class()
 	{

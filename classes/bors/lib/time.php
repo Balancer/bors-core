@@ -99,7 +99,7 @@ class bors_lib_time
 			return $yyyy.'-'.$mm.'-'.$dd;
 		}
 
-		if(!$year) // если формат фиксированный и год не указан, значит нам передали простую строку с датой для strtotime:
+		if(!$yyyy) // если формат фиксированный и год не указан, значит нам передали простую строку с датой для strtotime:
 		{
 //			echo "====== {$array[$var]} -> ".strtotime($array[$var])."<br/>";
 			return strtotime(@$data[$var]);

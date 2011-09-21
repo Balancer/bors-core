@@ -74,6 +74,7 @@ function http_get_content($url, $raw = false)
 		CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_SSL_VERIFYPEER => false,
+		CURLOPT_HEADER => true,
 	));
 
 //    if(preg_match("!lenta\.ru!", $url))
@@ -83,22 +84,39 @@ function http_get_content($url, $raw = false)
 	$data = curl_exec($ch);
 	if($data === false)
 	{
-		echo '[1] Curl error: ' . curl_error($ch);
+		echo '<small><i>[1] Curl error: ' . curl_error($ch) . '</i></small><br/>';
 //		echo debug_trace();
 		return '';
 	}
+
+	if(preg_match("!^(.+?)\n\n(<.+)$!s", $data, $m))
+	{
+		$header = $m[1];
+		$data = $m[2];
+	}
+	elseif(preg_match("!^(.+?)\r\n\r\n(<.+)$!s", $data, $m))
+	{
+		$header = $m[1];
+		$data = $m[2];
+	}
+	else
+		$header = '';
+
 	$data = trim($data);
 //	$data = trim(curl_redir_exec($ch));
 
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
+//	var_dump($header);
+
     if(preg_match("!charset=(\S+)!i", $content_type, $m))
         $charset = $m[1];
     elseif(preg_match("!<\?xml version=\S+ encoding=\"(.+?)\"!i", $data, $m))
         $charset = $m[1];
-    else
+    elseif(preg_match("!(Microsoft\-IIS|X\-Powered\-By: ASP\.NET)!", $header))
+        $charset = 'windows-1251';
+	else
         $charset = '';
-
 
 	curl_close($ch);
 

@@ -5,8 +5,13 @@ class bors_tools_delete extends base_page
 	function config_class() { return config('admin_config_class'); }
 	function access() { return $this->object()->access(); }
 
+	function editor() { return bors_load_uri($_GET['edit_class']); }
+
 	function parents()
 	{
+		if(!empty($_GET['edit_class']))
+			return array($_GET['edit_class']);
+
 		$obj_admin = $this->object()->admin_url();
 		return $obj_admin ? array($obj_admin) : array($this->object()->internal_uri());
 	}
@@ -51,8 +56,16 @@ class bors_tools_delete extends base_page
 			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_url());
 
 		$obj->delete(!config('skip_remove_cross'));
+		if($r = urldecode($_GET['ref']))
+			return go($r);
+
+		if($e = $this->editor())
+			return go($e->url());
+
 		return go(urldecode($_GET['ref']));
 	}
+
+	function url_engine() { return 'url_getp'; }
 
 	function ref()
 	{

@@ -1,10 +1,63 @@
 <?php
 
+/**
+	Основной класс простых двухкомпонентных (общая страница и её тело) HTML-страниц.
+	Фактически обёртка над устаревшим base_page. Идёт процесс переноса функционала
+	base_page в этот класс.
+
+	• 22.09.2011 Реализовано smart-распознавание шаблонизаторов, PHamlP и чистого PHP.
+*/
+
 class bors_page extends base_page
 {
 	function page_template_class() { return config('page_template_class', 'bors_templates_smarty'); }
 	// Можно не указывать, если оно равно page_template_class
-	function body_template_class() { return config('body_template_class', $this->page_template_class()); }
+	function body_template_class()
+	{
+		if($this->is_smart())
+		{
+			$this->__smart_body_template_check();
+			if(!empty($this->attr['body_template_class']))
+				return $this->attr['body_template_class'];
+		}
+
+		return config('body_template_class', $this->page_template_class());
+	}
+
+	function body_template()
+	{
+		if($this->is_smart())
+		{
+			$this->__smart_body_template_check();
+			if(!empty($this->attr['body_template']))
+				return $this->attr['body_template'];
+		}
+
+		return parent::body_template();
+	}
+
+	function __smart_body_template_check()
+	{
+		if(!empty($this->attr['__smart_body_template_checked']))
+			return;
+
+		$this->attr['__smart_body_template_checked'] = true;
+
+		if($this->is_smart())
+		{
+			$base = preg_replace('/\.php$/', '.', $this->class_file());
+			if(file_exists($bt = $base.'tpl.php'))
+			{
+				$this->attr['body_template'] = $bt;
+				$this->attr['body_template_class'] = 'bors_templates_php';
+			}
+			if(file_exists($bt = $base.'phaml') && class_exists('bors_templates_phaml'))
+			{
+				$this->attr['body_template'] = $bt;
+				$this->attr['body_template_class'] = 'bors_templates_phaml';
+			}
+		}
+	}
 
 	// Возвращает общий шаблон страницы
 	//TODO: со временем перенести все упоминания из base_object. Оно не нужно для всех видов объектов.

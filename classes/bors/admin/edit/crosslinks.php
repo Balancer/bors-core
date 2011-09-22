@@ -2,7 +2,7 @@
 
 class bors_admin_edit_crosslinks extends bors_admin_edit
 {
-	function title() { return ($this->object() ? $this->object()->title() : '---').ec(': Связи'); }
+	function title() { return ($this->object() ? $this->object()->title() : '---').ec(': связи'); }
 	function nav_name() { return ec('связи'); }
 
 	function object()

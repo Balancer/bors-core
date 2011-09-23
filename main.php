@@ -148,7 +148,10 @@ require_once('engines/bors/object_show.php');
 require_once('engines/bors/vhosts_loader.php');
 
 $uri = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
-header("X-request-url: $uri");
+
+if(config('bors_version_show'))
+	header("X-request-url: $uri");
+
 if($_SERVER['QUERY_STRING'] == 'del')
 {
 	$_SERVER['QUERY_STRING'] = 'act=del';
@@ -167,6 +170,9 @@ try
 {
 	if($object = bors_load_uri($uri))
 	{
+		if(config('bors_version_show'))
+			header('X-bors-object: '.$object->internal_uri());
+
 		// Новый метод вывода, полностью на самом объекте
 		if(method_exists($object, 'show'))
 			$res = $object->show();

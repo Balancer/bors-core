@@ -166,6 +166,7 @@ if(defined('INCLUDES_APPEND'))
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEPARATOR, array_unique($includes)));
 
+require_once('inc/helpers.php');
 require_once('inc/debug.php');
 require_once('classes/inc/BorsMemCache.php');
 require_once('inc/global-data.php');

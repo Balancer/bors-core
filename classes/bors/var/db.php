@@ -11,6 +11,8 @@ class bors_var_db extends base_object_db
 	{
 		return array(
 			'id',
+//			'container_class_name',
+//			'container_id',
 			'name',
 			'title',
 			'value',

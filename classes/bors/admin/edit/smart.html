@@ -28,7 +28,9 @@
 {if $ptype == 'input_date'}{input_date name=$field_name can_drop=1 year_min=1900 time=$pargs.time}{/if}
 </td></tr>
 {/foreach}
-
+{if $object->get('smart_form_append')}
+{$object->get('smart_form_append')}
+{/if}
 {submit value="Сохранить"}
 
 {foreach from=$smarty.get item="v" key="k"}

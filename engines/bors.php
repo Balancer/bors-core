@@ -4,7 +4,6 @@
 require_once('bors/names.php');
 require_once('bors/messages.php');
 require_once('bors/objects_array.php');
-require_once('inc/helpers.php');
 require_once('bors/object_loader.php');
 require_once('inc/bors/cross.php');
 require_once('engines/smarty/global.php');

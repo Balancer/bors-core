@@ -4,12 +4,15 @@
 require_once('bors/names.php');
 require_once('bors/messages.php');
 require_once('bors/objects_array.php');
+require_once('inc/helpers.php');
 require_once('bors/object_loader.php');
 require_once('inc/bors/cross.php');
 require_once('engines/smarty/global.php');
 
 function object_load($class, $object_id=NULL, $args=array())
 {
+//	echo "object_load($class, $object_id, ".print_dl($args).")\n";
+
 	if(is_numeric($class))
 		$class = class_id_to_name($class);
 

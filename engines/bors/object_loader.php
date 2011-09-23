@@ -1,81 +1,5 @@
 <?php
 
-function class_include($class_name, &$args = array())
-{
-	if($file_name = @$GLOBALS['bors_data']['class_included'][$class_name])
-		return $file_name;
-
-	if(in_array($class_name, config('classes_skip', array())))
-		return false;
-
-	$class_path = "";
-	$class_file = $class_name;
-
-	if(preg_match("!^(.+/)([^/]+)$!", str_replace("_", "/", $class_name), $m))
-	{
-		$class_path = $m[1];
-		$class_file = $m[2];
-	}
-
-	foreach(bors_dirs() as $dir)
-	{
-//		echo "check {$dir}/classes/{$class_path}{$class_file}.php  <br/>\n";
-		if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.php"))
-		{
-			require_once($file_name);
-			$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
-			return $file_name;
-		}
-
-		if(file_exists($file_name = "{$dir}/classes/bors/{$class_path}{$class_file}.php"))
-		{
-			require_once($file_name);
-			$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
-			return $file_name;
-		}
-
-		if(file_exists($file_name = "{$dir}/classes/inc/$class_name.php"))
-		{
-			require_once($file_name);
-			$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
-			return $file_name;
-		}
-
-//		echo "Find {$dir}/classes/{$class_path}{$class_file}.yaml<br/>\n";
-		if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.yaml"))
-		{
-			bors_classes_loaders_yaml::load($class_name, $file_name);
-			$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
-			return $file_name;
-		}
-	}
-
-	if(class_exists($class_name))
-		return class_include(get_parent_class($class_name));
-
-	if(empty($args['host']))
-		return false;
-
-	$data = bors_vhost_data($args['host']);
-	if(file_exists($file_name = "{$data['bors_site']}/classes/{$class_path}{$class_file}.php"))
-	{
-		require_once($file_name);
-		$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
-		$args['need_check_to_public_load'] = true;
-		return $file_name;
-	}
-
-	if(file_exists($file_name = "{$data['bors_site']}/classes/bors/{$class_path}{$class_file}.php"))
-	{
-		require_once($file_name);
-		$GLOBALS['bors_data']['class_included'][$class_name] = $file_name;
-		$args['need_check_to_public_load'] = true;
-		return $file_name;
-	}
-
-	return false;
-}
-
 spl_autoload_register('class_include');
 
 function bors_object_caches_drop()
@@ -559,6 +483,7 @@ function class_load_by_vhosts_url($url)
 
 function object_init($class_name, $object_id, $args = array())
 {
+//	echo "object_init($class_name, $object_id, ".print_dl($args).")\n";
 //	if(config('is_debug')) debug_hidden_log('debug', "Try to load $class_name($object_id)");
 	// В этом методе нельзя использовать debug_test()!!!
 
@@ -568,7 +493,7 @@ function object_init($class_name, $object_id, $args = array())
 	if($object_id === 'NULL')
 		$object_id = NULL;
 
-	if(!($class_file = class_include($class_name, $args)))
+	if(!($class_file = bors_class_loader::load($class_name, $args)))
 	{
 		if(config('throw_exception_on_class_not_found'))
 			return bors_throw("Class '$class_name' not found");
@@ -589,7 +514,7 @@ function object_init($class_name, $object_id, $args = array())
 	}
 	elseif(empty($args['no_load_cache']))
 	{
-//		echo "load_cached_object($class_name, $object_id, $args, $found);<Br/>\n";
+//		echo "load_cached_object($class_name, $object_id, $args, $found); <br/>\n";
 		$obj = &load_cached_object($class_name, $object_id, $args, $found);
 //		echo "cache loaded: $obj<br/>\n";
 		if($obj && ($obj->id() != $object_id))

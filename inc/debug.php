@@ -45,6 +45,7 @@ function debug_pre($text)
 
 function print_d($data, $string=false) { return debug_xmp(print_r($data, true), $string); }
 function print_dd($data, $string=false){ return debug_xmp(__print_dd($data), $string); }
+function print_dl($data) { return str_replace("\n", " ", print_r($data, true)); }
 
 function __print_dd($data, $level=0)
 {

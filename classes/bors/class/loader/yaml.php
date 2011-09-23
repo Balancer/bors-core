@@ -1,6 +1,6 @@
 <?php
 
-class bors_classes_loaders_yaml extends bors_classes_loaders_meta
+class bors_class_loader_yaml extends bors_class_loader_meta
 {
 	static function load($class_name, $class_file)
 	{
@@ -37,17 +37,20 @@ class bors_classes_loaders_yaml extends bors_classes_loaders_meta
 			$data['table_fields'] = $table_fields;
 		}
 
-		$data['storage_engine'] = popval($data, 'storage_engine', 'bors_storage_mysql');
+		$table_fields = popval($data, 'table_fields');
 
-		$class = "class ".popval($data, 'class', $class_name)." extends ".popval($data, 'extends', $properties ? 'base_object_db' : 'bors_object')."
-{
-	function table_fields()
-	{
-		return array(
-".self::tr_array(popval($data, 'table_fields'), 3)."
-		);
-	}
-";
+		if($table_fields)
+			$data['storage_engine'] = popval($data, 'storage_engine', 'bors_storage_mysql');
+
+		$class = "class ".popval($data, 'class', $class_name)." extends ".popval($data, 'extends', $properties ? 'base_object_db' : 'bors_object')
+			."\n{";
+
+		if($table_fields)
+		{
+			$class .= "\tfunction table_fields()\n\t{\n\t\t	return array("
+				.self::tr_array($table_fields, 3)
+				."\n\t\t);\n\t}\n";
+		}
 
 		foreach($data as $key => $value)
 		{
@@ -67,15 +70,17 @@ class bors_classes_loaders_yaml extends bors_classes_loaders_meta
 
 		$class .= "}\n";
 
-		$generated_name = dirname($class_file)."/".array_pop(explode('_', $class_name)).".php";
-		if(file_exists($generated_name))
-			debug_hidden_log('__generated', "File $generated_name already exists for {$class_name}");
-		else
-		{
-			@file_put_contents($generated_name, "<?php\n// Этот файт является автоматически сгенерированным.\n// Будьте осторожны при модификациях, чтобы ничего не потерять\n\n".$class);
-			@chmod($generated_name, 0666);
-		}
-		eval($class);
+//		$generated_name = dirname($class_file)."/".array_pop(explode('_', $class_name)).".php";
+		$cached_class_file = config('cache_dir').'/classes/'.str_replace('_', '/', $class_name).'.php';
+
+		mkpath(dirname($cached_class_file), 0755);
+		@file_put_contents($cached_class_file, "<?php\n\n".$class);
+		@chmod($generated_name, 0644);
+
+//		eval($class);
+		bors_class_loader::cache_make_info($class_name, $class_file, $cached_class_file);
+		require($cached_class_file);
+		return $class_file;
 	}
 
 	function tr_array(&$data, $tabs)

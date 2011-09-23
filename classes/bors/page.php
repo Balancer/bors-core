@@ -43,19 +43,36 @@ class bors_page extends base_page
 
 		$this->attr['__smart_body_template_checked'] = true;
 
-		if($this->is_smart())
+		$current_class = get_class($this);
+		$class_files = $GLOBALS['bors_data']['classes_included'];
+		$ext = $this->body_template_ext();
+		$is_smart = $this->is_smart();
+
+		while($current_class)
 		{
-			$base = preg_replace('/\.php$/', '.', $this->class_file());
-			if(file_exists($bt = $base.'tpl.php'))
+			$base = preg_replace("!(.+/\w+)\..+?$!", "$1.", $class_files[$current_class]);
+			if($is_smart)
 			{
-				$this->attr['body_template'] = $bt;
-				$this->attr['body_template_class'] = 'bors_templates_php';
+				if(file_exists($bt = $base.'tpl.php'))
+				{
+					$this->attr['body_template'] = $bt;
+					$this->attr['body_template_class'] = 'bors_templates_php';
+					return;
+				}
+				if(file_exists($bt = $base.'haml') && class_exists('bors_templates_phaml'))
+				{
+					$this->attr['body_template'] = $bt;
+					$this->attr['body_template_class'] = 'bors_templates_phaml';
+					return;
+				}
 			}
-			if(file_exists($bt = $base.'phaml') && class_exists('bors_templates_phaml'))
+			else
 			{
-				$this->attr['body_template'] = $bt;
-				$this->attr['body_template_class'] = 'bors_templates_phaml';
+				if(file_exists($template_file = $base.$ext))
+					return "xfile:{$template_file}";
 			}
+
+			$current_class = get_parent_class($current_class);
 		}
 	}
 

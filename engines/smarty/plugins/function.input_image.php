@@ -2,6 +2,10 @@
 
 function smarty_function_input_image($params, &$smarty)
 {
+	echo bors_forms_image::html($params);
+	return;
+
+	//TODO: снести всё до конца, если отрефакторенный код работает
 	extract($params);
 	$image_name_field = defval($params, 'image', 'image');
 	$image_id_field   = defval($params, 'image_id_field', $image_name_field.'_id');

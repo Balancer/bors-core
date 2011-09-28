@@ -98,7 +98,7 @@ function array_smart_expand(&$array)
 
 function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 {
-//	if(config('is_debug')) echo "<i>bors_class_field_to_db</i>($class, $property, $was_joined) <br/>\n";
+//	echo "<i>bors_class_field_to_db</i>($class, $property, $was_joined) <br/>\n";
 	if(!$class)
 		return $property;
 

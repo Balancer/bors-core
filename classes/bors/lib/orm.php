@@ -17,6 +17,9 @@ class bors_lib_orm
 			if(strpos($field, '|') !== false && preg_match('/^(\w+)\|(\w+)$/', $field, $m))
 			// Это запись вида 'property' => 'fiels|post_function'
 				$field = array('name' => $m[1], 'post_function' => $m[2]);
+			elseif(preg_match('/^(\w+),(\w+)$/', $field, $m))
+			//	Запись вида 'id' => 'company_id,user_id' — составной первичный или уникальный ключ
+				$field = array('name' => "CONCAT(`{$m[1]}`,':::',`{$m[2]}`)");
 			else // просто строка вида 'property' => 'field',
 				$field = array('name' => $field);
 

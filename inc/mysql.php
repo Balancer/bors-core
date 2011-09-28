@@ -11,7 +11,6 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 	$where = array();
 	foreach($conditions_array as $field_cond => $value)
 	{
-
 		$value = str_replace('%ID%', '%MySqlStorageOID%', $value);
 
 		$w = false;

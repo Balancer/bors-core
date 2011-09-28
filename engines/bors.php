@@ -332,3 +332,12 @@ function bors_each($class_name, $where)
 }
 
 function bors_new($class_name, $data = array()) { return object_new_instance($class_name, $data); }
+
+function bors_delete($class_name, $where)
+{
+	if(empty($where['limit']))
+		$where['limit'] = 1;
+
+	foreach(bors_find_all($class_name, $where) as $x)
+		$x->delete();
+}

@@ -560,12 +560,18 @@ defined at {$this->class_file()}<br/>
 		if($popup = defval($params, 'popup'))
 			$popup = " title=\"".htmlspecialchars($popup)."\"";
 
+		if($target = defval($params, 'target'))
+			$target = " target=\"".htmlspecialchars($target)."\"";
+		else
+			$target = "";
+
 		$page = defval($params, 'page');
 //		if($page === NULL) //TODO: WTF? Изучить все вызовы.
 //			$title = $this->page();
 
-		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."\"{$popup}>{$title}</a>"; 
+		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."\"{$popup}{$target}>{$title}</a>"; 
 	}
+	function titled_link_target($target) { return $this->titled_link_ex(array('target' => $target)); }
 
 	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
 	function nav_named_link($append = NULL) { return '<a href="'.$this->url($this->page())."\"".($append?' '.$append:'').">{$this->nav_name()}</a>"; }

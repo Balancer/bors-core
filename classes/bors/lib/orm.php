@@ -66,6 +66,7 @@ class bors_lib_orm
 		foreach($object->fields() as $db => $tables)
 		{
 			foreach($tables as $table => $fields)
+			{
 				foreach($fields as $property => $field)
 				{
 					if($field != '*no_defaults')
@@ -75,6 +76,7 @@ class bors_lib_orm
 							$fields_array[] = $field;
 					}
 				}
+			}
 		}
 
 		return set_global_key($gk, $object->class_name(), $fields_array);

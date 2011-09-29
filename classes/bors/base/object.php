@@ -1375,12 +1375,31 @@ defined at {$this->class_file()}<br/>
 		if(!$obj)
 			return bors_exit(ec('Не существующий привязывающий объект ').$data['link_object_from']);
 
-		$target = object_load($data['link_class_name'], $data['link_object_id']);
+		if(!empty($data['link_class_name']) && !empty($data['link_object_id']))
+		{
+			$target = object_load($data['link_class_name'], $data['link_object_id']);
 
-		if(!$target)
-			return bors_exit(ec('Не существующий привязываемый объект ').$data['link_class_name'].'://'. $data['link_object_id']);
+			if(!$target)
+				return bors_exit(ec('Не существующий привязываемый объект ').$data['link_class_name'].'://'. $data['link_object_id']);
 
-		$obj->add_cross_object($target);
+			$obj->add_cross_object($target);
+		}
+
+		if(!empty($data['link_urls']))
+		{
+			foreach(explode("\n", $data['link_urls']) as $url)
+			{
+				$target = bors_load_uri(trim($url));
+
+				if(!$target)
+					bors_throw(ec('Не существующий привязываемый объект ').$data['link_urls']);
+
+				if($t2 = $target->get('target'))
+					$target = $t2;
+
+				$obj->add_cross_object($target);
+			}
+		}
 	}
 
 	function default_page() { return 1; }

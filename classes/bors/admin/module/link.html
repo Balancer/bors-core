@@ -2,21 +2,22 @@
 Привязка {$target->class_title_rp()} к другим объектам:
 <ul>
 {foreach from=$linked item="x"}
-<li>{$x->class_title()} «{$x->titled_url()}» [
-        {$x->titled_admin_url('администрировать')},
-        <a href="/admin/cross_unlink?from={$target->internal_uri()}&to={$x->internal_uri()}">убрать привязку</a>
-    ]</li>
+{if $x->target()}
+<li>{$x->target()->class_title()}&nbsp;{$x->target()->admin()->imaged_titled_link()}&nbsp;{$x->admin()->imaged_link('unlink', 'unlink.gif', 'Убрать связь')}</li>
+{else}
+<li>Некорректная связь {$x} {$x->admin()->imaged_delete_link()}</li>
+{/if}
 {foreachelse}
 <li>Привязок не найдено</li>
 {/foreach}
 </ul>
 
 {form act="link" object=$target}
-{dropdown name="link_class_name" list=$linkable value=""}
-№
-{input name="link_object_id" value=""}
+{dropdown name="link_class_name" list=$linkable value=""}&nbsp;№&nbsp;{input name="link_object_id" value=""}<br/>
+<small>или укажите ссылки на привязываемые объекты, по одной в строке:</small><br/>
+{textarea name="link_urls" value="" rows="4" cols="50"}<br/>
+{submit value="Добавить привязки"}
 {hidden name="link_object_from" value=$target->internal_uri()}
 {go value=$this->url()}
-{submit value="Добавить привязку"}
 {/form}
 </div>

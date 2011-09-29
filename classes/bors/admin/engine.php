@@ -218,7 +218,7 @@ class bors_admin_engine extends bors_object
 
 		$delete_text = ec('Удаление ')
 			.bors_lower($obj->class_title_rp())
-			.ec(' «').$obj->title().ec('»');
+			.ec(' «').$obj->get('title').ec('»');
 
 		if($title === true)
 			$title = $delete_text;

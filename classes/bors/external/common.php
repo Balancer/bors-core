@@ -23,18 +23,20 @@ class bors_external_common extends bors_object
 		if(!$img)
 			$img = @$meta['img_src'];
 
+		if(!$img)
+			$img = @$meta['image_src'];
+
+		if($img)
+			$img = "[img {$img} 200x200 left flow]";
+
 		if($title && $description)
 		{
-			if($img)
-				$description = "[img {$img} 200x200 left] ".$description;
-
 			$description = clause_truncate_ceil($description, $limit);
 
-			$bbshort = "[b][url={$url}]{$title}[/url][/b]
-
+			$bbshort = "[round_box]{$img}[h][url={$url}]{$title}[/url][/h]
 {$description}
 
-// ".ec("Подробнее: ").bors_external_feeds_entry::url_host_link($url);
+// ".bors_external_feeds_entry::url_host_link($url)."[/round_box]";
 
 			$tags = array();
 			return compact('tags', 'bbshort');

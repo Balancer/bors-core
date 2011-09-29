@@ -27,8 +27,11 @@ class bors_lib_html
 
 			if(preg_match("!<meta[^>]+name=([\w:]+)[^>]+(content|value)=\"(.*?)\"!is", trim($s), $m))
 				$meta[bors_lower($m[1])] = html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
-		}
 
+			// <link rel="image_src" href="http://infox.ru/photos/2011/17/112717/300x168_IRp6fXolYdFHbUso28YKRYQS8y3fn0Ca.jpg" >
+			if(preg_match("!<link [^>]*rel=\"?([\w:]+)\"?[^>]+(href)=\"(.*?)\"!is", trim($s), $m))
+				$meta[bors_lower($m[1])] = html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
+		}
 
 		if(empty($meta['title']) && preg_match('!<title>([^>]+)</title>!si', $content, $m))
 			$meta['title'] = html_entity_decode($m[1], ENT_COMPAT, 'UTF-8');

@@ -3,7 +3,7 @@
 class base_page_paged extends base_page
 {
 	function where() { return array(); }
-	function order() { return '-create_time'; }
+	function order() { return '-create_time'; } // Всегда! Не менять в будущем. Унификация.
 	function group() { return false; }
 
 	private function _where($where = array())
@@ -71,6 +71,15 @@ class base_page_paged extends base_page
 	function item_name()
 	{
 		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
+	}
+
+	function items_name() { return bors_plural($this->item_name()); }
+
+	function body_data()
+	{
+		return array_merge(parent::body_data(), array(
+			$this->items_name() => $this->items(),
+		));
 	}
 
 /*

@@ -134,14 +134,32 @@ class bors_link extends base_object_db
 		}
 
 		$target_classes = array();
+		$target_classes_skip = array();
 		foreach(explode(',', $params['target_class']) as $tc)
-			$target_classes[] = class_name_to_id(trim($tc));
+		{
+			$tc = trim($tc);
+			if($tc[0] == '-')
+				$target_classes_skip[] = class_name_to_id(substr($tc,1));
+			else
+				$target_classes[] = class_name_to_id($tc);
+		}
 
 		unset($params['target_class']);
-		if(count($target_classes) == 1)
-			$params['target_class_id'] = $target_classes[0];
-		else
-			$params['target_class_id IN'] = $target_classes;
+		if($target_classes)
+		{
+			if(count($target_classes) == 1)
+				$params['target_class_id'] = $target_classes[0];
+			else
+				$params['target_class_id IN'] = $target_classes;
+		}
+
+		if($target_classes_skip)
+		{
+			if(count($target_classes_skip) == 1)
+				$params['target_class_id<>'] = $target_classes_skip[0];
+			else
+				$params['target_class_id NOT IN'] = $target_classes_skip;
+		}
 	}
 
 	// Возвращает список ссылок (не самих объектов!) от данного объекта

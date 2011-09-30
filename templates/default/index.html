@@ -6,7 +6,11 @@
 	<link rel="SHORTCUT ICON" href="/favicon.ico" />
 	<script type="text/javascript" src="/_bors/js/cfuncs.js"></script>
 	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
+	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/style.css" />
 	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/color-gray.css" />
+{foreach item=css from=$css_list}
+	<link rel="stylesheet" type="text/css" href="{$css}" />
+{/foreach}
 
 {if not empty($css_list)}{foreach item=css from=$css_list}
 <style type="text/css" media="all">@import url("{$css}");</style>
@@ -54,7 +58,9 @@
 {foreach from=$template_top_menu item="t" key="d"}
 {if $d|regex_match:'^\w+$'}
 {assign var="url" value='/'|cat:$d|cat:'/'}
-<li{if $main_uri|regex_match:$url} class="selected"{/if}><a href="{$url}">{$t}</a></li>
+<li{if $main_uri|regex_match:$url
+	or $this->url()|regex_match:$url
+} class="selected"{/if}><a href="{$url}">{$t}</a></li>
 {else}{if $d}
 <li><a href="{$d}">{$t}</a></li>
 {else}
@@ -66,10 +72,10 @@
 {/if}
 
 
-<div class="body" {if not $right_menu} style="margin-right: 20px"{/if}>
+<div class="body" {if not $right_menu and not $default_right_menu and not $right_menu_append} style="margin-right: 20px"{/if}>
 <div class="clear">&nbsp;</div>
-<div class="top-nav">{module class="nav_top" id=$this}</div>
 {if not $skip_page_title}<h1>{$this->page_title()}</h1>{/if}
+<div class="top-nav">{module class="nav_top" id=$this}</div>
 <div style="font-style:italic; margin-right: 0; display: block; float: right; width: 40%; text-align: justify">{$description|lcml_bbh}</div>
 <div class="clear">&nbsp;</div>
 
@@ -94,16 +100,25 @@
 
 {$body}
 
-{if $right_menu}
 <div class="right-menu">
+{if $right_menu}
 <!-- right menu = {$right_menu} -->
 	{include file=$right_menu}
-</div>
+{else}
+	{if $default_right_menu}{include file=$default_right_menu}{/if}
 {/if}
+{if $right_menu_append}
+	{foreach from=$right_menu_append item="f"}
+		{include file=$f}
+	{/foreach}
+{/if}
+</div>
 
 <div class="clear">&nbsp;</div>
 
+{if not $skip_signature}
 <div style="text-align:right">Powered by <a href="http://bors.balancer.ru/">BORS© OpenSource PHP Framework</a></div>
+{/if}
 
 </div>
 

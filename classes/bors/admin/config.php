@@ -20,7 +20,7 @@ class bors_admin_config extends base_config
 	function template_data()
 	{
 		return array_merge(parent::template_data(), array(
-			'right_menu' => config('admin_right_menu', 'xfile:bors/admin/right-menu.html'),
+			'default_right_menu' => config('admin_right_menu', 'xfile:bors/admin/right-menu.html'),
 		));
 	}
 }

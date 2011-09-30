@@ -163,3 +163,23 @@ div.thumb_up { background-image: url(http://balancer.ru/_bors/i/thumb_up.gif) }
 div.thumb_down { background-image: url(http://balancer.ru/_bors/i/thumb_down.gif) }
 
 input { border: 1px solid; }
+
+li.imaged {
+	background-repeat: no-repeat;
+	list-style: none;
+	margin-left: 0 !important;
+	padding-left: 16px;
+	background-position: 0 4px;
+}
+li.type-search{background-image: url(/_bors/i16/search.png)}
+li.type-logout{background-image: url(/_bors/i16/logout.gif)}
+
+div.right-menu h2, div.right-menu p, div.right-menu ul {
+	margin-top: 0;
+	margin-bottom: 4px;
+}
+div.right-menu li {
+	margin-left: 16px;
+}
+
+div.right-menu h2 { font-size: 1em !important; }

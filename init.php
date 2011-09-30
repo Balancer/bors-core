@@ -25,6 +25,7 @@ if(!defined('BORS_SITE'))
 	$path = realpath(@$_SERVER['DOCUMENT_ROOT'].'/../bors-site');
 	if(!$path)
 		$path = dirname(@$_SERVER['DOCUMENT_ROOT']).'/bors-site';
+
 	define('BORS_SITE', $path);
 }
 

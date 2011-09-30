@@ -24,21 +24,21 @@
 		return url_truncate($url, 70);
     }
 
-    function lcml_urls_title($url)
+    function lcml_urls_title($url, $snip = false)
     {
-        if(class_exists('Cache'))
+        if(class_exists('Cache') && !config('lcml_cache_disable_full'))
         {
             $cache = new Cache();
-            if($cache->get('url_titles-v4', $url))
+            if($cache->get('url_titles-v4-'.$snip, $url))
                 return $cache->last();
             else
-                return $cache->set(lcml_urls_title_nocache($url), 7*86400);
+                return $cache->set(lcml_urls_title_nocache($url, $snip), 7*86400);
         }
         else
-            return lcml_urls_title_nocache($url);
+            return lcml_urls_title_nocache($url, $snip);
     }
 
-    function lcml_urls_title_nocache($url)
+    function lcml_urls_title_nocache($url, $snip=false)
     {
 		$original_url = $url;
 		$anchor = "";
@@ -78,6 +78,9 @@
 			}
 		}
 
+		if($snip && ($data = bors_external_common::content_extract($url)))
+			return lcml($data['bbshort']);
+
 		$blacklist = $external || preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $url_data['host']);
 
 		if(preg_match("!/[^/]+\.[^/]+$!", $pure_url) 
@@ -92,6 +95,7 @@
             if($title = $hts->get('title'))
                 return "<a href=\"{$original_url}\">$title</a>";
         }
+
 		if(!function_exists('curl_init'))
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
@@ -121,13 +125,15 @@
 		if($taglist && empty($taglist['post_urls']))
 			return $txt;
 
+        $txt = preg_replace("!(^|\n)(https?://\S+)(\n|$)!sie","'$1'.lcml_urls_title('$2',1).'$3'",$txt);
+
         $txt=preg_replace("!\[(http://[^\s\|\]]+?)\]!ie","lcml_urls_title('$1')",$txt);
         $txt=preg_replace("!\[(www\.[^\s\|\]]+?)\]!ie","lcml_urls_title('http://$1')",$txt);
         $txt=preg_replace("!\[(ftp://[^\s\|\]]+?)\]!i","<a href=\"$1\" class=\"external\">$1</a>",$txt);
         $txt=preg_replace("!\[(ftp\.[^\s\|\]]+?)\]!i","<a href=\"ftp://$1\" class=\"external\">$1</a>",$txt);
 		$txt = preg_replace('!(?<=\s|^)(http://\S+(\S*\(\S*\))+)(?=\s|$)!sme', 'lcml_urls_title("$1")',$txt);
-        $txt=preg_replace("!(?<=\s|^|\()(http://[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!ie","lcml_urls_title('$1').'$2'",$txt);
-        $txt=preg_replace("!(?<=\s|^|\()(http://[^\s<>\|\[\]\<\>]+)(?=\s|$)!ie","lcml_urls_title('$1')",$txt);
+        $txt=preg_replace("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!ie","lcml_urls_title('$1').'$2'",$txt);
+        $txt=preg_replace("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(?=\s|$)!ie","lcml_urls_title('$1')",$txt);
         $txt=preg_replace("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!ie","lcml_urls_title('http://$1').'$2'",$txt);
         $txt=preg_replace("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(?=\s|$)!ie","lcml_urls_title('http://$1')",$txt);
 

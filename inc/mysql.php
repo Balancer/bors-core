@@ -137,6 +137,8 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 			echo debug_trace();
 	}
 */
+//	if(config('is_developer')) echo "--- $join <br/>\n";
+
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
 	$join = preg_replace('!^(\w+)\.(\w+)$!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
 	$join = preg_replace('!(\w+)\.(\w+)\s*(=|>|<)!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
@@ -147,8 +149,8 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 	$join = preg_replace('!^(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
 //	if(config('is_debug')) echo "    ??? result1: $join <br/>\n";
 	$join = preg_replace('!([ \(])(\w+)\s*(=|>|<)!e', '"$1".bors_class_field_to_db("$class_name", "$2")."$3"', $join);
-//	if(config('is_debug')) echo "    --- result2: $join <br/>\n";
 
+//	if(config('is_developer')) echo "    --- result2: $join <br/>\n";
 
 	if($class_name)
 	{
@@ -198,7 +200,7 @@ function mysql_args_compile($args, $class=NULL)
 				$join[] = 'LEFT JOIN '.mysql_bors_join_parse($j, $class);
 		}
 		else
-			$join[] = 'LEFT JOIN '.mysql_bors_join_parse($args['left_join']. $class);
+			$join[] = 'LEFT JOIN '.mysql_bors_join_parse($args['left_join'], $class);
 
 		unset($args['left_join']);
 	}

@@ -89,12 +89,12 @@ function http_get_content($url, $raw = false)
 		return '';
 	}
 
-	if(preg_match("!^(.+?)\n\n(<.+)$!s", $data, $m))
+	if(preg_match("!^(.+?)\r\n\r\n(<.+)$!s", $data, $m))
 	{
 		$header = $m[1];
 		$data = $m[2];
 	}
-	elseif(preg_match("!^(.+?)\r\n\r\n(<.+)$!s", $data, $m))
+	elseif(preg_match("!^(.+?)\n\n(<.+)$!s", $data, $m))
 	{
 		$header = $m[1];
 		$data = $m[2];

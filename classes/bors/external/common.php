@@ -8,8 +8,9 @@ class bors_external_common extends bors_object
 			return array('bbshort' => "[img url=\"$url\" 468x468]", 'tags' => array());
 
 		$html = bors_lib_http::get_cached($url, 7200);
-		$meta = bors_lib_html::get_meta_data($html);
-//		echo "$url:<br/>"; print_dd($meta); exit();
+		$meta = bors_lib_html::get_meta_data($html, $url);
+
+//		if(config('is_developer')) { echo "$url:<br/>"; var_dump($meta); var_dump($html); exit(); }
 
 		$title = @$meta['og:title'];
 		if(!$title)
@@ -26,10 +27,25 @@ class bors_external_common extends bors_object
 		if(!$img)
 			$img = @$meta['image_src'];
 
+		if(!$img && preg_match('!<div class="thumbinner".+?<img .+src="(//upload.wikimedia.org/[^"]+\.jpg)"!', $html, $m))
+			$img = 'http:'.$m[1];
+/*
+		if(!$img && config('is_developer'))
+		{
+			print_dd($html);
+			$dom = new DOMDocument('1.0', 'UTF-8');
+			$dom->loadHTML($html);
+			$xpath = new DOMXPath($dom);
+			$images = $xpath->query('//img');
+			foreach($images as $x)
+				var_dump($x->getAttribute('src'));
+		}
+if(config('is_developer')) { exit($img); }
+*/
 		if($img)
 			$img = "[img {$img} 200x200 left flow]";
 
-		if($title && $description)
+		if($title && strlen($title) > 5)
 		{
 			$description = clause_truncate_ceil($description, $limit);
 

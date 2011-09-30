@@ -2,7 +2,7 @@
 
 class bors_lib_html
 {
-	function get_meta_data($content) // via http://ru2.php.net/get_meta_tags
+	function get_meta_data($content, $url = NULL) // via http://ru2.php.net/get_meta_tags
 	{
 		$content = preg_replace("'<style[^>]*>.*</style>'siU",'',$content);  // strip js
 		$content = preg_replace("'<script[^>]*>.*</script>'siU",'',$content); // strip css
@@ -17,25 +17,38 @@ class bors_lib_html
 		$content = preg_replace("!<meta !i", "\n<meta ", $content);
 		$content = preg_replace("!/>!", "/>\n", $content);
 
+		$url_data = parse_url($url);
+
 		foreach(explode("\n", $content) as $s)
 		{
-			if(preg_match("!<meta[^>]+(name|property)=\"([\w:]+)\"[^>]+(content|value)=\"(.*?)\"!is", trim($s), $m))
-				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
+			if(preg_match("!<meta[^>]+(name|property)=\"([\w:]+)\"[^>]+(content|value)=\"([^>]+)\"(.*?)>!is", trim($s), $m))
+				$meta[bors_lower($m[2])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'), $m[2]);
 
 			if(preg_match("!<meta[^>]+(http\-equiv|name)=['\"]([\w:]+)['\"][^>]+(content|value)='([^']*)'!is", trim($s), $m))
 				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
 
-			if(preg_match("!<meta[^>]+name=([\w:]+)[^>]+(content|value)=\"(.*?)\"!is", trim($s), $m))
+			if(preg_match("!<meta[^>]+name=([\w:]+)[^>]+(content|value)=\"([^>]+)\"(.*?)>!is", trim($s), $m))
 				$meta[bors_lower($m[1])] = html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
 
 			// <link rel="image_src" href="http://infox.ru/photos/2011/17/112717/300x168_IRp6fXolYdFHbUso28YKRYQS8y3fn0Ca.jpg" >
 			if(preg_match("!<link [^>]*rel=\"?([\w:]+)\"?[^>]+(href)=\"(.*?)\"!is", trim($s), $m))
-				$meta[bors_lower($m[1])] = html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
+				$meta[bors_lower($m[1])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'));
 		}
 
 		if(empty($meta['title']) && preg_match('!<title>([^>]+)</title>!si', $content, $m))
 			$meta['title'] = html_entity_decode($m[1], ENT_COMPAT, 'UTF-8');
 
 		return $meta;
+	}
+
+	static function norm($url_data, $value, $type = NULL)
+	{
+		if(!$url_data || $value[0] != '/')
+			return $value;
+
+		if($type && $type != 'og:image')
+			return $value;
+
+		return $url_data['scheme'].'://'.$url_data['host'].$value;
 	}
 }

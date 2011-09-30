@@ -54,60 +54,74 @@ function http_get_content($url, $raw = false)
 
 	$header = array();
 	if(($cs = config('lcml_request_charset_default')))
-		$header[] = "Accept-Charset: ".$cs;
+		$header[] = "Accept-Charset: utf-8, ".$cs;
+	else
+		$header[] = "Accept-Charset: utf-8";
 	$header[] = "Accept-Language: ru, en";
 
 	debug_timing_start('http-get: '.$url);
 	debug_timing_start('http-get-total');
 	$ch = curl_init($url);
+
 	curl_setopt_array($ch, array(
 		CURLOPT_TIMEOUT => 5,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 3,
 		CURLOPT_ENCODING => 'gzip,deflate',
-//		CURLOPT_RANGE => '0-4095',
 		CURLOPT_REFERER => $original_url,
 		CURLOPT_AUTOREFERER => true,
 		CURLOPT_HTTPHEADER => $header,
-//TODO: сделать перебор разных UA при ошибке
-//		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
 		CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_SSL_VERIFYPEER => false,
 		CURLOPT_HEADER => true,
 	));
 
+
+//TODO: сделать перебор разных UA при ошибке
+//		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
+//		CURLOPT_RANGE => '0-4095',
+
 //    if(preg_match("!lenta\.ru!", $url))
 	if(preg_match("!(rian.ru)!", $url))
 		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 	$data = curl_exec($ch);
+
+//	if(config('is_developer')) { var_dump($html); }
+//	if(config('is_developer')) { exit('stop: "'.$url.'"'); }
+
 	if($data === false)
 	{
 		echo '<small><i>[1] Curl error: ' . curl_error($ch) . '</i></small><br/>';
 //		echo debug_trace();
+//		if(config('is_developer')) { var_dump($data); exit(); }
 		return '';
 	}
 
-	if(preg_match("!^(.+?)\r\n\r\n(<.+)$!s", $data, $m))
+	$adat = explode("\n", $data);
+
+//	if(config('is_developer')) { var_dump(file_get_contents($url)); }
+
+	$pos = 0;
+	$header = '';
+	for($i=0; $i<count($adat); $i++)
 	{
-		$header = $m[1];
-		$data = $m[2];
+		$pos += strlen($adat[$i])+1;
+		if(!trim($adat[$i]))
+		{
+			$header = join("\n", array_slice($adat, 0, $i-1));
+			$data   = join("\n", array_slice($adat, $i+1));
+			break;
+		}
 	}
-	elseif(preg_match("!^(.+?)\n\n(<.+)$!s", $data, $m))
-	{
-		$header = $m[1];
-		$data = $m[2];
-	}
-	else
-		$header = '';
 
 	$data = trim($data);
 //	$data = trim(curl_redir_exec($ch));
 
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
-//	var_dump($header);
+//	if(config('is_developer')) { var_dump($header); var_dump($data); }
 
     if(preg_match("!charset=(\S+)!i", $content_type, $m))
         $charset = $m[1];

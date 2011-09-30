@@ -1,6 +1,6 @@
 <ul>
 {if $this->get('admin_group_url')}<li><a href="{$this->get('admin_group_url')}">Главная</a></li>{/if}
-{if $this->get('new_sublink')}<li><a href="{$this->get('new_sublink')}">{$this->get('new_title')}</a></li>{/if}
+{if $this->get('new_sublink')}<li class="b nobr"><a href="{$this->get('new_sublink')}">{$this->get('new_title')}</a></li>{/if}
 {if $real_object}<li><a href="{$real_object->url()}" target="_blank">Посмотреть на сайте</a></li>{/if}
 {if $this->get('search_link')}<li><a href="{$this->get('search_link')}">Поиск</a></li>{/if}
 </ul>

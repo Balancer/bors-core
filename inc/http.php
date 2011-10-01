@@ -88,7 +88,7 @@ function http_get_content($url, $raw = false)
 
 	$data = curl_exec($ch);
 
-//	if(config('is_developer')) { var_dump($html); }
+//	if(1||config('is_developer')) { var_dump($data); exit(); }
 //	if(config('is_developer')) { exit('stop: "'.$url.'"'); }
 
 	if($data === false)
@@ -161,7 +161,7 @@ function http_get_content($url, $raw = false)
 */
 	if($charset)
 		$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
-
+//var_dump($data);
     return $data;
 }
 

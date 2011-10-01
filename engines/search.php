@@ -244,8 +244,8 @@ function bors_search_stem($word)
 	static $Stemmer = NULL;
 	if(!$Stemmer)
 	{
+		require_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
 //		echo "**** New Stemmer ****\n";
-//		include_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
 		$Stemmer = new Lingua_Stem_Ru();
 	}
 

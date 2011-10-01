@@ -8,10 +8,10 @@ class bors_lib_http
 		return http_get_content($url, $raw);
 	}
 
-	function get_cached($url, $ttl = 86400, $raw = false)
+	function get_cached($url, $ttl = 86400, $raw = false, $force = false)
 	{
 		$cache = new Cache();
-		if($cache->get('bors_lib_http.get_cached', $url))
+		if($cache->get('bors_lib_http.get_cached', $url) && !$force)
 			return $cache->last();
 
 		return $cache->set(self::get($url, $raw), $ttl);

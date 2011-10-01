@@ -56,7 +56,7 @@
 				object.config = ".object_property($obj->config(), 'debug_title')."
 
 ".debug_trace(0, false, 0)."
-			-->") : true;
+			-->", array('template' => object_property($obj, 'template'))) : true;
 		}
 
 		$processed = $obj->pre_show();

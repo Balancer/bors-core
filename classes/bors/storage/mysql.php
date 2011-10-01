@@ -109,6 +109,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			{
 				if($sql)
 					$update[$db_name][$table_name]["raw $field_name"] = $sql.'("'.addslashes($object->get($f['property'])).'")';
+				elseif(@$f['type'] == 'float')
+					$update[$db_name][$table_name]["float $field_name"] = $object->get($f['property']);
 				else
 					$update[$db_name][$table_name][$field_name] = $object->get($f['property']);
 			}

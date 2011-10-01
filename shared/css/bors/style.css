@@ -167,12 +167,14 @@ input { border: 1px solid; }
 li.imaged {
 	background-repeat: no-repeat;
 	list-style: none;
-	margin-left: 0 !important;
-	padding-left: 16px;
-	background-position: 0 4px;
+	margin-left: -18px;
+	padding-left: 18px;
+	background-position: 0 1px;
 }
+
 li.type-search{background-image: url(/_bors/i16/search.png)}
 li.type-logout{background-image: url(/_bors/i16/logout.gif)}
+li.type-exchange-rate{background-image: url(/_bors/i16/misc/exchange_rate.png)}
 
 div.right-menu h2, div.right-menu p, div.right-menu ul {
 	margin-top: 0;
@@ -180,6 +182,12 @@ div.right-menu h2, div.right-menu p, div.right-menu ul {
 }
 div.right-menu li {
 	margin-left: 16px;
+}
+
+div.right-menu li.imaged {
+	margin-left: 0;
+	padding-left: 16px;
+	background-position: 0 4px;
 }
 
 div.right-menu h2 { font-size: 1em !important; }

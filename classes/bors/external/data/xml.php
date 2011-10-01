@@ -6,13 +6,18 @@ class bors_external_data_xml extends bors_object_data
 
 	function load($object)
 	{
+//		echo $this->xml_url()."\n";
 		$xml = bors_lib_http::get_cached($this->xml_url(), $object->xml_cache_ttl());
+
+		// Качалка перекодирует данные, но нам нужно поменять информацию об этом в заголовке
+		$xml = preg_replace('!(<\?xml version=\S+ encoding=)"[^"]+"( \?>)!', '$1"utf-8"$2', $xml);
 		$data = bors_lib_xml::xml2array($xml);
 
 		$data = self::_array_path($data, $this->xml_root());
 		if(!$data)
 			return $object->set_loaded(false);
-//		print_dd($data);
+
+//		var_dump($data);
 
 		foreach($object->xml_map() as $property => $idx)
 		{

@@ -52,4 +52,13 @@ class bors_template
 
 		return $template_name;
 	}
+
+	function page_data()
+	{
+		$data = $GLOBALS['cms']['config'];
+		if(!empty($GLOBALS['cms']['templates']['data']))
+			$data = array_merge($data, $GLOBALS['cms']['templates']['data']);
+
+		return $data;
+	}
 }

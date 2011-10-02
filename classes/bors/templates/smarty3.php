@@ -67,9 +67,8 @@ class bors_templates_smarty3 extends bors_template
 		if(!$smarty)
 			$smarty = self::factory();
 
-		if(!empty($GLOBALS['cms']['templates']['data']))
-            foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
-       	        $smarty->assign($key, $value);
+		foreach(bors_template::page_data() as $key => $value)
+			$smarty->assign($key, $value);
 
 		$smarty->assign($data);
 		$trace = debug_backtrace();

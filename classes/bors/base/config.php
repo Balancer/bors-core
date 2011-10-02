@@ -8,7 +8,7 @@ class base_config extends base_object
 
 		// Внимание. Установка параметров через атрибуты, а не через данные,
 		// так как данные будут перезаписаны при загрузке через ORM.
-		foreach($this->config_data() as $key => $value)
+		foreach(array_merge($this->config_data(), $this->object_data()) as $key => $value)
 			$object->set_attr($key, $value);
 
 		foreach($this->config_defaults() as $key => $value)
@@ -19,7 +19,7 @@ class base_config extends base_object
 	function template_init()
 	{
 		$object = $this->id();
-		foreach($this->template_data() as $key => $value)
+		foreach(array_merge($this->template_data(), $this->page_data()) as $key => $value)
 		{
 			if(strpos($key, '['))
 				$object->add_template_data_array($key, $value);
@@ -35,6 +35,7 @@ class base_config extends base_object
 
 	function config_defaults() { return array(); }
 	function config_data() { return array(); }
+	function object_data() { return array(); }
 	function template_data_array() { return array(); }
 
 	function template_data()
@@ -62,6 +63,8 @@ class base_config extends base_object
 
 		return $data;
 	}
+
+	function page_data() { return array(); }
 
 	function object() { return $this->id(); }
 }

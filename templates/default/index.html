@@ -105,7 +105,10 @@
 <!-- right menu = {$right_menu} -->
 	{include file=$right_menu}
 {else}
-	{if $default_right_menu}{include file=$default_right_menu}{/if}
+	{if $default_right_menu}
+<!-- default right menu = {$default_right_menu} -->
+		{include file=$default_right_menu}
+	{/if}
 {/if}
 {if $right_menu_append}
 	{foreach from=$right_menu_append item="f"}

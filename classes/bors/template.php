@@ -53,11 +53,26 @@ class bors_template
 		return $template_name;
 	}
 
-	function page_data()
+	function page_data($args = NULL)
 	{
 		$data = $GLOBALS['cms']['config'];
+
+		if(is_array($args) && ($obj = @$args['this']))
+			$object = $obj;
+		else
+			$object = NULL;
+
+		if($object)
+		{
+//			if($cfg = $object->config())
+//				$data = array_merge($data, $cfg->page_data()); // page_data — требуется обработка, так что не тут.
+		}
+
 		if(!empty($GLOBALS['cms']['templates']['data']))
 			$data = array_merge($data, $GLOBALS['cms']['templates']['data']);
+
+		if(is_array($args))
+			$data = array_merge($data, $args);
 
 		return $data;
 	}

@@ -53,14 +53,12 @@ class bors_templates_smarty2 extends bors_templates_abstract
 		if(!$smarty->template_exists($template))
 			return "[2] Not existing template {$template}<br/>";
 
-		foreach(bors_template::page_data() as $key => $value)
-			$smarty->assign($key, $value);
 
 		$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 		$smarty->assign("page_template", $template);
 		$smarty->assign('me', bors()->user());
 //		if(config('is_developer')) echo debug_trace();
-		$smarty->assign($data);
+		$smarty->assign(bors_template::page_data($data));
 
 		$out = $smarty->fetch($template);
 

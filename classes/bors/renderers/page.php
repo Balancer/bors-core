@@ -50,15 +50,7 @@ class bors_renderers_page extends base_null
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$data[$var] = $object->$var();
 
-		foreach($object->local_template_data_array() as $var => $value)
-			$data[$var] = $value;
-
-		foreach($object->data as $var => $value)
-			$data[$var] = $value;
-
-		if(!empty($GLOBALS['cms']['templates']['data']))
-			foreach($GLOBALS['cms']['templates']['data'] as $key => $value)
-				$data[$key] = $value;
+		$data = bors_template::page_data(array_merge($object->data, $data, $object->local_template_data_array()));
 
 //	$smarty->assign("views_average", sprintf("%.1f",86400*$views/($views_last-$views_first+1)));
 

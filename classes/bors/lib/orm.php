@@ -45,6 +45,8 @@ class bors_lib_orm
 		{
 			if(preg_match('/^\w+_id$/', $property) || $property == 'id')
 				$field['type'] = 'uint';
+			elseif(preg_match('/order$/', $property))
+				$field['type'] = 'int';
 			elseif(preg_match('/^is_\w+$/', $property))
 				$field['type'] = 'bool';
 			elseif(preg_match('/^\w+_date$/', $property))

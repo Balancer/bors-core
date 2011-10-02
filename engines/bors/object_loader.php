@@ -237,12 +237,25 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 		{
 			// Подгрузка блока расширений карты привязок URL.
 			$class_base = $id;
-			if(file_exists($map_file = $foo = 'classes/'.str_replace('_', '/', $class_base).'/url_map.php'))
-				require_once($map_file);
-			elseif(file_exists($map_file = 'classes/'.str_replace('_', '/', $class_base).'/bors_map.php'))
-				require_once($map_file);
-			else
-				bors_throw(ec('Отсутствует файл блока расширений карты привязок "').$foo.'"');
+			$found = false;
+			$map_file_new = '/classes/'.str_replace('_', '/', $class_base).'/url_map.php';
+			$map_file_old = '/classes/'.str_replace('_', '/', $class_base).'/bors_map.php';
+			foreach(bors_dirs() as $dir)
+			{
+				if(file_exists($dir.$map_file_old))
+				{
+					require_once($dir.$map_file_old);
+					$found = true;
+				}
+				if(file_exists($dir.$map_file_new))
+				{
+					require_once($dir.$map_file_new);
+					$found = true;
+				}
+			}
+
+			if(!$found)
+				bors_throw(ec('Отсутствует файл блока расширений карты привязок "').$fmap_file_new.'"');
 
 			foreach($GLOBALS['bors_url_submap_map'] as $pair)
 			{

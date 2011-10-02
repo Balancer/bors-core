@@ -18,7 +18,11 @@ class base_empty extends base_null
 	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
 		if(method_exists($this, $name) && !$skip_methods)
-			return $this->$name();
+		{
+			try { $value = $this->$name(); }
+			catch(Exception $e) { $value = NULL; }
+			return $value;
+		}
 
 		if(@array_key_exists($name, $this->data))
 			return $this->data[$name];
@@ -44,7 +48,7 @@ class base_empty extends base_null
 			$auto_targs = $this->auto_targets();
 			if(($f = @$auto_targs[$name]))
 				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
-					return $this->attr[$name] = bors_load($this->$m[1](), $this->$m[2]());
+					return $this->attr[$name] = bors_load($this->get($m[1]), $this->get($m[2]));
 		}
 
 		// Проверяем одноимённые переменные (var $title = 'Files')

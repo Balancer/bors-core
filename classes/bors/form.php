@@ -282,6 +282,7 @@ class bors_form extends bors_object
 					case 'input':
 					case 'int':
 					case 'uint':
+					case 'float':
 						$html .= bors_forms_input::html($data, $this);
 						break;
 					case 'input_date':

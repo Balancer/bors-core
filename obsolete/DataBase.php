@@ -476,7 +476,7 @@ class DataBase extends base_object
 				case 'raw':
 					break;
 				case 'float':
-					$value = str_replace(',', '.', floatval($value));
+					$value = str_replace(',', '.', floatval(str_replace(',', '.', $value)));
 					break;
 				default:
 					$value = "'".mysql_real_escape_string($value, $this->dbh)."'";

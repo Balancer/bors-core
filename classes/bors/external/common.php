@@ -29,6 +29,18 @@ class bors_external_common extends bors_object
 
 		if(!$img && preg_match('!<div class="thumbinner".+?<img .+src="(//upload.wikimedia.org/[^"]+\.jpg)"!', $html, $m))
 			$img = 'http:'.$m[1];
+
+		// Yandex.Market: <a id="id1164306191641" href="http://mdata.yandex.net/i?path=b0410004559__Philips-FC-9071-xl.jpg" target="_blank">
+		if(!$img && preg_match('!<a id="\w+?" href="([^"]+\.jpg)" target="_blank">!', $html, $m))
+			$img = $m[1];
+
+		// Lenta.Ru: http://balancer.ru/g/p2579554
+		if(!$img && preg_match('!<div class=photo><img src=(http://img.lenta.ru\S+) !', $html, $m))
+			$img = $m[1];
+
+		if($img)
+			$img = "[img {$img} 200x200 left flow]";
+
 /*
 		if(!$img && config('is_developer'))
 		{
@@ -42,8 +54,6 @@ class bors_external_common extends bors_object
 		}
 if(config('is_developer')) { exit($img); }
 */
-		if($img)
-			$img = "[img {$img} 200x200 left flow]";
 
 		if($title && strlen($title) > 5)
 		{

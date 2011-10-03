@@ -89,6 +89,9 @@ function lt_img($params)
 				if(preg_match("!/$!",$path))
 					$path .= "index";
 
+				if(!empty($data['query']))
+					$path .= '/='.str_replace('&','/', $data['query']);
+
 				if(!file_exists($path) || filesize($path)==0)
 				{
 					$c1 = substr($data['host'],0,1);
@@ -98,6 +101,9 @@ function lt_img($params)
 
 					if(preg_match("!/$!",$path))
 						$path .= "index";
+
+					if(!empty($data['query']))
+						$path .= '/='.str_replace('&','/', $data['query']);
 				}
 
 //				return $path;
@@ -134,7 +140,6 @@ function lt_img($params)
 					fwrite($fh, $content);
 					fclose($fh);
 					@chmod($path, 0666);
-
 				}
 
 				if(file_exists($path) && filesize($path)>0)

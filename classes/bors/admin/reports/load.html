@@ -28,6 +28,7 @@
 <table class="btab w100p">
 <tr><th>class name</th>
 	<th>max uri</th>
+	<th>referer</th>
 	<th>всего обращений</th>
 	<th>потрачено секунд</th>
 	<th>%</th>
@@ -35,6 +36,7 @@
 {foreach from=$max_cpu_by_classes item="x"}
 <tr><td>{$x.class_name}</td>
 	<td><a href="{$x.uri}">{$x.uri}</a></td>
+	<td>{$x.referer|host_link}</td>
 	<td>{$x.cnt}</td>
 	<td>{$x.su|round:2}</td>
 	<td>{math equation="time / total * 100" time=$x.su total=$total_time assign="perc"}{$perc|round:2}</td>

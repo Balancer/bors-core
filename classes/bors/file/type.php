@@ -18,6 +18,7 @@ class bors_file_type extends bors_list
 				return 'DOC';
 			case 'application/octet-stream':
 			case 'application/download':
+			case 'application/x-www-form-urlencoded':
 				return $this->name_by_ext();
 			default:
 				list($foo, $type) = explode('/', $this->mime());
@@ -34,6 +35,8 @@ class bors_file_type extends bors_list
 				return 'DOC';
 			case 'rtf':
 				return 'RTF';
+			case 'pdf':
+				return 'PDF';
 		}
 
 		return '';

@@ -67,10 +67,7 @@ class bors_templates_smarty3 extends bors_template
 		if(!$smarty)
 			$smarty = self::factory();
 
-		foreach(bors_template::page_data() as $key => $value)
-			$smarty->assign($key, $value);
-
-		$smarty->assign($data);
+		$smarty->assign(array_merge(bors_template::page_data(), $data));
 		$trace = debug_backtrace();
 		$smarty->assign("template_dirname", dirname($trace[1]['file']));
 		$smarty->assign('me', bors()->user());

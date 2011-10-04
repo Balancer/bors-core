@@ -1123,14 +1123,8 @@ defined at {$this->class_file()}<br/>
 	function dir()
 	{
 		$data = $this->___path_data();
-//		$data = url_parse($this->called_url());
-//		print_d($data);
 
-//		return $data['local_path'];
 		return preg_match('!^(.+)/$!', $data['local_path'], $m) ? $m[1] : dirname($data['local_path']);
-
-		//TODO: затычка!
-//		return $_SERVER['DOCUMENT_ROOT'].preg_replace('!^http://[^/]+!', '', $this->called_url());
 	}
 
 	function _basename()

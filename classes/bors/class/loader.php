@@ -12,10 +12,11 @@ class bors_class_loader
 		if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
 			return $real_class_file;
 
-		$class_path = str_replace('_', '/', $class_name).'.php';
+		$class_base = str_replace('_', '/', $class_name);
+		$class_path = $class_base.'.php';
 		$cached_class_file = config('cache_dir').'/classes/'.$class_path;
 
-		$class_info_path = str_replace('_', '/', $class_name).'.ini';
+		$class_info_path = $class_base.'.ini';
 		$cached_class_info_file = config('cache_dir').'/classes/'.$class_info_path;
 
 		if(file_exists($cached_class_file) && file_exists($cached_class_info_file))

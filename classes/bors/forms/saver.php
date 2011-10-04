@@ -6,10 +6,11 @@ class bors_forms_saver extends base_empty
 	{
 		config_set('orm.auto.cache_attr_skip', true);
 
-//		if(config('is_developer')) { echo "On input {$form_object->debug_title()}:"; print_d($data); print_d($files); bors_exit(); }
+//		print_d($data);
 		if(!empty($data['time_vars']))
 			bors_lib_time::parse_form($data);
 
+//		if(config('is_developer')) { echo "On input {$form_object->debug_title()}:"; print_dd($data); print_dd($files); bors_exit(); }
 //		echo "Time vars parsed:"; print_d($data);
 
 		$object = NULL;

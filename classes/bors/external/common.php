@@ -38,6 +38,11 @@ class bors_external_common extends bors_object
 		if(!$img && preg_match('!<div class=photo><img src=(http://img.lenta.ru\S+) !', $html, $m))
 			$img = $m[1];
 
+
+		// Lenta.Ru: http://balancer.ru/g/p2580440
+		if(!$img && preg_match('!^<img src=(http://img.lenta.ru/news/\S+\.jpg) width=!m', $html, $m))
+			$img = $m[1];
+
 		if($img)
 			$img = "[img {$img} 200x200 left flow]";
 
@@ -65,7 +70,7 @@ if(config('is_developer')) { exit($img); }
 // ".bors_external_feeds_entry::url_host_link($url)."[/round_box]";
 
 			$tags = array();
-			return compact('tags', 'bbshort');
+			return compact('tags', 'title', 'bbshort');
 		}
 
 		if(preg_match('!^(http://)pda\.(.+)$!', $url, $m))

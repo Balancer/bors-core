@@ -55,7 +55,9 @@ class bors_template
 
 	function page_data($args = NULL)
 	{
-		$data = $GLOBALS['cms']['config'];
+		$data = array_merge(array(
+			'now' => $GLOBALS['now'],
+		), $GLOBALS['cms']['config']);
 
 		if(is_array($args) && ($obj = @$args['this']))
 			$object = $obj;

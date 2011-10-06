@@ -6,7 +6,6 @@ class bors_forms_saver extends base_empty
 	{
 		config_set('orm.auto.cache_attr_skip', true);
 
-//		print_d($data);
 		if(!empty($data['time_vars']))
 			bors_lib_time::parse_form($data);
 
@@ -16,6 +15,8 @@ class bors_forms_saver extends base_empty
 		$object = NULL;
 		if(!empty($data['object_id']))	// Был передан ID, пытаемся загрузить
 			$object = bors_load($data['class_name'], $data['object_id']);
+
+//		print_d($data); var_dump($object->changed_fields); exit();
 
 		if(!$object) // Если не было объекта или нужно создать новый
 			$object = object_new($data['class_name']);
@@ -73,6 +74,7 @@ class bors_forms_saver extends base_empty
 		if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 			$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));
 
+//		var_dump($object->has_changed()); exit();
 		if($was_new || $object->has_changed())
 		{
 			$object->set_modify_time(time(), true);

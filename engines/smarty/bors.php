@@ -16,7 +16,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 	$smarty = new Smarty;
 	require('smarty-register.php');
 
-	$smarty->compile_dir = secure_path(config('cache_dir').'/smarty-templates_c_'.config('internal_charset').'/');
+	$smarty->compile_dir = config('cache_dir').'/smarty-eb-templates_c/';
 //	$smarty->use_sub_dirs = true;
 	$smarty->plugins_dir = array();
 	foreach(bors_dirs(true) as $dir)
@@ -24,7 +24,7 @@ function template_assign_bors_object($obj, $template = NULL, $global = false)
 
 	$smarty->plugins_dir[] = 'plugins';
 
-	$smarty->cache_dir   = secure_path(config('cache_dir').'/smarty-cache/');
+	$smarty->cache_dir   = config('cache_dir').'/smarty-eb-cache/';
 
 	if(!@file_exists($smarty->compile_dir))
 		@mkpath($smarty->compile_dir, 0777);

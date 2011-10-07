@@ -20,7 +20,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 	$smarty = new Smarty;
 	require('smarty-register.php');
 
-	$smarty->compile_dir = secure_path(config('cache_dir').'/smarty-templates_c_'.config('internal_charset').'/');
+	$smarty->compile_dir = config('cache_dir').'/smarty-e-templates_c';
 	$smarty->compile_id = defval($data, 'compile_id');
 	if(strlen($smarty->compile_id) > 128)
 	{
@@ -34,7 +34,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 
 		$smarty->plugins_dir[] = 'plugins';
 
-		$smarty->cache_dir   = config('cache_dir').'/smarty-cache/';
+		$smarty->cache_dir   = config('cache_dir').'/smarty-e-cache/';
 
 		if(!file_exists($smarty->compile_dir))
 			@mkpath($smarty->compile_dir, 0775);

@@ -138,7 +138,6 @@ if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 	}
 }
 
-
 // Если кодировка вывода в браузер не та же, что внутренняя - то перекодируем
 // все входные данные во внутреннюю кодировку
 if(($ics = config('internal_charset')) != ($ocs = config('output_charset')))

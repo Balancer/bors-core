@@ -6,7 +6,7 @@ class render_quicky extends base_null
 	{
 		if(!$object->loaded() && !$object->can_be_empty())
 			return false;
-			
+
 		require_once('quicky/Quicky.class.php');
 		$tpl = new Quicky;
 		$tpl->compiler_prefs['interpret_varname_params'] = true;
@@ -18,13 +18,13 @@ class render_quicky extends base_null
 		foreach($object->local_data() as $var => $value)
 			$tpl->assign($var, $value);
 
-		$tpl->compile_dir = config('cache_dir').'/smarty-templates_c/';
+		$tpl->compile_dir = config('cache_dir').'/quicky-templates_c/';
 //		$tpl->plugins_dir = array();
 //		foreach(bors_dirs(true) as $dir)
 //			$tpl->plugins_dir[] = $dir.'/engines/smarty/plugins';
 
 		$tpl->plugins_dir[] = 'plugins';
-		$tpl->cache_dir   = config('cache_dir').'/smarty-cache/';
+		$tpl->cache_dir   = config('cache_dir').'/quicky-cache/';
 
 		return $tpl->fetch($object->template());
 	}

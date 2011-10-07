@@ -15,7 +15,7 @@ class bors_templates_smarty2 extends bors_templates_abstract
 		$smarty = new Smarty;
 		require('smarty-register.php');
 
-		$smarty->compile_dir = config('cache_dir').'/smarty2-templates_c_'.config('internal_charset').'/';
+		$smarty->compile_dir = config('cache_dir').'/smarty2-templates_c/';
 //		$smarty->use_sub_dirs = true;
 		$smarty->plugins_dir = array();
 		foreach(bors_dirs() as $dir)
@@ -23,7 +23,7 @@ class bors_templates_smarty2 extends bors_templates_abstract
 
 		$smarty->plugins_dir[] = 'plugins';
 
-		$smarty->cache_dir   = config('cache_dir').'/smarty2-templates_c_'.config('internal_charset').'/';
+		$smarty->cache_dir   = config('cache_dir').'/smarty2-cache/';
 
 		if(!@file_exists($smarty->compile_dir))
 		{

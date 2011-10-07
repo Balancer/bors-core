@@ -196,6 +196,9 @@ if(file_exists(BORS_HOST.'/config-post.php'))
 if(file_exists(BORS_LOCAL.'/config-post.php'))
 	include_once(BORS_LOCAL.'/config-post.php');
 
+if(!config('cache_dir'))
+	config_set('cache_dir', '/tmp/bors-cache-'.@$_SERVER['HTTP_HOST'].'-'.config('internal_charset'));
+
 if(config('debug_can_change_now'))
 {
 	$GLOBALS['now'] = empty($_GET['now']) ? time() : intval(strtotime($_GET['now']));

@@ -10,8 +10,6 @@ config_set('admin_config_class', 'bors_admin_config');
 // получают сообщение о временной недоступности сервиса
 config_set('bot_lavg_limit', 0);
 
-config_set('cache_dir', '/tmp/bors-cache-'.@$_SERVER['HTTP_HOST']);
-
 config_set('debug_class_load_trace', true);
 if(empty($_SERVER['DOCUMENT_ROOT']))
 	config_set('debug_hidden_log_dir', realpath(BORS_SITE.'/logs'));

@@ -27,7 +27,7 @@ class bors_templates_smarty3 extends bors_template
 //		$smarty->template_dir = '/web/www.example.com/guestbook/templates/';
 //		$smarty->config_dir   = '/web/www.example.com/guestbook/configs/';
 
-		$smarty->compile_dir = secure_path(config('cache_dir').'/smarty3-templates_c_'.config('internal_charset').'/');
+		$smarty->compile_dir = config('cache_dir').'/smarty3-templates_c_'.config('internal_charset').'/';
 		$smarty->auto_literal = false; //TODO: придумать, как сделать разрешение для отдельных шаблонов.
 /*
 		$smarty->compile_id = defval($data, 'compile_id');
@@ -37,7 +37,7 @@ class bors_templates_smarty3 extends bors_template
 			$smarty->compile_id = substr($smarty->compile_id, 0, 128);
 		}
 */
-		$smarty->cache_dir = secure_path(config('cache_dir').'/smarty3-cache/');
+		$smarty->cache_dir = config('cache_dir').'/smarty3-templates_c_'.config('internal_charset').'/';
 
 		if(!file_exists($smarty->compile_dir))
 			mkpath($smarty->compile_dir, 0777);

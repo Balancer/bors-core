@@ -60,8 +60,14 @@ class bors_global extends base_empty
 
 	function changed_save()
 	{
-		if(empty($this->changed_objects))
+		static $entered = false;
+		if($entered)
 			return;
+
+		$entered = true;
+
+		if(empty($this->changed_objects))
+			return $entered = false;
 
 //		include_once('engines/search.php');
 
@@ -81,6 +87,7 @@ class bors_global extends base_empty
 		}
 
 		$this->changed_objects = false;
+		$entered = false;
 	}
 
 	function real_uri($uri)

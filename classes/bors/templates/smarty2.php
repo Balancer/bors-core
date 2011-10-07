@@ -7,13 +7,15 @@ class bors_templates_smarty2 extends bors_templates_abstract
 	// это задача вызывающего. Например, bors_template->render_page($template, $object);
 	static function fetch($template, $data)
 	{
+//		if(config('is_developer')) echo "bors_templates_smarty2::fetch($template)<br/>\n";
+
 		require_once(config('smarty_include'));
 		require_once('engines/smarty/bors_smarty_common.php');
 
 		$smarty = new Smarty;
 		require('smarty-register.php');
 
-		$smarty->compile_dir = secure_path(config('cache_dir').'/smarty/templates_c/');
+		$smarty->compile_dir = config('cache_dir').'/smarty2-templates_c_'.config('internal_charset').'/';
 //		$smarty->use_sub_dirs = true;
 		$smarty->plugins_dir = array();
 		foreach(bors_dirs() as $dir)
@@ -21,7 +23,7 @@ class bors_templates_smarty2 extends bors_templates_abstract
 
 		$smarty->plugins_dir[] = 'plugins';
 
-		$smarty->cache_dir   = secure_path(config('cache_dir').'/smarty/cache/');
+		$smarty->cache_dir   = config('cache_dir').'/smarty2-templates_c_'.config('internal_charset').'/';
 
 		if(!@file_exists($smarty->compile_dir))
 		{

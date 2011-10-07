@@ -8,7 +8,7 @@ class bors_templates_twig
 {
 	static function fetch($template, $data)
 	{
-		$cache_dir = config('cache_dir').'/twig/';
+		$cache_dir = config('cache_dir').'/twig-'.config('internal_charset').'/';
 		mkpath($cache_dir);
 
 		$template_file = preg_replace('!tpl://!', '/', $template);

@@ -199,6 +199,9 @@ if(file_exists(BORS_LOCAL.'/config-post.php'))
 if(!config('cache_dir'))
 	config_set('cache_dir', '/tmp/bors-cache-'.@$_SERVER['HTTP_HOST'].'-'.config('internal_charset'));
 
+if(!file_exists($d = config('cache_dir')));
+	mkpath($d, 0777);
+
 if(config('debug_can_change_now'))
 {
 	$GLOBALS['now'] = empty($_GET['now']) ? time() : intval(strtotime($_GET['now']));

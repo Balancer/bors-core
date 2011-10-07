@@ -743,31 +743,31 @@ defined at {$this->class_file()}<br/>
 
 	function store()
 	{
-		if(!$this->id())
+		if($this->attr('__store_entered'))
 			return;
+
+		$this->set_attr('__store_entered', true);
+
+		if(!$this->id())
+			return $this->set_attr('__store_entered', false);
 
 		if(empty($this->changed_fields))
-			return;
+			return $this->set_attr('__store_entered', false);
 
 		if($this->get('_read_only'))
-			return;
+			return $this->set_attr('__store_entered', false);
 
 		if(method_exists($this, 'skip_save') && $this->skip_save()) //TODO: костыль для bors_admin_image_append
-			return;
+			return $this->set_attr('__store_entered', false);
 
-		include_once('engines/search.php');
-
-		$this->cache_clean();
-
-		if(!($storage = $this->storage_engine()))
+		if(!($storage = $this->storage()))
 		{
-			$storage = config('storage_engine.default'); // 'storage_db_mysql_smart';
 			debug_hidden_log('storage_error', 'Not defined storage engine for '.$this->class_name());
-			return;
+			return $this->set_attr('__store_entered', false);
 		}
 
-		$storage = bors_load($storage, NULL);
 		$storage->save($this);
+
 		if(config('debug_trace_changed_save'))
 			echo 'Save '.$this->debug_title()."\n";
 
@@ -776,13 +776,17 @@ defined at {$this->class_file()}<br/>
 
 		if(config('search_autoindex') && $this->auto_search_index())
 		{
+			include_once('engines/search.php');
+
 			if(config('bors_tasks'))
 				bors_tools_tasks::add_task($this, 'bors_task_index', 0, -10);
 			else
 				bors_search_object_index($this, 'replace');
 		}
 
+		$this->cache_clean();
 		bors()->drop_changed_object($this->internal_uri());
+		$this->set_attr('__store_entered', false);
 	}
 
 	private function __update_relations()
@@ -1065,24 +1069,46 @@ defined at {$this->class_file()}<br/>
 			cache_static::drop($this);
 
 		// Чистка memcache и Cache.
-		delete_cached_object($this);
+		save_cached_object($this);
 	}
 
 	function cache_children() { return array(); }
 
+	// Поставить объект $this в очередь на очистку
+	function cache_clean_register()
+	{
+		$GLOBALS['bors_cache_clean_queue'][$this->internal_uri_ascii()] = $this;
+	}
+
 	function cache_clean()
 	{
-		$this->cache_clean_self();
+		if($this->attr('__cache_clean_entered'))
+			return;
 
-		foreach($this->cache_children() as $child_cache)
-			if($child_cache && !$child_cache->was_cleaned())
-				$child_cache->cache_clean_self();
+		$this->set_attr('__cache_clean_entered', true);
 
+		// Сперва чистим группы. Так как cache_clean_self() генерирует статические файлы и обновляет группы
+		// Если группы чистить потом, то они удалятся и не восстановятся.
 		foreach(explode(' ', $this->cache_provides()) as $group_name)
 			if($group_name)
 				foreach(bors_find_all('cache_group', array('cache_group' => $group_name)) as $group)
 					if($group)
 						$group->clean();
+
+//		echo "<b>cache_clean</b> {$this->debug_title()}: ".print_r($this->changed_fields, true)."<br/>\n";
+		$this->cache_clean_register();
+
+		foreach($this->cache_children() as $child_cache)
+			if($child_cache && !$child_cache->was_cleaned())
+				$child_cache->cache_clean_register();
+
+		foreach($GLOBALS['bors_cache_clean_queue'] as $uri => $object)
+		{
+			$object->cache_clean_self();
+			unset($GLOBALS['bors_cache_clean_queue'][$uri]);
+		}
+
+		$this->set_attr('__cache_clean_self_entered', false);
 	}
 
 	function touch() { }

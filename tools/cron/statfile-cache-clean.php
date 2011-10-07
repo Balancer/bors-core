@@ -2,7 +2,6 @@
 <?php
 $start = time();
 
-
 require_once('../config.php');
 require_once(BORS_CORE.'/init.php');
 

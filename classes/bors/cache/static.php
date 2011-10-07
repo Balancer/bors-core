@@ -55,19 +55,16 @@ class cache_static extends base_object_db
 			return;
 
 		$caches = bors_find_all('cache_static', array(
-			'target_class_id' => $object->extends_class_id(),
+			'target_class_id' => $object->class_id(),
 			'target_id' => $object->id(),
 			'by_id' => true,
 		));
 
-		if(file_exists($object->static_file()))
-			if($cache = bors_load('cache_static', $object->static_file()))
-				$caches[$cache->id()] = $cache;
-
-		$first = true;
+		$first = true; // Мы сохраняем первый загруженный объект, чтобы потом не перезагружать его снова.
 		$cache = NULL;
 		foreach($caches as $cache)
 		{
+//			echo "unlink {$cache->id()}<br/>";
 			@unlink($cache->id());
 			$d = dirname($cache->id());
 			while($d && $d != '/')
@@ -76,12 +73,17 @@ class cache_static extends base_object_db
 				$d = dirname($d);
 			}
 
+			// Удаляем все кеш-записи (хотя, по идее, она будет только одна), кроме первой
 			if(!file_exists($cache->id()) && !$first)
+			{
+				echo "<b>delete</b>($cache), class_name={$object->class_name()}<br/>";
 				$cache->delete(false);
+			}
 			else
 				$first = false;
 		}
 
+		// Найденную запись, если была, сохраняем для дальнейшей работы
 		$object->set_attr('static_recreate_object', $cache);
 
 		if($object->cache_static_recreate())
@@ -91,13 +93,12 @@ class cache_static extends base_object_db
 			else
 				bors_object_create($object);
 		}
-		else
-			@unlink($object->static_file());
 	}
 
 	//TODO: можно делать static, если static будет у родителя. Или переименовать.
 	function save($object, $content, $expire_time = false)
 	{
+//		echo "Save $object as {$object->static_file()}<br/>";
 		$object_id = $object->id();
 
 		$file = $object->static_file();
@@ -106,9 +107,9 @@ class cache_static extends base_object_db
 			return;
 
 		//TODO: отловить кеш-запись постов при добавлении нового сообщения. (class_id = 1)
-
 		bors()->changed_save();
 
+		// Если это просто обновление кеша, то у нас тут будет найденная запись из ::drop
 		if(!($cache = $object->attr('static_recreate_object')))
 			$cache = bors_load_ex(__CLASS__, $file, array('no_load_cache' => true));
 
@@ -117,7 +118,7 @@ class cache_static extends base_object_db
 
 		if($cache)
 		{
-//			echo "Update $file\n";
+//			echo "Update $file<br/>\n";
 			$cache->set_target_class_name($object->extends_class_name(), true);
 			$cache->set_target_class_id($object->extends_class_id(), true);
 			$cache->set_target_id($object->id(), true);
@@ -135,7 +136,7 @@ class cache_static extends base_object_db
 		}
 		else
 		{
-//			echo "New $file\n";
+//			echo "New $file<br/>\n";
 			$cache = bors_new('cache_static', array(
 				'id' => $file,
 				'object_uri' => $object_uri,
@@ -154,7 +155,7 @@ class cache_static extends base_object_db
 			if($group_name)
 				cache_group::register($group_name, $object);
 
-		$object->set_was_cleaned(false, false);
+//		$object->set_was_cleaned(false);
 
 		if(($ic=config('internal_charset')) != ($oc=config('output_charset')))
 			$content = iconv($ic, $oc.'//translit', $content);

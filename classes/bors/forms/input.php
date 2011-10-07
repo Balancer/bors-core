@@ -17,6 +17,8 @@ class bors_forms_input extends bors_forms_element
 		if(in_array($name, explode(',', session_var('error_fields'))))
 			$class[] = "error";
 
+		$id = defval($params, 'dom_id', $id);
+
 		// Если у нас используется валидация данных формы
 		if($form->attr('ajax_validate'))
 		{

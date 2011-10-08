@@ -133,7 +133,7 @@ function lt_img($params)
 					if(!is_writable(dirname($path)))
 					{
 						debug_hidden_log('access_error', "Can't write to ".dirname($path));
-						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write]</small>";
+						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$path']</small>";
 					}
 
 					$fh = fopen($path,'wb');
@@ -205,7 +205,7 @@ function lt_img($params)
 //				return "img_ico_uri=__$img_ico_uri, gis=($width, $height, $type, $attr)__";
 
 				if(!intval($width) || !intval($height))
-					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get WxH]";
+					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get WxH '$img_ico_uri']";
 
 					/*lcml("Get image [url]{$params['url']}[/url] error [spoiler|details]".
 "File: ".__FILE__." line: ".__LINE__."[br]\n".

@@ -3,9 +3,12 @@
 function bors_bot_detect($user_agent)
 {
 	foreach(array(
-			'Baiduspider\+' => 'Baiduspider+',	// Baiduspider+(+http://www.baidu.com/search/spider.htm)
+			'archive.org_bot' => 'archive.org bot',	// Mozilla/5.0 (compatible; archive.org_bot +http://www.archive.org/details/archive.org_bot)
+			'Baiduspider' => 'Baidu Spider',		// Baiduspider+(+http://www.baidu.com/search/spider.htm)
+													// Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
 			'Begun Robot Crawler' => 'Begun Robot Crawler',
-			'bingbot' => 'BingBot',		// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
+			'bingbot' => 'BingBot',				// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
+			'discobot' => 'Discovery Engine',	// Mozilla/5.0 (compatible; discobot/1.1; +http://discoveryengine.com/discobot.html)
 			'DotBot' => 'DotBot',		// Mozilla/5.0 (compatible; DotBot/1.1; http://www.dotnetdotcom.org/, crawler@dotnetdotcom.org)
 			'Exabot' => 'Exabot',		// Mozilla/5.0 (compatible; Exabot-Images/3.0; +http://www.exabot.com/go/robot)
 			'Ezooms' => 'Ezooms',		// Mozilla/5.0 (compatible; Ezooms/1.0; ezooms.bot@gmail.com)
@@ -13,6 +16,7 @@ function bors_bot_detect($user_agent)
 			'Feedreader' => 'Feedreader',	// Feedreader 3.14 (Powered by Newsbrain)
 			'Gigabot' => 'Gigabot',		// Gigabot/3.0 (http://www.gigablast.com/spider.html)
 			'google' => 'Googlebot',	// Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+			'igorbot' => 'igorbot',		// Mozilla/5.0 (Windows; U; Windows NT 6.0; ru; rv:1.9.2.18) Gecko/20110614 Firefox/3.6.17 igorbot
 			'LexxeBot' => 'LexxeBot',	// LexxeBot/1.0 (lexxebot@lexxe.com)
 			'Liferea' => 'Liferea',		// Liferea/1.6.2 (Linux; ru_RU.UTF-8; http://liferea.sf.net/)
 			'lwp' => 'LWP',				// lwp-trivial/1.41
@@ -28,8 +32,10 @@ function bors_bot_detect($user_agent)
 			'psbot'	=> 'Picsearch bot',	// psbot/0.1 (+http://www.picsearch.com/bot.html)
 			'princeton crawler' => 'princeton crawler',	// nu_tch-princeton/Nu_tch-1.0-dev (princeton crawler for cass project; http://www.cs.princeton.edu/cass/; zhewang a_t cs ddot princeton dot edu)
 			'rambler' => 'Rambler',
-			'robotgenius' => 'robotgenius', // robotgenius (http://robotgenius.net)
-			'ROCKMELT-BOT' => 'RockMelt'	, // ROCKMELT-BOT
+			'robotgenius' => 'robotgenius',			// robotgenius (http://robotgenius.net)
+			'ROCKMELT-BOT' => 'RockMelt'	,		// ROCKMELT-BOT
+			'Socialradarbot' => 'Infegy Social',	// Mozilla/5.0 (compatible; Linux; Socialradarbot/2.0; en-US; bot@infegy.com)
+			'Sogou' => 'Sogou web spider',			// Sogou web spider/4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)
 			'SimplePie' => 'SimplePie',	// SimplePie/1.1.1 (Feed Parser; http://simplepie.org; Allow like Gecko) Build/2.00803152059E+13
 			'Snapbot' => 'Snapbot',		// Snapbot/1.0 (Snap Shots, +http://www.snap.com)
 			'Speedy Spider' => 'EntirewebBot',

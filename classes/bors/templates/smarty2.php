@@ -53,8 +53,7 @@ class bors_templates_smarty2 extends bors_templates_abstract
 			$template = smarty_template($template);
 
 		if(!$smarty->template_exists($template))
-			return "[2] Not existing template {$template}<br/>";
-
+			return "[2] Not existing template '{$template}'<br/><!-- ".debug_trace(0, false).' -->';
 
 		$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 		$smarty->assign("page_template", $template);

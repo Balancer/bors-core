@@ -15,6 +15,8 @@ class bors_forms_element
 		{
 			if(($object && ($object->id() || !$object->storage_engine())))
 				$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($object?$object->$name():NULL)) : '';
+			elseif($calling_object = $form->attr('calling_object'))
+				$value = $calling_object->get($name);
 			else
 				$value = NULL;
 		}

@@ -19,15 +19,15 @@ class bors_admin_image_append extends base_object
 
 		if(!$obj)
 			return;
-var_dump($data);
-var_dump($get);
+//var_dump($data);
+//var_dump($get);
 		foreach($data['tmp_name'] as $idx => $tmp_file)
 		{
 			if(empty($tmp_file))
 				continue;
 
 			$idata = getimagesize($tmp_file);
-			var_dump($idata);
+//			var_dump($idata);
 
 			$maxw = config('image_upload_max_width', 2048);
 			$maxh = config('image_upload_max_height', 2048);

@@ -6,7 +6,7 @@ class bors_admin_reports_load extends base_page
 {
 	function title() { return ec('Загрузка системы на ').date('d.m.Y H:i'); }
 	function config_class() { return config('admin_config_class'); }
-	function template() { return 'forum/_header.html'; }
+	function template() { return config('default_admin_template', 'forum/_header.html'); }
 
 	function body_data()
 	{

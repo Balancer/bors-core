@@ -103,6 +103,7 @@ class bors_form extends bors_object
 		}
 
 		$this->set_attr('object', $object);
+		$this->set_attr('calling_object', $calling_object);
 
 		if(!isset($uri))
 		{
@@ -143,8 +144,8 @@ class bors_form extends bors_object
 		if($action == 'this')
 			$action = $GLOBALS['main_uri'];
 
-		if($action == 'target' && $object)
-			$action = $object->url();
+		if($action == 'target')
+			$action = $object ? $object->url() : $GLOBALS['main_uri'];
 
 		if(!empty($calling_object))
 		{

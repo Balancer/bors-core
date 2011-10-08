@@ -38,6 +38,9 @@ class bors_lib_html
 		if(empty($meta['title']) && preg_match('!<title>([^>]+)</title>!si', $content, $m))
 			$meta['title'] = html_entity_decode($m[1], ENT_COMPAT, 'UTF-8');
 
+		if(empty($meta['title']) && preg_match('!<h1[^>]*>([^>]+)</h1>!si', $content, $m))
+			$meta['title'] = html_entity_decode($m[1], ENT_COMPAT, 'UTF-8');
+
 		return $meta;
 	}
 

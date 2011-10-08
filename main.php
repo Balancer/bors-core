@@ -218,7 +218,7 @@ if(config('access_log'))
 		'user_id' => bors()->user_id(),
 		'server_uri' => $uri,
 		'referer' => @$_SERVER['HTTP_REFERER'],
-		'access_time' => round($GLOBALS['stat']['start_microtime']/1000000),
+		'access_time' => round($GLOBALS['stat']['start_microtime']),
 		'operation_time' =>  str_replace(',', '.', microtime(true) - $GLOBALS['stat']['start_microtime']),
 		'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
 		'is_bot' => $is_bot,

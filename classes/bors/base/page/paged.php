@@ -51,13 +51,13 @@ class base_page_paged extends base_page
 		if(!is_null($this->_total))
 			return $this->_total;
 
-		try
+//		try
 		{
-			$count = $this->_total = objects_count($this->main_class(), $this->_where());
+			$count = $this->_total = bors_count($this->main_class(), $this->_where());
 		}
-		catch(Exception $e)
+//		catch(Exception $e)
 		{
-			$count = 0;
+//			$count = 0;
 		}
 
 		return $count;

@@ -8,8 +8,10 @@
 	$image_class = 'bors_image' - класс изображения
 	$image_type = тип загружаемого изображения по умолчанию
 	$skip_image_type = не показывать выбор типа изображения
+	$title = если указано, то названия файлов берутся отсюда. Иначе — из таблицы
 *}
 {defval var="image_class" value="bors_image"}
+{defval var="go" value=$this->url()}
 <div class="clear">&nbsp;</div>
 
 <h2>Изображения</h2>
@@ -25,6 +27,9 @@
 {form class="bors_admin_image_append" action="target"}
 <table class="btab w100p">
 <tr>
+{if not $title}
+	<th>Название</th>
+{/if}
 	<th width="50%">Описание</th>
 	<th>Файл</th>
 {if not $skip_limits}
@@ -39,7 +44,12 @@
 {foreach from=$range item="i"}
 {assign var="order" value=$order+10}
 <tr>
+{if $title}
+	{hidden name="image_title[]" value=$title|htmlspecialchars}
+{else}
 	<td>{input name="image_title[]" class="w100p" size="40"}</td>
+{/if}
+	<td>{input name="image_description[]" class="w100p" size="40"}</td>
 	<td>{file name="image[]"}</td>
 {if not $skip_limits}
 	<td>{dropdown name="image_limit[]" list="bors_image_sizes"}</td>
@@ -51,12 +61,13 @@
 </tr>
 {/foreach}
 </td></tr>
+</table>
 {hidden name="object_to_link" value=$item|get:internal_uri}
 {hidden name="link_type" value=$link_type}
 {hidden name="image_class" value=$image_class}
 {hidden name="upload_dir" value=$upload_dir}
 {hidden name="author_name" value=$author_name}
-</table>
+{go value=$go}
 {submit value="Загрузить"}<br/><br/>
 {/form}
 

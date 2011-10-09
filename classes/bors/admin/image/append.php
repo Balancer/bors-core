@@ -19,8 +19,7 @@ class bors_admin_image_append extends base_object
 
 		if(!$obj)
 			return;
-//var_dump($data);
-//var_dump($get);
+//var_dump($data); var_dump($get); echo $obj; exit();
 		foreach($data['tmp_name'] as $idx => $tmp_file)
 		{
 			if(empty($tmp_file))
@@ -54,9 +53,8 @@ class bors_admin_image_append extends base_object
 				$parent_order = $img->db()->select('bors_images', 'MAX(`sort_order`)', array('parent_class_id=' => $obj->class_id(), 'parent_object_id=' => $obj->id()));
 
 				$sort_order = max($cross_order, $parent_order);
+				$sort_order = (intval(($sort_order-1)/10)+1)*10;
 			}
-
-			$sort_order = (intval(($sort_order-1)/10)+1)*10;
 
 			$img->new_instance();
 			$img->upload(array(
@@ -64,11 +62,11 @@ class bors_admin_image_append extends base_object
 				'name' => $data['name'][$idx],
 			), $get['upload_dir']);
 
-			$img->set_title($obj->title(), true);
-			$img->set_description(@$get['image_title'], true);
+			$img->set_title(@$get['image_title'][$idx], true);
+			$img->set_description(@$get['image_description'][$idx], true);
 			$img->set_author_name(defval($get, 'author_name', object_property(bors()->user(), 'title')), true);
-			$img->set_resolution_limit(@$get['image_limit'], true);
-			$img->set_image_type(@$get['image_type'], true);
+			$img->set_resolution_limit(@$get['image_limit'][$idx], true);
+			$img->set_image_type(@$get['image_type'][$idx], true);
 			$img->set_original_filename($data['name'][$idx], true);
 
 			$this->_last_image = $img;

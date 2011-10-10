@@ -155,6 +155,9 @@ class cache_static extends base_object_db
 			if($group_name)
 				cache_group::register($group_name, $object);
 
+		foreach(explode(' ', $object->cache_parents()) as $parent_object)
+			cache_group::register($parent_object->internal_uri_ascii(), $object);
+
 //		$object->set_was_cleaned(false);
 
 		if(($ic=config('internal_charset')) != ($oc=config('output_charset')))

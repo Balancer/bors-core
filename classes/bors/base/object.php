@@ -842,16 +842,19 @@ defined at {$this->class_file()}<br/>
 
 		// Сперва чистим группы. Так как cache_clean_self() генерирует статические файлы и обновляет группы
 		// Если группы чистить потом, то они удалятся и не восстановятся.
-		foreach(explode(' ', $this->cache_provides()) as $group_name)
-			if($group_name)
-				foreach(bors_find_all('cache_group', array('cache_group' => $group_name)) as $group)
-					if($group)
-						$group->clean();
+		if(config('cache_database'))
+		{
+			foreach(explode(' ', $this->cache_provides()) as $group_name)
+				if($group_name)
+					foreach(bors_find_all('cache_group', array('cache_group' => $group_name)) as $group)
+						if($group)
+							$group->clean();
 
-		// Чистим все прямые привязки других объектов на событие изменения нашего.
-		foreach(bors_find_all('cache_group', array('cache_group' => $this->internal_uri_ascii())) as $group)
-			if($group)
-				$group->clean();
+			// Чистим все прямые привязки других объектов на событие изменения нашего.
+			foreach(bors_find_all('cache_group', array('cache_group' => $this->internal_uri_ascii())) as $group)
+				if($group)
+					$group->clean();
+		}
 
 //		echo "<b>cache_clean</b> {$this->debug_title()}: ".print_r($this->changed_fields, true)."<br/>\n";
 		$this->cache_clean_register();

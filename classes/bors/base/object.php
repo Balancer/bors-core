@@ -811,6 +811,84 @@ defined at {$this->class_file()}<br/>
 		}
 	}
 
+	function cache_static() { return 0; }
+	function cache_static_expire() { return $this->cache_static() ? $this->cache_static() + time() : 0; }
+
+	// Признак постоянного существования объекта.
+	// Если истина, то объект создаётся не по первому запросу, а при сохранении
+	// параметров и/или сбросе кеша, удалении старого статического кеша и т.п.
+	// Применимо только при cache_static === true
+	function cache_static_recreate() { return false; }
+	function cache_static_can_be_dropped() { return true; }
+
+	function cache_groups() { return ''; }
+	function cache_depends_on() { return $this->cache_groups(); }
+
+	function cache_groups_parent() { return ''; }
+	function cache_provides() { return $this->cache_groups_parent(); }
+
+	function uid() { return md5($this->class_id().'://'.$this->id().','.$this->page()); }
+	function can_cached() { return true; }
+
+	function cache_children() { return array(); }
+	function cache_parents() { return array(); }
+
+	function cache_clean()
+	{
+		if($this->attr('__cache_clean_entered'))
+			return;
+
+		$this->set_attr('__cache_clean_entered', true);
+
+		// Сперва чистим группы. Так как cache_clean_self() генерирует статические файлы и обновляет группы
+		// Если группы чистить потом, то они удалятся и не восстановятся.
+		foreach(explode(' ', $this->cache_provides()) as $group_name)
+			if($group_name)
+				foreach(bors_find_all('cache_group', array('cache_group' => $group_name)) as $group)
+					if($group)
+						$group->clean();
+
+		// Чистим все прямые привязки других объектов на событие изменения нашего.
+		foreach(bors_find_all('cache_group', array('cache_group' => $this->internal_uri_ascii())) as $group)
+			if($group)
+				$group->clean();
+
+//		echo "<b>cache_clean</b> {$this->debug_title()}: ".print_r($this->changed_fields, true)."<br/>\n";
+		$this->cache_clean_register();
+
+		foreach($this->cache_children() as $child_cache)
+			if($child_cache && !$child_cache->was_cleaned())
+				$child_cache->cache_clean_register();
+
+		foreach($GLOBALS['bors_cache_clean_queue'] as $uri => $object)
+		{
+			$object->cache_clean_self();
+			unset($GLOBALS['bors_cache_clean_queue'][$uri]);
+		}
+
+		$this->set_attr('__cache_clean_self_entered', false);
+	}
+
+	function cache_clean_self()
+	{
+		if($this->was_cleaned())
+			return;
+
+		$this->set_was_cleaned(true);
+
+		if($this->cache_static() > 0 && $this->cache_static_can_be_dropped())
+			cache_static::drop($this);
+
+		// Чистка memcache и Cache.
+		save_cached_object($this);
+	}
+
+	// Поставить объект $this в очередь на очистку
+	function cache_clean_register()
+	{
+		$GLOBALS['bors_cache_clean_queue'][$this->internal_uri_ascii()] = $this;
+	}
+
 	/**
 		Если выставлен этот флаг, то новые объекты в БД будут
 		добавляться по методу replace, замещая возможное старое значение
@@ -935,25 +1013,6 @@ defined at {$this->class_file()}<br/>
 		return  $this->class_name().'://'.$this->id().'/'; 
 	}
 
-	function cache_static() { return 0; }
-	function cache_static_expire() { return $this->cache_static() ? $this->cache_static() + time() : 0; }
-
-	// Признак постоянного существования объекта.
-	// Если истина, то объект создаётся не по первому запросу, а при сохранении
-	// параметров и/или сбросе кеша, удалении старого статического кеша и т.п.
-	// Применимо только при cache_static === true
-	function cache_static_recreate() { return false; }
-	function cache_static_can_be_dropped() { return true; }
-
-	function cache_groups() { return ''; }
-	function cache_depends_on() { return $this->cache_groups(); }
-
-	function cache_groups_parent() { return ''; }
-	function cache_provides() { return $this->cache_groups_parent(); }
-
-	function uid() { return md5($this->class_id().'://'.$this->id().','.$this->page()); }
-	function can_cached() { return true; }
-
 	protected $_dbh = NULL;
 	function db($database_name = NULL)
 	{
@@ -1057,59 +1116,6 @@ defined at {$this->class_file()}<br/>
 
 	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }
 	function set_was_cleaned($value) { return $GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()] = $value; }
-
-	function cache_clean_self()
-	{
-		if($this->was_cleaned())
-			return;
-
-		$this->set_was_cleaned(true);
-
-		if($this->cache_static() > 0 && $this->cache_static_can_be_dropped())
-			cache_static::drop($this);
-
-		// Чистка memcache и Cache.
-		save_cached_object($this);
-	}
-
-	function cache_children() { return array(); }
-
-	// Поставить объект $this в очередь на очистку
-	function cache_clean_register()
-	{
-		$GLOBALS['bors_cache_clean_queue'][$this->internal_uri_ascii()] = $this;
-	}
-
-	function cache_clean()
-	{
-		if($this->attr('__cache_clean_entered'))
-			return;
-
-		$this->set_attr('__cache_clean_entered', true);
-
-		// Сперва чистим группы. Так как cache_clean_self() генерирует статические файлы и обновляет группы
-		// Если группы чистить потом, то они удалятся и не восстановятся.
-		foreach(explode(' ', $this->cache_provides()) as $group_name)
-			if($group_name)
-				foreach(bors_find_all('cache_group', array('cache_group' => $group_name)) as $group)
-					if($group)
-						$group->clean();
-
-//		echo "<b>cache_clean</b> {$this->debug_title()}: ".print_r($this->changed_fields, true)."<br/>\n";
-		$this->cache_clean_register();
-
-		foreach($this->cache_children() as $child_cache)
-			if($child_cache && !$child_cache->was_cleaned())
-				$child_cache->cache_clean_register();
-
-		foreach($GLOBALS['bors_cache_clean_queue'] as $uri => $object)
-		{
-			$object->cache_clean_self();
-			unset($GLOBALS['bors_cache_clean_queue'][$uri]);
-		}
-
-		$this->set_attr('__cache_clean_self_entered', false);
-	}
 
 	function touch() { }
 

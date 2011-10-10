@@ -5,9 +5,9 @@ class bors_storage_mongo extends bors_storage
 	function load($object)
 	{
 		$m = new Mongo();
-		$db = $m->selectDB('BORS');
-		$c = $db->selectCollection('objects');
-		$object->data = $c->findOne(array('_id' => $object->internal_uri_ascii()));
+		$db = $m->selectDB($object->get('db_name', 'BORS'));
+		$c = $db->createCollection($object->get('table_name', 'objects'));
+		$object->data = $c->findOne(array('_id' => $object->id()));
 
 		return $object;
 	}
@@ -15,10 +15,10 @@ class bors_storage_mongo extends bors_storage
 	function save($object)
 	{
 		$m = new Mongo();
-		$db = $m->selectDB('BORS');
-		$c = $db->createCollection('objects');
+		$db = $m->selectDB($object->get('db_name', 'BORS'));
+		$c = $db->createCollection($object->get('table_name', 'objects'));
 		$c->insert(array_merge(array(
-			'_id' => $object->internal_uri_ascii(),
+			'_id' => $object->id(),
 			'class_name' => $object->class_name(),
 			'object_id' => $object->id()
 		), $object->data));

@@ -19,6 +19,7 @@ try
 
 	$db = new driver_mysql(config('cache_database'));
 
+	// BETWEEN 0 AND NOW — чтобы не стирать -1.
 	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time())) as $x)
 	{
 		echo "{$x->original_uri()}, {$x->id()} [recreate={$x->recreate()}]: ";
@@ -46,8 +47,7 @@ try
 		}
 		else
 		{
-			if($fx = object_property($x, 'file'))
-				@unlink($fx);
+			@unlink($x->id());
 
 			if(file_exists($x->id()))
 			{
@@ -57,12 +57,9 @@ try
 			else
 			{
 				echo 'Deleted';
-				@rmdir(dirname($x->id()));
-				@rmdir(dirname(dirname($x->id())));
-				@rmdir(dirname(dirname(dirname($x->id()))));
+				bors_lib_dir::clean_path(dirname($x->id()));
+				$x->delete();
 			}
-
-			$x->delete();
 		}
 
 		echo "<br/>\n";

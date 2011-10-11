@@ -1,4 +1,5 @@
 <?php
+
 	function pages_select($page, $current_page, $total_pages)
 	{
 		$pages = array();

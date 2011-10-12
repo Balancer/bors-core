@@ -93,6 +93,7 @@ class bors_forms_saver extends base_empty
 		{
 //			var_dump($form_object);
 //			var_dump($form_object);
+
 			require_once('inc/navigation.php');
 			switch($go)
 			{
@@ -102,12 +103,16 @@ class bors_forms_saver extends base_empty
 					return go($object->admin_url(1));
 				case 'newpage_edit_parent':
 				case 'admin_parent':
-					if($p = object_load($form_object->admin_url(1)))
+					if($p = bors_load_uri($form_object->admin_url(1)))
 					{
 						$p = $p->parents();
 						return go($p[0]);
 					}
-					return go($form_objects->url(1));
+					if($ps = $form_object->parents())
+					{
+						return go($ps[0]);
+					}
+					return go($form_object->url(1));
 			}
 
 			if($form_object)

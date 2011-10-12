@@ -32,7 +32,7 @@ class base_list extends base_empty
 	static function make($class_name, $where = array())
 	{
 		$list = array(0 => '');
-		foreach(objects_array($class_name, array_merge(array('order' => 'title'), $where)) as $x)
+		foreach(bors_find_all($class_name, array_merge(array('order' => 'title'), $where)) as $x)
 			if($x->id() && ($t = $x->title()))
 				$list[$x->id()] = $t;
 

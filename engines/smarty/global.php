@@ -58,6 +58,12 @@ function template_js($js_code)
 	bors_page::add_template_data('template_js_'.$hash, true);
 }
 
+function template_jquery_js($jquery_code)
+{
+	template_jquery();
+	template_js("\$(function() {\n{$jquery_code}\n});\n");
+}
+
 function template_js_include($js_link)
 {
 	$hash = md5(print_r($js_link, true));

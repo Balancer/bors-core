@@ -76,7 +76,10 @@ class bors_lib_orm
 				{
 					if($field != '*no_defaults')
 					{
-						$field = self::field($property, $field);
+						$field = array_merge(array(
+							'db' => $db,
+							'table' => $table,
+						), self::field($property, $field));
 //					if($field['name'] != 'id')
 							$fields_array[] = $field;
 					}

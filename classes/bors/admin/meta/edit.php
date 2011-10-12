@@ -62,4 +62,11 @@ class bors_admin_meta_edit extends bors_page
 			)
 		);
 	}
+
+	// Куда переходим после сохранения нового объекта
+	// По умолчанию — на редактирование этого же объекта
+	function go_new_url() { return 'newpage_admin'; }
+	// Куда переходим после сохранения изменённого старого объекта
+	// По умолчанию — на страницу-родителя
+	function go_edit_url() { return 'admin_parent'; }
 }

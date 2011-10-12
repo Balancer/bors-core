@@ -111,34 +111,20 @@ class base_object extends base_empty
 		$r_id_field = NULL;
 		$r_db_field = NULL;
 
-		foreach($this->fields() as $db => $tables)
+		foreach(bors_lib_orm::all_fields($this) as $field)
 		{
-			foreach($tables as $table => $fields)
+			if($field['property'] == $test_property)
 			{
-				if(preg_match('!^(\w+)\((\w+)\)$!', $table, $m))
-				{
-					$table = $m[1];
-					$r_id_field = $m[2];
-				}
-
-				foreach($fields as $property => $db_field)
-				{
-					if(is_numeric($property))
-						$property = $db_field;
-
-//					if(preg_match('/^(\w+)\|.+/', $db_field, $m))
-//						$db_field = $m[1];
-
-					if($property == $test_property)
-						list($r_db, $r_table, $r_db_field) = array($db, $table, $db_field);
-
-					if($property == 'id')
-						$r_id_field = $db_field;
-
-					if($r_id_field && $r_db_field)
-						return array($r_db, $r_table, $r_id_field, $r_db_field);
-				}
+				$r_db_field = $field['name'];
+				$r_db = $field['db'];
+				$r_table = $field['table'];
 			}
+
+			if($field['property'] == 'id')
+				$r_id_field = $field['name'];
+
+			if($r_id_field && $r_db_field)
+				return array($r_db, $r_table, $r_id_field, $r_db_field);
 		}
 
 		return false;
@@ -1080,6 +1066,7 @@ defined at {$this->class_file()}<br/>
 
 	function title_field()
 	{
+		echo "Get title field";
 		if(method_exists($this, 'table_fields') && $this->storage_engine() != 'storage_db_mysql_smart')
 		{
 			// Новый формат

@@ -102,6 +102,7 @@ class bors_form extends bors_object
 			$object_id	= $object->id();
 		}
 
+		$this->set_attr('class_name', $class_name);
 		$this->set_attr('object', $object);
 		$this->set_attr('calling_object', $calling_object);
 
@@ -248,7 +249,7 @@ class bors_form extends bors_object
 
 				if(!empty($data['named_list']))
 				{
-					$type = 'dropdown';
+					$type = defval($data, 'type', 'dropdown');
 					$class = $data['named_list'];
 				}
 
@@ -276,6 +277,8 @@ class bors_form extends bors_object
 //				echo "property=$property_name, title=$title, type=$type, data=".print_dd($data).", field=".print_dd($field)."<br/>\n";
 				if(!empty($property_name))
 					$data['name'] = $property_name;
+
+				$html_append = '';
 
 				switch($type)
 				{
@@ -326,6 +329,7 @@ class bors_form extends bors_object
 
 					case 'dropdown':
 					case 'dropdown_id':
+					case 'dropdown_edit':
 						if($type == 'dropdown_id')
 						{
 							$saveclass = @$data['class'];
@@ -336,6 +340,7 @@ class bors_form extends bors_object
 							$this->append_attr('override_fields', $data['name']);
 							$html .= "ID:";
 							$html .= bors_forms_input::html($data, $this);
+							template_jquery();
 							template_js("\$(function() {
 	\$('select[name={$data['name']}]').change(function(){
 		\$('input[name={$data['input_name']}]').val(\$(this).val())
@@ -343,6 +348,21 @@ class bors_form extends bors_object
 });");
 							unset($data['maxlength'], $data['size']);
 							$data['class'] = $saveclass;
+						}
+
+						if($type == 'dropdown_edit')
+						{
+							$saveclass = @$data['class'];
+							$data['class'] = 'w50p';
+							$data['input_name'] = '_'.$data['name'];
+							$this->append_attr('override_fields', $data['name']);
+							$html_append = bors_forms_input::html($data, $this);
+							template_jquery();
+							template_js("\$(function() {
+	\$('select[name={$data['name']}]').change(function(){
+		\$('input[name={$data['input_name']}]').val(\$(this).val())
+	});
+});");
 						}
 
 						if(array_key_exists('named_list', $data))
@@ -404,6 +424,7 @@ class bors_form extends bors_object
 //						echo defval($data, 'value');
 //						echo defval($data, 'value');
 				}
+				$html .= $html_append;
 				$html .= "\t</td></tr>\n";
 			}
 

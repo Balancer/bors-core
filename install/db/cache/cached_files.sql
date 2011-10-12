@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS `cached_files` (
   `file` varchar(255) NOT NULL DEFAULT '',
   `uri` varchar(255) NOT NULL DEFAULT '',
+  `bors_site` VARCHAR( 255 ) NULL,
   `original_uri` varchar(255) NOT NULL DEFAULT '',
   `last_compile` int(11) NOT NULL DEFAULT '0',
   `expire_time` int(11) NOT NULL DEFAULT '0',

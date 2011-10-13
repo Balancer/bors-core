@@ -88,7 +88,8 @@ function url_parse($url)
 			'document_root' => bors()->server()->root(),
 		);
 
-	if($root = @$vhost_data['document_root'])
+	$root = @$data['root'];
+	if(!$root && ($root = @$vhost_data['document_root']))
 		$data['root'] = $root;
 
 	//TODO: а вот это теперь, наверное, можно будет снести благодаря {if(empty($vhost_data) && $host == bors()->server()->host())} ...

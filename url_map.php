@@ -34,9 +34,10 @@ $map = array(
 	'(.*)\?new  => bors_admin_append_child(1)',
 	'(.*)\?cdrop  => bors_admin_tools_clean(1)',
 
-
 	'(/_bors/)igo\?o=(.+) => bors_system_go_internal(2)',
 	'(/_bors/)ugo\?u=(.+) => bors_system_go_url(2)',
+
+	'/_bors/js/touch\?(.+) => bors_system_js_touch(1)',
 
 	'/sitemap-index.xml => bors_system_sitemap_index',
 	'/sitemap-(\w+)-(\d+).xml => bors_system_sitemap_map(1,2)',

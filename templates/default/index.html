@@ -39,6 +39,9 @@
 {/foreach}
 --></script>
 {/if}
+{if $bors_touch_params}
+<script type="text/javascript" src="/_bors/js/touch?{$bors_touch_params}"></script>
+{/if}
 {foreach item=s from=$head_append}
 {$s}
 {/foreach}

@@ -16,11 +16,9 @@ class bors_forms_keywords_tabbed extends bors_forms_element
 
 		extract($params);
 
-		$keywords = self::value($params, $form);
+		$keyword_values = self::value($params, $form);
 		if(!is_array($value))
-		{
-			$keywords = preg_split('/[,;]\s*/', $keywords);
-		}
+			$keyword_values = preg_split('/\s*[,;]\s*/', $keyword_values);
 
 		$html = "<div id=\"keywords_tabbed\">\n\t<ul>\n";
 		$idx = 1;
@@ -30,13 +28,36 @@ class bors_forms_keywords_tabbed extends bors_forms_element
 		$html .= "\t</ul>\n";
 
 		$idx = 1;
-		foreach($list as $category_name => $keywords)
+		foreach($list as $category_name => $category_keywords)
 		{
 			$html .= "\t<div id=\"keywords_tabbed_".($idx++)."\">\n";
-			foreach($keywords as $kw)
-				$html .= "<label><input name=\"keywords_tabbed[]\" type=\"checkbox\" />&nbsp;{$kw}</label>\n";
+			foreach($category_keywords as $kw)
+			{
+				if(false !== ($pos = array_search($kw, $keyword_values)))
+				{
+					$checked = ' checked="checked"';
+					unset($keyword_values[$pos]);
+					$style = " class=\"b\"";
+				}
+				else
+				{
+					$checked = '';
+					$style = '';
+				}
+
+				$html .= "<label$style><input name=\"keywords_tabbed[]\" type=\"checkbox\"$checked value=\"{$kw}\" />&nbsp;{$kw}</label>\n";
+			}
 			$html .= "\t</div>\n";
 		}
+
+		$html .= bors_forms_input::html(array(
+			'name' => $name,
+			'value' => join(', ', $keyword_values),
+			'dom_id' => 'keywords',
+			'size' => 60,
+		), $form);
+
+		$form->append_attr('override_fields', "bors_comma_join({$name}+keywords_tabbed)");
 
 		return $html;
 	}

@@ -145,3 +145,19 @@ function bors_entity_decode($string)
 {
 	return html_entity_decode($string, ENT_COMPAT, config('internal_charset'));
 }
+
+function bors_comma_join($s1, $s2 = NULL)
+{
+	if(!is_array($s1))
+		$s1 = preg_split('/\s*[,;]+\s*/', $s1);
+
+	if($s2)
+	{
+		if(!is_array($s2))
+			$data = preg_split('/\s*[,;]+\s*/', $s2);
+	}
+	else
+		$s2 = array();
+
+	return join(', ', array_merge($s1, $s2));
+}

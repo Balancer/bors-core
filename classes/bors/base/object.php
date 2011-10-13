@@ -1196,7 +1196,20 @@ defined at {$this->class_file()}<br/>
 		if($overrides = popval($data, 'override_fields'))
 		{
 			foreach(explode(',', $overrides) as $name)
-				$data[$name] = $data['_'.$name];
+			{
+				// формат 'func(name1,name2)' — обработка функцией для _name и добавление к результату name
+				if(preg_match('!^(\w+)\((\w+)\+(\w+)\)$!', $name, $m))
+				{
+					$data[$m[2]] = $m[1](@$data[$m[2]], @$data[$m[3]]);
+					unset($data[$m[3]]);
+				}
+				// формат 'func(name)' — прямая обработка функцией
+				elseif(preg_match('!^(\w+)\((\w+)\)$!', $name, $m))
+					$data[$m[2]] = $m[1]($data['_'.$m[2]]);
+				// Прямое присваивание.
+				else
+					$data[$name] = $data['_'.$name];
+			}
 		}
 	}
 

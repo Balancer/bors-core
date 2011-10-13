@@ -40,7 +40,7 @@
 --></script>
 {/if}
 {if $bors_touch_params}
-<script type="text/javascript" src="/_bors/js/touch?{$bors_touch_params}"></script>
+<script type="text/javascript">$(function(){literal}{{/literal}$.getScript('/_bors/js/touch?{$bors_touch_params}'){literal}}{/literal});</script>
 {/if}
 {foreach item=s from=$head_append}
 {$s}

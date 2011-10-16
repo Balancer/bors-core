@@ -44,6 +44,16 @@ class auto_object_php extends base_object
 				$class_path = $cp;
 				$object_id = $m[2];
 			}
+			elseif(class_include($class_base.($cp = $m[1].'_'.$m[2].'_main')))
+			{
+				$class_path = $cp;
+				$object_id = NULL;
+			}
+			elseif(class_include($class_base.($cp = $m[1].'_'.$m[2])))
+			{
+				$class_path = $cp;
+				$object_id = NULL;
+			}
 			else
 			{
 				$class_path = bors_unplural($m[1]);

@@ -75,7 +75,7 @@
 {/if}
 
 
-<div class="body" {if not $right_menu and not $default_right_menu and not $right_menu_append} style="margin-right: 20px"{/if}>
+<div class="body" {if not $right_menu and not $default_right_menu and not $right_menu_append and not $right_menu_prepend} style="margin-right: 20px"{/if}>
 <div class="clear">&nbsp;</div>
 {if not $skip_page_title}<h1>{$this->page_title()}</h1>{/if}
 <div class="top-nav">{module class="nav_top" id=$this}</div>
@@ -104,6 +104,11 @@
 {$body}
 
 <div class="right-menu">
+{if $right_menu_prepend}
+	{foreach from=$right_menu_prepend item="f"}
+		{include file=$f}
+	{/foreach}
+{/if}
 {if $right_menu}
 <!-- right menu = {$right_menu} -->
 	{include file=$right_menu}

@@ -74,13 +74,17 @@ function template_js_include($js_link)
 	bors_page::add_template_data('template_js_include_'.$hash, true);
 }
 
-function template_css($css)
+function template_css($css, $prepend = false)
 {
 	$hash = md5(print_r($css, true));
 	if(bors_page::template_data('template_css_'.$hash))
 		return;
 
-	bors_page::merge_template_data_array('css_list', array($css));
+	if($prepend)
+		bors_page::prepend_template_data_array('css_list', array($css));
+	else
+		bors_page::merge_template_data_array('css_list', array($css));
+
 	bors_page::add_template_data('template_css_'.$hash, true);
 }
 
@@ -107,7 +111,19 @@ function template_jquery_ui()
 	template_js_include('/_bors3rdp/jquery/ui/jquery-ui-1.8.5.custom.min.js');
 }
 
-function template_jquery_ui_css($tpl = 'overcast') { template_css('/_bors3rdp/jquery/ui/themes/'.$tpl.'/jquery-ui-1.8.5.custom.css'); }
+function template_jquery_ui_css($tpl = NULL)
+{
+	if(!$tpl)
+	{
+		if(!($tpl = config('jquery_ui.css')))
+			$tpl = config('jquery_ui.theme', 'overcast');
+	}
+
+	if(strpos($tpl, '/') === false)
+		$tpl = '/_bors3rdp/jquery/ui/themes/'.$tpl.'/jquery-ui-1.8.5.custom.css';
+
+	template_css($tpl, true); // true == prepend
+}
 
 function template_jquery_ui_tabs($id)
 {

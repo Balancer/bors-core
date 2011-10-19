@@ -341,3 +341,9 @@ function bors_delete($class_name, $where)
 	foreach(bors_find_all($class_name, $where) as $x)
 		$x->delete();
 }
+
+
+function bors_find($class_name)
+{
+	return new bors_core_find($class_name);
+}

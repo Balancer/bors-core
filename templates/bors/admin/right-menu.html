@@ -1,13 +1,25 @@
 {if $this->get('object_type')}
-{assign var="li_type" value=" imaged type-"|cat:$this->get('object_type')}
+{assign var="new_object_type" value=" imaged type-"|cat:$this->get('object_type')}
 {assign var="c_li_type" value=" class='imaged type-"|cat:$this->get('object_type')|cat:"'"}
 {/if}
-<ul>
 
-{if $this->get('admin_group_url')}<li><a href="{$this->get('admin_group_url')}">Главная</a></li>{/if}
-{if $this->get('new_sublink')}<li class="b{$li_type}"><a href="{$this->get('new_sublink')}">{$this->get('new_title')}</a></li>{/if}
+{if $this->get('new_object_type')}
+{assign var="new_object_type" value=" imaged type-"|cat:$this->get('new_object_type')}
+{/if}
+
+<ul>
+{if $this->get('new_sublink')}<li class="b{$new_object_type}"><a href="{$this->get('new_sublink')}">{$this->get('new_title')}</a></li>{/if}
 {if $real_object}<li{$c_li_type}><a href="{$real_object->url()}" target="_blank">Посмотреть на сайте</a></li>{/if}
+</ul>
+<br/>
+<ul>
+{if $this->get('admin_group_url')}<li class="imaged type-unknown"><a href="{$this->get('admin_group_url')}">Главная</a></li>{/if}
 {if $this->get('search_link')}<li><a href="{$this->get('search_link')}">Поиск</a></li>{/if}
+{if $this->get('right_menu_links')}
+{foreach from=$this->get('right_menu_links') item="link"}
+<li{if $link.type} class="imaged type-{$link.type}"{/if}><a href="{$link.url}">{$link.title}</a></li>
+{/foreach}
+{/if}
 </ul>
 {if $this->get('admin_group_url')}
 <form style="padding: 0 0 10px 10px; margin: 0;" name="goidrm"

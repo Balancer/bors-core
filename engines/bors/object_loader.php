@@ -139,6 +139,9 @@ function class_load($class, $id = NULL, $args=array())
 	{
 		if(preg_match("!^http://!", $class))
 		{
+			// Фиксим некорректные ссылки с форумов, например, оканчивающиеся на «.html,»
+			$class = preg_replace('/[\.,\)\]!\?…"\']+$/', '', $class);
+
 //			echo "Try load $class<Br/>\n";
 			if(preg_match('!^(.+)#(.+)$!', $class, $m))
 				$class = $m[1];

@@ -183,6 +183,7 @@ li.type-unknown{background-image: url(/_bors/i16/obj-types/unknown.png)}
 li.type-search{background-image: url(/_bors/i16/search.png)}
 li.type-logout{background-image: url(/_bors/i16/logout.gif)}
 li.type-exchange-rate{background-image: url(/_bors/i16/misc/exchange_rate.png)}
+li.type-image{background-image: url(/_bors/i16/obj-types/image.png)}
 
 div.right-menu h2, div.right-menu p, div.right-menu ul {
 	margin-top: 0;

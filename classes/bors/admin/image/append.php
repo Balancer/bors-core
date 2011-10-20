@@ -68,6 +68,7 @@ class bors_admin_image_append extends base_object
 			$img->set_resolution_limit(@$get['image_limit'][$idx], true);
 			$img->set_image_type(@$get['image_type'][$idx], true);
 			$img->set_original_filename($data['name'][$idx], true);
+			$img->store();
 
 			$this->_last_image = $img;
 

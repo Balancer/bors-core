@@ -334,7 +334,7 @@ class bors_link extends base_object_db
 		if(!$tc)
 			return;
 
-		if($ti = class_name_to_id($where['target_id']))
+		if(!empty($where['target_id']) && ($ti = class_name_to_id($where['target_id'])))
 			$dbh->delete(self::main_table(), array("((from_class=$fc AND from_id=$fi AND to_class=$tc AND to_id=$ti)
 				OR (to_class=$fc AND to_id=$fi AND from_class=$tc AND from_id=$ti))"));
 		else

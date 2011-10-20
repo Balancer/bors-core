@@ -562,7 +562,6 @@ class storage_db_mysql_smart extends base_null
 				else
 					$dbh->insert_ignore($table_name, $tab_data);
 
-
 				if(empty($oid))
 					$object->set_id($oid = $dbh->last_id());
 			}

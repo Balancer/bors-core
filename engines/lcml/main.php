@@ -101,6 +101,7 @@ class bors_lcml
 		{
 			$original = $text;
 
+//			if(config('is_developer'))echo "$fn('$text')<br/><br/>";
 			$text = $fn($text, $this);
 
 			if(!trim($text) && trim($original))
@@ -118,6 +119,8 @@ class bors_lcml
 		if(!trim($text))
 			return '';
 
+		$need_prepare = popval($this->_params, 'prepare');
+
 		if($this->_params['level'] == 1
 			&& !config('lcml_cache_disable')
 			&& config('cache_engine')
@@ -125,7 +128,7 @@ class bors_lcml
 		)
 		{
 			$cache = new Cache();
-			if($cache->get('lcml-cache-v2', $text))
+			if($cache->get('lcml-cache-v5', $text))
 				return $cache->last();
 		}
 		else
@@ -135,7 +138,7 @@ class bors_lcml
 		$GLOBALS['lcml']['params']['html_disable'] = $this->p('html_disable');
 		$GLOBALS['lcml']['cr_type'] = $this->p('cr_type');
 
-		if($this->_params['level'] == 1)
+		if($this->_params['level'] == 1 || $need_prepare)
 			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text);
 
 		$mask = str_repeat('.', bors_strlen($text));
@@ -181,7 +184,7 @@ class bors_lcml
 
 		if($start < bors_strlen($text))
 		{
-			if($can_modif)
+			if($can_modif && $this->_params['level'] == 1)
 				$result .= $this->functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, bors_strlen($text) - $start));
 			else
 				$result .= bors_substr($text, $start, bors_strlen($text) - $start);
@@ -205,6 +208,7 @@ function lcml($text, $params = array())
 		$lc = new bors_lcml($params);
 
 	$lc->set_p('level', $lc->p('level')+1);
+	$lc->set_p('prepare', popval($params, 'prepare'));
 	$save_tags = $lc->p('only_tags');
 	if(!empty($params['only_tags']))
 		$lc->set_p('only_tags', $params['only_tags']);

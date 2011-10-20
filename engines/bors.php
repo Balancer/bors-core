@@ -264,6 +264,7 @@ function bors_stop_bots()
 
 function bors_throw($message)
 {
+//	echo debug_trace();
 	throw new Exception($message);
 }
 

@@ -64,7 +64,7 @@ if(config('is_developer')) { exit($img); }
 		{
 			$description = clause_truncate_ceil($description, $limit);
 
-			$bbshort = "[round_box]{$img}[h][url={$url}]{$title}[/url][/h]
+			$bbshort = "[round_box]{$img}[h][a href=\"{$url}\"]{$title}[/a][/h]
 {$description}
 
 // ".bors_external_feeds_entry::url_host_link($url)."[/round_box]";

@@ -8,7 +8,7 @@ function lt_li($text)
 function lp_li($text, &$param)
 {
 	$param['skip_around_cr'] = true;
-	return save_format("<li>".lcml($text)."</li>\n");
+	return save_format("<li>".lcml($text, array('prepare' => true))."</li>\n");
 }
 
 function lp_ul($text, &$param)

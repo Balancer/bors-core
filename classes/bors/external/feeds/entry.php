@@ -90,8 +90,8 @@ class bors_external_feeds_entry extends base_object_db
 
 	static function url_host_link($url)
 	{
-		if(preg_match('!http://([^/]+)!', $url, $m))
-			return "[url={$url}]{$m[1]}[/url]";
+		if(preg_match('!https?://([^/]+)!', $url, $m))
+			return "[a href=\"{$url}\"]{$m[1]}[/a]";
 
 		return "[url]{$url}[/url]";
 	}

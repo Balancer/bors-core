@@ -151,6 +151,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 
 	debug_timing_stop('template_smarty_assign');
 //	debug_timing_start('template_smarty_assign_fetch');
+	$smarty->assign($data);
 	$result = $smarty->fetch($template_uri);
 //	debug_timing_stop('template_smarty_assign_fetch');
 	return $result;

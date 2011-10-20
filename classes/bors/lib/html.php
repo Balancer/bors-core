@@ -31,7 +31,7 @@ class bors_lib_html
 				$meta[bors_lower($m[1])] = html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
 
 			// <link rel="image_src" href="http://infox.ru/photos/2011/17/112717/300x168_IRp6fXolYdFHbUso28YKRYQS8y3fn0Ca.jpg" >
-			if(preg_match("!<link [^>]*rel=\"?([\w:]+)\"?[^>]+(href)=\"(.*?)\"!is", trim($s), $m))
+			if(preg_match("!<link [^>]*rel=['\"]?([\w:]+)['\"]?[^>]+(href)=\"(.*?)\"!is", trim($s), $m))
 				$meta[bors_lower($m[1])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'));
 		}
 

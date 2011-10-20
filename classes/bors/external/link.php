@@ -53,8 +53,8 @@ class bors_external_link extends base_object_db
 		if(preg_match('!^(www|ftp)\.([^\.]+\..+)$!', $url_data['host'], $m))
 			$url_data['host'] = $m[2];
 
-		echo "url=$url ";
-		print_d($url_data);
+//		echo "url=$url ";
+//		print_d($url_data);
 		$file_name = basename(@$url_data['path']);
 		$dir_name = dirname(@$url_data['path']);
 		echo "dn=$dir_name, fn=$file_name\n";

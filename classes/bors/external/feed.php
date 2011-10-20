@@ -80,7 +80,7 @@ class bors_external_feed extends base_object_db
 			if($xml)
 			{
 //				print_d($xml)."\n";
-				print_d($data)."\n";
+//				print_d($data)."\n";
 			}
 
 			if(!$is_test)

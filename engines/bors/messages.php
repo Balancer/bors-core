@@ -125,12 +125,13 @@ function bors_message($text, $params=array())
 	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 		$template = "xfile:$template";
 
-
 	if(config('smarty3_enable'))
 		$message = bors_templates_smarty::fetch($template, $data);
 	else
 		$message = template_assign_data($template, $data);
 
+	if(!$message) // Если всё плохо
+		$message = $body;
 
 	//TODO: исправить!!
 	if($ics != $ocs)

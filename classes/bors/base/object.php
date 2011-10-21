@@ -1066,7 +1066,6 @@ defined at {$this->class_file()}<br/>
 
 	function title_field()
 	{
-		echo "Get title field";
 		if(method_exists($this, 'table_fields') && $this->storage_engine() != 'storage_db_mysql_smart')
 		{
 			// Новый формат

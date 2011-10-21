@@ -32,11 +32,12 @@ class bors_lib_orm
 
 			$field['sql_name'] = $field['name'];
 
-			if(preg_match('!^(\w+)\(`(\w+)`\)$!', $field['name'], $m))
-			{
-				$field['name'] = $m[2];
-				$field['sql_function'] = $m[1];
-			}
+		}
+
+		if(preg_match('!^(\w+)\(`(\w+)`\)$!', $field['name'], $m))
+		{
+			$field['name'] = $m[2];
+			$field['sql_function'] = $m[1];
 		}
 
 		$field['property'] = $property;

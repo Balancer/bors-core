@@ -26,13 +26,20 @@ class bors_lib_object
 
 		// Проверяем одноимённые переменные (var $title = 'Files')
 		if(property_exists($class_name, $name) && !$skip_properties)
-			return call_user_func(array($class_name, $name));
+		{
 //			return $class_name::$name;
+			$vars = get_class_vars($class_name);
+			return @$vars[$name];
+		}
 
 		// Проверяем одноимённые переменные, требующие перекодирования (var $title_ec = 'Сообщения')
 		$name_ec = "{$name}_ec";
 		if(property_exists($class_name, $name_ec) && !$skip_properties)
-			return ec($class_name::$this->$name_ec);
+		{
+//			return ec($class_name::$this->$name_ec);
+			$vars = get_class_vars($class_name);
+			return ec(@$vars[$name_ec]);
+		}
 
 		return $default;
 	}

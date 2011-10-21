@@ -5,4 +5,5 @@
 require_once(dirname(__FILE__).'/../init.php');
 config_set('system.session.skip', true);
 
-require_once(__DIR__.'/config-host.php');
+@include_once(dirname(__FILE__).'/config-host.php');
+

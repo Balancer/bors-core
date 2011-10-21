@@ -165,6 +165,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					foreach($fields as $property => $field)
 					{
 						$field = bors_lib_orm::field($property, $field);
+
 						$x = "$t.`{$field['name']}`";//FIXME: предусмотреть возможность подключать FUNC(`field`)
 						if($field['name'] != $field['property'])
 							$x .= " AS `{$field['property']}`";

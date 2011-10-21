@@ -11,6 +11,7 @@ class bors_admin_reports_load extends base_page
 	function body_data()
 	{
 		$dbh = new driver_mysql(config('bors_core_db'));
+
 		return array(
 			'total_time' => $dbh->select('bors_access_log', 'SUM(operation_time)', array()),
 			'period' => time() - $dbh->select('bors_access_log', 'MIN(access_time)', array()),

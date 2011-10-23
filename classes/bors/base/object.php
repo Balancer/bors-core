@@ -915,9 +915,10 @@ defined at {$this->class_file()}<br/>
 	{
 		$access = $this->access_engine();
 		if(!$access)
-			$access = config('access_default', 'access_base');
+			$access = config('access_default');
+//			bors_throw(ec('Не задан режим доступа к ').$this->object_titled_dp_link());
 
-		return object_load($access, $this);
+		return bors_load($access, $this);
 	}
 
 	function edit_url()
@@ -1381,6 +1382,9 @@ defined at {$this->class_file()}<br/>
 	function object_title() { return strip_tags(bors_lower($this->class_title()).ec(' «').$this->title().ec('»')); }
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }
 	function object_titled_vp_link() { return $this->class_title_vp().ec(' «').$this->titled_link().ec('»'); }
+
+	function object_title_dp() { return strip_tags(bors_lower($this->class_title_dp()).ec(' «').$this->title().ec('»')); }
+	function object_titled_dp_link() { return $this->class_title_dp().ec(' «').$this->titled_link().ec('»'); }
 
 	function cross_ids($to_class) { return bors_link::object_ids($this, $to_class); }
 	function cross_objs($to_class = NULL) { return bors_link::objects($this, $to_class); }

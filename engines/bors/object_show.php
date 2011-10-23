@@ -42,7 +42,7 @@
 					."[<a href=\"/users/do-logout\">выйти</a>]";
 			}
 			else
-				$msg = ec("Извините, у Вас нет доступа к этому ресурсу");
+				$msg = ec("Извините, гость, у Вас нет доступа к этому ресурсу");
 
 			if($access_object->get('login_redirect') && !bors()->user())
 				return go('/_bors/login?ref='.$obj->url());

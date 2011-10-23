@@ -184,7 +184,14 @@ class bors_lcml
 
 		if($start < bors_strlen($text))
 		{
-			if($can_modif && $this->_params['level'] == 1)
+//			if(config('is_developer')) var_dump($can_modif, $this->_params['level'], $start, bors_strlen($text), $text);
+			// Внимание! Уровень 1 тут добавлять нельзя. Проблема:
+			// [quote]...lcml-код... [/quote]
+			// Внутри quote level > 1, но после обработки для всего блока quote can_modif в маске == false
+			// Нужно искать некорректный вызов post-функций в других местах. При правильном проектировании
+			// этот вызов может быть только один раз, потом — блокируется.
+
+			if($can_modif/* && $this->_params['level'] == 1*/)
 				$result .= $this->functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, bors_strlen($text) - $start));
 			else
 				$result .= bors_substr($text, $start, bors_strlen($text) - $start);

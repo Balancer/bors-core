@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_meta_main extends bors_paginated
+class bors_admin_meta_main extends bors_admin_paginated
 {
 	function config_class() { return config('admin_config_class'); }
 	function access_name() { return bors_lib_object::get_static($this->main_admin_class(), 'access_name'); }

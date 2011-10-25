@@ -411,7 +411,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 		$out .= "\n".$args['append'];
 
 	@file_put_contents($file = "{$out_dir}/{$type}.log", $out, FILE_APPEND);
-	@chmod($file, 0664);
+	@chmod($file, 0666);
 }
 
 function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcontext)
@@ -426,7 +426,7 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 		return false;
 
 	@mkdir($dir = config('debug_hidden_log_dir').'/errors');
-	@chmod($dir, 0775);
+	@chmod($dir, 0777);
 	if(!file_exists($dir))
 		return false;
 

@@ -242,7 +242,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 			bors_throw("Can't write dir '{$this->image_dir()}'<br/>");
 		if(!move_uploaded_file($file, $this->file_name_with_path()))
 			bors_throw("Can't load image {$data['name']}<br/>");
-		@chmod($this->file_name_with_path(), 0664);
+		@chmod($this->file_name_with_path(), 0666);
 
 		$this->recalculate(true);
 
@@ -269,8 +269,8 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		$img->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $img->original_filename()), $new_instance);
 		$img->set_file_name($img->original_filename(), $new_instance);
 
-		@chmod($img->image_dir(), 0775);
-		@chmod($img->file_name_with_path(), 0664);
+		@chmod($img->image_dir(), 0777);
+		@chmod($img->file_name_with_path(), 0666);
 
 		$img->recalculate($new_instance);
 

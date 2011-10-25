@@ -100,8 +100,8 @@ class bors_file extends base_object_db
 		$data['extension'] = preg_replace('!^.+\.([^\.]+)$!', '$1', $file);
 		$data['size'] = filesize($file);
 
-		@chmod($file, 0775);
-		@chmod(dirname($file), 0664);
+		@chmod($file, 0777);
+		@chmod(dirname($file), 0666);
 
 		return bors_new($class_name, $data);
 	}
@@ -154,7 +154,7 @@ class bors_file extends base_object_db
 		if(!move_uploaded_file($tmp_file, $upload_file_name))
 			bors_throw("Can't upload image {$file_data['name']} as {$upload_file_name}");
 
-		@chmod($upload_file_name, 0664);
+		@chmod($upload_file_name, 0666);
 		$file->set_full_file_name($upload_file_name);
 		$file->store();
 		return $file;

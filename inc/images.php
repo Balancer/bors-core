@@ -118,7 +118,7 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 
 	mkpath(dirname($file_out), 0777);
 	$img->save($file_out, $img->getImageType());
-	@chmod($file_out, 0664);
+	@chmod($file_out, 0666);
 	bors_thread_unlock('image_file_scale');
 	return $img->isError();
 }
@@ -132,7 +132,7 @@ function bors_image_resize_error_return($message, $file_out, $width, $height)
 	));
 	mkpath(dirname($file_out), 0777);
 	file_put_contents($file_out, $image);
-	@chmod($file_out, 0664);
+	@chmod($file_out, 0666);
 	bors_thread_unlock('image_file_scale');
 	return false;
 }

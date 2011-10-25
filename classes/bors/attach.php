@@ -90,7 +90,7 @@ class bors_attach extends base_object_db
 
 		if(!move_uploaded_file($file, $this->full_file_name()))
 			debug_exit("Can't load image {$data['name']}<br/>");
-		@chmod($this->full_file_name(), 0664);
+		@chmod($this->full_file_name(), 0666);
 
 //		$this->recalculate(true);
 //		exit();

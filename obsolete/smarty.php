@@ -81,9 +81,9 @@ function show_page($uri, $data = true)
 		$smarty->cache_dir   = config('cache_dir').'/smarty-cache/';
 
 		if(!file_exists($smarty->compile_dir))
-		    @mkpath($smarty->compile_dir, 0775);
+		    @mkpath($smarty->compile_dir, 0777);
 		if(!file_exists($smarty->cache_dir))
-			@mkpath($smarty->cache_dir, 0775);
+			@mkpath($smarty->cache_dir, 0777);
 
         $smarty->caching = $action ? false : @$GLOBALS['cms']['templates_cache_disabled'] != true;
         $smarty->compile_check = true; 

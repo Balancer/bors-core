@@ -37,9 +37,9 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		$smarty->cache_dir   = config('cache_dir').'/smarty-e-cache/';
 
 		if(!file_exists($smarty->compile_dir))
-			@mkpath($smarty->compile_dir, 0775);
+			@mkpath($smarty->compile_dir, 0777);
 		if(!file_exists($smarty->cache_dir))
-			@mkpath($smarty->cache_dir, 0775);
+			@mkpath($smarty->cache_dir, 0777);
 
 		$caching = !is_null($uri)
 				&& @$data['caching'] !== false

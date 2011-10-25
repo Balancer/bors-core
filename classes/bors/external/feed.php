@@ -30,6 +30,19 @@ class bors_external_feed extends base_object_db
 		);
 	}
 
+	function class_title() { return ec('лента'); }
+	function class_title_rp() { return ec('ленты'); }
+	function class_title_vp() { return ec('ленту'); }
+	function class_title_tpm() { return ec('лентами'); }
+	function class_title_m() { return ec('ленты'); }
+
+	function auto_objects()
+	{
+		return array_merge(parent::auto_objects(), array(
+			'default_topic' => 'balancer_board_topic(target_topic_id)',
+		));
+	}
+
 	static function _atom_extract($data)
 	{
 		$feed = array();

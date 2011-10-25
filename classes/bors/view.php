@@ -24,6 +24,7 @@ class bors_view extends bors_page
 
 	function title($exact = false) { return $this->object()->title($exact); }
 	function nav_name($exact = false) { return $this->object()->nav_name($exact); }
+	function description() { return $this->object()->description(); }
 	function create_time($exact = false) { return $this->object()->create_time($exact); }
 	function modify_time($exact = false) { return $this->object()->modify_time($exact); }
 

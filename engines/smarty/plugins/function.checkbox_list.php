@@ -2,10 +2,13 @@
 
 function smarty_function_checkbox_list($params, &$smarty)
 {
+	echo bors_forms_checkbox_list::html($params);
+	return;
+
 	extract($params);
 
 	$obj = $smarty->get_template_vars('form');
-
+//var_dump($smarty);
 	$params = "";
 	foreach(explode(' ', 'size style') as $p)
 		if(!empty($$p))

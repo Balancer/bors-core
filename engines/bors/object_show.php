@@ -5,10 +5,10 @@
 	// Иначе - строку с результатом для вывода.
 	function bors_object_show($obj)
 	{
-		$page = $obj->set_page($obj->arg('page'));
-
 		if(!$obj)
 			return false;
+
+		$page = $obj->set_page($obj->arg('page'));
 
 		@header("Status: 200 OK");
 		if(config('bors_version_show'))

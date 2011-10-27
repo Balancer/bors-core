@@ -176,3 +176,11 @@ function template_meta_prop($name, $value)
 {
 	bors_page::add_template_data_array('head_append', "<meta property=\"{$name}\" content=\"".htmlspecialchars($value)."\"/>");
 }
+
+function template_rss($rss_url, $title)
+{
+	bors_page::add_template_data_array('head_append',
+		"<link rel=\"alternate\" type=\"application/rss+xml\" href=\""
+		.htmlspecialchars($rss_url)
+		."\" title=\"".htmlspecialchars($title)."\" />");
+}

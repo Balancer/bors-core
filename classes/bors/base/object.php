@@ -546,6 +546,12 @@ defined at {$this->class_file()}<br/>
 		if($popup = defval($params, 'popup'))
 			$popup = " title=\"".htmlspecialchars($popup)."\"";
 
+		if($class = defval($params, 'class'))
+			$class = " class=\"".htmlspecialchars($class)."\"";
+
+		if($style = defval($params, 'style'))
+			$style = " style=\"".htmlspecialchars($style)."\"";
+
 		if($target = defval($params, 'target'))
 			$target = " target=\"".htmlspecialchars($target)."\"";
 		else
@@ -555,7 +561,7 @@ defined at {$this->class_file()}<br/>
 //		if($page === NULL) //TODO: WTF? Изучить все вызовы.
 //			$title = $this->page();
 
-		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."\"{$popup}{$target}>{$title}</a>"; 
+		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."\"{$popup}{$target}{$class}{$style}>{$title}</a>"; 
 	}
 	function titled_link_target($target) { return $this->titled_link_ex(array('target' => $target)); }
 

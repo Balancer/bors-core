@@ -94,7 +94,9 @@ class base_page extends bors_object
 	}
 
 	function items_per_page() { return 25; }
-	function total_items() { return -1; }
+	private $__total_items = -1;
+	function total_items() { return $this->__total_items; }
+	function set_total_items($count) { return $this->__total_items = $count; }
 	function items_offset() { return ($this->page()-1)*$this->items_per_page(); }
 
 	function body()

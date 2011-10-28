@@ -12,7 +12,15 @@ class bors_view extends bors_page
 	// Класс отображаемого объекта
 	function main_class()
 	{
-		return bors_unplural(preg_replace('/_view$/', '', $this->extends_class_name()));
+		$main_class = preg_replace('/_view$/', '', $this->extends_class_name());
+		if(class_include($main_class))
+			return $main_class;
+
+		$main_class = bors_unplural($main_class);
+		if(class_include($main_class))
+			return $main_class;
+
+		bors_throw(ec('Не определён главный класс для представления ').$this->class_name());
 	}
 
 	function item_name()

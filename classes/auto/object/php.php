@@ -37,9 +37,16 @@ class auto_object_php extends base_object
 		if($class_base = config('classes_auto_base', 'auto_php'))
 			$class_base .= '_';
 
+		$is_auto = false;
 		if(preg_match('!^(.+)_(\d+|new)$!', $class_path, $m))
 		{
-			if(class_include($class_base.($cp = $m[1].'_edit')))
+			if(class_include($class_base.($cp = bors_unplural($m[1]).'_view')))
+			{
+				$class_path = $cp;
+				$object_id = $m[2];
+				$is_auto = true;
+			}
+			elseif(class_include($class_base.($cp = $m[1].'_edit')))
 			{
 				$class_path = $cp;
 				$object_id = $m[2];
@@ -75,7 +82,7 @@ class auto_object_php extends base_object
 			$object = bors_load($class_base.$class_path, $object_id);
 		}
 
-		if(!config('classes_auto_full_enabled') && !object_property($object, 'is_auto_url_mapped_class'))
+		if(!($is_auto || config('classes_auto_full_enabled') || object_property($object, 'is_auto_url_mapped_class')))
 			$object = NULL;
 
 		if($object)

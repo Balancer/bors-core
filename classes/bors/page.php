@@ -116,4 +116,16 @@ class bors_page extends base_page
 	}
 
 	static function object_type() { return 'page'; }
+
+	function body_data()
+	{
+		$data = parent::body_data();
+		if($bdc = $this->get('body_data_engine'))
+		{
+			$bde = bors_load($bdc, $this);
+			return $bde->body_data($data);
+		}
+
+		return $data;
+	}
 }

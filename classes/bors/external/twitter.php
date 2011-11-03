@@ -81,14 +81,14 @@ class bors_external_twitter extends bors_object
 		if(preg_match_all('/( |^|"|«)#([\wа-яА-ЯёЁ\-]+)/um', $text, $matches))
 			foreach($matches[2] as $m)
 			{
-				$tags[] = common_keyword::loader($m)->title();
+				$tags[] = common_keyword::loader(str_replace('_', ' ', $m))->synonym_or_self()->title();
 				$text = preg_replace('/( |^|"|«)#('.preg_quote($m).")/", '$1$2', $text);
 			}
 
 		if(preg_match_all('/#[«"]([^»"]+)["»]/um', $text, $matches))
 			foreach($matches[1] as $m)
 			{
-				$tags[] = '«'.common_keyword::loader($m)->title().'»';
+				$tags[] = '«'.common_keyword::loader(str_replace('_', ' ', $m))->synonym_or_self()->title().'»';
 				$text = preg_replace('/#[«"]('.preg_quote($m).')[»"]/', '«$1»', $text);
 			}
 
@@ -96,7 +96,7 @@ class bors_external_twitter extends bors_object
 		{
 			foreach($matches[1] as $m)
 			{
-				$tags[] = $m;
+				$tags[] = common_keyword::loader(str_replace('_', ' ', $m))->synonym_or_self()->title();
 				$text = preg_replace("/(\S+ )\s*\*".preg_quote($m)."/", '$1', $text);
 			}
 		}

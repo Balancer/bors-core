@@ -7,7 +7,21 @@ class bors_module extends bors_page
 {
 	function body_engine()	{ return 'bors_bodies_page'; }
 
-	function html() { return $this->html_code(); }
+	function html()
+	{
+		if($ttl = $this->get('body_cache_ttl'))
+		{
+			$ch = new bors_cache();
+			if($ch->get('body_cache_ttl', $this->internal_uri_ascii().'/'.serialize($this->args())))
+				return $ch->last();
+		}
+
+		$html = $this->html_code();
+		if($ttl)
+			$ch->set($html, $ttl);
+
+		return $html;
+	}
 
 	function html_code()
 	{

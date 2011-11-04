@@ -6,4 +6,5 @@ bors_url_submap(array(
 	'/ajax/keyword\-remove => _ajax_keywordRemove',
 	'/favorites/ajax => bors_user_favorites_ajax',
 	'/ajax/call/(.+) => _ajax_call(1)',
+	'/ajax/module/(.+) => _ajax_module(1)',
 ));

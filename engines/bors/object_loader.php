@@ -562,7 +562,7 @@ function object_init($class_name, $object_id, $args = array())
 		$obj->set_class_file($class_file);
 
 		if(config('debug_objects_create_counting_details'))
-			debug_count_inc('init object '.$class_name);
+			debug_count_inc($class_name.': bors_load');
 	}
 
 	unset($args['local_path']);

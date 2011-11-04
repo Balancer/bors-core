@@ -43,7 +43,10 @@ function objects_array($class, $args = array())
 			$objects = $s->load($init, mysql_args_compile($args, $class), false, $cargs);
 
 		if(config('debug_objects_create_counting_details'))
-			debug_count_inc('init object '.$class, count($objects));
+		{
+			debug_count_inc($class.': bors_find_all_calls');
+			debug_count_inc($class.': bors_find_all_total ', count($objects));
+		}
 
 		if($preload)
 		{
@@ -65,7 +68,10 @@ function objects_first($class, $args = array())
 		$args['limit'] = 1;
 	$objs = objects_array($class, $args);
 	if(config('debug_objects_create_counting_details'))
-		debug_count_inc('init object '.$class, count($objs));
+	{
+		debug_count_inc($class.': bors_find_first_calls');
+		debug_count_inc($class.': bors_find_first_total', count($objs));
+	}
 	return $objs ? $objs[0] : NULL;
 }
 

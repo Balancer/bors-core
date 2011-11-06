@@ -1,7 +1,7 @@
 {form
 	class=$this->main_admin_class()
 	id=$this->id()
-	object=$this->target()
+	object=$target
 	fields=$form_fields
 	calling_object=$this}
 
@@ -13,3 +13,13 @@
 {submit th='Добавить'}
 {/if}
 {/form}
+
+{if $this->id()}
+{* module class="bors_admin_module_link" object=$target types='-ipotekbank_file' linkable='ipotekbank_linkable' *}
+{* include file="xfile:bors/admin/files.html" object=$target upload_files_count="1" file_class='ipotekbank_file' *}
+{* module class="bors_admin_module_images" object=$target upload_images_count=1 skip_limits=true skip_image_type=true *}
+<br />
+<div align="center">
+[ <b>{$target->admin_delete_link()}</b> ]
+</div>
+{/if}

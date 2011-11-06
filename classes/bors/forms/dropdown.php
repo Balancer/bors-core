@@ -7,6 +7,7 @@ class bors_forms_dropdown extends bors_forms_element
 		include_once('inc/bors/lists.php');
 
 		extract($params);
+//		var_dump($list);
 
 		$object = $form->object();
 		$html = "";
@@ -40,7 +41,6 @@ class bors_forms_dropdown extends bors_forms_element
 
 		$html .= ">\n";
 
-//	$html .= "==={$list}===";
 		if(!is_array($list))
 		{
 			if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))

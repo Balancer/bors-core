@@ -29,9 +29,13 @@ class base_list extends base_empty
 	function zero_item() { return ec('Выберите:'); }
 	function named_list_zero() { return array_merge(array(0 => $this->zero_item()), $this->named_list()); }
 
-	static function make($class_name, $where = array())
+	static function make($class_name, $where = array(), $data = array())
 	{
-		$list = array(0 => '');
+		if(empty($data['have_null']))
+			$list = array(0 => '');
+		else
+			$list = array(NULL => '');
+
 		foreach(bors_find_all($class_name, array_merge(array('order' => 'title'), $where)) as $x)
 			if($x->id() && ($t = $x->title()))
 				$list[$x->id()] = $t;

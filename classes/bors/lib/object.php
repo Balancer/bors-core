@@ -43,4 +43,10 @@ class bors_lib_object
 
 		return $default;
 	}
+
+	function get_foo($class_name, $name)
+	{
+		$foo = new $class_name(NULL);
+		return $foo->get($name);
+	}
 }

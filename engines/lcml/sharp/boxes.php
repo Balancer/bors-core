@@ -25,7 +25,11 @@
             $class  = "nbox";
             $params = $m[1];
         }
-        return "<div class=\"$class\"><table cellSpacing=\"0\" width=\"100%\">".($params?"<caption>$params</caption>":"")."<tr><td>\n$txt</td></tr></table></div>\n";
+
+        return "<div class=\"$class\"><table cellSpacing=\"0\" width=\"100%\">".($params?"<caption>$params</caption>":"")."<tr><td>\n".lcml($txt)."</td></tr></table></div>\n";
     }
 
-?>
+function lst_vsplit($params)
+{
+	return '</td><td>';
+}

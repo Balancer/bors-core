@@ -15,6 +15,23 @@ class bors_admin_meta_edit extends bors_admin_page
 
 	function target() { return $this->id() ? bors_load($this->main_class(), $this->id()) : NULL; }
 
+	function main_class()
+	{
+		$class_name = str_replace('_admin_', '_', $this->class_name());
+		$class_name = str_replace('_edit', '', $class_name);
+		return bors_unplural($class_name);
+	}
+
+	function main_admin_class()
+	{
+		$class_name = str_replace('_edit', '', $this->class_name());
+		$admin_class_name = bors_unplural($class_name);
+		if(class_include($admin_class_name))
+			return $admin_class_name;
+
+		return $this->main_class();
+	}
+
 	function admin_target()
 	{
 		if(!$this->id())
@@ -53,11 +70,14 @@ class bors_admin_meta_edit extends bors_admin_page
 		else
 			$data = array();
 
+		$target = $this->id() ? $this->target() : NULL;
+
 		return array_merge(
 			$data,
 			parent::body_data(),
 			array(
-				$this->item_name() => $this->id() ? $this->target() : NULL,
+				$this->item_name() => $target,
+				'target' => $target,
 				'form_fields' => ($f=$this->get('form')) ? $f : 'auto',
 			)
 		);

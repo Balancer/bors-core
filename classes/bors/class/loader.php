@@ -73,6 +73,7 @@ class bors_class_loader
 //			echo "Find {$dir}/classes/{$class_path}{$class_file}.yaml<br/>\n";
 			if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.yaml"))
 			{
+//				echo "Try load $class_name in $file_name<br/>\n";
 				bors_class_loader_yaml::load($class_name, $file_name);
 				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
 				return $file_name;

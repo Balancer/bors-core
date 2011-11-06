@@ -95,6 +95,7 @@ class bors_forms_saver extends base_empty
 //			var_dump($form_object);
 
 			require_once('inc/navigation.php');
+
 			switch($go)
 			{
 				case 'newpage':

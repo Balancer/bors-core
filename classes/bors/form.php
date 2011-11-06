@@ -381,11 +381,11 @@ class bors_form extends bors_object
 							$data['list'] = $list->named_list();
 						}
 						else
-							$data['list'] = base_list::make($class);
+							$data['list'] = base_list::make($class, array(), $data);
 
-						$data['is_int'] = true;
-						foreach($data['list'] as $v => $n)
-							$data['is_int'] &= is_numeric($v);
+						if($data['is_int'] = defval($data, 'is_int', true))
+							foreach($data['list'] as $v => $n)
+								$data['is_int'] &= is_numeric($v);
 
 						$html .= bors_forms_dropdown::html($data, $this);
 						break;

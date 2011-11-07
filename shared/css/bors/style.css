@@ -172,6 +172,10 @@ div.thumb_down { background-image: url(http://balancer.ru/_bors/i/thumb_down.gif
 
 input { border: 1px solid; }
 
+ul.none {
+	list-style: none;
+}
+
 li.imaged {
 	background-repeat: no-repeat;
 	list-style: none;

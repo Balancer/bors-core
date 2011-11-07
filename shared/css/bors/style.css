@@ -27,6 +27,8 @@ small, .small { font-size: 0.8em !important; }
 .blue { color: blue; }
 .navy { color: navy; }
 
+.bg_pink { background-color: pink; }
+
 .b { font-weight: bold; }
 .s { text-decoration: line-through; }
 .nobr { white-space: nowrap; }

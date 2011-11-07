@@ -8,6 +8,12 @@
 		if(!$obj)
 			return false;
 
+		if(!is_object($obj))
+		{
+			debug_hidden_log('__error_non_object', "Non object ".$obj);
+			return false;
+		}
+
 		$page = $obj->set_page($obj->arg('page'));
 
 		@header("Status: 200 OK");

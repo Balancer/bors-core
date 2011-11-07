@@ -41,6 +41,8 @@ class bors_templates_smarty3 extends bors_template
 
 		if(!file_exists($smarty->compile_dir))
 			mkpath($smarty->compile_dir, 0777);
+		if(!file_exists($smarty->compile_dir))
+			bors_throw(ec('Не могу создать каталог для компиляции шаблонов: ').$smarty->compile_dir);
 		if(!file_exists($smarty->cache_dir))
 			mkpath($smarty->cache_dir, 0777);
 

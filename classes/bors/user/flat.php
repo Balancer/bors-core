@@ -29,6 +29,11 @@ class bors_user_flat extends bors_user_base
 			return self::$users_data;
 
 		$users_data = array();
+		if(!config('user_flat_base'))
+			bors_throw(ec("Не задана переменная конфигурации config('user_flat_base')"));
+		if(!file_exists(config('user_flat_base')))
+			bors_throw(ec("Не существует файт ".config('user_flat_base')));
+
 		foreach(file(config('user_flat_base')) as $x)
 			if(preg_match('!^(\d+)::([^:]+)::([\da-fA-F]+)::([^:]+)::(\d+)$!', chop($x), $m))
 				self::$users_data[$m[1]] = array(
@@ -119,5 +124,6 @@ class bors_user_flat extends bors_user_base
 	}
 
 	function is_admin() { return $this->data('access_level') > 2; }
+	function is_coordinator() { return $this->is_admin(); }
 	function can_edit_object($object) { return $this->data('access_level') > 2; }
 }

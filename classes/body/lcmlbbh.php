@@ -33,7 +33,6 @@ class body_lcmlbbh extends base_null
 		$data['this'] = $obj;
 
 		$obj->template_data_fill();
-		require_once('engines/smarty/assign.php');
-		return lcml_bbh(template_assign_data($obj->body_template(), $data));
+		return lcml_bbh(bors_templates_smarty::fetch($obj->body_template(), $data));
 	}
 }

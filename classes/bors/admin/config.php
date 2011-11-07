@@ -13,7 +13,7 @@ class bors_admin_config extends base_config
 			$data['new_title'] = ec('Добавить ').$foo->get('class_title_vp');
 		}
 
-//		'template' => config('admin_template', 'default'),
+		$data['template'] = config('admin_template', 'default');
 
 		return $data;
 	}

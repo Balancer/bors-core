@@ -2,13 +2,13 @@
 
 function geoip_place($ip)
 {
-	list($cc, $cn, $city) = geoip_info($ip);
+	list($country_code, $country_name, $city_name) = geoip_info($ip);
 
-	if($cc)
+	if($country_code)
 	{
-		$res = "$cn";
-		if($city)
-			$res .= ", $city";
+		$res = "$country_name";
+		if($city_name)
+			$res .= ", $city_name";
 	}
 	else
 		$res = "";
@@ -18,23 +18,23 @@ function geoip_place($ip)
 
 function geoip_flag($ip, $fun = false)
 {
-	list($cc, $cn, $city) = geoip_info($ip);
+	list($country_code, $country_name, $city) = geoip_info($ip);
 
-	if(!$cc)
+	if(!$country_code)
 		return '';
 
-	$alt = "$cn";
+	$alt = "$country_name";
 	if($city)
 		$alt .= ", $city";
 
-	$file = bors_lower($cc).".gif";
+	$file = bors_lower($country_code).".gif";
 //	if(!file_exists("/var/www/balancer.ru/htdocs/img/flags/$file"))
 //		$file = "-.gif";
 
 	if($fun)
 		$alt = "Earth, {$alt}";
 
-	$res = '<img src="http://s.wrk.ru/f/'.$file.'" class="flag" title="'.addslashes($alt).'" alt="'.$cc.'"/>';
+	$res = '<img src="http://s.wrk.ru/f/'.$file.'" class="flag" title="'.addslashes($alt).'" alt="'.$country_code.'"/>';
 	return $res;
 }
 
@@ -48,64 +48,76 @@ function geoip_info($ip)
 	if(!$ip)
 		return array('','','', NULL);
 
-	require_once(BORS_3RD_PARTY."/geoip/geoip.inc");
-	require_once(BORS_3RD_PARTY."/geoip/geoipcity.inc");
+	if(!function_exists('geoip_country_code_by_name'))
+		require_once(BORS_3RD_PARTY."/geoip/geoipcity.inc");
 
 //	$ch = new Cache();
 //	if($ch->get("users-geoip-info", $ip))
 //		0;//return $ch->last();
 
-	$cc = '';
+	$country_code = '';
 	$city_object = NULL;
 	if(file_exists(($gf = BORS_3RD_PARTY."/geoip/GeoIPCity.dat")))
 	{
 		$gi = geoip_open($gf, GEOIP_STANDARD);
 
 		$record = geoip_record_by_addr($gi, $ip);
-		$cc = $record->country_code;
-		$cn = $record->country_name;
-		$cin = $record->city;
+		$country_code = $record->country_code;
+		$country_name = $record->country_name;
+		$city_name = $record->city;
 		geoip_close($gi);
 		$city_object = $record;
 	}
 
-	if(!$cc && file_exists(($gf = BORS_3RD_PARTY."/geoip/GeoLiteCity.dat")))
+	if(!$country_code && file_exists(($gf = BORS_3RD_PARTY."/geoip/GeoLiteCity.dat")))
 	{
 		$gi = geoip_open($gf, GEOIP_STANDARD);
 
 		$record = geoip_record_by_addr($gi, $ip);
 		if($record)
 		{
-			$cc = $record->country_code;
-			$cn = $record->country_name;
-			$cin = $record->city;
+			$country_code = $record->country_code;
+			$country_name = $record->country_name;
+			$city_name = $record->city;
 		}
 		geoip_close($gi);
 		$city_object = $record;
 	}
 
-	if(!$cc && @file_exists(($gf = "/usr/share/GeoIP/GeoIP.dat")))
+	if(!$country_code && @file_exists(($gf = "/usr/share/GeoIP/GeoIP.dat")) && function_exists('geoip_open'))
 	{
 		$gi = geoip_open($gf, GEOIP_STANDARD);
-		$cc = geoip_country_code_by_addr($gi, $ip);
-		$cn = geoip_country_name_by_addr($gi, $ip);
-		$cin = "";
+		$country_code = geoip_country_code_by_addr($gi, $ip);
+		$country_name = geoip_country_name_by_addr($gi, $ip);
+		$city_name = "";
 		geoip_close($gi);
 	}
 
-	if(!$cc && file_exists(($gf = BORS_3RD_PARTY."/geoip/GeoIP.dat")))
+	if(!$country_code && file_exists(($gf = BORS_3RD_PARTY."/geoip/GeoIP.dat")) && function_exists('geoip_open'))
 	{
 		$gi = geoip_open($gf, GEOIP_STANDARD);
-		$cc = geoip_country_code_by_addr($gi, $ip);
-		$cn = geoip_country_name_by_addr($gi, $ip);
-		$cin = "";
+		$country_code = geoip_country_code_by_addr($gi, $ip);
+		$country_name = geoip_country_name_by_addr($gi, $ip);
+		$city_name = "";
 		geoip_close($gi);
 	}
 
-	$cc  = iconv('ISO-8859-1', 'utf-8', $cc );
-	$cn  = iconv('ISO-8859-1', 'utf-8', $cn );
-	$cin = iconv('ISO-8859-1', 'utf-8', $cin);
+	$country_code  = iconv('ISO-8859-1', 'utf-8', $country_code );
+	$country_name  = iconv('ISO-8859-1', 'utf-8', @$country_name );
+	$city_name = iconv('ISO-8859-1', 'utf-8', @$city_name);
 
-	return array($cc, $cn, $cin, $city_object);
-//	return $ch->set(array($cc, $cn, $cin, $city_object), -3600);
+	if(!$country_code & function_exists('geoip_country_code_by_name'))
+		$country_code = geoip_country_code_by_name($ip);
+
+	if(!$country_name & function_exists('geoip_country_name_by_name'))
+		$country_name = geoip_country_name_by_name($ip);
+
+	if(!$city_name & function_exists('geoip_org_by_name'))
+		$city_name = geoip_org_by_name($ip);
+
+	if(!$city_name & function_exists('geoip_isp_by_name'))
+		$city_name = geoip_isp_by_name($ip);
+
+	return array($country_code, $country_name, $city_name, $city_object);
+//	return $ch->set(array($country_code, $country_name, $city_name, $city_object), -3600);
 }

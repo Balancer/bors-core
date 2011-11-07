@@ -95,6 +95,10 @@ function bors_message($text, $params=array())
 		$body = template_assign_data($body_template, $data);
 	}
 
+	// Если возникла какая-то ошибка рендеринга, выводим исходный текст.
+	if(!$body)
+		$body = $text;
+
 	$data['url_engine'] = 'url_calling';
 
 	$page_class_name = defval($params, 'page_class_name', 'base_page');

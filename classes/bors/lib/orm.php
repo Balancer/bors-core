@@ -151,14 +151,14 @@ class bors_lib_orm
 		{
 			debug_hidden_log('__defaults', "Found defaults for {$object->debug_title()}");
 
-			$x = 'id';
-			array_unshift($fields_array, self::field(0, $x));
+			$foo = array('is_editable' => false);
+			array_unshift($fields_array, self::field('id', $foo));
 
 			foreach(array(
-				'modify_time' => array('name' => 'UNIX_TIMESTAMP(`modify_time`)', 'type' => 'timestamp', 'index' => true),
-				'create_time' => array('name' => 'UNIX_TIMESTAMP(`create_time`)', 'type' => 'timestamp', 'index' => true),
-				'owner_id',
-				'last_editor_id'
+				'modify_time' => array('name' => 'UNIX_TIMESTAMP(`modify_time`)', 'type' => 'timestamp', 'index' => true, 'is_editable' => false),
+				'create_time' => array('name' => 'UNIX_TIMESTAMP(`create_time`)', 'type' => 'timestamp', 'index' => true, 'is_editable' => false),
+				'owner_id' => array('is_editable' => false),
+				'last_editor_id' => array('is_editable' => false)
 			) as $property => $data)
 			{
 				$f = self::field($property, $data);

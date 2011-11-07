@@ -53,8 +53,10 @@ class bors_view extends bors_page
 
 	function body_data()
 	{
+		$target = $this->object();
 		return array_merge(parent::body_data(), array(
-			$this->item_name() => $this->object(),
+			$this->item_name() => $target,
+			'target' => $target,
 		), $this->target()->data);
 	}
 

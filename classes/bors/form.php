@@ -385,7 +385,7 @@ class bors_form extends bors_object
 
 						if($data['is_int'] = defval($data, 'is_int', true))
 							foreach($data['list'] as $v => $n)
-								$data['is_int'] &= is_numeric($v);
+								$data['is_int'] &= !$k || is_numeric($k);
 
 						$html .= bors_forms_dropdown::html($data, $this);
 						break;

@@ -2,6 +2,9 @@
 
 function smarty_function_checkbox($params, &$smarty)
 {
+	echo bors_forms_checkbox::html($params);
+	return;
+
 		extract($params);
 
 		if(!array_key_exists('checked', $params))

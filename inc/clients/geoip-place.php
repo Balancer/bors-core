@@ -106,17 +106,20 @@ function geoip_info($ip)
 	$country_name  = iconv('ISO-8859-1', 'utf-8', @$country_name );
 	$city_name = iconv('ISO-8859-1', 'utf-8', @$city_name);
 
-	if(!$country_code & function_exists('geoip_country_code_by_name'))
-		$country_code = geoip_country_code_by_name($ip);
+	if(!function_exists('geoip_open') && function_exists('geoip_country_code_by_name'))
+	{
+		if(!$country_code)
+			$country_code = geoip_country_code_by_name($ip);
 
-	if(!$country_name & function_exists('geoip_country_name_by_name'))
-		$country_name = geoip_country_name_by_name($ip);
+		if(!$country_name)
+			$country_name = geoip_country_name_by_name($ip);
 
-	if(!$city_name & function_exists('geoip_org_by_name'))
-		$city_name = geoip_org_by_name($ip);
+		if(!$city_name)
+			$city_name = geoip_org_by_name($ip);
 
-	if(!$city_name & function_exists('geoip_isp_by_name'))
-		$city_name = geoip_isp_by_name($ip);
+		if(!$city_name)
+			$city_name = geoip_isp_by_name($ip);
+	}
 
 	return array($country_code, $country_name, $city_name, $city_object);
 //	return $ch->set(array($country_code, $country_name, $city_name, $city_object), -3600);

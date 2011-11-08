@@ -21,9 +21,11 @@ class bors_forms_checkbox extends bors_forms_element
 		if($checked)
 			$checked = "checked";
 
-		$cbs = base_object::template_data('form_checkboxes');
-		$cbs[] = $name;
-		base_object::add_template_data('form_checkboxes', $cbs);
+//		$cbs = base_object::template_data('form_checkboxes');
+//		$cbs[] = $name;
+//		base_object::add_template_data('form_checkboxes', $cbs);
+
+		$form->append_attr('checkboxes', $name);
 
 		if(empty($value))
 			$value = 1;

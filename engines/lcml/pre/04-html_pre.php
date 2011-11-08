@@ -58,7 +58,7 @@ function lcml_html_pre($txt)
 		}
 
 		// Строго парные тэги. отображаемые в другие BB-тэги
-		foreach(array('blockquote' => 'quote') as $html_tag => $bb_tag)
+		foreach(array('blockquote' => 'quote', 'table' => 'table_html') as $html_tag => $bb_tag)
 		{
 			$txt = preg_replace("!<$html_tag>(.*?)</$html_tag>!is","[$bb_tag]$1[/$bb_tag]", $txt);
 			$txt = preg_replace("!<$html_tag\s+([^>]+)>(.*?)</$html_tag>!is","[$bb_tag $1]$2[/$bb_tag]", $txt);
@@ -83,7 +83,7 @@ function lcml_html_pre($txt)
 			$txt = preg_replace("!<$tag\s+([^>]+)>!is","[$tag $1]", $txt);
 		}
 
-		foreach(explode(' ','b big br center code div font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr table td th html_img html_a') as $tag)
+		foreach(explode(' ','b big br center code div font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr td th html_img html_a') as $tag)
 		{
 			$txt = preg_replace("!<$tag>!i","[$tag]", $txt);
 			$txt = preg_replace("!<$tag\s*/>!i","[$tag]", $txt);

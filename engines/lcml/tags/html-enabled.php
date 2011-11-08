@@ -43,6 +43,16 @@ function lp_table($inner, $params)
 	return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">".lcml($inner)."</table>";
 }
 
+function lp_table_html($inner, $params)
+{
+	if(empty($params['class']) && empty($params['style']) && !empty($params['border']))
+	{
+		unset($params['border']);
+		$params['class'] = 'btab';
+	}
+	return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">".lcml(str_replace("\n"," ",$inner))."</table>";
+}
+
 function lp_form($inner, $params)
 {
 	if(!preg_match('!^http://(aeterna\.ru)!', @$params['action']))

@@ -47,6 +47,10 @@ class bors_external_common extends bors_object
 		if(!$img && preg_match('!<div class="doc-banner-icon"><img src="([^"]+)" /></div>!', $html, $m))
 			$img = $m[1];
 
+		// Принудительный urldecode, если нужно.
+		if(preg_match('/%D0/', $img))
+			$img = urldecode($img);
+
 		if($img)
 			$img = "[img {$img} 200x200 left flow]";
 

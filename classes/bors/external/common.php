@@ -38,9 +38,13 @@ class bors_external_common extends bors_object
 		if(!$img && preg_match('!<div class=photo><img src=(http://img.lenta.ru\S+) !', $html, $m))
 			$img = $m[1];
 
-
 		// Lenta.Ru: http://balancer.ru/g/p2580440
 		if(!$img && preg_match('!^<img src=(http://img.lenta.ru/news/\S+\.jpg) width=!m', $html, $m))
+			$img = $m[1];
+
+		// Андроид Маркет
+		// <div class="doc-banner-icon"><img src="https://g1.gstatic.com/android/market/com.eolwral.osmonitor/hi-256-1-cb0eccad4104c6cf15182a6da90c40002d76bad8" /></div>
+		if(!$img && preg_match('!<div class="doc-banner-icon"><img src="([^"]+)" /></div>!', $html, $m))
 			$img = $m[1];
 
 		if($img)

@@ -66,7 +66,7 @@ function http_get_content($url, $raw = false)
 	curl_setopt_array($ch, array(
 		CURLOPT_TIMEOUT => 5,
 		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_MAXREDIRS => 3,
+		CURLOPT_MAXREDIRS => 5,
 		CURLOPT_ENCODING => 'gzip,deflate',
 		CURLOPT_REFERER => $original_url,
 		CURLOPT_AUTOREFERER => true,

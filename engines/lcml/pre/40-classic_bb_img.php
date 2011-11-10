@@ -3,6 +3,7 @@
 function lcml_classic_bb_img($txt)
 {
 	// простые .jpg отрабатываем с утягиванием:
+	$txt = preg_replace("!\[url=([^\]]+)\]\[img\]([^\[&\?]+\.jpe?g)\[/img\]\[/url\]!is", "[img $2]// $1\n", $txt);
 	$txt = preg_replace("!\[img\]([^\[&\?]+\.jpe?g)\[/img\]!is", "[img $1]", $txt);
 
 	$txt = preg_replace("!\[img\]\s*(.+?)\s*\[/img\]!is", "<img src=\"$1\" alt=\"\" />", $txt);

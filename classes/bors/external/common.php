@@ -7,6 +7,8 @@ class bors_external_common extends bors_object
 		if(preg_match('/\.(jpg|jpeg|png|gif)$/i', $url))
 			return array('bbshort' => "[img url=\"$url\" 468x468]", 'tags' => array());
 
+		$more = false;
+
 		$html = bors_lib_http::get_cached($url, 7200);
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
@@ -68,6 +70,22 @@ class bors_external_common extends bors_object
 if(config('is_developer')) { exit($img); }
 */
 
+		if(!$description && config('is_developer'))
+		{
+//			print_dd($html);
+			$dom = new DOMDocument('1.0', 'UTF-8');
+			$dom->loadHTML($html);
+			$xpath = new DOMXPath($dom);
+			if($divs = $xpath->query('//div[@id="content"]'))
+			{
+				$content = /*bors_lib_dom::element_html*/($divs->item(0));
+				$source = str_replace("\n", "\n\n", $content->nodeValue);
+				$description = clause_truncate_ceil($source, 512);
+				if($source != $description)
+					$more = true;
+			}
+		}
+
 		if($title && strlen($title) > 5)
 		{
 			$description = clause_truncate_ceil($description, $limit);
@@ -75,9 +93,10 @@ if(config('is_developer')) { exit($img); }
 			$bbshort = "[round_box]{$img}[h][a href=\"{$url}\"]{$title}[/a][/h]
 {$description}
 
-// ".bors_external_feeds_entry::url_host_link($url)."[/round_box]";
+// ".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($url)."[/round_box]";
 
 			$tags = array();
+
 			return compact('tags', 'title', 'bbshort');
 		}
 

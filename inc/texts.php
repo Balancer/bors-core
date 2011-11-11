@@ -183,7 +183,7 @@ function clause_truncate_ceil($text, $limit, $max_limit = NULL)
 	if(is_null($max_limit))
 		$max_limit = $limit * 2;
 
-	if(preg_match("/^(.{".$limit."}.+?[\.\?!])(\n|\s|$)/s", $text, $m))
+	if(preg_match("/^(.{".$limit."}.+?[\.\?!])(\n|\s|$)/su", $text, $m))
 		if(bors_strlen($m[1]) <= $max_limit)
 			return $m[1];
 

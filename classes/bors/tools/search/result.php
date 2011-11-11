@@ -73,9 +73,13 @@ class bors_tools_search_result extends bors_tools_search
 				$index = "blog_titles,blog_keywords,blog_sources";
 				$weights = array ('blog_titles' => 100 , 'blog_keywords' => 1000, 'blog_sources' => 10);
 				break;
+			case 't':
+				$index = "topic_titles";
+				$weights = array ('topic_titles');
+				break;
 			default:
-				$index = "topic_titles,topic_descriptions";
-				$weights = array ('topic_titles' => 1000 , 'topic_descriptions' => 100);
+				$index = "topic_titles,topic_descriptions,topic_keywords";
+				$weights = array ('topic_titles' => 1000 , 'topic_descriptions' => 100, 'topic_keywords' => 10);
 				break;
 		}
 //		$groupby = "topic_id";

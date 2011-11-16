@@ -80,6 +80,6 @@ class bors_tools_cutycapt
 
 	static function image($url, $args = array())
 	{
-		$
+		
 	}
 }

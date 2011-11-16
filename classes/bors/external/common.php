@@ -70,7 +70,7 @@ class bors_external_common extends bors_object
 if(config('is_developer')) { exit($img); }
 */
 
-		if(!$description && config('is_developer'))
+		if(!$description)
 		{
 //			print_dd($html);
 			$dom = new DOMDocument('1.0', 'UTF-8');
@@ -79,7 +79,17 @@ if(config('is_developer')) { exit($img); }
 			if($divs = $xpath->query('//div[@id="content"]'))
 			{
 				$content = /*bors_lib_dom::element_html*/($divs->item(0));
-				$source = str_replace("\n", "\n\n", $content->nodeValue);
+				$source = preg_replace("/\s*\n+\s*/", "\n", $content->nodeValue);
+				$source = array_filter(explode("\n", $source));
+				if(count($source) > 7)
+				{
+					$source = array_slice($source, 0, 6);
+					$source[] = ec('…');
+					$more = true;
+				}
+
+				$source = join("\n", $source);
+//				var_dump($source);
 				$description = clause_truncate_ceil($source, 512);
 				if($source != $description)
 					$more = true;

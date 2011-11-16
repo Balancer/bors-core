@@ -58,6 +58,7 @@ class bors_templates_smarty2 extends bors_templates_abstract
 		$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $template));
 		$smarty->assign("page_template", $template);
 		$smarty->assign('me', bors()->user());
+		$smarty->assign("main_uri", @$GLOBALS['main_uri']);
 //		if(config('is_developer')) echo debug_trace();
 		$smarty->assign(bors_template::page_data($data));
 

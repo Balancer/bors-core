@@ -74,7 +74,7 @@ if(config('is_developer')) { exit($img); }
 		{
 //			print_dd($html);
 			$dom = new DOMDocument('1.0', 'UTF-8');
-			$dom->loadHTML($html);
+			@$dom->loadHTML($html);
 			$xpath = new DOMXPath($dom);
 			if($divs = $xpath->query('//div[@id="content"]'))
 			{

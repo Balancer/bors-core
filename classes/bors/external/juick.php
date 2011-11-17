@@ -22,6 +22,10 @@ class bors_external_juick extends bors_object
 			}
 		}
 
+		$text = preg_replace('!<a href="[^"]+youtube[^"]+v=([^"&]+)?"[^>]+>youtube\.com</a>!e', "lcml('[youtube]$1[/youtube]');", $text);
+//		var_dump($text);
+//		exit();
+
 		if(!empty($link))
 			$text .= "<br/><br/><span class=\"transgray\">// Транслировано с ".bors_external_feeds_entry::url_host_link_html($link)."</span>";
 

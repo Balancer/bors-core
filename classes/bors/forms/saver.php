@@ -116,6 +116,12 @@ class bors_forms_saver extends base_empty
 					return go($form_object->url(1));
 			}
 
+			if($object)
+			{
+				$go = str_replace('%OBJECT_ID%', $object->id(), $go);
+				$go = str_replace('%OBJECT_URL%', $object->url(), $go);
+			}
+
 			if($form_object)
 			{
 				$go = str_replace('%OBJECT_ID%', $form_object->id(), $go);

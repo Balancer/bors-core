@@ -36,11 +36,12 @@ if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 }
 
 $is_bot = bors()->client()->is_bot();
+$is_crowler = bors()->client()->is_crowler();
 
 // Если это бот и включён лимит максимальной загрузки сервера
 // то проверяем. И если загрузка превышает допустимую - просим подождать
 //if($bot && config('bot_lavg_limit') && !in_array($bot, config('bot_whitelist', array())))
-if($is_bot && config('bot_lavg_limit'))
+if($is_crowler && config('bot_lavg_limit'))
 {
 	$cache = new BorsMemCache();
 	if(!($load_avg = $cache->get('system-load-average')))

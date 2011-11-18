@@ -1,6 +1,6 @@
 <?php
 
-function bors_bot_detect($user_agent)
+function bors_bot_detect($user_agent, &$data = array())
 {
 	foreach(array(
 			'archive.org_bot' => 'archive.org bot',	// Mozilla/5.0 (compatible; archive.org_bot +http://www.archive.org/details/archive.org_bot)
@@ -49,18 +49,40 @@ function bors_bot_detect($user_agent)
 			'WebAlta' => 'WebAlta',
 			'YaDirectBot' => 'YandexDirect',	// YaDirectBot/1.0
 			'yahoo' => 'Yahoo',
+			'YandexMetrika' => array(
+				'bot' => 'YandexMetrica',
+				'crowler' => false,
+			),
 			'yandex' => 'Yandex',
 			'Yanga' => 'Yanga',
 			'YoudaoBot' => 'YoudaoBot',	// Mozilla/5.0 (compatible; YoudaoBot/1.0; http://www.youdao.com/help/webmaster/spider/; )
 		) as $pattern => $bot)
 	{
 		if(preg_match("!".$pattern."!i", $user_agent))
+		{
+			if(is_array($bot))
+			{
+				$data = $bot;
+				$bot = $data['bot'];
+			}
+			else
+				$data = array('bot' => $bot, 'crowler' => $bot);
+
 			return $bot;
+		}
 	}
 
-	if(preg_match("/bot|crowler|spider|feed|rss/i", $user_agent))
+	if(preg_match("/bot|crowler|spider/i", $user_agent))
 	{
 		debug_hidden_log('_need_append_data', 'unknown bot detectd');
+		$data = array('bot' => '$user_agent', 'crowler' => $user_agent);
+		return 'Unknown bot';
+	}
+
+	if(preg_match("/monitor|feed|rss/i", $user_agent))
+	{
+		debug_hidden_log('_need_append_data', 'unknown bot detectd');
+		$data = array('bot' => '$user_agent', 'crowler' => false);
 		return 'Unknown bot';
 	}
 
@@ -70,7 +92,10 @@ function bors_bot_detect($user_agent)
 function bors_client_analyze()
 {
 	global $client;
-	$client['is_bot'] = bors_bot_detect(@$_SERVER['HTTP_USER_AGENT']);
+	$data = array();
+	bors_bot_detect(@$_SERVER['HTTP_USER_AGENT'], $data);
+	$client['is_bot'] = @$data['bot'];
+	$client['is_crowler'] = @$data['crowler'];
 }
 
 function bors_client_info_short($ip, $ua = '')

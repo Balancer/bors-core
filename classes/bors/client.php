@@ -4,6 +4,7 @@ class bors_client extends base_object
 {
 	function can_cached() { return false; }
 	function is_bot() { return @$GLOBALS['client']['is_bot']; }
+	function is_crowler() { return @$GLOBALS['client']['is_crowler']; }
 	function ip()
 	{
 		$ip = @$_SERVER['REMOTE_ADDR'];

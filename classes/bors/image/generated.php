@@ -52,7 +52,7 @@ function set_last_visit_time($v, $dbup) { return $this->set('last_visit_time', $
 function owner_id() { return @$this->data['owner_id']; }
 function set_owner_id($v, $dbup) { return $this->set('owner_id', $v, $dbup); }
 function last_editor_id() { return @$this->data['last_editor_id']; }
-function set_last_editor_id($v, $dbup) { return $this->set('last_editor_id', $v, $dbup); }
+function set_last_editor_id($v, $dbup = true) { return $this->set('last_editor_id', $v, $dbup); }
 
 	function auto_targets()
 	{

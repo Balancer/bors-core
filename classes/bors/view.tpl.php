@@ -15,8 +15,8 @@ foreach(bors_lib_orm::main_fields($target) as $idx => $args)
 	else
 		$value = htmlspecialchars($value);
 
-	if($value)
-		echo "<li>{$args['title']}: ".$value."</li>\n";
+	if($value && ($title = $args['title']))
+		echo "<li>{$title}: ".$value."</li>\n";
 }
 echo "</ul>";
 

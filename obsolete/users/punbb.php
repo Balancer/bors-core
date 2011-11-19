@@ -259,7 +259,7 @@
 
 			SetCookie("user_id", $this->get('id'), $expired, "/", '.'.$_SERVER['HTTP_HOST']);
 			SetCookie("cookie_hash", $cookie_hash, $expired, "/", '.'.$_SERVER['HTTP_HOST']);
-			
+
 			$_COOKIE['user_id'] = $this->get('id');
 			$_COOKIE['cookie_hash'] = $cookie_hash;
 			return $this->cookie_hash();
@@ -268,19 +268,19 @@
 	    function check_salt()
 		{
 			$user_hash_password = @$_COOKIE['cookie_hash'];
-			
+
 			if(is_global_key('user-id-cookie-hash', $user_hash_password))
 			{
 				$this->id = global_key('user-id-cookie-hash', $user_hash_password);
 				return;
 			}
 
-			$db = new driver_mysql('punbb');
+			$db = new driver_mysql(config('punbb.database', 'punbb'));
 
 			$this->id = 1;
 			if($user_hash_password)
 			{
-				$this->id = intval($db->get("SELECT id FROM punbb.users WHERE user_cookie_hash = '".addslashes($user_hash_password)."' LIMIT 1"));
+				$this->id = intval($db->get("SELECT id FROM users WHERE user_cookie_hash = '".addslashes($user_hash_password)."' LIMIT 1"));
 /*				if(!$this->id)
 				{
 					$db = &new DataBase('USERS');
@@ -288,7 +288,7 @@
 					if(!$this->id)
 						$this->id = 1;
 				}
-*/				
+*/
 				set_global_key('user-id-cookie-hash', $user_hash_password, $this->id);
 			}
 //			echo("=={$this->id}");

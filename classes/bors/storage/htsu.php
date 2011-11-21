@@ -1,5 +1,7 @@
 <?php
 
+bors_function_include('debug/log_var');
+
 class bors_storage_htsu extends bors_storage
 {
 	private $hts;

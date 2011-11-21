@@ -115,10 +115,10 @@ function geoip_info($ip)
 			$country_name = geoip_country_name_by_name($ip);
 
 		if(!$city_name)
-			$city_name = geoip_org_by_name($ip);
+			$city_name = @geoip_org_by_name($ip); // Нужен /usr/share/GeoIP/GeoIPOrg.dat
 
 		if(!$city_name)
-			$city_name = geoip_isp_by_name($ip);
+			$city_name = @geoip_isp_by_name($ip); // Нужен /usr/share/GeoIP/GeoIPISP.dat
 	}
 
 	return array($country_code, $country_name, $city_name, $city_object);

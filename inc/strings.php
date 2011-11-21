@@ -40,34 +40,7 @@ function sklonn($n, $s1, $s2=NULL, $s5=NULL)
     return $n.' '.$s5;
 }
 
-function bors_truncate($string, $length = 80, $etc = '&#133;', $break_words = false, $middle = false)
-{
-	return truncate($string, $length, $etc, $break_words, $middle);
-}
-
-function truncate($string, $length = 80, $etc = '&#133;', $break_words = false, $middle = false)
-{
-    if($length == 0)
-        return '';
-
-    if(bors_strlen($string) <= $length)
-        return $string;
-
-	$length -= min($length, bors_strlen($etc));
-	if(!$break_words && !$middle)
-	{
-		$string = preg_replace('/\s+?(\S+)?$/', '', bors_substr($string, 0, $length+1));
-	}
-
-	if(!$middle)
-	{
-   		return bors_substr($string, 0, $length) . $etc;
-	}
-	else
-	{
-	    return bors_substr($string, 0, $length/2) . $etc . bors_substr($string, -$length/2);
-	}
-}
+bors_function_include('text/truncate');
 
 function stripq($text) { return str_replace('\\"', '"', $text); }
 

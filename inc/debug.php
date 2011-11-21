@@ -187,46 +187,8 @@ $GLOBALS['bors_debug_counts'] = array();
 function debug_count_inc($category, $inc = 1) { @$GLOBALS['bors_debug_counts'][$category] += $inc; }
 function debug_count($category) { return @$GLOBALS['bors_debug_counts'][$category]; }
 
-$GLOBALS['bors_debug_timing'] = array();
-function debug_timing_start($category)
-{
-	global $bors_debug_timing;
-	if(empty($bors_debug_timing[$category]))
-		$bors_debug_timing[$category] = array('start' => NULL, 'calls'=>0, 'total'=>0, 'mem_total' => 0);
-
-	$current = &$bors_debug_timing[$category];
-
-	if($current['start'])
-	{
-		//TODO: need best method
-//		debug_hidden_log('__debug_error', ec("Вторичный вызов незавершённой функции debug_timing_start('$category')."));
-		return;
-	}
-
-	$current['start'] = microtime(true);
-	$current['mem'] = memory_get_usage();
-}
-
-function debug_timing_stop($category)
-{
-	global $bors_debug_timing;
-	$current = &$bors_debug_timing[$category];
-
-	if(empty($current['start']))
-	{
-//		debug_hidden_log('__debug_error', ec("Вызов неактивированной функции debug_timing_stop('$category')."));
-		return;
-	}
-
-	$mem = memory_get_usage() - $current['mem'];
-	$time = microtime(true) - $current['start'];
-
-	$current['start'] = NULL;
-	$current['mem'] = NULL;
-	$current['calls']++;
-	$current['total'] += $time;
-	$current['mem_total'] += $mem;
-}
+bors_function_include('debug/timing_start');
+bors_function_include('debug/timing_stop');
 
 function debug_timing_info_all()
 {
@@ -244,7 +206,8 @@ function debug_timing_info_all()
 	return $result;
 }
 
-function debug_log_var($var, $value) { return $GLOBALS['bors_debug_log_vars'][$var] = $value; }
+bors_function_include('debug/log_var');
+
 function debug_vars_info()
 {
 	global $bors_debug_log_vars;

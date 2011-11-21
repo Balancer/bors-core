@@ -60,7 +60,9 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				continue;
 			}
 
-			if(preg_match('/^\w+$/', $value))
+			if(preg_match('/^(\w+)\(\)$/', $key, $m))
+				$key = $m[1];
+			elseif(preg_match('/^\w+$/', $value))
 				$value = "'".addslashes($value)."'";
 			else
 				$value = "ec('".addslashes($value)."')";

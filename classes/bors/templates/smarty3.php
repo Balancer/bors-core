@@ -22,7 +22,7 @@ class bors_templates_smarty3 extends bors_template
 	{
 		require_once(config('smarty3_include'));
 		$smarty = new Smarty();
-		require('smarty3-register.php');
+		require('classes/bors/templates/smarty3-register.php');
 
 //		$smarty->template_dir = '/web/www.example.com/guestbook/templates/';
 //		$smarty->config_dir   = '/web/www.example.com/guestbook/configs/';

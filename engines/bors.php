@@ -142,6 +142,20 @@ function bors_clear() { $GLOBALS['bors_global'] = NULL; }
 
 function bors_exit($message = '')
 {
+	bors_function_include('debug/trace');
+	bors_function_include('debug/hidden_log');
+	bors_function_include('fs/file_put_contents_lock');
+
+	if(!empty($GLOBALS['bors_data']['php_cache_content']))
+		file_put_contents_lock(config('cache_dir') . '/functions.php', $GLOBALS['bors_data']['php_cache_content']);
+
+	if(!empty($GLOBALS['bors_data']['classes_cache_content_updated']))
+	{
+		debug_hidden_log('test', "write cache", false);
+		file_put_contents_lock(config('cache_dir') . '/classes.php', $GLOBALS['bors_data']['classes_cache_content']);
+	}
+
+
 	static $bors_exit_doing = false;
 	if($bors_exit_doing)
 		return true;

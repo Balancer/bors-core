@@ -1,5 +1,6 @@
 <?php
 
+bors_function_include('natural/bors_plural');
 require_once('inc/bors/cross.php');
 
 class base_object_db extends bors_object

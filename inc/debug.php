@@ -20,7 +20,7 @@ function debug_exit($message)
 	exit($message);
 }
 
-function debug_in_console() { return defined('STDIN'); }
+bors_function_include('debug/in_console');
 
 function debug_xmp($text, $string = false)
 {
@@ -160,86 +160,7 @@ function debug($message,$comment='',$level=3)
 	@fclose($fh);
 }
 
-function debug_trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
-{
-	$MAXSTRLEN = 128;
-
-	if(is_null($html))
-		$html = !debug_in_console();
-
-	if($html)
-		$s = '<pre align="left">';
-	else
-		$s = '';
-
-	if(is_null($traceArr))
-		$traceArr = debug_backtrace();
-
-	for($i = 1; $i <= $skip; $i++)
-		array_shift($traceArr);
-
-	if(is_numeric($level) && $level > 0)
-		$traceArr = array_slice($traceArr, 0, $level);
-//	if(is_numeric($level) && $level < 0)
-//		$traceArr = array_slice($traceArr, -$level);
-
-	$tabs = 0; //sizeof($traceArr)-1;
-	for($pos=0, $stop=sizeof($traceArr); $pos<$stop; $pos++)
-	{
-		$arr = $traceArr[$stop-$pos-1];
-		$indent = '';
-		for ($i=0; $i < $tabs; $i++)
-			$indent .= $html ? '&nbsp;' : ' ';
-
-		$Line = (isset($arr['line'])? $arr['line'] : "unknown");
-		$File = (isset($arr['file'])? $arr['file'] : "unknown");
-		if($html)
-			$s .= "$indent<span style=\"font-size:8pt;margin:0;padding:0;color:#999\">{$File}:{$Line}</span>";
-		else
-			$s .= "[{$File}:{$Line}]";
-
-		$s .= "\n$indent";
-
-		$tabs++;
-		if($html)
-			$s .= '<span style="font-family:monospace;size:9pt;padding:0;margin:0">';
-		if(isset($arr['class']))
-			$s .= $arr['class'].'.';
-		$args = array();
-		if(!empty($arr['args']))
-		{
-			foreach($arr['args'] as $v)
-			{
-				if (is_null($v)) $args[] = 'null';
-				else if (is_array($v)) $args[] = 'Array['.sizeof($v).']';
-				else if (is_object($v)) $args[] = 'Object:'.get_class($v);
-				else if (is_bool($v)) $args[] = $v ? 'true' : 'false';
-				else
-				{
-					$v = (string) @$v;
-					$str = htmlspecialchars(substr($v,0,$MAXSTRLEN));
-					if (strlen($v) > $MAXSTRLEN) $str .= '...';
-						$args[] = "\"".$str."\"";
-				}
-			}
-		}
-		if($html)
-			$s .= "<b>{$arr['function']}</b>";
-		else
-			$s .= $arr['function'];
-
-		$s .= '('.implode(', ',$args).')';
-
-		if($html)
-			$s .= '</span>';
-		$s .= "\n";
-	}
-
-	if($html)
-		$s .= '</pre>';
-
-	return $s;
-}
+bors_function_include('debug/trace');
 
 function debug_page_stat()
 {
@@ -313,9 +234,12 @@ function debug_timing_info_all()
 
 	global $bors_debug_timing;
 	$result = "";
-	ksort($bors_debug_timing);
-	foreach($bors_debug_timing as $section => $data)
-		$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls, ".sprintf('%.2f', $data['total']/$time * 100)."%, {$data['mem_total']}]\n";
+	if($bors_debug_timing)
+	{
+		ksort($bors_debug_timing);
+		foreach($bors_debug_timing as $section => $data)
+			$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls, ".sprintf('%.2f', $data['total']/$time * 100)."%, {$data['mem_total']}]\n";
+	}
 
 	return $result;
 }
@@ -350,69 +274,17 @@ function debug_count_info_all()
 	$result = "";
 
 	global $bors_debug_counts;
-	ksort($bors_debug_counts);
-	foreach($bors_debug_counts as $section => $count)
-		$result .= $section.": {$count}\n";
+	if($bors_debug_counts)
+	{
+		ksort($bors_debug_counts);
+		foreach($bors_debug_counts as $section => $count)
+			$result .= $section.": {$count}\n";
+	}
 
 	return $result;
 }
 
-function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
-{
-	if(!$message)
-	{
-		$message = $type;
-		$type = 'common';
-	}
-
-//	bors_debug::log($type, $message, 'hidden');
-	if(!($out_dir = config('debug_hidden_log_dir')))
-		return;
-
-	if(empty($args['dont_show_user']))
-		$user = object_property(bors(), 'user');
-
-	if(popval($args, 'notime'))
-		$out = '';
-	else
-		$out = strftime('%Y-%m-%d %H:%M:%S: ');
-
-	$out .= $message . "\n";
-
-	if($trace !== false)
-	{
-		if($trace === true)
-			$trace_out = debug_trace(0, false);
-		elseif($trace >= 1)
-			$trace_out = debug_trace(0, false, $trace);
-		else
-			$trace_out = '';
-
-		if(!empty($_GET))
-			$data = "_GET=".print_r($_GET, true)."\n";
-		else
-			$data = "";
-
-		$out .= "url: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
-			.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
-			. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
-			. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
-			. (!empty($_SERVER['HTTP_USER_AGENT']) ? "user agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"
-			. (@$user ? 'user = '.dc($user->title()) . ' [' .bors()->user_id()."]\n": '')
-			. $data
-			. $trace_out
-			. "\n---------------------------\n\n";
-	}
-
-//	if(!empty($args['mkpath']))
-//		mkpath(dirname("{$out_dir}/{$type}.log"));
-
-	if(!empty($args['append']))
-		$out .= "\n".$args['append'];
-
-	@file_put_contents($file = "{$out_dir}/{$type}.log", $out, FILE_APPEND);
-	@chmod($file, 0666);
-}
+bors_function_include('debug/hidden_log');
 
 function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcontext)
 {

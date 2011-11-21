@@ -93,16 +93,7 @@ function bors_hypher($string)
 	return set_global_key('hypher-cache', $string, $result);
 }
 
-function bors_plural($s)
-{
-	if(preg_match('/s$/', $s))
-		return $s.'es';
-
-	if(preg_match('/y$/', $s))
-		return substr($s,0,bors_strlen($s)-1).'ies';
-
-	return $s.'s';
-}
+bors_function_include('natural/bors_plural');
 
 function bors_unplural($s)
 {

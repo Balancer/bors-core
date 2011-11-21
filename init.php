@@ -186,12 +186,6 @@ if(file_exists(BORS_HOST.'/config.php'))
 if(file_exists(BORS_SITE.'/config.php'))
 	include_once(BORS_SITE.'/config.php');
 
-if(file_exists(BORS_HOST.'/config-post.php'))
-	include_once(BORS_HOST.'/config-post.php');
-
-if(file_exists(BORS_LOCAL.'/config-post.php'))
-	include_once(BORS_LOCAL.'/config-post.php');
-
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0777);
 
@@ -366,6 +360,15 @@ register_shutdown_function('bors_exit');
 
 bors_function_include('client/bors_client_analyze');
 bors_client_analyze();
+
+if(file_exists(BORS_EXT.'/config-post.php'))
+	include_once(BORS_EXT.'/config-post.php');
+
+if(file_exists(BORS_HOST.'/config-post.php'))
+	include_once(BORS_HOST.'/config-post.php');
+
+if(file_exists(BORS_LOCAL.'/config-post.php'))
+	include_once(BORS_LOCAL.'/config-post.php');
 
 /**
 	=================================================

@@ -5,7 +5,7 @@
 	Тупой вариант на базе unix timestamp
 */
 
-class bors_time_ts extends bors_object //TODO: придумать название «пустого» класса вместо base_empty
+class bors_time_ts extends bors_time_meta
 {
 	private $_time;
 
@@ -37,6 +37,8 @@ class bors_time_ts extends bors_object //TODO: придумать названи
 	function strftime($format) { return strftime($format, $this->_time); }
 
 	function __toString() { return $this->date('d.m.Y H:i:s'); }
+
+	function timestamp() { return $this->_time; }
 
 //TODO: реализовать:
 //	function mysql_time()

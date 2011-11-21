@@ -1451,7 +1451,14 @@ defined at {$this->class_file()}<br/>
 	function link_time1() { return NULL; }
 	function link_time2() { return NULL; }
 
-	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
+//	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
+	function __toString()
+	{
+		if($tt = $this->title_true())
+			return $tt;
+
+		return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); 
+	}
 
 	function _relations() { return array(); }
 

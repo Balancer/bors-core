@@ -79,7 +79,7 @@
 <div class="clear">&nbsp;</div>
 {if not $skip_page_title}<h1>{$this->page_title()}</h1>{/if}
 <div class="top-nav">{module class="nav_top" id=$this}</div>
-<div style="font-style:italic; margin-right: 0; display: block; float: right; width: 40%; text-align: justify">{$description|lcml_bbh}</div>
+<div style="font-style:italic; margin-right: 0; display: block; float: right; width: 40%; text-align: justify">{$this->description()|lcml_bbh}</div>
 <div class="clear">&nbsp;</div>
 
 {$under_head_insert}

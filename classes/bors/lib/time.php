@@ -114,4 +114,18 @@ class bors_lib_time
 		date_default_timezone_set($tz_save);
 		return $time;
 	}
+
+	static function short($time, $def = '')
+	{
+		if(!$time)
+			return $def;
+
+		global $now;
+		$time = intval($time);
+
+		if(abs($now - $time) < 86400 && strftime("%d", $time) == strftime("%d", $now))
+			return strftime("%H:%M", $time);
+		else
+			return strftime("%d.%m.%Y", $time);
+	}
 }

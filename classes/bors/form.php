@@ -249,7 +249,8 @@ class bors_form extends bors_object
 
 				if(!empty($data['named_list']))
 				{
-					$type = defval($data, 'type', 'dropdown');
+					if(empty($data['type']) || $data['type'] == 'string')
+						$type = 'dropdown';
 					$class = $data['named_list'];
 				}
 
@@ -383,8 +384,9 @@ class bors_form extends bors_object
 						else
 							$data['list'] = base_list::make($class, array(), $data);
 
+						// Смешанная проверка для тестирования на http://ucrm.wrk.ru/admin/persons/9/
 						if($data['is_int'] = defval($data, 'is_int', true))
-							foreach($data['list'] as $v => $n)
+							foreach($data['list'] as $k => $v)
 								$data['is_int'] &= !$k || is_numeric($k);
 
 						$html .= bors_forms_dropdown::html($data, $this);
@@ -402,10 +404,12 @@ class bors_form extends bors_object
 						break;
 
 					case 'image':
-						$image = bors_load('bors_image', $data['value']);
-						if(!$image)
-							$image = $object;
-						$html .= $image->thumbnail($data['geometry'])->html_code();
+//						$image = bors_load('bors_image', $data['value']);
+//WTF?
+//						if(!$image)
+//							$image = $object;
+//						$html .= $image->thumbnail($data['geometry'])->html_code();
+						$html .= bors_forms_image::html($data, $this);
 						break;
 
 					case 'bool':

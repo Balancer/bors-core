@@ -108,4 +108,12 @@ class bors_object extends base_object
 	function admin_additional_info() { return array(); }
 
 	static function object_type() { return 'unknown'; }
+
+	function mtime()
+	{
+		if($this->__havefc())
+			return $this->__lastc();
+
+		return bors_load('bors_time', $this->modify_time());
+	}
 }

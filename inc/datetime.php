@@ -4,19 +4,7 @@ require_once('inc/strings.php');
 
 function full_time($time) { return $time ? strftime("%d.%m.%Y %H:%M",$time) : '-'; }
 
-function short_time($time, $def = '')
-{
-	if(!$time)
-		return $def;
-
-	global $now;
-	$time = intval($time);
-
-	if(abs($now - $time) < 86400 && strftime("%d", $time) == strftime("%d", $now))
-		return strftime("%H:%M", $time);
-	else
-		return strftime("%d.%m.%Y", $time);
-}
+function short_time($time, $def = '') { return bors_lib_time::short($time, $def); }
 
 function is_today($time)
 {

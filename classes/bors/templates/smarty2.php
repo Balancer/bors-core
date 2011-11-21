@@ -13,7 +13,7 @@ class bors_templates_smarty2 extends bors_templates_abstract
 		require_once('engines/smarty/bors_smarty_common.php');
 
 		$smarty = new Smarty;
-		require('smarty-register.php');
+		require('classes/bors/templates/smarty-register.php');
 
 		$smarty->compile_dir = config('cache_dir').'/smarty2-templates_c/';
 //		$smarty->use_sub_dirs = true;

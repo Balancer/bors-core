@@ -1,5 +1,8 @@
 <?php
 
+//bors_function_include('debug/trace');
+//echo debug_trace();
+
 // «Пустой» логгер-заглушка, ничего не делает.
 
 class bors_log_stub extends base_empty

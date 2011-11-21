@@ -100,7 +100,8 @@ function full_hdate($date, $show_year = true)
 	return date('j', $date).' '.bors_lower(month_name_rp(date('n', $date))).($show_year ? ec(strftime(' %Y года', $date)) : '');
 }
 
-function date_format_mysqltime($time) { return $time ? strftime('\'%Y-%m-%d %H:%M:%S\'', $time) : NULL; }
+bors_function_include('time/date_format_mysqltime');
+
 function date_format_mysql($time, $quoted=true) { $q=$quoted?"'":''; return $time ? $q.date('Y-m-d', $time).$q : NULL; }
 
 function date_day_begin($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time())); }

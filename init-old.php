@@ -167,12 +167,21 @@ if(defined('INCLUDES_APPEND'))
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEPARATOR, array_unique($includes)));
 
-// Уникальный случай, грузим класс загрузчика вручную, так как
-// автоматическую загрузку обеспечивает именно он сам
-require BORS_CORE.'/classes/bors/class/loader.php';
-function class_include($class_name, &$args = array()) { return bors_class_loader::load($class_name, $args); }
+function bors_function_include($name)
+{
+	require_once(BORS_CORE.'/inc/functions/'.$name.'.php');
+}
 
-spl_autoload_register('class_include');
+require_once('inc/helpers.php');
+require_once('inc/debug.php');
+require_once('classes/inc/BorsMemCache.php');
+require_once('inc/global-data.php');
+require_once('inc/locales.php');
+require_once('inc/system.php');
+require_once('inc/datetime.php');
+require_once('inc/clients.php');
+require_once('engines/bors.php');
+require_once('engines/bors/vhosts_loader.php');
 
 if(file_exists(BORS_EXT.'/config.php'))
 	include_once(BORS_EXT.'/config.php');
@@ -195,61 +204,6 @@ if(file_exists(BORS_LOCAL.'/config-post.php'))
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0777);
 
-if(config('cache_code_monolith') && file_exists($php_cache_file = config('cache_dir') . '/functions.php'))
-	require_once($php_cache_file);
-
-function bors_function_include($req_name)
-{
-	if(preg_match('!^(\w+)/(\w+)$!', $req_name, $m))
-	{
-		$path = $m[1];
-		$name = $m[2];
-	}
-	else
-	{
-		$path = '';
-		$name = $req_name;
-	}
-
-	if(function_exists($name))
-		return;
-
-	if(function_exists($path.'_'.$name))
-		return;
-
-	$file = BORS_CORE.'/inc/functions/'.$req_name.'.php';
-
-	if(!config('cache_code_monolith'))
-		// Если монолитное кеширование запрещено, то просто грузим файл и уходим
-		return require_once($file);
-
-	static $php_cache_file = NULL;
-	if(!$php_cache_file)
-		$php_cache_file = config('cache_dir') . '/functions.php';
-
-	static $php_cache_content = NULL;
-
-	if(!file_exists($php_cache_file))
-		file_put_contents($php_cache_file, "<?php\n");
-
-	if(!$php_cache_content)
-		$php_cache_content = file_get_contents($php_cache_file);
-
-	require_once($php_cache_file);
-
-	if(function_exists($name))
-		return;
-
-	if(function_exists($path.'_'.$name))
-		return;
-
-	require_once($file);
-	$function_code = file_get_contents($file);
-	$function_code = "\n".trim(preg_replace('/^<\?php/', '', $function_code))."\n";
-	$php_cache_content .= $function_code;
-	$GLOBALS['bors_data']['php_cache_content'] = $php_cache_content;
-}
-
 if(config('debug_can_change_now'))
 {
 	$GLOBALS['now'] = empty($_GET['now']) ? time() : intval(strtotime($_GET['now']));
@@ -258,7 +212,6 @@ if(config('debug_can_change_now'))
 else
 	$GLOBALS['now'] = time();
 
-bors_function_include('time/date_format_mysqltime');
 $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
 
 /**
@@ -363,77 +316,4 @@ if(get_magic_quotes_gpc() && $_POST)
 bors_init();
 register_shutdown_function('bors_exit');
 //stream_wrapper_register('xfile', 'bors_wrappers_xfile') or die('Failed to register protocol xfile');
-
-bors_function_include('client/bors_client_analyze');
 bors_client_analyze();
-
-/**
-	=================================================
-	Функции первой необходимости, нужные для загрузки
-	системы автокеширования функций
-	=================================================
-*/
-
-function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
-{
-	global $bors_data;
-
-	if(empty($documents_root))
-		$documents_root = '/var/www/'.$host.'/htdocs';
-
-	if(empty($bors_host))
-	{
-		$bors_host = dirname($documents_root).'/bors-host';
-		$bors_site = dirname($documents_root).'/bors-site';
-	}
-	else
-		$bors_site = $bors_host;
-
-	$map = array();
-
-	if(file_exists($file = BORS_HOST.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		include($file);
-	elseif(file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		include($file);
-	elseif(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		include($file);
-
-	$map2 = $map;
-
-	if(file_exists($file = $bors_site.'/handlers/bors_map.php'))
-		include($file);
-
-	if(file_exists($file = $bors_site.'/bors_map.php'))
-		include($file);
-
-	if(file_exists($file = $bors_site.'/url_map.php'))
-		include($file);
-
-	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
-		include($file);
-
-//	echo "$host: <xmp>"; print_r($map); echo "</xmp>";
-
-	$bors_data['vhosts'][$host] = array(
-		'bors_map' => array_merge($map2, $map),
-		'bors_local' => $bors_host,
-		'bors_site' => $bors_site,
-		'document_root' => $documents_root,
-	);
-}
-
-function mkpath($strPath, $mode=0777)
-{
-    if(!$strPath || is_dir($strPath) || $strPath=='/')
-        return true;
-
-	if(!($pStrPath = dirname($strPath)))
-		return true;
-
-	if(!mkpath($pStrPath, $mode)) 
-        return false;
-
-	$err = @mkdir($strPath, $mode);
-	@chmod($strPath, $mode);
-	return $err;
-}

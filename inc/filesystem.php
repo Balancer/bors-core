@@ -1,69 +1,56 @@
 <?php
-    function abs_path_from_relative($uri, $page)
-    {
-        if(preg_match("!^\w+://!", $uri))
-            return $uri;
 
-        if(preg_match("!^/!", $uri))
-            return 'http://'.$_SERVER['HTTP_HOST'].$uri;
+function abs_path_from_relative($uri, $page)
+{
+    if(preg_match("!^\w+://!", $uri))
+        return $uri;
 
-        return "$page$uri";
+    if(preg_match("!^/!", $uri))
+        return 'http://'.$_SERVER['HTTP_HOST'].$uri;
+
+    return "$page$uri";
+}
+
+bors_function_include('fs/mkpath');
+
+function smart_size($size)
+{
+	if($size<1024)
+		return $size.ec("Б");
+
+	$size = $size/1024;
+
+	if($size<1024)
+		return round($size,2).ec("КБ");
+
+	return round($size/1024,2).ec("МБ");
+}
+
+if(!function_exists("scandir"))
+	require_once("include/php4/scandir.php");
+
+function rec_rmdir($dir, $delete_self = true, $mask = '.*')
+{
+	if(!$dh = opendir($dir))
+		return;
+
+    while(($obj = readdir($dh))) 
+	{
+        if($obj=='.' || $obj=='..')
+			continue;
+
+		if(!preg_match("!^{$mask}$!", $obj))
+			continue;
+
+        if(!unlink($dir.'/'.$obj))
+			rec_rmdir($dir.'/'.$obj, true, $mask);
     }
 
-    function mkpath($strPath, $mode=0777)
-    {
-        if(!$strPath || is_dir($strPath) || $strPath=='/')
-            return true;
-  
-		if(!($pStrPath = dirname($strPath)))
-			return true;
+	closedir($dh);
 
-		if(!mkpath($pStrPath, $mode)) 
-            return false;
-
-  		$err = @mkdir($strPath, $mode);
-		@chmod($strPath, $mode);
-		return $err;
-    }
-
-	function smart_size($size)
-	{
-		if($size<1024)
-			return $size.ec("Б");
-
-		$size = $size/1024;
-
-		if($size<1024)
-			return round($size,2).ec("КБ");
-
-		return round($size/1024,2).ec("МБ");
-	}
-
-	if(!function_exists("scandir"))
-		require_once("include/php4/scandir.php");
-
-	function rec_rmdir($dir, $delete_self = true, $mask = '.*')
-	{
-    	if(!$dh = opendir($dir))
-			return;
-
-	    while(($obj = readdir($dh))) 
-		{
-	        if($obj=='.' || $obj=='..')
-				continue;
-
-			if(!preg_match("!^{$mask}$!", $obj))
-				continue;
-
-	        if(!unlink($dir.'/'.$obj))
-				rec_rmdir($dir.'/'.$obj, true, $mask);
-	    }
-
-		closedir($dh);
-		
-	    if ($delete_self)
-	        rmdir($dir);
-	}
+    if ($delete_self)
+        rmdir($dir);
+}
 
 function secure_path($path)
 {

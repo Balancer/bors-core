@@ -9,7 +9,7 @@ class bors_objects_loaders_meta extends bors_object
 		if(function_exists('get_called_class'))
 		{
 			$called_class = get_called_class(); // (PHP 5 >= 5.3.0)
-//		echo "Register $called_class<br/>";
+//			echo "Register $called_class<br/>";
 			self::$class_loaders[] = $called_class;
 		}
 	}

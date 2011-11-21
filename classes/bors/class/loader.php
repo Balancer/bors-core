@@ -4,6 +4,7 @@ class bors_class_loader
 {
 	static function load($class_name, &$args = array())
 	{
+//		echo "Check class $class_name<br/>\n";
 		if(in_array($class_name, config('classes_skip', array())))
 			return false;
 
@@ -11,6 +12,18 @@ class bors_class_loader
 		// его реальный(! — например, .yaml) файл, не кешированный.
 		if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
 			return $real_class_file;
+
+		if(config('cache_code_monolith')
+			&& empty($GLOBALS['bors_data']['classes_cache_content'])
+			&& file_exists($classes_cache_file = config('cache_dir') . '/classes.php')
+		)
+		{
+			$GLOBALS['bors_data']['classes_cache_content'] = file_get_contents($classes_cache_file);
+			require_once($classes_cache_file);
+
+			if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
+				return $real_class_file;
+		}
 
 		$class_base = str_replace('_', '/', $class_name);
 		$class_path = $class_base.'.php';
@@ -25,9 +38,11 @@ class bors_class_loader
 			$real_class_file = $info['real_class_file'];
 			if(file_exists($real_class_file) && ($info['cached_class_filemtime'] >= filemtime($real_class_file)))
 			{
+//				echo "Load cached class $class_name<br/>\n";
 				require_once($cached_class_file);
 				return $GLOBALS['bors_data']['classes_included'][$class_name] = $real_class_file;
 			}
+
 			@unlink($cached_class_file);
 			@unlink($cached_class_info_file);
 		}
@@ -48,32 +63,17 @@ class bors_class_loader
 
 		foreach(bors_dirs() as $dir)
 		{
-//			echo "check {$dir}/classes/{$class_path}{$class_file}.php  <br/>\n";
 			if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.php"))
-			{
-				require_once($file_name);
-				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
-				return $file_name;
-			}
+				return self::load_and_cache($class_name, $file_name);
 
 			if(file_exists($file_name = "{$dir}/classes/bors/{$class_path}{$class_file}.php"))
-			{
-				require_once($file_name);
-				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
-				return $file_name;
-			}
+				return self::load_and_cache($class_name, $file_name);
 
 			if(file_exists($file_name = "{$dir}/classes/inc/$class_name.php"))
-			{
-				require_once($file_name);
-				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
-				return $file_name;
-			}
+				return self::load_and_cache($class_name, $file_name);
 
-//			echo "Find {$dir}/classes/{$class_path}{$class_file}.yaml<br/>\n";
 			if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.yaml"))
 			{
-//				echo "Try load $class_name in $file_name<br/>\n";
 				bors_class_loader_yaml::load($class_name, $file_name);
 				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
 				return $file_name;
@@ -89,16 +89,14 @@ class bors_class_loader
 		$data = bors_vhost_data($args['host']);
 		if(file_exists($file_name = "{$data['bors_site']}/classes/{$class_path}{$class_file}.php"))
 		{
-			require_once($file_name);
-			$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
+			self::load_and_cache($class_name, $file_name);
 			$args['need_check_to_public_load'] = true;
 			return $file_name;
 		}
 
 		if(file_exists($file_name = "{$data['bors_site']}/classes/bors/{$class_path}{$class_file}.php"))
 		{
-			require_once($file_name);
-			$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
+			self::load_and_cache($class_name, $file_name);
 			$args['need_check_to_public_load'] = true;
 			return $file_name;
 		}
@@ -116,5 +114,47 @@ class bors_class_loader
 		$ini_file = str_replace('.php', '.ini', $cached_class_file);
 		mkpath(dirname($ini_file), 0755);
 		bors_file_ini::write($ini_file, $data);
+	}
+
+	function load_and_cache($class_name, $class_file)
+	{
+		if(!class_exists($class_name))
+		{
+//			echo "Find class $class_name<br/>\n";
+
+			if(config('cache_code_monolith'))
+			{
+				static $classes_cache_file = NULL;
+				if(!$classes_cache_file)
+					$classes_cache_file = config('cache_dir') . '/classes.php';
+
+				if(!file_exists($classes_cache_file))
+					file_put_contents($classes_cache_file, "<?php\n");
+
+				if(empty($GLOBALS['bors_data']['classes_cache_content']))
+					$GLOBALS['bors_data']['classes_cache_content'] = file_get_contents($classes_cache_file);
+				require_once($classes_cache_file);
+				if(class_exists($class_name))
+					return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
+
+				require_once($class_file);
+
+//				echo "Store class $class_name to $classes_cache_file<br/>\n";
+				$class_code = file_get_contents($class_file);
+				$class_code = "\n".trim(preg_replace('/^<\?php/', '', $class_code))."\n";
+//				$class_code = preg_replace("/class $class_name/", "if(!class_exists('$class_name'))\n{  class $class_name", $class_code);
+				$class_code .= "\$GLOBALS['bors_data']['classes_included']['{$class_name}'] = '$class_file';\n";
+//				$class_code .= "}\n";
+				$GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
+				$GLOBALS['bors_data']['classes_cache_content'] .= $class_code;
+				$GLOBALS['bors_data']['classes_cache_content_updated'] = true;
+			}
+			else
+				require_once($class_file);
+		}
+//		else
+//			echo "Class $class_name already loaded<br/>\n";
+
+		return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
 	}
 }

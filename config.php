@@ -24,6 +24,9 @@ config_set('bors_logs_db', 'BORS_LOGS');
 
 config_set('bors_version_show', false);
 
+config_set('cache_dir', '/tmp/bors-cache-'.@$_SERVER['HTTP_HOST'].'-'.config('internal_charset'));
+config_set('cache_code_monolith', 0);
+
 config_set('storage_db_sqlite_main', BORS_SITE.'/data/main.sqlite');
 
 config_set('lcml_sharp_markup', false);

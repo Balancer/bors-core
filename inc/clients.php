@@ -2,6 +2,8 @@
 
 function bors_bot_detect($user_agent, &$data = array())
 {
+	// Описания некоторых ботов: http://www.tengy.ru/bot.html
+
 	foreach(array(
 			'archive.org_bot' => 'archive.org bot',	// Mozilla/5.0 (compatible; archive.org_bot +http://www.archive.org/details/archive.org_bot)
 			'Baiduspider' => 'Baidu Spider',		// Baiduspider+(+http://www.baidu.com/search/spider.htm)

@@ -33,9 +33,6 @@ class base_empty extends base_null
 		if(@array_key_exists($name, $this->data))
 			return $this->data[$name];
 
-		if(@array_key_exists($name, $this->defaults))
-			return $this->defaults[$name];
-
 		if($name == 'this')
 			return $this;
 
@@ -65,6 +62,9 @@ class base_empty extends base_null
 		$name_ec = "{$name}_ec";
 		if(property_exists($this, $name_ec) && !$skip_properties)
 			return $this->set_attr($name, ec($this->$name_ec));
+
+		if(@array_key_exists($name, $this->defaults))
+			return $this->defaults[$name];
 
 		return $default;
 	}

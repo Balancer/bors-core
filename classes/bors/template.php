@@ -55,20 +55,20 @@ class bors_template
 
 	function page_data($args = NULL)
 	{
-		$data = array_merge(array(
+		$data = array(
 			'now' => $GLOBALS['now'],
-		), $GLOBALS['cms']['config']);
+		);
 
 		if(is_array($args) && ($obj = @$args['this']))
 			$object = $obj;
 		else
 			$object = NULL;
 
-		if($object)
-		{
+//		if($object)
+//		{
 //			if($cfg = $object->config())
 //				$data = array_merge($data, $cfg->page_data()); // page_data — требуется обработка, так что не тут.
-		}
+//		}
 
 		if(!empty($GLOBALS['cms']['templates']['data']))
 			$data = array_merge($data, $GLOBALS['cms']['templates']['data']);

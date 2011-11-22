@@ -14,7 +14,14 @@ class base_page extends bors_object
 	function class_title_vp()	{ return ec('страницу'); }
 
 	function page_title()		{ return $this->get('page_title', $this->title(), true); }
-	function browser_title()	{ return $this->get('browser_title', $this->title(), true); }
+
+	function browser_title()
+	{
+		if($t = $this->get('browser_title', NULL, true))
+			return $t;
+
+		return $this->title();
+	}
 
 	function source() { return @$this->data['source']; }
 	function set_source($source, $db_update) { return $this->set('source', $source, $db_update); }

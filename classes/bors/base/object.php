@@ -5,13 +5,13 @@ class base_object extends base_empty
 	var $data = array();
 
 	function attr_preset() { return array(
+		'title' => $this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
+		'config_class' => config('config_class'),
+		'access_engine' => '',
+		'url_engine' => 'url_calling2',
 	); }
 
 	function properties_preset() { return array(
-			'config_class' => config('config_class'),
-			'access_engine' => '',
-			'title' => $this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
-			'url_engine' => 'url_calling2',
 	); }
 
 	var $___loaded = false;
@@ -138,8 +138,8 @@ class base_object extends base_empty
 				$this->$name = $val;
 
 		foreach($this->attr_preset() as $attr => $val)
-			if(!array_key_exists($attr, $this->attr))
-				$this->attr[$attr] = $val;
+			if(!array_key_exists($attr, $this->defaults))
+				$this->defaults[$attr] = $val;
 
 		if(($config = $this->config_class()))
 		{
@@ -251,13 +251,20 @@ class base_object extends base_empty
 		if(preg_match('!^set_(\w+)$!', $method, $match))
 			return $this->set($match[1], $params[0], array_key_exists(1, $params) ? $params[1] : true);
 
+		// Проверяем нет ли уже загруженного значения атрибута (временных несохраняемых данных) объекта
+		// Приоритет атрибута выше, чем приоритет параметров, так как в атрибутах
+		// может лежать изменённое значение параметра
+		// Если это где-то что-то поломает — исправить там, а не тут.
+		if(@array_key_exists($method, $this->attr))
+			return $this->attr[$method];
+
 		// Проверяем нет ли уже загруженного значения данных объекта
 		if(@array_key_exists($method, $this->data))
 			return $this->data[$method];
 
-		// Проверяем нет ли уже загруженного значения атрибута (временных несохраняемых данных) объекта
-		if(@array_key_exists($method, $this->attr))
-			return $this->attr[$method];
+		// Проверяем нет ли значения по умолчанию — это вместо бывшего attr
+		if(@array_key_exists($method, $this->defaults))
+			return $this->defaults[$method];
 
 		// Проверяем нет ли уже загруженного значения автообъекта
 		if(@array_key_exists($method, $this->__auto_objects))
@@ -268,6 +275,7 @@ class base_object extends base_empty
 		}
 
 		// Проверяем автоматические объекты.
+//		echo $this->debug_title();
 		$auto_objs = $this->auto_objects();
 		if(($f = @$auto_objs[$method]))
 		{

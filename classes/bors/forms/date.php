@@ -14,6 +14,9 @@ class bors_forms_date extends bors_forms_element
 		$object = $form->object();
 		$value = self::value($params, $form);
 
+		if(is_object($value))
+			$value = $value->timestamp();
+
 		$html = '';
 
 		$date = $value; // $obj ? $obj->$name() : NULL;

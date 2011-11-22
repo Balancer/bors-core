@@ -15,6 +15,9 @@ class bors_time_52 extends bors_object //TODO: придумать названи
 
 	function __construct($time = NULL)
 	{
+		if(is_null($time))
+			$this->is_null = true;
+
 		$this->_time = new DateTime($time ? $time : 'now');
 		parent::__construct($this->_time->format(DateTime::ATOM)); //TODO: может быть uuid()?
 	}

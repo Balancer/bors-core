@@ -78,10 +78,10 @@ function news_short_time($time)
 }
 
 $GLOBALS['month_names'] = explode(' ', 'Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь');
-$GLOBALS['month_names_rp'] = explode(' ', 'Января Февраля Марта Апреля Мая Июня Июля Августа Сентября Октября Ноября Декабря');
 
 function month_name($m) { return ec($GLOBALS['month_names'][$m-1]); }
-function month_name_rp($m) { return ec($GLOBALS['month_names_rp'][$m-1]); }
+
+bors_function_include('time/month_name_rp');
 
 $GLOBALS['day_names'] = explode(' ', 'Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье');
 
@@ -113,39 +113,7 @@ function date_today($time = 0)     { return strtotime(date('Y-m-d', $time ? $tim
 function date_yesterday($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' -1 day'); }
 function date_tomorrow ($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' +1 day'); }
 
-function part_date($date, $int = false, $on_empty_text = '')
-{
-	$year = $month = $day = 0;
-	if($int)
-	{
-		$year = substr($date, 0, 4);
-		$date = substr($date, 4);
-		if($date != 0)
-		{
-			$month = substr($date, 0, 2);
-			$date = substr($date, 2);
-		}
-		if($date != 0)
-		{
-			$day = substr($date, 0, 2);
-			$date = substr($date, 2);
-		}
-	}
-	elseif(is_numeric($date))
-		list($year, $month, $day) = explode('-', date('Y-m-d', $date));
-	else
-		list($year, $month, $day) = explode('-', $date);
-
-	if($year == 0)
-		return $on_empty_text;
-
-	if($month == 0)
-		return $year.ec(' г.');
-	if($day == 0)
-		return month_name($month).' '.$year.ec(' г.');
-
-	return $day.' '.month_name_rp($month).' '.$year.ec(' г.');
-}
+bors_function_include('time/part_date');
 
 function smart_interval($interval, $parts = 2)
 {

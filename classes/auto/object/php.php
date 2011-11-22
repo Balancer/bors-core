@@ -1,5 +1,7 @@
 <?php
 
+bors_function_include('natural/bors_unplural');
+
 class auto_object_php extends base_object
 {
 	function init() { }
@@ -40,7 +42,13 @@ class auto_object_php extends base_object
 		$is_auto = false;
 		if(preg_match('!^(.+)_(\d+|new)$!', $class_path, $m))
 		{
-			if(class_include($class_base.($cp = bors_unplural($m[1]).'_view')))
+			if(class_include($class_base.($cp = $m[1].'_view')))
+			{
+				$class_path = $cp;
+				$object_id = $m[2];
+				$is_auto = true;
+			}
+			elseif(class_include($class_base.($cp = bors_unplural($m[1]).'_view')))
 			{
 				$class_path = $cp;
 				$object_id = $m[2];
@@ -95,6 +103,7 @@ class auto_object_php extends base_object
 			if(!$object->parents(true))
 				$object->set_parents(array(secure_path(dirname($path).'/')), false);
 
+			bors_function_include('debug/log_var');
 			debug_log_var('target_class_file', $object->class_file());
 			debug_log_var('loader_class_file', $this->class_file());
 		}

@@ -364,11 +364,14 @@ bors_client_analyze();
 if(file_exists(BORS_EXT.'/config-post.php'))
 	include_once(BORS_EXT.'/config-post.php');
 
-if(file_exists(BORS_HOST.'/config-post.php'))
-	include_once(BORS_HOST.'/config-post.php');
-
 if(file_exists(BORS_LOCAL.'/config-post.php'))
 	include_once(BORS_LOCAL.'/config-post.php');
+
+if(file_exists(BORS_SITE.'/config-post.php'))
+	include_once(BORS_SITE.'/config-post.php');
+
+if(file_exists(BORS_HOST.'/config-post.php'))
+	include_once(BORS_HOST.'/config-post.php');
 
 /**
 	=================================================

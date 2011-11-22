@@ -16,9 +16,13 @@ class bors_time_ts extends bors_time_meta
 	function __construct($time = NULL)
 	{
 		if(is_null($time))
+		{
 			$time = time();
+			$this->is_null = true;
+		}
 		elseif(!is_numeric($time))
 			$time = strtotime($time);
+
 		$this->_time = $time;
 
 		parent::__construct(date('c', $time)); //TODO: может быть uuid()?
@@ -38,7 +42,7 @@ class bors_time_ts extends bors_time_meta
 
 	function __toString() { return $this->date('d.m.Y H:i:s'); }
 
-	function timestamp() { return $this->_time; }
+	function timestamp() { return $this->is_null ? NULL : $this->_time; }
 
 //TODO: реализовать:
 //	function mysql_time()

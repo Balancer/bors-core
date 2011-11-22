@@ -31,4 +31,10 @@ class bors_lib_date
 
 		return "$d1 ".bors_lower(month_name_rp($m1))." $y1";
 	}
+
+	static function part($date, $int = false, $on_empty_text = '')
+	{
+		bors_function_include('time/part_date');
+		return part_date($date, $int, $on_empty_text);
+	}
 }

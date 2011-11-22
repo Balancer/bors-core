@@ -1,5 +1,7 @@
 <?php
 
+bors_function_include('cache/global');
+
 class bors_lib_orm
 {
 	static function field($property, &$field = NULL)
@@ -51,7 +53,10 @@ class bors_lib_orm
 			elseif(preg_match('/^is_\w+$/', $property))
 				$field['type'] = 'bool';
 			elseif(preg_match('/^\w+_date$/', $property))
+			{
 				$field['type'] = 'date';
+				$field['post_function'] = array('bors_time_date', 'load');
+			}
 			elseif(preg_match('/text/', $property))
 				$field['type'] = 'text';
 			elseif(preg_match('/^\w+$/', $property))
@@ -149,6 +154,7 @@ class bors_lib_orm
 
 		if($defaults)
 		{
+			bors_function_include('debug/hidden_log');
 			debug_hidden_log('__defaults', "Found defaults for {$object->debug_title()}");
 
 			$foo = array('is_editable' => false);

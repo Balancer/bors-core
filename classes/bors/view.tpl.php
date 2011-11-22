@@ -15,7 +15,7 @@ foreach(bors_lib_orm::main_fields($target) as $idx => $args)
 	elseif(!empty($args['named_list']))
 		$value = object_property(bors_load($args['named_list'], $value), 'title');
 	elseif($args['type'] == 'freedate')
-		$value = bors_lower(part_date($value, true));
+		$value = bors_lower(bors_lib_date::part($value, true));
 	elseif($args['type'] == 'image') // http://ucrm.wrk.ru/persons/4/
 	{
 //		var_dump($value);
@@ -24,8 +24,13 @@ foreach(bors_lib_orm::main_fields($target) as $idx => $args)
 
 		continue;
 	}
+	elseif($args['type'] == 'bbcode')
+		$value = lcml_bbh($value);
 	else
+	{
+//		var_dump($args, $value);
 		$value = htmlspecialchars($value);
+	}
 
 	if($value && ($title = $args['title']))
 		$out[] = "<li>{$title}: ".$value."</li>\n";

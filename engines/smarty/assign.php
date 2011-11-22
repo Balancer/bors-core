@@ -8,6 +8,7 @@ if(config('smarty3_enable'))
 
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 {
+	bors_function_include('debug/timing_start');
 	debug_timing_start('template_smarty_assign');
 
 	unset($GLOBALS['module_data']);

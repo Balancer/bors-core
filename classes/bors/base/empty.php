@@ -5,6 +5,7 @@ class base_empty extends base_null
 	var $___id;
 
 	var $attr = array();
+	var $defaults = array();
 
 	function id() { return $this->___id; }
 	function set_id($id) { return $this->___id = $id; }
@@ -24,11 +25,16 @@ class base_empty extends base_null
 			return $value;
 		}
 
+		// У атрибутов приоритет выше, так как они могут перекрывать data.
+		// Смотри также в __call
+		if(array_key_exists($name, $this->attr))
+			return $this->attr[$name];
+
 		if(@array_key_exists($name, $this->data))
 			return $this->data[$name];
 
-		if(array_key_exists($name, $this->attr))
-			return $this->attr[$name];
+		if(@array_key_exists($name, $this->defaults))
+			return $this->defaults[$name];
 
 		if($name == 'this')
 			return $this;

@@ -187,7 +187,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 	static function post_functions_do(&$object, $post_functions)
 	{
 		foreach($post_functions as $property => $function)
-			$object->set($property, $function($object->$property()), false);
+			$object->set_attr($property, call_user_func($function, $object->$property()));
 	}
 
 	/**********************************************************
@@ -273,13 +273,14 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$select = array('*');
 			$class_name = 'base_object_db';
 			$object = new base_object_db(NULL);
+			$post_functions = array();
 		}
 		else
 		{
 			$db_name = $object->db_name();
 			$table_name = $object->table_name();
 			$class_name = $object->class_name();
-			list($select, $where) = self::__query_data_prepare($object, $where);
+			list($select, $where, $post_functions) = self::__query_data_prepare($object, $where);
 		}
 
 		$dbh = new driver_mysql($db_name);
@@ -301,6 +302,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$object->_configure();
 
 			$object->set_loaded(true);
+
+			if(!empty($post_functions))
+				self::post_functions_do($object, $post_functions);
 
 			if($by_id === true)
 				$objects[$object->id()] = $object;

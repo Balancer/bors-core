@@ -1,8 +1,5 @@
 <?php
 
-global $bors_data;
-$bors_data['vhost_handlers'] = array();
-
 function bors_vhosts()
 {
 	if(empty($GLOBALS['bors_data']['vhosts']))
@@ -20,15 +17,7 @@ function bors_vhost_data($host, $key = NULL, $def = NULL)
 	return $data;
 }
 
-bors_function_include('bors/register_vhost');
-
 require_once("inc/filesystem.php");
-
-function bors_url_map($map_array)
-{
-	global $bors_map;
-	$bors_map = array_merge($bors_map, $map_array);
-}
 
 function bors_url_submap($map)
 {

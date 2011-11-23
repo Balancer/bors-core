@@ -82,15 +82,12 @@ $GLOBALS['month_names'] = explode(' ', 'Январь Февраль Март А�
 function month_name($m) { return ec($GLOBALS['month_names'][$m-1]); }
 
 bors_function_include('time/month_name_rp');
+bors_function_include('date/text');
 
 $GLOBALS['day_names'] = explode(' ', 'Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье');
 
 function week_day_name($day_num) { return ec($GLOBALS['day_names'][$day_num-1]); }
 
-function text_date($date)
-{
-	return date('j', $date).' '.bors_lower(month_name_rp(date('n', $date))).' '.date('Y', $date);
-}
 
 function full_hdate($date, $show_year = true)
 {

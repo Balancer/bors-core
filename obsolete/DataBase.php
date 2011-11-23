@@ -145,6 +145,9 @@ class DataBase extends base_object
 //		if(preg_match('/select.*count.*topics/i', $query))
 //			debug_hidden_log('__00query_topics', $query);
 
+		if(config('mysql_trace_show'))
+			print_dd($query);
+
 		if(!$query)
 			return;
 

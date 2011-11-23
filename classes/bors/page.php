@@ -140,4 +140,15 @@ class bors_page extends base_page
 
 		return $data;
 	}
+
+	function get_find($name, $default = '')
+	{
+		if($value = $this->get($name))
+			return $value;
+
+		if($value = config($name))
+			return $value;
+
+		return $default;
+	}
 }

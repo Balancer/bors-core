@@ -262,10 +262,6 @@ class base_object extends base_empty
 		if(@array_key_exists($method, $this->data))
 			return $this->data[$method];
 
-		// Проверяем нет ли значения по умолчанию — это вместо бывшего attr
-		if(@array_key_exists($method, $this->defaults))
-			return $this->defaults[$method];
-
 		// Проверяем нет ли уже загруженного значения автообъекта
 		if(@array_key_exists($method, $this->__auto_objects))
 		{
@@ -313,6 +309,10 @@ class base_object extends base_empty
 		$name_ec = "{$name}_ec";
 		if(property_exists($this, $name_ec))
 			return $this->set_attr($name, ec($this->$name_ec));
+
+		// Проверяем нет ли значения по умолчанию — это вместо бывшего attr
+		if(@array_key_exists($method, $this->defaults))
+			return $this->defaults[$method];
 
 		if($this->strict_auto_fields_check())
 		{

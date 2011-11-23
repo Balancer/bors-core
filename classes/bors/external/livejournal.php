@@ -18,7 +18,8 @@ class bors_external_livejournal extends bors_object
 			$el = $els->item(0);
 			$dom2= new DOMDocument('1.0', 'utf-8');
 			$dom2->loadXML( "<html></html>" );
-			$dom2->documentElement->appendChild($dom2->importNode($el, true));
+			$child = $dom2->importNode($el, true);
+			$dom2->documentElement->appendChild($child);
 			$xpath2 = new DOMXPath($dom2);
 
 			foreach($xpath2->query("//a") as $elem)

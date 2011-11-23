@@ -1,4 +1,7 @@
 <?php
+
+bors_function_include('cache/global');
+
 	$punbb_db = 'punbb';
 
 	// db table get-field where-field

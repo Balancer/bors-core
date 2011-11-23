@@ -12,6 +12,8 @@ class bors_view extends bors_page
 	// Класс отображаемого объекта
 	function main_class()
 	{
+		bors_function_include('natural/bors_unplural');
+
 		$main_class = preg_replace('/_view$/', '', $this->extends_class_name());
 		if(class_include($main_class))
 			return $main_class;

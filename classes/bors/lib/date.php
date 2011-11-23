@@ -4,6 +4,8 @@ class bors_lib_date
 {
 	static function interval($begin_date, $end_date, $show_year = true)
 	{
+		bors_function_include('time/month_name_rp');
+
 		if(!$begin_date)
 			return '';
 
@@ -36,5 +38,11 @@ class bors_lib_date
 	{
 		bors_function_include('time/part_date');
 		return part_date($date, $int, $on_empty_text);
+	}
+
+	static function text($timestamp)
+	{
+		bors_function_include('date/text');
+		return text_date($timestamp);
 	}
 }

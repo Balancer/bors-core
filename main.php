@@ -227,7 +227,7 @@ if(config('access_log'))
 		'is_bot' => $is_bot,
 	);
 
-	if(empty($object))
+	if(empty($object) || !is_object($object))
 	{
 		$data['object_class_name'] = $_SERVER['REQUEST_URI'];
 	}

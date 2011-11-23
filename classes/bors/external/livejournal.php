@@ -15,18 +15,20 @@ class bors_external_livejournal extends bors_object
 
 		if($els = $xpath->query("//table/tr/td/b[.='Метки данной записи']/../.."))
 		{
-			$el = $els->item(0);
-			$dom2= new DOMDocument('1.0', 'utf-8');
-			$dom2->loadXML( "<html></html>" );
-			$child = $dom2->importNode($el, true);
-			$dom2->documentElement->appendChild($child);
-			$xpath2 = new DOMXPath($dom2);
+			if($el = $els->item(0))
+			{
+				$dom2= new DOMDocument('1.0', 'utf-8');
+				$dom2->loadXML( "<html></html>" );
+				$child = $dom2->importNode($el, true);
+				$dom2->documentElement->appendChild($child);
+				$xpath2 = new DOMXPath($dom2);
 
-			foreach($xpath2->query("//a") as $elem)
-				$tags[] = $elem->nodeValue;
+				foreach($xpath2->query("//a") as $elem)
+					$tags[] = $elem->nodeValue;
 
-			if($el && $el->parentNode)
-				$el->parentNode->removeChild($el);
+				if($el->parentNode)
+					$el->parentNode->removeChild($el);
+			}
 		}
 
 		$body = $xpath->query("//div[@class='entry-content']")->item(0);

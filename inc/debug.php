@@ -182,11 +182,7 @@ else
 <?php
 }
 
-
-$GLOBALS['bors_debug_counts'] = array();
-function debug_count_inc($category, $inc = 1) { @$GLOBALS['bors_debug_counts'][$category] += $inc; }
-function debug_count($category) { return @$GLOBALS['bors_debug_counts'][$category]; }
-
+bors_function_include('debug/counting');
 bors_function_include('debug/timing_start');
 bors_function_include('debug/timing_stop');
 

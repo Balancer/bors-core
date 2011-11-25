@@ -10,7 +10,18 @@
 
 class bors_page extends base_page
 {
-	function page_template_class() { return config('page_template_class', 'bors_templates_smarty'); }
+	function page_template_class()
+	{
+		if($class_name = config('templates_page_engine'))
+		{
+			if(strpos($class_name, '_'))
+				return $class_name;
+			return 'bors_templates_'.$class_name;
+		}
+
+		return config('page_template_class', 'bors_templates_smarty');
+	}
+
 	// Можно не указывать, если оно равно page_template_class
 	function body_template_class()
 	{
@@ -139,5 +150,16 @@ class bors_page extends base_page
 		}
 
 		return $data;
+	}
+
+	function get_find($name, $default = '')
+	{
+		if($value = $this->get($name))
+			return $value;
+
+		if($value = config($name))
+			return $value;
+
+		return $default;
 	}
 }

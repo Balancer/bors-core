@@ -227,7 +227,7 @@ if(config('access_log'))
 		'is_bot' => $is_bot,
 	);
 
-	if(empty($object))
+	if(empty($object) || !is_object($object))
 	{
 		$data['object_class_name'] = $_SERVER['REQUEST_URI'];
 	}
@@ -280,6 +280,9 @@ if(config('debug_timing') && is_string($res))
 
 	$deb .= "smarty = ".(config('smarty3_enable') ? 3 : 2)."\n";
 
+	bors_function_include('debug/vars');
+	bors_function_include('debug/counting');
+	bors_function_include('debug/timing');
 	if($deb_vars = debug_vars_info())
 	{
 		$deb .= "\n=== debug vars: ===\n";

@@ -6,18 +6,7 @@ function full_time($time) { return $time ? strftime("%d.%m.%Y %H:%M",$time) : '-
 
 function short_time($time, $def = '') { return bors_lib_time::short($time, $def); }
 
-function is_today($time)
-{
-	global $now;
-	if($now - $time < 86400 && strftime("%d", $time) == strftime("%d", $now))
-		return true;
-
-	//FIXME: разобраться, wtf?
-	if(preg_match("!\d{4}/\d{1,2}/\d{1,2}/$!", @$GLOBALS['main_uri']))
-		return true;
-
-	return false;
-}
+bors_function_include('date/is_today');
 
 function news_time($time)
 {
@@ -44,27 +33,7 @@ function airbase_time($time)
 	return strftime("%Y-%m-%d",$time);
 }
 
-function smart_date($time, $human_readable = true, $def='', $always_show_time = false)
-{
-	if(!$time)
-		return $def;
-
-	global $now;
-	if(is_today($time))
-		return ec(strftime("сегодня,&nbsp;%H:%M",$time));
-
-	if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d",$now-86400))
-		return ec("вчера,&nbsp;").strftime("%H:%M",$time);
-
-	$hhmm = $always_show_time ? date(' H:i', $time) : '';
-
-	return ($human_readable ? full_hdate($time) : strftime("%d.%m.%Y", $time)).$hhmm;
-}
-
-function smart_time($time, $human_readable = true, $def='', $always_show_time = true)
-{
-	return smart_date($time, $human_readable, $def, $always_show_time);
-}
+bors_function_include('time/smart');
 
 function news_short_time($time)
 {
@@ -88,15 +57,7 @@ $GLOBALS['day_names'] = explode(' ', 'Понедельник Вторник Ср
 
 function week_day_name($day_num) { return ec($GLOBALS['day_names'][$day_num-1]); }
 
-
-function full_hdate($date, $show_year = true)
-{
-	if(!$date)
-		$date = time();
-
-	return date('j', $date).' '.bors_lower(month_name_rp(date('n', $date))).($show_year ? ec(strftime(' %Y года', $date)) : '');
-}
-
+bors_function_include('date/full_hdate');
 bors_function_include('time/date_format_mysqltime');
 
 function date_format_mysql($time, $quoted=true) { $q=$quoted?"'":''; return $time ? $q.date('Y-m-d', $time).$q : NULL; }

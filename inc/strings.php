@@ -79,12 +79,7 @@ function bors_str_cat($string1, $string2, $explode_delimiter = ',', $join_delimi
 }
 
 bors_function_include('string/bors_starts_with');
-
-function bors_ends_with($string, $char)
-{
-    $length = strlen($char);
-    return (substr($string, -$length, $length) === $char);
-}
+bors_function_include('string/bors_ends_with');
 
 function bors_entity_decode($string)
 {

@@ -76,10 +76,19 @@ if(config('is_developer')) { exit($img); }
 			$dom = new DOMDocument('1.0', 'UTF-8');
 			@$dom->loadHTML($html);
 			$xpath = new DOMXPath($dom);
+
+			foreach(array(
+				'//script',
+			) as $query)
+				foreach($xpath->query($query) as $node)
+					$node->parentNode->removeChild($node);
+
 			if($divs = $xpath->query('//div[@id="content"]'))
 			{
 				$content = /*bors_lib_dom::element_html*/($divs->item(0));
-				$source = preg_replace("/\s*\n+\s*/", "\n", $content->nodeValue);
+				$source = preg_replace('/<!--.*?-->/s', '', $content->nodeValue);
+//				var_dump($source); exit();
+				$source = preg_replace("/\s*\n+\s*/", "\n", $source);
 				$source = array_filter(explode("\n", $source));
 				if(count($source) > 7)
 				{
@@ -89,7 +98,7 @@ if(config('is_developer')) { exit($img); }
 				}
 
 				$source = join("\n", $source);
-//				var_dump($source);
+//				var_dump($source); exit();
 				$description = clause_truncate_ceil($source, 512);
 				if($source != $description)
 					$more = true;

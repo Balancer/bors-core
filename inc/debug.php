@@ -183,65 +183,9 @@ else
 }
 
 bors_function_include('debug/counting');
-bors_function_include('debug/timing_start');
-bors_function_include('debug/timing_stop');
-
-function debug_timing_info_all()
-{
-	$time = microtime(true) - $GLOBALS['stat']['start_microtime'];
-
-	global $bors_debug_timing;
-	$result = "";
-	if($bors_debug_timing)
-	{
-		ksort($bors_debug_timing);
-		foreach($bors_debug_timing as $section => $data)
-			$result .= $section.": ".sprintf('%.4f', floatval(@$data['total'])).'sec ['.intval(@$data['calls'])." calls, ".sprintf('%.2f', $data['total']/$time * 100)."%, {$data['mem_total']}]\n";
-	}
-
-	return $result;
-}
-
+bors_function_include('debug/timing');
 bors_function_include('debug/log_var');
-
-function debug_vars_info()
-{
-	global $bors_debug_log_vars;
-	$result = "";
-	if(!empty($bors_debug_log_vars))
-	{
-		ksort($bors_debug_log_vars);
-		foreach($bors_debug_log_vars as $var => $value)
-		{
-			if(is_int($value))
-				$value = "$value [int]";
-			elseif(is_string($value))
-				$value = "'$value' [string]";
-			else
-				$value = "($value) [unknown]";
-			$result .= "{$var} = {$value}\n";
-		}
-	}
-
-	$result .= 'user='.@$_SERVER['USER']."\n";
-
-	return $result;
-}
-
-function debug_count_info_all()
-{
-	$result = "";
-
-	global $bors_debug_counts;
-	if($bors_debug_counts)
-	{
-		ksort($bors_debug_counts);
-		foreach($bors_debug_counts as $section => $count)
-			$result .= $section.": {$count}\n";
-	}
-
-	return $result;
-}
+bors_function_include('debug/vars');
 
 bors_function_include('debug/hidden_log');
 

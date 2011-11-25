@@ -109,6 +109,14 @@ class bors_object extends base_object
 
 	static function object_type() { return 'unknown'; }
 
+	function ctime()
+	{
+		if($this->__havefc())
+			return $this->__lastc();
+
+		return bors_load('bors_time', $this->create_time());
+	}
+
 	function mtime()
 	{
 		if($this->__havefc())

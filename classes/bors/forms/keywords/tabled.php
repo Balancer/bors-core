@@ -28,7 +28,8 @@ class bors_forms_keywords_tabled extends bors_forms_element
 		$idx = 1;
 		foreach($list as $category_name => $category_keywords)
 		{
-			$html .= "\t<td>\n";
+			$columns = ceil(count($category_keywords)/12);
+			$html .= "\t<td style=\"column-count: $columns;\" class=\"nobr\">\n";
 			foreach($category_keywords as $kw)
 			{
 				if(false !== ($pos = array_search($kw, $keyword_values)))
@@ -43,7 +44,7 @@ class bors_forms_keywords_tabled extends bors_forms_element
 					$style = '';
 				}
 
-				$html .= "\t<label$style><input name=\"keywords_tabbed[]\" type=\"checkbox\"$checked value=\"{$kw}\" />&nbsp;{$kw}</label>\n";
+				$html .= "\t<label$style><input name=\"keywords_tabbed[]\" type=\"checkbox\"$checked value=\"{$kw}\" />&nbsp;{$kw}</label><br/>\n";
 			}
 			$html .= "\t</td>\n";
 		}

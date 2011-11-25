@@ -280,6 +280,9 @@ if(config('debug_timing') && is_string($res))
 
 	$deb .= "smarty = ".(config('smarty3_enable') ? 3 : 2)."\n";
 
+	bors_function_include('debug/vars');
+	bors_function_include('debug/counting');
+	bors_function_include('debug/timing');
 	if($deb_vars = debug_vars_info())
 	{
 		$deb .= "\n=== debug vars: ===\n";

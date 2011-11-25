@@ -8,7 +8,7 @@ if(config('smarty3_enable'))
 
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 {
-	bors_function_include('debug/timing_start');
+	bors_function_include('debug/timing');
 	debug_timing_start('template_smarty_assign');
 
 	unset($GLOBALS['module_data']);
@@ -111,6 +111,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		foreach(explode(' ', 'host_name main_host_uri') as $key)
 			$smarty->assign($key, @$GLOBALS['cms'][$key]);
 
+		bors_function_include('debug/timing');
 		debug_timing_stop('template_smarty_assign');
 		debug_timing_start('template_smarty_assign_fill');
 

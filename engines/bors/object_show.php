@@ -81,12 +81,14 @@
 			return true;
 		}
 
+		$modify_time = max($obj->modify_time(), $obj->get('compile_time'));
+
 		// [HTTP_IF_MODIFIED_SINCE] => Mon, 27 Jul 2009 19:03:37 GMT
 		// [If-Modified-Since] => Mon, 27 Jul 2009 19:03:37 GMT
 		if(!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && config('ims_enabled'))
 		{
 			$check_date = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-			if($check_date >= $obj->modify_time())
+			if($check_date >= $modify_time)
 			{
 				@header('HTTP/1.1 304 Not Modified');
 				return bors_exit();
@@ -124,8 +126,8 @@
 		if(!$access_object->can_read())
 			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас нет доступа к этому ресурсу [2]\n<!-- $access_object, class_file = {$access_object->class_file()}-->")) : true;
 
-		$last_modify = @gmdate('D, d M Y H:i:s', $obj->modify_time()).' GMT';
-		@header('Last-Modified: '.$last_modify);
+        $last_modify = gmdate('D, d M Y H:i:s', $modify_time).' GMT';
+   	    @header ('Last-Modified: '.$last_modify);
 
 		if($obj->cache_static())
 		{
@@ -133,7 +135,7 @@
 //			Видимо, нужно вводить отдельный параметр.
 //			@header('Expires: '.@gmdate('D, d M Y H:i:s', $obj->cache_static() + time()).' GMT');
 //			@header('Cache-Control: max-age='.$obj->cache_static());
-			@header('ETag: "'.md5($obj->internal_uri().$obj->modify_time()).'"');
+			@header('ETag: "'.md5($obj->internal_uri().$modify_time).'"');
 		}
 
 		return $content;

@@ -76,7 +76,7 @@ class bors_lib_http
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_MAXREDIRS => 10,
 			CURLOPT_ENCODING => 'gzip, deflate',
-//			CURLOPT_REFERER => defval($curl_options, 'referer'),
+			CURLOPT_REFERER => defval($curl_options, 'referer', $original_url),
 			CURLOPT_AUTOREFERER => true,
 //			CURLOPT_HTTPHEADER => $header,
 			CURLOPT_USERAGENT => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; FunWebProducts; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
@@ -148,5 +148,29 @@ class bors_lib_http
 	{
 		$url = str_replace(' ', '+', $url);
 		return $url;
+	}
+}
+
+if(!function_exists('curl_setopt_array'))
+{
+	function curl_setopt_array($curl, $options)
+	{
+		foreach($options as $key => $value)
+			curl_setopt($curl, $key, $value);
+	}
+}
+
+if(!function_exists('defval'))
+{
+	function defval(&$data, $name, $default=NULL, $must_be_set = false)
+	{
+		if($data && array_key_exists($name, $data))
+			return $data[$name];
+
+		//TODO: вынести в отдельную функцию
+		if($must_be_set)
+			$data[$name] = $default;
+
+		return $default;
 	}
 }

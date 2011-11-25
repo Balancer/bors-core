@@ -265,6 +265,7 @@ function bors_stop_bots()
 function bors_throw($message)
 {
 //	echo debug_trace();
+	debug_hidden_log('__exceptions-unknown', $message);
 	throw new Exception($message);
 }
 

@@ -77,7 +77,7 @@ function __session_init()
 	{
 		if(!config('system.session.skip'))
 		{
-			ini_set('session.use_trans_sid', false);
+			@ini_set('session.use_trans_sid', false);
 			@session_start();
 			$session_started = true;
 		}

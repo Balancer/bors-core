@@ -26,7 +26,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$post_functions = array();
 
 		$table = $object->table_name();
-//		var_dump(bors_lib_orm::main_fields($object));
+//		if(config('is_developer')) { echo "<b>Load: {$object->class_name()}</b><br/>"; print_dd($where); print_dd(bors_lib_orm::main_fields($object)); }
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
 			if(!empty($f['sql_function']))
@@ -166,8 +166,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					{
 						$field = bors_lib_orm::field($property, $field);
 
-						$x = "$t.`{$field['name']}`";//FIXME: предусмотреть возможность подключать FUNC(`field`)
-						if($field['name'] != $field['property'])
+						$x = "$t.`{$field['name']}`";
+
+						if(!empty($field['sql_function']))
+						// Если у нас это SQL-функция 'modify_time' => 'UNIX_TIMESTAMP(`modify_time`)'
+							$x = $field['sql_function']."({$t}.`{$field['name']}`) AS `{$field['property']}`";
+						elseif($field['name'] != $field['property'])
 							$x .= " AS `{$field['property']}`";
 
 						$select[] = $x;

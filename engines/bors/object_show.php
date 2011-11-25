@@ -25,14 +25,22 @@
 
 		$processed = $obj->pre_parse($_GET);
 		if($processed === true)
+		{
+			if(config('debug_header_trace'))
+				@header('X-Bors-show-has-preparsed: Yes');
 			return true;
+		}
 
 		if(!empty($_GET) && !$obj->get('skip_auto_forms'))
 		{
 			require_once('inc/bors/form_save.php');
 			$processed = bors_form_save($obj);
 			if($processed === true)
+			{
+				if(config('debug_header_trace'))
+					@header('X-Bors-show-form-saved: Yes');
 				return true;
+			}
 		}
 
 		$access_object = $obj->access();
@@ -67,7 +75,11 @@
 
 		$processed = $obj->pre_show();
 		if($processed === true)
+		{
+			if(config('debug_header_trace'))
+				@header('X-Bors-show-pre-show: Yes');
 			return true;
+		}
 
 		// [HTTP_IF_MODIFIED_SINCE] => Mon, 27 Jul 2009 19:03:37 GMT
 		// [If-Modified-Since] => Mon, 27 Jul 2009 19:03:37 GMT

@@ -497,7 +497,8 @@ function class_load_by_vhosts_url($url)
 //						exit("Redirect");
 //					}
 //					else
-						return go($obj->url($page), true);
+//						return go($obj->url($page), true);
+					$obj->set_attr('redirect_to', $obj->url($page));
 				}
 
 				return $obj;

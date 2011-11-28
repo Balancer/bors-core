@@ -38,6 +38,7 @@ class storage_fs_separate extends base_null
 		if(!$found)
 			return $object->set_loaded(false);
 
+		bors_function_include('debug/log_var');
 		debug_log_var('fs.separate.dir', $dir);
 
 		// По дефолту в separate разрешён HTML и все BB-тэги.

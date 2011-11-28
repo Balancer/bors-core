@@ -75,9 +75,6 @@ class bors_lcml
 			self::memcache()->set($files);
 		}
 
-		$fns_list_enabled  = config('lcml_functions_enabled',  array());
-		$fns_list_disabled = config('lcml_functions_disabled', array());
-
         foreach($files as $file) 
         {
             if(preg_match("!(.+)\.php$!", $file, $m))
@@ -85,24 +82,25 @@ class bors_lcml
                 include_once("$dir/$file");
 
                 $fn = "lcml_".($ffn=substr($file, 3, -4));
-
-                if(function_exists($fn)
-					&& (!$fns_list_enabled || in_array($ffn, $fns_list_enabled))
-					&& ($fns_list_disabled || !in_array($ffn, $fns_list_disabled))
-                )
-					$functions[] = $fn;
+				$functions[] = $fn;
             }
         }
 	}
 
 	private function functions_do($functions, $text)
 	{
+		$fns_list_enabled  = config('lcml_functions_enabled',  array());
+		$fns_list_disabled = config('lcml_functions_disabled', array());
+
 		foreach($functions as $fn)
 		{
 			$original = $text;
 
 //			if(config('is_developer'))echo "$fn('$text')<br/><br/>";
-			$text = $fn($text, $this);
+			if((!$fns_list_enabled || in_array($fn, $fns_list_enabled))
+				&& !in_array($fn, $fns_list_disabled)
+			)
+				$text = $fn($text, $this);
 
 			if(!trim($text) && trim($original))
 				debug_hidden_log('lcml-error', "Drop on $fn convert '$original'");

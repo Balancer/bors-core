@@ -38,6 +38,9 @@ class bors_object extends base_object
 
 	function show()
 	{
+//		if($go = $obj->attr('redirect_to'))
+//			return go($go);
+
 		return false; // Пока ничего автоматом не выводим
 		//TODO: добавить debug-info в конец и т.п. вещи из main.php
 //		echo $this->content();

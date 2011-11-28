@@ -23,6 +23,10 @@
 			@header("X-Bors-object-id: {$obj->id()}");
 		}
 
+
+		if($go = $obj->attr('redirect_to'))
+			return go($go);
+
 		$processed = $obj->pre_parse($_GET);
 		if($processed === true)
 		{

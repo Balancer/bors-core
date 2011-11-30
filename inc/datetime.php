@@ -46,10 +46,7 @@ function news_short_time($time)
 	return strftime("%d.%m.%Y", $time);
 }
 
-$GLOBALS['month_names'] = explode(' ', 'Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь');
-
-function month_name($m) { return ec($GLOBALS['month_names'][$m-1]); }
-
+bors_function_include('time/month_name');
 bors_function_include('time/month_name_rp');
 bors_function_include('date/text');
 

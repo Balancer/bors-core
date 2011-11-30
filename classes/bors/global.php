@@ -14,6 +14,7 @@ class bors_global extends base_empty
 			$uc = config('user_class');
 			if(!$uc)
 			{
+				bors_function_include('debug/hidden_log');
 				debug_hidden_log('__critical', 'Not defined user_class', true, array('dont_show_user' => true));
 				return NULL;
 			}

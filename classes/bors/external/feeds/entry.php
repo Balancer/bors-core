@@ -11,7 +11,7 @@ class bors_external_feeds_entry extends base_object_db
 		return array(
 			'id',
 			'entry_url',
-			'pub_date',
+			'pub_date' => array('type' => 'timestamp'),
 			'title',
 			'keywords_string',
 			'text',

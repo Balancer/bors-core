@@ -507,6 +507,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					$new_id = $dbh->last_id();
 					if(!$new_id)
 						$new_id = $object->id();
+					if(!$new_id && ($idf = $object->id_field()))
+						$new_id = $object->get($idf);
 					if(!$new_id)
 						debug_hidden_log('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
 				}

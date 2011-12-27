@@ -92,7 +92,7 @@ class bors_forms_saver extends base_empty
 		if($go)
 		{
 //			var_dump($form_object);
-//			var_dump($form_object);
+//			var_dump($object);
 
 			require_once('inc/navigation.php');
 

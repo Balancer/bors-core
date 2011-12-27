@@ -1,5 +1,7 @@
 <?php
 
+bors_function_include('debug/timing');
+
 class driver_oci
 {
 	private $connection = NULL;
@@ -64,6 +66,7 @@ class driver_oci
 			$error = oci_error($this->statement);
 			if(@$error['sqltext'] && @$error['offset'])
 				$error['error_in'] = substr($error['sqltext'], $error['offset']);
+			bors_function_include('debug/print');
 			print_d($error);
 			bors_throw('oci_execute error: '.print_r($error, true));
 		}

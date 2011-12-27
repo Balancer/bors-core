@@ -21,50 +21,7 @@ function debug_exit($message)
 }
 
 bors_function_include('debug/in_console');
-
-function debug_xmp($text, $string = false)
-{
-	if(debug_in_console())
-		$out = $text;
-	else
-		$out = "<xmp>{$text}</xmp>\n";
-
-	if(!$string)
-		echo $out;
-
-	return $out;
-}
-
-function debug_pre($text)
-{
-	if(debug_in_console())
-		echo $text;
-	else
-		echo "<xmp>{$text}</xmp>\n";
-}
-
-function print_d($data, $string=false) { return debug_xmp(print_r($data, true), $string); }
-function print_dd($data, $string=false){ return debug_xmp(__print_dd($data), $string); }
-function print_dl($data) { return str_replace("\n", " ", print_r($data, true)); }
-
-function __print_dd($data, $level=0)
-{
-	$s = '';
-	$step = str_repeat(' ', $level*4);
-	if(is_object($data))
-		$s .= $step.$data->debug_title()."\n";
-	elseif(is_array($data))
-	{
-		$s .= "{$step}array(\n";
-		foreach($data as $key => $value)
-			$s .= $step."    '{$key}' => " . __print_dd($value, $level+1) . "\n";
-		$s .= "{$step});\n";
-	}
-	else
-		$s .= $step.$data."\n";
-
-	return trim($s);
-}
+bors_function_include('debug/print');
 
 function set_loglevel($n, $file=false)
 {

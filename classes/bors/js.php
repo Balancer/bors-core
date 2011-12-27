@@ -8,9 +8,22 @@ class bors_js extends base_page
 
 	function pre_show()
 	{
-		header("Content-type: text/javascript");
+//		header("Content-type: text/javascript");
+		header('Content-type: text/javascript; charset='.$this->output_charset());
 		config_set('debug_timing', false); // Чтобы не мусорить комментарием в конце JS.
-		echo $this->content();
-		return true;
+		return false;
 	}
+
+	function body_data()
+	{
+		return array_merge(parent::body_data(), array(
+			'smarty_auto_literal' => true,
+		));
+	}
+
+//	function direct_content()
+//	{
+//		return $this->content();
+//
+//	}
 }

@@ -192,7 +192,7 @@ class bors_form extends bors_object
 		$table_css_class = defval($params, 'table_css_class', 'btab w100p');
 
 		if($fields == 'auto')
-			$fields = array_keys($object_fields);
+			$fields = array_keys(array_filter($object_fields, create_function('$x', 'return defval($x, "is_editable", true);')));
 
 		if($th || !empty($fields))
 		{
@@ -275,7 +275,7 @@ class bors_form extends bors_object
 
 				$type = defval($data, 'form_type', $type);
 
-//				echo "property=$property_name, title=$title, type=$type, data=".print_dd($data).", field=".print_dd($field)."<br/>\n";
+//				echo "<b>property=$property_name</b>, title=$title, type=$type, data=".print_dd($data, true).", field=".print_dd($field, true)."<br/>\n";
 				if(!empty($property_name))
 					$data['name'] = $property_name;
 
@@ -428,6 +428,7 @@ class bors_form extends bors_object
 //						echo defval($data, 'value');
 //						echo defval($data, 'value');
 				}
+
 				$html .= $html_append;
 				$html .= "\t</td></tr>\n";
 			}

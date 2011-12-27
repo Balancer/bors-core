@@ -1,0 +1,9 @@
+<?php
+
+define('BORS_CORE', '/var/www/bors/bors-core');
+define('BORS_LOCAL', '/var/www/bors/bors-local');
+define('BORS_HOST', '/var/www/bors/bors-host');
+
+$_SERVER['HTTP_HOST'] = 'www.domain.tld';
+$_SERVER['DOCUMENT_ROOT'] = '/var/www/domain.tld/htdocs';
+

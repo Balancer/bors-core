@@ -1379,7 +1379,9 @@ defined at {$this->class_file()}<br/>
 		$content = $this->direct_content();
 
 		if($this->internal_charset() != $this->output_charset())
-			$content = $this->cs_i2o($content);
+			$output_content = $this->cs_i2o($content);
+		else
+			$output_content = $content;
 
 		if(empty($content))
 		{
@@ -1390,7 +1392,7 @@ defined at {$this->class_file()}<br/>
 		if($use_static || $recreate)
 			cache_static::save($this, $content);
 
-		return $content;
+		return $output_content;
 	}
 
 	function object_title() { return strip_tags(bors_lower($this->class_title()).ec(' «').$this->title().ec('»')); }

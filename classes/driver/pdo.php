@@ -1,5 +1,7 @@
 <?php
 
+bors_function_include('debug/timing');
+
 class driver_pdo
 {
 	protected $connection = NULL;

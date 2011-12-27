@@ -102,7 +102,7 @@ class driver_mysql extends DataBase implements Iterator
 		if(!$this->each_result)
 			return false;
 
-		mysql_data_seek($this->each_result, 0);
+		@mysql_data_seek($this->each_result, 0);
 
         return $this->fetch();
     }

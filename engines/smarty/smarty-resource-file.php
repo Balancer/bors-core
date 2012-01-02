@@ -45,6 +45,7 @@ function smarty_resource_file_get_template($tpl_name, &$tpl_source, $smarty)
 
 function smarty_resource_file_get_timestamp($tpl_name, &$tpl_timestamp, $smarty)
 {
+//	if(config('is_developer')) echo "engines/smarty: get timestamp template $tpl_name<br/>\n";
 	static $cache;
 	if(!empty($cache[$tpl_name]))
 		return ($tpl_timestamp = $cache[$tpl_name]) > 0;

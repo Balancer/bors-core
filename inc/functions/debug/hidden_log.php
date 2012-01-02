@@ -25,6 +25,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 	if($trace !== false)
 	{
 		bors_function_include('debug/trace');
+		require_once('inc/locales.php');
 
 		if($trace === true)
 			$trace_out = debug_trace(0, false);

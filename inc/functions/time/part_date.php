@@ -1,7 +1,5 @@
 <?php
 
-bors_function_include('time/month_name_rp');
-
 function part_date($date, $int = false, $on_empty_text = '')
 {
 	$year = $month = $day = 0;
@@ -31,7 +29,11 @@ function part_date($date, $int = false, $on_empty_text = '')
 	if($month == 0)
 		return $year.ec(' г.');
 	if($day == 0)
+	{
+		bors_function_include('time/month_name');
 		return month_name($month).' '.$year.ec(' г.');
+	}
 
+	bors_function_include('time/month_name_rp');
 	return $day.' '.month_name_rp($month).' '.$year.ec(' г.');
 }

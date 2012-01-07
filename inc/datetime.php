@@ -56,8 +56,7 @@ function week_day_name($day_num) { return ec($GLOBALS['day_names'][$day_num-1]);
 
 bors_function_include('date/full_hdate');
 bors_function_include('time/date_format_mysqltime');
-
-function date_format_mysql($time, $quoted=true) { $q=$quoted?"'":''; return $time ? $q.date('Y-m-d', $time).$q : NULL; }
+bors_function_include('date/format_mysql');
 
 function date_day_begin($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time())); }
 function date_day_next($time)   { return strtotime(date('Y-m-d', $time).' +1 day');  }

@@ -9,6 +9,9 @@ class bors_templates_smarty2 extends bors_templates_abstract
 	{
 //		if(config('is_developer')) echo "bors_templates_smarty2::fetch($template)<br/>\n";
 
+		if($template[0] == '/')
+			$template = 'xfile:'.$template;
+
 		require_once(config('smarty_include'));
 		require_once('engines/smarty/bors_smarty_common.php');
 

@@ -66,6 +66,9 @@ class bors_templates_smarty3 extends bors_template
 	// это задача вызывающего. Например, bors_template->render_page($template, $object);
 	static function fetch($template, $data = array(), $smarty = NULL)
 	{
+		if($template[0] == '/')
+			$template = 'xfile:'.$template;
+
 		if(!$smarty)
 			$smarty = self::factory();
 

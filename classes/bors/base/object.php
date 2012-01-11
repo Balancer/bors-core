@@ -357,7 +357,7 @@ defined at {$this->class_file()}<br/>
 
 	function set($field, $value, $db_update=true)
 	{
-		if($db_update && @$this->data[$field] != $value) // TODO: если без контроля типов, то !=, иначе - !==
+		if($db_update && strcmp(@$this->data[$field], $value)) // TODO: если без контроля типов, то !=, иначе - !==
 		{
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();
@@ -374,6 +374,7 @@ defined at {$this->class_file()}<br/>
 			bors()->add_changed_object($this);
 		}
 
+		$this->attr[$field] = $value; // У атрибутов выше приоритет. Так что их тоже надо менять. Ну а данные — они на запись.
 		return $this->data[$field] = $value;
 	}
 
@@ -383,12 +384,12 @@ defined at {$this->class_file()}<br/>
 		if(empty($this->changed_fields))
 			return false;
 
-		foreach($this->changed_fields as $property => $value)
+		foreach($this->changed_fields as $property => $old_value)
 		{
 			if($property == 'modify_time')
 				continue;
 
-			if($value && $value != $this->get($property))
+			if($old_value && !strcmp($old_value, $this->get($property)))
 				return true;
 		}
 

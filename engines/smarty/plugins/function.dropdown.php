@@ -69,7 +69,7 @@ function smarty_function_dropdown($params, &$smarty)
 	$strict = defval($params, 'strict', $have_null);
 	$is_int = defval($params, 'is_int');
 
-	if(is_null($is_int) && !$strict)
+	if(is_null($is_int) && !$strict && !array_key_exists('', $list))
 		$is_int = true;
 
 	if(empty($get))

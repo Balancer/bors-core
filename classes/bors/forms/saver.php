@@ -222,6 +222,8 @@ class bors_forms_saver extends base_empty
 			if(empty($file_data['tmp_name'])) // Файл не загружался. Вызываем после проверки на удаление.
 				continue;
 
+			$file_data['upload_name']  = $file_name;
+
 			if($method_name) // Обработка вынесена в конец, чтобы корректно обработать удаление выше.
 			{
 				$object->$method_name($file_data, $data);

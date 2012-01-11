@@ -98,7 +98,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			}
 			elseif(preg_match('/^\w+\(.+\)$/', $field_name)) // id => CONCAT(keyword,":",keyword_id)
 			{
-//				echo "skip $field_name\n";
 				$skip_joins = true;
 				continue;
 			}
@@ -115,8 +114,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					$update[$db_name][$table_name][$field_name] = $object->get($f['property']);
 			}
 		}
-//		print_dd($update);
-//		echo "skip = $skip_joins\n";
+
 		$select = array(); // dummy
 		if(!$skip_joins)
 		{
@@ -399,12 +397,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function save($object)
 	{
-//		var_dump($object->id());
+//		var_dump($object->data);
 //		var_dump($object->id_field());
 		$where = array($object->id_field() => $object->id());
 //		var_dump($where);
 		list($update, $where) = self::__update_data_prepare($object, $where);
-
+//		print_dd($update);
 		$update_plain = array();
 		foreach($update as $db_name => $tables)
 			foreach($tables as $table_name => $fields)

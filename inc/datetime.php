@@ -33,7 +33,7 @@ function airbase_time($time)
 	return strftime("%Y-%m-%d",$time);
 }
 
-bors_function_include('time/smart');
+bors_function_include('time/smart_time');
 
 function news_short_time($time)
 {
@@ -64,7 +64,7 @@ function date_month_next($time) { return strtotime(date('Y-m-d', $time).' +1 mon
 function date_year_next($time)  { return strtotime(date('Y-m-d', $time).' +1 year'); }
 
 function date_today($time = 0)     { return strtotime(date('Y-m-d', $time ? $time : time())); }
-function date_yesterday($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' -1 day'); }
+bors_function_include('date/yesterday');
 function date_tomorrow ($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' +1 day'); }
 
 bors_function_include('time/part_date');

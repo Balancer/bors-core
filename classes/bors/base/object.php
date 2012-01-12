@@ -389,7 +389,7 @@ defined at {$this->class_file()}<br/>
 			if($property == 'modify_time')
 				continue;
 
-			if($old_value && !strcmp($old_value, $this->get($property)))
+			if($old_value && strcmp($old_value, $this->get($property)))
 				return true;
 		}
 

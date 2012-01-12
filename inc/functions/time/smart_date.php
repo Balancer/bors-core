@@ -20,8 +20,3 @@ function smart_date($time, $human_readable = true, $def='', $always_show_time = 
 	bors_function_include('date/full_hdate');
 	return ($human_readable ? full_hdate($time) : strftime("%d.%m.%Y", $time)).$hhmm;
 }
-
-function smart_time($time, $human_readable = true, $def='', $always_show_time = true)
-{
-	return smart_date($time, $human_readable, $def, $always_show_time);
-}

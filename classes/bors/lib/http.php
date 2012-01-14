@@ -2,19 +2,26 @@
 
 class bors_lib_http
 {
-	function get($url, $raw = false)
+	function get($url, $raw = false, $max_length = false)
 	{
 		require_once('inc/http.php');
-		return http_get_content($url, $raw);
+		return http_get_content($url, $raw, $max_length);
 	}
 
-	function get_cached($url, $ttl = 86400, $raw = false, $force = false)
+	// Работает с объектами не более одного мегабайта. Можно настроить новым параметром max_length
+	function get_cached($url, $ttl = 86400, $raw = false, $force = false, $max_length = 1000000)
 	{
 		$cache = new Cache();
 		if($cache->get('bors_lib_http.get_cached', $url) && !$force)
 			return $cache->last();
 
-		return $cache->set(self::get($url, $raw), $ttl);
+		$content = self::get($url, $raw);
+
+		// Запоминаем не более одного мегабайта, а то по max_allowed_packet можно влететь.
+		if(strlen($content) > $max_length)
+			$content = substr($content, 0, $max_length);
+
+		return $cache->set($content, $ttl);
 	}
 
 	static function url_unshort($url, $type, $loop = 0)

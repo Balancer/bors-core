@@ -63,7 +63,7 @@ function date_day_next($time)   { return strtotime(date('Y-m-d', $time).' +1 day
 function date_month_next($time) { return strtotime(date('Y-m-d', $time).' +1 month');}
 function date_year_next($time)  { return strtotime(date('Y-m-d', $time).' +1 year'); }
 
-function date_today($time = 0)     { return strtotime(date('Y-m-d', $time ? $time : time())); }
+bors_function_include('date/today');
 bors_function_include('date/yesterday');
 function date_tomorrow ($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' +1 day'); }
 

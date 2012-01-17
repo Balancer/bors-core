@@ -28,7 +28,7 @@ function http_get($url)
 	return $data;
 }
 
-function http_get_content($url, $raw = false)
+function http_get_content($url, $raw = false, $max_length = false)
 {
 
 	$original_url = $url;

@@ -63,6 +63,15 @@ class base_empty extends base_null
 		if(property_exists($this, $name_ec) && !$skip_properties)
 			return $this->set_attr($name, ec($this->$name_ec));
 
+		// Ищем методы, перекрываемые переменным по умолчанию
+		$m = "_{$name}_def";
+		if(method_exists($this, $m) && !$skip_methods)
+		{
+			try { $value = $this->$m(); }
+			catch(Exception $e) { $value = NULL; }
+			return $this->attr[$name] = $value;
+		}
+
 		if(@array_key_exists($name, $this->defaults))
 			return $this->defaults[$name];
 

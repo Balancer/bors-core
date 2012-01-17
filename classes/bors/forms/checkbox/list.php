@@ -18,6 +18,14 @@ class bors_forms_checkbox_list extends bors_forms_element
 			if(!empty($$p))
 				$params .= " $p=\"{$$p}\"";
 
+		if(!empty($xref))
+		{
+			// Задан класс m2m связей
+			$xref_obj = new $xref;
+			$list = $xref_obj->named_list($obj);
+			$name = $xref_obj->name($obj);
+		}
+
 		if(!is_array($list))
 		{
 			if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))

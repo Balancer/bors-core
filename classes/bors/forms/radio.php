@@ -16,7 +16,14 @@ class bors_forms_radio extends bors_forms_element
 			if(!empty($$p))
 				$params .= " $p=\"{$$p}\"";
 
-		if(preg_match("!^(\w+)\->(\w+)!", $list, $m))
+		if(!empty($xref))
+		{
+			// Задан класс m2m связей
+			$xref_obj = new $xref;
+			$list = $xref_obj->named_list($obj);
+			$name = $xref_obj->name($obj);
+		}
+		elseif(preg_match("!^(\w+)\->(\w+)!", $list, $m))
 		{
 			if($m[1] == 'this')
 				$list = $obj->$list();

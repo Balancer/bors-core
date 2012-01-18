@@ -65,6 +65,15 @@ class bors_storage_htsu extends bors_storage
 		{
 			foreach(bors_dirs() as $d)
 			{
+				if($base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}/{$base}.htsu")))
+					return $file;
+
+				if(!$base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}.htsu")))
+					return $file;
+
+				if(!$base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}/index.htsu")))
+					return $file;
+
 				if($base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/{$base}.htsu")))
 					return $file;
 

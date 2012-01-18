@@ -49,7 +49,7 @@
 
 		$access_object = $obj->access();
 		if(!$access_object)
-			bors_throw("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
+			bors_throw("Can't load access_engine ({$obj->access_engine()}?) for class {$obj->debug_title()}");
 
 		if(!$access_object->can_read())
 		{
@@ -125,7 +125,7 @@
 
 		$access_object = $obj->access();
 		if(!$access_object)
-			debug_exit("Can't load access_engine ({$obj->access_engine()}?) for class {$obj}");
+			debug_exit("Can't load access_engine ({$obj->access_engine()}?) for class {$obj->debug_title()}");
 
 		if(!$access_object->can_read())
 			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас нет доступа к этому ресурсу [2]\n<!-- $access_object, class_file = {$access_object->class_file()}-->")) : true;

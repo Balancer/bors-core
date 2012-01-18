@@ -4,6 +4,7 @@ class bors_debug
 {
 	static function syslog($type, $message, $trace = true, $args = array())
 	{
+		bors_function_include('debug/hidden_log');
 		return debug_hidden_log($type, $message, $trace, $args);
 	}
 
@@ -30,5 +31,11 @@ class bors_debug
 		));
 
 		$enter = false;
+	}
+
+	static function trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
+	{
+		bors_function_include('debug/trace');
+		debug_trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL);
 	}
 }

@@ -59,6 +59,8 @@ class bors_cache_redis extends bors_cache_base
 
 	function get($type, $key, $default = NULL)
 	{
+		bors_function_include('debug/count_inc');
+
 		parent::get($type, $key, $default);
 
 		if(config('cache_disabled'))

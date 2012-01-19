@@ -61,6 +61,7 @@ function smarty_function_dropdown($params, &$smarty)
 		}
 		else
 		{
+//			var_dump('$list='.$list);
 			eval('$list='.$list);
 		}
 	}

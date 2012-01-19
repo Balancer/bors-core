@@ -53,6 +53,7 @@ function bors_message($text, $params=array())
 	if(empty($data['this']))
 		$data['this'] = object_load('base_page', NULL);
 
+	bors_function_include('debug/trace');
 	$data['debug_trace'] = debug_trace(0, false);
 
 	$body_template = "xfile:messages.html";

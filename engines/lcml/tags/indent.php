@@ -2,6 +2,6 @@
 
 function lp_indent($text, $params)
 {
-	$params['skip_around_cr'] = true;
+	$params['skip_around_cr'] = 'full';
 	return "<div style=\"padding-left: 3ex;\">".lcml($text)."</div>";
 }

@@ -28,7 +28,7 @@ function lcml_quote($txt)
 		if($break)
 			continue;
 
-		$s = preg_replace("!^(\s*)([^\s><]*?)(&gt;|>)(.+?)$!", "$1<span class=\"q\"><b>$2</b>&gt;$4</span>", $s);
+		$s = preg_replace("!^(\s*)([^\s><;]+?)(&gt;|>)(.+?)$!", "$1<span class=\"q\"><b>$2</b>&gt;$4</span>", $s);
 		$res .= "$s\n";
 	}
 

@@ -101,7 +101,7 @@
 
 		$called_url = preg_replace('/\?.*$/', '', $obj->called_url());
 		$target_url = preg_replace('/\?.*$/', '', $obj->url($page));
-//		if(config('is_developer')) echo "{$obj}:<br/>.called={$obj->called_url()},<br/>target={$target_url} && called={$called_url} && {$obj->_auto_redirect()}<br/>";
+//		if(config('is_developer')) echo "{$obj->debug_title()}:<br/>.called={$obj->called_url()},<br/>target={$target_url} && called={$called_url} && {$obj->_auto_redirect()}<br/>";
 		if($obj->called_url() && !preg_match('!'.preg_quote($target_url).'$!', $called_url) && $obj->_auto_redirect())
 			return go($obj->url($page), true);
 
@@ -130,7 +130,7 @@
 		if(!$access_object->can_read())
 			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас нет доступа к этому ресурсу [2]\n<!-- $access_object, class_file = {$access_object->class_file()}-->")) : true;
 
-        $last_modify = gmdate('D, d M Y H:i:s', $modify_time).' GMT';
+        $last_modify = @gmdate('D, d M Y H:i:s', $modify_time).' GMT';
    	    @header ('Last-Modified: '.$last_modify);
 
 		if($obj->cache_static())

@@ -35,13 +35,12 @@ function lp_ol($text, $param)
 require_once('inc/strings.php');
 function lp_list($text, $params)
 {
-	$param['skip_around_cr'] = true;
+	$params['skip_around_cr'] = true;
 
 	if(@$params['list'] == 1)
 		$tag = 'ol';
 	else
 		$tag = 'ul';
 
-	return "<$tag>".preg_replace('/^\[\*\](.*?)$/me', "'<li>'.lcml(stripq('$1')).'</li>'", $text)."</$tag>";
-//	return save_format($html);
+	return save_format("<$tag>".preg_replace('/^\[\*\](.*?)$/me', "'<li>'.lcml(stripq('$1')).'</li>'", $text)."</$tag>");
 }

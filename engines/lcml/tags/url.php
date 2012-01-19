@@ -6,7 +6,7 @@ function lp_url($text, $params)
 	$url_data = url_parse($url);
 	$external = @$url_data['local'] ? '' : ' class="external"';
 	$blacklist = $external || preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $url_data['host']);
-	return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"$url\"$external>{$text}</a>";
+	return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"$url\"$external>".lcml($text, array('html'=>'safe', 'only_tags' => true))."</a>";
 }
 
 function lt_url($params) 

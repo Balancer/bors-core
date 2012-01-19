@@ -5,9 +5,13 @@ foreach(explode(' ','red green blue yellow gray silver orange white black') as $
 
 function lp_color($txt, $params)
 {
-	if(empty($params['name']))
+	$color = @$params['color'];
+
+	if(!$color)
+		$color = @$params['name'];
+
+	if(!$color)
 		$color = $params['orig'];
-	else
-		$color = $params['name'];
+
 	return "<span style=\"color:{$color}\">".lcml($txt)."</span>";
 }

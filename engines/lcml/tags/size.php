@@ -1,9 +1,14 @@
 <?php
 
-function lp_size($txt,$params)
+function lp_size($txt, $params)
 {
-	$size = trim($params['orig']);
-	if($size == "".intval($size))
+	extract($params);
+	if(empty($size))
+		$size = $orig;
+
+	$size = trim($size);
+
+	if(is_numeric($size))
 	{
 		if($size > 30)
 			$size .= "%";

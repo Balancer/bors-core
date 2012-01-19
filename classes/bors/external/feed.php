@@ -198,11 +198,18 @@ class bors_external_feed extends base_object_db
 
 			if($entry
 					&& $pub_date <= $entry->pub_date()
-					&& $title == $entry->title()
+					&& bors_substr($title, 0, 255) == bors_substr($entry->title(), 0, 255)
 					&& $description == $entry->text()
 					&& $keywords_string == $entry->keywords_string()
 			)
 				continue;
+
+			if($entry)
+				debug_hidden_log('__keywords_delete', "check 1: why not skipped? entry={$entry->id()}; entry=".((bool)$entry)
+					." && pubdate <= :".($pub_date <= $entry->pub_date())
+					." && title==:".($title == $entry->title())
+					." && desc==:".($description == $entry->text())
+					." && kws==:".($keywords_string == $entry->keywords_string()));
 
 			echo "=== $title ===\n";
 
@@ -240,6 +247,7 @@ class bors_external_feed extends base_object_db
 				$entry->set_keywords_string($keywords_string, true);
 				$entry->set_text($description, true);
 				$entry->set_is_suspended($is_skipped, true);
+				$was = 'updated';
 			}
 			else
 			{
@@ -256,12 +264,24 @@ class bors_external_feed extends base_object_db
 //					'target_object_id',
 					'is_suspended' => $is_skipped,
 				));
+				$was = 'new';
 			}
 
 //			if(!$entry->target_object_id() && $this->target_topic_id())
 
 			if(!$is_skipped && !$is_test)
+			{
+
+				if($entry)
+					debug_hidden_log('__keywords_delete', "why not skipped? entry={$entry->debug_title()}; was=$was; entry=".((bool)$entry)
+						." && pubdate <= :".($pub_date <= $entry->pub_date())
+						." && title==:".($title == $entry->title())
+						." && desc==:".($description == $entry->text())
+						." && kws==:".($keywords_string == $entry->keywords_string()));
+
 				$entry->update_target(true, $find_topic);
+			}
+
 //			echo "update_target($forum_id, {$this->target_topic_id()});\n";
 //			if(!$is_skipped)
 //				return;

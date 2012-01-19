@@ -42,7 +42,9 @@ class base_page extends bors_object
 		));
 	}
 
-	function pages_links($css='pages_select', $before='', $after='')
+	function is_reversed() { return false; }
+
+	function pages_links_list($css='pages_select', $before='', $after='')
 	{
 		if($this->total_pages() < 2)
 			return '';
@@ -52,7 +54,10 @@ class base_page extends bors_object
 		return '<div class="'.$css.'">'.$before.ec('<ul><li>Страницы:</li>').$pages.'</ul>'.$after.'</div>';
 	}
 
-	function is_reversed() { return false; }
+	function pages_links($css='pages_select', $text = NULL, $delim = '', $show_current = true, $use_items_numeration = false, $around_page = NULL)
+	{
+		return $this->pages_links_nul($css, $text, $delim, $show_current, $use_items_numeration, $around_page);
+	}
 
 	function pages_links_nul($css='pages_select', $text = NULL, $delim = '', $show_current = true, $use_items_numeration = false, $around_page = NULL)
 	{

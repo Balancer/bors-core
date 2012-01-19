@@ -423,6 +423,9 @@ function bors_function_include($req_name)
 	if(function_exists($path.'_'.$name))
 		return;
 
+	if(function_exists('bors_'.$path.'_'.$name))
+		return;
+
 	$file = BORS_CORE.'/inc/functions/'.$req_name.'.php';
 
 	if(!config('cache_code_monolith'))

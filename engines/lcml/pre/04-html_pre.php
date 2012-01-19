@@ -6,7 +6,6 @@ function lcml_html_pre($txt)
 	if(config('lcml_html_nonmutable'))
 	    return $txt;
 
-
 //	$txt = "html_disable = {$GLOBALS['lcml']['params']['html_disable']} - $txt";
 
 		$txt = preg_replace('/<!\-\-.*?\-\->/', '', $txt);
@@ -21,7 +20,7 @@ function lcml_html_pre($txt)
 //		echo "***:{$GLOBALS['lcml']['params']['html_disable']}";
 
 		if("".$GLOBALS['lcml']['params']['html_disable'] == 'full')
-			return str_replace('&amp;', '&', htmlspecialchars($txt));
+			return str_replace(array('&', '<', '>'), array('&amp;', '&lt;', '&gt;'), $txt);
 
 //		echo "***";
 

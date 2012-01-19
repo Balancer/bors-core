@@ -7,6 +7,9 @@ function lt_img($params)
 	if(!trim($params['orig']))
 		return '[img]';
 
+	if(!empty($params['img']))
+		$params['url'] = $params['img'];
+
 //	if(config('is_developer')) var_dump($params);
 
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')

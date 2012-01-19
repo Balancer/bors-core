@@ -66,8 +66,17 @@ function lcml_tags($txt, &$mask)
 
 							if($tag_params['skip_around_cr'])
 							{
-								$part1 = preg_replace("/\n{2,}$/s", "\n", $part1);
-								$part3 = preg_replace("/^\n{2,}/s", "\n", $part3);
+								if($tag_params['skip_around_cr'] == 'full')
+								{
+									$part1 = preg_replace("/\n+$/s", "", $part1);
+									$part3 = preg_replace("/^\n+/s", "", $part3);
+								}
+								else
+								{
+									$part1 = preg_replace("/\n{2,}$/s", "\n", $part1);
+									$part3 = preg_replace("/^\n{2,}/s", "\n", $part3);
+								}
+
 								$pos = bors_strlen($part1);
 							}
 

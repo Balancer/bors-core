@@ -1,6 +1,6 @@
 <?php
 
-function lcml_tags($txt, &$mask)
+function lcml_tags($txt, &$mask, $lcml = NULL)
 {
 	$taglist = config('lcml_tags_enabled');
 	$taglist_disabled = config('lcml_tags_disabled');
@@ -19,14 +19,34 @@ function lcml_tags($txt, &$mask)
 		// Если нашли тэг и он не закрывающийся
 		if($pos !== false && $end && bors_substr($txt, $pos+1, 1) != '/')
 		{
+			$class_pair_name		= NULL;
+			$function_pair_name		= NULL;
+			$class_single_name		= NULL;
+			$function_single_name	= NULL;
+
+			$test = "bors_lcml_tag_pair_{$func}";
+			if(class_exists($test))
+				$class_pair_name = $test;
+			elseif(class_include($test))
+				$class_pair_name = $test;
+			elseif(function_exists($test = "lp_{$func}"))
+				$function_pair_name = $test;
+
+			$test = "bors_lcml_tag_single_{$func}";
+			if(class_exists($test))
+				$class_single_name = $test;
+			elseif(class_include($test))
+				$class_single_name = $test;
+			elseif(function_exists($test = "lt_{$func}"))
+				$function_single_name = $test;
+
 			if(empty($GLOBALS['cms']['config']['disable']["lp_$func"]) 
-				&& function_exists("lp_$func")
+				&& ($class_pair_name || $function_pair_name)
 				&& (!$taglist || in_array($func, $taglist))
 				&& ($taglist_disabled || !@in_array($func, $taglist_disabled))
 			)
 			{
 				$opened   = 0; // число открытых тэгов данного типа
-				$cfunc	= "lp_$func";
 				$next_end = $end;
 				$lp_parsed = false; // флаг того, что нам удалось обработать тег парной функцией.
 				list($pos_stored, $end_stored, $tag_stored, $func_stored, $params_stored) = array($pos, $end, $tag, $func, $params);
@@ -60,9 +80,16 @@ function lcml_tags($txt, &$mask)
 							$part1 = bors_substr($txt, 0, $pos);
 							$part2 = bors_substr($txt, $end, $next_pos-$end);
 							$part3 = bors_substr($txt, $next_end);
-							$tag_params = params($params);
+							$tag_params = params($params, $lcml);
 							$tag_params['skip_around_cr'] = false;
-							$part2 = $cfunc($part2, $tag_params);
+
+							if($class_pair_name)
+							{
+								$class = new $class_pair_name($lcml);
+								$part2 = $class->parse($part2, $tag_params);
+							}
+							else
+								$part2 = $function_pair_name($part2, $tag_params);
 
 							if($tag_params['skip_around_cr'])
 							{
@@ -119,7 +146,7 @@ function lcml_tags($txt, &$mask)
 				}
 
 				$part1 = bors_substr($txt, 0, $pos);
-				$part2 = $func(params($params));
+				$part2 = $func(params($params, $lcml));
 				$part3 = bors_substr($txt, $end);
 				$txt  = $part1.$part2.$part3;
 				$mask = substr($mask, 0, $pos).str_repeat('X',bors_strlen($part2)).substr($mask, $end);
@@ -293,9 +320,9 @@ function next_open_brace($txt, $pos)
 		return $pos;
 	}
 */
-	function params($in)
+	function params($in, $lcml)
 	{
-		$params = array();
+		$params = array('lcml' => $lcml);
 		$params['self'] = defval($GLOBALS['lcml']['params'], 'self');
 
 		if(preg_match("!^(.*?)\|(.*)$!s",$in,$m))

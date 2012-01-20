@@ -3,7 +3,7 @@
 // Уровень h2 — это обычно подзаголовок первого уровня.
 // Заголовок разделов.
 
-class bors_lcml_tags_pairs_h2 extends bors_lcml_tags_pair
+class bors_lcml_tag_pair_h2 extends bors_lcml_tag_pair
 {
 	static function html($title, &$params)
 	{
@@ -12,7 +12,7 @@ class bors_lcml_tags_pairs_h2 extends bors_lcml_tags_pair
 		return "\n\n<h2>".lcml($title)."</h2>\n";
 	}
 
-	static function text($title, &$params)
+	static function text($title, $params)
 	{
 		return "\n\n$title\n".str_repeat("-", bors_strlen($title))."\n";
 	}

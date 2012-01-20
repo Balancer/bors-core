@@ -9,7 +9,7 @@ function lcml_quote($txt)
 	$txt = preg_replace('!^\s*={10,}\s*$!m',  '<hr style="height:3px; width:98%;text-align: left;" />', $txt);
 	$txt = preg_replace('!^\s*\-{10,}\s*$!m', '<hr style="height:1px; width:98%;text-align: left;" />', $txt);
 
-	$res = "";
+	$res = array();
 	foreach(explode("\n", $txt) as $s)
 	{
 		$break = false;
@@ -19,7 +19,7 @@ function lcml_quote($txt)
 			foreach(explode(' ', $s) as $tmp)
 				if(bors_strlen($tmp) > 255)
 				{
-					$res .= "$s\n";
+					$res[] = "$s";
 					$break = true;
 					break;
 				}
@@ -29,8 +29,8 @@ function lcml_quote($txt)
 			continue;
 
 		$s = preg_replace("!^(\s*)([^\s><;]+?)(&gt;|>)(.+?)$!", "$1<span class=\"q\"><b>$2</b>&gt;$4</span>", $s);
-		$res .= "$s\n";
+		$res[] = "$s";
 	}
 
-	return $res;
+	return join("\n", $res);
 }

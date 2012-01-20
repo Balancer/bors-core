@@ -2,6 +2,9 @@
 
 function lcml_line_format($txt, $lcml)
 {
+	if($lcml->output_type() == 'text')
+		return trim(preg_replace("/\n{3,}/", "\n\n", $txt));
+
 	if(empty($GLOBALS['lcml']['cr_type']))
 		$cr_type = 'empty_as_para';
 	else

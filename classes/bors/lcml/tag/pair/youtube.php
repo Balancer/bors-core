@@ -1,6 +1,6 @@
 <?php
 
-class bors_lcml_tags_pairs_youtube extends bors_lcml_tags_pair
+class bors_lcml_tag_pair_youtube extends bors_lcml_tag_pair
 {
 	static function html($id, &$params)
 	{

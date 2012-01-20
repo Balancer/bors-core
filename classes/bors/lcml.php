@@ -220,7 +220,7 @@ class bors_lcml
 
 		$code = '[http://balancer.ru Сайт расходящихся тропок]';
 		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
-//		Упс. Не работает.
+//		Упс. Не работает. Сделать не прямой парсинг, а подмену тэга вначале, в зависимости от типа ссылки, [url или [img
 //		$code = '[http://balancer.ru|[b]Сайт расходящихся тропок[/b]]';
 //		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
 
@@ -230,7 +230,7 @@ class bors_lcml
 		$code = '[url=http://balancer.ru]Сайт расходящихся тропок[/url]';
 		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
 
-		$code = '[b]Сайт расходящихся тропок: [url=http://balancer.ru][/b]';
+		$code = '[b]Сайт расходящихся тропок: [url="http://balancer.ru"][/b]';
 		$suite->assertRegexp('#<strong>Сайт расходящихся тропок: <a.+href="http://balancer.ru".+>balancer.ru</a></strong>#', lcml($code));
 
 		// Внутренние ошибочные теги не парсятся

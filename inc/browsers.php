@@ -64,6 +64,11 @@ function get_browser_info($user_agent, $log_unknown = true)
 		}
 		elseif(preg_match('!FreeBSD!', $user_agent))
 			$os = 'FreeBSD';
+		elseif(preg_match('!Mint!', $user_agent))
+		{
+			$os = 'Linux';
+			$ov = 'Mint';
+		}
 		elseif(preg_match('!Ubuntu!', $user_agent))
 		{
 			$os = 'Linux';

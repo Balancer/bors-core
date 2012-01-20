@@ -9,8 +9,3 @@ function lp_box($txt,$params)
 	else
 		return "<div class=\"box\">".lcml($txt)."</div>";
 }
-
-function lp_round_box($text, $params)
-{
-	return "<div class=\"round_box\">".lcml($text)."<div class=\"clear\">&nbsp;</div></div>";
-}

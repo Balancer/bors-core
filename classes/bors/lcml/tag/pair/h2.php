@@ -9,11 +9,20 @@ class bors_lcml_tag_pair_h2 extends bors_lcml_tag_pair
 	{
 		$params['skip_around_cr'] = true;
 
-		return "\n\n<h2>".lcml($title)."</h2>\n";
+		return "<h2>".lcml($title)."</h2>";
 	}
 
 	function text($title, $params)
 	{
+		$params['skip_around_cr'] = true;
+
 		return "\n\n$title\n".str_repeat("-", bors_strlen($title))."\n";
+	}
+
+	static function __unit_test($suite)
+	{
+		$code = '[h2]Здравствуй, мир![/h2]';
+		$suite->assertEquals('<h2>Здравствуй, мир!</h2>', lcml($code));
+		$suite->assertEquals("Здравствуй, мир!\n----------------", lcml($code, array('output_type' => 'text')));
 	}
 }

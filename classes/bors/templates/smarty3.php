@@ -72,7 +72,9 @@ class bors_templates_smarty3 extends bors_template
 		if(!$smarty)
 			$smarty = self::factory();
 
-		$smarty->assign(array_merge(bors_template::page_data(), $data));
+		$data = array_merge(bors_template::page_data(), $data);
+		$smarty->auto_literal = popval($data, 'smarty_auto_literal', $smarty->auto_literal);
+		$smarty->assign($data);
 		$trace = debug_backtrace();
 		$smarty->assign("template_dirname", dirname($trace[1]['file']));
 		$smarty->assign('me', bors()->user());
@@ -81,6 +83,7 @@ class bors_templates_smarty3 extends bors_template
 		// Снести в пользу render_page(), наверное.
 		if(!$smarty->templateExists($template))
 			$template = self::find_template($template, @$data['this']);
+
 
 //		$smarty->debugging = true;
 		$smarty->error_reporting = E_ALL & ~E_NOTICE;

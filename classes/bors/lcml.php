@@ -210,4 +210,35 @@ class bors_lcml
 	}
 
 	function output_type() { return $this->output_type; }
+
+	static function __unit_test($suite)
+	{
+		// Одиночные теги тестируются в соответствующих классах. Так что нам тут их проверять не надо
+		// нужно проверять сочетания.
+		$code = '[b][i]italic-bold[/i][/b]';
+		$suite->assertEquals('<strong><i>italic-bold</i></strong>', lcml($code));
+
+		$code = '[http://balancer.ru Сайт расходящихся тропок]';
+		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
+//		Упс. Не работает.
+//		$code = '[http://balancer.ru|[b]Сайт расходящихся тропок[/b]]';
+//		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
+
+		$code = '[url http://balancer.ru|[b]Сайт расходящихся тропок[/b]]';
+		$suite->assertRegexp('#<a.+href="http://balancer.ru".+><strong>Сайт расходящихся тропок</strong></a>#', lcml($code));
+
+		$code = '[url=http://balancer.ru]Сайт расходящихся тропок[/url]';
+		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
+
+		$code = '[b]Сайт расходящихся тропок: [url=http://balancer.ru][/b]';
+		$suite->assertRegexp('#<strong>Сайт расходящихся тропок: <a.+href="http://balancer.ru".+>balancer.ru</a></strong>#', lcml($code));
+
+		// Внутренние ошибочные теги не парсятся
+		$code = '[b][i]italic[/b]bold[/i]';
+		$suite->assertEquals('<strong>[i]italic</strong>bold[/i]', lcml($code));
+
+		// Переводы строк.
+		$code = "Раз, два, три, четыре, пять\nВышел зайчик погулять";
+		$suite->assertEquals("Раз, два, три, четыре, пять<br />\nВышел зайчик погулять", lcml($code)); //?WTF? Это же не BB.
+	}
 }

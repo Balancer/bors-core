@@ -2,7 +2,7 @@
 
 class bors_lcml_tag_pair_youtube extends bors_lcml_tag_pair
 {
-	static function html($id, &$params)
+	function html($id, &$params=array())
 	{
 		$width  = @$params['width']  ? $params['width']  : '640';
 		$height = @$params['height'] ? $params['height'] : '390';
@@ -12,14 +12,14 @@ class bors_lcml_tag_pair_youtube extends bors_lcml_tag_pair
 		return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"http://www.youtube.com/embed/{$id}\" frameborder=\"0\" allowfullscreen></iframe><br/><small>// <a href=\"http://www.youtube.com/watch/?v={$id}\">http://www.youtube.com/watch/?v={$id}</a></small>\n";
 	}
 
-	static function text($id, &$params)
+	function text($id, &$params=array())
 	{
 		self::register($id, $params);
 
 		return ec("http://www.youtube.com/watch?v={$id}\n");
 	}
 
-	static function register($id, $params)
+	function register($id, $params)
 	{
 		if(!($self = defval($params, 'self')))
 			return;
@@ -42,5 +42,12 @@ class bors_lcml_tag_pair_youtube extends bors_lcml_tag_pair
 			'target_create_time' => $self->create_time(),
 			'target_score' => $self->score(),
 		));
+	}
+
+	static function __unit_test($suite)
+	{
+		$url = 'http://www.youtube.com/watch?v=IO2h-yzTOhs&list=UUNtclu0DvBOkjbVYhZZUcdA&index=4&feature=plcp';
+		$html = bors_external_youtube::url2html($url);
+		$suite->assertRegexp('/<iframe.*v=IO2h-yzTOhs/', $html);
 	}
 }

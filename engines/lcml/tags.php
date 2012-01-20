@@ -40,7 +40,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 			elseif(function_exists($test = "lt_{$func}"))
 				$function_single_name = $test;
 
-			if(empty($GLOBALS['cms']['config']['disable']["lp_$func"]) 
+			if(empty($GLOBALS['cms']['config']['disable'][$func])
 				&& ($class_pair_name || $function_pair_name)
 				&& (!$taglist || in_array($func, $taglist))
 				&& ($taglist_disabled || !@in_array($func, $taglist_disabled))
@@ -130,14 +130,12 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 			}
 
 //			echo "*** test tag-func $func, next_pos=$next_pos\n";
-			if(empty($GLOBALS['cms']['config']['disable']["lt_$func"])
-				&& function_exists("lt_$func")
+			if(empty($GLOBALS['cms']['config']['disable'][$func])
+				&& ($class_single_name || $function_single_name)
 				&& (!$taglist || in_array($func, $taglist))
 				&& (!$taglist_disabled || !@in_array($func, $taglist_disabled))
 				)
 			{
-				$func = "lt_$func";
-
 				if(!empty($outfile))
 				{
 					$fh = fopen($GLOBALS['cms']['base_dir']."/funcs/lcml.log","at");
@@ -146,7 +144,17 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 				}
 
 				$part1 = bors_substr($txt, 0, $pos);
-				$part2 = $func(params($params, $lcml));
+				$tag_params = params($params, $lcml);
+				$tag_params['skip_around_cr'] = false;
+
+				if($class_single_name)
+				{
+					$class = new $class_single_name($lcml);
+					$part2 = $class->parse($tag_params);
+				}
+				else
+					$part2 = $function_single_name($tag_params);
+
 				$part3 = bors_substr($txt, $end);
 				$txt  = $part1.$part2.$part3;
 				$mask = substr($mask, 0, $pos).str_repeat('X',bors_strlen($part2)).substr($mask, $end);

@@ -46,4 +46,18 @@ class bors_lib_urls
 
 		return $result;
 	}
+
+	static function check_nofollow($url)
+	{
+		$url_data = url_parse($url);
+		$external = empty($url_data['local']);
+		$blacklist = $external && !preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $url_data['host']);
+		return $blacklist ? ' rel="nofollow"' : '';
+	}
+
+	static function check_external($url)
+	{
+		$url_data = url_parse($url);
+		return empty($url_data['local']) ? ' class="external"' : '';
+	}
 }

@@ -50,7 +50,7 @@ class bors_class_loader
 		return self::find_and_include($class_name, $args);
 	}
 
-	private function find_and_include($class_name, &$args = array())
+	private static function find_and_include($class_name, &$args = array())
 	{
 		$class_path = "";
 		$class_file = $class_name;
@@ -116,7 +116,7 @@ class bors_class_loader
 		bors_file_ini::write($ini_file, $data);
 	}
 
-	function load_and_cache($class_name, $class_file)
+	static function load_and_cache($class_name, $class_file)
 	{
 		if(!class_exists($class_name))
 		{

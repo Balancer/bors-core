@@ -240,5 +240,12 @@ class bors_lcml
 		// Переводы строк.
 		$code = "Раз, два, три, четыре, пять\nВышел зайчик погулять";
 		$suite->assertEquals("Раз, два, три, четыре, пять<br />\nВышел зайчик погулять", lcml($code)); //?WTF? Это же не BB.
+
+		// Проверки, использующие специфичные локальне ресурсы balancer.ru
+		if(config('is_balancer_ru_tests'))
+		{
+			$code = '[url=http://balancer.ru/forum/punbb/viewtopic.php?pid=1248520#p1248520][img]http://balancer.ru/cache/img/forums/0708/468x468/1024x768-img_0599.jpg[/img][/url]';
+			$suite->assertEquals("===", lcml($code));
+		}
 	}
 }

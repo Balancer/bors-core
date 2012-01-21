@@ -109,6 +109,21 @@ class bors_external_feeds_entry extends base_object_db
 	{
 		$feed = $this->feed();
 
+		// Если это не транслируемая запись
+		if($feed->skip_entry_content_regexp() && preg_match('!'.$feed->skip_entry_content_regexp().'!i', $this->text()))
+		{
+			$post = $this->target();
+			if(!$feed->parser_class_name() || !$post || $post->is_deleted()) // Не транслировалась или уже скрыта
+				return;
+
+			// Нужно скрыть запись
+			$post->set_is_deleted(true);
+			echo "Hide post {$post->debug_title()}\n";
+			return;
+		}
+
+//		echo var_dump($feed->skip_entry_content_regexp(), $is_skipped);
+
 		if($parser_class_name = $feed->parser_class_name())
 		{
 //			exit($parser_class_name);
@@ -177,7 +192,14 @@ class bors_external_feeds_entry extends base_object_db
 				$post->body();
 			}
 
-			$post->set_create_time($this->pub_date(), true);
+			$pub_date = $this->pub_date();
+			if(!$pub_date)
+				$pub_date = $this->create_time();
+
+			if(!$pub_date)
+				debug_hidden_log('error_rss_translation', "No pubdate for ".$this->debug_title());
+
+			$post->set_create_time($pub_date, true);
 			$post->topic()->recalculate();
 
 			if($blog = bors_load_ex('balancer_board_blog', $post->id(), array('no_load_cache' => true)))

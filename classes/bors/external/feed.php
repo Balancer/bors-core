@@ -146,7 +146,8 @@ class bors_external_feed extends base_object_db
 					'entry_url' => $link,
 				));
 
-			$is_skipped = $this->skip_entry_content_regexp() && preg_match('!'.$this->skip_entry_content_regexp().'!i', $description);
+			$is_skipped = $this->skip_entry_content_regexp()
+				&& preg_match('!'.$this->skip_entry_content_regexp().'!i', $description);
 
 			$tags = array();
 

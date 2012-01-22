@@ -86,7 +86,7 @@ if(config('is_developer')) { exit($img); }
 			if($divs = $xpath->query('//div[@id="content"]'))
 			{
 				$content = /*bors_lib_dom::element_html*/($divs->item(0));
-				$source = preg_replace('/<!--.*?-->/s', '', $content->nodeValue);
+				$source = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
 //				var_dump($source); exit();
 				$source = preg_replace("/\s*\n+\s*/", "\n", $source);
 				$source = array_filter(explode("\n", $source));
@@ -99,6 +99,7 @@ if(config('is_developer')) { exit($img); }
 
 				$source = join("\n", $source);
 //				var_dump($source); exit();
+				require_once('inc/texts.php');
 				$description = clause_truncate_ceil($source, 512);
 				if($source != $description)
 					$more = true;

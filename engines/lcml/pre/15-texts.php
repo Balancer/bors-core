@@ -21,9 +21,5 @@ function lcml_texts($text)
 		eval("\$text = preg_replace(\"/^ *{$pad} (.+) {$pad} *\$/me\", \"'[h{$ih}]'.lcml(stripq('\$1')).'[/h{$ih}]'\", \$text);");
 	}
 
-	$text = preg_replace("!<<!", "&laquo;", $text);
-	$text = preg_replace("!>>!", "&raquo;", $text);
-	$text = str_replace(' -- ', ' &mdash; ', $text);
-
 	return $text;
 }

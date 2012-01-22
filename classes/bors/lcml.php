@@ -169,7 +169,10 @@ class bors_lcml
 				if($can_modif)
 				{
 					if($start != $i)
-						$result .= bors_lcml::functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, $i-$start));
+					{
+						$code = bors_substr($text, $start, $i-$start);
+						$result .= bors_lcml::parsers_do('post', bors_lcml::functions_do(bors_lcml::$data['post_functions'], $code));
+					}
 
 					$start = $i;
 					$can_modif = false;
@@ -196,7 +199,10 @@ class bors_lcml
 			// этот вызов может быть только один раз, потом — блокируется.
 
 			if($can_modif/* && $this->_params['level'] == 1*/)
-				$result .= $this->functions_do(bors_lcml::$data['post_functions'], bors_substr($text, $start, bors_strlen($text) - $start));
+			{
+				$code = bors_substr($text, $start, bors_strlen($text) - $start);
+				$result .= bors_lcml::parsers_do('post', $this->functions_do(bors_lcml::$data['post_functions'], $code));
+			}
 			else
 				$result .= bors_substr($text, $start, bors_strlen($text) - $start);
 		}
@@ -210,6 +216,31 @@ class bors_lcml
 	}
 
 	function output_type() { return $this->output_type; }
+
+	function parsers_do($type, $text)
+	{
+		static $parser_classes = array();
+		if(empty($parser_classes[$type]))
+		{
+			$classes = array();
+			foreach(bors_dirs() as $dir)
+			{
+				if(file_exists($f = $dir.'/engines/lcml/'.$type.'_parsers.list'))
+					foreach(file($f) as $s)
+					{
+						list($prio, $class_name) = preg_split("/\s+/", $s);
+						$classes[$prio.':'.$class_name] = new $class_name;
+					}
+			}
+			ksort($classes);
+			$parser_classes[$type] = $classes;
+		}
+
+		foreach($parser_classes[$type] as $foo => $parser)
+			$text = $parser->parse($text, $this);
+
+		return $text;
+	}
 
 	static function __unit_test($suite)
 	{

@@ -39,7 +39,9 @@ foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 	if(file_exists($file = "{$base_dir}/config-pre.php"))
 		include_once($file);
 
-require_once(dirname(__FILE__).'/config.php');
+$dir = dirname(__FILE__);
+bors_config_ini($dir.'/config.ini');
+require_once($dir.'/config.php');
 
 $GLOBALS['bors_data']['vhost_handlers'] = array();
 $GLOBALS['bors_map'] = array();
@@ -85,17 +87,14 @@ bors_function_include('locale/ec');
 
 spl_autoload_register('class_include');
 
-if(file_exists(BORS_EXT.'/config.php'))
-	include_once(BORS_EXT.'/config.php');
+foreach(array(BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $dir)
+{
+	if(file_exists($dir.'/config.ini'))
+		bors_config_ini($dir.'/config.ini');
 
-if(file_exists(BORS_LOCAL.'/config.php'))
-	include_once(BORS_LOCAL.'/config.php');
-
-if(file_exists(BORS_HOST.'/config.php'))
-	include_once(BORS_HOST.'/config.php');
-
-if(file_exists(BORS_SITE.'/config.php'))
-	include_once(BORS_SITE.'/config.php');
+	if(file_exists($dir.'/config.php'))
+		include_once($dir.'/config.php');
+}
 
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0777);
@@ -457,4 +456,16 @@ function bors_function_include($req_name)
 	$function_code = "\n".trim(preg_replace('/^<\?php/', '', $function_code))."\n";
 	$php_cache_content .= $function_code;
 	$GLOBALS['bors_data']['php_cache_content'] = $php_cache_content;
+}
+
+function bors_config_ini($file)
+{
+	foreach(parse_ini_file($file, true) as $section_name => $data)
+	{
+		if($section_name == 'global')
+			$GLOBALS['cms']['config'] = array_merge($GLOBALS['cms']['config'], $data);
+		else
+			foreach($data as $key => $value)
+				$GLOBALS['cms']['config'][$section_name.'.'.$key] = $value;
+	}
 }

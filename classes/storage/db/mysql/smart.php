@@ -230,7 +230,7 @@ class storage_db_mysql_smart extends base_null
 
 			$q = $from.' '.$where;
 
-			if(preg_match('/^(.*FROM.*) (LEFT JOIN.*) (USE INDEX.*) (WHERE.*)$/', $q, $m))
+			if(preg_match('/^(.*FROM.*?)(\s*LEFT JOIN.*\s*)+(USE INDEX.*) (WHERE.*)$/', $q, $m))
 				$q = "{$m[1]} {$m[3]} {$m[2]} $m[4]";
 
 			if($only_count)

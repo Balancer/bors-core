@@ -139,7 +139,10 @@ class bors_lcml
 		$GLOBALS['lcml']['cr_type'] = $this->p('cr_type');
 
 		if($this->_params['level'] == 1 || $need_prepare)
+		{
 			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text);
+			$text = bors_lcml::parsers_do('pre', $text);
+		}
 
 		if($this->_params['level'] == 1)
 			$this->output_type = popval($params, 'output_type', 'html');

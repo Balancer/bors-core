@@ -9,7 +9,7 @@ class bors_lcml_tag_pair_youtube extends bors_lcml_tag_pair
 
 		self::register($id, $params);
 
-		return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"http://www.youtube.com/embed/{$id}\" frameborder=\"0\" allowfullscreen></iframe><br/><small>// <a href=\"http://www.youtube.com/watch/?v={$id}\">http://www.youtube.com/watch/?v={$id}</a></small>\n";
+		return "<div class=\"round_box shadow8\" style=\"width: {$width}px; height: auto; margin: 8px 0; padding: 4px;\"><iframe width=\"{$width}\" height=\"{$height}\" src=\"http://www.youtube.com/embed/{$id}\" frameborder=\"0\" allowfullscreen></iframe><br/><small><a href=\"http://www.youtube.com/watch/?v={$id}\">http://www.youtube.com/watch/?v={$id}</a></small></div>";
 	}
 
 	function text($id, &$params=array())

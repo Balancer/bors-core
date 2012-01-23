@@ -9,14 +9,15 @@
 			$txt = str_replace($m[0], lcml("[img \"{$m[1]}\" noflow {$m[3]}]"), $txt);
 
 		$n=50;
-		while(preg_match("!(^|\s)(http://\S+\.(jpg|png|gif|jpeg|sjpg))(?=($|\s))!ime", $txt, $m) && $n-->0)
-			$txt = str_replace($m[0], $m[1].lt_img(array(
-					'orig' => $m[2],
-					'url' => $m[2],
+		while(preg_match("!^\S*(http://\S+\.(jpg|png|gif|jpeg|sjpg))\s*$!ime", $txt, $m) && $n-->0)
+			$txt = str_replace($m[0], lt_img(array(
+					'orig' => $m[1],
+					'url' => $m[1],
 					'align' => 'left',
 					'flow' => 'noflow',
 					'no_lcml_description' => true,
-					'description' => ec('Взято <a href="').$m[2].ec('">тут</a>')
+					'description' => ec('Взято <a href="').$m[1].ec('">тут</a>'),
+					'border' => true,
 				)), $txt);
 
 		$n=50;

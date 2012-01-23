@@ -2,7 +2,7 @@
 
 require_once('inc/urls.php');
 
-function lt_img($params) 
+function lt_img($params)
 {
 	if(!trim($params['orig']))
 		return '[img]';
@@ -259,6 +259,18 @@ __EOT__;
 				}
 
 				$styles = array();
+
+				$out = '';
+
+				if(@$params['border'])
+				{
+					if($width > 640) // Это чтобы не наезжало на аватар
+						$out .= "<div class=\"clear\">&nbsp;</div>\n";
+
+					$params['skip_around_cr'] = true;
+					$styles[] = $description ? 'rs_box' : 'rs_box_nd';
+				}
+
 				if(@$params['flow'] == 'flow' && @$params['align'] != 'center')
 				{
 					if(@$params['align'] == 'left')
@@ -271,17 +283,7 @@ __EOT__;
 					$styles[] = @$params['align'];
 				}
 
-				$out = '';
-
-				if(@$params['border'])
-				{
-					if($width > 640)
-						$out .= "<div class=\"clear\">&nbsp;</div>\n";
-
-					$styles[] = 'box';
-				}
-
-				$out .= '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" alt=\"\" />{$a_href_e}";
+				$out .= '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" alt=\"\" class=\"main\" />{$a_href_e}";
 				if($description)
 					$out .= "<div class=\"block_description\"><small>".$description."</small></div>";
 				$out .= '</div>';

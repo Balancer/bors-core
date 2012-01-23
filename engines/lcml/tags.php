@@ -249,7 +249,7 @@ function find_next_open_tag($txt, $pos)
 
 		// Вырезаем целиком найденный тэг, без квадратных скобок
 		$tag = bors_substr($txt, $pos+1, $end-$pos-1);
-//		echo "Cuted tag '$tag'<br/>";
+//		echo "Tag '$tag'<br/>\n";
 
 		if(preg_match("!^(\w+)=\"([^\"]+)\"$!s", $tag, $m)) // [url="http://example.com"]text[/url]
 		{
@@ -280,6 +280,11 @@ function find_next_open_tag($txt, $pos)
 		{
 			$func = $m[1];
 			$params = "$func={$m[2]} $m{3}";
+		}
+		elseif(preg_match("!^(\w+)\|(.+)$!s", $tag, $m)) // func, params
+		{
+			$func = $m[1];
+			$params = $tag;
 		}
 		elseif(preg_match("!^(\w+)\s+(.+)$!s", $tag, $m)) // func, params
 		{

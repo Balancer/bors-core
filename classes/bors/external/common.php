@@ -108,6 +108,7 @@ if(config('is_developer')) { exit($img); }
 
 		if($title && strlen($title) > 5)
 		{
+			require_once('inc/texts.php');
 			$description = clause_truncate_ceil($description, $limit);
 
 			$bbshort = "[round_box]{$img}[h][a href=\"{$url}\"]{$title}[/a][/h]

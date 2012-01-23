@@ -37,7 +37,8 @@ else
         $ps = "\$GLOBALS['module_data'] = array(); ";
 
 		foreach($params as $key=>$value)
-			$ps .= "\$GLOBALS['module_data']['$key'] = '".addslashes($value)."'; ";
+			if(!is_object($value))
+				$ps .= "\$GLOBALS['module_data']['$key'] = '".addslashes($value)."'; ";
 
 		$out = "<?php ob_start(); $ps include(\"modules/{$params['url']}.php\"); \$content = ob_get_contents(); ob_clean(); ?>";
 

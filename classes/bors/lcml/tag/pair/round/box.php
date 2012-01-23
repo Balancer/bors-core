@@ -15,6 +15,6 @@ class bors_lcml_tag_pair_round_box extends bors_lcml_tag_pair
 	static function __unit_test($suite)
 	{
 		$code = '[round_box]Обратите внимание[/round_box]';
-		$suite->assertEquals('<div class="round_box">Обратите внимание<div class="clear">&nbsp;</div></div>', lcml($code));
+		$suite->assertEquals('<div class="round_box shadow8">Обратите внимание<div class="clear">&nbsp;</div></div>', lcml($code));
 	}
 }

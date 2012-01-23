@@ -476,7 +476,8 @@ function make_enabled_params($params, $names_list, $skip_list = '')
 		$att = array();
 		foreach($params as $key => $value)
 			if($value && strpos($skip_list, " $key ")===false)
-				$att[] = "params['$key']='".str_replace('&amp;', '&', $value)."'\n";
+				if(!is_object($value))
+					$att[] = "params['$key']='".str_replace('&amp;', '&', $value)."'\n";
 
 		if($att)
 			debug_hidden_log('lcml-need-attention', "Unknown parameters: ".join(' ', $att));

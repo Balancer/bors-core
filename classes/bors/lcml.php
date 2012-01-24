@@ -1,5 +1,7 @@
 <?php
 
+define('MAX_EXECUTE_S', 0.1);
+
 class bors_lcml
 {
 	private $_params = array();
@@ -84,8 +86,11 @@ class bors_lcml
         }
 	}
 
-	private function functions_do($functions, $text)
+	private function functions_do($functions, $text, $type)
 	{
+		$t0 = $text;
+		$ts = microtime(true);
+
 		$fns_list_enabled  = config('lcml_functions_enabled',  array());
 		$fns_list_disabled = config('lcml_functions_disabled', array());
 
@@ -102,6 +107,9 @@ class bors_lcml
 			if(!trim($text) && trim($original))
 				debug_hidden_log('lcml-error', "Drop on $fn convert '$original'");
 		}
+
+		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
+			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type functions execute for '$t0'", false);
 
 		return $text;
 	}
@@ -140,7 +148,7 @@ class bors_lcml
 
 		if($this->_params['level'] == 1 || $need_prepare)
 		{
-			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text);
+			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text, 'pre');
 			$text = bors_lcml::parsers_do('pre', $text);
 		}
 
@@ -150,7 +158,10 @@ class bors_lcml
 		$mask = str_repeat('.', bors_strlen($text));
 
 		// ******* Собственно, главная часть — обработка тэгов *******
-		$text = lcml_tags($text, $mask, $this);
+		$ts = microtime(true);
+		$text = lcml_tags($t0 = $text, $mask, $this);
+		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
+			debug_hidden_log('warning_lcml', "Too long ({$long}s) tags execute for '$t0'", false);
 
 		if($this->p('only_tags'))
 			return $cache ? $cache->set($text, 86400) : $text;
@@ -174,7 +185,7 @@ class bors_lcml
 					if($start != $i)
 					{
 						$code = bors_substr($text, $start, $i-$start);
-						$result .= bors_lcml::parsers_do('post', bors_lcml::functions_do(bors_lcml::$data['post_functions'], $code));
+						$result .= bors_lcml::parsers_do('post', bors_lcml::functions_do(bors_lcml::$data['post_functions'], $code, 'post'));
 					}
 
 					$start = $i;
@@ -204,7 +215,7 @@ class bors_lcml
 			if($can_modif/* && $this->_params['level'] == 1*/)
 			{
 				$code = bors_substr($text, $start, bors_strlen($text) - $start);
-				$result .= bors_lcml::parsers_do('post', $this->functions_do(bors_lcml::$data['post_functions'], $code));
+				$result .= bors_lcml::parsers_do('post', $this->functions_do(bors_lcml::$data['post_functions'], $code, 'post'));
 			}
 			else
 				$result .= bors_substr($text, $start, bors_strlen($text) - $start);
@@ -213,7 +224,7 @@ class bors_lcml
 		$text = $result;
 
 		if($this->_params['level'] == 1)
-			$text = $this->functions_do(bors_lcml::$data['post_whole_functions'], $text);
+			$text = $this->functions_do(bors_lcml::$data['post_whole_functions'], $text, 'post_whole');
 
 		return $cache ? $cache->set($text, 86400) : $text;
 	}
@@ -222,6 +233,9 @@ class bors_lcml
 
 	function parsers_do($type, $text)
 	{
+		$t0 = $text;
+		$ts = microtime(true);
+
 		static $parser_classes = array();
 		if(empty($parser_classes[$type]))
 		{
@@ -241,6 +255,9 @@ class bors_lcml
 
 		foreach($parser_classes[$type] as $foo => $parser)
 			$text = $parser->parse($text, $this);
+
+		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
+			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type parsers execute for '$t0'", false);
 
 		return $text;
 	}
@@ -267,7 +284,7 @@ class bors_lcml
 		$code = '[b]Сайт расходящихся тропок: [url="http://balancer.ru"][/b]';
 		$suite->assertRegexp('#<strong>Сайт расходящихся тропок: <a.+href="http://balancer.ru".+>balancer.ru</a></strong>#', lcml($code));
 
-		// Внутренние ошибочные теги не парсятся
+	// Внутренние ошибочные теги не парсятся
 		$code = '[b][i]italic[/b]bold[/i]';
 		$suite->assertEquals('<strong>[i]italic</strong>bold[/i]', lcml($code));
 

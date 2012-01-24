@@ -1,0 +1,10 @@
+class: bors_mailing
+bors_mailing:
+    int     id++!
+	string	target_class_name
+	int		target_object_id
+	int		target_user_id
+
+    int     create_time!
+
+	unique  target_class_name, target_object_id, target_user_id

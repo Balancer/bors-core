@@ -17,6 +17,39 @@ function debug_exit($message)
 	if(bors()->main_object())
 		$message .= "<br/>\nmain_object->class_file=".bors()->main_object()->class_file();
 
+	if(config('debug_timing'))
+	{
+		// Общее время работы
+		$time = microtime(true) - $GLOBALS['stat']['start_microtime'];
+
+		$deb = "\n=== debug-info ===\n"
+			."created = ".date('r')."\n";
+
+		$deb .= "smarty = ".(config('smarty3_enable') ? 3 : 2)."\n";
+
+		bors_function_include('debug/vars');
+		bors_function_include('debug/counting');
+		bors_function_include('debug/timing');
+		if($deb_vars = debug_vars_info())
+		{
+			$deb .= "\n=== debug vars: ===\n";
+			$deb .= $deb_vars;
+		}
+
+		$deb .= "\n=== debug counting: ===\n";
+		$deb .= debug_count_info_all();
+
+		$deb .= "\n=== debug timing: ===\n";
+		$deb .= debug_timing_info_all();
+		$deb .= "Total time: $time sec.\n";
+		$deb .= "-->\n";
+
+		if(config('is_developer'))
+			debug_hidden_log('debug_timing', $deb, false);
+
+		echo str_replace("\n", "<br/>\n", $deb);
+	}
+
 	exit($message);
 }
 

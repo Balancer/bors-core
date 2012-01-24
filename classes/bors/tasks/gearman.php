@@ -10,6 +10,7 @@ class bors_tasks_gearman
 		$client->addServer();
 
 		$client->doBackground('bors.task', serialize(array('worker_class_name' => $worker_class_name, 'worker_data' => $object)));
-//		debug_hidden_log('_talks', "BalaBOT: $message", false);
+		bors_function_include('debug/hidden_log');
+		debug_hidden_log('__tasks', "Add $worker_class_name($object)", false);
 	}
 }

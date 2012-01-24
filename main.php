@@ -58,7 +58,7 @@ if($is_crowler && config('bot_lavg_limit'))
 		header('Retry-After: 600');
 
 		bors_function_include('debug/hidden_log');
-		debug_hidden_log('system_overload_bots', $loadavg, false);
+		debug_hidden_log('system_overload_crowlers', $loadavg, false);
 //		@file_put_contents($file = config('debug_hidden_log_dir')."/blocked-bots.log", $_SERVER['REQUEST_URI']."/".@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."; LA={$load_avg}\n", FILE_APPEND);
 //		@chmod($file, 0666);
 		exit("Service Temporarily Unavailable");
@@ -120,7 +120,7 @@ if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 
 //		debug_hidden_log('system_overload_test', $total, 0);
 
-		if(!$is_bot && $user_overload && $total > $user_overload)
+		if(!$is_crowler && $user_overload && $total > $user_overload)
 		{
 			debug_hidden_log('system_overload_users', $total.' of '.$user_overload, 0);
 
@@ -129,7 +129,7 @@ if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 			exit("Service Temporarily Unavailable");
 		}
 
-		if($is_bot && $bot_overload && $total > $bot_overload)
+		if($is_crowler && $bot_overload && $total > $bot_overload)
 		{
 			debug_hidden_log('system_overload_bots', $total.' of '.$bot_overload, 0);
 

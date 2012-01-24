@@ -67,9 +67,9 @@
 
 			return empty($GLOBALS['cms']['error_show']) ? bors_message($msg . "
 				<!--
-				object to read = '$obj'
+				object to read = '{$obj->debug_title()}'
 				object to read file = '{$obj->get('class_file')}'
-				access engine = $access_object
+				access engine (access object->can_read() == false) = '{$access_object->debug_title()}'
 				class_file = ".(method_exists($access_object, 'class_file') ? $access_object->class_file() : 'none')."
 				object.config = ".object_property($obj->config(), 'debug_title')."
 

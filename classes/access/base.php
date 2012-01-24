@@ -1,6 +1,6 @@
 <?php
 
-class access_base extends base_empty
+class access_base extends base_object
 {
 	function object() { return $this->id(); }
 

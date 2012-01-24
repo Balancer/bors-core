@@ -35,8 +35,10 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$x = $m[1].'('.$table.'.'.$m[2].')';
 			elseif(preg_match('/^\w+\(.+\)$/', $field_name)) // id => CONCAT(keyword,":",keyword_id)
 				$x = $field_name;
-			else
+			elseif(preg_match('/^[\w`]+$/', $field_name))
 				$x = $table.'.'.$field_name;
+			else
+				$x = $field_name;
 
 			if($field_name != $f['property'])
 			{
@@ -323,6 +325,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function count($object, $where)
 	{
+		$set    = popval($where, '*set'); // Не используется
+
 		if(is_null($object))
 		{
 			$db_name = $where['*db'];

@@ -10,7 +10,7 @@ class bors_forms_saver extends base_empty
 			bors_lib_time::parse_form($data);
 
 //		if(config('is_developer')) { echo "On input {$form_object->debug_title()}:"; print_dd($data); print_dd($files); bors_exit(); }
-//		echo "Time vars parsed:"; print_d($data);
+//		echo "Data:"; print_d($data);
 
 		$object = NULL;
 		if(!empty($data['object_id']))	// Был передан ID, пытаемся загрузить

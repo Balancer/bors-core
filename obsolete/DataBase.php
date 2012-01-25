@@ -267,7 +267,7 @@ class DataBase extends base_object
 //					Вариант с array_map получается НАМНОГО медленнее цикла.
 //					$row = array_map(create_function('$x', 'return iconv("'.$dcs.'", "'.$icsi.'", $x);'), $row);
 					foreach($row as $k => $v)
-						$row[$k] = iconv($dcs, $icsi, $v);
+						$row[$k] = @iconv($dcs, $icsi, $v);
 				}
 			}
 

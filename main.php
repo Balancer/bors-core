@@ -35,6 +35,8 @@ if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 	exit("Do not use direct bors-call!\n");
 }
 
+bors_function_include('debug/hidden_log');
+bors_client_analyze();
 $is_bot = bors()->client()->is_bot();
 $is_crowler = bors()->client()->is_crowler();
 
@@ -57,7 +59,6 @@ if($is_crowler && config('bot_lavg_limit'))
 		header('Status: 503 Service Temporarily Unavailable');
 		header('Retry-After: 600');
 
-		bors_function_include('debug/hidden_log');
 		debug_hidden_log('system_overload_crowlers', $loadavg, false);
 //		@file_put_contents($file = config('debug_hidden_log_dir')."/blocked-bots.log", $_SERVER['REQUEST_URI']."/".@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."; LA={$load_avg}\n", FILE_APPEND);
 //		@chmod($file, 0666);
@@ -131,7 +132,7 @@ if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 
 		if($is_crowler && $bot_overload && $total > $bot_overload)
 		{
-			debug_hidden_log('system_overload_bots', $total.' of '.$bot_overload, 0);
+			debug_hidden_log('system_overload_crowlers', $total.' of '.$bot_overload, 0);
 
 			header('Status: 503 Service Temporarily Unavailable');
 			header('Retry-After: 600');
@@ -139,6 +140,9 @@ if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 		}
 	}
 }
+
+//if($is_bot || $is_crowler)
+//	debug_hidden_log('system_overload_test', "$is_bot/$is_crowler, lavg=$load_avg, total=$total, bot_overload=$bot_overload");
 
 // Если кодировка вывода в браузер не та же, что внутренняя - то перекодируем
 // все входные данные во внутреннюю кодировку

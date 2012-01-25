@@ -9,7 +9,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Baiduspider' => 'Baidu Spider',		// Baiduspider+(+http://www.baidu.com/search/spider.htm)
 													// Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
 			'Begun Robot Crawler' => 'Begun Robot Crawler',
-			'bingbot' => 'BingBot',				// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
+			'bingbot' => 'Bing',				// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
 			'discobot' => 'Discovery Engine',	// Mozilla/5.0 (compatible; discobot/1.1; +http://discoveryengine.com/discobot.html)
 			'DotBot' => 'DotBot',		// Mozilla/5.0 (compatible; DotBot/1.1; http://www.dotnetdotcom.org/, crawler@dotnetdotcom.org)
 			'Exabot' => 'Exabot',		// Mozilla/5.0 (compatible; Exabot-Images/3.0; +http://www.exabot.com/go/robot)
@@ -17,7 +17,11 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Falconsbot' => 'Falconsbot',	// 219.219.127.4, Mozilla/5.0 (compatible; Falconsbot; +http://ws.nju.edu.cn/falcons/)
 			'Feedreader' => 'Feedreader',	// Feedreader 3.14 (Powered by Newsbrain)
 			'Gigabot' => 'Gigabot',		// Gigabot/3.0 (http://www.gigablast.com/spider.html)
-			'google' => 'Googlebot',	// Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+			'Mediapartners-Google' => array(	//	Mediapartners-Google
+				'bot' => 'Google Mediapartners',
+				'crowler' => false,
+			),
+			'google' => 'Google',	// Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
 			'igorbot' => 'igorbot',		// Mozilla/5.0 (Windows; U; Windows NT 6.0; ru; rv:1.9.2.18) Gecko/20110614 Firefox/3.6.17 igorbot
 			'LexxeBot' => 'LexxeBot',	// LexxeBot/1.0 (lexxebot@lexxe.com)
 			'Liferea' => 'Liferea',		// Liferea/1.6.2 (Linux; ru_RU.UTF-8; http://liferea.sf.net/)

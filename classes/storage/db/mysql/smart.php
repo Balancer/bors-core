@@ -445,7 +445,7 @@ class storage_db_mysql_smart extends base_null
 					if($dbh->select($table_name, $id_field, array($id_field => $oid)))
 						$dbh->update($table_name, array($id_field => $oid), $set);
 					else
-						$dbh->insert($table_name, array_merge(array($id_field => $oid), $set));
+						$dbh->insert_ignore($table_name, array_merge(array($id_field => $oid), $set));
 				}
 			}
 		}

@@ -124,9 +124,9 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 //	if(config('is_developer')) { var_dump($header); var_dump($data); }
 
-    if(preg_match("!charset=(\S+)!i", $content_type, $m))
+    if(preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
         $charset = $m[1];
-    elseif(preg_match("!<\?xml version=\S+ encoding=\"(.+?)\"!i", $data, $m))
+    elseif(preg_match("!<\?xml\s+version=\S+\s+encoding\s*=\s*\"(.+?)\"!i", $data, $m))
         $charset = $m[1];
     elseif(preg_match("!(Microsoft\-IIS|X\-Powered\-By: ASP\.NET)!", $header))
         $charset = 'windows-1251';
@@ -142,9 +142,9 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 	if(empty($charset))
 	{
-        if(preg_match("!<meta http\-equiv=(\"|')Content\-Type(\"|')[^>]+charset=(.+?)(\"|')!i", $data, $m))
+        if(preg_match("!<meta\s+http\-equiv\s*=\s*(\"|')Content\-Type(\"|')[^>]+charset\s*=\s*(.+?)(\"|')!i", $data, $m))
 	        $charset = $m[3];
-		elseif(preg_match("!<meta[^>]+charset=(.+?)(\"|')!i", $data, $m))
+		elseif(preg_match("!<meta[^>]+charset\s*=\s*(.+?)(\"|')!i", $data, $m))
 	        $charset = $m[1];
 	}
 

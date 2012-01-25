@@ -7,4 +7,3 @@ class bors_task_statCacheRecreate extends base_empty
 		bors_object_create($this->id());
 	}
 }
-                           

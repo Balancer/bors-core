@@ -10,4 +10,13 @@ class bors_request extends base_object
 
 	function url() { return @$GLOBALS['bors_full_request_url']; }
 	function referer() { return @$_SERVER['HTTP_REFERER']; }
+
+	function pure_url()
+	{
+		$url = self::url();
+		if(preg_match('/^(.+?)\?/', $url, $m))
+			return $m[1];
+
+		return $url;
+	}
 }

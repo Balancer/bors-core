@@ -950,7 +950,8 @@ defined at {$this->class_file()}<br/>
 	function new_url()  { return '/_bors/admin/new-smart/?object='.urlencode($this->internal_uri()); }
 	function admin_parent_url()
 	{
-		if(!preg_match('/'.preg_quote($this->admin_url(),'/').'/', bors()->main_object()->called_url()))
+		$called_url = object_property(bors()->main_object(), 'called_url');
+		if($called_url && !preg_match('/'.preg_quote($this->admin_url(),'/').'/', $called_url))
 			return bors()->main_object()->called_url();
 
 		if(($o = object_load($this->admin_url(true))))

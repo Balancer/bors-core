@@ -131,6 +131,11 @@ function lt_img($params)
 
 //					if(config('is_debug')) echo "Got content for {$params['url']} to {$path}: ".strlen($content)."\n";
 
+					// Автоматический фикс старого некорректного утягивания.
+					// errstr=fopen(/var/www/balancer.ru/htdocs/sites/g/a/gallery.greedykidz.net/get/992865/3274i.jpg/=g2_serialNumber=1)
+					if(preg_match('#^(.+\.jpg)/=#', $path, $m) && file_exists($m[1]))
+						unlink($m[1]);
+
 					require_once('inc/filesystem.php');
 					mkpath(dirname($path), 0777);
 					if(!is_writable(dirname($path)))
@@ -138,6 +143,7 @@ function lt_img($params)
 						debug_hidden_log('access_error', "Can't write to ".dirname($path));
 						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$path']</small>";
 					}
+
 
 					$fh = fopen($path,'wb');
 					fwrite($fh, $content);
@@ -170,10 +176,12 @@ function lt_img($params)
 			{
 				if(!file_exists($path))
 				{
-					$GLOBALS['cms']['images'][] = $params['url'];
-					$uri  = $GLOBALS['cms']['main_host_uri'].'/cms/templates/default/img/system/not-loaded.png';
-					$path = $_SERVER['DOCUMENT_ROOT'].'/cms/templates/default/img/system/not-loaded.png';
-					$need_upload = true;
+//					$GLOBALS['cms']['images'][] = $params['url'];
+//					$uri  = $GLOBALS['cms']['main_host_uri'].'/cms/templates/default/img/system/not-loaded.png';
+//					$path = $_SERVER['DOCUMENT_ROOT'].'/cms/templates/default/img/system/not-loaded.png';
+//					$need_upload = true;
+					debug_hidden_log('error_lcml_tag_img', "Incorrect image {$params['url']}");
+					return lcml_urls_title($params['url']).'<small> [image link error]</small>';
 				}
 
 //				if(config('is_debug')) echo "path=$path, need_upload=$need_upload<br/>";

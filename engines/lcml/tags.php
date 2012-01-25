@@ -25,18 +25,28 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 			$function_single_name	= NULL;
 
 			$test = "bors_lcml_tag_pair_{$func}";
+			$test2 = "lcml_tag_pair_{$func}";
 			if(class_exists($test))
 				$class_pair_name = $test;
 			elseif(class_include($test))
 				$class_pair_name = $test;
+			elseif(class_exists($test2))
+				$class_pair_name = $test2;
+			elseif(class_include($test2))
+				$class_pair_name = $test2;
 			elseif(function_exists($test = "lp_{$func}"))
 				$function_pair_name = $test;
 
 			$test = "bors_lcml_tag_single_{$func}";
+			$test2 = "lcml_tag_single_{$func}";
 			if(class_exists($test))
 				$class_single_name = $test;
 			elseif(class_include($test))
 				$class_single_name = $test;
+			elseif(class_exists($test2))
+				$class_single_name = $test2;
+			elseif(class_include($test2))
+				$class_single_name = $test2;
 			elseif(function_exists($test = "lt_{$func}"))
 				$function_single_name = $test;
 
@@ -176,7 +186,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 
 function find_next_open_tag($txt, $pos)
 {
-//	echo "<b>find tags in ".substr(str_replace("\n", '\n', $txt), $pos, 80)."</b><br/>\n";
+//	if(config('is_developer')) echo "<b>find tags in ".bors_substr(str_replace("\n", '\n', $txt), $pos, 80)."</b><br/>\n";
 
 	$strlen = bors_strlen($txt);
 //	while($pos < $strlen && ($pos = next_open_brace($txt, $pos)) !== false)
@@ -249,7 +259,7 @@ function find_next_open_tag($txt, $pos)
 
 		// Вырезаем целиком найденный тэг, без квадратных скобок
 		$tag = bors_substr($txt, $pos+1, $end-$pos-1);
-//		echo "Tag '$tag'<br/>\n";
+//		if(config('is_developer')) echo "Tag '$tag'<br/>\n";
 
 		if(preg_match("!^(\w+)=\"([^\"]+)\"$!s", $tag, $m)) // [url="http://example.com"]text[/url]
 		{
@@ -269,17 +279,17 @@ function find_next_open_tag($txt, $pos)
 		elseif(preg_match("!^(\w+)=\"([^\"]|)\"\s+(.+)$!s", $tag, $m)) // [flash="http://example.com/video.flv" width=200 height=400]
 		{
 			$func = $m[1];
-			$params = "$func=\"{$m[2]}\" $m{3}";
+			$params = "$func=\"{$m[2]}\" {$m[3]}";
 		}
 		elseif(preg_match("!^(\w+)='([^']|)'\s+(.+)$!s", $tag, $m)) // [flash='http://example.com/video.flv' width=200 height=400]
 		{
 			$func = $m[1];
-			$params = "$func='{$m[2]}' $m{3}";
+			$params = "$func='{$m[2]}' {$m[3]}";
 		}
 		elseif(preg_match("!^(\w+)=(\S+)\s+(.+)$!s", $tag, $m)) // [flash=http://example.com/video.flv width=200 height=400]
 		{
 			$func = $m[1];
-			$params = "$func={$m[2]} $m{3}";
+			$params = "$func={$m[2]} {$m[3]}";
 		}
 		elseif(preg_match("!^(\w+)\|(.+)$!s", $tag, $m)) // func, params
 		{
@@ -357,7 +367,8 @@ function next_open_brace($txt, $pos)
 		$params['noresize'] = false;
 		$params['notitle'] = true;
 //		$params['page'] = $GLOBALS['lcml'][''];
-//if(config('is_developer')) var_dump(preg_split("![\s\n\t]+!",$in));
+//		if(config('is_developer')) var_dump(preg_split("![\s\n\t]+!",$in));
+//		if(config('is_developer')) echo debug_trace();
 		foreach(preg_split("![\s\n\t]+!",$in) as $param)
 		{
 			if(preg_match("!^\d+x\d+$!",$param)) { $params['size']=$param; continue;}

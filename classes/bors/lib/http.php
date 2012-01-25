@@ -12,7 +12,7 @@ class bors_lib_http
 	function get_cached($url, $ttl = 86400, $raw = false, $force = false, $max_length = 1000000)
 	{
 		$cache = new Cache();
-		if($cache->get('bors_lib_http.get_cached', $url) && !$force)
+		if($cache->get('bors_lib_http.get_cached-v1', $url) && !$force)
 			return $cache->last();
 
 		$content = self::get($url, $raw);
@@ -231,7 +231,7 @@ class bors_lib_http
 		$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 //		echo "<xmp>"; print_r($data); echo "</xmp>";
 
-	    if(!$raw && preg_match("!charset=(\S+)!i", $content_type, $m))
+	    if(!$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
     	    $charset = $m[1];
 	    else
     	    $charset = '';
@@ -242,9 +242,9 @@ class bors_lib_http
 		{
 			if(empty($charset))
 			{
-    	    	if(preg_match("!<meta http\-equiv=\"Content\-Type\"[^>]+charset=(.+?)\"!i", $data, $m))
+    	    	if(preg_match("!<meta\s+http\-equiv\s*=\s*\"Content\-Type\"[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
 	    	    	$charset = $m[1];
-				elseif(preg_match("!<meta[^>]+charset=(.+?)\"!i", $data, $m))
+				elseif(preg_match("!<meta[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
 			        $charset = $m[1];
 			}
 

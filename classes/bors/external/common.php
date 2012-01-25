@@ -53,6 +53,9 @@ class bors_external_common extends bors_object
 		if(preg_match('/%D0/', $img))
 			$img = urldecode($img);
 
+		if(preg_match('/^\w+/', $img) && !preg_match('/^\w+:/', $img)) // Это тупо "images/stories/img/big/m1a2_2.jpg" — вроде, как от корня сайта
+			$img = 'http://'.$meta['host'].'/'.$img;
+
 		if($img)
 			$img = "[img {$img} 200x200 left flow]";
 

@@ -35,5 +35,7 @@ foreach(objects_array('bors_access_log', array('was_counted' => 0)) as $x)
 	}
 }
 
+bors()->changed_save();
+
 echo "\n";
 bors_exit();

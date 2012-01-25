@@ -2,11 +2,12 @@
 
 class bors_access_log extends base_object_db
 {
-	function main_table() { return 'bors_access_log'; }
-	function main_table_fields()
+	function storage_engine() { return 'bors_storage_mysql'; }
+	function table_name() { return 'bors_access_log'; }
+	function table_fields()
 	{
 		return array(
-//			'id',
+			'id',
 			'user_ip',
 			'user_id',
 			'access_url' => 'url',

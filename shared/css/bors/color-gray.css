@@ -66,25 +66,17 @@ div.pages_select a {
 	padding: 1px 2px;
 	margin: 0 2px;
 	background-color: #ddd;
+	border-radius: 4px;
+	box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-div.pages_select a.current_page {
+div.pages_select a.current_page, div.pages_select a:hover {
 	background-color: #999;
 	color: white;
 }
 
 div.pages_select a.select_page {
 }
-
-
-
-
-
-
-
-
-
-
 
 body {
 	margin: 0!important;
@@ -132,11 +124,13 @@ ul.top-tabs li {
 	margin: 2px 4px;
 	border: 1px solid #333;
 	background-color: #bbb;
+	border-radius: 4px 4px 0 0;
 }
 
 ul.top-tabs li.selected {
 	background-color: #fffcfc;
 	border-bottom: 1px solid #fffcfc;
+	box-shadow: 2px -2px 4px rgba(0,0,0,0.5);
 }
 
 ul.top-tabs li a {
@@ -153,6 +147,7 @@ ul.top-tabs li.selected a {
 ul.top-tabs li:hover {
 	background-color: #fffcfc;
 	border-bottom: 1px solid #fffcfc;
+	box-shadow: 2px -2px 4px rgba(0,0,0,0.5);
 }
 
 div.body {
@@ -191,11 +186,13 @@ ul.pages-tabs li {
 	margin: 2px 4px;
 	border: 1px solid #ccc;
 	background-color: #ddd;
+	border-radius: 4px 4px 0 0;
 }
 
 ul.pages-tabs li.selected {
 	background-color: #fffcfc;
 	border-bottom: 1px solid #fffcfc;
+	box-shadow: 2px -2px 4px rgba(0,0,0,0.5);
 }
 
 ul.pages-tabs li a {
@@ -212,6 +209,7 @@ ul.pages-tabs li.selected a {
 ul.pages-tabs li:hover {
 	background-color: #fffcfc;
 	border-bottom: 1px solid #fffcfc;
+	box-shadow: 2px -2px 4px rgba(0,0,0,0.5);
 }
 
 h1 {

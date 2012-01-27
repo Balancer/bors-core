@@ -149,7 +149,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 	}
 
     if(!$charset)
-		$charset = config('lcml_request_charset_default');
+		$charset = config('lcml_request_charset_default', 'WINDOWS-1251');
 /*
 	if(config('is_developer'))
 	{

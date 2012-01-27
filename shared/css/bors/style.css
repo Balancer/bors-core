@@ -20,12 +20,13 @@ small, .small { font-size: 0.8em !important; }
 .f8pt { font-size: 8pt !important; }
 .f10pt { font-size: 10pt !important; }
 
-.gray { color: gray; }
-.red { color: red; }
-.orange { color: orange; }
-.green { color: green; }
-.blue { color: blue; }
-.navy { color: navy; }
+.gray	{ color: gray	!important; }
+.red	{ color: red	!important; }
+.orange	{ color: orange	!important; }
+.yellow	{ color: yellow	!important; }
+.green	{ color: green	!important; }
+.blue	{ color: blue	!important; }
+.navy	{ color: navy	!important; }
 
 .bg_pink { background-color: pink; }
 

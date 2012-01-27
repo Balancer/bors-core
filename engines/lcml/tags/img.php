@@ -131,9 +131,12 @@ function lt_img($params)
 
 //					if(config('is_debug')) echo "Got content for {$params['url']} to {$path}: ".strlen($content)."\n";
 
+					//TODO: придумать, блин, какой-нибудь .d вместо каталогов. А то, вдруг, картинка будет и прямая
+					//и с GET-параметрами.
+
 					// Автоматический фикс старого некорректного утягивания.
 					// errstr=fopen(/var/www/balancer.ru/htdocs/sites/g/a/gallery.greedykidz.net/get/992865/3274i.jpg/=g2_serialNumber=1)
-					if(preg_match('#^(.+\.jpg)/=#', $path, $m) && file_exists($m[1]))
+					if(preg_match('#^(.+\.(jpe?g|png|gif))/=#', $path, $m) && file_exists($m[1]))
 						unlink($m[1]);
 
 					require_once('inc/filesystem.php');

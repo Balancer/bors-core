@@ -34,6 +34,9 @@ function lp_picasa($id, $params)
 			return "<a href=\"$url\">$url</a>";
 		}
 
+//		print_d($content);
+
+		// <meta name="description" content="26.01.2012 - Быстрые и медленные"/>
 		if(preg_match('!<meta name="description" content="(.+?)"/>!', $content, $m))
 			$title = $m[1];
 		else
@@ -41,10 +44,10 @@ function lp_picasa($id, $params)
 
 		$thumb_url = preg_replace('!/s\d+/!', "/s$width/", $thumb_url);
 
-		if($params['notitle'])
-			$title = NULL;
+//		if($params['notitle'])
+//			$title = NULL;
 
-		return "<a href=\"$url\"><img src=\"$thumb_url\" />" . ($title ? "<br/>\n$title" : "")."</a>";
+		return "<div class=\"rs_box".($title?'':'_nd')."\" style=\"width:{$width}px\"><a href=\"$url\"><img src=\"$thumb_url\" />" . ($title ? "<br/><small class=\"inbox\">$title</small>" : "")."</a></div>";
 	}
 
 	return "$id";

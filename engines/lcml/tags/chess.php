@@ -1,8 +1,9 @@
 <?php
     function lp_chess($text,$params)
     {
+    	return "Тэг временно отключён:<br/>\n$text";
 		$text = restore_format($text);
-	
+
 		global $wgScriptPath;
 		$errrep_save = error_reporting();
 		error_reporting($errrep_save & ~E_NOTICE);

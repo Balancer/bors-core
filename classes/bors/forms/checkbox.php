@@ -9,21 +9,10 @@ class bors_forms_checkbox extends bors_forms_element
 
 		extract($params);
 
-		if(!array_key_exists('checked', $params))
-		{
-			$obj = $form->object();
-			$checked = preg_match('!^\w+$!', $name) ? ($obj?$obj->$name():NULL) : '';
-
-			if(!isset($checked) && isset($def))
-				$checked = $def;
-		}
+		$checked = self::value($params, $form);
 
 		if($checked)
 			$checked = "checked";
-
-//		$cbs = base_object::template_data('form_checkboxes');
-//		$cbs[] = $name;
-//		base_object::add_template_data('form_checkboxes', $cbs);
 
 		$form->append_attr('checkboxes', $name);
 

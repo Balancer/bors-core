@@ -12,19 +12,39 @@ class bors_forms_saver extends base_empty
 //		if(config('is_developer')) { echo "On input {$form_object->debug_title()}:"; print_dd($data); print_dd($files); bors_exit(); }
 //		echo "Data:"; print_d($data);
 
+		$form = bors_load($data['form_class_name'], @$data['form_object_id']);
+
 		$object = NULL;
-		if(!empty($data['object_id']))	// Был передан ID, пытаемся загрузить
-			$object = bors_load($data['class_name'], $data['object_id']);
+		if(!empty($data['class_name']))
+		{
+			if(!empty($data['object_id']))	// Был передан ID, пытаемся загрузить
+				$object = bors_load($data['class_name'], $data['object_id']);
 
-		if(!$object) // Если не было объекта или нужно создать новый
-			$object = object_new($data['class_name']);
+			if(!$object) // Если не было объекта или нужно создать новый
+				$object = object_new($data['class_name']);
 
-		if(!$object) // Так и не получилось создать
-			return bors_throw(ec("Не получается создать объект для сохранения ")."{$data['class_name']}({$data['object_id']})");
+			if(!$object) // Так и не получилось создать
+				return bors_throw(ec("Не получается создать объект для сохранения ")."{$data['class_name']}({$data['object_id']})");
+		}
+
+		if(!$object)
+		{
+			$object = $form;
+			$use_form = true;
+		}
+		else
+			$use_form = false;
 
 		// Проверяем не обрабатывает ли свои сохранения объект сам.
 		if($object->pre_action($data) === true)
 			return true;
+
+		if(!empty($data['saver_prepare_classes']))
+		{
+			foreach(explode(',', $data['saver_prepare_classes']) as $cn)
+				if(true === $cn::saver_prepare($data))
+					return true;
+		}
 
 		// Проверяем доступ
 		if(!$object->access())
@@ -61,7 +81,7 @@ class bors_forms_saver extends base_empty
 		$was_new = false;
 
 		// Создаём новый объект, если это требуется
-		if(!$object->id())
+		if(!$object->id() && !$use_form)
 		{
 			$object->new_instance($data);
 			$object->on_new_instance($data);

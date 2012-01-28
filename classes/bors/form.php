@@ -81,6 +81,15 @@ class bors_form extends bors_object
 			if(empty($object_id)) // obsolete
 				$object_id = @$id;
 
+			if(!$class_name || $class_name == 'this')
+			{
+				$class_name = $calling_object->class_name();
+				$object_id	= $calling_object->id();
+				$is_calling = true;
+			}
+			else
+				$is_calling = false;
+
 			if(empty($object_id) || $object_id == 'NULL')
 				$object_id = NULL;
 
@@ -102,6 +111,7 @@ class bors_form extends bors_object
 		$this->set_attr('class_name', $class_name);
 		$this->set_attr('object', $object);
 		$this->set_attr('calling_object', $calling_object);
+		$this->set_attr('is_calling', $is_calling);
 
 		if(!isset($uri))
 		{

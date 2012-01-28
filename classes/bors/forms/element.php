@@ -4,8 +4,6 @@ class bors_forms_element
 {
 	static function value(&$params, &$form)
 	{
-//var_dump($params);
-//var_dump($form->attr);
 		$name = defval($params, 'name');
 		$def  = defval($params, 'def');
 		$value = defval($params, 'value');
@@ -16,7 +14,7 @@ class bors_forms_element
 		{
 			if(($object && ($object->id() || !$object->storage_engine())))
 				$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($object?$object->$name():NULL)) : '';
-			elseif(!$form->attr('class_name') && ($calling_object = $form->attr('calling_object')))
+			elseif($form->attr('is_calling') && ($calling_object = $form->attr('calling_object')))
 				$value = $calling_object->get($name);
 			else
 				$value = NULL;

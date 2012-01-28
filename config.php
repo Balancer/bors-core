@@ -53,4 +53,7 @@ config_set('3rdp_xmlrpc_path', 'xmlrpc-2.2.2');
 config_set('cache_dir', '/tmp/bors-cache-'.@$_SERVER['HTTP_HOST'].'-'.config('internal_charset'));
 config_set('cache_code_monolith', 0);
 
+config_set('cache.webroot_dir', $_SERVER['DOCUMENT_ROOT'].'/cache');
+config_set('cache.webroot_url', "http://{$_SERVER['HTTP_HOST']}/cache");
+
 @include_once(BORS_3RD_PARTY.'/config.php');

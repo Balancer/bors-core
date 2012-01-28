@@ -35,7 +35,7 @@ class bors_form extends bors_object
 
 	/**
 		Входные параметры:
-			class_name	— имя класса объекта формы (устаревшее: class, name)
+			class_name	— имя класса объекта, с которым работает форма (устаревшее: class, name)
 			object_id	— ID объекта формы (устаревшее id)
 			object		— готовый объект формы, при наличии приоритет над class_name/object_id
 			fields		— редактируемые поля формы
@@ -81,12 +81,6 @@ class bors_form extends bors_object
 			if(empty($object_id)) // obsolete
 				$object_id = @$id;
 
-			if(!$class_name || $class_name == 'this')
-			{
-				$class_name = $calling_object->class_name();
-				$object_id	= $calling_object->id();
-			}
-
 			if(empty($object_id) || $object_id == 'NULL')
 				$object_id = NULL;
 
@@ -101,6 +95,9 @@ class bors_form extends bors_object
 			$class_name	= $object->class_name();
 			$object_id	= $object->id();
 		}
+
+		$form_class_name = $calling_object->class_name();
+		$form_object_id	= $calling_object->id();
 
 		$this->set_attr('class_name', $class_name);
 		$this->set_attr('object', $object);
@@ -155,7 +152,7 @@ class bors_form extends bors_object
 			set_session_var('post_message_link_url', $calling_object->get('post_message_link_url'));
 		}
 
-		foreach(explode(' ', 'class_name object_id uri ref act inframe subaction') as $x)
+		foreach(explode(' ', 'form_class_name form_object_id class_name object_id uri ref act inframe subaction') as $x)
 			if(!empty($$x))
 				$this->set_attr($x, $$x);
 
@@ -473,13 +470,13 @@ class bors_form extends bors_object
 		if(empty($this->_params['go']))
 			$this->_params['go'] = $go2;
 
-		foreach(explode(' ', 'go class_name') as $name)
+		foreach(explode(' ', 'go class_name form_class_name') as $name)
 			$$name = $this->attr($name);
 
-		foreach(explode(' ', 'class_name object_id uri ref act inframe subaction') as $name)
+		foreach(explode(' ', 'form_class_name class_name object_id uri ref act inframe subaction') as $name)
 			$html .= $this->hidden_attr($name);
 
-		foreach(explode(' ', 'checkboxes checkboxes_list time_vars file_vars linked_targets override_fields') as $name)
+		foreach(explode(' ', 'checkboxes checkboxes_list time_vars file_vars linked_targets override_fields saver_prepare_classes') as $name)
 			$html .= $this->hidden_array($name);
 
 		if(!$this->attr('form_have_go') && $go)

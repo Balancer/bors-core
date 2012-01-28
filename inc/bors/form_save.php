@@ -53,9 +53,16 @@ function bors_form_save(&$obj)
 	}
 
 	$class_name = @$_GET['class_name'];
-	if($class_name && $class_name != 'NULL')
+	$form_class_name = @$_GET['form_class_name'];
+	if(($class_name && $class_name != 'NULL') || ($form_class_name && $form_class_name != 'NULL'))
 	{
-		$tmp = new $class_name(NULL);
+		if($class_name)
+			$tmp = new $class_name(NULL);
+		elseif($form_class_name)
+			$tmp = new $form_class_name(NULL);
+		else
+			$tmp = NULL;
+
 		if($form_saver_class = object_property($tmp, 'form_saver_class'))
 			return object_load($form_saver_class)->save($obj, $_GET, $_FILES);
 		elseif($form_saver_class = config('form_saver.class_name'))

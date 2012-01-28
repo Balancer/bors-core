@@ -10,7 +10,7 @@ function lcml_line_format($txt, $lcml)
 	else
 		$cr_type = $GLOBALS['lcml']['cr_type'];
 
-//		echo "lcml_line_format,$cr_type: #$txt#\n";
+//	echo "lcml_line_format,$cr_type: #$txt#\n";
 
 	switch($cr_type)
 	{

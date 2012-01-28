@@ -38,6 +38,15 @@ function bors_form_save(&$obj)
 
 	if(method_exists($obj, 'on_action'))
 	{
+		//TODO: придумать, как унифицировать с классом-сейвером
+		$form = bors_load(@$_GET['form_class_name'], @$_GET['form_object_id']);
+		if(!empty($_GET['saver_prepare_classes']))
+		{
+			foreach(explode(',', $_GET['saver_prepare_classes']) as $cn)
+				if(true === $cn::saver_prepare($_GET))
+					return true;
+		}
+
 		if(method_exists($obj, 'action_target'))
 			$obj = $obj->action_target();
 

@@ -58,7 +58,7 @@ class bors_lcml
         if(!is_dir($dir))
 			return;
 
-		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_'.@$_SERVER['HTTP_HOST'].'_3:'.$dir);
+		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_3:'.$dir);
 		if(!$files)
 		{
 	        $files = array();
@@ -98,7 +98,7 @@ class bors_lcml
 		{
 			$original = $text;
 
-//			if(config('is_developer'))echo "$fn('$text')<br/><br/>";
+//			if(config('is_developer'))echo "$fn('$text') <br/>\n";
 			if((!$fns_list_enabled || in_array($fn, $fns_list_enabled))
 				&& !in_array($fn, $fns_list_disabled)
 			)
@@ -144,7 +144,8 @@ class bors_lcml
 
 		$GLOBALS['lcml']['params'] = $this->_params;
 		$GLOBALS['lcml']['params']['html_disable'] = $this->p('html_disable');
-		$GLOBALS['lcml']['cr_type'] = $this->p('cr_type');
+		$GLOBALS['lcml']['cr_type'] = @$params['cr_type'];
+//		echo "cr-type = {$GLOBALS['lcml']['cr_type']}\n";
 
 		if($this->_params['level'] == 1 || $need_prepare)
 		{
@@ -270,19 +271,19 @@ class bors_lcml
 		$suite->assertEquals('<strong><i>italic-bold</i></strong>', lcml($code));
 
 		$code = '[http://balancer.ru Сайт расходящихся тропок]';
-		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
+		$suite->assertRegexp('#<a.+href="http://balancer.ru".*>Сайт расходящихся тропок</a>#', lcml($code));
 //		Упс. Не работает. Сделать не прямой парсинг, а подмену тэга вначале, в зависимости от типа ссылки, [url или [img
 //		$code = '[http://balancer.ru|[b]Сайт расходящихся тропок[/b]]';
 //		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
 
 		$code = '[url http://balancer.ru|[b]Сайт расходящихся тропок[/b]]';
-		$suite->assertRegexp('#<a.+href="http://balancer.ru".+><strong>Сайт расходящихся тропок</strong></a>#', lcml($code));
+		$suite->assertRegexp('#<a.+href="http://balancer.ru".*><strong>Сайт расходящихся тропок</strong></a>#', lcml($code));
 
 		$code = '[url=http://balancer.ru]Сайт расходящихся тропок[/url]';
-		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
+		$suite->assertRegexp('#<a.+href="http://balancer.ru".*>Сайт расходящихся тропок</a>#', lcml($code));
 
 		$code = '[b]Сайт расходящихся тропок: [url="http://balancer.ru"][/b]';
-		$suite->assertRegexp('#<strong>Сайт расходящихся тропок: <a.+href="http://balancer.ru".+>balancer.ru</a></strong>#', lcml($code));
+		$suite->assertRegexp('#<strong>Сайт расходящихся тропок: <a.+href="http://balancer.ru".*>balancer.ru</a></strong>#', lcml($code));
 
 	// Внутренние ошибочные теги не парсятся
 		$code = '[b][i]italic[/b]bold[/i]';
@@ -290,7 +291,7 @@ class bors_lcml
 
 		// Переводы строк.
 		$code = "Раз, два, три, четыре, пять\nВышел зайчик погулять";
-		$suite->assertEquals("Раз, два, три, четыре, пять<br />\nВышел зайчик погулять", lcml($code)); //?WTF? Это же не BB.
+		$suite->assertEquals("Раз, два, три, четыре, пять<br />\nВышел зайчик погулять", trim(lcml_bb($code))); //?WTF? Это же не BB.
 
 		// Проверки, использующие специфичные локальне ресурсы balancer.ru
 		if(config('is_balancer_ru_tests'))

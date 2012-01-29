@@ -109,7 +109,7 @@ class bors_lcml
 		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type functions execute for '$t0'", false);
+			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type functions execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		return $text;
 	}
@@ -162,7 +162,7 @@ class bors_lcml
 		$ts = microtime(true);
 		$text = lcml_tags($t0 = $text, $mask, $this);
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) tags execute for '$t0'", false);
+			debug_hidden_log('warning_lcml', "Too long ({$long}s) tags execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		if($this->p('only_tags'))
 			return $cache ? $cache->set($text, 86400) : $text;
@@ -258,7 +258,7 @@ class bors_lcml
 			$text = $parser->parse($text, $this);
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type parsers execute for '$t0'", false);
+			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type parsers execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		return $text;
 	}

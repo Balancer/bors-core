@@ -57,7 +57,7 @@ class bors_external_common extends bors_object
 			$img = 'http://'.$meta['host'].'/'.$img;
 
 		if($img)
-			$img = "[img {$img} 200x200 left flow]";
+			$img = "[img={$img} 200x200 left flow]";
 
 /*
 		if(!$img && config('is_developer'))

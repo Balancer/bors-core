@@ -110,6 +110,7 @@ if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 	$common_overload = config('overload_time', 0);
 	$user_overload = config('user_overload_time', $common_overload);
 	$bot_overload = config('bot_overload_time', $common_overload);
+//	$admin_overload = config('admin_overload_time', $common_overload);
 
 	if($user_overload || $bot_overload)
 	{

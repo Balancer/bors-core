@@ -149,8 +149,8 @@ class bors_lcml
 
 		if($this->_params['level'] == 1 || $need_prepare)
 		{
-			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text, 'pre');
 			$text = bors_lcml::parsers_do('pre', $text);
+			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text, 'pre');
 		}
 
 		if($this->_params['level'] == 1)

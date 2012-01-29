@@ -12,6 +12,9 @@ function lt_img($params)
 
 //	if(config('is_developer')) var_dump($params);
 
+	while(preg_match('/%\w+/', $params['url']))
+		$params['url'] = urldecode($params['url']);
+
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
 		return lt_img_bors($params);
 
@@ -192,7 +195,7 @@ function lt_img($params)
 
 //				if(config('is_debug')) echo "path=$path, need_upload=$need_upload<br/>";
 
-				if($params['noresize'])
+				if(!empty($params['noresize']))
 					$img_ico_uri  = $uri;
 				else
 					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", $uri);

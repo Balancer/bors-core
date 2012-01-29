@@ -29,7 +29,10 @@ function lt_img($params)
 //		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.
 
 	if(empty($params['size']))
-		$params['size'] = '468x468';
+	{
+		$size = config('box_sizes', 640);
+		$params['size'] = $size.'x'.$size;
+	}
 
 //		if(empty($params['url'])) { var_dump($params); exit(); }
 

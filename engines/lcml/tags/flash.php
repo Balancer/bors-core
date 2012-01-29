@@ -65,7 +65,7 @@
 
 	function lp_div($inner, $params)
 	{
-		return "<div ".make_enabled_params($params, 'style').">".lcml($inner)."</div>";
+		return "<div ".make_enabled_params($params, 'style class').">".lcml($inner)."</div>";
 	}
 
 	function lp_tabtr($inner, $params)

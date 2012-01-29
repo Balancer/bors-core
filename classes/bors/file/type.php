@@ -58,9 +58,11 @@ class bors_file_type extends bors_list
 		return ec('Файл ').$this->name();
 	}
 
-	function icon()
+	function icon($type = NULL)
 	{
-		$type = bors_lower($this->name());
+		if(!$type)
+			$type = bors_lower($this->name());
+
 		if(file_exists(BORS_CORE.'/shared'.($f = "/i16/file-types/$type.png")))
 			return bors_image_file::load('/_bors'.$f);
 

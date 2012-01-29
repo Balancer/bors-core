@@ -16,14 +16,14 @@ bors_function_include('fs/mkpath');
 function smart_size($size)
 {
 	if($size<1024)
-		return $size.ec("Б");
+		return $size.ec("байт");
 
 	$size = $size/1024;
 
 	if($size<1024)
-		return round($size,2).ec("КБ");
+		return round($size,2).ec("кбайт");
 
-	return round($size/1024,2).ec("МБ");
+	return round($size/1024,2).ec("Мбайт");
 }
 
 if(!function_exists("scandir"))

@@ -1,6 +1,6 @@
 <?php
 
-define('MAX_EXECUTE_S', 0.1);
+define('MAX_EXECUTE_S', 0.5);
 
 class bors_lcml
 {

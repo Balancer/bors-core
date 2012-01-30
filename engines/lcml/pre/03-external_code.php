@@ -25,7 +25,7 @@ function lcml_external_code($text)
 	// http://r-img.fotki.yandex.ru/get/5300/alex-hedin.86/0_575e1_d75048a8_orig
 	// http://img-fotki.yandex.ru/get/4400/alex-hedin.86/0_575dc_805f7c4e_orig
 	// http://img-fotki.yandex.ru/get/5004/balancer73.f/0_4cc96_94922bd7_XL
-	$text = preg_replace("!((^|\s|\n)http://[^/]+fotki\.yandex\.ru/get/\d+/[^/]+/\w+_(orig|XL)(\s|\n|$))!m", "\n[img $1]\n", $text);
+//	$text = preg_replace("!((^|\s|\n)http://[^/]+fotki\.yandex\.ru/get/\d+/[^/]+/\w+_(orig|XL)(\s|\n|$))!m", "\n[img $1]\n", $text);
 
 	$text = preg_replace('!(<script type="text/javascript" src="http://googlepage.googlepages.com/player.js"></script>)!ise', 'save_format("\1")', $text);
 

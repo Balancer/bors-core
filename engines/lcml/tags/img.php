@@ -12,6 +12,9 @@ function lt_img($params)
 
 //	if(config('is_developer')) var_dump($params);
 
+	while(preg_match('/%\w+/', $params['url']))
+		$params['url'] = urldecode($params['url']);
+
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
 		return lt_img_bors($params);
 
@@ -29,7 +32,10 @@ function lt_img($params)
 //		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.
 
 	if(empty($params['size']))
-		$params['size'] = '468x468';
+	{
+		$size = config('box_sizes', 640);
+		$params['size'] = $size.'x'.$size;
+	}
 
 //		if(empty($params['url'])) { var_dump($params); exit(); }
 
@@ -115,7 +121,7 @@ function lt_img($params)
 				if(!file_exists($path) || filesize($path)==0 || !$image_size)
 				{
 					require_once('inc/http.php');
-					$x = http_get_ex($params['url']);
+					$x = http_get_ex(str_replace(' ', '+', $params['url']));
 					$content      = $x['content'];
 					$content_type = $x['content_type'];
 
@@ -124,7 +130,7 @@ function lt_img($params)
 
 					if(!preg_match("!image!", $content_type))
 					{
-						debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type); // Это не картинка
+						debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type."\n".$content); // Это не картинка
 //						return lcml("Non-image content type ('$content_type') image ={$uri}= error.");
 						return lcml_urls_title($params['url']).'<small> [not image]</small>';
 					}
@@ -189,7 +195,7 @@ function lt_img($params)
 
 //				if(config('is_debug')) echo "path=$path, need_upload=$need_upload<br/>";
 
-				if($params['noresize'])
+				if(!empty($params['noresize']))
 					$img_ico_uri  = $uri;
 				else
 					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", $uri);

@@ -1,0 +1,14 @@
+div.message {
+	border-width: 1px;
+	border-style: solid;
+	box-shadow: 0 0 10px rgba(0,0,0,0.3);
+	vertical-align: middle;
+	padding: 20px;
+	margin: 20px;
+	font-size: 20pt;
+}
+
+div.message-text {
+	margin: 0 0 20px 0;
+/*	text-align-last: center; Ждём CSS3 */
+}

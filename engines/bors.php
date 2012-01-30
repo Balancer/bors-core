@@ -351,8 +351,12 @@ function bors_new($class_name, $data = array()) { return object_new_instance($cl
 
 function bors_delete($class_name, $where)
 {
-	if(empty($where['limit']))
+	//TODO: прописать в юниттесты оба варианта
+	if(!array_key_exists('limit', $where))
 		$where['limit'] = 1;
+
+	if($where['limit'] === false)
+		unset($where['limit']);
 
 	foreach(bors_find_all($class_name, $where) as $x)
 		$x->delete();

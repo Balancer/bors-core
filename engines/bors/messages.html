@@ -1,12 +1,11 @@
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-<br/>
-<br/>
-<big class="big20">{$text}</big>
-<br />
-<br />
-<br />
-<center>
+<div class="{if $is_error}yellow_box{/if} message">
 
+<div class="message-text">
+{$text}
+</div>
+
+<center>
 {if $login_form}
 <form method="post" action="/users/do-login" class="big">
 <table class="null big20">
@@ -18,5 +17,7 @@
 </form>
 {/if}
 
-<a href="{$link_url|htmlspecialchars}">{$link_text}</a>
+<a href="{$link_url|htmlspecialchars}" class="current_page">{$link_text}</a>
 </center>
+
+</div>

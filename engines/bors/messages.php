@@ -3,6 +3,7 @@
 function bors_message($text, $params=array())
 {
 	template_nocache();
+	template_css('/_bors/css/messages.css');
 
 	$ocs = config('output_charset', config('internal_charset', 'utf-8'));
 	$ics = config('internal_charset', 'utf-8');
@@ -117,6 +118,7 @@ function bors_message($text, $params=array())
 		'source' => $body,
 		'body' => $body,
 		'this' => $page,
+		'is_error' => preg_match('/ошибк/i', bors_lower($title)),
 	);
 
 	$template = defval($params, 'template');

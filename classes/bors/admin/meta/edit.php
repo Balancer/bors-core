@@ -17,6 +17,7 @@ class bors_admin_meta_edit extends bors_admin_page
 
 	function main_class()
 	{
+		bors_function_include('natural/bors_unplural');
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		$class_name = str_replace('_edit', '', $class_name);
 		return bors_unplural($class_name);

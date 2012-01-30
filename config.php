@@ -54,6 +54,6 @@ config_set('cache_dir', '/tmp/bors-cache-'.@$_SERVER['HTTP_HOST'].'-'.config('in
 config_set('cache_code_monolith', 0);
 
 config_set('cache.webroot_dir', $_SERVER['DOCUMENT_ROOT'].'/cache');
-config_set('cache.webroot_url', "http://{$_SERVER['HTTP_HOST']}/cache");
+config_set('cache.webroot_url', "/cache");
 
 @include_once(BORS_3RD_PARTY.'/config.php');

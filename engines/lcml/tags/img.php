@@ -121,7 +121,7 @@ function lt_img($params)
 				if(!file_exists($path) || filesize($path)==0 || !$image_size)
 				{
 					require_once('inc/http.php');
-					$x = http_get_ex($params['url']);
+					$x = http_get_ex(str_replace(' ', '+', $params['url']));
 					$content      = $x['content'];
 					$content_type = $x['content_type'];
 
@@ -130,7 +130,7 @@ function lt_img($params)
 
 					if(!preg_match("!image!", $content_type))
 					{
-						debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type); // Это не картинка
+						debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type."\n".$content); // Это не картинка
 //						return lcml("Non-image content type ('$content_type') image ={$uri}= error.");
 						return lcml_urls_title($params['url']).'<small> [not image]</small>';
 					}

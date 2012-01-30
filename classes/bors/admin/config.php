@@ -9,8 +9,11 @@ class bors_admin_config extends base_config
 		if($class_name = object_property($this->id(), 'main_class'))
 		{
 			$data['new_sublink'] = object_property($this->id(), 'admin_group_url').'new/';
-			$foo = new $class_name(NULL);
-			$data['new_title'] = ec('Добавить ').$foo->get('class_title_vp');
+			if(class_exists($class_name))
+			{
+				$foo = new $class_name(NULL);
+				$data['new_title'] = ec('Добавить ').$foo->get('class_title_vp');
+			}
 		}
 
 		$data['template'] = config('admin_template', 'default');

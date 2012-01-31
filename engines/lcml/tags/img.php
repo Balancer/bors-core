@@ -209,6 +209,14 @@ function lt_img($params)
 				if(defval($params, 'is_direct'))
 					$img_page_uri = $uri;
 
+				if($href = defval($params, 'href'))
+					$have_href = true;
+				else
+				{
+					$href = $img_page_uri;
+					$have_href = false;
+				}
+
 //				if(config('is_debug')) echo "img_ico_uri=$img_ico_uri<br/>";
 
 				require_once('HTTP/Request.php');
@@ -262,16 +270,20 @@ __EOT__;
 				}
 
 				if(empty($params['no_lcml_description']))
-					$description = stripslashes(!empty($params['description']) ? "<div style=\"text-align: center\"><small>".lcml($params['description'])."</small></div>" : '');
+					$description = stripslashes(!empty($params['description']) ? lcml($params['description']) : '');
 				else
-					$description = stripslashes(!empty($params['description']) ? "<div style=\"text-align: center\"><small>".$params['description']."</small></div>" : '');
+					$description = stripslashes(!empty($params['description']) ? $params['description'] : '');
 
 				$a_href_b = "";
 				$a_href_e = "";
 
 				if(empty($params['nohref']))
 				{
-					$a_href_b = "<a href=\"$img_page_uri\">";
+					if($width > 700)
+						$a_href_b = "<a href=\"{$href}\" class=\"cloud-zoom\" id=\"zoom-".rand()."\" rel=\"position:'inside'\">";
+					else
+						$a_href_b = "<a href=\"{$href}\">";
+
 					$a_href_e = "</a>";
 				}
 
@@ -300,9 +312,13 @@ __EOT__;
 					$styles[] = @$params['align'];
 				}
 
-				$out .= '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "").";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" alt=\"\" class=\"main\" />{$a_href_e}";
+				$styles[] = 'mtop8';
+				$description = str_replace('%IMAGE_PAGE_URL%', $img_page_uri, $description);
+
+				$out .= '<div class="'.join(' ', $styles)."\" style=\"width:".($width)."px;".(!$description? "height:".($height)."px" : "")
+					.";\">{$a_href_b}<img src=\"$img_ico_uri\" width=\"$width\" height=\"$height\" alt=\"\" class=\"main\" />{$a_href_e}";
 				if($description)
-					$out .= "<div class=\"block_description\"><small>".$description."</small></div>";
+					$out .= "<small class=\"inbox\">".$description."</small>";
 				$out .= '</div>';
 
 				return $out;

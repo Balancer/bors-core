@@ -49,23 +49,26 @@ class bors_lib_http
 		curl_setopt_array($ch, array(
 			CURLOPT_RETURNTRANSFER => 1,
 			CURLOPT_HEADER => 1,		// return header
-			CURLOPT_NOBODY => 1,		// no body return. it will faster  
+			CURLOPT_NOBODY => 1,		// no body return. it will faster
+			CURLOPT_TIMEOUT => defval($curl_options, 'timeout', 5),
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_USERAGENT => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; FunWebProducts; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
+			CURLOPT_REFERER => defval($curl_options, 'referer', $url),
+			CURLOPT_AUTOREFERER => true,
 		));
 
 		$headers = curl_exec($ch);
 		$info = curl_getinfo($ch);
 		curl_close($ch);
 
-//		echo "info: "; var_dump($info);
 		$parsed_headers = array();
 		foreach(explode("\n", $headers) as $x)
 		{
-//			var_dump(trim($x));
 			if(preg_match('/^(\S+):\s+(.+)$/', trim($x), $m))
 				$parsed_headers[$m[1]] = $m[2];
 		}
 
-//		echo "Headers:"; var_dump($parsed_headers);
 		return $parsed_headers;
 	}
 

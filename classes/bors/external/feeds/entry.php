@@ -139,7 +139,7 @@ class bors_external_feeds_entry extends base_object_db
 			$tags	= @$data['tags'];
 			$title	= @$data['title'];
 			if(!$markup)
-				$source .= "\n\n[span class=\"transgray\"]// Транслировано с ".$this->url_host_link($this->entry_url())."[/span]\n";
+				$source .= "\n\n[span class=\"transgray\"]// Транслировано с ".$this->url_host_link($this->entry_url()).".[/span]\n";
 		}
 		else
 		{

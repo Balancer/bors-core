@@ -21,5 +21,8 @@ function lcml_texts($text)
 		eval("\$text = preg_replace(\"/^ *{$pad} (.+) {$pad} *\$/me\", \"'[h{$ih}]'.lcml(stripq('\$1')).'[/h{$ih}]'\", \$text);");
 	}
 
+	// Сноски
+	$text = preg_replace("!^//\s+(.+?)$!me", "lcml('[reference]$1[/reference]');", $text);
+
 	return $text;
 }

@@ -61,7 +61,10 @@ class bors_external_livejournal extends bors_object
 		$meta = bors_lib_html::get_meta_data($html);
 		$title = $meta['title'];
 
-//var_dump($bbcode); exit();
+//		var_dump($bbcode); exit();
+
+		if(!$bbcode)
+			return bors_external_common::content_extract($url);
 
 		$bbshort = "[b][url={$url}]{$title}[/url][/b]
 

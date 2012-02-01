@@ -2,15 +2,15 @@
 
 class bors_forms_element
 {
-	static function value(&$params, &$form)
+	static function value(&$params, &$form, $param_name = 'value')
 	{
 		$name = defval($params, 'name');
 		$def  = defval($params, 'def');
-		$value = defval($params, 'value');
+		$value = defval($params, $param_name);
 
 		$object = $form->object();
 
-		if(!array_key_exists('value', $params))
+		if(!array_key_exists($param_name, $params))
 		{
 			if(($object && ($object->id() || !$object->storage_engine())))
 				$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($object?$object->$name():NULL)) : '';

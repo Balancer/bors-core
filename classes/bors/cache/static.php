@@ -76,7 +76,8 @@ class cache_static extends base_object_db
 			// Удаляем все кеш-записи (хотя, по идее, она будет только одна), кроме первой
 			if(!file_exists($cache->id()) && !$first)
 			{
-				echo "<b>delete</b>($cache), class_name={$object->class_name()}<br/>";
+//TODO: WTF? Сообщение сверху на http://balancer.ru/society/2011/08/t82829--vybory-2011-2012.html
+//				echo "<b>delete</b>($cache), class_name={$object->class_name()}<br/>";
 				$cache->delete(false);
 			}
 			else

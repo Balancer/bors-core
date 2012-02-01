@@ -57,7 +57,7 @@ class bors_external_common extends bors_object
 			$img = 'http://'.$meta['host'].'/'.$img;
 
 		if($img)
-			$img = "[img={$img} 200x200 left flow]";
+			$img = "[img={$img} 200x200 left flow nohref]";
 
 /*
 		if(!$img && config('is_developer'))
@@ -117,7 +117,7 @@ if(config('is_developer')) { exit($img); }
 			$bbshort = "[round_box]{$img}[h][a href=\"{$url}\"]{$title}[/a][/h]
 {$description}
 
-// ".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($url)."[/round_box]";
+[span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($url)."[/reference][/span][/round_box]";
 
 			$tags = array();
 

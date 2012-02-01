@@ -77,6 +77,7 @@ class cache_static extends base_object_db
 			if(!file_exists($cache->id()) && !$first)
 			{
 //TODO: WTF? Сообщение сверху на http://balancer.ru/society/2011/08/t82829--vybory-2011-2012.html
+//http://balancer.ru/g/p2702194
 //				echo "<b>delete</b>($cache), class_name={$object->class_name()}<br/>";
 				$cache->delete(false);
 			}

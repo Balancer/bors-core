@@ -9,7 +9,7 @@ class bors_forms_checkbox extends bors_forms_element
 
 		extract($params);
 
-		$checked = self::value($params, $form);
+		$checked = self::value($params, $form, 'checked');
 
 		if($checked)
 			$checked = "checked";

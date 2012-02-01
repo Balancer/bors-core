@@ -215,7 +215,7 @@ class bors_lib_http
 			CURLOPT_SSL_VERIFYPEER => false,
 		));
 
-		if(preg_match("!(rian.ru)!", $url))
+		if(config('proxy.force_regexp') && preg_match(config('proxy.force_regexp'), $url))
 			curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 		$data = curl_exec($ch);

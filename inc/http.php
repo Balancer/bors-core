@@ -83,8 +83,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 //		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
 //		CURLOPT_RANGE => '0-4095',
 
-//    if(preg_match("!lenta\.ru!", $url))
-	if(preg_match("!(img.beta.rian.ru|rian.ru)!", $url))
+	if(config('proxy.force_regexp') && preg_match(config('proxy.force_regexp'), $url))
 		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 	$data = curl_exec($ch);
@@ -218,7 +217,7 @@ function http_get_ex($url, $raw = true)
 		CURLOPT_SSL_VERIFYPEER => false,
 	));
 
-	if(preg_match("!(img.beta.rian.ru|rian.ru)!", $url))
+	if(config('proxy.force_regexp') && preg_match(config('proxy.force_regexp'), $url))
 		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 	$data = curl_exec($ch);

@@ -39,6 +39,17 @@ function template_jquery_plugin($name)
 	bors_page::add_template_data('jquery_plugin_'.$name.'_has_added', true);
 }
 
+function template_jquery_plugin_post($name)
+{
+	template_jquery();
+
+	if(bors_page::template_data('jquery_plugin_'.$name.'_has_added'))
+		return;
+
+	bors_page::add_template_data_array('js_include_post', '/_bors3rdp/jquery/plugins/'.$name);
+	bors_page::add_template_data('jquery_plugin_'.$name.'_has_added', true);
+}
+
 function template_jquery_plugin_css($css)
 {
 	if(bors_page::template_data('jquery_plugin_'.$css.'_css_has_added'))
@@ -58,10 +69,26 @@ function template_js($js_code)
 	bors_page::add_template_data('template_js_'.$hash, true);
 }
 
+function template_js_post($js_code)
+{
+	$hash = md5($js_code);
+	if(bors_page::template_data('template_js_'.$hash))
+		return;
+
+	bors_page::add_template_data_array('javascript_post', trim($js_code));
+	bors_page::add_template_data('template_js_'.$hash, true);
+}
+
 function template_jquery_js($jquery_code)
 {
 	template_jquery();
 	template_js("\$(function() {\n{$jquery_code}\n});\n");
+}
+
+function template_jquery_js_post($jquery_code)
+{
+	template_jquery();
+	template_js_post("\$(function() {\n{$jquery_code}\n});\n");
 }
 
 function template_js_include($js_link)
@@ -71,6 +98,16 @@ function template_js_include($js_link)
 		return;
 
 	bors_page::add_template_data_array('js_include', $js_link);
+	bors_page::add_template_data('template_js_include_'.$hash, true);
+}
+
+function template_js_include_post($js_link)
+{
+	$hash = md5(print_r($js_link, true));
+	if(bors_page::template_data('template_js_include_'.$hash))
+		return;
+
+	bors_page::add_template_data_array('js_include_post', $js_link);
 	bors_page::add_template_data('template_js_include_'.$hash, true);
 }
 

@@ -44,8 +44,6 @@ class bors_forms_input extends bors_forms_element
 		else
 			$has_versioning = false;
 
-		$class = join(' ', $class);
-
 		$result = "";
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
@@ -58,6 +56,18 @@ class bors_forms_input extends bors_forms_element
 
 		if(empty($input_name))
 			$input_name = $name;
+
+		if($inset = defval($params, 'inset'))
+		{
+			if($inset == $value || !$value)
+			{
+				$value = $inset;
+				$class[] = 'inset';
+			}
+		}
+
+		$class = join(' ', $class);
+
 		$result .= "<input type=\"text\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
 
 		foreach(explode(' ', 'class id maxlength size style') as $p)

@@ -17,7 +17,8 @@ function lcml_urls_pre_pre($txt)
 	$txt = preg_replace("!\[([^\s\|\]]+/)\s+([^\|\]]+?)\]!", "[url=$1]$2[/url]", $txt);
 
 	// Ссылки вида [sparkweb/SparkWeb.html SparkWeb]
-	$txt = preg_replace("!\[([^\s\|\]]+/[^\s\|\]]+)\s+([^\|\]]+?)\]!", "[url=$1]$2[/url]", $txt);
+	// Осторожно! Не должно конвертироваться [img=http://blah.com left]
+	$txt = preg_replace("!\[([^\s\|\]=]+/[^\s\|\]]+)\s+([^\|\]]+?)\]!", "[url=$1]$2[/url]", $txt);
 
 	return $txt;
 }

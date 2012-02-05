@@ -154,7 +154,8 @@ function bors_message($text, $params=array())
 			$redir = user_data('level') > 3 ? "/admin/news/" : "/";
 	}
 
-	clean_all_session_vars();
+	if(empty($params['save_session']))
+		clean_all_session_vars();
 
 	if($hidden_log)
 		debug_hidden_log($hidden_log, "message: $text");
@@ -204,7 +205,8 @@ function bors_message_tpl($template, $obj, $params)
 			$redir = user_data('level') > 3 ? "/admin/news/" : "/";
 	}
 
-	clean_all_session_vars();
+	if(empty($params['save_session']))
+		clean_all_session_vars();
 
 	if($redir && $timeout >= 0)
 		go($redir, false, $timeout);

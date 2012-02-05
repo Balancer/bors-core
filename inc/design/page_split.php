@@ -8,7 +8,7 @@
 		$q = "";
 		if(!empty($_GET))
 			foreach($_GET as $key => $value)
-				$q .= ($q=="") ? "?$key=$value" : "&$key=$value";
+				$q .= (($q=="") ? '?' : '&').urlencode($key)."=".urlencode($value);
 
 		if($total_pages > 1)
 		{
@@ -69,10 +69,10 @@
 			return $pages;
 
 		$q = "";
-//		print_d($_GET);
+
 		if(!empty($_GET))
 			foreach($_GET as $key => $value)
-				$q .= ($q=="") ? "?$key=$value" : "&$key=$value";
+				$q .= (($q=='') ? '?' : '&').urlencode($key)."=".urlencode($value);
 
 		list($start, $stop) = pages_start_stop_calculate($current_page, $total_pages, $limit);
 //		$pages[] = $start;

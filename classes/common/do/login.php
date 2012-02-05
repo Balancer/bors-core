@@ -8,8 +8,8 @@ class common_do_login extends base_page
 	{
 		if(empty($_GET))
 		{
-			debug_hidden_log('Ошибка передачи параметров в класс логина');
-			return bors_message('Ошибка передачи параметров. Возможно, сбой в настройке сервера. Администрация извещена о проблеме.');
+			debug_hidden_log('error_auth', ec('Ошибка передачи параметров в класс логина, пустой _GET'));
+			return bors_message(ec('Ошибка передачи параметров. Возможно, сбой в настройке сервера. Администрация извещена о проблеме.'));
 		}
 
 		require_once('obsolete/users.php');

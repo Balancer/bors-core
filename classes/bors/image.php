@@ -144,7 +144,8 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 	{
 		if(!$this->file_name())
 		{
-			debug_hidden_log("image-data-error", "empty file_name() on recalculate image url='{$this->url()}', this={$this}, data=".print_r($this->data, true));
+			//TODO: логи забиваются страшно. Непонятно…
+//			debug_hidden_log("image-data-error", "empty file_name() on recalculate image url='{$this->url()}', this={$this}, data=".print_r($this->data, true));
 			return;
 		}
 

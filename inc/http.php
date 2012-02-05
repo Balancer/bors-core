@@ -159,9 +159,11 @@ function http_get_content($url, $raw = false, $max_length = false)
 		print_d(iconv($charset, config('internal_charset').'//IGNORE', $data));
 	}
 */
+//	var_dump($charset, $data);
+
 	if($charset)
 		$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
-//var_dump($data);
+
     return $data;
 }
 

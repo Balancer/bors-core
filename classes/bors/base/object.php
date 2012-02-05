@@ -357,7 +357,7 @@ defined at {$this->class_file()}<br/>
 
 	function set($field, $value, $db_update=true)
 	{
-		if($db_update && strcmp(@$this->data[$field], $value)) // TODO: если без контроля типов, то !=, иначе - !==
+		if($db_update && !is_array($value) && strcmp(@$this->data[$field], $value)) // TODO: если без контроля типов, то !=, иначе - !==
 		{
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();

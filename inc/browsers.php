@@ -83,16 +83,16 @@ function get_browser_info($user_agent, $log_unknown = true)
 			$os = 'Linux';
 		elseif(preg_match('!Windows CE; PPC!', $user_agent))
 			$os = 'PocketPC';
+		elseif(preg_match('!Series\s*(\d+)!', $user_agent, $m))
+		{
+			$os = 'Symbian';
+			$ov = 'Series '.$m[1];
+		}
 		elseif(preg_match('!(Symbian OS|SymbOS)!', $user_agent))
 		{
 			$os = 'Symbian';
 			if(preg_match('!S(\d+);!', $user_agent, $m))
-				$osv = 'Series '.$m[1];
-		}
-		elseif(preg_match('!Series60!', $user_agent))
-		{
-			$os = 'Symbian';
-			$osv = 'Series 60';
+				$ov = 'Series '.$m[1];
 		}
 		elseif(preg_match('!J2ME!', $user_agent))
 			$os = 'J2ME';
@@ -234,7 +234,8 @@ function bors_find_shared_file($base_name, $path, $default = 'unknown.png')
 {
 	$base_name = bors_lower($base_name);
 	$base_name = preg_replace('/\W/', '-', $base_name);
-
+//if(preg_match('/series/', $base_name))
+//	exit($base_name);
 	$dir = BORS_CORE;
 	if(file_exists("$dir/shared/".($file = "$path/$base_name.png")))
 		return $file;

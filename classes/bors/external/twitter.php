@@ -140,9 +140,10 @@ class bors_external_twitter extends bors_object
 //			'origin_url' => $link,
 			'strip_forms' => true,
 		));
+
 		// К этому месту у нас готовое текстовое сообщение. Нужно извлечь из него всё, что можно
 		// Первый вариант — это ссылка с примечанием:
-		if(preg_match('!^(http\S+)\s*(.+)$!', $text, $m))
+		if(preg_match('!^(http\S+)\s+(.+)$!', $text, $m))
 		{
 			$url = $m[1];
 			$msg_text = $m[2];

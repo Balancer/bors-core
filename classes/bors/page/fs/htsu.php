@@ -15,8 +15,9 @@ class bors_page_fs_htsu extends bors_page
 
 	function init()
 	{
-		if(preg_match('/^(.+)\.phtml$/', $this->called_url(), $m))
-			go($m[1].'/', true);
+//		TODO: убедиться, что нет левых редиректов, типа http://balancer.ru/g/p351551
+//		if(preg_match('/^(.+)\.phtml$/', $this->called_url(), $m))
+//			go($m[1].'/', true);
 
 		return parent::init();
 	}

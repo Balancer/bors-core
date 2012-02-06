@@ -31,7 +31,7 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 	if(config('bors_version_show'))
 		@header("X-bors-go: {$uri}");
 
-    if(!headers_sent($filename, $linenum) && $time==0) 
+    if(!headers_sent($filename, $linenum) && $time==0 && !config('redirect_by_html'))
     {
 		if($permanent)
             header("Status: 301 Moved Permanently");
@@ -47,6 +47,9 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
     }
 
 	echo "<meta http-equiv=\"refresh\" content=\"$time; url=$uri\">";
+
+	if($time > 0)
+		echo ec("Редирект по адресу <a href=\"$uri\">$uri</a> через $time секунд");
 
 	if($exit)
 		bors_exit('');

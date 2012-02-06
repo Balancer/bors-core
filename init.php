@@ -18,7 +18,7 @@ if(!defined('BORS_LOCAL'))
 	define('BORS_LOCAL', dirname(BORS_CORE).'/bors-local');
 
 if(!defined('BORS_HOST'))
-	define('BORS_HOST', realpath(@$_SERVER['DOCUMENT_ROOT'].'/../bors-host'));
+	define('BORS_HOST', dirname(BORS_CORE).'/bors-host');
 
 if(!defined('BORS_SITE'))
 {

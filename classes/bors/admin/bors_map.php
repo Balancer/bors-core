@@ -4,6 +4,8 @@ bors_url_submap(array(
 	'/ => _main',
 	'/action\?(\w+) => _action(1)',
 	'/append/child\?object=([^&]*) => _append_child(1)',
+	'/classes/(\w+)/? => _classes_edit(1)',
+	'/classes/(\w+)/new/? => _classes_new(1)',
 	'/cross_chtype\?.* => _cross_chtype',
 	'/cross_unlink\?.* => _cross_unlink',
 	'/delete/\?object=([^&]+).* => bors_tools_delete(1)',

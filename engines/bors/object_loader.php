@@ -258,7 +258,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 			}
 
 			if(!$found)
-				bors_throw(ec('Отсутствует файл блока расширений карты привязок "').$fmap_file_new.'"');
+				bors_throw(ec('Для ссылки ').$url.(' отсутствует файл блока расширений карты привязок "').$map_file_new.'"');
 
 			foreach($GLOBALS['bors_url_submap_map'] as $pair)
 			{

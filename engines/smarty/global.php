@@ -91,6 +91,12 @@ function template_jquery_js_post($jquery_code)
 	template_js_post("\$(function() {\n{$jquery_code}\n});\n");
 }
 
+function template_jquery_document_ready($js_code)
+{
+	template_jquery();
+	bors_page::add_template_data_array('jquery_document_ready', trim($js_code));
+}
+
 function template_js_include($js_link)
 {
 	$hash = md5(print_r($js_link, true));

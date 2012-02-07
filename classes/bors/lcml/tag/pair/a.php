@@ -9,7 +9,10 @@ class bors_lcml_tag_pair_a extends bors_lcml_tag_pair
 {
 	function html($text, $params)
 	{
-		$url = $params['href'];
+		if(empty($params['href']))
+			debug_hidden_log('errors_lcml_parameters', "Tag [a] without href param for '{$text}'");
+
+		$url = @$params['href'];
 		return "<a href=\"$url\""
 			.bors_lib_urls::check_nofollow($url)
 			.bors_lib_urls::check_external($url)

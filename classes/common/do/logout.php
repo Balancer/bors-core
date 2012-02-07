@@ -14,6 +14,8 @@ class common_do_logout extends base_page
 		else
 			bors_user::do_logout();
 
+		bors_exit();
+
 		$refo = object_load($referer);
 		if(!object_property($refo, 'is_public'))
 			$referer = NULL;

@@ -101,6 +101,11 @@ class bors_external_twitter extends bors_object
 			}
 		}
 
+		// YouTube
+		$text = preg_replace('!\s+(https?://+\S+)\s*!is', "\n\n$1\n", $text);
+		$text = bors_external_youtube::parse_links($text);
+//		if(config('is_developer')) { var_dump($text); exit(); }
+
 		if(preg_match('!(http://(www\.)?fresher\.ru/\d+/\d+/\d+/[^/]+/) \((.+)\)!', $text, $m))
 		{
 			// Это ссылка на fresher.ru

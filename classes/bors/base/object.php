@@ -143,12 +143,7 @@ class base_object extends base_empty
 
 		if(($config = $this->config_class()))
 		{
-//			if(config('is_debug')) debug_hidden_log('debug-config', "{$this}->config_class() = {$config}");
 			$this->config = new $config($this);
-
-			//TODO: workaround странной ошибки на страницах вида http://balancer.ru/user/29251/aliases.html
-			//Call to undefined method airbase_forum_config::set() in /var/www/.bors/bors-core/classes/bors/base/config.php on line 13
-//			get_class($this);
 
 			if(!$this->config)
 				debug_exit("Can't load config class '{$config}'.");
@@ -179,6 +174,7 @@ class base_object extends base_empty
 			$this->config = new $config($this);
 			if(!$this->config)
 				debug_exit("Can't load config ".$this->config_class());
+
 			$this->config->target_configure();
 		}
 

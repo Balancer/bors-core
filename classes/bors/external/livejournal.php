@@ -38,6 +38,7 @@ class bors_external_livejournal extends bors_object
 		foreach(array(
 			'//p[@class="entry-footer"]',
 			"//div[@class='ljtags']",
+			"//a[contains(@href,'/share')]", // <a href="http://ibigdan.com/share.php?type=livejournal&amp;id=10165510" target="_blank" style="text-decoration:none;border:0px;"> ...
 		) as $query)
 			foreach($xpath->query($query) as $node)
 				$node->parentNode->removeChild($node);

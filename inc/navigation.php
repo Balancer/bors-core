@@ -37,6 +37,7 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
             header("Status: 301 Moved Permanently");
 		else
             header("Status: 302 Moved Temporarily");
+
 		if(preg_match("!\n!", $uri))
 			echolog("cr in uri '$uri'", 1);
 

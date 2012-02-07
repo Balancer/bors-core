@@ -64,12 +64,6 @@ class bors_template
 		else
 			$object = NULL;
 
-//		if($object)
-//		{
-//			if($cfg = $object->config())
-//				$data = array_merge($data, $cfg->page_data()); // page_data — требуется обработка, так что не тут.
-//		}
-
 		if(!empty($GLOBALS['cms']['templates']['data']))
 			$data = array_merge($data, $GLOBALS['cms']['templates']['data']);
 

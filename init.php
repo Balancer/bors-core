@@ -12,25 +12,19 @@ if(!defined('BORS_CORE'))
 	define('BORS_CORE', dirname(__FILE__));
 
 if(!defined('BORS_EXT'))
-	define('BORS_EXT', dirname(BORS_CORE).'/bors-ext');
+	define('BORS_EXT', dirname(BORS_CORE).DIRECTORY_SEPARATOR.'bors-ext');
 
 if(!defined('BORS_LOCAL'))
-	define('BORS_LOCAL', dirname(BORS_CORE).'/bors-local');
+	define('BORS_LOCAL', dirname(BORS_CORE).DIRECTORY_SEPARATOR.'bors-local');
 
 if(!defined('BORS_HOST'))
-	define('BORS_HOST', dirname(BORS_CORE).'/bors-host');
+	define('BORS_HOST', dirname(BORS_CORE).DIRECTORY_SEPARATOR.'bors-host');
 
 if(!defined('BORS_SITE'))
-{
-	$path = realpath(@$_SERVER['DOCUMENT_ROOT'].'/../bors-site');
-	if(!$path)
-		$path = dirname(@$_SERVER['DOCUMENT_ROOT']).'/bors-site';
-
-	define('BORS_SITE', $path);
-}
+	define('BORS_SITE', dirname(@$_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'bors-site');
 
 if(!defined('BORS_3RD_PARTY'))
-	define('BORS_3RD_PARTY', dirname(BORS_CORE).'/bors-third-party');
+	define('BORS_3RD_PARTY', dirname(BORS_CORE).DIRECTORY_SEPARATOR.'bors-third-party');
 
 if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_REAL_IP'];
@@ -97,7 +91,7 @@ foreach(array(BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $di
 }
 
 if(!file_exists($d = config('cache_dir')));
-	mkpath($d, 0777);
+	mkpath($d, 0750);
 
 if(config('cache_code_monolith') && file_exists($php_cache_file = config('cache_dir') . '/functions.php'))
 	require_once($php_cache_file);
@@ -111,7 +105,6 @@ else
 	$GLOBALS['now'] = time();
 
 bors_function_include('time/date_format_mysqltime');
-
 $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
 
 /**

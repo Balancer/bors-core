@@ -136,7 +136,7 @@
 		if(abs($p - $current_page) <= 5)	return true;
 		if($p == $current_page-6 && $p == 3) return true;
 		if($p <= 14 && $current_page < 10) return true;
-	
+
 		if($p == $current_page+6 && $p == $total_pages-2) return true;
 		if($p >= $total_pages-13 && $current_page > $total_pages-9) return true;
 

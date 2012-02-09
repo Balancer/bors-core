@@ -7,9 +7,9 @@
 class bors_lcml_parser
 {
 	function html($text) { return $text; }
-	function html_compact($text) { return $this->html(); }
-	function html_simple($text) { return $this->html(); }
-	function text($text) { return strip_tags($this->html()); }
+	function html_compact($text) { return $this->html($text); }
+	function html_simple($text) { return $this->html($text); }
+	function text($text) { return strip_tags($this->html($text)); }
 
 	function parse($text, $lcml)
 	{

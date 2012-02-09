@@ -42,11 +42,11 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 //			$data['storage_engine'] = popval($data, 'storage_engine', 'bors_storage_mysql');
 
 		$class = "class ".popval($data, 'class', $class_name)." extends ".popval($data, 'extends', $properties ? 'base_object_db' : 'bors_object')
-			."\n{";
+			."\n{\n";
 
 		if($table_fields)
 		{
-			$class .= "\tfunction table_fields()\n\t{\n\t\t	return array("
+			$class .= "\tfunction table_fields()\n\t{\n\t\treturn array(\n"
 				.self::tr_array($table_fields, 3)
 				."\n\t\t);\n\t}\n";
 		}
@@ -71,7 +71,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		$class .= "}\n";
 
-		echo "\n====================\n$class\n======================\n";
+//		echo "\n====================\n$class\n======================\n";
 
 //		$generated_name = dirname($class_file)."/".array_pop(explode('_', $class_name)).".php";
 		$cached_class_file = config('cache_dir').'/classes/'.str_replace('_', '/', $class_name).'.php';

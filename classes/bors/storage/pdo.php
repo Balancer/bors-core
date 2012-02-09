@@ -267,13 +267,20 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		$iterator = new bors_storage_pdo();
 		$iterator->object = $object;
 		$iterator->__class_name = $class_name;
-		$iterator->dbi = driver_pdo::factory($db_name)->each($table_name, join(',', $select), $where);
+
+		$storage = $object->storage();
+		$db_driver_name = $storage->_db_driver_name();
+		$dbh = new $db_driver_name($db_name);
+		$iterator->dbi = $dbh->each($table_name, join(',', $select), $where);
 		return $iterator;
 	}
 
     public function key() { } // Not implemented
 
-    public function current() { return $this->object; }
+    public function current()
+    {
+    	return $this->object;
+    }
 
     public function next()
     {
@@ -366,7 +373,6 @@ class bors_storage_pdo extends bors_storage implements Iterator
 
 		foreach($data as $db_name => $tables)
 		{
-
 			$dbh = new $db_driver_name($db_name);
 			foreach($tables as $table_name => $fields)
 			{

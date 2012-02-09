@@ -306,6 +306,15 @@ class base_object extends base_empty
 		if(property_exists($this, $name_ec))
 			return $this->set_attr($name, ec($this->$name_ec));
 
+		// Ищем методы, перекрываемые переменным по умолчанию
+		$m = "_{$name}_def";
+		if(method_exists($this, $m))
+		{
+			try { $value = $this->$m(); }
+			catch(Exception $e) { $value = NULL; }
+			return $this->attr[$name] = $value;
+		}
+
 		// Проверяем нет ли значения по умолчанию — это вместо бывшего attr
 		if(@array_key_exists($method, $this->defaults))
 			return $this->defaults[$method];

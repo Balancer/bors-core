@@ -10,7 +10,6 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		$data = $parse['data'];
 
-//		echo "Load class $class_name ($class_file)\n";
 		$funcs = array();
 
 		if($properties = popval($data, 'properties'))
@@ -39,8 +38,8 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		$table_fields = popval($data, 'table_fields');
 
-		if($table_fields)
-			$data['storage_engine'] = popval($data, 'storage_engine', 'bors_storage_mysql');
+//		if($table_fields)
+//			$data['storage_engine'] = popval($data, 'storage_engine', 'bors_storage_mysql');
 
 		$class = "class ".popval($data, 'class', $class_name)." extends ".popval($data, 'extends', $properties ? 'base_object_db' : 'bors_object')
 			."\n{";
@@ -72,12 +71,14 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		$class .= "}\n";
 
+		echo "\n====================\n$class\n======================\n";
+
 //		$generated_name = dirname($class_file)."/".array_pop(explode('_', $class_name)).".php";
 		$cached_class_file = config('cache_dir').'/classes/'.str_replace('_', '/', $class_name).'.php';
 
-		mkpath(dirname($cached_class_file), 0755);
+		mkpath(dirname($cached_class_file), 0750);
 		@file_put_contents($cached_class_file, "<?php\n\n".$class);
-		@chmod($generated_name, 0644);
+		@chmod($generated_name, 0640);
 
 //		eval($class);
 		bors_class_loader::cache_make_info($class_name, $class_file, $cached_class_file);

@@ -3,7 +3,7 @@
 require_once('inc/mysql.php');
 require_once('obsolete/DataBase.php');
 
-class driver_mysql extends DataBase implements Iterator 
+class driver_mysql extends DataBase implements Iterator
 {
 	function connection() { return $this->dbh; }
 

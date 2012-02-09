@@ -2,11 +2,13 @@
 
 bors_function_include('debug/timing');
 
-class driver_pdo
+class driver_pdo implements Iterator
 {
 	protected $connection = NULL;
 	protected $database = NULL;
 	private $statement = NULL;
+
+	static function factory($db) { return new driver_pdo($db); }
 
 	function __construct($database = NULL)
 	{
@@ -52,7 +54,7 @@ class driver_pdo
 		if($err[0] != "00000")
 			return bors_throw("PDO error on query «{$query}»: ".print_r($err, true));
 
-		return $result;
+		return $this->result = $result;
 	}
 
 	function exec($query)
@@ -81,19 +83,19 @@ class driver_pdo
 	function fetch()
 	{
 		debug_timing_start('pdo_fetch');
-		$row = $this->row;
+		$assoc = $this->result->fetch(PDO::FETCH_ASSOC);
 		$ics = config('internal_charset');
 		$dcs = configh('pdo_access', $this->database, 'charset');
 
-		if($row && $ics != $dcs)
+		if($assoc && $ics != $dcs)
 		{
 			$ics .= '//IGNORE';
-			foreach($row as $k => $v)
-				$row[$k] = iconv($dcs, $ics, $v);
+			foreach($assoc as $k => $v)
+				$assoc[$k] = iconv($dcs, $ics, $v);
 		}
 
 		debug_timing_stop('pdo_fetch');
-		return $row;
+		return $assoc;
 	}
 
 	function get($query)
@@ -269,7 +271,7 @@ class driver_pdo
 //			$this->connection->bindParam(":$name", );
 //		$this->prepare($query);
 //		$this->execute(array_values($fields));
-//		echo "INSERT INTO $table ".$this->make_string_values($fields).PHP_EOL;
+		echo "INSERT INTO $table ".$this->make_string_values($fields).PHP_EOL;
 		$this->exec("INSERT INTO $table ".$this->make_string_values($fields));
 	}
 
@@ -282,4 +284,26 @@ class driver_pdo
 	}
 
 	function last_id() { return $this->connection->lastInsertId(); }
+
+	public function each($table, $fields, $where)
+    {
+    	$query = "SELECT $fields FROM {$table} ".$this->args_compile($where);
+//    	echo "$query\n";
+		$this->each_statement = $this->query($query);
+		return $this;
+    }
+
+    public function rewind()
+    {
+    	if(!$this->each_statement)
+    		return false;
+
+		return $this->each_statement->fetch();
+    }
+
+    public function next() { return $this->each_statement->fetch(); }
+
+    public function current() { bors_throw('Not implemented'); }
+    public function key() { bors_throw('Not implemented'); }
+    public function valid() { return bors_throw('Not implemented'); }
 }

@@ -68,15 +68,12 @@
 		if($total_pages < 2)
 			return $pages;
 
-		$q = "";
-
 		if(!empty($_GET))
-			foreach($_GET as $key => $value)
-				$q .= (($q=='') ? '?' : '&').urlencode($key)."=".urlencode($value);
+			$q = '?'.http_build_query($_GET);
+		else
+			$q = '';
 
 		list($start, $stop) = pages_start_stop_calculate($current_page, $total_pages, $limit);
-//		$pages[] = $start;
-//		$pages[] = $stop;
 
 		$pages[] = get_page_link($obj, 1, 1==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
 

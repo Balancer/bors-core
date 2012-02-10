@@ -1,5 +1,7 @@
 <?php
 
+//if(!function_exists('bors_function_include')) var_dump(debug_backtrace());
+
 require_once('inc/texts.php');
 
 function debug_exit($message)

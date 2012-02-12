@@ -50,7 +50,7 @@ config_set('locale', 'ru_RU.UTF-8');
 config_set('3rdp_xmlrpc_path', 'xmlrpc-2.2.2');
 
 // После установки кодировок -- использует internal_charset
-config_set('cache_dir', '/tmp/bors-cache-'.@$_SERVER['HTTP_HOST'].'-'.config('internal_charset'));
+config_set('cache_dir', '/tmp/bors-cache/'.@$_SERVER['HTTP_HOST'].'-'.config('internal_charset'));
 config_set('cache_code_monolith', 0);
 
 config_set('cache.webroot_dir', $_SERVER['DOCUMENT_ROOT'].'/cache');

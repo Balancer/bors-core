@@ -162,4 +162,12 @@ class bors_page extends base_page
 
 		return $default;
 	}
+
+	function use_css($css_urls)
+	{
+		if(!is_array($css_urls))
+			$css_urls = array($css_urls);
+
+		$this->merge_template_data_array('css_list', $css_urls);
+	}
 }

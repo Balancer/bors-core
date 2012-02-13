@@ -3,8 +3,14 @@
 class bors_file_type extends bors_list
 {
 	function file() { return $this->id(); }
-	function mime() { return $this->file()->mime(); }
-	function extension() { return bors_lower(array_pop(explode('.', $this->file()->full_file_name()))); }
+	function mime() { return is_object($this->file()) ? $this->file()->mime() : @mime_content_type($this->file()); }
+	function extension()
+	{
+		if(is_object($f = $this->file()))
+			return bors_lower(array_pop(explode('.', $f->full_file_name())));
+
+		return bors_lower(array_pop(explode('.', $f)));
+	}
 
 	function name()
 	{
@@ -21,7 +27,10 @@ class bors_file_type extends bors_list
 			case 'application/x-www-form-urlencoded':
 				return $this->name_by_ext();
 			default:
-				list($foo, $type) = explode('/', $this->mime());
+				if(!($mime = $this->mime()))
+					return bors_upper($this->extension());
+
+				list($foo, $type) = explode('/', $mime);
 				return bors_upper($type);
 		}
 	}
@@ -75,12 +84,15 @@ class bors_file_type extends bors_list
 		return bors_image_file::load('/_bors/i16/file-types/other.png');
 	}
 
-	function icon_class($type = NULL)
+	function css_class($type = NULL)
 	{
 		if(!$type)
 			$type = bors_lower($this->name());
 
-		if(file_exists(BORS_CORE.'/shared'.("/i16/file-types/$type.png")))
+		if(file_exists(BORS_CORE."/shared/i16/file-types/$type.png"))
+			return "file-{$type}";
+
+		if(file_exists(BORS_EXT."/htdocs/_bors-ext/i16/file-types/$type.png"))
 			return "file-{$type}";
 
 		switch($this->name())
@@ -89,6 +101,6 @@ class bors_file_type extends bors_list
 				return 'file-doc';
 		}
 
-		return 'file-other.png';
+		return 'file-other';
 	}
 }

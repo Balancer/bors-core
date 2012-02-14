@@ -142,8 +142,8 @@ class DataBase extends base_object
 	var $last_query_time;
 	function query($query, $ignore_error=false, $reenter = false)
 	{
-//		if(preg_match('/select.*count.*topics/i', $query))
-//			debug_hidden_log('__00query_topics', $query);
+//		if(preg_match('/insert.*access_log/i', $query))
+//			debug_hidden_log('__00query_update_log', $query);
 
 		if(config('mysql_trace_show'))
 			print_dd($query);

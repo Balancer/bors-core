@@ -5,11 +5,11 @@
 			return $txt;
 
 		$n=50;
-		while(preg_match("!\[([http://\w\.\-\+%_/:&\?=#]+\.(jpg|jpeg|gif|png|sjpg))([^\]]*)\]!ie", $txt, $m) && $n-->0)
+		while(preg_match("!\[([https?://\w\.\-\+%_/:&\?=#]+\.(jpg|jpeg|gif|png|sjpg))([^\]]*)\]!ie", $txt, $m) && $n-->0)
 			$txt = str_replace($m[0], lcml("[img \"{$m[1]}\" noflow {$m[3]}]"), $txt);
 
 		$n=50;
-		while(preg_match("!^\S*(http://\S+\.(jpg|png|gif|jpeg|sjpg))\s*$!ime", $txt, $m) && $n-->0)
+		while(preg_match("!^\S*(https?://\S+\.(jpg|png|gif|jpeg|sjpg))\s*$!ime", $txt, $m) && $n-->0)
 		{
 			$image_url = $m[1];
 			$ud = parse_url($image_url);

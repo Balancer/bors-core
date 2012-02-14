@@ -131,6 +131,7 @@ class bors_lib_time
 
 	function smart_interval_vp($interval, $parts = 2)
 	{
+		require_once('inc/strings.php');
 		$res = array();
 		$res[] = ($x = $interval % 60) ? $x.ec(' секунд').sklon($x,ec('у,ы,')) : '';
 		$interval = intval($interval/60);

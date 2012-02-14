@@ -501,7 +501,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				elseif($object->ignore_on_new_instance())
 					$dbh->insert_ignore($table_name, $fields);
 				else
+				{
+					if($object->get('insert_delayed_on_new_instance'))
+						$fields['*DELAYED'] = true;
+
 					$dbh->insert($table_name, $fields);
+				}
 
 				if($main_table)
 				{

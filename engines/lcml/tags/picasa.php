@@ -42,12 +42,13 @@ function lp_picasa($id, $params)
 		else
 			$title = "";
 
+		$big_thumb_url = preg_replace('!/s\d+/!', "/s1600/", $thumb_url);
 		$thumb_url = preg_replace('!/s\d+/!', "/s$width/", $thumb_url);
 
 //		if($params['notitle'])
 //			$title = NULL;
 
-		return "<div class=\"rs_box".($title?'':'_nd')."\" style=\"width:{$width}px\"><a href=\"$url\"><img src=\"$thumb_url\" />" . ($title ? "<br/><small class=\"inbox\">$title</small>" : "")."</a></div>";
+		return "<div class=\"rs_box".($title?'':'_nd')."\" style=\"width:{$width}px\"><a href=\"$big_thumb_url\" class=\"cloud-zoom\" rel=\"position:'inside'\"><img src=\"$thumb_url\" />" . ($title ? "<br/><small class=\"inbox\">$title @ PicasaWeb</small>" : "")."</a></div>";
 	}
 
 	return "$id";

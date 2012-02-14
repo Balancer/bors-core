@@ -239,7 +239,7 @@ function lt_img($params)
 					}
 					elseif(!preg_match('/\.htm$/', $href))
 					{
-						if($width > 300 && $height > 300)
+						if($width > 300 && $height > 200)
 							$rel = "position:'inside'";
 						else
 							$rel = "position:'bototm', zoomWidth:400, zoomHeight:400";

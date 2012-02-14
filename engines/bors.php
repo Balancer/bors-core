@@ -116,6 +116,7 @@ function bors_object_new_instance_db(&$object)
 	$object->set_last_editor_id(bors()->user_id());
 
 	$object->storage()->create($object);
+	$object->changed_fields = array();
 }
 
 function bors_db_fields_init($obj)

@@ -773,6 +773,7 @@ defined at {$this->class_file()}<br/>
 		}
 
 		$storage->save($this);
+		$this->changed_fields = array();
 
 		if(config('debug_trace_changed_save'))
 			echo 'Save '.$this->debug_title()."\n";

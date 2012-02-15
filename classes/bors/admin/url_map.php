@@ -17,6 +17,7 @@ bors_url_submap(array(
 	'/links/ => _links_main',
 	'/links/(\d+)\.html => _links_main(NULL,1)',
 	'/links/search/ => _links_search',
+	'/links/checklist/(\w+/\w+)/? => _links_checklist(NULL,1)',
 	'/mark/delete/\?object=([^&]+).* => _mark_delete(1)',
 	'/new\?class_name=(.+) => _edit_smart(1)',
 	'/objects\?class=(\w+) => _objects_main(1)',

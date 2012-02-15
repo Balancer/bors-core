@@ -68,9 +68,14 @@ class bors_forms_radio extends bors_forms_element
 		if(empty($delim))
 			$delim = "<br />";
 
+		if(!empty($label_css_class))
+			$label_css_class = " class=\"$label_css_class\"";
+		else
+			$label_css_class = "";
+
 		$html = '';
 		foreach($list as $id => $iname)
-			$html .= "<label><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$params />&nbsp;$iname</label>$delim\n";
+			$html .= "<label{$label_css_class}><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$params />&nbsp;$iname</label>$delim\n";
 
 		return $html;
 	}

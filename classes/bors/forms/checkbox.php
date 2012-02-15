@@ -21,8 +21,14 @@ class bors_forms_checkbox extends bors_forms_element
 
 		$html = "";
 
+		if(!empty($label_css_class))
+			$label_css_class = " class=\"$label_css_class\"";
+		else
+			$label_css_class = "";
+
 		if($label)
-			$html .= "<label>";
+			$html .= "<label{$label_css_class}>";
+
 		$html .= "<input type=\"checkbox\"";
 
 		foreach(explode(' ', 'checked name size style value') as $p)

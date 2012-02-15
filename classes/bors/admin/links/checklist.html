@@ -1,0 +1,16 @@
+{form act="do"}
+<table class="btab">
+<tr><td>
+{foreach from=$targets item="x"}
+{if $x->linked()}
+{checkbox name="targets[]" label=$x->title() value=$x->id() checked=true label_css_class="b red"}
+{else}
+{checkbox name="targets[]" label=$x->title() value=$x->id()}
+{/if}
+{/foreach}
+</tr>
+<tr><th>{submit value="Сохранить"}</th></tr>
+</table>
+{hidden name="object_uri" value=$this->object->internal_uri_ascii()}
+{hidden name="target_class_name" value=$this->target_class_name}
+{/form}

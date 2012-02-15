@@ -83,6 +83,7 @@ function go_message($message, $params = array())
 	$permanent	= defval($params, 'permanent', false);
 
 	$type		= defval($params, 'type', NULL);
+
 	switch($type)
 	{
 		case 'success':

@@ -201,6 +201,7 @@ class base_object extends base_empty
 
 	function class_title_m() { return ec('объекты ').@get_class($this); }	// Множественный именительный
 	function class_title_tpm() { return ec('объектами ').@get_class($this); }	// Множественный Творительный Кем? Чем?
+	function class_title_dpm() { return ec('объектам ').@get_class($this); }	// Множественный дательный, Кому? Чему?
 
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 

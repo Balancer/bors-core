@@ -133,6 +133,8 @@ class bors_page extends base_page
 				$this->add_template_data_array('style', ec(file_get_contents($f)));
 			if(file_exists($f="$class_file_base.inc.js"))
 				$this->add_template_data_array('javascript', ec(file_get_contents($f)));
+			if(file_exists($f="$class_file_base.inc.post.js"))
+				$this->add_template_data_array('javascript_post', ec(file_get_contents($f)));
 		}
 
 		return parent::pre_show();

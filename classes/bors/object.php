@@ -76,7 +76,11 @@ class bors_object extends base_object
 
 	function direct_content()
 	{
+
 		$renderer = $this->renderer();
+		if(config('debug.execute_trace'))
+			debug_execute_trace("{$this->debug_title_short()} renderer = {$renderer}");
+
 		if(!$renderer)
 			bors_throw(ec('Отсутствует рендерер класса ').$this->class_name()." (renderer_class={$this->get('renderer_class')}, render_engine={$this->get('render_engine')})");
 

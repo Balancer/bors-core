@@ -136,7 +136,7 @@ class bors_lcml
 		)
 		{
 			$cache = new Cache();
-			if($cache->get('lcml-cache-v10', $text) && 0)
+			if($cache->get('lcml-cache-v10', $text))
 				return $cache->last();
 		}
 		else

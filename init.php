@@ -112,6 +112,13 @@ $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
 */
 function bors_init()
 {
+	if(config('debug.execute_trace'))
+	{
+		bors_function_include('debug/execute_trace');
+		debug_execute_trace("bors_init() begin: ".@$GLOBALS['bors_full_request_url']);
+		debug_execute_trace("\tBORS_CORE=".BORS_CORE."; BORS_SITE=".BORS_SITE);
+	}
+
 	if(config('internal_charset'))
 		ini_set('default_charset', config('internal_charset'));
 	else
@@ -139,6 +146,9 @@ function bors_init()
 	require_once('engines/bors/object_show.php');
 
 	require_once('classes/Cache.php');
+
+	if(config('debug.execute_trace'))
+		debug_execute_trace('bors_init() done.');
 }
 
 function bors_dirs($skip_config = false, $host = NULL)

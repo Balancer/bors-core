@@ -10,7 +10,7 @@ class bors_js extends base_page
 	{
 //		header("Content-type: text/javascript");
 		header('Content-type: text/javascript; charset='.$this->output_charset());
-		config_set('debug_timing', false); // Чтобы не мусорить комментарием в конце JS.
+		config_set('debug.timing', false); // Чтобы не мусорить комментарием в конце JS.
 		return false;
 	}
 

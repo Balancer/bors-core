@@ -76,6 +76,9 @@
 			-->", array('template' => object_property($obj, 'template'))) : true;
 		}
 
+		if(config('debug.execute_trace'))
+			debug_execute_trace("{$obj->debug_title_short()}->pre_show()");
+
 		$processed = $obj->pre_show();
 		if($processed === true)
 		{
@@ -113,6 +116,9 @@
 				$GLOBALS['main_uri'] = $obj->url();
 			else
 				debug_hidden_log('___222', "main uri already set to '{$GLOBALS['main_uri']}' while try set to '{$obj->url()}'");
+
+			if(config('debug.execute_trace'))
+				debug_execute_trace("{$obj->debug_title_short()}->content()");
 
 			$content = $obj->content();
 		}

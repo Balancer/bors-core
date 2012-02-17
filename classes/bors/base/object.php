@@ -438,6 +438,8 @@ defined at {$this->class_file()}<br/>
 	function debug_titled_link() { return "<a href=\"{$this->url()}\">'{$this->title()}' {$this->class_name()}({$this->id()})</a>"; }
 	function debug_title_dc() { return dc("'{$this->title()}' {$this->class_name()}({$this->id()})"); }
 
+	function debug_title_short() { return "{$this->class_name()}({$this->id()})"; }
+
 	function description() { return @$this->data['description']; }
 	function set_description($description, $db_update=true) { return $this->set('description', $description, $db_update); }
 
@@ -1273,6 +1275,9 @@ defined at {$this->class_file()}<br/>
 	{
 		if(($render_engine = $this->render_engine()))
 		{
+			if(config('debug.execute_trace'))
+				debug_execute_trace("{$this->debug_title_short()} render engine = '$render_engine' (old direct_content)");
+
 			if($render_engine == 'self')
 				$re = $this;
 			elseif(!($re = object_load($render_engine)))
@@ -1280,6 +1285,9 @@ defined at {$this->class_file()}<br/>
 
 			return $re->render($this);
 		}
+
+		if(config('debug.execute_trace'))
+			debug_execute_trace("{$this->debug_title_short()} old smarty render: template_assign_bors_object()  (old direct_content)");
 
 	    require_once('engines/smarty/bors.php');
 		$this->template_data_fill();
@@ -1369,7 +1377,7 @@ defined at {$this->class_file()}<br/>
 		if($use_static && $file && $fe && !$recreate)
 			return file_get_contents($this->static_file());
 
-		if($use_static 
+		if($use_static
 			&& !$fs 
 			&& $this->use_temporary_static_file()
 			&& config('temporary_file_contents')
@@ -1385,6 +1393,9 @@ defined at {$this->class_file()}<br/>
 				$this->output_charset(),
 			), $this->cs_u2i(config('temporary_file_contents')))), 120);
 
+		if(config('debug.execute_trace'))
+			debug_execute_trace("{$this->debug_title_short()}->direct_content()");
+
 		$content = $this->direct_content();
 
 		if($this->internal_charset() != $this->output_charset())
@@ -1392,7 +1403,7 @@ defined at {$this->class_file()}<br/>
 		else
 			$output_content = $content;
 
-		if(empty($content))
+		if(empty($content) && $use_static)
 		{
 			cache_static::drop($this);
 			return '';

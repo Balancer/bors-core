@@ -12,7 +12,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 	if(!($out_dir = config('debug_hidden_log_dir')))
 		return;
 
-	if(empty($args['dont_show_user']))
+	if($trace && empty($args['dont_show_user']))
 		$user = object_property(bors(), 'user');
 
 	if(popval($args, 'notime'))
@@ -56,6 +56,6 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 	if(!empty($args['append']))
 		$out .= "\n".$args['append'];
 
-	@file_put_contents($file = "{$out_dir}/{$type}.log", $out, FILE_APPEND);
+	file_put_contents($file = "{$out_dir}/{$type}.log", $out, FILE_APPEND);
 	@chmod($file, 0666);
 }

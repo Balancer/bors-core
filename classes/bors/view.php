@@ -7,7 +7,7 @@
 class bors_view extends bors_page
 {
 	function can_be_empty() { return false; }
-	function loaded() { return !!$this->target(); }
+	function loaded() { return (bool) $this->target(); }
 
 	// Класс отображаемого объекта
 	function main_class()

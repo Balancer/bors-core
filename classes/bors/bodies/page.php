@@ -23,6 +23,9 @@ class bors_bodies_page extends base_null
 			$object->local_template_data_array()
 		);
 
+		if(config('debug.execute_trace'))
+			debug_execute_trace("{$object->body_template_class()}::fetch()");
+
 		return call_user_func(
 			array($object->body_template_class(), 'fetch'),
 			$body_template,

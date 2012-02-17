@@ -11,18 +11,34 @@ class bors_global extends base_empty
 	{
 		if($this->__user === false)
 		{
+			// Блокируем реентерабельность, иначе на ошибках легко словить бесконечный цикл.
+			$this->__user = NULL;
+
+			if(config('debug.execute_trace'))
+				debug_execute_trace("bors()->user(): first load");
+
 			$uc = config('user_class');
 			if(!$uc)
 			{
-				bors_function_include('debug/hidden_log');
-				debug_hidden_log('__critical', 'Not defined user_class', true, array('dont_show_user' => true));
+				if(!config('user_class_skip'))
+				{
+					bors_function_include('debug/hidden_log');
+					debug_hidden_log('__critical', 'Not defined user_class', true, array('dont_show_user' => true));
+    			}
+
 				return NULL;
 			}
+
+			if(config('debug.execute_trace'))
+				debug_execute_trace("bors()->user(): load $uc(-1)");
 
 			$this->__user = object_load($uc, -1);
 
 			if($this->__user && $this->__user->get('last_visit_time') < time()-300) // не стоит обновляться чаще раза в 5 минут
 				$this->__user->set_last_visit_time(time()); // global $now тут не прокатит, т.к. может вызываться до инициализации конфигов.
+
+			if(config('debug.execute_trace'))
+				debug_execute_trace("bors()->user(): done");
 		}
 
 		return $this->__user;

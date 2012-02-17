@@ -66,13 +66,13 @@ class bors_link extends base_object_db
 
 	function set_from($obj_from)
 	{
-		$this->set_from_class($obj_from->class_id());
+		$this->set_from_class($obj_from->extends_class_id());
 		$this->set_from_id   ($obj_from->id());
 	}
 
 	function set_target($target)
 	{
-		$this->set_target_class_id ($target->class_id());
+		$this->set_target_class_id ($target->extends_class_id());
 		$this->set_target_object_id($target->id());
 
 		$this->set_target_create_time($target->create_time(true));
@@ -173,7 +173,7 @@ class bors_link extends base_object_db
 
 		if(is_object($object))
 		{
-			$params['from_class'] = $object->class_id();
+			$params['from_class'] = $object->extends_class_id();
 			$params['from_id']    = $object->id();
 		}
 		else
@@ -183,7 +183,7 @@ class bors_link extends base_object_db
 
 		if(!empty($params['to']))
 		{
-			$params['to_class'] = $params['to']->class_id();
+			$params['to_class'] = $params['to']->extends_class_id();
 			$params['to_id']    = $params['to']->id();
 			unset($params['to']);
 		}
@@ -200,7 +200,7 @@ class bors_link extends base_object_db
 
 		if(is_object($object))
 		{
-			$params['from_class'] = $object->class_id();
+			$params['from_class'] = $object->extends_class_id();
 			$params['from_id']    = $object->id();
 		}
 		else
@@ -210,7 +210,7 @@ class bors_link extends base_object_db
 
 		if(!empty($params['to']))
 		{
-			$params['to_class'] = $params['to']->class_id();
+			$params['to_class'] = $params['to']->extends_class_id();
 			$params['to_id']    = $params['to']->id();
 			unset($params['to']);
 		}
@@ -292,7 +292,7 @@ class bors_link extends base_object_db
 
 		self::_target_class_parse($where);
 
-		$where['from_class'] = $object->class_id();
+		$where['from_class'] = $object->extends_class_id();
 		$where['from_id'] = $object->id();
 		$where[] = '(type_id IS NULL OR type_id<>4)';
 
@@ -302,7 +302,7 @@ class bors_link extends base_object_db
 	static function drop_auto($object)
 	{
 		$dbh = new driver_mysql(config('main_bors_db'));
-		$tc = $object->class_id();
+		$tc = $object->extends_class_id();
 		$ti = $object->id();
 		$dbh->delete(self::main_table(), array("owner_id < 0 AND ((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
 	}
@@ -313,7 +313,7 @@ class bors_link extends base_object_db
 			return;
 
 		$dbh = new driver_mysql(config('main_bors_db'));
-		$tc = $object->class_id();
+		$tc = $object->extends_class_id();
 		$ti = $object->id();
 		$dbh->delete(self::main_table(), array("((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
 	}
@@ -324,10 +324,10 @@ class bors_link extends base_object_db
 			return;
 
 		if(is_object($where))
-			$where = array('target_class' => $where->class_id(), 'target_id' => $where->id());
+			$where = array('target_class' => $where->extends_class_id(), 'target_id' => $where->id());
 
 		$dbh = new driver_mysql(config('main_bors_db'));
-		$fc = $object->class_id();
+		$fc = $object->extends_class_id();
 		$fi = $object->id();
 
 		$tc = class_name_to_id($where['target_class']);

@@ -3,7 +3,17 @@
 class bors_file_type extends bors_list
 {
 	function file() { return $this->id(); }
-	function mime() { return is_object($this->file()) ? $this->file()->mime() : @mime_content_type($this->file()); }
+	function mime()
+	{
+		if(is_object($this->file()))
+			return $this->file()->mime();
+
+		if(function_exists('mime_content_type'))
+			return @mime_content_type($this->file());
+
+		return NULL;
+	}
+
 	function extension()
 	{
 		if(is_object($f = $this->file()))

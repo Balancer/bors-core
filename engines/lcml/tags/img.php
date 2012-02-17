@@ -207,7 +207,7 @@ function lt_img($params)
 				@list($img_w, $img_h) = getimagesize($uri);
 
 				if(!intval($width) || !intval($height))
-					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get WxH '$img_ico_uri']";
+					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get icon's size]<!-- {$img_ico_uri} -->";
 
 				if(empty($params['description']))
 					$params['description'] = "";

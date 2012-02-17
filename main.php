@@ -32,6 +32,7 @@ if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 {
 	@file_put_contents($file = config('debug_hidden_log_dir')."/main-php-referers.log", @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
+//	$_SERVER['REQUEST_URI'] = '/';
 	exit("Do not use direct bors-call!\n");
 }
 
@@ -174,6 +175,9 @@ $GLOBALS['bors_full_request_url'] = $uri;
 $res = false;
 try
 {
+	if(config('debug.execute_trace'))
+		debug_execute_trace("bors_load_uri('$uri');");
+
 	if($object = bors_load_uri($uri))
 	{
 		if(config('bors_version_show'))
@@ -181,10 +185,20 @@ try
 
 		// Новый метод вывода, полностью на самом объекте
 		if(method_exists($object, 'show'))
+		{
+			if(config('debug.execute_trace'))
+				debug_execute_trace("{$object}->show()");
+
 			$res = $object->show();
+		}
 
 		if(!$res)	// Если новый метод не обработан, то выводим как раньше.
+		{
+			if(config('debug.execute_trace'))
+				debug_execute_trace("bors_object_show($object)");
+
 			$res = bors_object_show($object);
+		}
 	}
 }
 catch(Exception $e)
@@ -216,6 +230,9 @@ catch(Exception $e)
 
 	$res = true;
 }
+
+if(config('debug.execute_trace'))
+	debug_execute_trace("process done. Return type is ".gettype($res)."; Check post access log...");
 
 /**********************************************************************************************************/
 
@@ -258,6 +275,9 @@ catch(Exception $e)
 	$error = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка сохранения</div>"));
 }
 
+if(config('debug.execute_trace'))
+	debug_execute_trace("process done. Check work time...");
+
 // Общее время работы
 $time = microtime(true) - $GLOBALS['stat']['start_microtime'];
 
@@ -269,7 +289,7 @@ if($time > config('timing_limit'))
 }
 
 // Если показываем отладочную инфу, то описываем её в конец выводимой страницы комментарием.
-if(config('debug_timing') && is_string($res))
+if(config('debug.timing') && is_string($res))
 {
 	$deb = "<!--\n=== debug-info ===\n"
 		."created = ".date('r')."\n";

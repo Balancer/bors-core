@@ -43,7 +43,7 @@ function bors_form_save(&$obj)
 		if(!empty($_GET['saver_prepare_classes']))
 		{
 			foreach(explode(',', $_GET['saver_prepare_classes']) as $cn)
-				if(true === $cn::saver_prepare($_GET))
+				if(true === call_user_func(array($cn, 'saver_prepare'), $_GET))
 					return true;
 		}
 

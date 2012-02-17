@@ -28,11 +28,14 @@ class bors_templates_smarty2 extends bors_templates_abstract
 
 		$smarty->cache_dir   = config('cache_dir').'/smarty2-cache/';
 
-		if(!@file_exists($smarty->compile_dir))
+		if(!file_exists($smarty->compile_dir))
 		{
 			@mkpath($smarty->compile_dir, 0777);
 			@chmod($smarty->compile_dir, 0777);
 		}
+
+		if(!file_exists($smarty->compile_dir))
+			bors_throw("Can't make compile dir '{$smarty->compile_dir}'");
 
 		if(!@file_exists($smarty->cache_dir))
 		{

@@ -19,7 +19,7 @@ function debug_exit($message)
 	if(bors()->main_object())
 		$message .= "<br/>\nmain_object->class_file=".bors()->main_object()->class_file();
 
-	if(config('debug_timing'))
+	if(config('debug.timing'))
 	{
 		// Общее время работы
 		$time = microtime(true) - $GLOBALS['stat']['start_microtime'];

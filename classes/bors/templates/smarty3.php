@@ -84,8 +84,11 @@ class bors_templates_smarty3 extends bors_template
 		if(!$smarty->templateExists($template))
 			$template = self::find_template($template, @$data['this']);
 
-
 //		$smarty->debugging = true;
+
+		if(config('debug.execute_trace'))
+			debug_execute_trace("smarty3->fetch()");
+
 		$smarty->error_reporting = E_ALL & ~E_NOTICE;
 		return $smarty->fetch($template);
 	}

@@ -42,7 +42,7 @@ class bors_forms_saver extends base_empty
 		if(!empty($data['saver_prepare_classes']))
 		{
 			foreach(explode(',', $data['saver_prepare_classes']) as $cn)
-				if(true === $cn::saver_prepare($data))
+				if(true === call_user_func(array($cn, 'saver_prepare'), $data))
 					return true;
 		}
 
@@ -182,7 +182,7 @@ class bors_forms_saver extends base_empty
 
 			if(preg_match('/^\w+$/', $f))
 			{
-				// Это простое указание имени файла. 
+				// Это простое указание имени файла.
 				// Обработчик загрузки целиком на совести самого объекта
 				// Используются методы upload_<file_name>_file($file_data, $object_data)
 

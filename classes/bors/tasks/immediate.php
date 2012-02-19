@@ -6,6 +6,6 @@ class bors_tasks_immediate
 {
 	function add($worker_class_name, $object = NULL)
 	{
-		$worker_class_name::execute($object);
+		call_user_func(array($worker_class_name, 'execute'), $object);
 	}
 }

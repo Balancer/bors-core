@@ -29,7 +29,7 @@ class bors_admin_files_append extends base_object
 			$sort_order = intval($get['sort_orders'][$idx]);
 			$file_class = defval($get, 'file_class', 'bors_file');
 
-			$file = $file_class::upload(array(
+			$file = call_user_func(array($file_class, 'upload'), array(
 				'tmp_name' => $tmp_file,
 				'name' => $data['name'][$idx],
 				'type' => $data['type'][$idx],

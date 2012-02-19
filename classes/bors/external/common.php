@@ -146,6 +146,6 @@ if(config('is_developer')) { exit($img); }
 		else
 			$parser = 'bors_external_common';
 
-		return $parser::content_extract($url, $limit);
+		return call_user_func(array($parser, 'content_extract'), $url, $limit);
 	}
 }

@@ -148,7 +148,7 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		{
 			$x = $f['name'];
 
-			if($load = $db_driver_name::load_sql_function($f['type']))
+			if($load = call_user_func(array($db_driver_name, 'load_sql_function'), $f['type']))
 			{
 				$x = sprintf($load, $f['name'])." AS {$f['property']}";
 			}
@@ -188,7 +188,7 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		{
 			$x = $f['name'];
 
-			if($save = $db_driver_name::save_sql_function($f['type']))
+			if($save = call_user_func(array($db_driver_name, 'save_sql_function'), $f['type']))
 				$direct_sql = sprintf($save, $object->get($f['property']));
 			else
 				$direct_sql = false;

@@ -30,6 +30,7 @@ class bors_external_fresher extends bors_object
 				$tags[] = $tag;
 
 		foreach(array(
+			'//style',
 			'//div[@class="more link"]',
 			'//p[@class="link sects"]',
 			'//div[@class="tip conttip"]/h2/span',
@@ -52,7 +53,8 @@ class bors_external_fresher extends bors_object
 			$bb_code = preg_replace('!\[html_video.+?\[/html_video\]!s', '', $bb_code);
 
 		$len = bors_strlen($bb_code);
-		$bb_code = bors_close_bbtags(clause_truncate_ceil($bb_code, $limit));
+		$bb_code = clause_truncate_ceil($bb_code, $limit);
+		$bb_code = bors_close_bbtags($bb_code);
 		if($len >= $limit)
 //			$bb_code .= "\n\n[url={$url}]".ec('… дальше »»»[/url]');
 			$bb_code .= "\n\n".ec('… дальше »»»');

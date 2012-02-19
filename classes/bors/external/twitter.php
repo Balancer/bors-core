@@ -106,15 +106,16 @@ class bors_external_twitter extends bors_object
 		$text = bors_external_youtube::parse_links($text);
 //		if(config('is_developer')) { var_dump($text); exit(); }
 
-		if(preg_match('!(http://(www\.)?fresher\.ru/\d+/\d+/\d+/[^/]+/) \((.+)\)!', $text, $m))
+		if(preg_match('!(http://(www\.)?fresher\.ru/\d+/\d+/\d+/[^/]+/)(\s|$)!m', $text, $m))
 		{
 			// Это ссылка на fresher.ru
 			$content = bors_lib_http::get_cached($m[1], 3600);
-			$result = bors_external_fresher::parse($content, $m[1]);
+			$result = bors_external_fresher::parse($content, 500);
 			if(!$result)
 				return NULL;
 
 			$result['bb_code'] = "[quote]{$result['bb_code']}\n\n// ".$m[1]."[/quote]";
+			$result['tags'] = @array_merge(@$result['tags'], $tags);
 			return $result;
 		}
 
@@ -127,6 +128,7 @@ class bors_external_twitter extends bors_object
 			if(!$result)
 				return NULL;
 
+			$result['tags'] = @array_merge(@$result['tags'], $tags);
 			$result['bb_code'] = "[quote]{$result['bb_code']}\n\n// ".$m[1]."[/quote]";
 			return $result;
 		}

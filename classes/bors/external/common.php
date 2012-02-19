@@ -82,6 +82,7 @@ if(config('is_developer')) { exit($img); }
 
 			foreach(array(
 				'//script',
+				'//style',
 			) as $query)
 				foreach($xpath->query($query) as $node)
 					$node->parentNode->removeChild($node);

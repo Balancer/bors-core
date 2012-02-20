@@ -45,7 +45,11 @@ class page_fs_xml extends base_page
 		return $this->_storage;
 	}
 
-	function delete() { $this->storage()->delete($this); }
+	function delete()
+	{
+		$this->storage()->delete($this);
+		return parent::delete();
+	}
 
 	function new_instance()
 	{

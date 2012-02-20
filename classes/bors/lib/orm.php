@@ -229,7 +229,8 @@ class bors_lib_orm
 				if($class_source = file_get_contents($class_file))
 					if(preg_match_all("!^/\*\*(.+?)^\*/!ms", $class_source, $match, PREG_SET_ORDER))
 						foreach($match as $m)
-							$object->attr['__yaml_notations'] = array_merge($object->attr['__yaml_notations'], bors_data_yaml::parse(trim($m[1])));
+							if(is_array($data = bors_data_yaml::parse(trim($m[1]))))
+								$object->attr['__yaml_notations'] = array_merge($object->attr['__yaml_notations'], $data);
 		}
 
 		if($properties = @$object->attr['__yaml_notations']['properties'])

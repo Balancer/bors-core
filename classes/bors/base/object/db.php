@@ -102,6 +102,8 @@ class base_object_db extends bors_object
 		if(method_exists($this, 'on_delete_post'))
 			if($this->on_delete_post() === true)
 				return true;
+
+		return parent::delete();
 	}
 
 	static function objects_array($where) { return objects_array($where); }

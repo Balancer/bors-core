@@ -118,6 +118,8 @@ class base_page_db extends base_page
 		if(method_exists($this, 'on_delete_post'))
 			if($this->on_delete_post() === true)
 				return true;
+
+		return parent::delete();
 	}
 
 	function compiled_source() { return lcml($this->source()); }

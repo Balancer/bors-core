@@ -10,12 +10,12 @@ function bors_object_caches_drop()
 
 function &load_cached_object($class_name, $id, $args, &$found=0)
 {
-//		$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()] = &$object;
 	$obj = NULL;
 
 	if(is_object($id) || @$args['no_load_cache'])
 		return $obj;
 
+//	$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()]
 	if(!empty($GLOBALS['bors_data']['cached_objects4'][$class_name][$id]))
 	{
 		$obj = &$GLOBALS['bors_data']['cached_objects4'][$class_name][$id];
@@ -70,7 +70,7 @@ function delete_cached_object_by_id($class_name, $object_id)
 	unset($GLOBALS['bors_data']['cached_objects4'][$class_name][$object_id]);
 }
 
-function save_cached_object(&$object, $delete = false, $use_memcache = true)
+function save_cached_object($object, $delete = false, $use_memcache = true)
 {
 	if(!method_exists($object, 'id') || is_object($object->id()))
 		return;
@@ -99,7 +99,7 @@ function save_cached_object(&$object, $delete = false, $use_memcache = true)
 	if($delete)
 		unset($GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()]);
 	else
-		$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()] = &$object;
+		$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()] = $object;
 }
 
 function class_internal_uri_load($uri)
@@ -545,9 +545,8 @@ function object_init($class_name, $object_id, $args = array())
 	}
 	elseif(empty($args['no_load_cache']))
 	{
-//		echo "load_cached_object($class_name, $object_id, $args, $found); <br/>\n";
 		$obj = &load_cached_object($class_name, $object_id, $args, $found);
-//		echo "cache loaded: $obj<br/>\n";
+
 		if($obj && ($obj->id() != $object_id))
 		{
 			$found = 0;

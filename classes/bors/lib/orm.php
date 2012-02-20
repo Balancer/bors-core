@@ -218,4 +218,30 @@ class bors_lib_orm
 
 		return NULL;
 	}
+
+	static function get_yaml_notation($object, $name)
+	{
+		// Парсим файл класса на предмет YAML-нотаций
+		if(is_null(@$object->attr['__yaml_notations']))
+		{
+			$object->attr['__yaml_notations'] = array();
+			if($class_file = $object->class_file())
+				if($class_source = file_get_contents($class_file))
+					if(preg_match_all("!^/\*\*(.+?)^\*/!ms", $class_source, $match, PREG_SET_ORDER))
+						foreach($match as $m)
+							$object->attr['__yaml_notations'] = array_merge($object->attr['__yaml_notations'], bors_data_yaml::parse(trim($m[1])));
+		}
+
+		if($properties = @$object->attr['__yaml_notations']['properties'])
+		{
+			foreach($properties as $desc)
+			{
+				// default_image2 = aviaport_image(default_image_id)
+				if(preg_match('!^(\w+)\s*=\s*(\w+)\((\w+)\)$!', trim($desc), $m) && ($name == $m[1]))
+					return $object->attr[$name] = bors_load($m[2], $object->get($m[3]));
+			}
+		}
+
+		return false;
+	}
 }

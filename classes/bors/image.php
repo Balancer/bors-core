@@ -336,7 +336,8 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 	function parent_object() { return object_load($this->parent_class_id(), $this->parent_object_id()); }
 
-	function can_cached() { return false; }
+//	WHY?
+//	function can_cached() { return false; }
 
 	function setdefaultfor_url($obj)  { return "/admin/tools/set-default/?object={$obj->internal_uri()}&image={$this->internal_uri()}"; }
 	function imaged_set_default_url($object, $title = NULL)

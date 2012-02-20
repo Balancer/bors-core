@@ -5,7 +5,7 @@ require_once 'inc/filesystem.php';
 require_once 'inc/processes.php';
 require_once 'inc/debug.php';
 
-function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
+function image_file_scale(string $file_in, string &$file_out, int $width, int $height, string $opts = NULL)
 {
 	while(!bors_thread_lock('image_file_scale', 30, "{$file_in} => {$file_out} [{$width}x{$height}($opts)]"))
 		usleep(rand(1000, 5000));
@@ -34,7 +34,7 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = '')
 
 	if(!$data || !$data[0])
 	{
-		config_set('bors-image-lasterror', ec('Не могу определить размер файла'));
+		config_set('bors-image-lasterror', ec('Не могу определить размеры изображения'));
 		debug_hidden_log('image-error', "Can't get width for image {$file_in} (tr resize to {$file_out}($width, $height, $opts); WxH = ".@$data[0].'x'.@$data[1]);
 		bors_thread_unlock('image_file_scale');
 		return false;
@@ -74,6 +74,7 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 	{
 		if(!$width)
 			$width = $height * 100 + 64;
+
 		if(!$height)
 			$height = $width * 100 + 64;
 
@@ -88,27 +89,56 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 
 		if(!$width)
 			$width = $height * $img_w / $img_h;
+
 		if(!$height)
 			$height = $width * $img_h / $img_w;
 
 		$scale_up = in_array('up', $opts);
 		$crop = in_array('crop', $opts);
+		$fillpad = in_array('fillpad', $opts);
 
 		$scale_down = ($height && $img_h >= $height) || ($width && $img_w >= $width);
 
 		if($scale_up || $scale_down) // ресайз обязателен
 		{
-			$upw = $img_w*$height/$img_h;
-			if($upw > $width)
-				$uph = $height;
-			else
+			// Если заполняем картинку, то до полного размера
+			if($fillpad)
 			{
 				$upw = $width;
-				$uph = $img_h*$width/$img_w;
+				$uph = $height;
+			}
+			else
+			{
+				$upw = $img_w*$height/$img_h;
+				if($upw > $width)
+					$uph = $height;
+				else
+				{
+					$upw = $width;
+					$uph = $img_h*$width/$img_w;
+				}
 			}
 
-			$img->resize($upw, $uph);
-			if($upw > $width || $uph > $height)
+			if($fillpad)
+				$img->fit(round(0.95*$upw), round(0.95*$uph));
+			else
+				$img->resize($upw, $uph);
+
+			$given_w = $img->getNewImageWidth();
+			$given_h = $img->getNewImageHeight();
+
+			if($fillpad && ($given_w < $upw || $given_h < $uph))
+			{
+				//TODO: Жёсткий хардкод GD1. Даже не представляю, как менять на нативный вариант
+				$new_img = ImageCreate($upw, $uph);
+				ImageCopyResized($new_img, $img->imageHandle, round(($upw - $given_w)/2), round(($uph - $given_h)/2), 0, 0, $given_w, $given_h, $given_w, $given_h);
+				$img->old_image = $img->imageHandle;
+				$img->imageHandle = $new_img;
+				$img->resized = true;
+				$img->new_x = $upw;
+				$img->new_y = $uph;
+			}
+			elseif($upw > $width || $uph > $height)
 				$img->crop($width, $height, ($upw-$width)/2, ($uph-$height)/2);
 
 //			bors_exit("img={$img_w}x{$img_h}, need={$width}x{$height}, up=$scale_up, crop=$crop, upWxH={$upw}x{$uph}");

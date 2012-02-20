@@ -14,6 +14,9 @@ class bors_view extends bors_page
 	{
 		bors_function_include('natural/bors_unplural');
 
+		if($this->class_name() == 'bors_view')
+			return $this->arg('class_name');
+
 		$main_class = preg_replace('/_view$/', '', $this->extends_class_name());
 		if(class_include($main_class))
 			return $main_class;

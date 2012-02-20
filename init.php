@@ -472,3 +472,18 @@ function bors_config_ini($file)
 				$GLOBALS['cms']['config'][$section_name.'.'.$key] = $value;
 	}
 }
+
+function bors_use($uses)
+{
+	foreach(explode(',', $uses) as $u)
+	{
+		$u = trim($u);
+		if(preg_match('/\.css$/', $u))
+		{
+			template_css($u);
+			continue;
+		}
+
+		bors_throw("Unknown bors_use('$u')");
+	}
+}

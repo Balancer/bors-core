@@ -5,7 +5,7 @@ class base_object extends base_empty
 	var $data = array();
 
 	function attr_preset() { return array(
-		'title' => $this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
+		'title' => $this->class_title().' '.$this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
 		'config_class' => config('config_class'),
 		'access_engine' => '',
 		'url_engine' => 'url_calling2',
@@ -319,6 +319,9 @@ class base_object extends base_empty
 		// Проверяем нет ли значения по умолчанию — это вместо бывшего attr
 		if(@array_key_exists($method, $this->defaults))
 			return $this->defaults[$method];
+
+		if(bors_lib_orm::get_yaml_notation($this, $name))
+			return $this->attr[$name];
 
 		if($this->strict_auto_fields_check())
 		{
@@ -1485,7 +1488,7 @@ defined at {$this->class_file()}<br/>
 	function __toString()
 	{
 		if($tt = $this->title_true())
-			return $tt;
+			return $this->class_title().ec(' «').$tt.ec('»').(is_numeric($this->id()) ? "({$this->id()})" : '');
 
 		return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); 
 	}

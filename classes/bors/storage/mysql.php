@@ -249,6 +249,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			self::post_functions_do($object, $post_functions);
 
 		$object->set_loaded(true);
+		save_cached_object($object);
 
 		return true;
 	}
@@ -316,6 +317,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$objects[$object->$by_id()] = $object;
 			else
 				$objects[] = $object;
+
+			save_cached_object($object);
 
 			$object = new $class_name(NULL);
 		}

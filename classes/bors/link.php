@@ -66,6 +66,9 @@ class bors_link extends base_object_db
 
 	function set_from($obj_from)
 	{
+		if(!$obj_from)
+			return;
+
 		$this->set_from_class($obj_from->extends_class_id());
 		$this->set_from_id   ($obj_from->id());
 	}
@@ -86,6 +89,9 @@ class bors_link extends base_object_db
 
 	static function link_objects($obj1, $obj2, $params = array())
 	{
+		if(!$obj1 || !$obj2)
+			return;
+
 		self::link_object_to($obj1, $obj2, $params);
 		self::link_object_to($obj2, $obj1, $params);
 	}
@@ -181,10 +187,18 @@ class bors_link extends base_object_db
 			$params['from_class'] = class_name_to_id($object);
 		}
 
-		if(!empty($params['to']))
+		if($to = @$params['to'])
 		{
-			$params['to_class'] = $params['to']->extends_class_id();
-			$params['to_id']    = $params['to']->id();
+			if(is_object($to))
+			{
+				$params['to_class'] = $to->extends_class_id();
+				$params['to_id']    = $to->id();
+			}
+			elseif($to)
+			{
+				$params['to_class'] = class_name_to_id($to);
+			}
+
 			unset($params['to']);
 		}
 
@@ -203,15 +217,23 @@ class bors_link extends base_object_db
 			$params['from_class'] = $object->extends_class_id();
 			$params['from_id']    = $object->id();
 		}
-		else
+		elseif($object)
 		{
 			$params['from_class'] = class_name_to_id($object);
 		}
 
-		if(!empty($params['to']))
+		if($to = @$params['to'])
 		{
-			$params['to_class'] = $params['to']->extends_class_id();
-			$params['to_id']    = $params['to']->id();
+			if(is_object($to))
+			{
+				$params['to_class'] = $to->extends_class_id();
+				$params['to_id']    = $to->id();
+			}
+			elseif($to)
+			{
+				$params['to_class'] = class_name_to_id($to);
+			}
+
 			unset($params['to']);
 		}
 
@@ -228,10 +250,10 @@ class bors_link extends base_object_db
 		$links = bors_link::links($object, $params);
 
 		foreach($links as $link)
-			$objs[$link->target_class_id()][$link->target_object_id()] = 1;
+			$objs[$link->target_class_id()][$link->target_object_id()] = true;
 
 		foreach($objs as $class_id => $ids)
-			objects_array($class_id, array('id IN' => $ids));
+			objects_array($class_id, array('id IN' => array_keys($ids)));
 
 		foreach($links as $link)
 		{

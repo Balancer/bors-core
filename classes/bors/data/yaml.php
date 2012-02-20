@@ -16,17 +16,7 @@ class bors_data_yaml extends bors_data_meta
 
 		extract($data);
 
-		// yaml_parse не понимает табы в начале строк. Меняем все табы на 4 пробела
-		$content = str_replace("\t", '    ', $content);
-
-		if(function_exists('yaml_parse'))
-			$data = yaml_parse($content);
-		else
-		{
-			require_once '/usr/share/php/SymfonyComponents/YAML/sfYamlParser.php';
-			$yaml = new sfYamlParser();
-			$data = $yaml->parse($content);
-		}
+		$data = self::parse($content);
 
 		return array(
 			'data' => $data,
@@ -35,5 +25,21 @@ class bors_data_yaml extends bors_data_meta
 				'filemtime' => $mtime,
 			)
 		);
+	}
+
+	static function parse($string)
+	{
+		$string = str_replace("\t", '    ', $string);
+
+		if(function_exists('yaml_parse'))
+			$data = yaml_parse($string);
+		else
+		{
+			require_once '/usr/share/php/SymfonyComponents/YAML/sfYamlParser.php';
+			$yaml = new sfYamlParser();
+			$data = $yaml->parse($string);
+		}
+
+		return $data;
 	}
 }

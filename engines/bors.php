@@ -330,7 +330,15 @@ function bors_eq($object1, $object2)
 }
 
 function bors_count($class_name, $where) { return objects_count($class_name, $where); }
-function bors_load($class_name, $id = NULL) { return object_load($class_name, $id); }
+
+function bors_load($class_name, $id = NULL)
+{
+	$object = object_load($class_name, $id);
+	if(!$object && config('orm.is_strict') && !class_include($class_name))
+		bors_throw("Not found class '{$class_name}' for load with id='{$id}'");
+	return $object;
+}
+
 function bors_load_ex($class_name, $id, $attrs)
 {
 	if(!array_key_exists('no_load_cache', $attrs))

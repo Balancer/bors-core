@@ -75,6 +75,9 @@ class base_empty extends base_null
 		if(@array_key_exists($name, $this->defaults))
 			return $this->defaults[$name];
 
+		if(bors_lib_orm::get_yaml_notation($this, $name))
+			return $this->attr[$name];
+
 		return $default;
 	}
 

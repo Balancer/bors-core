@@ -27,7 +27,7 @@ class bors_data_yaml extends bors_data_meta
 		);
 	}
 
-	static function parse($string)
+	static function parse($string, $ignore_errors = false)
 	{
 		$string = str_replace("\t", '    ', $string);
 
@@ -37,7 +37,14 @@ class bors_data_yaml extends bors_data_meta
 		{
 			require_once '/usr/share/php/SymfonyComponents/YAML/sfYamlParser.php';
 			$yaml = new sfYamlParser();
-			$data = $yaml->parse($string);
+			try {
+				$data = $yaml->parse($string);
+			} catch(Exception $e)
+			{
+				$data = NULL;
+				if(!$ignore_errors)
+					bors_throw("Yaml parse error for string '$string'");
+			}
 		}
 
 		return $data;

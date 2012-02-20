@@ -286,10 +286,13 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 	function delete()
 	{
 		@unlink($this->file_name_with_path());
+
 		if($this->full_file_name())
 			@unlink($this->full_file_name());
+
 		@rmdir($this->image_dir());
-		parent::delete();
+
+		return parent::delete();
 	}
 
 	function class_title() { return ec('Изображение'); }

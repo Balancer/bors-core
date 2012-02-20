@@ -24,7 +24,11 @@ class page_fs_separate extends base_page
 
 //	function dont_check_fields() { return array_merge(parent::dont_check_fields, array('cr_type')); }
 
-	function delete() { $this->storage()->delete($this); }
+	function delete()
+	{
+		$this->storage()->delete($this);
+		return parent::delete();
+	}
 
 	function children()
 	{

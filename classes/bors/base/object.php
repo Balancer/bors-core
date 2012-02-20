@@ -1562,4 +1562,9 @@ defined at {$this->class_file()}<br/>
 		return $this->__setc(object_load(config('logs.default_logger_class', 'bors_log_stub'), $this));
 	}
 
+	function delete()
+	{
+		delete_cached_object($this);
+		return false;
+	}
 }

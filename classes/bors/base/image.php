@@ -55,7 +55,8 @@ class base_image extends base_object
 	{
 		@unlink($this->file_name_with_path());
 		@rmdir($this->image_dir());
-		parent::delete();
+
+		return parent::delete();
 	}
 
 	function class_title() { return ec('изображение'); }

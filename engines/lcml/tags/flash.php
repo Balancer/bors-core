@@ -1,11 +1,39 @@
 <?php
-    function lp_flash($url,$params)
-    {
-        list($width,$height) = explode("x",(isset($params['size'])?$params['size']:"")."x");
-        if(!$width)  $width=468;
-        if(!$height) $height=351;
-        return "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=$width height=$height><param name=movie value=$url><param name=play value=true><param name=loop value=true><param name=quality value=high><embed src=$url width=$width height=$height play=true loop=true quality=high></embed></object>";
-    }
+
+function lp_flash($url,$params)
+{
+	list($width,$height) = explode("x",(isset($params['size'])?$params['size']:"")."x");
+	if(!$width)  $width=468;
+	if(!$height) $height=351;
+	return "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=$width height=$height><param name=movie value=$url><param name=play value=true><param name=loop value=true><param name=quality value=high><embed src=$url width=$width height=$height play=true loop=true quality=high></embed></object>";
+}
+
+function lt_flash($params)
+{
+	extract($params);
+	// [flash=470,353,http://video.rutube.ru/a1c1049be72c1745978c8352140027b3]
+	if(preg_match('!(\d+),(\d+),(\S+)!', $url, $m))
+	{
+		$width = $m[1];
+		$height = $m[2];
+		$url = $m[3];
+	}
+	else
+		return $url;
+
+	if($width && $height && $width < 640)
+	{
+		$height = round(640*$height/$width);
+		$width = 640;
+	}
+
+	return "<OBJECT width=\"$width\" height=\"$height\">"
+		."<PARAM name=\"movie\" value=\"{$url}\"></PARAM>"
+		."<PARAM name=\"wmode\" value=\"window\"></PARAM>"
+		."<PARAM name=\"allowFullScreen\" value=\"true\"></PARAM>"
+		."<EMBED src=\"$url\" type=\"application/x-shockwave-flash\" wmode=\"window\" width=\"$width\" height=\"$height\" allowFullScreen=\"true\" ></EMBED>"
+		."</OBJECT>";
+}
 
 	function lt_param(&$params)
 	{

@@ -1,10 +1,10 @@
 <?php
 
-class base_empty_unittest extends PHPUnit_Framework_TestCase
+class bors_object_simple_unittest extends PHPUnit_Framework_TestCase
 {
-    public function test_base_empty()
+    public function test()
     {
-		$x = object_load('bors_empty', 12345);
+		$x = object_load('bors_object_simple', 12345);
         $this->assertNotNull($x);
 
 		// Проверка ID

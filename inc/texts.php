@@ -4,25 +4,25 @@ require_once('strings.php');
 
 	function strip_text($text, $len=192, $more_text = '&#133;', $microstyle = false)
 	{
-    	$text=to_one_string($text);
+		$text=to_one_string($text);
 
-	    while(preg_match("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is",$text))
-    	    $text=preg_replace("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is","$1",$text);
+		while(preg_match("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is",$text))
+			$text=preg_replace("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is","$1",$text);
 
-    // 
-	    $text=preg_replace("!(^|<p>|<br>|<br />)+(<font[^>]+>)(<p>)?[^\s<]*>.+?(<br />|<br>|<p>|$)+!i","",$text);
-    	$text=preg_replace("!(^|<p>|<br>|<br />)+(<font[^>]+>)(<a [^>]+>)?[^\s<]*</a>>.+?(<br />|<br>|<p>|$)+!i","",$text);
-	    $text=preg_replace("!<font size=\-2 color=#\d\d\d\d\d\d><b>.+?</b>>.+?</font>(<br>)+!is","",$text);
+	// 
+		$text=preg_replace("!(^|<p>|<br>|<br />)+(<font[^>]+>)(<p>)?[^\s<]*>.+?(<br />|<br>|<p>|$)+!i","",$text);
+		$text=preg_replace("!(^|<p>|<br>|<br />)+(<font[^>]+>)(<a [^>]+>)?[^\s<]*</a>>.+?(<br />|<br>|<p>|$)+!i","",$text);
+		$text=preg_replace("!<font size=\-2 color=#\d\d\d\d\d\d><b>.+?</b>>.+?</font>(<br>)+!is","",$text);
 
-    	$text=preg_replace("!(<br>|<br />)+!i","<br />",$text);
+		$text=preg_replace("!(<br>|<br />)+!i","<br />",$text);
 
-//    $text=preg_replace("!</?(table|tr|td|h\d|br|p)[^>]*>!i"," ",$text);
-	    $text=str_replace("\n"," ",$text);
-    	$text=preg_replace("/\s+/"," ",$text);
-	    $text=preg_replace("/^\s+/","",$text);
-    	$text=preg_replace("/\s+$/","",$text);
-	    $text=preg_replace("/^#nav(.+?)#/","",$text);
-    	$text=preg_replace("!\-+!","-",$text);
+//	$text=preg_replace("!</?(table|tr|td|h\d|br|p)[^>]*>!i"," ",$text);
+		$text=str_replace("\n"," ",$text);
+		$text=preg_replace("/\s+/"," ",$text);
+		$text=preg_replace("/^\s+/","",$text);
+		$text=preg_replace("/\s+$/","",$text);
+		$text=preg_replace("/^#nav(.+?)#/","",$text);
+		$text=preg_replace("!\-+!","-",$text);
 
 		if($microstyle)
 		{
@@ -45,49 +45,46 @@ require_once('strings.php');
 			return $text;
 		}
 
-	    if(bors_strlen($text) > $len)
-    	{
-        	$res="";
-	        $do_flag=1;
-    	    $in_tag=0;
-        	while($do_flag && $text)
-	        {
-    	        $c = bors_substr($text,0,1);
-        	    $text = bors_substr($text,1);
-            	$res.=$c;
-	            if($c=='<') $in_tag++;
-    	        if($c=='>' && $in_tag>0) $in_tag--;
-        	    if(!$in_tag &&  bors_strlen($res)>=$len)
-            	    $do_flag=0;
-	        }
-    	    $text = $res . $more_text;
-	    }
+		if(bors_strlen($text) > $len)
+		{
+			$res="";
+			$do_flag=1;
+			$in_tag=0;
+			while($do_flag && $text)
+			{
+				$c = bors_substr($text,0,1);
+				$text = bors_substr($text,1);
+				$res.=$c;
+				if($c=='<') $in_tag++;
+				if($c=='>' && $in_tag>0) $in_tag--;
+				if(!$in_tag &&  bors_strlen($res)>=$len)
+					$do_flag=0;
+			}
+			$text = $res . $more_text;
+		}
 
 		return bors_close_tags($text);
 	}
 
 function bors_close_tags($text)
 {
-    $close_tags = explode(" ","a b blockquote dd div dl dt embed font i iframe object option p param pre s select small span table td tr tt u xmp");
+	$close_tags = explode(" ", "a b blockquote dd div dl dt embed font i iframe object option p param pre s select small span table td tr tt u xmp");
 
-   	for($i=0, $count = count($close_tags); $i<$count; $i++)
-    {
-		$tag = $close_tags[$i];
-       	$n = preg_match_all("!<$tag(\s|>)!i", $text, $m) - preg_match_all("!</$tag(\s|>)!i", $text, $m);
+   	foreach($close_tags as $tag)
+	{
+	   	$n = preg_match_all("!<$tag(\s|>)!i", $text, $m) - preg_match_all("!</$tag(\s|>)!i", $text, $m);
 
-		if($n == 0)
+		if($n == 0) // Все тэги закрыты
 			continue;
 
-        if($n > 0)
-        {
-       	    while($n--)
-           	    $text .="</$tag>";
-
-			return $text;
+		if($n > 0) // Открывающихся больше закрывающихся
+		{
+			$text .= str_repeat("</$tag>", $n);
+			continue;
 		}
 
-		while($n++)
-			$text = "<$tag>" . $text;
+		// Закрывающихся больше открывающихся
+		$text = str_repeat("<$tag>", -$n) . $text;
    	}
 
    	return $text;
@@ -95,26 +92,23 @@ function bors_close_tags($text)
 
 function bors_close_bbtags($text)
 {
-    $close_tags = explode(" ","a b blockquote dd div dl dt embed font i iframe object option p param pre s select small span table td tr tt u xmp");
+	$close_tags = explode(" ", "a b blockquote dd div dl dt embed font i iframe object option p param pre s select small span table td tr tt u xmp");
 
-   	for($i=0, $count = count($close_tags); $i<$count; $i++)
-    {
-		$tag = $close_tags[$i];
-       	$n = preg_match_all("!\[$tag(\s|\])!i", $text, $m) - preg_match_all("!\[/$tag(\s|\])!i", $text, $m);
+   	foreach($close_tags as $tag)
+	{
+	   	$n = preg_match_all("!\[$tag(\s|\])!i", $text, $m) - preg_match_all("!\[/$tag(\s|\])!i", $text, $m);
 
 		if($n == 0)
 			continue;
 
-        if($n > 0)
-        {
-       	    while($n--)
-           	    $text .="[/$tag]";
-
-			return $text;
+		if($n > 0) // Открывающихся больше закрывающихся
+		{
+			$text .= str_repeat("[/$tag]", $n);
+			continue;
 		}
 
-		while($n++)
-			$text = "[$tag]" . $text;
+		// Закрывающихся больше открывающихся
+		$text = str_repeat("[$tag]", -$n) . $text;
    	}
 
    	return $text;
@@ -123,14 +117,14 @@ function bors_close_bbtags($text)
 
 function to_one_string($s)
 {
-    if(sizeof($s)>1) 
-    	$s=join("\n",$s);
+	if(sizeof($s)>1) 
+		$s=join("\n",$s);
 
    	$s=str_replace("\n","<br />",$s);
-    $s=str_replace("\|","&#124;",$s);
+	$s=str_replace("\|","&#124;",$s);
    	$s=str_replace("\r","",$s);
 
-    return $s;
+	return $s;
 }
 
 function quote_fix($text)

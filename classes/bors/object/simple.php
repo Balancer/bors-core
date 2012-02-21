@@ -1,6 +1,12 @@
 <?php
 
-class base_empty extends base_null
+/**
+	Минимальный полноценный BORS-объект
+	Всё необходимое для полноценной работы
+	Без бэкенда.
+*/
+
+class bors_object_simple extends bors_object_empty
 {
 	var $___id;
 
@@ -12,7 +18,6 @@ class base_empty extends base_null
 
 	function __construct($id)
 	{
-//		echo get_class($this)."<br/>";
 		$this->set_id($this->initial_id = $id);
 	}
 

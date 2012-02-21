@@ -93,6 +93,8 @@ foreach(array(BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $di
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0750);
 
+@chmod(dirname($d), 0777);
+
 if(config('cache_code_monolith') && file_exists($php_cache_file = config('cache_dir') . '/functions.php'))
 	require_once($php_cache_file);
 
@@ -475,15 +477,49 @@ function bors_config_ini($file)
 
 function bors_use($uses)
 {
+	static $uses_active = array();
 	foreach(explode(',', $uses) as $u)
 	{
 		$u = trim($u);
+
+		if(in_array($u, $uses_active))
+			continue;
+
+		$uses_active[] = $u;
+
 		if(preg_match('/\.css$/', $u))
 		{
 			template_css($u);
 			continue;
 		}
 
+		if(preg_match('/^\w+$/', $u))
+		{
+			if(function_exists($f = "bors_use_{$u}"))
+			{
+				call_user_func($f);
+				continue;
+			}
+
+//			На будущее.
+//			if(file_exists($file = BORS_CORE.DIRECTORY_SEPARATOR.'uses'.DIRECTORY_SEPARATOR.$u.'.php'))
+//			{
+//				require_once($file);
+//				continue;
+//			}
+		}
+
 		bors_throw("Unknown bors_use('$u')");
 	}
+}
+
+function bors_use_mysql()
+{
+	bors_function_include('time/date_format_mysqltime');
+	$GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
+}
+
+function bors_use_debug()
+{
+	require_once('inc/debug.php');
 }

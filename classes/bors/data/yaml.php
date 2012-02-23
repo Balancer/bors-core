@@ -32,7 +32,12 @@ class bors_data_yaml extends bors_data_meta
 		$string = str_replace("\t", '    ', $string);
 
 		if(function_exists('yaml_parse'))
-			$data = yaml_parse($string);
+		{
+			if($ignore_errors)
+				$data = @yaml_parse($string);
+			else
+				$data = yaml_parse($string);
+		}
 		else
 		{
 			require_once '/usr/share/php/SymfonyComponents/YAML/sfYamlParser.php';

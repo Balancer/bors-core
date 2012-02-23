@@ -443,7 +443,7 @@ defined at {$this->class_file()}<br/>
 
 	function debug_title_short() { return "{$this->class_name()}({$this->id()})"; }
 
-	function description() { return @$this->data['description']; }
+	function _description_def() { return @$this->data['description']; }
 	function set_description($description, $db_update=true) { return $this->set('description', $description, $db_update); }
 
 	function nav_name($exact = false)

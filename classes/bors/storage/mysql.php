@@ -70,6 +70,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 	{
 		$_back_functions = array(
 			'html_entity_decode' => 'htmlspecialchars',
+			'bors_entity_decode' => 'htmlspecialchars',
 			'UNIX_TIMESTAMP' => 'FROM_UNIXTIME',
 			'FROM_UNIXTIME' => 'UNIX_TIMESTAMP',
 			'aviaport_old_denormalize' => 'aviaport_old_normalize',
@@ -190,6 +191,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static function post_functions_do(&$object, $post_functions)
 	{
+//		var_dump($post_functions);
 		foreach($post_functions as $property => $function)
 			$object->set_attr($property, call_user_func($function, $object->$property()));
 	}
@@ -482,6 +484,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			return;
 
 		$main_table = true;
+		$new_id = NULL;
 
 		foreach($data as $db_name => $tables)
 		{

@@ -511,7 +511,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					$dbh->insert($table_name, $fields);
 				}
 
-				if($main_table)
+				if($main_table && !$object->get('insert_delayed_on_new_instance'))
 				{
 					$main_table = false;
 					$new_id = $dbh->last_id();

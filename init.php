@@ -463,6 +463,10 @@ function bors_function_include($req_name)
 	$GLOBALS['bors_data']['php_cache_content'] = $php_cache_content;
 }
 
+/**
+ * @param string $file
+ * Загрузить .ini файл в параметры конфигурации.
+ */
 function bors_config_ini($file)
 {
 	foreach(parse_ini_file($file, true) as $section_name => $data)

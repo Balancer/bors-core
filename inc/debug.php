@@ -9,7 +9,7 @@ require_once('inc/texts.php');
  * Выводит сообщение $message.
  * @param string $message
  */
-function debug_exit(string $message)
+function debug_exit($message)
 {
 	$ob_status = ob_get_status();
 	if(!empty($ob_status['type']) && ($tmp = @ob_get_contents()))

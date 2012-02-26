@@ -48,7 +48,7 @@ function news_short_time($time)
 
 bors_function_include('time/month_name');
 bors_function_include('time/month_name_rp');
-bors_function_include('date/text');
+bors_function_include('date/text_date');
 
 $GLOBALS['day_names'] = explode(' ', 'Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье');
 

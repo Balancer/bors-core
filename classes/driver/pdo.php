@@ -1,6 +1,7 @@
 <?php
 
-bors_function_include('debug/timing');
+bors_function_include('debug/timing_start');
+bors_function_include('debug/timing_stop');
 
 class driver_pdo implements Iterator
 {

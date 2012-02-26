@@ -1,4 +1,5 @@
 <?php
+
 require_once('inc/debug.php');
 require_once('engines/bors.php');
 require_once('inc/global-data.php');

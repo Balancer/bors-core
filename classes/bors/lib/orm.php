@@ -1,6 +1,7 @@
 <?php
 
-bors_function_include('cache/global');
+bors_function_include('cache/global_key');
+bors_function_include('cache/set_global_key');
 
 class bors_lib_orm
 {
@@ -217,6 +218,21 @@ class bors_lib_orm
 				return $f;
 
 		return NULL;
+	}
+
+	static function get_notation($object, $name)
+	{
+		// Парсим файл класса на предмет @-нотаций
+		if(!($class_file = $object->class_file()))
+			return false;
+
+		if(!($class_source = file_get_contents($class_file)))
+			return false;
+
+		if(preg_match("!^\s*@object:\s*$name\s*=\s*(\w+)\((\w+)\)\s*$!m", $class_source, $m))
+			return bors_load($m[1], $object->get($m[2]));
+
+		return false;
 	}
 
 	static function get_yaml_notation($object, $name)

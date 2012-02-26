@@ -1,6 +1,7 @@
 <?php
 
-bors_function_include('debug/timing');
+bors_function_include('debug/timing_start');
+bors_function_include('debug/timing_stop');
 
 class driver_oci
 {
@@ -66,7 +67,7 @@ class driver_oci
 			$error = oci_error($this->statement);
 			if(@$error['sqltext'] && @$error['offset'])
 				$error['error_in'] = substr($error['sqltext'], $error['offset']);
-			bors_function_include('debug/print');
+			bors_function_include('debug/print_d');
 			print_d($error);
 			bors_throw('oci_execute error: '.print_r($error, true));
 		}

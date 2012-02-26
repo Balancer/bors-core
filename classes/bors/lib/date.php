@@ -42,7 +42,7 @@ class bors_lib_date
 
 	static function text($timestamp)
 	{
-		bors_function_include('date/text');
+		bors_function_include('date/text_date');
 		return text_date($timestamp);
 	}
 }

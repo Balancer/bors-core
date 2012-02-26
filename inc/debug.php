@@ -4,6 +4,9 @@
 
 require_once('inc/texts.php');
 
+bors_function_include('debug/count');
+bors_function_include('debug/count_inc');
+
 /**
  * Завершает работу, выполняя все необходимые операции.
  * Выводит сообщение $message.
@@ -34,9 +37,8 @@ function debug_exit($message)
 
 		$deb .= "smarty = ".(config('smarty3_enable') ? 3 : 2)."\n";
 
-		bors_function_include('debug/vars');
-		bors_function_include('debug/counting');
-		bors_function_include('debug/timing');
+		bors_function_include('debug/vars_info');
+		bors_function_include('debug/timing_info_all');
 		if($deb_vars = debug_vars_info())
 		{
 			$deb .= "\n=== debug vars: ===\n";
@@ -61,7 +63,7 @@ function debug_exit($message)
 }
 
 bors_function_include('debug/in_console');
-bors_function_include('debug/print');
+bors_function_include('debug/print_dd');
 
 function set_loglevel($n, $file=false)
 {
@@ -179,10 +181,11 @@ else
 <?php
 }
 
-bors_function_include('debug/counting');
-bors_function_include('debug/timing');
+bors_function_include('debug/count');
+bors_function_include('debug/timing_start');
+bors_function_include('debug/timing_stop');
 bors_function_include('debug/log_var');
-bors_function_include('debug/vars');
+bors_function_include('debug/vars_info');
 
 bors_function_include('debug/hidden_log');
 

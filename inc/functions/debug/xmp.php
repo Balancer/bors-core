@@ -14,11 +14,3 @@ function debug_xmp($text, $string = false)
 
 	return $out;
 }
-
-function debug_pre($text)
-{
-	if(debug_in_console())
-		echo $text;
-	else
-		echo "<xmp>{$text}</xmp>\n";
-}

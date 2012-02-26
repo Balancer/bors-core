@@ -9,6 +9,9 @@ class bors_forms_dropdown extends bors_forms_element
 		extract($params);
 //		var_dump($list);
 
+		if(!$form)
+			$form = bors_form::$_current_form;
+
 		$object = $form->object();
 		$html = "";
 
@@ -62,10 +65,10 @@ class bors_forms_dropdown extends bors_forms_element
 				$list = new $list(@$args);
 				$list = $list->named_list();
 			}
-			else
-			{
+			elseif($list)
 				eval('$list='.$list);
-			}
+			else
+				$list = array();
 		}
 
 		$have_null = in_array(NULL, $list);

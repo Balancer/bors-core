@@ -115,8 +115,9 @@ class base_rss extends base_page
 	{
 		if(($tpl = $this->body_template()) && !preg_match('!/classes/bors/base/page.html$!', $tpl))
 		{
-			require_once('engines/smarty/assign.php');
-			return template_assign_data($tpl, array('this' => $object));
+//			require_once('engines/smarty/assign.php');
+//			return template_assign_data($tpl, array('this' => $object));
+			return bors_templates_smarty::fetch($tpl, array('this' => $object));
 		}
 
 		$html = $object->rss_body();

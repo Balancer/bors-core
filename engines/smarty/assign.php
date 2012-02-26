@@ -1,14 +1,19 @@
 <?php
 
-if(config('smarty3_enable'))
-{
-	debug_hidden_log('__obsolete', "Call obsolete smarty2");
-	bors_throw(ec('[assign load] Попытка использования Smarty2 при активном Smarty3'));
-}
+//if(config('smarty3_enable'))
+//{
+//	debug_hidden_log('__obsolete', "Call obsolete smarty2");
+//	bors_throw(ec('[assign load] Попытка использования Smarty2 при активном Smarty3'));
+//}
 
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 {
-	bors_function_include('debug/timing');
+	// Пробуем заменить новым выводом. Но логгируем выводы для замены:
+	debug_hidden_log('obsolete-code', "Call template_assign_data");
+	return bors_templates_smarty::fetch($assign_template, $data);
+
+	bors_function_include('debug/timing_start');
+	bors_function_include('debug/timing_stop');
 	debug_timing_start('template_smarty_assign');
 
 	unset($GLOBALS['module_data']);
@@ -111,7 +116,8 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 		foreach(explode(' ', 'host_name main_host_uri') as $key)
 			$smarty->assign($key, @$GLOBALS['cms'][$key]);
 
-		bors_function_include('debug/timing');
+		bors_function_include('debug/timing_start');
+		bors_function_include('debug/timing_stop');
 		debug_timing_stop('template_smarty_assign');
 		debug_timing_start('template_smarty_assign_fill');
 

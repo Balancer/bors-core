@@ -77,6 +77,10 @@ class bors_object_simple extends bors_object_empty
 			return $this->attr[$name] = $value;
 		}
 
+		$x = bors_lib_orm::get_notation($this, $name);
+		if($x !== false)
+			return $this->attr[$name] = $x;
+
 		if(@array_key_exists($name, $this->defaults))
 			return $this->defaults[$name];
 

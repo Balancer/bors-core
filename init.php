@@ -456,6 +456,9 @@ function bors_function_include($req_name)
 	if(function_exists($path.'_'.$name))
 		return;
 
+	if(function_exists('bors_'.$path.'_'.$name))
+		return;
+
 	require_once($file);
 	$function_code = file_get_contents($file);
 	$function_code = "\n".trim(preg_replace('/^<\?php/', '', $function_code))."\n";

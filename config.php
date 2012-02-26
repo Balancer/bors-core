@@ -42,15 +42,38 @@ config_set('url_truncate', false);
 config_set('upload_dir', 'uploads');
 
 // Кодировки
-config_set('internal_charset', 'utf-8');		// Внутренняя кодировка фреймворка, обычно равна системной
-config_set('output_charset', 'utf-8');			// Кодировка, в которой данные отдаются браузеру и сохраняются в статический кеш
-config_set('db_charset', 'utf-8');				// Кодировка БД
-config_set('locale', 'ru_RU.UTF-8');
+if(!config('internal_charset'))
+	config_set('internal_charset', 'utf-8');		// Внутренняя кодировка фреймворка, обычно равна системной
+if(!config('output_charset'))
+	config_set('output_charset', 'utf-8');			// Кодировка, в которой данные отдаются браузеру и сохраняются в статический кеш
+if(!config('db_charset'))
+	config_set('db_charset', 'utf-8');				// Кодировка БД
+if(!config('locale'))
+	config_set('locale', 'ru_RU.UTF-8');
 
 config_set('3rdp_xmlrpc_path', 'xmlrpc-2.2.2');
 
+if(!config('project.name'))
+	config_set('project.name', strtolower(basename(BORS_SITE)));
+
 // После установки кодировок -- использует internal_charset
-config_set('cache_dir', '/tmp/bors-cache/'.@$_SERVER['HTTP_HOST'].'-'.config('internal_charset'));
+if(!config('cache_dir'))
+{
+	$cache_dirs_parts = array();
+	if(empty($_SERVER['HTTP_HOST']))
+		$cache_dirs_parts[] = 'cli';
+	else
+		$cache_dirs_parts[] = strtolower($_SERVER['HTTP_HOST']);
+
+	$cache_dirs_parts[] = config('project.name');
+
+	if(!empty($_SERVER['USER']))
+		$cache_dirs_parts[] = strtolower($_SERVER['USER']);
+	$cache_dirs_parts[] = config('internal_charset');
+
+	config_set('cache_dir', '/tmp/bors-cache/'.join('-', array_filter($cache_dirs_parts)));
+}
+
 config_set('cache_code_monolith', 0);
 
 config_set('cache.webroot_dir', $_SERVER['DOCUMENT_ROOT'].'/cache');

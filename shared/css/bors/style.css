@@ -37,10 +37,10 @@ small, .small { font-size: 0.8em !important; }
 div.clear {	height: 0px !important; clear: both; }
 
 table.null, table.null td,  table.null th {
-	border: none;
-	padding: 0;
-	margin: 0;
-	vertical-align: top;
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	vertical-align: top !important;
 }
 
 pre {

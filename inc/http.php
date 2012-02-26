@@ -59,7 +59,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 		$header[] = "Accept-Charset: utf-8";
 	$header[] = "Accept-Language: ru, en";
 
-	bors_function_include('debug/timing');
+	bors_function_include('debug/timing_start');
 	debug_timing_start('http-get: '.$url);
 	debug_timing_start('http-get-total');
 	$ch = curl_init($url);

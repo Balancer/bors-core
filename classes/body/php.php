@@ -2,7 +2,8 @@
 
 require_once('inc/bors/lists.php');
 require_once('inc/bors/modules.php');
-bors_function_include('debug/timing');
+bors_function_include('debug/timing_start');
+bors_function_include('debug/timing_stop');
 
 class body_php extends base_null
 {

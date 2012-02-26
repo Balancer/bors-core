@@ -316,6 +316,10 @@ class base_object extends base_empty
 			return $this->attr[$name] = $value;
 		}
 
+		$x = bors_lib_orm::get_notation($this, $name);
+		if($x !== false)
+			return $this->attr[$name] = $x;
+
 		// Проверяем нет ли значения по умолчанию — это вместо бывшего attr
 		if(@array_key_exists($method, $this->defaults))
 			return $this->defaults[$method];

@@ -34,6 +34,7 @@ function smarty_function_module($params, &$smarty)
 		return $obj->body();
 	}
 
+	unset($GLOBALS['module_data']);
 	$name = $params['name'].".php";
 	foreach($params as $key=>$val)
 		$GLOBALS['module_data'][$key] = $val;

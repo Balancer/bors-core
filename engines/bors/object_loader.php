@@ -566,7 +566,7 @@ function object_init($class_name, $object_id, $args = array())
 
 		if(config('debug_objects_create_counting_details'))
 		{
-			bors_function_include('debug/count');
+			bors_function_include('debug/count_inc');
 			debug_count_inc($class_name.': bors_load');
 		}
 	}

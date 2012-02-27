@@ -200,6 +200,8 @@ function bors_exit($message = '')
 
 	if(config('debug.show_variables'))
 	{
+		bors_use('debug_count_info_all');
+		bors_use('debug_timing_info_all');
 		$deb = '';
 		if($s = debug_vars_info())
 			$deb = "\n=== debug vars info: ===\n$s";

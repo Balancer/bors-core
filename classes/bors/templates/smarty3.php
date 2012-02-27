@@ -86,6 +86,14 @@ class bors_templates_smarty3 extends bors_template
 
 //		$smarty->debugging = true;
 
+		$dirname = dirname($template);
+		if(!preg_match("!^\w+:!", $dirname))
+			$dirname = "xfile:$dirname";
+		if(!($dir_names = $smarty->getTemplateVars('template_dirnames')))
+			$dir_names = array();
+		array_unshift($dir_names, $dirname);
+		$smarty->assign("template_dirnames", $dir_names);
+
 		if(config('debug.execute_trace'))
 			debug_execute_trace("smarty3->fetch()");
 

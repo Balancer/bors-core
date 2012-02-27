@@ -514,6 +514,12 @@ function bors_use($uses)
 //				require_once($file);
 //				continue;
 //			}
+
+			if(preg_match('/^(\w+?)_(\w+)$/', $u, $m))
+			{
+				bors_function_include("{$m[1]}/{$m[2]}");
+				continue;
+			}
 		}
 
 		bors_throw("Unknown bors_use('$u')");

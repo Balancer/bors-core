@@ -17,6 +17,7 @@ class bors_template
 
 	static function find_template($template_name, $object = NULL)
 	{
+		$original_template_name = $template_name;
 		$template_name = preg_replace('!^xfile:!', '', $template_name);
 		foreach(bors_dirs(true) as $dir)
 		{
@@ -44,13 +45,15 @@ class bors_template
 			}
 		}
 
-		$trace = debug_backtrace();
-		$called_file = @$trace[1]['file'];
-		$called_dirname = dirname($called_file);
-		if(file_exists($file = $called_dirname.'/'.$template_name))
-			return 'xfile:'.$file;
+		foreach(debug_backtrace() as $trace)
+		{
+			$called_file = @$trace['file'];
+			$called_dirname = dirname($called_file);
+			if(file_exists($file = $called_dirname.'/'.$template_name))
+				return 'xfile:'.$file;
+		}
 
-		return $template_name;
+		return $original_template_name;
 	}
 
 	function page_data($args = NULL)

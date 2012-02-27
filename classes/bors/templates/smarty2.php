@@ -68,6 +68,14 @@ class bors_templates_smarty2 extends bors_templates_abstract
 //		if(config('is_developer')) echo debug_trace();
 		$smarty->assign(bors_template::page_data($data));
 
+		$dirname = dirname($template);
+		if(!preg_match("!^\w+:!", $dirname))
+			$dirname = "xfile:$dirname";
+		if(!($dir_names = $smarty->get_template_vars('template_dirnames')))
+			$dir_names = array();
+		array_unshift($dir_names, $dirname);
+		$smarty->assign("template_dirnames", $dir_names);
+
 		$out = $smarty->fetch($template);
 
 //		print_d($out);

@@ -14,11 +14,15 @@ function smarty_resource_file_get_template($tpl_name, &$tpl_source, $smarty)
 		return true;
 	}
 
-	if(file_exists($fn = str_replace('xfile:', '', $smarty->get_template_vars('template_dirname'))."/".$tpl_name))
-	{
-		$tpl_source = ec(file_get_contents($fn));
-		return true;
-	}
+	if(($dirs = $smarty->get_template_vars('template_dirnames')))
+		foreach($dirs as $dir)
+		{
+			if(file_exists($fn = str_replace('xfile:', '', $dir)."/".$tpl_name))
+			{
+				$tpl_source = ec(file_get_contents($fn));
+				return true;
+			}
+		}
 
 	if(file_exists($fn = $smarty->template_dir."/".$tpl_name))
 	{
@@ -58,11 +62,16 @@ function smarty_resource_file_get_timestamp($tpl_name, &$tpl_timestamp, $smarty)
 		$found = true;
 	}
 
-	if(!$found && file_exists($fn = str_replace('xfile:', '', $smarty->get_template_vars('template_dirname'))."/".$tpl_name))
-	{
-		$tpl_timestamp = filemtime($fn);
-		$found = true;
-	}
+	if(($dirs = $smarty->get_template_vars('template_dirnames')))
+		foreach($dirs as $dir)
+		{
+			if(!$found && file_exists($fn = str_replace('xfile:', '', $dir)."/".$tpl_name))
+			{
+				$tpl_timestamp = filemtime($fn);
+				$found = true;
+				break;
+			}
+		}
 
 	if(!$found && file_exists($fn = $smarty->template_dir."/".$tpl_name))
 	{

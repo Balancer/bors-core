@@ -29,6 +29,13 @@ class bors_external_common extends bors_object
 		if(!$img)
 			$img = @$meta['image_src'];
 
+		// Яндекс.Видео — такое Яндекс.Видео...
+		// http://balancer.ru/g/p2728087 для http://video.yandex.ru/users/cnewstv/view/3/
+		if(strpos($title, "\\'") !== false)
+			$title = stripslashes($title);
+		if(strpos($description, "\\'") !== false)
+			$description = stripslashes($description);
+
 		if(!$img && preg_match('!<div class="thumbinner".+?<img .+src="(//upload.wikimedia.org/[^"]+\.jpg)"!', $html, $m))
 			$img = 'http:'.$m[1];
 

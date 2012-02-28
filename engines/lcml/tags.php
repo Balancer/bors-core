@@ -271,7 +271,7 @@ function find_next_open_tag($txt, $pos)
 			$func = $m[1];
 			$params = "$func='{$m[2]}'";
 		}
-		elseif(preg_match("!^(\w+)=(\S+)$!s", $tag, $m)) // [url=http://example.com]text[/url]
+		elseif(preg_match("!^(\w+)=(\S+)$!s", $tag, $m)) // [url=http://example.com]text[/url] -- [url=http://yandex.ru/yandsearch?text="оранжевые+зомби"]оранжевых зомби[/url]
 		{
 			$func = $m[1];
 			$params = "$func={$m[2]}";
@@ -395,7 +395,7 @@ function next_open_brace($txt, $pos)
 			}
 		}
 
-//		print_dd($in);
+//		if(config('is_developer')) { print_dd($in); echo PHP_EOL; }
 
 		if(preg_match_all("!(?<=^|\s)(\w+)=\"([^\"]+)\"(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{
@@ -411,7 +411,9 @@ function next_open_brace($txt, $pos)
 				$params[strtolower($m[1])] = $m[2];
 		}
 
-		if(preg_match_all("!(?<=^|\s)(\w+)=([^\"'\s]+)(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
+		// Апострофы и кавычки убираем для http://balancer.ru/g/p2728134
+		// [url=http://yandex.ru/yandsearch?text="оранжевые+зомби"]оранжевых зомби[/url]
+		if(preg_match_all("!(?<=^|\s)(\w+)=(\S+)(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)

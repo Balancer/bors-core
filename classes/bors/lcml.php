@@ -285,6 +285,9 @@ class bors_lcml
 		$code = '[b]Сайт расходящихся тропок: [url="http://balancer.ru"][/b]';
 		$suite->assertRegexp('#<strong>Сайт расходящихся тропок: <a.+href="http://balancer.ru".*>balancer.ru</a></strong>#', lcml($code));
 
+		$code = '[url=http://yandex.ru/yandsearch?text="оранжевые+зомби"]оранжевых зомби[/url]';
+		$suite->assertRegexp('#<a rel="nofollow" href="http://yandex.ru/yandsearch\?text=&quot;оранжевые\+зомби&quot;" class="external">оранжевых зомби</a>#', lcml($code));
+
 	// Внутренние ошибочные теги не парсятся
 		$code = '[b][i]italic[/b]bold[/i]';
 		$suite->assertEquals('<strong>[i]italic</strong>bold[/i]', lcml($code));

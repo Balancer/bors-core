@@ -1,6 +1,6 @@
 <?php
 
-bors_function_include('debug/count');
+bors_function_include('debug/count_inc');
 
 function is_global_key($type,$key)
 {

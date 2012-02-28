@@ -413,7 +413,7 @@ function next_open_brace($txt, $pos)
 
 		// Апострофы и кавычки убираем для http://balancer.ru/g/p2728134
 		// [url=http://yandex.ru/yandsearch?text="оранжевые+зомби"]оранжевых зомби[/url]
-		if(preg_match_all("!(?<=^|\s)(\w+)=(\S+)(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
+		if(preg_match_all("!(?<=^|\s)(\w+)=([^'\"]\S+)(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{
 //			print_d($match);
 			foreach($match as $m)

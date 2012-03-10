@@ -4,7 +4,18 @@ function smarty_function_password($params, &$smarty)
 {
 	extract($params);
 
-	$obj = $smarty->get_template_vars('form');
+
+	if(method_exists($smarty, 'getTemplateVars'))
+	{
+		$obj = $smarty->getTemplateVars('form');
+		$ajax_validation = $smarty->getTemplateVars('ajax_validate');
+	}
+	else
+	{
+		$obj = $smarty->get_template_vars('form');
+		$ajax_validation = $smarty->get_template_vars('ajax_validate');
+	}
+
 	$value = $obj ? $obj->$name() : '';
 
 	$class = empty($class) ? array() : explode(' ', $class);
@@ -13,7 +24,7 @@ function smarty_function_password($params, &$smarty)
 		$class[] = "error";
 
 	// Если у нас используется валидация данных формы
-	if($smarty->get_template_vars('ajax_validate'))
+	if($ajax_validation)
 	{
 		if(empty($id))
 		{

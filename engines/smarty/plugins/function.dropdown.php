@@ -6,7 +6,10 @@ function smarty_function_dropdown($params, &$smarty)
 {
 	extract($params);
 
-	$obj = $smarty->get_template_vars('form');
+	if(method_exists($smarty, 'getTemplateVars'))
+		$obj = $smarty->getTemplateVars('form');
+	else
+		$obj = $smarty->get_template_vars('form');
 
 	if(in_array($name, explode(',', session_var('error_fields'))))
 	{

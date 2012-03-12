@@ -8,6 +8,7 @@
 
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 {
+	bors_function_include('debug/hidden_log');
 	// Пробуем заменить новым выводом. Но логгируем выводы для замены:
 	debug_hidden_log('obsolete-code', "Call template_assign_data");
 	return bors_templates_smarty::fetch($assign_template, $data);

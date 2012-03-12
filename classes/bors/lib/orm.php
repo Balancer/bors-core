@@ -232,6 +232,9 @@ class bors_lib_orm
 		if(preg_match("!^\s*@object:\s*$name\s*=\s*(\w+)\((\w+)\)\s*$!m", $class_source, $m))
 			return bors_load($m[1], $object->get($m[2]));
 
+		if(preg_match("!^\s*@$name\s*=(.+)*$!m", $class_source, $m))
+			return trim($m[1]);
+
 		return false;
 	}
 

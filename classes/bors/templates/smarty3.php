@@ -76,7 +76,30 @@ class bors_templates_smarty3 extends bors_template
 		$smarty->auto_literal = popval($data, 'smarty_auto_literal', $smarty->auto_literal);
 		$smarty->assign($data);
 		$trace = debug_backtrace();
-		$smarty->assign("template_dirname", dirname($trace[1]['file']));
+
+		$caller_path = NULL;
+		$wo_xfile_prefix = str_replace('xfile:', '', $template);
+
+		for($i=1, $stop=count($trace); $i<$stop; $i++)
+		{
+			$php_file_dir = dirname(@$trace[$i]['file']).'/';
+
+			if(file_exists($php_file_dir.$wo_xfile_prefix))
+			{
+				$caller_path = $php_file_dir;
+				break;
+			}
+		}
+
+		$dirname = dirname($wo_xfile_prefix);
+		if(!preg_match("!^\w+:!", $dirname))
+			$dirname = "xfile:$dirname";
+		if(!($dir_names = $smarty->getTemplateVars('template_dirnames')))
+			$dir_names = array();
+		array_unshift($dir_names, $dirname);
+		array_unshift($dir_names, $caller_path);
+		$smarty->assign("template_dirnames", $dir_names);
+
 		$smarty->assign('me', bors()->user());
 		$smarty->assign("main_uri", @$GLOBALS['main_uri']);
 
@@ -85,14 +108,6 @@ class bors_templates_smarty3 extends bors_template
 			$template = self::find_template($template, @$data['this']);
 
 //		$smarty->debugging = true;
-
-		$dirname = dirname($template);
-		if(!preg_match("!^\w+:!", $dirname))
-			$dirname = "xfile:$dirname";
-		if(!($dir_names = $smarty->getTemplateVars('template_dirnames')))
-			$dir_names = array();
-		array_unshift($dir_names, $dirname);
-		$smarty->assign("template_dirnames", $dir_names);
 
 		if(config('debug.execute_trace'))
 			debug_execute_trace("smarty3->fetch()");

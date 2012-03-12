@@ -1,0 +1,18 @@
+{$this->pages_links_nul()}
+
+<table class="btab w100p">
+<tr>
+{foreach from=$headers item="h"}
+	<th>{$h}</th>
+{/foreach}
+</tr>
+{foreach from=$objects item="o"}
+<tr>
+	{foreach from=$o item="x"}
+	<td>{$x}</td>
+	{/foreach}
+</tr>
+{/foreach}
+</table>
+
+{$this->pages_links_nul()}

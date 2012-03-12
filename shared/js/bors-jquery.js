@@ -1,5 +1,4 @@
-$(function(){
-
+$(function() {
 	$('.bors_lazy_load').each(function(){
 		el = $(this)
 		html = ''+el.html()
@@ -7,7 +6,7 @@ $(function(){
 			el.html(g[1])
 	})
 
-/*	$('.bors_lazy_load').show(); */
+	$('.bors_lazy_load').show();
 
 	jQuery('.bors_lazy_ad').lazyLoadAd({
 		threshold: 200,

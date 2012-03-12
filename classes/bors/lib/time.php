@@ -165,7 +165,7 @@ class bors_lib_time
 		$last_ct = bors_find_first($class_name, array('order' => '-create_time'))->create_time();
 		$last_action_ts = max($last_mt, $last_ct);
 		$last_interval = bors_lib_time::smart_interval_vp(time() - $last_action_ts);
-		$last_edit = short_time($events_last_action_ts);
+		$last_edit = short_time($last_action_ts);
 		return ec("{$last_edit} ({$last_interval} назад)");
 	}
 }

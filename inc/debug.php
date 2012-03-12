@@ -6,6 +6,18 @@ require_once('inc/texts.php');
 
 bors_function_include('debug/count');
 bors_function_include('debug/count_inc');
+bors_function_include('debug/count_info_all');
+bors_function_include('debug/in_console');
+bors_function_include('debug/print_dd');
+bors_function_include('debug/vars_info');
+bors_function_include('debug/timing_info_all');
+bors_function_include('debug/trace');
+bors_function_include('debug/count');
+bors_function_include('debug/timing_start');
+bors_function_include('debug/timing_stop');
+bors_function_include('debug/log_var');
+bors_function_include('debug/vars_info');
+bors_function_include('debug/hidden_log');
 
 /**
  * Завершает работу, выполняя все необходимые операции.
@@ -37,8 +49,6 @@ function debug_exit($message)
 
 		$deb .= "smarty = ".(config('smarty3_enable') ? 3 : 2)."\n";
 
-		bors_function_include('debug/vars_info');
-		bors_function_include('debug/timing_info_all');
 		if($deb_vars = debug_vars_info())
 		{
 			$deb .= "\n=== debug vars: ===\n";
@@ -62,8 +72,6 @@ function debug_exit($message)
 	exit($message);
 }
 
-bors_function_include('debug/in_console');
-bors_function_include('debug/print_dd');
 
 function set_loglevel($n, $file=false)
 {
@@ -159,7 +167,6 @@ function debug($message,$comment='',$level=3)
 	@fclose($fh);
 }
 
-bors_function_include('debug/trace');
 
 function debug_page_stat()
 {
@@ -180,14 +187,6 @@ else
 </noindex>
 <?php
 }
-
-bors_function_include('debug/count');
-bors_function_include('debug/timing_start');
-bors_function_include('debug/timing_stop');
-bors_function_include('debug/log_var');
-bors_function_include('debug/vars_info');
-
-bors_function_include('debug/hidden_log');
 
 function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcontext)
 {

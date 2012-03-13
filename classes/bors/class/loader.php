@@ -80,7 +80,7 @@ class bors_class_loader
 			}
 		}
 
-		if(class_exists($class_name))
+		if(class_exists($class_name, false))
 			return class_include(get_parent_class($class_name));
 
 		if(empty($args['host']))
@@ -118,7 +118,8 @@ class bors_class_loader
 
 	static function load_and_cache($class_name, $class_file)
 	{
-		if(!class_exists($class_name))
+//		echo "Find class $class_name = $class_file<br/>\n";
+		if(!class_exists($class_name, false))
 		{
 //			echo "Find class $class_name<br/>\n";
 
@@ -158,3 +159,5 @@ class bors_class_loader
 		return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
 	}
 }
+
+$GLOBALS['bors_data']['classes_included']['bors_class_loader'] = __FILE__;

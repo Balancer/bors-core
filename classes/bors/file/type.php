@@ -36,10 +36,11 @@ class bors_file_type extends bors_list
 			case 'application/download':
 			case 'application/x-www-form-urlencoded':
 				return $this->name_by_ext();
+			case 'text/plain':
+				return 'TEXT';
 			default:
 				if(!($mime = $this->mime()))
 					return bors_upper($this->extension());
-
 				list($foo, $type) = explode('/', $mime);
 				return bors_upper($type);
 		}

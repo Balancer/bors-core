@@ -13,7 +13,7 @@
 {/foreach}
 
 {if not empty($css_list)}{foreach item=css from=$css_list}
-<style type="text/css" media="all">@import url("{$css}");</style>
+<link rel="stylesheet" type="text/css" href="{$css}" />
 {/foreach}{/if}
 {if not empty($style)}
 <style type="text/css" media="all"><!--

@@ -20,6 +20,6 @@ function smarty_function_defval($params, &$smarty)
         return;
     }
 
-	if(!$smarty->get_template_vars($var))
+	if(!bors_templates_smarty::get_var($smarty, $var))
 	    $smarty->assign($var, $value);
 }

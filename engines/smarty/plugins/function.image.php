@@ -4,7 +4,7 @@ function smarty_function_image($params, &$smarty)
 {
 	extract($params);
 
-	$obj = $smarty->get_template_vars('form');
+	$obj = bors_templates_smarty::get_var($smarty, 'form');
 
 	if(!$obj->$name())
 		return;

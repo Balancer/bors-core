@@ -4,7 +4,7 @@ function smarty_function_linked_target($params, &$smarty)
 {
 		extract($params);
 
-		$object = $smarty->get_template_vars('form');
+		$object = bors_templates_smarty::get_var($smarty, 'form');
 		if(!array_key_exists('value', $params))
 		{
 			// Автоматизация? target_class_name(target_id)?

@@ -5,7 +5,7 @@ function smarty_function_hidden($params, &$smarty)
 
 	if(!isset($value))
 	{
-		$obj = $smarty->get_template_vars('form');
+		$obj = bors_templates_smarty::get_var($smarty, 'form');
 		if(($obj && $obj->id()))
 			$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($obj?$obj->$name():NULL)) : '';
 		else

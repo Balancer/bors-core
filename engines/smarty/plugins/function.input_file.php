@@ -15,7 +15,7 @@ function smarty_function_input_file($params, &$smarty)
 	$file_class_name = defval($params, 'file_class', config('attach_class', 'bors_attach'));
 	$file_id_field   = defval($params, 'id_field', $name.'_id');
 
-	$obj = $smarty->get_template_vars('form');
+	$obj = bors_templates_smarty::get_var($smarty, 'form');
 
 	// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
 	if($th = defval($params, 'th'))

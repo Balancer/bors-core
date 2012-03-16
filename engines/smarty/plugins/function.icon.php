@@ -17,7 +17,7 @@ function smarty_function_icon($params, &$smarty)
 
 	$img = "<img src=\"/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$action\" style=\"vertical-align: middle\"$class />";
 
-	$self = $smarty->get_template_vars('this');
+	$self = bors_templates_smarty::get_var($smarty, 'this');
 
 	if(!empty($action) && empty($link))
 		$link = $self->url().'?act='.$action;

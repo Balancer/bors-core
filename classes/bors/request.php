@@ -19,4 +19,14 @@ class bors_request extends base_object
 
 		return $url;
 	}
+
+	function url_data($name = NULL, $default = NULL)
+	{
+		$data = url_parse(self::url());
+
+		if(!$name)
+			return $data;
+
+		return defval($data, $name, $default);
+	}
 }

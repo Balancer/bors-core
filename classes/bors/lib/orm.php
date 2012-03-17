@@ -155,9 +155,6 @@ class bors_lib_orm
 
 		if($defaults)
 		{
-			bors_function_include('debug/hidden_log');
-			debug_hidden_log('__defaults', "Found defaults for {$object->debug_title()}");
-
 			$foo = array('is_editable' => false);
 			array_unshift($fields_array, self::field('id', $foo));
 

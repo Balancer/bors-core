@@ -320,6 +320,9 @@ class base_object extends base_empty
 		if($x !== false)
 			return $this->attr[$name] = $x;
 
+		if(preg_match('/advice/', $name))
+			echo "get {$this}.$name = {$x}<br/>";
+
 		// Проверяем нет ли значения по умолчанию — это вместо бывшего attr
 		if(@array_key_exists($method, $this->defaults))
 			return $this->defaults[$method];

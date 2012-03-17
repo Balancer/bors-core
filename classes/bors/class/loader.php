@@ -121,8 +121,6 @@ class bors_class_loader
 //		echo "Find class $class_name = $class_file<br/>\n";
 		if(!class_exists($class_name, false))
 		{
-//			echo "Find class $class_name<br/>\n";
-
 			if(config('cache_code_monolith'))
 			{
 				static $classes_cache_file = NULL;
@@ -156,6 +154,7 @@ class bors_class_loader
 //		else
 //			echo "Class $class_name already loaded<br/>\n";
 
+//		if(preg_match('/photoreport/', $class_name)) echo "Find class $class_name: $class_file<br/>\n";
 		return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
 	}
 }

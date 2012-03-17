@@ -287,6 +287,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$db_name = $object->db_name();
 			$table_name = $object->table_name();
 			$class_name = $object->class_name();
+			$class_file = $object->class_file();
 			list($select, $where, $post_functions) = self::__query_data_prepare($object, $where);
 		}
 
@@ -323,6 +324,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			save_cached_object($object);
 
 			$object = new $class_name(NULL);
+			$object->set_class_file($class_file);
 		}
 
 		return $objects;
@@ -653,5 +655,29 @@ class bors_storage_mysql extends bors_storage implements Iterator
 	{
 		if(config('mysql_tables_autocreate') && !$this->storage_exists())
 			$this->create_table();
+	}
+
+	static function add_field($class_name, $field_name)
+	{
+		$class = new $class_name(NULL);
+		$db = new driver_mysql($class->db_name());
+		$x = bors_lib_orm::parse_property($class_name, $field_name);
+		$db->query("ALTER TABLE `{$class->table_name()}` ADD `$field_name` ".self::bors_type_to_sql($x['type']));
+	}
+
+	static function bors_type_to_sql($type)
+	{
+		static $map = array(
+			'string'	=>	'VARCHAR(255)',
+			'text'		=>	'TEXT',
+			'timestamp'	=>	'TIMESTAMP',
+			'int'		=>	'INT',
+			'uint'		=>	'INT UNSIGNED',
+			'bool'		=>	'TINYINT(1) UNSIGNED',
+			'float'		=>	'FLOAT',
+			'enum'		=>	'ENUM(%)',
+		);
+
+		return $map[$type];
 	}
 }

@@ -34,6 +34,8 @@ function objects_array($class, $args = array())
 	}
 
 	$init = new $class(NULL);
+	$class_file = bors_class_loader::load($class);
+	$init->set_class_file($class_file);
 
 	if($s = $init->storage())
 	{

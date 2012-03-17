@@ -7,17 +7,16 @@ require_once('inc/texts.php');
 bors_function_include('debug/count');
 bors_function_include('debug/count_inc');
 bors_function_include('debug/count_info_all');
+bors_function_include('debug/hidden_log');
 bors_function_include('debug/in_console');
+bors_function_include('debug/log_var');
 bors_function_include('debug/print_dd');
-bors_function_include('debug/vars_info');
 bors_function_include('debug/timing_info_all');
-bors_function_include('debug/trace');
-bors_function_include('debug/count');
 bors_function_include('debug/timing_start');
 bors_function_include('debug/timing_stop');
-bors_function_include('debug/log_var');
+bors_function_include('debug/trace');
 bors_function_include('debug/vars_info');
-bors_function_include('debug/hidden_log');
+bors_function_include('debug/vars_info');
 
 /**
  * Завершает работу, выполняя все необходимые операции.

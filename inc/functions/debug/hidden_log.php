@@ -50,11 +50,14 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 			. "\n---------------------------\n\n";
 	}
 
-//	if(!empty($args['mkpath']))
-//		mkpath(dirname("{$out_dir}/{$type}.log"));
-
 	if(!empty($args['append']))
 		$out .= "\n".$args['append'];
+
+	if(!file_exists($out_dir))
+	{
+		mkpath($out_dir);
+		@chmod($out_dir, 0777);
+	}
 
 	file_put_contents($file = "{$out_dir}/{$type}.log", $out, FILE_APPEND);
 	@chmod($file, 0666);

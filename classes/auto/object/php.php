@@ -90,7 +90,11 @@ class auto_object_php extends base_object
 			$object = bors_load($class_base.$class_path, $object_id);
 		}
 
-		if(!($is_auto || config('classes_auto_full_enabled') || object_property($object, 'is_auto_url_mapped_class')))
+		if(!($is_auto
+				|| config('classes_auto_full_enabled')
+				|| object_property($object, 'is_auto_url_mapped_class')
+				|| object_property($object, 'auto_map')
+		))
 			$object = NULL;
 
 		if($object)

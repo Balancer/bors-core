@@ -9,6 +9,10 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 		return '';
 
 	$where = array();
+
+	if($raw_conditions = popval($conditions_array, '*raw_conditions'))
+		$where = array_merge($where, $raw_conditions);
+
 	foreach($conditions_array as $field_cond => $value)
 	{
 		$value = str_replace('%ID%', '%MySqlStorageOID%', $value);
@@ -65,8 +69,11 @@ function mysql_order_compile($order_list, $class_name = false)
 	return 'ORDER BY '.join(',', $order);
 }
 
-function mysql_limits_compile($args)
+function mysql_limits_compile(&$args)
 {
+	if($limit = intval(popval($args, '*limit')))
+		return "LIMIT $limit";
+
 	if(!empty($args['limit']))
 		return "LIMIT {$args['limit']}";
 
@@ -179,6 +186,14 @@ function mysql_args_compile($args, $class=NULL)
 		$set = '';
 
 	$join = array();
+
+	foreach(array('inner', 'left') as $join_type)
+	{
+		if($js = popval($args, "*{$join_type}_joins"))
+			foreach($js as $j)
+				$join[] = bors_upper($join_type).' JOIN '.$j;
+	}
+
 	if(!empty($args['inner_join']))
 	{
 		if(is_array($args['inner_join']))
@@ -212,8 +227,8 @@ function mysql_args_compile($args, $class=NULL)
 	unset($args['page']);
 	unset($args['per_page']);
 
-	$order = "";
-	if(!empty($args['order']))
+	$order = popval($args, '*raw_order');
+	if(!$order && !empty($args['order']))
 	{
 		$order = mysql_order_compile($args['order'], $class);
 
@@ -286,6 +301,6 @@ function make_id_field($table, $id_field, $oid = '%MySqlStorageOID%')
 		$out =  str_replace('%TABLE%.', $table, $id_field);
 		$out =  str_replace('%ID%', addslashes($oid), $out);
 	}
-		
+
 	return $out;
 }

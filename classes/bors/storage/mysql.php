@@ -264,7 +264,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function load_array($object, $where)
 	{
-		$by_id  = popval($where, 'by_id');
+		if(!$by_id  = popval($where, 'by_id'))
+			$by_id  = popval($where, '*by_id');
+
 		if(!($select = popval($where, '*select')))
 			$select = popval($where, 'select');
 

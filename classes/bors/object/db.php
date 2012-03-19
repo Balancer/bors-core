@@ -30,6 +30,9 @@ class bors_object_db extends base_object_db
 		if($this->table_name)
 			return $this->table_name;
 
+		if($tab = $this->get('table_name', NULL, true))
+			return $tab;
+
 		return $this->_item_name_m();
 	}
 

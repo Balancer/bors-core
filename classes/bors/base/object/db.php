@@ -46,7 +46,18 @@ class base_object_db extends bors_object
 	function main_db($default = NULL) { return $default ? $default : array_shift(array_keys($this->fields())); }
 
 	function table_name($default = NULL) { return $this->main_table($default); }
-	function main_table($default = NULL) { return $default ? $default : array_shift(array_keys(array_shift($this->fields()))); }
+	function main_table($default = NULL)
+	{
+		if($default)
+		{
+			if($tab = $this->get('table_name', NULL, true))
+				return $tab;
+
+			return $default;
+		}
+
+		return array_shift(array_keys(array_shift($this->fields())));
+	}
 
 	function new_instance() { bors_object_new_instance_db($this); }
 

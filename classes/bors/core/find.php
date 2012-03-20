@@ -39,8 +39,8 @@ class bors_core_find
 
 		if(config('debug_objects_create_counting_details'))
 		{
-			debug_count_inc($class.': bors_find_all_calls');
-			debug_count_inc($class.': bors_find_all_total ', count($objects));
+			debug_count_inc($this->_class_name.': bors_find_all_calls');
+			debug_count_inc($this->_class_name.': bors_find_all_total ', count($objects));
 		}
 
 		if($this->_preload)
@@ -61,11 +61,15 @@ class bors_core_find
 	function where($param, $value = NULL)
 	{
 		if(!is_null($value))
+		{
 			$this->where_parse_set($param, $value);
-		elseif(is_array($conditions))
-			$this->_where = array_merge($this->_where, $conditions);
+			return $this;
+		}
+
+		if(is_array($param))
+			$this->_where = array_merge($this->_where, $param);
 		else
-			$this->_where[] = $conditions;
+			$this->_where[] = $param;
 
 		return $this;
 	}
@@ -141,14 +145,20 @@ class bors_core_find
 			if(preg_match('/^-(.+)/', $property_name, $m))
 			{
 				$property_name = $m[1];
-				$dir = 'DESC';
+				$dir = ' DESC';
 			}
 			else
-				$dir = 'ASC';
+				$dir = '';
 
-			$field_data = bors_lib_orm::parse_property($this->_class_name, $property_name);
+			if(preg_match('/^\w+$/', $property_name))
+			{
+				$field_data = bors_lib_orm::parse_property($this->_class_name, $property_name);
+				$field_name = $field_data['name'];
+			}
+			else
+				$field_name = $property_name;
 
-			$parsed_order[] = "{$field_data['name']} $dir";
+			$parsed_order[] = "{$field_name}$dir";
 		}
 
 		$this->_where['*raw_order'] = "ORDER BY ".join(', ', $parsed_order);

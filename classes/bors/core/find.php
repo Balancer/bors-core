@@ -21,12 +21,16 @@ class bors_core_find
 
 	function first()
 	{
-		return bors_find_first($this->_class_name, $this->_where);
+		return array_pop($this->all(1));
 	}
 
 	// Найти все объекты, соответствующие заданным критериям
 	function all($limit1=NULL, $limit2=NULL)
 	{
+		$args = func_get_args();
+		if(count($args) == 1)
+			$this->_where['*limit'] = $limit1;
+
 		$init = new $this->_class_name(NULL);
 		$class_file = bors_class_loader::load($this->_class_name);
 		$init->set_class_file($class_file);
@@ -37,10 +41,12 @@ class bors_core_find
 
 		$objects = $s->load_array($init, $this->_where);
 
+		config_set('debug.trace_queries', NULL);
+
 		if(config('debug_objects_create_counting_details'))
 		{
-			debug_count_inc($this->_class_name.': bors_find_all_calls');
-			debug_count_inc($this->_class_name.': bors_find_all_total ', count($objects));
+			debug_count_inc($this->_class_name.': bors_find->all()_calls');
+			debug_count_inc($this->_class_name.': bors_find->all()_total', count($objects));
 		}
 
 		if($this->_preload)
@@ -60,11 +66,14 @@ class bors_core_find
 
 	function where($param, $value = NULL, $value2 = NULL)
 	{
-		$args = func_get_args();
-		if(count($args) > 1)
+		switch(count(func_get_args()))
 		{
-			$this->where_parse_set($param, $value, $value2);
-			return $this;
+			case 2:
+				$this->where_parse_set($param, $value);
+				return $this;
+			case 3:
+				$this->where_parse_set($param, $value, $value2);
+				return $this;
 		}
 
 		if(is_array($param))
@@ -78,7 +87,12 @@ class bors_core_find
 	function inner_join($join_class, $join_cond)
 	{
 		$this->class_stack_push($join_class);
-		$table = bors_lib_orm::table_name($join_class);
+
+		if(preg_match('/^\w+$/', $join_class))
+			$table = bors_lib_orm::table_name($join_class);
+		else
+			$table = $join_class;
+
 		$join_cond = $this->stack_parse($join_cond);
 		$this->_add_where_array('*inner_joins', "`$table` ON ($join_cond)");
 		return $this;
@@ -95,7 +109,7 @@ class bors_core_find
 		if(empty($this->_where[$name]))
 			$this->_where[$name] = array($value);
 		else
-			$this->_where[$name] = array_merge($this->_where, array($value));
+			$this->_where[$name] = array_merge($this->_where[$name], array($value));
 	}
 
 	function class_stack_push($class_name)
@@ -126,6 +140,7 @@ class bors_core_find
 	function where_parse_set($param, $value, $value2 = NULL)
 	{
 		$param = $this->stack_parse($param);
+
 		if(preg_match('/ IN$/', $param))
 		{
 			if(is_array($value))
@@ -140,10 +155,18 @@ class bors_core_find
 			else
 				$param = "$param ('".addslashes($value)." AND ".addslashes($value2)."')";
 		}
+		elseif(count(func_get_args()) == 2)
+		{
+			if(preg_match('/[\w`]$/', $param))
+				$param .= " = ";
+
+			$param .= "'".addslashes($value)."'";
+		}
 
 		$this->_add_where_array('*raw_conditions', $param);
 	}
 
+	//TODO: убрать преобразование, типа UNIXTIME(`Date`) as create_time … ORDER BY create_time там, где можно без него обойтись
 	function order($order)
 	{
 		$parsed_order = array();
@@ -170,6 +193,28 @@ class bors_core_find
 		}
 
 		$this->_where['*raw_order'] = "ORDER BY ".join(', ', $parsed_order);
+
+		return $this;
+	}
+
+	function debug($type = 'hidden')
+	{
+//		$this->_where['*debug'] = $type;
+		config_set('debug.trace_queries', $type);
+		return $this;
+	}
+
+	function group($property_name)
+	{
+		if(preg_match('/^\w+$/', $property_name))
+		{
+			$field_data = bors_lib_orm::parse_property($this->_class_name, $property_name);
+			$field_name = $field_data['name'];
+		}
+		else
+			$field_name = $property_name;
+
+		$this->_where['*raw_group'] = "GROUP BY `".addslashes($field_name)."`";
 
 		return $this;
 	}

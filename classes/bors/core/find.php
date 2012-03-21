@@ -58,11 +58,12 @@ class bors_core_find
 		return bors_count($this->_class_name, $this->_where);
 	}
 
-	function where($param, $value = NULL)
+	function where($param, $value = NULL, $value2 = NULL)
 	{
-		if(!is_null($value))
+		$args = func_get_args();
+		if(count($args) > 1)
 		{
-			$this->where_parse_set($param, $value);
+			$this->where_parse_set($param, $value, $value2);
 			return $this;
 		}
 
@@ -122,7 +123,7 @@ class bors_core_find
 		return "`$table`.`{$field_name}`";
 	}
 
-	function where_parse_set($param, $value)
+	function where_parse_set($param, $value, $value2 = NULL)
 	{
 		$param = $this->stack_parse($param);
 		if(preg_match('/ IN$/', $param))
@@ -131,6 +132,13 @@ class bors_core_find
 				$param = "$param ('".join("','", array_map('addslashes', $value))."')";
 			else
 				bors_throw("Parse where conditions error: where('$param', '$value')");
+		}
+		elseif(preg_match('/ BETWEEN$/', $param))
+		{
+			if(is_array($value))
+				$param = "$param ('".join("','", array_map('addslashes', $value))."')";
+			else
+				$param = "$param ('".addslashes($value)." AND ".addslashes($value2)."')";
 		}
 
 		$this->_add_where_array('*raw_conditions', $param);

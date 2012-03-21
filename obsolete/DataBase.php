@@ -171,6 +171,11 @@ class DataBase extends base_object
 		if($qtime > config('debug_mysql_slow', 5))
 			debug_hidden_log('mysql-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
 
+		if($type = config('debug.trace_queries'))
+		{
+			echo "q=$query<br/>";
+		}
+
 		if($cdmql = config('debug_mysql_queries_log'))
 		{
 			if($cdmql == 'false')

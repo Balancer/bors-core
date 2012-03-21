@@ -244,8 +244,8 @@ function mysql_args_compile($args, $class=NULL)
 	else
 		$use_index = '';
 
-	$group = "";
-	if(!empty($args['group']))
+	$group = popval($args, '*raw_group');
+	if(!$group && !empty($args['group']))
 	{
 		if(preg_match('/^\*BY([A-Z]+)\(UNIX_TIMESTAMP\((`\w+`)\)\)$/', $args['group'], $m))
 		{

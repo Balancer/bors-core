@@ -306,6 +306,12 @@ if(config('debug.timing') && is_string($res))
 
 	$deb .= "smarty = ".(config('smarty3_enable') ? 3 : 2)."\n";
 
+	if(config('is_developer'))
+	{
+		$deb .= "\n=== config ===\n"
+			. "cache_database = ".config('cache_database')."\n";
+	}
+
 	bors_function_include('debug/vars_info');
 	bors_function_include('debug/count');
 	bors_function_include('debug/count_info_all');

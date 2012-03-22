@@ -27,6 +27,8 @@ class bors_core_find
 	// Найти все объекты, соответствующие заданным критериям
 	function all($limit1=NULL, $limit2=NULL)
 	{
+		debug_timing_start('bors_find::all()');
+
 		$args = func_get_args();
 		if(count($args) == 1)
 			$this->_where['*limit'] = $limit1;
@@ -43,17 +45,21 @@ class bors_core_find
 
 		config_set('debug.trace_queries', NULL);
 
+		debug_timing_stop('bors_find::all()');
+
 		if(config('debug_objects_create_counting_details'))
 		{
-			debug_count_inc($this->_class_name.': bors_find->all()_calls');
-			debug_count_inc($this->_class_name.': bors_find->all()_total', count($objects));
+			debug_count_inc($this->_class_name.': bors_find::all()_calls');
+			debug_count_inc($this->_class_name.': bors_find::all()_total', count($objects));
 		}
 
 		if($this->_preload)
 		{
+			debug_timing_start('bors_find::all()_preload');
 			foreach($preload as $x)
 				if(preg_match('/^(\w+)\((\w+)\)$/', $x, $m))
 					bors_objects_preload($objects, $m[2], $m[1]);
+			debug_timing_stop('bors_find::all()_preload');
 		}
 
 		return $objects;

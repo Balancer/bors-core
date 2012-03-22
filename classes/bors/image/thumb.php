@@ -69,16 +69,15 @@ class bors_image_thumb extends bors_image
 
 //		$this->delete();
 
-		$caching = config('cache_database') ? true : false;
-		if($caching)
-			$this->new_instance();
-
 		if($original_path = $this->original->relative_path())
 			$new_path = secure_path('/cache/'.$original_path.'/'.$this->geometry);
 		else
 			$new_path = NULL;
 
+		$caching = config('cache_database') ? true : false;
+
 		$this->set_relative_path($new_path, $caching);
+
 
 		if($original_url = $this->original->full_url())
 			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
@@ -107,13 +106,26 @@ class bors_image_thumb extends bors_image
 			$file_orig_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_orig);
 			//TODO: ужасно, но пока только так.
 			$fsize_orig = strlen(@file_get_contents($file_orig_r));
+
+			$file_thumb_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_thumb);
+			//TODO: ужасно, но пока только так.
+			$fsize_thumb = strlen(file_get_contents($file_thumb_r));
+			//TODO: а это  совсем жопа
+			$this->set_full_file_name(str_replace('http://pics.aviaport.ru/', '/var/www/pics.aviaport.ru/htdocs/', $file_thumb_r), true);
 		}
 		else
 		{
 			$file_orig_r = $file_orig;
 			if(!($fsize_orig = @filesize($file_orig_r)))
 				debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
+
+			$file_thumb_r = $file_thumb;
+			//TODO: придумать обработку больших картинок.
+			$fsize_thumb = @filesize($file_thumb_r);
+			$this->set_full_file_name($file_thumb, true);
 		}
+
+		$this->set_size($fsize_thumb, $caching);
 
 		if(!$this->original->file_name() || !$fsize_orig)
 			return;
@@ -123,36 +135,6 @@ class bors_image_thumb extends bors_image
 		if(!$this->thumb_create($abs))
 			return $this->set_loaded(false);
 
-		if(config('pics_base_safemodded'))
-		{
-			$file_thumb_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_thumb);
-			//TODO: ужасно, но пока только так.
-			$fsize_thumb = strlen(file_get_contents($file_thumb_r));
-			//TODO: а это  совсем жопа
-			$this->set_full_file_name(str_replace('http://pics.aviaport.ru/', '/var/www/pics.aviaport.ru/htdocs/', $file_thumb_r), true);
-		}
-		else
-		{
-			$file_thumb_r = $file_thumb;
-			//TODO: придумать обработку больших картинок.
-			$fsize_thumb = @filesize($file_thumb_r);
-			$this->set_full_file_name($file_thumb, true);
-		}
-
-		//TODO: странный костыль.
-		if($caching)
-		{
-			$prev = bors_find_first($this->class_name(), array(
-				'full_file_name' => $this->full_file_name(),
-			));
-
-			if($prev)
-				$prev->delete();
-		}
-
-//		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
-		$this->set_size($fsize_thumb, $caching);
-
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
 			debug_hidden_log('image-error', 'Cannot get image width');
@@ -160,6 +142,22 @@ class bors_image_thumb extends bors_image
 		$this->set_width($img_data[0], $caching);
 		$this->set_height($img_data[1], $caching);
 		$this->set_mime_type($img_data['mime'], $caching);
+
+		if($caching)
+			$this->new_instance();
+
+		//TODO: странный костыль.
+//		if($caching)
+//		{
+//			$prev = bors_find_first($this->class_name(), array(
+//				'full_file_name' => $this->full_file_name(),
+//			));
+
+//			if($prev)
+//				$prev->delete();
+//		}
+
+//		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
 
 //		echo "{$this}: {$this->wxh()}<br />\n";
 		$this->set_loaded(true);

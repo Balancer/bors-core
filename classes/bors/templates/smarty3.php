@@ -57,6 +57,7 @@ class bors_templates_smarty3 extends bors_template
 //		$smarty->caching = true;
 //		$smarty->compile_check = true;
 //		$smarty->security = false;
+//		$smarty->escape_html = true; // config('smarty3.autoescape', true);
 		$smarty->cache_modified_check = true;
 		$smarty->cache_lifetime = 86400*7;
 

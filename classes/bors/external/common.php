@@ -129,6 +129,8 @@ if(config('is_developer')) { exit($img); }
 
 			$tags = array();
 
+			$bbshort = bors_close_tags(bors_close_bbtags($bbshort));
+
 			return compact('tags', 'title', 'bbshort');
 		}
 

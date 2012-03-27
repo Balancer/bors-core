@@ -1,6 +1,6 @@
 <?php
 
-function bors_url_parse($url, $field=NULL, $var=NULL)
+function bors_url_parse($url, $field=NULL, $var=NULL, $default=NULL)
 {
 	$data = parse_url($url);
 	if($field)
@@ -10,7 +10,7 @@ function bors_url_parse($url, $field=NULL, $var=NULL)
 	{
 		$parsed_data = array();
 		parse_str($data, $parsed_data);
-		$data = $parsed_data[$var];
+		$data = defval($parsed_data, $var, $default);
 	}
 
 	return $data;

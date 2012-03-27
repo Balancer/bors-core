@@ -31,7 +31,11 @@ class bors_core_find
 
 		$args = func_get_args();
 		if(count($args) == 1)
+			// Формат all($limit)
 			$this->_where['*limit'] = $limit1;
+		elseif(count($args) == 2)
+			// Формат all($page, $items_per_page)
+			$this->_where['*limit'] = array(($limit1-1)*$limit2, $limit2);
 
 		$init = new $this->_class_name(NULL);
 		$class_file = bors_class_loader::load($this->_class_name);
@@ -67,6 +71,9 @@ class bors_core_find
 
 	function count()
 	{
+		//TODO: сделать игнор в sql-драйвере
+		unset($this->_where['*by_id']);
+		unset($this->_where['*limit']);
 		return bors_count($this->_class_name, $this->_where);
 	}
 
@@ -157,9 +164,9 @@ class bors_core_find
 		elseif(preg_match('/ BETWEEN$/', $param))
 		{
 			if(is_array($value))
-				$param = "$param ('".join("','", array_map('addslashes', $value))."')";
+				$param = "$param '".join("','", array_map('addslashes', $value))."'";
 			else
-				$param = "$param ('".addslashes($value)." AND ".addslashes($value2)."')";
+				$param = "$param '".addslashes($value)."' AND '".addslashes($value2)."'";
 		}
 		elseif(count(func_get_args()) == 2)
 		{

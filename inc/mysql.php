@@ -71,8 +71,13 @@ function mysql_order_compile($order_list, $class_name = false)
 
 function mysql_limits_compile(&$args)
 {
-	if($limit = intval(popval($args, '*limit')))
-		return "LIMIT $limit";
+	if($limit = popval($args, '*limit'))
+	{
+		if(is_array($limit))
+			return "LIMIT ".intval($limit[0]).", ".intval($limit[1]);
+		else
+			return "LIMIT ".intval($limit);
+	}
 
 	if(!empty($args['limit']))
 		return "LIMIT {$args['limit']}";

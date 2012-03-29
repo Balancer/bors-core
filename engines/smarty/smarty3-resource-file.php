@@ -1,5 +1,4 @@
 <?php
-
     // from PHP script
     // put these function somewhere in your application
 
@@ -25,12 +24,6 @@
 			}
 
 		if(preg_match('/story-digest/', $tpl_name)) echo "get content for $tpl_name: $fn<br/>";
-
-		if(file_exists($fn = $smarty->template_dir."/".$tpl_name))
-		{
-			$tpl_source = ec(file_get_contents($fn));
-			return true;
-		}
 
 		foreach(bors_dirs(true) as $dir)
 		{

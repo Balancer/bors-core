@@ -188,10 +188,10 @@ class bors_storage_htsu extends bors_storage
 			$object->set('modify_time', filemtime($file), false);
 
 		if(!$object->title_true())
-			if(preg_match("/(^|\n)([^\n]+?)\n(==+)\n/su", $this->hts, $m))
+			if(preg_match("/(^|\n)([^\n]+)\n(==+)\n/s", $this->hts, $m))
 			{
 //				var_dump($m);
-				$this->hts = preg_replace("/(^|\n)([^\n]+?)\n(==+)\n/su", "$1\n", $this->hts);
+				$this->hts = preg_replace("/(^|\n)([^\n]+)\n(==+)\n/s", "$1\n", $this->hts);
 				$object->set_title($m[2], false);
 			}
 

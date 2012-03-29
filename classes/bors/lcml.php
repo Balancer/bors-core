@@ -98,7 +98,7 @@ class bors_lcml
 		{
 			$original = $text;
 
-//			if(config('is_developer'))echo "$fn('$text') <br/>\n";
+//			if(config('is_developer')) echo "$fn('$text') <br/>\n";
 			if((!$fns_list_enabled || in_array($fn, $fns_list_enabled))
 				&& !in_array($fn, $fns_list_disabled)
 			)

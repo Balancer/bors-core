@@ -22,6 +22,22 @@ if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 // Инициализация фреймворка
 require_once(dirname(__FILE__).'/init.php');
 
+if(file_exists($f = BORS_SITE.'/data/webroot/redirect.list'))
+{
+	$content = file_get_contents($f);
+	$content = preg_replace('/^#\s+.+$/m', '', $content);
+	$content = preg_replace('/^(.+)\s+#\s+.+$/m', '$1', $content);
+
+	foreach(explode("\n", $content) as $s)
+	{
+		if(!preg_match('!^(\S+)\s+(~|=)>\s+(\S+)$!', trim($s), $m))
+			continue;
+
+		if($m[2] == '=' && $m[1] == $_SERVER['REQUEST_URI'])
+			return go($m[3]);
+	}
+}
+
 // Скажем, кто мы такие. Какой версии.
 if(config('bors_version_show'))
 	header('X-Bors: v' .config('bors_version_show'));

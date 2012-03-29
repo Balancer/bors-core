@@ -157,8 +157,8 @@ function bors_dirs($skip_config = false, $host = NULL)
 {
 	static $dirs = NULL;
 
-	if(isset($dirs[$skip_config]))
-		return $dirs[$skip_config];
+	if(isset($dirs[$skip_config][$host]))
+		return $dirs[$skip_config][$host];
 
 	if(!$host)
 		$host = @$_SERVER['HTTP_HOST'];
@@ -181,7 +181,7 @@ function bors_dirs($skip_config = false, $host = NULL)
 		if(is_dir($dir))
 			$data[] = $dir;
 
-	return $dirs[$skip_config] = array_unique(array_filter($data));
+	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
 }
 
 if(get_magic_quotes_gpc() && $_POST)

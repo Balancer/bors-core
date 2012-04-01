@@ -378,6 +378,8 @@ defined at {$this->class_file()}<br/>
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();
 
+//			if(config('is_developer')) echo debug_trace();
+
 			//TODO: продумать систему контроля типов.
 			//FIXME: чёрт, тут нельзя вызывать всяких user, пока в них лезут ошибки типов. Исправить и проверить все основные проекты.
 //			if(@$this->data[$field] == $value && @$this->data[$field] !== NULL && $value !== NULL)

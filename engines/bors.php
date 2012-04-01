@@ -343,10 +343,45 @@ function bors_load($class_name, $id = NULL)
 
 function bors_load_ex($class_name, $id, $attrs)
 {
-	if(!array_key_exists('no_load_cache', $attrs))
+	$memcache_time = popval($attrs, 'memcache');
+
+	if(!array_key_exists('no_load_cache', $attrs) && !$memcache_time)
 		$attrs['no_load_cache'] = true;
-	return object_load($class_name, $id, $attrs);
+
+	if($memcache_time)
+	{
+//if(config('is_developer')) var_dump($memcache_time);
+		if(($memcache_instance = config('memcached_instance')))
+		{
+			debug_count_inc('memcached bors objects checks');
+			unset($attrs['memcache']);
+			$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id;
+			if($attrs)
+				$hash .= '/'.serialize($attrs);
+
+			if($x = unserialize($memcache_instance->get($hash)))
+			{
+				$updated = false;
+				if(config('object_loader_filemtime_check'))
+					$updated = !method_exists($x, 'class_filemtime') || filemtime($x->real_class_file()) > $x->class_filemtime();
+
+				if($x->can_cached() && !$updated)
+				{
+					debug_count_inc('memcached bors objects loads');
+					return $x;
+				}
+			}
+		}
+	}
+
+	$x = object_load($class_name, $id, $attrs);
+
+	if($memcache_time && $memcache_instance)
+		$memcache_instance->set($hash, serialize($x), 0, $memcache_time);
+
+	return $x;
 }
+
 function bors_load_uri($uri) { return object_load($uri); }
 function bors_find_all($class_name, $where) { return objects_array($class_name, $where); }
 function bors_find_first($class_name, $where) { return objects_first($class_name, $where); }

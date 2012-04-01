@@ -2,6 +2,8 @@
 
 spl_autoload_register('class_include');
 
+bors_function_include('debug/count_inc');
+
 function bors_object_caches_drop()
 {
 	unset($GLOBALS['bors_data']['cached_objects4']);

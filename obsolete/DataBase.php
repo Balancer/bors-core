@@ -174,6 +174,8 @@ class DataBase extends base_object
 		if($type = config('debug.trace_queries'))
 		{
 			echo "q=$query<br/>";
+//			if(preg_match('/select.*from.*forums/i', $query)) echo debug_trace();
+//			if(preg_match('/select id from posts/i', $query)) echo debug_trace();
 		}
 
 		if($cdmql = config('debug_mysql_queries_log'))

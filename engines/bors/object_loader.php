@@ -319,6 +319,9 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 			//TODO: ввести корректную отработку redirect:
 			// Проверить на http://forums.airbase.ru/2008/06/t61976--ssylki-na-temy-po-proektam-korablej-i-sudov-prezhde-chem-nac.html
 			// баг в том, что редиректит при простой инициализации объектов
+			// Пробуем в роли времянки возвращать URL:
+			if(config('__main_object_load', false))
+				return $obj->url($page);
 /*
 			if(!config('do_not_exit'))
 			{
@@ -328,7 +331,8 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 			}
 			else
 */
-				return object_load($obj->url($page));
+			// Иначе — загружаем объект редиректа
+			return object_load($obj->url($page));
 		}
 		return $obj;
 	}

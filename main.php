@@ -194,8 +194,20 @@ try
 	if(config('debug.execute_trace'))
 		debug_execute_trace("bors_load_uri('$uri');");
 
+	config_set('__main_object_load', true); // костыли, ну и фиг с ними. Боком нигде не должно вылезти.
 	if($object = bors_load_uri($uri))
 	{
+		config_set('__main_object_load', false);
+
+		// Если это редирект
+		if(!is_object($object))
+		{
+			if(config('bors_version_show'))
+				header('X-bors-object: redirect to '.$object);
+
+			return go($object);
+		}
+
 		if(config('bors_version_show'))
 			header('X-bors-object: '.$object->internal_uri());
 

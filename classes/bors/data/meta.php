@@ -9,6 +9,7 @@ class bors_data_meta extends bors_object
 			return array(
 				'content' => file_get_contents($file),
 				'mtime' => filemtime($file),
+				'file' => $file,
 			);
 
 		foreach(bors_dirs() as $dir)
@@ -18,6 +19,19 @@ class bors_data_meta extends bors_object
 					'mtime' => filemtime($fn),
 					'file' => $fn,
 				);
+
+		return NULL;
+	}
+
+	// Ищем файл в структуре BORS-каталогов
+	static function find_file($file, $base = '/')
+	{
+		if(file_exists($file) && is_readable($file))
+			return $file;
+
+		foreach(bors_dirs() as $dir)
+			if(file_exists($fn = $dir.$base.'/'.$file) && is_readable($fn))
+				return $fn;
 
 		return NULL;
 	}

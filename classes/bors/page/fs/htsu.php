@@ -24,6 +24,9 @@ class bors_page_fs_htsu extends bors_page
 
 	function pre_show()
 	{
+		if($redirect = $this->get('show_redirect'))
+			return go($redirect);
+
 		config_set('cache_disabled', true);
 		config_set('lcml_markdown', true);
 		return parent::pre_show();

@@ -160,6 +160,8 @@ class bors_storage_htsu extends bors_storage
     	$this->ext('modify_time', NULL, false);
     	$this->ext('style');
     	$this->ext('template');
+		// Атрибут редиректа по ссылке при попытке показа данной страницы. Полезно для страниц-заглушек у которых должно быть своё имя в навигации, но показ которых не нужен.
+    	$this->ext('show_redirect');
     	$this->ext('color');
     	$this->ext('logdir');
     	$this->ext('cr_type');

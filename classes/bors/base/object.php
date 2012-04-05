@@ -307,21 +307,23 @@ class base_object extends base_empty
 		if(property_exists($this, $name_ec))
 			return $this->set_attr($name, ec($this->$name_ec));
 
-		// Ищем методы, перекрываемые переменным по умолчанию
-		$m = "_{$name}_def";
-		if(method_exists($this, $m))
-		{
-			try { $value = $this->$m(); }
-			catch(Exception $e) { $value = NULL; }
-			return $this->attr[$name] = $value;
-		}
-
+		// Почему-то раньше нотации шли после _{name}_def. Не логично, так как нотации должны перекрывать значения по умолчанию
+		// Но если где-то вылезут ошибки, нужно будет думать.
 		$x = bors_lib_orm::get_notation($this, $name);
 		if($x !== false)
 			return $this->attr[$name] = $x;
 
-		if(preg_match('/advice/', $name))
-			echo "get {$this}.$name = {$x}<br/>";
+		// Ищем методы, перекрываемые переменным по умолчанию
+		$m = "_{$name}_def";
+		if(method_exists($this, $m))
+		{
+			// Try убран, так как нужно решить, как обрабатывать всякие function _title_def() { bors_throw('Заголовок не указан!';} — см. bors_rss
+			$value = $this->$m();
+//			var_dump($m, $value);
+//			try { $value = $this->$m(); }
+//			catch(Exception $e) { $value = NULL; }
+			return $this->attr[$name] = $value;
+		}
 
 		// Проверяем нет ли значения по умолчанию — это вместо бывшего attr
 		if(@array_key_exists($method, $this->defaults))

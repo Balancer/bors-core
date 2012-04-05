@@ -10,6 +10,8 @@ class base_rss extends base_page
 	function rss_title() { return $this->title(); }
 	function rss_description() { return $this->description(); }
 
+//	function item_image() { return NULL; }
+
 	function render($rss)
 	{
 		require_once(config('feedcreator_include'));
@@ -55,6 +57,7 @@ class base_rss extends base_page
 //			$item->description = $rss->rss_body($o, $rss->rss_strip());
 			if(($desc = $rss->item_rss_body($o, $rss)))
 				$item->description = $desc;
+
 			$item->descriptionHtmlSyndicated = true;
 			$item->date = intval($o->create_time());//$rss->item_rss_gmtime($o);
 			$item->source = $rss->rss_source_url();
@@ -76,8 +79,10 @@ class base_rss extends base_page
 					$item->enclosure->length = $s;
 			}
 /*
-			if($image = object_property($o, 'image'))
+			if($image = $this->item_image($o, $rss))
 			{
+				print_dd($image);
+				// <link rel="enclosure" type="image/jpeg" href="image_url_here" />
 	 			$item->enclosure = new EnclosureItem();
 	 			$thumb = $image->thumbnail('300x300');
 				$item->enclosure->url = $thumb->url();

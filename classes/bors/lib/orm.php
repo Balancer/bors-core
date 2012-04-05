@@ -233,7 +233,12 @@ class bors_lib_orm
 			return bors_load($m[1], $object->get($m[2]));
 
 		if(preg_match("!^\s*@$name\s*=(.+)*$!m", $class_source, $m))
-			return trim($m[1]);
+		{
+			$value = trim($m[1]);
+			// Поддержка переменных вида %config.value%
+			$value = preg_replace('/%config\.(\w+)%/e', "config('$1');", $value);
+			return $value;
+		}
 
 		return false;
 	}

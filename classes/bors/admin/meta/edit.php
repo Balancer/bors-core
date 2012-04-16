@@ -4,7 +4,14 @@ class bors_admin_meta_edit extends bors_admin_page
 {
 	function config_class() { return config('admin_config_class'); }
 
-	function nav_name() { return $this->id() ? $this->target()->nav_name() : ec('добавление'); }
+	function nav_name()
+	{
+		if($this->id()) // редактирование
+			return preg_match('!/edit/?$!', $this->url()) ? ec('редактирование') : $this->target()->nav_name();
+
+		return ec('добавление');
+	}
+
 	function title()
 	{
 		return $this->id() ?
@@ -90,4 +97,6 @@ class bors_admin_meta_edit extends bors_admin_page
 	// Куда переходим после сохранения изменённого старого объекта
 	// По умолчанию — на страницу-родителя
 	function go_edit_url() { return 'admin_parent'; }
+
+	function owner_id() { return $this->target()->owner_id(); }
 }

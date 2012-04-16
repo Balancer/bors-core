@@ -300,8 +300,9 @@ class bors_admin_engine extends bors_object
 
 	function urls($type = NULL)
 	{
-//var_dump($this->object());
-		if(method_exists($obj = $this->object(), 'urls') && ($object_url = $obj->urls($type)) && !is_object($object_url))
+		$object = $this->object();
+
+		if(method_exists($object, 'urls') && ($object_url = $object->urls($type)) && !is_object($object_url))
 			return $object_url;
 
 		switch($type)
@@ -310,6 +311,8 @@ class bors_admin_engine extends bors_object
 				return config('admin_host_url')."/_bors/admin/edit/crosslinks/?real_object={$this->real_object()->internal_uri_ascii()}&object={$this->object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
 			case 'synonyms':
 				return config('admin_host_url')."/_bors/admin/edit/synonyms/?real_object={$this->real_object()->internal_uri_ascii()}&object={$this->object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
+			case 'new':
+				return config('admin_host_url')."/{$object->section_name()}/new/";
 		}
 
 		return $this->object()->admin()->url().$type.'/';

@@ -145,7 +145,15 @@ class bors_object_db extends base_object_db
 	}
 
 	function url() { return config('main_site_url').'/'.$this->_item_name_m().'/'.$this->id().'/'; }
-	function admin_url() { return config('admin_site_url').'/'.$this->_item_name_m().'/'.$this->id().'/'; }
+	function admin_url()
+	{
+		$admin = config('admin_site_url');
+		//TODO: Костыль для сайтов без вынесенной админки. Придумать лучше.
+		if($admin != config('main_site_url'))
+			return $admin.'/'.$this->_item_name_m().'/'.$this->id().'/';
+
+		return $admin.'/'.$this->_item_name_m().'/'.$this->id().'/edit/';
+	}
 
 	function auto_objects()
 	{
@@ -164,4 +172,7 @@ class bors_object_db extends base_object_db
 	}
 
 	function __toString() { return $this->title(); }
+
+	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
+	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
 }

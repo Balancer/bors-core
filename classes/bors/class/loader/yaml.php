@@ -51,6 +51,9 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				."\n\t\t);\n\t}\n";
 		}
 
+		if(empty($data['class_file']))
+			$data['class_file'] = $class_file;
+
 		foreach($data as $key => $value)
 		{
 			if(is_array($value))

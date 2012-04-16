@@ -63,6 +63,7 @@ class bors_view extends bors_page
 			$this->item_name() => $target,
 			'target' => $target,
 			'view' => $this,
+			'self' => $this,
 		), $this->target()->data);
 	}
 
@@ -73,4 +74,48 @@ class bors_view extends bors_page
 	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
 	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
+
+	function html_auto()
+	{
+		$target = $this->target(); // Выводимый объект
+		$out = array();
+		foreach(bors_lib_orm::main_fields($target) as $idx => $args)
+		{
+			if(@$args['is_editable'] === false)
+				continue;
+
+			$value = $target->get($args['property']);
+//			var_dump($args, $value);
+			if($args['type'] == 'image') // http://ucrm.wrk.ru/persons/4/
+			{
+//				var_dump($value);
+				if($image = bors_load('bors_image', $value))
+					array_unshift($out, $image->thumbnail('200x200')->html(array('append' => 'align="left" hspace="10"')));
+
+				continue;
+			}
+			elseif(!empty($args['class']))
+				$value = object_property(bors_load($args['class'], $value), 'titled_link');
+			elseif(!empty($args['named_list']))
+				$value = object_property(bors_load($args['named_list'], $value), 'title');
+			elseif($args['type'] == 'freedate')
+				$value = bors_lower(bors_lib_date::part($value, true));
+			elseif($args['type'] == 'bbcode')
+				$value = lcml_bbh($value);
+			else
+			{
+//				var_dump($args, $value);
+				$value = htmlspecialchars($value);
+			}
+
+			if($value && ($title = $args['title']))
+				$out[] = "<li><b>{$title}</b>: ".$value."</li>\n";
+		}
+
+		$html .= join("", $out);
+
+		return $html;
+	}
+
+	function access() { return $this->target()->access(); }
 }

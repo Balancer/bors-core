@@ -102,7 +102,11 @@ class bors_forms_saver extends base_empty
 			$object->post_set($data);
 
 			add_session_message(ec('Данные успешно сохранены'), array('type' => 'success'));
+
+			if($was_new)
+				$object->set_owner_id(bors()->user_id(), true);
 		}
+
 
 		if(method_exists($object, 'post_save'))
 			$object->post_save($data);

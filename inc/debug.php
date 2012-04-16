@@ -203,7 +203,7 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 	if(!file_exists($dir))
 		return false;
 
-//	echo $errfile.':'.$errline;
+//	echo "$errstr ".$errfile.':'.$errline;
 	debug_hidden_log('errors/'.date('c'), "bors_system_error_handler:
 		errno=$errno
 		errstr=$errstr

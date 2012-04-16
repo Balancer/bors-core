@@ -112,14 +112,19 @@ function bors_message($text, $params=array())
 
 	$page->set_parents(array(@$_SERVER['REQUEST_URI']), false);
 
+	$is_error = preg_match('/ошибк/i', bors_lower($title));
+
 	$data = array(
 		'title' => $title,
 		'nav_name' => $nav_name,
 		'source' => $body,
 		'body' => $body,
 		'this' => $page,
-		'is_error' => preg_match('/ошибк/i', bors_lower($title)),
+		'is_error' => $is_error,
 	);
+
+	if($is_error)
+		$data['skip_nav'] = true;
 
 	$template = defval($params, 'template');
 
@@ -129,8 +134,8 @@ function bors_message($text, $params=array())
 	if(!$template)
 		$template = config('default_message_template', config('default_template'));
 
-	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
-		$template = "xfile:$template";
+//	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
+//		$template = "xfile:$template";
 
 	if(config('smarty3_enable'))
 		$message = bors_templates_smarty::fetch($template, $data);

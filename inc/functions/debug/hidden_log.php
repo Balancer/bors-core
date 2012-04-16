@@ -12,7 +12,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 	if(!($out_dir = config('debug_hidden_log_dir')))
 		return;
 
-	if($trace && empty($args['dont_show_user']))
+	if($trace && empty($args['dont_show_user']) && class_exists('bors_class_loader', false))
 		$user = object_property(bors(), 'user');
 
 	if(popval($args, 'notime'))

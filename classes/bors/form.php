@@ -248,7 +248,7 @@ class bors_form extends bors_object
 				if($comment = @$data['comment'])
 					$title .="<br/><small class=\"gray\">{$comment}</small>";
 
-				if(!empty($data['class']))
+				if(!empty($data['class']) && $type != 'image')
 				{
 					$type = 'dropdown';
 					$class = $data['class'];

@@ -62,10 +62,15 @@ class bors_view extends bors_page
 		return array_merge(parent::body_data(), array(
 			$this->item_name() => $target,
 			'target' => $target,
+			'view' => $this,
 		), $this->target()->data);
 	}
 
 	function url($page = NULL) { return $this->target()->url($page); }
 	function admin_url() { return $this->target()->get('admin_url'); }
 	static function object_type() { return $this->target()->object_type(); }
+
+	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
+	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
+	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
 }

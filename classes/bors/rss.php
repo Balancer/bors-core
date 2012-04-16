@@ -22,4 +22,18 @@ class bors_rss extends base_rss
 	function rss_url()  { return $this->called_url(); }
 
 	function language() { return 'ru'; }
+
+	function parse_template($template_or_suffix, $data)
+	{
+		// .item.html -> news.item.html
+		if($template_or_suffix[0] == '.')
+		{
+			bors_lib_page::smart_body_template_check($this, substr($template_or_suffix, 1));
+			$template = $this->body_template();
+		}
+		else
+			$template = $template_or_suffix;
+
+		return bors_templates_smarty::fetch($template, $data);
+	}
 }

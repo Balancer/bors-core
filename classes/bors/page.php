@@ -47,6 +47,7 @@ class bors_page extends base_page
 		return parent::body_template();
 	}
 
+	// Вынесено в bors_lib_page. Проверить.
 	function __smart_body_template_check()
 	{
 		if(!empty($this->attr['__smart_body_template_checked']))
@@ -172,5 +173,18 @@ class bors_page extends base_page
 
 		foreach($css_urls as $css)
 			template_css($css);
+	}
+
+	function _parser_type_def() { return 'lcml'; }
+	function _html_def()
+	{
+		switch($this->parser_type())
+		{
+			case 'lcml_bbh':
+				return lcml_bbh($this->source());
+
+			default:
+				return lcml($this->source());
+		}
 	}
 }

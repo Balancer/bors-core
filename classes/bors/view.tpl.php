@@ -1,6 +1,11 @@
 <?php
 
-$html = "<div class=\"yellow_box\"><ul class=\"none\">";
+$html = "";
+
+if($view->get('show_edit_link'))
+	$html .= "<div class=\"right\">{$target->admin()->imaged_titled_link('Редактировать')}</div>";
+
+$html .= "<div class=\"yellow_box\"><ul class=\"none\">";
 
 $out = array();
 foreach(bors_lib_orm::main_fields($target) as $idx => $args)

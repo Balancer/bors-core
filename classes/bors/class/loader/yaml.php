@@ -101,7 +101,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				if(is_numeric($key))
 					$s .= "'".addslashes($val)."',";
 				else
-					$s .= "'".addslashes($key)."' => ".$val.",";
+					$s .= "'".addslashes($key)."' => '".addslashes($val)."',";
 
 			}
 

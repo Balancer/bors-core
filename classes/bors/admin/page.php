@@ -20,4 +20,8 @@ class bors_admin_page extends bors_page
 
 		return parent::pre_show();
 	}
+
+	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
+	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
+	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
 }

@@ -126,7 +126,7 @@ class base_page extends bors_object
 				bors_throw("Can't load body engine '{$body_class_name}' for class {$this}");
 
 			if(config('debug.execute_trace'))
-				debug_execute_trace("Go ".get_class($body_engine)."->debug_title_short()}->body(object)...");
+				debug_execute_trace("Go ".get_class($body_engine)."->debug_title_short()->body(object)...");
 
 			return $this->__setc($body_engine->body($this));
 		}

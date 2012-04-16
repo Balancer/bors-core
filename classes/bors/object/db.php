@@ -51,9 +51,12 @@ class bors_object_db extends base_object_db
 
 		$project = $this->_project_name();
 
+		$types = $this->get('field_types', array());
+
 		$fields = array();
 		foreach(explode("\n", $info['Create Table']) as $s)
 		{
+//			echo "=$s=<br/>\n";
 			$is_null = !preg_match('/ NOT NULL /', $s);
 			$args = array();
 
@@ -64,7 +67,10 @@ class bors_object_db extends base_object_db
 				$foreign_table = $mm[2];
 				$item = bors_unplural($foreign_table);
 				$item_class = "{$project}_".$item;
-				$fields[$field_name]['class'] = $item_class;
+				if(empty($fields[$field_name]['class']))
+					$fields[$field_name]['class'] = $item_class;
+				else
+					$item_class = $fields[$field_name]['class'];
 				$fields[$field_name]['have_null'] = "true";
 				$auto_class_name = preg_replace('/_[a-z]+$/', '', $mm[1]);
 				self::$__auto_objects[$this->class_name()][$auto_class_name] = "$item_class({$field_name})";
@@ -99,8 +105,27 @@ class bors_object_db extends base_object_db
 				if(empty($fields[$field]))
 					$fields[$field] = array();
 
+				// Пример: Пол[common_sex]
+				// Добавить возможность использования и классов. Автоопределением, что ли?
+				if(preg_match('/^(.+)\[(\w+)\]$/', @$args['title'], $m))
+				{
+					$args['title'] = trim($m[1]);
+					$class_name = $m[2];
+					$foo = new $class_name(NULL);
+					if(method_exists($foo, 'named_list'))
+						$args['named_list'] = $class_name;
+					else
+						$args['class'] = $class_name;
+				}
+
 				if(in_array($field, array('id', 'create_time', 'modify_time', 'owner_id', 'last_editor_id')))
 					$args['is_editable'] = false;
+
+				if(@$args['title'] == 'hidden')
+					$args['is_editable'] = false;
+
+				if($type = @$types[$field])
+					$args['type'] = $type;
 
 				$fields[$field] = array_merge($fields[$field], $args);
 			}
@@ -108,6 +133,12 @@ class bors_object_db extends base_object_db
 
 //		var_dump($fields);
 //		var_dump($this->__auto_objects);
+
+		foreach($this->get('table_fields_append', array()) as $field => $name)
+		{
+			$fields[$field]['name'] = $name;
+			$fields[$field]['is_editable'] = false;
+		}
 
 		self::$__parsed_fields[$this->class_name()] = $fields;
 		return $fields;

@@ -78,6 +78,8 @@ class bors_forms_dropdown extends bors_forms_element
 		if(is_null($is_int) && !$strict)
 			$is_int = true;
 
+		$value = self::value($params, $form);
+
 		if(empty($get))
 		{
 			if(preg_match('!^\w+$!', $name))

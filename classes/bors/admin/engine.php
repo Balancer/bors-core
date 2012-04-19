@@ -83,6 +83,28 @@ class bors_admin_engine extends bors_object
 		return $res;
 	}
 
+	function imaged_direct_titled_link($title = NULL)
+	{
+		$obj = $this->real_object();
+		if(is_null($title))
+			$title = $obj->title();
+
+		if(!$title)
+			$title = ec('[без имени]');
+
+		$res = "<a rel=\"nofollow\" href=\"{$obj->url()}\">{$title}</a>";
+
+		try
+		{
+			//FIXME: подключить проверку доступа
+			if($obj->url() && $obj->access()->can_edit())
+				$res .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\"><img src=\"/_bors/i16/edit.png\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+		}
+		catch(Exception $e) { }
+
+		return $res;
+	}
+
 	function imaged_link($type, $image, $title=NULL)
 	{
 		require_once('inc/images.php');

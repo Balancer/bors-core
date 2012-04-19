@@ -76,7 +76,11 @@ class bors_admin_meta_edit extends bors_admin_page
 		if($this->id())
 			$data = object_property($this->target(), 'data', array());
 		else
+		{
 			$data = array();
+			if(preg_match('!/(\w+s)/(\d+)/?$!', bors()->request()->referer(), $m))
+				set_session_var("form_value_".bors_unplural($m[1]).'_id', $m[2]);
+		}
 
 		$target = $this->id() ? $this->target() : NULL;
 
@@ -98,5 +102,5 @@ class bors_admin_meta_edit extends bors_admin_page
 	// По умолчанию — на страницу-родителя
 	function go_edit_url() { return 'admin_parent'; }
 
-	function owner_id() { return $this->target()->owner_id(); }
+	function owner_id() { return object_property($this->target(), 'owner_id'); }
 }

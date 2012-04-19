@@ -94,6 +94,8 @@ class bors_view extends bors_page
 
 				continue;
 			}
+			elseif($args['type'] == 'bool') // http://matf.aviaport.ru/projects/1/
+				$value = $value ? ec('да') : ec('нет');
 			elseif(!empty($args['class']))
 				$value = object_property(bors_load($args['class'], $value), 'titled_link');
 			elseif(!empty($args['named_list']))

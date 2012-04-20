@@ -105,7 +105,9 @@ class bors_form extends bors_object
 			$object_id	= $object->id();
 		}
 
-		$form_class_name = $calling_object->class_name();
+		if(empty($form_class_name))
+			$form_class_name = $calling_object->class_name();
+
 		$form_object_id	= $calling_object->id();
 
 		$this->set_attr('class_name', $class_name);

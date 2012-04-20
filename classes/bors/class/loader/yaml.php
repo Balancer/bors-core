@@ -14,6 +14,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		if($properties = popval($data, 'properties'))
 		{
+			var_dump($properties);
 			$table_fields = array();
 			foreach($properties as $p)
 			{
@@ -58,7 +59,15 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 		{
 			if(is_array($value))
 			{
-				$class .= "\n\tfunction $key()\n\t{\n\t\treturn array(\n".self::tr_array($value, 3)."\n\t\t);\n\t}\n";
+				$value = "array(\n".self::tr_array($value, 3)."\n\t\t)";
+				// fiels[]: values — это добавляемый к parent массив
+				if(preg_match('/^(\w+)\[\]$/', $key, $m))
+				{
+					$key = $m[1];
+					$value = "parent::$key() + $value";
+				}
+
+				$class .= "\n\tfunction $key()\n\t{\n\t\treturn $value;\n\t}\n";
 				continue;
 			}
 

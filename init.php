@@ -474,7 +474,7 @@ function bors_config_ini($file)
 {
 	foreach(parse_ini_file($file, true) as $section_name => $data)
 	{
-		if($section_name == 'global')
+		if($section_name == 'global' || $section_name == 'config')
 			$GLOBALS['cms']['config'] = array_merge($GLOBALS['cms']['config'], $data);
 		else
 			foreach($data as $key => $value)

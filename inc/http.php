@@ -60,6 +60,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 	$header[] = "Accept-Language: ru, en";
 
 	bors_function_include('debug/timing_start');
+	bors_function_include('debug/timing_stop');
 	debug_timing_start('http-get: '.$url);
 	debug_timing_start('http-get-total');
 	$ch = curl_init($url);

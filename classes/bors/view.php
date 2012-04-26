@@ -17,7 +17,11 @@ class bors_view extends bors_page
 		if($this->class_name() == 'bors_view')
 			return $this->arg('class_name');
 
+		// ucrm_companies_groups_view -> ucrm_companies_groups
 		$main_class = preg_replace('/_view$/', '', $this->extends_class_name());
+		// ucrm_companies_groups -> ucrm_company_group
+		$main_class = join('_', array_map('bors_unplural', explode('_', $main_class)));
+
 		if(class_include($main_class))
 			return $main_class;
 
@@ -50,21 +54,25 @@ class bors_view extends bors_page
 
 	function auto_targets()
 	{
-		return array_merge(parent::auto_targets(), array(
+		$data = array(
 			'target' => 'main_class(id)',
 			$this->target_name() => 'main_class(id)',
-		));
+		);
+
+		return array_merge(parent::auto_targets(), $data);
 	}
 
 	function body_data()
 	{
 		$target = $this->object();
-		return array_merge(parent::body_data(), array(
+		$data = array(
 			$this->item_name() => $target,
 			'target' => $target,
 			'view' => $this,
 			'self' => $this,
-		), $this->target()->data);
+		);
+
+		return array_merge(parent::body_data(), $data, $this->target()->data);
 	}
 
 	function url($page = NULL) { return $this->target()->url($page); }

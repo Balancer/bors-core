@@ -451,6 +451,19 @@ class bors_form extends bors_object
 //					smarty_function_checkbox($data, $smarty);
 				$html .= "</td></tr>\n";
 			}
+
+			if($object && ($xrefs = $object->get('xrefs')))
+			{
+				foreach($xrefs as $xref)
+				{
+					$html .= "<tr><th>".call_user_func(array($xref, 'class_title'))."</th><td>";
+					$html .= bors_forms_checkbox_list::html(array(
+						'xref' => $xref,
+//						'delim' => ' ',
+					), $this);
+					$html .= "</td></tr>";
+				}
+			}
 		}
 
 		return $html;

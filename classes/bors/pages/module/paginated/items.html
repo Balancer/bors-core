@@ -1,0 +1,14 @@
+<table class="btab w100p">
+<tr>
+{foreach $item_list_fields as $p => $t}
+	<th>{$t}</th>
+{/foreach}
+</tr>
+{foreach from=$items item="x"}
+<tr>
+	{foreach $item_list_fields as $p => $t}
+	<td>{$x->get($p)}</td>
+	{/foreach}
+</tr>
+{/foreach}
+</table>

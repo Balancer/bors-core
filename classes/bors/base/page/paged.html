@@ -1,11 +1,5 @@
 {$this->pages_links_nul()}
 
-<ul>
-{foreach from=$items item="x"}
-<li>{$x->titled_url()}</li>
-{foreachelse}
-<li>Ничего не найдено</li>
-{/foreach}
-</ul>
+{bors_module class="bors_pages_module_paginated_items" items=$items}
 
 {$this->pages_links_nul()}

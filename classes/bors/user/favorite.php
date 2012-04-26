@@ -41,17 +41,34 @@ class bors_user_favorite extends base_object_db
 		));
 	}
 
-	static function find($user, $target)
+	// Фактически это не find(), а check() или is_exists()
+	// Проверка на наличие в избранном
+	static function find($user, $where = array())
 	{
-		if(!$user || !$target)
+		if(!$user || !$where)
 			return NULL;
 
-		return objects_first('bors_user_favorite', array(
-			'user_class_name' => $user->class_name(),
-			'user_id' => $user->id(),
-			'target_class_name' => $target->class_name(),
-			'target_object_id' => $target->id(),
-		));
+		// Старое поведение, фактически, is_exists()
+		if(is_object($where))
+		{
+			$target = $where;
+			return objects_first('bors_user_favorite', array(
+				'user_class_name' => $user->class_name(),
+				'user_id' => $user->id(),
+				'target_class_name' => $target->class_name(),
+				'target_object_id' => $target->id(),
+			));
+		}
+
+		// Массив значений для поиска или просто строка с именем класса
+		if(!is_array($where))
+			$where = array('target_class_name' => $where);
+
+//		set_def($where, 'user_class_name', $user->class_name());
+		set_def($where, 'user_id', $user->id());
+
+		$favorites = bors_find_all('bors_user_favorite', $where);
+		return bors_field_array_extract($favorites, 'target');
 	}
 
 	static function remove($user, $target)

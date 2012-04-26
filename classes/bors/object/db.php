@@ -144,13 +144,20 @@ class bors_object_db extends base_object_db
 		return $fields;
 	}
 
-	function url() { return config('main_site_url').'/'.$this->_item_name_m().'/'.$this->id().'/'; }
+	function url()
+	{
+		if(preg_match('/^'.$this->project_name().'_(\w+)$/i', $this->class_name(), $m))
+			return config('main_site_url').'/'.join('/', array_map('bors_plural', explode('_', bors_lower($m[1])))).'/'.$this->id().'/';
+
+		return config('main_site_url').'/'.$this->_item_name_m().'/'.$this->id().'/';
+	}
+
 	function admin_url()
 	{
 		$admin = config('admin_site_url');
 		//TODO: Костыль для сайтов без вынесенной админки. Придумать лучше.
 		if($admin != config('main_site_url'))
-			return $admin.'/'.$this->_item_name_m().'/'.$this->id().'/';
+			return $this->url();
 
 		return $admin.'/'.$this->_item_name_m().'/'.$this->id().'/edit/';
 	}

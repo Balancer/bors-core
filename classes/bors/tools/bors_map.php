@@ -7,4 +7,6 @@ bors_url_submap(array(
 	'/favorites/ajax => bors_user_favorites_ajax',
 	'/ajax/call/(.+) => _ajax_call(1)',
 	'/ajax/module/(.+) => _ajax_module(1)',
+
+	'/act/pub/(.+) => _action_public(1)',
 ));

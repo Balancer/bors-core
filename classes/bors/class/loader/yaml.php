@@ -81,6 +81,9 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 			$class .= "\n\tfunction $key() { return $value; }\n";
 		}
 
+		if(file_exists($inc_php = str_replace('.yaml', '.inc.php', $class_file)))
+			$class .= preg_replace('/^<\?php/', '', file_get_contents($inc_php));
+
 		$class .= "}\n";
 
 //		echo "\n====================\n$class\n======================\n";

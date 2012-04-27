@@ -33,6 +33,13 @@ class bors_object_db extends base_object_db
 		if($tab = $this->get('table_name', NULL, true))
 			return $tab;
 
+		bors_function_include('natural/bors_chunks_unplural');
+		if(preg_match('/^'.$this->project_name().'_(\w+)$/i', $this->class_name(), $m))
+		{
+//			echo bors_plural(bors_chunks_unplural($m[1]))."<br/>";
+			return bors_plural(bors_chunks_unplural($m[1]));
+		}
+
 		return $this->_item_name_m();
 	}
 

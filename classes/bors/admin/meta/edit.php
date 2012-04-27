@@ -24,16 +24,16 @@ class bors_admin_meta_edit extends bors_admin_page
 
 	function main_class()
 	{
-		bors_function_include('natural/bors_unplural');
+		bors_function_include('natural/bors_chunks_unplural');
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		$class_name = str_replace('_edit', '', $class_name);
-		return bors_unplural($class_name);
+		return bors_chunks_unplural($class_name);
 	}
 
 	function main_admin_class()
 	{
 		$class_name = str_replace('_edit', '', $this->class_name());
-		$admin_class_name = bors_unplural($class_name);
+		$admin_class_name = bors_chunks_unplural($class_name);
 		if(class_include($admin_class_name))
 			return $admin_class_name;
 

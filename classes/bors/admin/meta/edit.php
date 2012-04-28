@@ -64,6 +64,13 @@ class bors_admin_meta_edit extends bors_admin_page
 		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
 	}
 
+	function auto_objects()
+	{
+		return array_merge(parent::auto_objects(), array(
+			$this->item_name() => $this->main_class().'(id)',
+		));
+	}
+
 	function body_data()
 	{
 		if($this->id())

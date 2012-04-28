@@ -41,7 +41,7 @@ class bors_ext_mail extends bors_empty
 		{
 			$text = $mail;
 
-			$mail = bors_markup_markdown::factory($text);
+			$mail = bors_markup_markdown::factory($text, array('keep_title' => true));
 
 //			if($title)
 //				$mail->set_title($title, false);
@@ -74,6 +74,17 @@ class bors_ext_mail extends bors_empty
 			self::make_recipient($from),
 			$headers
 		);
+	}
+
+	static function get_email($user)
+	{
+		if(!$user)
+			return NULL;
+
+		if(!is_object($user))
+			return $user;
+
+		return $user->email();
 	}
 
 	static function make_recipient($user)

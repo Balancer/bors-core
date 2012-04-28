@@ -13,7 +13,7 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 	foreach(explode(' ', 'to subject text html from') as $x)
 		$$x = dc($$x, $charset);
 
-	$mime = new Mail_mime("\r\n");
+	$mime = new Mail_mime("\n");
 
 	$mime->setTXTBody($text); 
 

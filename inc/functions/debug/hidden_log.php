@@ -59,6 +59,6 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 		@chmod($out_dir, 0777);
 	}
 
-	file_put_contents($file = "{$out_dir}/{$type}.log", $out, FILE_APPEND);
+	@file_put_contents($file = "{$out_dir}/{$type}.log", $out, FILE_APPEND);
 	@chmod($file, 0666);
 }

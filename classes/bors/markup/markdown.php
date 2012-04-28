@@ -2,9 +2,11 @@
 
 class bors_markup_markdown extends base_object
 {
-	static function factory($text = NULL)
+	static function factory($text = NULL, $args = array())
 	{
 		$md = new bors_markup_markdown(NULL);
+		$md->append_attrs($args);
+
 		if($text)
 			$md->set_source($text, false);
 
@@ -49,13 +51,15 @@ class bors_markup_markdown extends base_object
 		return $title;
 	}
 
-	function html()
+	function html($with_title = false)
 	{
-		list($title, $text) = self::title_text_extract($this->source());
+		if($this->attr('keep_title')) // Не выкусываем заголовок
+			$text = $this->source();
+		else // Оставляем текст без заголовка
+			list($title_foo, $text) = self::title_text_extract($this->source());
 
 		return self::parse($text);
 	}
-
 
 	static function parse($text)
 	{

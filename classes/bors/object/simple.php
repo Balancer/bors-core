@@ -188,6 +188,7 @@ class bors_object_simple extends bors_object_empty
 
 	function attr($attr, $def = NULL) { return array_key_exists($attr, $this->attr) ? $this->attr[$attr] : $def; }
 	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
+	function append_attrs($attrs) { return $this->attr = array_merge($this->attr, $attrs); }
 
 //	private $__last_cache_key; // идентификатор последнего проверяемого по havec значения
 	var $__last_cache_stack = array(); // Для реентерабельности

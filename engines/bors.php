@@ -361,9 +361,7 @@ function bors_load_ex($class_name, $id, $attrs)
 
 			if($x = unserialize($memcache_instance->get($hash)))
 			{
-				$updated = false;
-				if(config('object_loader_filemtime_check'))
-					$updated = !method_exists($x, 'class_filemtime') || filemtime($x->real_class_file()) > $x->class_filemtime();
+				$updated = bors_class_loader_meta::cache_updated($x);
 
 				if($x->can_cached() && !$updated)
 				{

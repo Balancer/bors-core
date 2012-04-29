@@ -21,9 +21,8 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 	if(!empty($GLOBALS['bors_data']['cached_objects4'][$class_name][$id]))
 	{
 		$obj = &$GLOBALS['bors_data']['cached_objects4'][$class_name][$id];
-		$updated = false;
-		if(config('object_loader_filemtime_check'))
-			$updated = !method_exists($obj, 'class_filemtime') || filemtime($obj->real_class_file()) > $obj->class_filemtime();
+
+		$updated = bors_class_loader_meta::cache_updated($obj);
 
 //		if(config('is_developer'))
 //			echo "Found in memory <b>$class_name</b>('$id'); can_cached={$obj->can_cached()}; updated = $updated (me=".method_exists($obj, 'class_filemtime')."; ".filemtime($obj->real_class_file()).' > '.$obj->class_filemtime().")<br />";
@@ -42,9 +41,7 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 		$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id;
 		if($x = unserialize($memcache->get($hash)))
 		{
-			$updated = false;
-			if(config('object_loader_filemtime_check'))
-				$updated = !method_exists($x, 'class_filemtime') || filemtime($x->real_class_file()) > $x->class_filemtime();
+			$updated = bors_class_loader_meta::cache_updated($x);
 
 			if($x->can_cached() && !$updated)
 			{

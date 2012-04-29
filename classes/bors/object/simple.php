@@ -23,6 +23,18 @@ class bors_object_simple extends bors_object_empty
 
 	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
+		if(!preg_match('/^\w+$/', $name))
+		{
+			// Если оформлено как функциональный вызов
+			// Хак: если это SQL-id вида 'id' => "CONCAT_WS('-', person_id, list_id)",
+
+			if(preg_match('/^CONCAT/', $name))
+				return NULL;
+
+			eval("\$result = \$this->$name;");
+			return $result;
+		}
+
 		if(method_exists($this, $name) && !$skip_methods)
 		{
 			try { $value = $this->$name(); }

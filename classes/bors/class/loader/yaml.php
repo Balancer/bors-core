@@ -14,6 +14,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		if($properties = popval($data, 'properties'))
 		{
+			var_dump($properties);
 			$table_fields = array();
 			foreach($properties as $p)
 			{
@@ -51,11 +52,22 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				."\n\t\t);\n\t}\n";
 		}
 
+		if(empty($data['class_file']))
+			$data['class_file'] = $class_file;
+
 		foreach($data as $key => $value)
 		{
 			if(is_array($value))
 			{
-				$class .= "\n\tfunction $key()\n\t{\n\t\treturn array(\n".self::tr_array($value, 3)."\n\t\t);\n\t}\n";
+				$value = "array(\n".self::tr_array($value, 3)."\n\t\t)";
+				// fiels[]: values — это добавляемый к parent массив
+				if(preg_match('/^(\w+)\[\]$/', $key, $m))
+				{
+					$key = $m[1];
+					$value = "parent::$key() + $value";
+				}
+
+				$class .= "\n\tfunction $key()\n\t{\n\t\treturn $value;\n\t}\n";
 				continue;
 			}
 
@@ -68,6 +80,9 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 			$class .= "\n\tfunction $key() { return $value; }\n";
 		}
+
+		if(file_exists($inc_php = str_replace('.yaml', '.inc.php', $class_file)))
+			$class .= preg_replace('/^<\?php/', '', file_get_contents($inc_php));
 
 		$class .= "}\n";
 
@@ -101,7 +116,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				if(is_numeric($key))
 					$s .= "'".addslashes($val)."',";
 				else
-					$s .= "'".addslashes($key)."' => ".$val.",";
+					$s .= "'".addslashes($key)."' => '".addslashes($val)."',";
 
 			}
 

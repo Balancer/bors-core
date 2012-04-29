@@ -143,6 +143,7 @@ class base_object extends base_empty
 
 		if(($config = $this->config_class()))
 		{
+//			if(!preg_match($config))
 			$this->config = new $config($this);
 
 			if(!$this->config)
@@ -242,6 +243,7 @@ class base_object extends base_empty
 	}
 
 	function strict_auto_fields_check() { return config('strict_auto_fields_check', true); }
+
 	function __call($method, $params)
 	{
 		// Это был вызов $obj->set_XXX($value, $db_up)

@@ -185,9 +185,11 @@ class bors_lib_http
 		if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt)$/i", $pure_url) && empty($params['blobs_enabled']))
 			return "";
 
+		$charset = popval($params, 'charset');
+
 		$header = array();
-		if(($cs = config('lcml_request_charset_default')))
-			$header[] = "Accept-Charset: ".$cs;
+		if(($request_charset = $charset ? $charset : config('lcml_request_charset_default')))
+			$header[] = "Accept-Charset: ".$request_charset;
 
 		$header[] = "Accept-Language: ru, en";
 
@@ -234,10 +236,8 @@ class bors_lib_http
 		$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 //		echo "<xmp>"; print_r($data); echo "</xmp>";
 
-	    if(!$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
+		if(!$charset && !$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
     	    $charset = $m[1];
-	    else
-    	    $charset = '';
 
 		curl_close($ch);
 

@@ -10,6 +10,7 @@ class bors_bodies_page extends base_null
 
 		$data['template_dir'] = $object->class_dir();
 		$data['this'] = $object;
+		$data['self'] = $object;
 
 		$body_template = $object->body_template();
 

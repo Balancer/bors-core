@@ -67,7 +67,7 @@ class bors_forms_date extends bors_forms_element
 		}
 
 		if(empty($year_min))
-			$year_min = strftime('%Y') - 20;
+			$year_min = strftime('%Y') - 100;
 		elseif($year_min == 'now')
 			$year_min = strftime('%Y');
 

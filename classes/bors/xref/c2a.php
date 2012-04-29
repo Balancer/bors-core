@@ -1,5 +1,7 @@
 <?php
 
+// Class-to-any. Первый класс определяется только по ID, второй — и по имени тоже.
+
 class bors_xref_c2a extends bors_object_db
 {
 	static function add($object, $target, $args = array(), $xref_class_name = NULL)

@@ -105,7 +105,9 @@ class bors_form extends bors_object
 			$object_id	= $object->id();
 		}
 
-		$form_class_name = $calling_object->class_name();
+		if(empty($form_class_name))
+			$form_class_name = $calling_object->class_name();
+
 		$form_object_id	= $calling_object->id();
 
 		$this->set_attr('class_name', $class_name);
@@ -248,7 +250,7 @@ class bors_form extends bors_object
 				if($comment = @$data['comment'])
 					$title .="<br/><small class=\"gray\">{$comment}</small>";
 
-				if(!empty($data['class']))
+				if(!empty($data['class']) && $type != 'image')
 				{
 					$type = 'dropdown';
 					$class = $data['class'];
@@ -448,6 +450,19 @@ class bors_form extends bors_object
 					$html .= bors_forms_checkbox::html($data, $this);
 //					smarty_function_checkbox($data, $smarty);
 				$html .= "</td></tr>\n";
+			}
+
+			if($object && ($xrefs = $object->get('xrefs')))
+			{
+				foreach($xrefs as $xref)
+				{
+					$html .= "<tr><th>".call_user_func(array($xref, 'class_title'))."</th><td>";
+					$html .= bors_forms_checkbox_list::html(array(
+						'xref' => $xref,
+//						'delim' => ' ',
+					), $this);
+					$html .= "</td></tr>";
+				}
 			}
 		}
 

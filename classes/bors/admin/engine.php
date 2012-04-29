@@ -83,6 +83,28 @@ class bors_admin_engine extends bors_object
 		return $res;
 	}
 
+	function imaged_direct_titled_link($title = NULL)
+	{
+		$obj = $this->real_object();
+		if(is_null($title))
+			$title = $obj->title();
+
+		if(!$title)
+			$title = ec('[без имени]');
+
+		$res = "<a rel=\"nofollow\" href=\"{$obj->url()}\">{$title}</a>";
+
+		try
+		{
+			//FIXME: подключить проверку доступа
+			if($obj->url() && $obj->access()->can_edit())
+				$res .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\"><img src=\"/_bors/i16/edit.png\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+		}
+		catch(Exception $e) { }
+
+		return $res;
+	}
+
 	function imaged_link($type, $image, $title=NULL)
 	{
 		require_once('inc/images.php');
@@ -300,8 +322,9 @@ class bors_admin_engine extends bors_object
 
 	function urls($type = NULL)
 	{
-//var_dump($this->object());
-		if(method_exists($obj = $this->object(), 'urls') && ($object_url = $obj->urls($type)) && !is_object($object_url))
+		$object = $this->object();
+
+		if(method_exists($object, 'urls') && ($object_url = $object->urls($type)) && !is_object($object_url))
 			return $object_url;
 
 		switch($type)
@@ -310,6 +333,8 @@ class bors_admin_engine extends bors_object
 				return config('admin_host_url')."/_bors/admin/edit/crosslinks/?real_object={$this->real_object()->internal_uri_ascii()}&object={$this->object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
 			case 'synonyms':
 				return config('admin_host_url')."/_bors/admin/edit/synonyms/?real_object={$this->real_object()->internal_uri_ascii()}&object={$this->object()->internal_uri_ascii()}&edit_class={$this->real_object()->admin()->url()}";
+			case 'new':
+				return config('admin_host_url')."/{$object->section_name()}/new/";
 		}
 
 		return $this->object()->admin()->url().$type.'/';

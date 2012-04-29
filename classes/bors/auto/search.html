@@ -1,0 +1,24 @@
+{form method="get" action=$this->action_url() class_name="NULL" uri="NULL" form_class_name="NULL"}
+{input name="q" value=$this->query()}
+{submit value="Найти"}
+{/form}
+
+{if $items}
+<br />
+<table class="btab w100p">
+<tr>
+{foreach $this->result_fields() as $p => $t}
+	<th>{$t}</th>
+{/foreach}
+</tr>
+{foreach from=$items item="x"}
+<tr>
+	{foreach $this->result_fields() as $p => $t}
+	<td>{$x->get($p)}</td>
+	{/foreach}
+</tr>
+{/foreach}
+</table>
+
+{$this->pages_links_nul()}
+{/if}

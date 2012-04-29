@@ -22,7 +22,10 @@ if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 // Инициализация фреймворка
 require_once(dirname(__FILE__).'/init.php');
 
-if(file_exists($f = BORS_SITE.'/data/webroot/redirect.list'))
+if(
+	file_exists($f = BORS_SITE.'/webroot/redirect.list')
+	|| file_exists($f = BORS_SITE.'/data/webroot/redirect.list')
+)
 {
 	$content = file_get_contents($f);
 	$content = preg_replace('/^#\s+.+$/m', '', $content);
@@ -233,6 +236,7 @@ catch(Exception $e)
 {
 	bors_function_include('debug/trace');
 	bors_function_include('debug/hidden_log');
+//	var_dump($e->getTrace());
 	$trace = debug_trace(0, false, -1, $e->getTrace());
 	$message = $e->getMessage();
 	debug_hidden_log('exception', "$message\n\n$trace", true, array('dont_show_user' => true));

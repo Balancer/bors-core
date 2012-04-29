@@ -54,7 +54,7 @@ if(!config('locale'))
 config_set('3rdp_xmlrpc_path', 'xmlrpc-2.2.2');
 
 if(!config('project.name'))
-	config_set('project.name', strtolower(basename(BORS_SITE)));
+	config_set('project.name', strtolower(basename(dirname(BORS_SITE))));
 
 // После установки кодировок -- использует internal_charset
 if(!config('cache_dir'))

@@ -10,6 +10,7 @@ class bors_external_feed extends base_object_db
 			'id',
 			'title',
 			'feed_url',
+			'charset' => array('title' => ec('Кодировка ленты')),
 			'append_keywords',
 			'post_as_topics',
 			'topics_auto_search',
@@ -66,11 +67,15 @@ class bors_external_feed extends base_object_db
 		return $feed;
 	}
 
-	function update($is_test = false)
+	function update($is_test = false, $rss_reread = false)
 	{
-		$xml = bors_lib_http::get($this->feed_url());
+		$xml = bors_lib_http::get_ex($this->feed_url(), array('charset' => $this->charset()));
+
+		$xml = $xml['content'];
+
 //		if($is_test)
-//			echo "xml = $xml\n";
+//			echo "xml = ".var_dump($xml)."\n";
+
 		$data = bors_lib_xml::xml2array($xml);
 		if(!empty($data['feed'])) // Это ATOM
 		{

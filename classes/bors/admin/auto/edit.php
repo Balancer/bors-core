@@ -9,7 +9,8 @@ class bors_admin_auto_edit extends bors_admin_meta_edit
 
 	function set_args(&$args)
 	{
-		$this->_rel = bors_unplural(str_replace('/', '_', trim(popval($args, 'page'), '/')));
+		bors_function_include('natural/bors_chunks_unplural');
+		$this->_rel = bors_chunks_unplural(str_replace('/', '_', trim(popval($args, 'page'), '/')));
 		return parent::set_args($args);
 	}
 

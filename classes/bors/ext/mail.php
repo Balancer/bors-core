@@ -65,7 +65,16 @@ class bors_ext_mail extends bors_empty
 					'skip_title' => true,
 				));
 		}
-
+/*
+		echo "send_mail(
+			".self::make_recipient($user).",
+			$title,
+			$text,
+			$html,
+			".self::make_recipient($from).",
+			".print_r($headers, true)."
+		);\n"; exit();
+*/
 		send_mail(
 			self::make_recipient($user),
 			$title,

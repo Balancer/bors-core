@@ -38,10 +38,32 @@ class bors_module extends bors_page
 		return $content;
 	}
 
-	static function show_mod($class_name, $args)
+	static function show_mod($class_name, $args = NULL)
 	{
+		echo self::mod_html($class_name, $args);
+	}
+
+	static function mod_html($class_name, $args = NULL)
+	{
+		if(preg_match('/^(\w+)::(\w+)$/', $class_name, $m))
+		{
+			$class_name = $m[1];
+			$func = $m[2];
+		}
+		else
+			$func = 'html_code';
+
+		if(preg_match('/^([a-z0-9]+)$/', $class_name))
+			$class_name = 'bors_module_'.$class_name;
+
+		if(preg_match('/^([a-z0-9]+)$/', $func))
+			$func = $func.'_html';
+
+		if(!is_array($args))
+			$args = array('target' => $args);
+
 		$mod = bors_load_ex($class_name, NULL, $args);
-		echo $mod->html_code();
+		return $mod->$func();
 	}
 
 	function body_data()

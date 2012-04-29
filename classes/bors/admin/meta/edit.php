@@ -4,7 +4,14 @@ class bors_admin_meta_edit extends bors_admin_page
 {
 	function config_class() { return config('admin_config_class'); }
 
-	function nav_name() { return $this->id() ? $this->target()->nav_name() : ec('добавление'); }
+	function nav_name()
+	{
+		if($this->id()) // редактирование
+			return preg_match('!/edit/?$!', $this->url()) ? ec('редактирование') : $this->target()->nav_name();
+
+		return ec('добавление');
+	}
+
 	function title()
 	{
 		return $this->id() ?
@@ -17,16 +24,16 @@ class bors_admin_meta_edit extends bors_admin_page
 
 	function main_class()
 	{
-		bors_function_include('natural/bors_unplural');
+		bors_function_include('natural/bors_chunks_unplural');
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		$class_name = str_replace('_edit', '', $class_name);
-		return bors_unplural($class_name);
+		return bors_chunks_unplural($class_name);
 	}
 
 	function main_admin_class()
 	{
 		$class_name = str_replace('_edit', '', $this->class_name());
-		$admin_class_name = bors_unplural($class_name);
+		$admin_class_name = bors_chunks_unplural($class_name);
 		if(class_include($admin_class_name))
 			return $admin_class_name;
 
@@ -76,7 +83,11 @@ class bors_admin_meta_edit extends bors_admin_page
 		if($this->id())
 			$data = object_property($this->target(), 'data', array());
 		else
+		{
 			$data = array();
+			if(preg_match('!/(\w+s)/(\d+)/?$!', bors()->request()->referer(), $m))
+				set_session_var("form_value_".bors_unplural($m[1]).'_id', $m[2]);
+		}
 
 		$target = $this->id() ? $this->target() : NULL;
 
@@ -97,4 +108,6 @@ class bors_admin_meta_edit extends bors_admin_page
 	// Куда переходим после сохранения изменённого старого объекта
 	// По умолчанию — на страницу-родителя
 	function go_edit_url() { return 'admin_parent'; }
+
+	function owner_id() { return object_property($this->target(), 'owner_id'); }
 }

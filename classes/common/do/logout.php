@@ -2,7 +2,7 @@
 
 class common_do_logout extends base_page
 {
-	function title() { return ec('Авторизация.'); }
+	function title() { return ec('Аутентификация'); }
 	function template() { return 'forum/common.html'; }
 
 	function pre_parse()
@@ -14,9 +14,8 @@ class common_do_logout extends base_page
 		else
 			bors_user::do_logout();
 
-		bors_exit();
-
 		$refo = object_load($referer);
+
 		if(!object_property($refo, 'is_public'))
 			$referer = NULL;
 

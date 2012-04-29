@@ -21,7 +21,7 @@ class bors_forms_checkbox_list extends bors_forms_element
 		if(!empty($xref))
 		{
 			// Задан класс m2m связей
-			$xref_obj = new $xref;
+			$xref_obj = new $xref(NULL);
 			$list = $xref_obj->named_list($obj);
 			$name = $xref_obj->name($obj, $xref_obj->class_name());
 		}

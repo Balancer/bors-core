@@ -224,11 +224,14 @@ function http_get_ex($url, $raw = true)
 		curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
 
 	$data = curl_exec($ch);
+
 	if($data === false)
 	{
 		//TODO: оформить хорошо. Например, отправить отложенную задачу по пересчёту
 		//И выше есть такой же блок.
-		echo '[2] Curl error: ' . curl_error($ch);
+		$err_str = curl_error($ch);
+//		if(config('is_developer')) { var_dump($url, $pure_url, $raw, $data, $err_str); exit(); }
+		echo '[2] Curl error: ' . $err_str;
 		return '';
 	}
 

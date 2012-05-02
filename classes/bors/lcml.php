@@ -247,7 +247,8 @@ class bors_lcml
 					foreach(file($f) as $s)
 					{
 						list($prio, $class_name) = preg_split("/\s+/", $s);
-						$classes[$prio.':'.$class_name] = new $class_name;
+						if($prio && $class_name)
+							$classes[$prio.':'.$class_name] = new $class_name(NULL);
 					}
 			}
 			ksort($classes);

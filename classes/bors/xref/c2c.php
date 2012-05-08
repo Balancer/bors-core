@@ -35,9 +35,14 @@ class bors_xref_c2c extends bors_object_db
 
 	function ignore_on_new_instance() { return true; }
 
-	function named_list($object)
+	function named_list($xref_class_name = NULL)
 	{
-		return bors_named_list_db($this->target_class_name());
+		require_once('inc/bors/lists.php');
+
+		if(!$xref_class_name)
+			$xref_class_name = get_called_class();
+
+		return bors_named_list_db($xref_class_name::target_class_name());
 	}
 
 	function name($object, $xref_class_name = NULL)

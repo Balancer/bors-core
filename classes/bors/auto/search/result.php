@@ -11,7 +11,12 @@ class bors_auto_search_result extends bors_auto_search
 
 	function where()
 	{
-		return array("title LIKE '%".addslashes($this->query())."%'");
+		$q = "(title LIKE '%".addslashes($this->query())."%'";
+		if($id = intval($this->query()))
+			$q .= " OR id=".$id;
+		$q .= ")";
+
+		return array($q);
 	}
 
 	function result_fields()
@@ -19,6 +24,9 @@ class bors_auto_search_result extends bors_auto_search
 		$class_name = $this->main_class();
 		$foo = new $class_name(NULL);
 		if($data = $foo->get('search_result_fields'))
+			return $data;
+
+		if($data = $foo->get('item_list_fields'))
 			return $data;
 
 		return array(

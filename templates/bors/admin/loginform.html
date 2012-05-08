@@ -1,10 +1,11 @@
 <h2>Аутентификация</h2>
 <h3>Представьтесь, пожалуйста!</h3>
-<form action="/_bors/users/do-login" method="post">
+{form action="/_bors/users/do-login" method="post"}
 <table class="btab">
-<tr><th class="right">Имя пользователя:</th><td><input name="login" value="" /></td></tr>
-<tr><th class="right">Пароль:</th><td><input type="password" name="password" value="" /></td></tr>
+<tr><th class="right">Имя пользователя:</th><td>{input name="login" value=""}</td></tr>
+<tr><th class="right">Пароль:</th><td>{password name="password" value=""}</td></tr>
 <tr><th colSpan="2"><input type="submit" value="Вход"></th></tr>
 </table>
 <input type="hidden" name="ref" value="{$ref|htmlspecialchars}" />
-</form>
+{/form}
+

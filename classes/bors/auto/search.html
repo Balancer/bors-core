@@ -1,6 +1,8 @@
 {form method="get" action=$this->action_url() class_name="NULL" uri="NULL" form_class_name="NULL"}
-{input name="q" value=$this->query()}
-{submit value="Найти"}
+<table class="w100p null"><tr>
+<td>{input name="q" value=$this->query() class="w100p"}</td>
+<td width="10">{submit value="Найти"}</td>
+</tr></table>
 {/form}
 
 {if $items}

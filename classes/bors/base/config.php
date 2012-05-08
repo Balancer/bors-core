@@ -46,10 +46,6 @@ class base_config extends base_object
 			'error_message'   => session_var('error_message'),
 		);
 
-		set_session_var('success_message', NULL);
-		set_session_var('notice_message', NULL);
-		set_session_var('error_message', NULL);
-
 		if(($post_js = session_var('javascript_post_append')))
 		{
 			foreach($post_js as $js)

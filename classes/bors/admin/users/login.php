@@ -14,8 +14,8 @@ class bors_admin_users_login extends base_page
 
 	function pre_parse($data)
 	{
-		$this->referer = defval($_GET, 'redirect_url', @$_SERVER['HTTP_REFERER']);
-		$this->referer = defval($_GET, 'ref', $this->referer);
+		$this->referer = defval_ne($_GET, 'redirect_url', @$_SERVER['HTTP_REFERER']);
+		$this->referer = defval_ne($_GET, 'ref', $this->referer);
 
 		$this->ref = $this->referer;
 
@@ -23,12 +23,15 @@ class bors_admin_users_login extends base_page
 			$this->referer = '/';
 
 		if(empty($data['login']))
+		{
+			// ?? Может вылезти проблема с зацикливанием?
+			return go_ref_message(ec("Вы не указали логин"), array('go' => $this->referer, 'error_fields' => 'login'));
 			return false;
+		}
 
 		if(empty($data['password']))
 		{
-			set_session_var('error_message', ec('Вы не указали пароль'));
-			return go($this->referer);
+			return go_ref_message(ec("Не указали пароль"), array('go' => $this->referer, 'error_fields' => 'password'));
 		}
 
 		$me = bors_user::do_login($data['login'], $data['password'], false);

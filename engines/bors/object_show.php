@@ -147,6 +147,11 @@
 			@header('ETag: "'.md5($obj->internal_uri().$modify_time).'"');
 		}
 
+		set_session_var('success_message', NULL);
+		set_session_var('notice_message', NULL);
+		set_session_var('error_message', NULL);
+		set_session_var('error_fields', NULL);
+
 		return $content;
 	}
 

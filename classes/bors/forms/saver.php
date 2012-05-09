@@ -70,6 +70,8 @@ class bors_forms_saver extends base_empty
 		$uri = popval($data, 'uri');
 		$class_name = popval($data, 'class_name');
 
+		set_session_form_data($data);
+
 		if(($ret = $object->check_data($data)))
 			return $ret;
 

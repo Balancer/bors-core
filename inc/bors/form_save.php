@@ -337,8 +337,7 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 function bors_form_errors($data, $conditions = array())
 {
-	foreach($data as $field => $value)
-		set_session_var("form_value_{$field}", $value);
+	set_session_form_data($data);
 
 	foreach($conditions as $error_condition => $fail_message)
 	{

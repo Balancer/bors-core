@@ -72,7 +72,7 @@ class bors_tools_delete extends base_page
 		if(!empty($_GET['ref']))
 			return $_GET['ref'];
 
-		return @$_SERVER['HTTP_REFERER'];
+		return $this->admin_parent_url();
 	}
 
 	function access_section() { return $this->object()->access_section(); }

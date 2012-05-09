@@ -39,15 +39,15 @@ class bors_xref_c2c extends bors_object_db
 	{
 		require_once('inc/bors/lists.php');
 
-		if(!$xref_class_name)
-			$xref_class_name = get_called_class();
-
-		if(is_object($xref_class_name))
+		if($this)
 		{
 			// http://matf.aviaport.ru/companies/1/edit/
 			// bors-core/classes/bors/forms/checkbox/list.php:25
 			return bors_named_list_db($this->target_class_name());
 		}
+
+		if(!$xref_class_name)
+			$xref_class_name = get_called_class();
 
 		return bors_named_list_db($xref_class_name::target_class_name());
 	}

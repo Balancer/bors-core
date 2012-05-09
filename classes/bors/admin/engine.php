@@ -41,9 +41,19 @@ class bors_admin_engine extends bors_object
 
 		//TODO: придумать лучший вариант определения. Отказаться от has_smart_field.
 		if(method_exists($obj, 'fields') && $obj->has_smart_field('is_deleted'))
-			return '/_bors/admin/mark/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin_parent_url());
+			return '/_bors/admin/mark/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin()->parent_delete_url());
 		else
-			return '/_bors/admin/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin_parent_url());
+			return '/_bors/admin/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin()->parent_delete_url());
+	}
+
+	function parent_delete_url()
+	{
+		$ps1 = object_property(bors_load_uri($this->admin_url()), 'parents');
+		$p1 = $ps1[0];
+		$ps2 = object_property(bors_load_uri($p1), 'parents');
+		$p2 = $ps2[0];
+
+		return $p2;
 	}
 
 	function append_child_url()
@@ -94,11 +104,13 @@ class bors_admin_engine extends bors_object
 
 		$res = "<a rel=\"nofollow\" href=\"{$obj->url()}\">{$title}</a>";
 
+		$popup = config('titles.imaged_direct_titled_link.popup', ec('Посмотреть на сайте'));
+
 		try
 		{
 			//FIXME: подключить проверку доступа
 			if($obj->url() && $obj->access()->can_edit())
-				$res .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\"><img src=\"/_bors/i16/edit.png\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+				$res .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\"><img src=\"/_bors/i16/edit.png\" width=\"16\" height=\"16\" alt=\"View\" title=\"".htmlspecialchars($popup)."\" style=\"vertical-align:middle\" /></a>";
 		}
 		catch(Exception $e) { }
 

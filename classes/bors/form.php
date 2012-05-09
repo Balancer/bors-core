@@ -452,7 +452,10 @@ class bors_form extends bors_object
 				$html .= "</td></tr>\n";
 			}
 
-			if($object && ($xrefs = $object->get('xrefs')))
+			if(
+				($object && ($xrefs = $object->get('xrefs')))
+				|| ($class_name && ($xrefs = bors_lib_object::get_foo($class_name, 'xrefs')))
+			)
 			{
 				foreach($xrefs as $xref)
 				{

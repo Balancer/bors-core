@@ -193,6 +193,8 @@ li.imaged {
 }
 
 li.type-page{background-image: url(/_bors/i16/obj-types/page.png)}
+li.type-edit{background-image: url(/_bors/i16/edit.png)}
+li.type-delete{background-image: url(/_bors/i16/delete.png)}
 li.type-unknown{background-image: url(/_bors/i16/obj-types/unknown.png)}
 li.type-search{background-image: url(/_bors/i16/search.png)}
 li.type-logout{background-image: url(/_bors/i16/logout.gif)}

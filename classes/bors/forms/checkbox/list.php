@@ -64,7 +64,7 @@ class bors_forms_checkbox_list extends bors_forms_element
 		if(empty($values))
 		{
 			if(empty($get))
-				$current = preg_match('!^\w+$!', $name) ? (isset($value)?$value:($obj?$obj->$name():0)) : 0;
+				$current = preg_match('!^\w+$!', $name) ? (isset($value)?$value:($obj?$obj->get($name):0)) : 0;
 			else
 				$current = $obj->$get();
 
@@ -77,13 +77,22 @@ class bors_forms_checkbox_list extends bors_forms_element
 		else
 			$current = $values;
 
+		$class = explode(' ', defval($params, 'class'));
+		if(in_array($name, explode(',', session_var('error_fields'))))
+			$class[] = "error";
+
+		if($class)
+			$class = ' class="'.join(' ', $class).'"';
+		else
+			$class = '';
+
 		$html = '';
 
 		foreach($list as $id => $iname)
 		{
 			$ids[] = $id;
 			$checked = in_array($id, $current);
-			$html .= "<label><input type=\"checkbox\" name=\"".addslashes($name)."[]\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$params />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."</label>$delim\n";
+			$html .= "<label><input type=\"checkbox\" name=\"".addslashes($name)."[]\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$params$class />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."</label>$delim\n";
 		}
 
 		$form->append_attr('checkboxes_list', $name);

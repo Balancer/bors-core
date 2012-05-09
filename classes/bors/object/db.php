@@ -84,6 +84,8 @@ class bors_object_db extends base_object_db
 				continue;
 			}
 
+			$is_req = false;
+
 			if(preg_match('/^\s+`(\w+)`(.*)$/', $s, $m))
 			{
 				$field = $m[1];
@@ -94,7 +96,16 @@ class bors_object_db extends base_object_db
 				$args = array();
 
 				if(preg_match("/COMMENT '(.+?)'/", $s, $mm))
-					$args['title'] = $mm[1];
+				{
+					$title = $mm[1];
+					if(preg_match('/^(.+?)\s*\[\*\]\s*$/', $title, $mm))
+					{
+						$title = $mm[1];
+						$is_req = true;
+					}
+
+					$args['title'] = $title;
+				}
 
 				switch($type)
 				{
@@ -133,6 +144,9 @@ class bors_object_db extends base_object_db
 
 				if($type = @$types[$field])
 					$args['type'] = $type;
+
+				if($is_req)
+					$args['is_req'] = true;
 
 				$fields[$field] = array_merge($fields[$field], $args);
 			}

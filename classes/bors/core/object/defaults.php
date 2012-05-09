@@ -34,6 +34,6 @@ class bors_core_object_defaults
 
 	static function config_class($object)
 	{
-		return $object->project_name().'_'.$object->section_name().'_config';
+		return join('_', array_filter(array($object->project_name(), $object->section_name(), 'config')));
 	}
 }

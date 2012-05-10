@@ -24,9 +24,10 @@ class bors_admin_users_login extends base_page
 
 		if(empty($data['login']))
 		{
-			// ?? Может вылезти проблема с зацикливанием?
-			return go_ref_message(ec("Вы не указали логин"), array('go' => $this->referer, 'error_fields' => 'login'));
-			return false;
+			if(empty($data['form_class_name']))
+				return false;
+			else
+				return go_ref_message(ec("Вы не указали логин"), array('go' => $this->referer, 'error_fields' => 'login'));
 		}
 
 		if(empty($data['password']))

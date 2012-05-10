@@ -98,7 +98,7 @@ class bors_view extends bors_page
 			{
 //				var_dump($value);
 				if($image = bors_load('bors_image', $value))
-					array_unshift($out, $image->thumbnail('200x200')->html(array('append' => 'align="left" hspace="10"')));
+					array_unshift($out, $image->thumbnail('200x')->html(array('append' => 'class="float-right" hspace="10"')));
 
 				continue;
 			}

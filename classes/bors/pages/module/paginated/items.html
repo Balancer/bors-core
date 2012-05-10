@@ -7,7 +7,12 @@
 {foreach from=$items item="x"}
 <tr>
 	{foreach $item_list_fields as $p => $t}
-	<td>{$x->get($p)}</td>
+	<td>
+		{if ($p == 'imaged_titled_link' || $p == 'title') && $x->get('image')}
+			{$x->image()->thumbnail('64x64')->html_code('class="float-right" style="margin-left: 10px"')}
+		{/if}
+		{$x->get($p)}
+	</td>
 	{/foreach}
 </tr>
 {/foreach}

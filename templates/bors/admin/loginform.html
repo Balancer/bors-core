@@ -1,5 +1,7 @@
+{if not $notitle}
 <h2>Аутентификация</h2>
 <h3>Представьтесь, пожалуйста!</h3>
+{/if}
 {form action="/_bors/users/do-login" method="post"}
 <table class="btab">
 <tr><th class="right">Имя пользователя:</th><td>{input name="login" value=""}</td></tr>
@@ -8,4 +10,3 @@
 </table>
 <input type="hidden" name="ref" value="{$ref|htmlspecialchars}" />
 {/form}
-

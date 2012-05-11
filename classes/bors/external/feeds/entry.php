@@ -109,6 +109,8 @@ class bors_external_feeds_entry extends base_object_db
 	{
 		$feed = $this->feed();
 
+//		echo var_dump($feed->skip_entry_content_regexp());
+
 		// Если это не транслируемая запись
 		if($feed->skip_entry_content_regexp() && preg_match('!'.$feed->skip_entry_content_regexp().'!i', $this->text()))
 		{
@@ -122,7 +124,6 @@ class bors_external_feeds_entry extends base_object_db
 			return;
 		}
 
-//		echo var_dump($feed->skip_entry_content_regexp(), $is_skipped);
 
 		if($parser_class_name = $feed->parser_class_name())
 		{

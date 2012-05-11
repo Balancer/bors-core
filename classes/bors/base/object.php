@@ -594,7 +594,10 @@ defined at {$this->class_file()}<br/>
 //		if($page === NULL) //TODO: WTF? Изучить все вызовы.
 //			$title = $this->page();
 
-		return '<a href="'.$this->url_ex(array('page' => $page)).defval($params, 'url_append')."\"{$popup}{$target}{$class}{$style}>{$title}</a>"; 
+		if(!($url = defval($params, 'url')))
+			$url = $this->url_ex(array('page' => $page));
+
+		return '<a href="'.$url.defval($params, 'url_append')."\"{$popup}{$target}{$class}{$style}>{$title}</a>"; 
 	}
 	function titled_link_target($target) { return $this->titled_link_ex(array('target' => $target)); }
 

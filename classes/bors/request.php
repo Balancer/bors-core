@@ -29,4 +29,6 @@ class bors_request extends base_object
 
 		return defval($data, $name, $default);
 	}
+
+	function path() { return $this->url_data('path'); }
 }

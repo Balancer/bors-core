@@ -42,8 +42,8 @@ function lp_picasa($id, $params)
 		else
 			$title = "";
 
-		$big_thumb_url = preg_replace('!/s\d+/!', "/s1600/", $thumb_url);
-		$thumb_url = preg_replace('!/s\d+/!', "/s$width/", $thumb_url);
+		$big_thumb_url = preg_replace('!/s\d+(-d)?/!', "/s1600/", $thumb_url);
+		$thumb_url = preg_replace('!/s\d+(-d)?/!', "/s$width/", $thumb_url);
 
 //		if($params['notitle'])
 //			$title = NULL;

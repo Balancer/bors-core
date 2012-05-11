@@ -28,6 +28,9 @@ class bors_storage_htsu extends bors_storage
 
 	private function __find($object)
 	{
+		if(preg_match('/\.htsu?$/', $object->id()) && file_exists($object->id()))
+			return $object->id();
+
 		$dir = $object->dir();
 		$root = $object->document_root();
 		$base = $object->_basename();

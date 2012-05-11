@@ -109,6 +109,8 @@ class bors_forms_saver extends base_empty
 				$object->set_owner_id(bors()->user_id(), true);
 		}
 
+		// Чистим данные форм сессии, чтобы не мусорить дальше
+		clear_session_form_data();
 
 		if(method_exists($object, 'post_save'))
 			$object->post_save($data);

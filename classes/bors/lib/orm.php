@@ -75,7 +75,7 @@ class bors_lib_orm
 			return $fields;
 
 		$fields_array = array();
-		foreach($object->fields() as $db => $tables)
+		foreach($object->get('fields', array()) as $db => $tables)
 		{
 			foreach($tables as $table => $fields)
 			{
@@ -87,7 +87,7 @@ class bors_lib_orm
 							'db' => $db,
 							'table' => $table,
 						), self::field($property, $field));
-//					if($field['name'] != 'id')
+//				if($field['name'] != 'id')
 							$fields_array[] = $field;
 					}
 				}

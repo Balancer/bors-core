@@ -186,3 +186,10 @@ function set_session_form_data($data)
 	foreach($data as $field => $value)
 		set_session_var("form_value_{$field}", $value);
 }
+
+function clear_session_form_data()
+{
+	foreach($_SESSION as $key => $value)
+		if(preg_match('/^form_value_/', $key))
+			set_session_var($key, NULL);
+}

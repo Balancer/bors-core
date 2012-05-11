@@ -75,20 +75,23 @@ class bors_lib_orm
 			return $fields;
 
 		$fields_array = array();
-		foreach($object->fields() as $db => $tables)
+		if(method_exists($this, 'fields'))
 		{
-			foreach($tables as $table => $fields)
+			foreach($object->fields() as $db => $tables)
 			{
-				foreach($fields as $property => $field)
+				foreach($tables as $table => $fields)
 				{
-					if($field != '*no_defaults')
+					foreach($fields as $property => $field)
 					{
-						$field = array_merge(array(
-							'db' => $db,
-							'table' => $table,
-						), self::field($property, $field));
+						if($field != '*no_defaults')
+						{
+							$field = array_merge(array(
+								'db' => $db,
+								'table' => $table,
+							), self::field($property, $field));
 //					if($field['name'] != 'id')
-							$fields_array[] = $field;
+								$fields_array[] = $field;
+						}
 					}
 				}
 			}

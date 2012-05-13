@@ -1,7 +1,7 @@
 <table class="btab w100p">
 <tr>
 {foreach $item_list_fields as $p => $t}
-	<th>{$t}</th>
+	{$this->make_sortable_th($p, $t)}
 {/foreach}
 </tr>
 {foreach from=$items item="x"}

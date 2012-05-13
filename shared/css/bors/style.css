@@ -228,3 +228,18 @@ div.right-menu h2 { font-size: 1em !important; }
 	-moz-column-count: 4;
 	-webkit-column-count: 4;
 }
+
+th.sort_asc {
+	padding-right: 16px;
+	background: url(/_bors/i16/asc.gif) right 7px no-repeat;
+}
+
+th.sort_desc {
+	padding-right: 16px;
+	background: url(/_bors/i16/desc.gif) right 7px no-repeat;
+}
+
+th.sort_ascdesc {
+	padding-right: 16px;
+	background: url(/_bors/i16/asc-desc.gif) right 5px no-repeat;
+}

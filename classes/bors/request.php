@@ -8,6 +8,23 @@ class bors_request extends base_object
 
 	static function data($key = NULL, $default = NULL) { return $key ? defval($_GET, $key, $default) : $_GET; }
 
+	static function data_parse($type, $key, $default = NULL)
+	{
+		$val = self::data($key, $default);
+		if($val)
+		{
+			switch($type)
+			{
+				case 'signed_name':
+					if(!preg_match('/^[\-\+]*\w+$/', $val))
+						$val = NULL;
+					break;
+			}
+		}
+
+		return $val;
+	}
+
 	function url() { return @$GLOBALS['bors_full_request_url']; }
 	function referer() { return defval($_GET, 'ref', @$_SERVER['HTTP_REFERER']); }
 

@@ -37,8 +37,13 @@ class bors_lib_urls
 	static function parse_query_string($query)
 	{
 		if(!is_array($query))
-			$query = explode('&', $query);
+		{
+			$result = array();
+			parse_str($query, $result);
+			return $reult;
+		}
 
+		// Анализ готовых пар, используется для всяких explode('/', '.../mod/class=value/...');
 		$result = array();
 		foreach($query as $pair)
 			if(preg_match('!^(.+?)=(.+)$!', $pair, $m) && $m[2])
@@ -59,5 +64,37 @@ class bors_lib_urls
 	{
 		$url_data = url_parse($url);
 		return empty($url_data['local']) ? ' class="external"' : '';
+	}
+
+	static function replace_query($url, $param_name, $value=NULL)
+	{
+		$params = array();
+		$url_info = parse_url($url);
+
+		if($query = @$url_info['query'])
+			parse_str($query, $params);
+
+		if($value)
+			$params[$param_name] = $value;
+		else
+			unset($params[$param_name]);
+
+		$url_info['query'] = http_build_query($params);
+
+		return self::build_url($url_info);
+	}
+
+	static function build_url($url_info)
+	{
+		$scheme	= defval($url_info, 'scheme', 'http');
+		$host 	= defval($url_info, 'host');
+		$path 	= defval($url_info, 'path');
+		$query 	= defval($url_info, 'query');
+
+		$url = "$scheme://$host$path";
+		if($query)
+			$url .= '?'.$query;
+
+		return $url;
 	}
 }

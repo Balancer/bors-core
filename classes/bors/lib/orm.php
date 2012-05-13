@@ -277,4 +277,32 @@ class bors_lib_orm
 		$foo->set_class_file($class_file);
 		return object_property($foo, 'table_name');
 	}
+
+	static function property_sign(&$property, $shift = false)
+	{
+		if(preg_match('/^([\+\-])(\w+)$/', $property, $m))
+		{
+			$sign = $m[1];
+			if($shift)
+				$property = $m[2];
+		}
+		else
+			$sign = '';
+
+		return $sign;
+	}
+
+	static function reverse_sign($property, $current_property)
+	{
+		$prop_sign = self::property_sign($property, true);
+		$curr_sign = self::property_sign($current_property, true);
+
+		if($property != $current_property)
+			return $prop_sign.$property;
+
+		if($curr_sign != '-')
+			return '-'.$property;
+
+		return $property;
+	}
 }

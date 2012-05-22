@@ -31,12 +31,17 @@ class bors_object_simple extends bors_object_empty
 			if(preg_match('/^CONCAT/', $name))
 				return NULL;
 
-			eval("\$result = \$this->$name;");
+			$result = NULL;
+
+			try { eval("\$result = \$this->$name;"); }
+			catch(Exception $e) { $result = NULL; }
+
 			return $result;
 		}
 
 		if(method_exists($this, $name) && !$skip_methods)
 		{
+			$value = NULL;
 			try { $value = $this->$name(); }
 			catch(Exception $e) { $value = NULL; }
 			return $value;
@@ -102,6 +107,24 @@ class bors_object_simple extends bors_object_empty
 			return $this->attr[$name];
 
 		return $default;
+	}
+
+	function get_ne($name, $def = NULL)
+	{
+		if(is_array($name))
+		{
+			$def = popval($name, 'default');
+			$name = popval($name, 'property');
+		}
+
+		$val = $this->get($name);
+		if($val)
+			return $val;
+
+		if(is_array($def) && !empty($def['property']))
+			return $this->get_ne($def);
+
+		return $def;
 	}
 
 	function get_data($name, $default = NULL, $auto_set = false)

@@ -93,6 +93,8 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 							$tag_params = params($params, $lcml);
 							$tag_params['skip_around_cr'] = false;
 
+//							if(config('is_developer')) echo "<xmp>tag=$func,p1='$part1'\np2='$part2'\np3='$part3'\n,end=$end,nextpos=$next_pos,params=".print_r($params, true).", tag_params=".print_r($tag_params, true)."</xmp>";
+
 							if($class_pair_name)
 							{
 								$class = new $class_pair_name($lcml);
@@ -120,7 +122,6 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 							$mask = substr($mask, 0, $pos).str_repeat('X',bors_strlen($part2)).substr($mask, $next_end);
 
 							$txt = $part1.$part2.$part3;
-//							echo "<xmp>tag=$func,p1='$part1'\np2='$part2'\np3='$part3'\n,end=$end,nextpos=$next_pos</xmp>";
 							$next_pos = false;
 							$pos = bors_strlen($part1.$part2); //с конца изменённого фрагмента
 							$lp_parsed = true; // Тэг успешно обработан парной функцией.
@@ -348,7 +349,7 @@ function next_open_brace($txt, $pos)
 		$params = array('lcml' => $lcml);
 		$params['self'] = defval($GLOBALS['lcml']['params'], 'self');
 
-		if(preg_match("!^(.*?)\|(.*)$!s",$in,$m))
+		if(!preg_match('!^\w+=!', $in) && preg_match("!^(.*?)\|(.*)$!s", $in, $m))
 		{
 			$in=$m[1];
 			$params['description']=$m[2];

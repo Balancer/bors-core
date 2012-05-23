@@ -16,7 +16,7 @@ class bors_admin_auto_edit extends bors_admin_meta_edit
 
 	function main_admin_class()
 	{
-		$test = config('admin_auto_class_base', config('project_prefix').'_admin').'_'.$this->_rel;
+		$test = config('admin_auto_class_base', config('project.name').'_admin').'_'.$this->_rel;
 		if(class_include($test))
 			return $test;
 
@@ -25,7 +25,7 @@ class bors_admin_auto_edit extends bors_admin_meta_edit
 
 	function main_class()
 	{
-		$test = config('classes_auto_base', config('project_prefix')).'_'.$this->_rel;
+		$test = config('classes_auto_base', config('project.name')).'_'.$this->_rel;
 		if(class_include($test))
 			return $test;
 

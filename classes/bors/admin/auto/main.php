@@ -8,7 +8,7 @@ class bors_admin_auto_main extends bors_admin_meta_main
 	function main_admin_class()
 	{
 		$rel = bors_unplural(str_replace('/', '_', trim($this->id(), '/')));
-		$test = config('admin_auto_class_base', config('project_prefix').'_admin').'_'.$rel;
+		$test = config('admin_auto_class_base', config('project.name').'_admin').'_'.$rel;
 		if(class_include($test))
 			return $test;
 
@@ -18,7 +18,7 @@ class bors_admin_auto_main extends bors_admin_meta_main
 	function main_class()
 	{
 		$rel = bors_unplural(str_replace('/', '_', trim($this->id(), '/')));
-		$test = config('classes_auto_base', config('project_prefix')).'_'.$rel;
+		$test = config('classes_auto_base', config('project.name')).'_'.$rel;
 		if(class_include($test))
 			return $test;
 

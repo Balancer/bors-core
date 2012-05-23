@@ -36,6 +36,9 @@ class base_list extends base_empty
 		else
 			$list = array(NULL => '');
 
+		if(!empty($data['non_empty']))
+			$list = array();
+
 		foreach(bors_find_all($class_name, array_merge(array('order' => 'title'), $where)) as $x)
 			if($x->id() && ($t = $x->title()))
 				$list[$x->id()] = $t;

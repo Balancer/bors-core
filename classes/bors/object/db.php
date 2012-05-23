@@ -104,6 +104,12 @@ class bors_object_db extends base_object_db
 						$is_req = true;
 					}
 
+					if(preg_match('/^(.+?)\s*\(\.\)\s*$/', $title, $mm))
+					{
+						$title = $mm[1];
+						$args['type'] = 'radio';
+					}
+
 					$args['title'] = $title;
 				}
 

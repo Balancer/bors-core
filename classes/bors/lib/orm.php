@@ -34,7 +34,6 @@ class bors_lib_orm
 				$field['name'] = defval($field, 'field', $property);
 
 			$field['sql_name'] = $field['name'];
-
 		}
 
 		if(preg_match('!^(\w+)\(`(\w+)`\)$!', $field['name'], $m))
@@ -183,6 +182,7 @@ class bors_lib_orm
 		$fields_array = array();
 
 		$table_fields = $object->get('table_fields');
+
 		if(is_array($table_fields))
 		{
 			foreach($table_fields as $property => $field)

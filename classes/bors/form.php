@@ -221,13 +221,14 @@ class bors_form extends bors_object
 
 			foreach($fields as $property_name => $data)
 			{
-//				echo "prop_name = ",var_dump($property_name), "data=",var_dump($data)."<br/>\n";
 				if(is_array($data))
 				{
 					$property_name = $data['name'];
 				}
 				else
 					$data = $object_fields[$data];
+
+//				echo "prop_name = ",var_dump($property_name), "data=",var_dump($data)."<br/>\n";
 
 				if(!$data)
 					foreach($object_fields as $f)
@@ -252,7 +253,9 @@ class bors_form extends bors_object
 
 				if(!empty($data['class']) && $type != 'image')
 				{
-					$type = 'dropdown';
+					if($type != 'radio')
+						$type = 'dropdown';
+
 					$class = $data['class'];
 				}
 
@@ -335,6 +338,11 @@ class bors_form extends bors_object
 						$data['is_int'] = true;
 						require_once('function.dropdown.php');
 						smarty_function_dropdown($data, $smarty);
+						break;
+
+					case 'radio':
+						$data['list'] = base_list::make($class, array(), $data + array('non_empty' => true));
+						$html .= bors_forms_radio::html($data, $this);
 						break;
 
 					case 'dropdown':

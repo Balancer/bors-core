@@ -2,8 +2,14 @@
 
 class bors_core_object_defaults
 {
-	static function project_name($object)
+	static function project_name($object) { return array_shift(explode('_', $object->class_name())); }
+//	static function access_name($object) { return bors_plural(array_pop(explode('_', $object->class_name()))); }
+
+	static function _obsolete_project_name($object)
 	{
+		if($name = config('project.name'))
+			return $name;
+
 		$class_file = $object->class_file();
 		// "/data/var/www/ru/wrk/ucrm/bors-site/classes/ucrm/projects/main.yaml"
 		$name = preg_replace('!^.+/(\w+)/bors-site/.+$!', '$1', $class_file);

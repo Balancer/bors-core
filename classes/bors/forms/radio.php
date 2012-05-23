@@ -35,10 +35,8 @@ class bors_forms_radio extends bors_forms_element
 			$list = new $list(@$args);
 			$list = $list->named_list();
 		}
-		else
-		{
+		elseif(!is_array($list))
 			eval('$list='.$list);
-		}
 
 		if(preg_match('/^(\w+)\[\]$/', $name, $m))
 		{
@@ -67,6 +65,14 @@ class bors_forms_radio extends bors_forms_element
 
 		if(empty($delim))
 			$delim = "<br />";
+
+		if(in_array($name, explode(',', session_var('error_fields'))))
+		{
+			if(empty($label_css_class))
+				$label_css_class = "error";
+			else
+				$label_css_class .= " error";
+		}
 
 		if(!empty($label_css_class))
 			$label_css_class = " class=\"$label_css_class\"";

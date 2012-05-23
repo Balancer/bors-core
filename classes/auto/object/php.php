@@ -36,7 +36,7 @@ class auto_object_php extends base_object
 		}
 
 		$class_path = str_replace('/', '_', trim($path, '/'));
-		if($class_base = config('classes_auto_base', config('project_prefix', 'auto_php')))
+		if($class_base = config('classes_auto_base', config('project.name', 'auto_php')))
 			$class_base .= '_';
 
 		$is_auto = false;

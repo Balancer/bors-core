@@ -116,6 +116,12 @@ class bors_lib_http
 		return $info;
 	}
 
+	static function get_bin_content($url, $curl_options = array())
+	{
+		$data = self::get_bin($url, $curl_options);
+		return @$data['content'];
+	}
+
 	// Спёрто с http://stackoverflow.com/questions/5483851/manually-parse-raw-http-data-with-php
 	function parse_raw_http_request($data, $content_type)
 	{

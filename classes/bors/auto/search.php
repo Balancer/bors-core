@@ -64,15 +64,20 @@ array
 		return config('main_site_url').'/'.bors_plural($this->item_type()).'/search/';
 	}
 
-	function url()
+	function url($page = NULL)
 	{
 		$url = $this->action_url();
 
-//		if($q = $this->query())
-//			$url .= '?q='.urlencode($q);
+		if($q = $this->query())
+			$url = bors_lib_urls::replace_query($url, 'q', $q);
+
+		if($page > 1)
+			$url = bors_lib_urls::replace_query($url, 'p', $page);
 
 		return $url;
 	}
+
+	function page() { return bors()->request()->data('p', $this->default_page()); }
 
 	function url_skip_keys() { return 'q'; }
 }

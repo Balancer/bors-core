@@ -113,6 +113,18 @@ class bors_object_db extends base_object_db
 					$args['title'] = $title;
 				}
 
+				if(preg_match('!^(.+) // (.+)$!', @$args['title'], $m))
+				{
+					$args['title'] = $m[1];
+					$args['comment'] = $m[2];
+				}
+
+				if(preg_match('!^([\wа-яА-ЯёЁ \-]+): (.+)$!u', @$args['title'], $m))
+				{
+					$args['form_section'] = $m[1];
+					$args['title'] = $m[2];
+				}
+
 				switch($type)
 				{
 					case 'timestamp':

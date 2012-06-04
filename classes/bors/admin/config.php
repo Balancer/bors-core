@@ -11,8 +11,13 @@ class bors_admin_config extends base_config
 			$data['new_sublink'] = object_property($this->id(), 'admin_group_url').'new/';
 			if(class_exists($class_name))
 			{
-				$foo = new $class_name(NULL);
-				$data['new_title'] = ec('Добавить ').$foo->get('class_title_vp');
+				if(bors_load_uri($data['new_sublink']))
+				{
+					$foo = new $class_name(NULL);
+					$data['new_title'] = ec('Добавить ').$foo->get('class_title_vp');
+				}
+				else
+					unset($data['new_sublink']);
 			}
 		}
 

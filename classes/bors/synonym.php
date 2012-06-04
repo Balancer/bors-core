@@ -2,7 +2,7 @@
 
 class bors_synonym extends base_object_db
 {
-	function class_title_rp() { return ec('синонима'); }
+	function _class_title_rp_def() { return ec('синонима'); }
 	function class_title_vp() { return ec('синоним'); }
 	function main_table() { return config('synonyms_table', 'bors_synonyms'); }
 

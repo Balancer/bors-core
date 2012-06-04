@@ -237,6 +237,8 @@ class bors_lib_orm
 			$value = trim($m[1]);
 			// Поддержка переменных вида %config.value%
 			$value = preg_replace('/%config\.(\w+)%/e', "config('$1');", $value);
+			// Поддержка переменных вида %this.property%
+			$value = preg_replace_callback('/%this\.(\w+)%/', function($m) use ($object) { return $object->get($m[1]); }, $value);
 			return $value;
 		}
 

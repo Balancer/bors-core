@@ -297,7 +297,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 	function class_title() { return ec('Изображение'); }
 	function class_title_vp() { return ec('изображение'); }
-	function class_title_rp() { return ec('изображения'); }
+	function _class_title_rp_def() { return ec('изображения'); }
 
 	function description_or_title()
 	{

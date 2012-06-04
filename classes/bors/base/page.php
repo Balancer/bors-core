@@ -9,7 +9,7 @@ class base_page extends bors_object
 	function can_be_empty() { return true; }
 
 	function class_title()		{ return ec('Страница'); }
-	function class_title_rp()	{ return ec('страницы'); }
+	function _class_title_rp_def()	{ return ec('страницы'); }
 	function class_title_dp()	{ return ec('странице'); }
 	function class_title_vp()	{ return ec('страницу'); }
 

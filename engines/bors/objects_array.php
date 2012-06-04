@@ -60,7 +60,7 @@ function objects_array($class, $args = array())
 		return $objects;
 	}
 
-	debug_hidden_log('__fatal_objects_error', 'Try to load objects array without storage');
+	debug_hidden_log('__fatal_objects_error', 'Try to load objects array without storage: '.$init);
 	return array();
 }
 

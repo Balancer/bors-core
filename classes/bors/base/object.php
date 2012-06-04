@@ -194,7 +194,7 @@ class base_object extends base_empty
 	}
 
 	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
-	function class_title_rp() { return ec('объекта ').@get_class($this); }	// РодительныйГенитив Кого? Чего?
+	function _class_title_rp_def() { return ec('объекта ').@get_class($this); }	// РодительныйГенитив Кого? Чего?
 	function class_title_dp() { return ec('объекту ').@get_class($this); }	// Дательный Кому? Чему?
 	function class_title_vp() { return ec('объект ').@get_class($this); }	// Винительный Кого? Что?
 	function class_title_tp() { return ec('объектом ').@get_class($this); }	// Творительный Кем? Чем?
@@ -1440,6 +1440,7 @@ defined at {$this->class_file()}<br/>
 
 	function object_title() { return strip_tags(bors_lower($this->class_title()).ec(' «').$this->title().ec('»')); }
 	function object_titled_url() { return $this->class_title().ec(' «').$this->titled_url().ec('»'); }
+	function object_titled_rp_link() { return $this->class_title_rp().ec(' «').$this->titled_link().ec('»'); }
 	function object_titled_vp_link() { return $this->class_title_vp().ec(' «').$this->titled_link().ec('»'); }
 
 	function object_title_dp() { return strip_tags(bors_lower($this->class_title_dp()).ec(' «').$this->title().ec('»')); }

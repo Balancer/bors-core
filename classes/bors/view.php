@@ -9,6 +9,8 @@ class bors_view extends bors_page
 	function can_be_empty() { return false; }
 	function loaded() { return (bool) $this->target(); }
 
+	function _class_title_rp_def() { return $this->object()->class_title_rp(); }
+
 	// Класс отображаемого объекта
 	function main_class()
 	{
@@ -78,6 +80,8 @@ class bors_view extends bors_page
 	function url($page = NULL) { return $this->target()->url($page); }
 	function admin_url() { return $this->target()->get('admin_url'); }
 	static function object_type() { return $this->target()->object_type(); }
+
+	function _owner_id_def() { return $this->object()->owner_id(); }
 
 	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }

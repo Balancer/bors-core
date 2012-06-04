@@ -3,7 +3,7 @@
 class bors_file extends base_object_db
 {
 	function class_title() { return ec('Файл'); }
-	function class_title_rp() { return ec('файла'); }
+	function _class_title_rp_def() { return ec('файла'); }
 	function class_title_vp() { return ec('файл'); }
 	function class_title_m() { return ec('файлы'); }
 	function class_title_tpm() { return ec('файлами'); }

@@ -39,8 +39,13 @@ class base_list extends base_empty
 		if(!empty($data['non_empty']))
 			$list = array();
 
-		foreach(bors_find_all($class_name, array_merge(array('order' => 'title'), $where)) as $x)
-			if($x->id() && ($t = $x->title()))
+		$foo = new $class_name(NULL);
+		$order = $foo->get('list_fields_sort', 'title');
+
+		$format = $foo->get('list_fields_format', '%title%');
+
+		foreach(bors_find_all($class_name, array_merge(array('order' => $order), $where)) as $x)
+			if($x->id() && ($t = preg_replace_callback('/(%(\w+)%)/', function($m) use ($x) { return $x->get($m[2]); }, $format )))
 				$list[$x->id()] = $t;
 
 		return $list;

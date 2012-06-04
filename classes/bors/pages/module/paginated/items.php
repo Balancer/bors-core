@@ -31,7 +31,7 @@ class bors_pages_module_paginated_items extends bors_module
 		if(!($sort_key = @$sorts[$property]))
 			return "<th>$title</th>";
 
-		$current_sort = bors()->request()->data_parse('signed_name', 'sort');
+		$current_sort = bors()->request()->data_parse('signed_names', 'sort');
 		if(preg_match('/^(.+)\*$/', $sort_key, $m))
 		{
 			$sort_key = $m[1];

@@ -47,6 +47,7 @@ class bors_modules_calend extends bors_module
 				'count' => 0,
 			);
 
+//		config_set('mysql_trace_show', true);
 		$counts = bors_count($target_count_class_name, array_merge($where, array(
 			$time_field.' BETWEEN' => array($begin, $month_end),
 			'group' => '*BYDAYS('.$time_field.')*',

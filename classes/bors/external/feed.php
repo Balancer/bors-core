@@ -32,7 +32,7 @@ class bors_external_feed extends base_object_db
 	}
 
 	function class_title() { return ec('лента'); }
-	function class_title_rp() { return ec('ленты'); }
+	function _class_title_rp_def() { return ec('ленты'); }
 	function class_title_vp() { return ec('ленту'); }
 	function class_title_tpm() { return ec('лентами'); }
 	function class_title_m() { return ec('ленты'); }

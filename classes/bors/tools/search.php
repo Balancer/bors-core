@@ -46,6 +46,7 @@ class bors_tools_search extends base_page
 	function access() { return $this; }
 	function can_action() { return true; }
 	function can_read() { return true; }
+	function _can_list_def() { return $this->can_read(); }
 
 	function url() { return '/tools/search/'; }
 	// Для исправной работы старых кривых ссылоки вида http://balancer.ru/tools/search/result/?q=%D1%82%D1%8D%D0%BC2%D1%83&w=a&s=r&class_name=bors_tools_search

@@ -219,15 +219,62 @@ class bors_form extends bors_object
 			if(!is_array($fields))
 				$fields = explode(',', $fields);
 
+			$sections = array();
+			$last_section = NULL;
+			$have_sections = false;
+
 			foreach($fields as $property_name => $data)
 			{
 				if(is_array($data))
-				{
 					$property_name = $data['name'];
-				}
 				else
 					$data = $object_fields[$data];
 
+
+				if($current_section = defval($data, 'form_section'))
+					$have_sections = true;
+
+				$el = array('section' => $current_section, 'data' => $data, 'property' => $property_name);
+				$inserted = false;
+				if($current_section !== $last_section && $current_section != '')
+				{
+					for($i = count($sections)-1; $i>=0; $i--)
+					{
+						if($sections[$i]['section'] == $current_section)
+						{
+							// ('н', 'н', '', 'ч') ищем 'н' => 1
+							$sections = array_merge(array_slice($sections, 0, $i+1),
+								array($el),
+								array_slice($sections, $i+1, count($sections) - $i - 1));
+							$inserted = true;
+							$last_section = $current_section;
+							break;
+						}
+					}
+					if($inserted)
+						break;
+
+				}
+
+				$sections[] = $el;
+				$last_section = $current_section;
+			}
+
+//			print_dd($sections);
+//			foreach($fields as $property_name => $data)
+
+			$last_section = NULL;
+
+			foreach($sections as $x)
+			{
+				$section_name = $x['section'];
+				$data = $x['data'];
+				$property_name = $x['property'];
+
+				if($have_sections && $last_section != $section_name)
+					$html .= "<tr><th class=\"subcaption\" colspan=\"2\">".($section_name?$section_name:'&nbsp;')."</th></tr>\n";
+
+				$last_section = $section_name;
 //				echo "prop_name = ",var_dump($property_name), "data=",var_dump($data)."<br/>\n";
 
 				if(!$data)

@@ -4,6 +4,7 @@ class access_base extends base_object
 {
 	function object() { return $this->id(); }
 
+	function _can_list_def() { return $this->can_read(); }
 	function can_read() { return true; }
 	function can_edit() { return false; }
 	function can_new() { return $this->can_edit(); }

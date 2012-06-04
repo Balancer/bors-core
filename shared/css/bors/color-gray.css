@@ -24,12 +24,12 @@ table.btab {
 	border-collapse:	collapse;
 }
 
-table.btab caption {
+table.btab caption, table.btab th.subcaption {
 	color: #ccc;
 	border-right: 1px solid #999;
 	border-top: 1px solid #999;
 	border-left: 1px solid #999;
-	padding: 2px;
+	padding: 4px 2px;
 	margin: 0;
 	background-color: #999;
 	text-align: left;

@@ -10,7 +10,7 @@ class bors_users_tools_subscribe extends base_page
 	{
 		if(bors()->user())
 			return true;
-			
+
 		bors_message(ec('Извините, эта функция доступна только зарегистрированным пользователям сайта'));
 		return false;
 	}

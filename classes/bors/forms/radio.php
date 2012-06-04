@@ -16,27 +16,30 @@ class bors_forms_radio extends bors_forms_element
 			if(!empty($$p))
 				$params .= " $p=\"{$$p}\"";
 
-		if(!empty($xref))
+		if(!is_array($list))
 		{
-			// Задан класс m2m связей
-			$xref_obj = new $xref;
-			$list = $xref_obj->named_list($obj);
-			$name = $xref_obj->name($obj);
-		}
-		elseif(preg_match("!^(\w+)\->(\w+)!", $list, $m))
-		{
-			if($m[1] == 'this')
-				$list = $obj->$list();
+			if(!empty($xref))
+			{
+				// Задан класс m2m связей
+				$xref_obj = new $xref;
+				$list = $xref_obj->named_list($obj);
+				$name = $xref_obj->name($obj);
+			}
+			elseif(preg_match("!^(\w+)\->(\w+)!", $list, $m))
+			{
+				if($m[1] == 'this')
+					$list = $obj->$list();
+				else
+					$list = object_load($m[1])->$m[2]();
+			}
+			elseif(preg_match("!^\w+$!", $list))
+			{
+				$list = new $list(@$args);
+				$list = $list->named_list();
+			}
 			else
-				$list = object_load($m[1])->$m[2]();
+				eval('$list='.$list);
 		}
-		elseif(preg_match("!^\w+$!", $list))
-		{
-			$list = new $list(@$args);
-			$list = $list->named_list();
-		}
-		elseif(!is_array($list))
-			eval('$list='.$list);
 
 		if(preg_match('/^(\w+)\[\]$/', $name, $m))
 		{

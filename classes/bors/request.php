@@ -19,6 +19,10 @@ class bors_request extends base_object
 					if(!preg_match('/^[\-\+]*\w+$/', $val))
 						$val = NULL;
 					break;
+				case 'signed_names':
+					if(!preg_match('/^([\-\+]*\w+\s*,?\s*)+$/', $val))
+						$val = NULL;
+					break;
 			}
 		}
 

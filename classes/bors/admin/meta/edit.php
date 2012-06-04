@@ -88,6 +88,8 @@ class bors_admin_meta_edit extends bors_admin_page
 			$data = array();
 			if(preg_match('!/(\w+s)/(\d+)/?$!', bors()->request()->referer(), $m))
 				set_session_var("form_value_".bors_unplural($m[1]).'_id', $m[2]);
+			elseif(preg_match('!/(\w+s)/(\d+)/\w+/?$!', bors()->request()->referer(), $m))
+				set_session_var("form_value_".bors_unplural($m[1]).'_id', $m[2]);
 		}
 
 		$target = $this->id() ? $this->target() : NULL;

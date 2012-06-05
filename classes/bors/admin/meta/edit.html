@@ -14,7 +14,7 @@
 {/if}
 {/form}
 
-{if $this->id()}
+{if $this->id() && $target->access()->get('can_delete')}
 {* module class="bors_admin_module_link" object=$target types='-ipotekbank_file' linkable='ipotekbank_linkable' *}
 {* include file="xfile:bors/admin/files.html" object=$target upload_files_count="1" file_class='ipotekbank_file' *}
 {* module class="bors_admin_module_images" object=$target upload_images_count=1 skip_limits=true skip_image_type=true *}

@@ -93,13 +93,16 @@ class bors_admin_meta_edit extends bors_admin_page
 		}
 
 		$target = $this->id() ? $this->target() : NULL;
+		$admin_target = $this->id() ? $this->admin_target() : NULL;
 
 		return array_merge(
 			$data,
 			parent::body_data(),
 			array(
 				$this->item_name() => $target,
+				'admin_'.$this->item_name() => $admin_target,
 				'target' => $target,
+				'admin_target' => $admin_target,
 				'form_fields' => ($f=$this->get('form')) ? $f : 'auto',
 			)
 		);

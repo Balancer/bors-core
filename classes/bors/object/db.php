@@ -45,6 +45,9 @@ class bors_object_db extends base_object_db
 
 	function set_table_name($table_name) { return $this->table_name = $table_name; }
 
+	// Используется сброс кеша из storage при изменении числа полей
+	function clear_table_fields_cache() { unset(self::$__parsed_fields[$this->class_name()]); }
+
 	function table_fields()
 	{
 		if($fields = @self::$__parsed_fields[$this->class_name()])

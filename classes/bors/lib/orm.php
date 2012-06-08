@@ -68,9 +68,36 @@ class bors_lib_orm
 		return $field;
 	}
 
+	static function property_type_autodetect($property, &$info = array())
+	{
+		if(preg_match('/^\w+_id$/', $property) || $property == 'id')
+			return $info['type'] = 'uint';
+
+		if(preg_match('/(order|count)$/', $property))
+			return $info['type'] = 'int';
+
+		if(preg_match('/^(is_|has_|have_)\w+$/', $property))
+			return $info['type'] = 'bool';
+
+		if(preg_match('/^\w+_date$/', $property))
+		{
+			$info['post_function'] = array('bors_time_date', 'load');
+			return $info['type'] = 'date';
+		}
+
+		if(preg_match('/text/', $property))
+			return $info['type'] = 'text';
+
+		if(preg_match('/^\w+$/', $property))
+			return $info['type'] = 'string';
+
+  		bors_throw(ec('Неизвестное поле ').$property);
+	}
+
 	static function all_fields($object, $only_editable = true)
 	{
-		if($fields = global_key($gk = __CLASS__.'-'.$only_editable, $object->class_name()))
+		// Кеширование может быть сброшено из storage. При возможной замене менять сброс и там!
+		if($fields = global_key($gk = 'bors_lib_orm_class_fields-'.intval($only_editable), $object->class_name()))
 			return $fields;
 
 		$fields_array = array();

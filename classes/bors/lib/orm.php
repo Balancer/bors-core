@@ -261,7 +261,7 @@ class bors_lib_orm
 
 		if(preg_match("!^\s*@$name\s*=(.+)*$!m", $class_source, $m))
 		{
-			$value = trim($m[1]);
+			$value = ec(trim($m[1]));
 			// Поддержка переменных вида %config.value%
 			$value = preg_replace('/%config\.(\w+)%/e', "config('$1');", $value);
 			// Поддержка переменных вида %this.property%

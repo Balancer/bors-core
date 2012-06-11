@@ -289,6 +289,28 @@ class bors_lcml
 		$code = '[url=http://yandex.ru/yandsearch?text="оранжевые+зомби"]оранжевых зомби[/url]';
 		$suite->assertRegexp('#<a rel="nofollow" href="http://yandex.ru/yandsearch\?text=&quot;оранжевые\+зомби&quot;" class="external">оранжевых зомби</a>#', lcml($code));
 
+		// Обработка пайпов
+		$code = '[url=http://www.n2yo.com/?s=25544|38348]Реалтаймовый мониторинг положения Dragin и МКС[/url]';
+		$suite->assertRegexp('#<a rel="nofollow" href="http://www.n2yo.com/?s=25544|38348" class="external">Реалтаймовый мониторинг положения Dragin и МКС</a>#', lcml($code));
+
+		$code = '[http://www.ru|WWW.RU]';
+		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external">WWW.RU</a>#', lcml($code));
+
+		$code = '[http://www.ru WWW.RU]';
+		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external">WWW.RU</a>#', lcml($code));
+
+		$code = '[/test/|Ещё тест]';
+		$suite->assertRegexp('#<a.*href="/test/".*>Ещё тест</a>#', lcml($code));
+
+		$code = '[/test/ Ещё тест]';
+		$suite->assertRegexp('#<a.*href="/test/".*>Ещё тест</a>#', lcml($code));
+
+		$code = '[test/ Ещё тест]';
+		$suite->assertRegexp('#<a.*href="test/".*>Ещё тест</a>#', lcml($code));
+
+		$code = '[test/|Ещё тест]';
+		$suite->assertRegexp('#<a.*href="test/".*>Ещё тест</a>#', lcml($code));
+
 	// Внутренние ошибочные теги не парсятся
 		$code = '[b][i]italic[/b]bold[/i]';
 		$suite->assertEquals('<strong>[i]italic</strong>bold[/i]', lcml($code));

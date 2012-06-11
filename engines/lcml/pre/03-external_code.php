@@ -21,11 +21,18 @@ function lcml_external_code($text)
 
 	// pics.livejournal.com
 	$text = preg_replace("!((^|\s|\n)http://pics\.livejournal\.com/(\w+)/pic/(\w+)(\s|\n|$))!m", "\n[img $1]\n", $text);
+	// http://pics.livejournal.com/uacrussia/pic/0000eae9/s640x480
+	$text = preg_replace("!^\s*(http://pics\.livejournal\.com/\w+/pic/\w+)/s\d+x\d+\s*$!m", "\n[img]$1[/img]\n", $text);
 
 	// http://r-img.fotki.yandex.ru/get/5300/alex-hedin.86/0_575e1_d75048a8_orig
 	// http://img-fotki.yandex.ru/get/4400/alex-hedin.86/0_575dc_805f7c4e_orig
 	// http://img-fotki.yandex.ru/get/5004/balancer73.f/0_4cc96_94922bd7_XL
 //	$text = preg_replace("!((^|\s|\n)http://[^/]+fotki\.yandex\.ru/get/\d+/[^/]+/\w+_(orig|XL)(\s|\n|$))!m", "\n[img $1]\n", $text);
+
+	// http://img-fotki.yandex.ru/get/6308/138238612.af/0_77559_be8c8e97_orig
+	// http://balancer.ru/g/p2826100
+	$text = preg_replace("!^\s*(http://img-fotki\.yandex\.ru/get/\d+/[^/]+/\w+_(orig|XL))\s*$!m", "\n[img]$1[/img]\n", $text);
+
 
 	$text = preg_replace('!(<script type="text/javascript" src="http://googlepage.googlepages.com/player.js"></script>)!ise', 'save_format("\1")', $text);
 

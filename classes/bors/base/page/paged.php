@@ -6,12 +6,25 @@ class base_page_paged extends bors_page
 	function order() { return '-create_time'; } // Всегда! Не менять в будущем. Унификация.
 	function group() { return false; }
 
+	function _inner_join_def() { return false; }
+	function _item_properties_set_def() { return false; }
+	function _limit_def() { return false; }
+
 	private function _where($where = array())
 	{
 		$where = array_merge(object_property($this, 'where', array()), $where);
 
 		if($group = $this->group())
 			$where['group'] = $group;
+
+		if($set = $this->item_properties_set())
+			$where['*set'] = $set;
+
+		if($inner = $this->inner_join())
+			$where['inner_join'] = $inner;
+
+		if($limit = $this->limit())
+			$where['limit'] = $limit;
 
 		return $where;
 	}

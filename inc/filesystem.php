@@ -11,8 +11,6 @@ function abs_path_from_relative($uri, $page)
     return "$page$uri";
 }
 
-bors_function_include('fs/mkpath');
-
 function smart_size($size)
 {
 	if($size<1024)

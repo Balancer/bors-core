@@ -10,6 +10,7 @@ function smarty_function_use($params, &$smarty)
 
 	if($function = defval($params, 'function'))
 	{
+		echo $function;
 		bors_function_include($function);
 		return;
 	}

@@ -410,6 +410,8 @@ function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$d
 
 function bors_function_include($req_name)
 {
+	static $defined = array();
+
 	if(preg_match('!^(\w+)/(\w+)$!', $req_name, $m))
 	{
 		$path = $m[1];
@@ -421,14 +423,10 @@ function bors_function_include($req_name)
 		$name = $req_name;
 	}
 
-	if(function_exists($name))
+	if(!empty($defined[$req_name]))
 		return;
 
-	if(function_exists($path.'_'.$name))
-		return;
-
-	if(function_exists('bors_'.$path.'_'.$name))
-		return;
+	$defined[$req_name] = true;
 
 	$file = BORS_CORE.'/inc/functions/'.$req_name.'.php';
 
@@ -520,6 +518,12 @@ function bors_use($uses)
 				bors_function_include("{$m[1]}/{$m[2]}");
 				continue;
 			}
+		}
+
+		if(preg_match('!^(\w+/\w+)$!', $u))
+		{
+			bors_function_include($u);
+			continue;
 		}
 
 		bors_throw("Unknown bors_use('$u')");

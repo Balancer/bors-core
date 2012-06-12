@@ -70,6 +70,9 @@ function bors_search_sphinx($query, $params = array())
 		case 'c':
 			$cl->SetSortMode(SPH_SORT_ATTR_DESC, 'create_time');
 			break;
+		case 'u': // От обновлённых
+			$cl->SetSortMode(SPH_SORT_ATTR_DESC, 'modify_time');
+			break;
 		case 'co':
 			$cl->SetSortMode(SPH_SORT_ATTR_ASC, 'create_time');
 			break;

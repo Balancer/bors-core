@@ -148,6 +148,8 @@ class bors_form extends bors_object
 		if(empty($method))
 			$method = 'post';
 
+		$this->set_attr('method', $method);
+
 		if(empty($action))
 			$action = $uri;
 
@@ -559,8 +561,12 @@ class bors_form extends bors_object
 		foreach(explode(' ', 'form_class_name class_name object_id uri ref act inframe subaction') as $name)
 			$html .= $this->hidden_attr($name);
 
-		foreach(explode(' ', 'checkboxes checkboxes_list time_vars file_vars linked_targets override_fields saver_prepare_classes') as $name)
+		foreach(explode(' ', 'time_vars file_vars linked_targets override_fields saver_prepare_classes') as $name)
 			$html .= $this->hidden_array($name);
+
+		if($this->attr('method') != 'get')
+			foreach(explode(' ', 'checkboxes checkboxes_list') as $name)
+				$html .= $this->hidden_array($name);
 
 		if(!$this->attr('form_have_go') && $go)
 			$html .= "<input type=\"hidden\" name=\"go\" value=\"$go\" />\n";

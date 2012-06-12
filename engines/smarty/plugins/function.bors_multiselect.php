@@ -43,12 +43,12 @@ function smarty_function_bors_multiselect($params, &$smarty)
 
 	foreach($list as $id => $iname)
 		$out .= "<option value=\"$id\"".(in_array($id, $current) ? " selected=\"selected\"" : "").">$iname</option>\n";
-		
+
 	$out .= "</select>";
 
 	$vcbs = base_object::template_data('form_checkboxes_list');
 	$vcbs[] = $name;
 	base_object::add_template_data('form_checkboxes_list', $vcbs);
-		
+
 	return $out;
 }

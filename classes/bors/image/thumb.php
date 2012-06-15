@@ -143,7 +143,7 @@ class bors_image_thumb extends bors_image
 		$this->set_height($img_data[1], $caching);
 		$this->set_mime_type($img_data['mime'], $caching);
 
-		if($caching)
+		if($caching && $img_data[0])
 			$this->new_instance();
 
 		//TODO: странный костыль.

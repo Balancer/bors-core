@@ -31,7 +31,7 @@ function image_file_scale($file_in, &$file_out, $width, $height, $opts = NULL)
 	}
 
 	$data = getimagesize($file_in);
-
+//var_dump($file_in, $data); exit();
 	if(!$data || !$data[0])
 	{
 		config_set('bors-image-lasterror', ec('Не могу определить размеры изображения'));

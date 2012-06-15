@@ -38,6 +38,9 @@ if(
 
 		if($m[2] == '=' && $m[1] == $_SERVER['REQUEST_URI'])
 			return go($m[3]);
+
+		if($m[2] == '~' && preg_match("!{$m[1]}!", $_SERVER['REQUEST_URI']))
+			return go(preg_replace("!{$m[1]}!", $m[3], $_SERVER['REQUEST_URI']));
 	}
 }
 

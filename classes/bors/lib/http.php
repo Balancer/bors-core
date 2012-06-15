@@ -80,6 +80,8 @@ class bors_lib_http
 	*/
 	static function get_bin($url, $curl_options = array())
 	{
+		$original_url = $url;
+
 		$ch = curl_init($url);
 		curl_setopt_array($ch, array(
 			CURLOPT_TIMEOUT => defval($curl_options, 'timeout', 15),

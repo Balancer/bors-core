@@ -226,7 +226,7 @@ class bors_lib_http
 		));
 
 		if(config('proxy.force_regexp') && preg_match(config('proxy.force_regexp'), $url))
-			curl_setopt($ch, CURLOPT_PROXY, 'balancer.endofinternet.net:3128');
+			curl_setopt($ch, CURLOPT_PROXY, config('proxy.forced'));
 
 		$data = curl_exec($ch);
 		if($data === false)

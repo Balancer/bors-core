@@ -24,7 +24,7 @@ class base_config extends base_object
 			if(strpos($key, '['))
 				$object->add_template_data_array($key, $value);
 			elseif(preg_match('/^\[(\w+)\]\+/', $key, $m))
-				$object->merge_template_data_array($m[1], $value);
+				bors_page::merge_template_data_array($m[1], $value);
 			else
 				$object->add_template_data($key, $value);
 		}

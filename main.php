@@ -327,6 +327,7 @@ if($time > config('timing_limit'))
 if(config('debug.timing') && is_string($res))
 {
 	$deb = "<!--\n=== debug-info ===\n"
+		."BORS_CORE = ".BORS_CORE."\n"
 		."created = ".date('r')."\n";
 
 	if($object)

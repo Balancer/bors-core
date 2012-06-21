@@ -41,6 +41,15 @@ class bors_lib_object
 			return ec(@$vars[$name_ec]);
 		}
 
+		// Ищем методы, перекрываемые переменным по умолчанию
+		$m = "_{$name}_def";
+		if(method_exists($class_name, $m) && !$skip_methods)
+		{
+			try { $value = call_user_func(array($class_name, $m)); }
+			catch(Exception $e) { $value = NULL; }
+			return $value;
+		}
+
 		return $default;
 	}
 

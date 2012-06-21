@@ -26,12 +26,18 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$post_functions = array();
 
 		$table = $object->table_name();
-//		if(config('is_developer')) { echo "<b>Load: {$object->class_name()}</b><br/>"; print_dd($where); print_dd(bors_lib_orm::main_fields($object)); }
+		$fields = popval($where, '*fields');
+//		if(config('is_developer')) { bors_use('debug/print_dd'); echo "<b>Load: {$object->class_name()}</b><br/>"; print_dd($where); print_dd(bors_lib_orm::main_fields($object)); }
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
+			$field_name = $f['name'];
+
+			if(!empty($fields) && !in_array($field_name, $fields))
+				continue;
+
 			if(!empty($f['sql_function']))
-				$x = $f['sql_function']."(`{$table}`.`{$f['name']}`)";
-			elseif(preg_match('/^(\w+)\((\w+)\)$/', $field_name = $f['name'], $m))
+				$x = $f['sql_function']."(`{$table}`.`{$field_name}`)";
+			elseif(preg_match('/^(\w+)\((\w+)\)$/', $field_name, $m))
 				$x = $m[1].'('.$table.'.'.$m[2].')';
 			elseif(preg_match('/^\w+\(.+\)$/', $field_name)) // id => CONCAT(keyword,":",keyword_id)
 				$x = $field_name;
@@ -40,7 +46,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			else
 				$x = $field_name;
 
-			if($field_name != $f['property'])
+			if($field_name != $f['property'] || !empty($f['sql_function']))
 			{
 //				var_dump($where);
 //				echo "{$f['property']} -> {$f['name']}<br/>";
@@ -327,6 +333,60 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 			$object = new $class_name(NULL);
 			$object->set_class_file($class_file);
+		}
+
+		return $objects;
+	}
+
+	/**********************************************************
+
+		Загрузка массива смешанных объектов
+
+	***********************************************************/
+
+	static function load_multi_array($class_names, $fields, $where)
+	{
+		$union	= array();
+		$post	= array();
+		foreach($class_names as $class_name)
+		{
+			$foo = new $class_name(NULL);
+			$db_name = $foo->db_name();
+			$dbh = new driver_mysql($db_name);
+			$table_name = $foo->table_name();
+			$class_file = $foo->class_file();
+			$where['*fields'] = $fields;
+			list($select, $where, $post_functions) = self::__query_data_prepare($foo, $where);
+
+			if(count($select) != count($fields))
+				bors_throw(ec('У класса ').$class_name
+					.ec(' не хватает нужных полей. В наличии только ').join(', ', $select)
+					.ec(' при необходимых ').join(', ', $fields));
+
+			$select[] = "'$class_name' AS `class_name`";
+			$post[$class_name] = $post_functions;
+			$union[] = array($table_name, join(',', $select), $where, $class_name);
+		}
+
+		$datas = $dbh->union_select_array($union);
+		$objects = array();
+
+		foreach($datas as $data)
+		{
+			$class_name = $data['class_name'];
+			$object = new $class_name(NULL);
+//			$object->set_class_file($class_file);
+			$object->set_id(@$data['id']);
+			$object->data = $data;
+
+			$object->set_loaded(true);
+
+			if(!empty($post[$class_name]))
+				self::post_functions_do($object, $post[$class_name]);
+
+			$objects[] = $object;
+
+			save_cached_object($object);
 		}
 
 		return $objects;

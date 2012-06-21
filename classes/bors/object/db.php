@@ -87,6 +87,22 @@ class bors_object_db extends base_object_db
 				continue;
 			}
 
+			// То же самое, но в другую БД
+			// FOREIGN KEY (`city_id`) REFERENCES `WWW`.`CityIndex` (`Code`)
+			if(preg_match('/FOREIGN KEY \(`(\w+)`\) REFERENCES `(\w+)`.`(\w+)` \(`\w+`\)/', $s, $mm))
+			{
+				$field_name = $mm[1]; // например, parent_project_id
+				$foreign_table = $mm[2];
+				$foreign_db = $mm[3];
+				if(empty($fields[$field_name]['class']))
+					bors_throw(ec('Не могу автоматически определить имя класса в сторонней БД: ')."`{$foreign_db}`.`{$foreign_table}`");
+				$item_class = $fields[$field_name]['class'];
+				$fields[$field_name]['have_null'] = "true";
+				$auto_class_name = preg_replace('/_[a-z]+$/', '', $mm[1]);
+				self::$__auto_objects[$this->class_name()][$auto_class_name] = "$item_class({$field_name})";
+				continue;
+			}
+
 			$is_req = false;
 
 			if(preg_match('/^\s+`(\w+)`(.*)$/', $s, $m))
@@ -229,4 +245,7 @@ class bors_object_db extends base_object_db
 
 	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
+
+	//TODO: беглый костыль. Поднять на уровень выше
+	function have_image() { return $this->get('image_id'); }
 }

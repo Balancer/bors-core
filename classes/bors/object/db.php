@@ -164,7 +164,12 @@ class bors_object_db extends base_object_db
 					$args['is_editable'] = false;
 
 				if($type = @$types[$field])
-					$args['type'] = $type;
+				{
+					if(is_array($type))
+						$args = array_merge($args, $type);
+					else
+						$args['type'] = $type;
+				}
 
 				if($is_req)
 					$args['is_req'] = true;

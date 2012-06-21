@@ -8,7 +8,7 @@
 <tr>
 	{foreach $item_list_fields as $p => $t}
 	<td>
-		{if ($p == 'imaged_titled_link' || $p == 'title') && $x->get('image')}
+		{if ($p == 'imaged_titled_link' || $p == 'title') && $x->get('have_image')}
 			{$x->image()->thumbnail('64x64')->html_code('class="float-right" style="margin-left: 10px"')}
 		{/if}
 		{$x->get($p)}

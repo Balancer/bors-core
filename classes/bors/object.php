@@ -131,4 +131,6 @@ class bors_object extends base_object
 
 		return bors_load('bors_time', $this->modify_time());
 	}
+
+	function _admin_searchable_properties_def() { return 'title'; }
 }

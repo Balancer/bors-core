@@ -60,6 +60,16 @@ class driver_mysql extends DataBase implements Iterator
 		return $this->get_array($query, false, false, $index_field);
 	}
 
+	function union_select_array($data)
+	{
+		// $data — массив, где каждый элемент — массив ($table, $fields, $where_array, [$class_name])
+		$union = array();
+		foreach($data as $x)
+			$union[] = "SELECT {$x[1]} FROM {$x[0]} ".mysql_args_compile($x[2], @$x[3]);
+
+		return $this->get_array(join(" UNION ", $union), false, false);
+	}
+
 	function update($table, $where, $fields)
 	{
 		$where['*set'] = $this->make_string_set($fields);

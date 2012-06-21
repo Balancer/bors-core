@@ -178,7 +178,7 @@ class bors_object_db extends base_object_db
 
 		foreach($this->get('table_fields_append', array()) as $field => $name)
 		{
-			$fields[$field]['name'] = $name;
+			$fields[$field]['name'] = $field;
 			$fields[$field]['is_editable'] = false;
 		}
 

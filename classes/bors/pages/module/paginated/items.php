@@ -5,18 +5,22 @@ class bors_pages_module_paginated_items extends bors_module
 	function body_data()
 	{
 		$items = $this->args('items');
+		$data = $this->args('table_columns');
 
-		if($class_name = $this->args('class'))
-			$foo = new $class_name(NULL);
-		else
-			$foo = @$items[0];
-
-		if($foo && !($data = $foo->get('item_list_fields')))
+		if(!$data)
 		{
-			$data = array(
-				'title' => ec('Название'),
-				'id' => ec('ID'),
-			);
+			if($class_name = $this->args('class'))
+				$foo = new $class_name(NULL);
+			else
+				$foo = @$items[0];
+
+			if($foo && !($data = $foo->get('item_list_fields')))
+			{
+				$data = array(
+					'title' => ec('Название'),
+					'id' => ec('ID'),
+				);
+			}
 		}
 
 		return array(

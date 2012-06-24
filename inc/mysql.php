@@ -252,25 +252,30 @@ function mysql_args_compile($args, $class=NULL)
 	$group = popval($args, '*raw_group');
 	if(!$group && !empty($args['group']))
 	{
-		if(preg_match('/^\*BY([A-Z]+)\(UNIX_TIMESTAMP\((`\w+`)\)\)$/', $args['group'], $m))
+		$group = popval($args, 'group');
+		if(preg_match('/^\*BY([A-Z]+)\(UNIX_TIMESTAMP\((`\w+`)\)\)$/', $group, $m))
 		{
 			switch($m[1])
 			{
 				case 'DAYS':
-					$args['group'] = "YEAR({$m[2]}),MONTH({$m[2]}),DAY({$m[2]})";
+					$group = "YEAR({$m[2]}),MONTH({$m[2]}),DAY({$m[2]})";
 					$args['*select'] = "DATE(FROM_UNIXTIME({$m[2]})) AS group_date";
 					$args['*select_index_field*'] = 'group_date';
 					break;
 				case 'MONTHS':
-					$args['group'] = "YEAR({$m[2]}),MONTH({$m[2]})";
+					$group = "YEAR({$m[2]}),MONTH({$m[2]})";
 					$args['*select'] = "CONCAT(YEAR(FROM_UNIXTIME({$m[2]})),'-',MONTH(FROM_UNIXTIME({$m[2]}))) AS group_date";
 					$args['*select_index_field*'] = 'group_date';
 					break;
 			}
 		}
 
-		$group = "GROUP BY {$args['group']}";
-		unset($args['group']);
+	}
+
+	if($group)
+	{
+		$group = mysql_bors_join_parse($group);
+		$group = "GROUP BY {$group}";
 	}
 
 	$having = '';

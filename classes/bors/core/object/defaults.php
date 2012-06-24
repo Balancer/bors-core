@@ -2,6 +2,7 @@
 
 class bors_core_object_defaults
 {
+	// airbase_common_forum => airbase
 	static function project_name($object) { return array_shift(explode('_', $object->class_name())); }
 //	static function access_name($object) { return bors_plural(array_pop(explode('_', $object->class_name()))); }
 
@@ -20,6 +21,7 @@ class bors_core_object_defaults
 		return $name;
 	}
 
+	// ucrm_company_type => company
 	static function section_name($object)
 	{
 		$class_file = $object->class_file();
@@ -41,5 +43,10 @@ class bors_core_object_defaults
 	static function config_class($object)
 	{
 		return join('_', array_filter(array($object->project_name(), $object->section_name(), 'config')));
+	}
+
+	static function item_name($class_name)
+	{
+		return array_pop(explode('_', $class_name));
 	}
 }

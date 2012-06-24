@@ -1,11 +1,11 @@
 <?php
 
-function bors_named_list_db($class_name, $zero_item = NULL, $where = array())
+function bors_named_list_db($class_name, $zero_item = NULL, $where = array(), $zero_index=0)
 {
 	$res = array();
 
 	if(isset($zero_item))
-		$res[0] = $zero_item;
+		$res[$zero_index] = $zero_item;
 
 	if(empty($where['order']))
 		$where['order'] = 'title';// $title_field;

@@ -299,6 +299,14 @@ class bors_lib_orm
 		return false;
 	}
 
+	static function db_name($class_name)
+	{
+		$foo = new $class_name(NULL);
+		$class_file = bors_class_loader::load($class_name);
+		$foo->set_class_file($class_file);
+		return object_property($foo, 'db_name');
+	}
+
 	static function table_name($class_name)
 	{
 		$foo = new $class_name(NULL);

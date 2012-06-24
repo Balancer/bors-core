@@ -132,6 +132,19 @@ class bors_object_db extends base_object_db
 					$args['title'] = $title;
 				}
 
+				// Пример: Пол[common_sex]
+				// Добавить возможность использования и классов. Автоопределением, что ли?
+				if(preg_match('/^(.+)\[(\w+)\]$/', @$args['title'], $m))
+				{
+					$args['title'] = trim($m[1]);
+					$class_name = $m[2];
+					$foo = new $class_name(NULL);
+					if(method_exists($foo, 'named_list'))
+						$args['named_list'] = $class_name;
+					else
+						$args['class'] = $class_name;
+				}
+
 				if(preg_match('!^(.+) // (.+)$!', @$args['title'], $m))
 				{
 					$args['title'] = $m[1];
@@ -159,19 +172,6 @@ class bors_object_db extends base_object_db
 
 				if(empty($fields[$field]))
 					$fields[$field] = array();
-
-				// Пример: Пол[common_sex]
-				// Добавить возможность использования и классов. Автоопределением, что ли?
-				if(preg_match('/^(.+)\[(\w+)\]$/', @$args['title'], $m))
-				{
-					$args['title'] = trim($m[1]);
-					$class_name = $m[2];
-					$foo = new $class_name(NULL);
-					if(method_exists($foo, 'named_list'))
-						$args['named_list'] = $class_name;
-					else
-						$args['class'] = $class_name;
-				}
 
 				if(in_array($field, array('id', 'create_time', 'modify_time', 'owner_id', 'last_editor_id')))
 					$args['is_editable'] = false;

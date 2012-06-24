@@ -33,7 +33,19 @@ class bors_object_simple extends bors_object_empty
 
 			$result = NULL;
 
-			try { eval("\$result = \$this->$name;"); }
+			if(preg_match('/^(.+)\|(\w+)$/', $name, $m))
+			{
+				$name = $m[1];
+				$post_function = $m[2];
+			}
+			else
+				$post_function = false;
+
+			try{
+				eval("\$result = \$this->$name;");
+				if($post_function)
+					$result = $post_function($result);
+			}
 			catch(Exception $e) { $result = NULL; }
 
 			return $result;

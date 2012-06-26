@@ -9,14 +9,40 @@ class bors_auto_search_result extends bors_auto_search
 
 	function nav_name() { return ec('«').$this->query().ec('»'); }
 
+	function order() { return bors_lib_object::get_static($this->main_class(), 'admin_items_list_order', '-create_time'); }
+
 	function where()
 	{
-		$q = "(title LIKE '%".addslashes($this->query())."%'";
-		if($id = intval($this->query()))
-			$q .= " OR id=".$id;
-		$q .= ")";
+		if(!($q = $this->query()))
+			return array();
 
-		return array($q);
+		$q0 = "'".addslashes(trim($q))."'";
+		$q = "'%".addslashes(trim($q))."%'";
+
+		$where = array();
+
+		$class_name = $this->main_class();
+
+		$qq = array();
+		$properties = explode(' ', bors_lib_object::get_static($class_name, 'admin_searchable_properties'));
+
+		foreach($properties as $p)
+		{
+			if(preg_match('/^(\w+)=$/', $p, $m))
+			{
+				$x = bors_lib_orm::parse_property($class_name, $m[1]);
+				$qq[] = "`{$x['name']}` = {$q0}";
+			}
+			else
+			{
+				$x = bors_lib_orm::parse_property($class_name, $p);
+				$qq[] = "`{$x['name']}` LIKE {$q}";
+			}
+		}
+
+		$where[] = '('.join(' OR ', $qq).')';
+
+		return $where;
 	}
 
 	function result_fields()

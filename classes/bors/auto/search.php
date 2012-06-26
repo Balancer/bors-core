@@ -13,7 +13,11 @@ class bors_auto_search extends bors_paginated
 
 	function _item_type_def()
 	{
-		if($class = $this->args('class'))
+		$class = str_replace('/', '_', $this->args('class'));
+
+		$class = preg_replace('/^'.$this->project_name().'_/', '', $class);
+
+		if($class)
 			return bors_unplural($class);
 
 		bors_throw(ec("Не задан тип искомых объектов и его не удаётся вычислить"));
@@ -61,7 +65,9 @@ array
 
 	function action_url()
 	{
-		return config('main_site_url').'/'.bors_plural($this->item_type()).'/search/';
+//		return bors()->request()->pure_url();
+		$path = '/'.str_replace('_', '/', bors_plural(str_replace('admin_', '', $this->item_type()))).'/search/';
+		return (strpos($this->args('class'), '_admin_') ? config('admin_site_url') : config('main_site_url')) . $path;
 	}
 
 	function url($page = NULL)

@@ -23,10 +23,22 @@ class bors_pages_module_paginated_items extends bors_module
 			}
 		}
 
-		return array(
+		$body_data = array(
 			'item_list_fields' => $data,
 			'items' => $items,
 		) + parent::body_data();
+
+		$more = false;
+		if(($limit = $this->args('more_limit')) && count($items) >= $limit)
+		{
+			$item = $items[0];
+			if($this->args('more') == 'search')
+				$more = dirname($item->url()).'/search/?q='.bors()->request()->data('q');
+		}
+
+		$body_data['more'] = $more;
+
+		return $body_data;
 	}
 
 	function make_sortable_th($property, $title)

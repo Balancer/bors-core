@@ -141,7 +141,7 @@ class bors_page extends base_page
 		return parent::pre_show();
 	}
 
-	static function object_type() { return 'page'; }
+	function object_type() { return 'page'; }
 
 	function body_data()
 	{

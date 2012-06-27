@@ -75,14 +75,21 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				continue;
 			}
 
-			if(preg_match('/^(\w+)\(\)$/', $key, $m))
+			$args = '';
+
+			if(preg_match('/^(\w+)\(\)$/', $key, $m)) // function(): ...
 				$key = $m[1];
+			elseif(preg_match('/^(\w+) \( ([^\)]+) \)$/x', $key, $m)) // function($arg): ...
+			{
+				$key = $m[1];
+				$args = $m[2];
+			}
 			elseif(preg_match('/^\w+$/', $value))
 				$value = "'".addslashes($value)."'";
 			else
 				$value = "ec('".addslashes($value)."')";
 
-			$class .= "\n\tfunction $key() { return $value; }\n";
+			$class .= "\n\tfunction $key($args) { return $value; }\n";
 		}
 
 		if(file_exists($inc_php = str_replace('.yaml', '.inc.php', $class_file)))

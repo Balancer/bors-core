@@ -114,7 +114,7 @@ class bors_object extends base_object
 
 	function admin_additional_info() { return array(); }
 
-	static function object_type() { return 'unknown'; }
+	function object_type() { return 'unknown'; }
 
 	function ctime()
 	{

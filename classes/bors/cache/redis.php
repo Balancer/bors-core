@@ -66,11 +66,13 @@ class bors_cache_redis extends bors_cache_base
 		if(config('cache_disabled'))
 			return NULL;
 
+		debug_count_inc('redis_debug. Get for '.$this->hmd);
 		$key = new Rediska_Key($this->hmd);
 
 		try
 		{
 			$this->last = $key->getValue();
+//			if(config('is_developer')) var_dump($this->last);
 		}
 		catch(Rediska_Serializer_Adapter_Exception $e)
 		{
@@ -95,6 +97,7 @@ class bors_cache_redis extends bors_cache_base
 		if(config('cache_disabled'))
 			return $this->last = $value;
 
+		debug_count_inc('redis_debug. Set for '.$this->hmd);
 		$key = new Rediska_Key($this->hmd);
 		$key->setValue($value);
 		$key->expire($ttl);

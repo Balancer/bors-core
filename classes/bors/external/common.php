@@ -53,7 +53,8 @@ class bors_external_common extends bors_object
 
 		// Андроид Маркет
 		// <div class="doc-banner-icon"><img src="https://g1.gstatic.com/android/market/com.eolwral.osmonitor/hi-256-1-cb0eccad4104c6cf15182a6da90c40002d76bad8" /></div>
-		if(!$img && preg_match('!<div class="doc-banner-icon"><img src="([^"]+)" /></div>!', $html, $m))
+		// <div class="doc-banner-icon"><img src="https://lh5.ggpht.com/HelkQpBcO9SPqOgu0AdXqU_N6M3zMIBR6lR-rvBUPMsZl_7H2aGwfqq9tEHV89vJ_yo=w124"/></div>
+		if(!$img && preg_match('!<div class="doc-banner-icon">\s*<img src="([^"]+)"\s*/>\s*</div>!s', $html, $m))
 			$img = $m[1];
 
 		// Принудительный urldecode, если нужно.
@@ -84,37 +85,52 @@ if(config('is_developer')) { exit($img); }
 		{
 //			print_dd($html);
 			$dom = new DOMDocument('1.0', 'UTF-8');
-			@$dom->loadHTML($html);
-			$xpath = new DOMXPath($dom);
+			$html = iconv('utf-8', 'utf-8//ignore', preg_replace('!<meta [^>]+?>!is', '', $html));
+			$html = preg_replace('!<script[^>]*>.+?</script>!is', '', $html);
+			$html = str_replace("\r", "", $html);
 
-			foreach(array(
-				'//script',
-				'//style',
-			) as $query)
-				foreach($xpath->query($query) as $node)
-					$node->parentNode->removeChild($node);
-
-			if($divs = $xpath->query('//div[@id="content"]'))
+			if($html)
 			{
-				$content = /*bors_lib_dom::element_html*/($divs->item(0));
-				$source = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
-//				var_dump($source); exit();
-				$source = preg_replace("/\s*\n+\s*/", "\n", $source);
-				$source = array_filter(explode("\n", $source));
-				if(count($source) > 7)
-				{
-					$source = array_slice($source, 0, 6);
-					$source[] = ec('…');
-					$more = true;
-				}
+				libxml_use_internal_errors(true);
+				$dom->loadHTML($html);
+				$xpath = new DOMXPath($dom);
 
-				$source = join("\n", $source);
-//				var_dump($source); exit();
-				require_once('inc/texts.php');
-				$description = clause_truncate_ceil($source, 512);
-				if($source != $description)
-					$more = true;
+//				if(config('is_developer')) { var_dump($html, $dom->saveHTML()); exit(); }
+
+				foreach(array(
+					'//script',
+					'//style',
+				) as $query)
+					foreach($xpath->query($query) as $node)
+						$node->parentNode->removeChild($node);
+
+				if($divs = $xpath->query('//div[@id="content"]'))
+				{
+					$content = /*bors_lib_dom::element_html*/($divs->item(0));
+					$source = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
+					if(strpos($source, 'Ð') !== false)
+						$source = '';
+//					var_dump($source); exit();
+					$source = preg_replace("/\s*\n+\s*/", "\n", $source);
+					$source = array_filter(explode("\n", $source));
+					if(count($source) > 7)
+					{
+						$source = array_slice($source, 0, 6);
+						$source[] = ec('…');
+						$more = true;
+					}
+
+					$source = join("\n", $source);
+
+//					var_dump($source); exit();
+					require_once('inc/texts.php');
+					$description = clause_truncate_ceil($source, 512);
+					if($source != $description)
+						$more = true;
+				}
 			}
+			else
+				$description = '';
 		}
 
 		if($title && strlen($title) > 5)

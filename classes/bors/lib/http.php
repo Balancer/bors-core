@@ -11,9 +11,18 @@ class bors_lib_http
 	// Работает с объектами не более одного мегабайта. Можно настроить новым параметром max_length
 	function get_cached($url, $ttl = 86400, $raw = false, $force = false, $max_length = 1000000)
 	{
-		$cache = new Cache();
+		//FIXME: Придумать более изящный способ
+		$cache_status_save = config('cache_disabled');
+		config_set('cache_disabled', false);
+		debug_count_inc('bors_lib_url: get_cached('.$url.')');
+		$cache = new bors_cache();
 		if($cache->get('bors_lib_http.get_cached-v1', $url) && !$force)
-			return $cache->last();
+		{
+			debug_count_inc('bors_lib_url: get_cached('.$url.'):found');
+			$res = $cache->last();
+			config_set('cache_disabled', $cache_status_save);
+			return $res;
+		}
 
 		$content = self::get($url, $raw);
 
@@ -21,7 +30,10 @@ class bors_lib_http
 		if(strlen($content) > $max_length)
 			$content = substr($content, 0, $max_length);
 
-		return $cache->set($content, $ttl);
+		debug_count_inc('bors_lib_url: get_cached('.$url.'):store');
+		$cache->set($content, $ttl);
+		config_set('cache_disabled', $cache_status_save);
+		return $content;
 	}
 
 	static function url_unshort($url, $type, $loop = 0)
@@ -256,6 +268,9 @@ class bors_lib_http
     	    	if(preg_match("!<meta\s+http\-equiv\s*=\s*\"Content\-Type\"[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
 	    	    	$charset = $m[1];
 				elseif(preg_match("!<meta[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
+			        $charset = $m[1];
+				// <meta http-equiv="Content-Type" content="text/html;UTF-8">
+				elseif(preg_match("!<meta [^>]+Content-Type[^>]+content=\"text/html;([^>]+)\">!i", $data, $m))
 			        $charset = $m[1];
 			}
 

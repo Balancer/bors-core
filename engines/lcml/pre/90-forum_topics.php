@@ -18,12 +18,13 @@
 //        $txt=preg_replace("!(\s|^|\()http://forums\.airbase\.ru/\?act=ST&amp;showtopic=(\d+)&amp;st=(\d+)#entry(\d+)(\s|$|\.|,|\))!me","'$1'.lcml_forum_topics_post('$2','$4').'$5'",$txt);
         $txt=preg_replace("!(\s|^|\()http://forums\.airbase\.ru/\?act=ST&amp;f=(\d+)&amp;t=(\d+)&amp;st=(\d+)#entry(\d+)(\s|$|\.|,|\))!me","'$1'.lcml_forum_topics_post('$3','$5').'$6'",$txt);
         $txt=preg_replace("!(showtopic=\d+)&amp;st=0!","$1",$txt);
-        
-        $txt=preg_replace("!(\s|^|\()http://forums\.airbase\.ru/\?act=ST&amp;f=(\d+)&amp;t=(\d+)&amp;st=(\d+)(\s|$|\.|,|\))!me","'$1'.lcml_forum_topics_page('$2','$3','$4').'$5'",$txt);
-        $txt=preg_replace("!(\s|^|\()http://forums\.airbase\.ru/\?showtopic=(\d+)&amp;st=(\d+)(\s|$|\.|,|\))!me","'$1'.lcml_forum_topics_page('','$2','$3').'$4'",$txt);
+
+//TODO:	Посмотреть, не нужна ли замена. Например: http://balancer.ru/g/p251869
+//        $txt=preg_replace("!(\s|^|\()http://forums\.airbase\.ru/\?act=ST&amp;f=(\d+)&amp;t=(\d+)&amp;st=(\d+)(\s|$|\.|,|\))!me","'$1'.lcml_forum_topics_page('$2','$3','$4').'$5'",$txt);
+//        $txt=preg_replace("!(\s|^|\()http://forums\.airbase\.ru/\?showtopic=(\d+)&amp;st=(\d+)(\s|$|\.|,|\))!me","'$1'.lcml_forum_topics_page('','$2','$3').'$4'",$txt);
 
         $txt=preg_replace("!http://forums\.airbase\.ru/\?act=ST&amp;f=\d+&amp;t=(\d+)!","http://forums.airbase.ru/?showtopic=$1",$txt);
-        
+
         $txt=preg_replace("!(\s|^|\()http://forums\.airbase\.ru/\?showtopic=(\d+)&amp;hl=(\s|$|\.|,|\))!me","'$1'.lcml_forum_topics_title('$2').'$3'",$txt);
         $txt=preg_replace("!(\s|^|\()http://forums\.airbase\.ru/\?showtopic=(\d+)(\s|$|\.|,|\))!me","'$1'.lcml_forum_topics_title('$2').'$3'",$txt);
         $txt=preg_replace("!(\s|^|\()http://forums\.airbase\.ru/\?showtopic=(\d+)&amp;view=findpost&amp;p=(\d+)(\s|$|\.|,|\))!me","'$1'.lcml_forum_topics_post('$2','$3').'$4'",$txt);
@@ -69,7 +70,6 @@
         $q="SELECT title FROM ib_topics WHERE tid=$topic";
         $query = mysql_query ($q) or  die(__FILE__.':'.__LINE__." Query '$q' failed, error ".mysql_errno().": ".mysql_error()."<BR>");
         $res = mysql_fetch_array($query);
-        
         mysql_close();
 
         if($res['title'])
@@ -80,7 +80,5 @@
         }
         else
             $title=$url;
-        
         return "<a href=\"$url\">$title</a>";
     }
-?>

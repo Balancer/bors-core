@@ -47,6 +47,8 @@ class bors_form extends bors_object
 
 	function html_open($params)
 	{
+//		var_dump($params);
+
 		$this->_params = $params;
 		extract($params);
 
@@ -214,6 +216,8 @@ class bors_form extends bors_object
 		if($th && $th!='-')
 			$html .= "<caption>{$th}</caption>\n";
 
+		$edit_properties_append = $calling_object->get('edit_properties', array());
+
 		if(!empty($fields))
 		{
 			$this->set_attr('has_autofields', true);
@@ -316,6 +320,9 @@ class bors_form extends bors_object
 				}
 
 				$property_name = defval($data, 'property', $data['name']);
+
+				if($append = @$edit_properties_append[$property_name])
+					$data = array_merge($data, $append);
 
 				if(!$title)
 					$title = $property_name;
@@ -448,7 +455,12 @@ class bors_form extends bors_object
 							$data['list'] = $list->named_list();
 						}
 						else
-							$data['list'] = base_list::make($class, array(), $data);
+						{
+							$list_filter = popval($data, 'list_filter', array());
+							if(is_string($list_filter))
+								eval("\$list_filter = $list_filter;");
+							$data['list'] = base_list::make($class, $list_filter, $data);
+						}
 
 						// Смешанная проверка для тестирования на http://ucrm.wrk.ru/admin/persons/9/
 						if($data['is_int'] = defval($data, 'is_int', true))

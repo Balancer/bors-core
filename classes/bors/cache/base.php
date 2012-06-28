@@ -4,7 +4,7 @@ class bors_cache_base
 {
 	protected $type;
 	protected $key;
-	protected $hmd;
+	var $hmd;
 	protected $last;
 
 	function init() { }

@@ -98,7 +98,6 @@ class bors_lcml
 		{
 			$original = $text;
 
-//			if(config('is_developer')) echo "$fn('$text') <br/>\n";
 			if((!$fns_list_enabled || in_array($fn, $fns_list_enabled))
 				&& !in_array($fn, $fns_list_disabled)
 			)
@@ -152,6 +151,7 @@ class bors_lcml
 			$text = bors_lcml::parsers_do('pre', $text);
 			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text, 'pre');
 		}
+
 
 		if($this->_params['level'] == 1)
 			$this->output_type = popval($params, 'output_type', 'html');

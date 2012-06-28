@@ -98,5 +98,5 @@ function lcml_html_pre($txt)
 			$txt = preg_replace("!<a [^>]*href=$q([$mask]+){$q}[^>]*>(.*?)</a>!is", "[url=$1]$2[/url]", $txt);
 		}
 
-		return config('lcml_html_special_chars_enable') ? $txt : htmlspecialchars($txt, ENT_NOQUOTES);
+		return str_replace(array('>'), array('&gt;'), $txt); // Придумать, как обойти порчу ссылок. Видимо, ставить в post? config('lcml_html_special_chars_enable') ? $txt : htmlspecialchars($txt, ENT_NOQUOTES);
     }

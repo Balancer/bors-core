@@ -30,7 +30,6 @@ function http_get($url)
 
 function http_get_content($url, $raw = false, $max_length = false)
 {
-
 	$original_url = $url;
 	$anchor = "";
 
@@ -94,7 +93,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 	if($data === false)
 	{
-		echo '<small><i>[1] Curl error: ' . curl_error($ch) . '</i></small><br/>';
+		echo '<small><i>[1] Curl '.$url.' error: ' . curl_error($ch) . '</i></small><br/>';
 //		echo debug_trace();
 //		if(config('is_developer')) { var_dump($data); exit(); }
 		return '';
@@ -122,14 +121,15 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
-//	if(config('is_developer')) { var_dump($header); var_dump($data); }
-
     if(preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
         $charset = $m[1];
     elseif(preg_match("!<\?xml\s+version=\S+\s+encoding\s*=\s*\"(.+?)\"!i", $data, $m))
         $charset = $m[1];
     elseif(preg_match("!(Microsoft\-IIS|X\-Powered\-By: ASP\.NET)!", $header))
         $charset = 'windows-1251';
+	// <meta http-equiv="Content-Type" content="text/html;UTF-8">
+	elseif(preg_match("!<meta [^>]+Content-Type[^>]+content=\"text/html;([^>]+)\">!i", $data, $m))
+        $charset = $m[1];
 	else
         $charset = '';
 
@@ -164,6 +164,8 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 	if($charset)
 		$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
+
+//	if(config('is_developer')) { var_dump($raw, $charset, $header, $data); }
 
     return $data;
 }

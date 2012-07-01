@@ -19,12 +19,20 @@ class bors_paginated extends base_page_paged
 	{
 		$where = parent::where();
 
-		if($inner_join_class = $this->get('inner_join_filter'))
+		$join_class = $this->get('inner_join_filter');
+		$join_type = 'inner';
+		if(!$join_class)
 		{
-			$db_name = bors_lib_orm::db_name($inner_join_class);
-			$table_name = bors_lib_orm::table_name($inner_join_class);
+			$join_class = $this->get('join_counter_class');
+			$join_type = 'left';
+		}
 
-			if(preg_match('/^(\w+)\((\w+)\)$/', $inner_join_class, $m))
+		if($join_class)
+		{
+			$db_name = bors_lib_orm::db_name($join_class);
+			$table_name = bors_lib_orm::table_name($join_class);
+
+			if(preg_match('/^(\w+)\((\w+)\)$/', $join_class, $m))
 			{
 				$inner_field = $m[2];
 				$inner_join_class = $m[1];
@@ -34,12 +42,18 @@ class bors_paginated extends base_page_paged
 
 			if($this->get('counts_in_list'))
 			{
-				$where['inner_join'] = "`$db_name`.`$table_name` ON ({$this->main_class()}.id = $inner_field)";
-				$where['group'] = $this->main_class().'.id';
-				$where['*set'] = 'COUNT(*) AS `group_count`';
+				if($join_type == 'inner')
+				{
+					$where[$join_type.'_join'] = "`$db_name`.`$table_name` ON ({$this->main_class()}.id = $inner_field)";
+					$where['group'] = $inner_field;
+					$where['*set'] = 'COUNT(*) AS `group_count`';
+				}
+				else
+					$where['*set'] = "'$join_class' AS `b_counter_class`";
 			}
 			else
-				$where[] = $this->main_class().".id IN (SELECT $inner_field FROM `$db_name`.`$table_name`)";
+				$where[] = "$inner_field IN (SELECT $inner_field FROM `$db_name`.`$table_name`)";
+
 		}
 
 		return $where;

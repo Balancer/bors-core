@@ -417,4 +417,4 @@ if(config('404_page_url'))
 	return go(config('404_page_url'), true);
 
 if(config('404_show', true))
-	echo ec("Page '$uri' not found\n<!-- BORS_SITE=".BORS_SITE."-->");
+	echo ec("Page '$uri' not found\n<!--\nBORS_SITE=".BORS_SITE."\nBORS_CORE=".BORS_CORE."\n-->");

@@ -248,4 +248,15 @@ class bors_object_db extends base_object_db
 
 	//TODO: беглый костыль. Поднять на уровень выше
 	function have_image() { return $this->get('image_id'); }
+
+	function _group_count_def()
+	{
+		if($counter_class = $this->get('b_counter_class'))
+		{
+			$link_field = bors_core_object_defaults::item_name($this->class_name()).'_id';
+			return bors_count($counter_class, array($link_field => $this->id()));
+		}
+
+		return NULL;
+	}
 }

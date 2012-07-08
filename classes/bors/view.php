@@ -27,9 +27,18 @@ class bors_view extends bors_page
 		if(class_include($main_class))
 			return $main_class;
 
-		$main_class = bors_unplural($main_class);
+		$main_class_up = bors_unplural($main_class);
+		if(class_include($main_class_up))
+			return $main_class_up;
+
+		$main_class = preg_replace('/^(\w+)_admin_(\w+)$/', '$1_$2', $main_class);
+
 		if(class_include($main_class))
 			return $main_class;
+
+		$main_class_up = bors_unplural($main_class);
+		if(class_include($main_class_up))
+			return $main_class_up;
 
 		bors_throw(ec('Не определён главный класс для представления ').$this->class_name());
 	}

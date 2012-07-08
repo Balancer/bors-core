@@ -14,12 +14,27 @@ class bors_pages_module_paginated_items extends bors_module
 			else
 				$foo = @$items[0];
 
-			if($foo && !($data = $foo->get('item_list_fields')))
+			if($foo)
 			{
-				$data = array(
-					'title' => ec('Название'),
-					'id' => ec('ID'),
-				);
+				if($this->args('is_admin_list'))
+					$data = $foo->get('item_list_admin_fields');
+
+				if(!$data)
+					$data = $foo->get('item_list_fields');
+
+				if(!$data)
+				{
+					if($this->args('is_admin_list'))
+						$data = array(
+							'admin()->imaged_titled_link()' => ec('Название'),
+							'id' => ec('ID'),
+						);
+					else
+						$data = array(
+							'title' => ec('Название'),
+							'id' => ec('ID'),
+						);
+				}
 			}
 		}
 

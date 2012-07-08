@@ -9,7 +9,7 @@ class bors_xref_c2c extends bors_object_db
 		if(!$xref_class_name)
 			$xref_class_name = get_called_class();
 
-		$object_field_name = self::object_name($xref_class_name).'_id';
+		$object_field_name = bors_unplural(self::object_name($xref_class_name)).'_id';
 		$target_field_name = self::target_name($xref_class_name).'_id';
 
 		$args[$object_field_name] = $object->id();
@@ -58,5 +58,20 @@ class bors_xref_c2c extends bors_object_db
 			$xref_class_name = get_called_class();
 
 		return self::target_name($xref_class_name).'_ids';
+	}
+
+	function targets($where)
+	{
+		$target_class_name = defval($where, 'target_class_name', $this->get('target_class_name'));
+		return bors_field_array_extract($target_class_name, $where);
+	}
+
+	// Отладка на http://admin.aviaport.wrk.ru/projects/1/
+	function target_ids($where)
+	{
+		$xref_class_name = popval($where, 'xref_class_name');
+		$target_field_name = popval($where, 'target_field_name');
+		$xrefs = bors_find_all($xref_class_name, $where);
+		return bors_field_array_extract($xrefs, $target_field_name);
 	}
 }

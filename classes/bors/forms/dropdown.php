@@ -7,7 +7,6 @@ class bors_forms_dropdown extends bors_forms_element
 		include_once('inc/bors/lists.php');
 
 		extract($params);
-//		var_dump($list);
 
 		if(!$form)
 			$form = bors_form::$_current_form;

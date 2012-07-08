@@ -34,7 +34,8 @@ class bors_object_db extends base_object_db
 			return $tab;
 
 		bors_function_include('natural/bors_chunks_unplural');
-		if(preg_match('/^'.$this->project_name().'_(\w+)$/i', $this->class_name(), $m))
+		$class_name = str_replace('_admin_', '_', $this->class_name());
+		if(preg_match('/^'.$this->project_name().'_(\w+)$/i', $class_name, $m))
 		{
 //			echo bors_plural(bors_chunks_unplural($m[1]))."<br/>";
 			return bors_plural(bors_chunks_unplural($m[1]));
@@ -209,10 +210,18 @@ class bors_object_db extends base_object_db
 
 	function url()
 	{
-		if(preg_match('/^'.$this->project_name().'_(\w+)$/i', $this->class_name(), $m))
-			return config('main_site_url').'/'.join('/', array_map('bors_plural', explode('_', bors_lower($m[1])))).'/'.$this->id().'/';
+		$site_url = config('main_site_url');
+		$class_name = $this->class_name();
+		if(preg_match('/_admin_/', $class_name))
+		{
+			$site_url = config('admin_site_url');
+			$class_name = str_replace('_admin_', '_', $class_name);
+		}
 
-		return config('main_site_url').'/'.$this->_item_name_m().'/'.$this->id().'/';
+		if(preg_match('/^'.$this->project_name().'_(\w+)$/i', $class_name, $m))
+			return $site_url.'/'.join('/', array_map('bors_plural', explode('_', bors_lower($m[1])))).'/'.$this->id().'/';
+
+		return $site_url.'/'.$this->_item_name_m().'/'.$this->id().'/';
 	}
 
 	function admin_url()

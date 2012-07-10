@@ -20,4 +20,12 @@ class bors_time_meta extends bors_object //TODO: придумать назван
 
 		return NULL;
 	}
+
+	function hm()
+	{
+		if($ts = $this->timestamp())
+			return date('H:i', $ts);
+
+		return NULL;
+	}
 }

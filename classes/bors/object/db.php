@@ -256,7 +256,7 @@ class bors_object_db extends base_object_db
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
 
 	//TODO: беглый костыль. Поднять на уровень выше
-	function have_image() { return $this->get('image_id'); }
+	function _have_image_def() { return $this->get('image_id'); }
 
 	function _group_count_def()
 	{

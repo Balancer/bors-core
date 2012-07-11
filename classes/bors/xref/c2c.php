@@ -10,10 +10,11 @@ class bors_xref_c2c extends bors_object_db
 			$xref_class_name = get_called_class();
 
 		$object_field_name = bors_unplural(self::object_name($xref_class_name)).'_id';
-		$target_field_name = self::target_name($xref_class_name).'_id';
+		$target_field_name = bors_unplural(self::target_name($xref_class_name)).'_id';
 
 		$args[$object_field_name] = $object->id();
 		$args[$target_field_name] = $target->id();
+
 		bors_new($xref_class_name, $args);
 	}
 
@@ -25,8 +26,11 @@ class bors_xref_c2c extends bors_object_db
 		return NULL;
 	}
 
-	static function target_name($xref_class_name)
+	static function target_name($xref_class_name = NULL)
 	{
+		if(is_null($xref_class_name))
+			$xref_class_name = get_called_class();
+
 		if(preg_match('/_xref_([a-z0-9]+)$/', $xref_class_name, $m))
 			return $m[1];
 
@@ -60,10 +64,25 @@ class bors_xref_c2c extends bors_object_db
 		return self::target_name($xref_class_name).'_ids';
 	}
 
-	function targets($where)
+	// Отладка на http://pfo.wrk.ru/
+	function find_targets($where)
 	{
-		$target_class_name = defval($where, 'target_class_name', $this->get('target_class_name'));
-		return bors_field_array_extract($target_class_name, $where);
+		$xref_class_name = popval($where, 'xref_class_name');
+		$target_class_name = popval($where, 'target_class_name');
+		$target_field_name = popval($where, 'target_field_name');
+		$target_where = popval($where, 'target', array());
+		$xrefs = bors_find_all($xref_class_name, $where);
+		$ids = bors_field_array_extract($xrefs, $target_field_name);
+		$target_where['id IN'] = $ids;
+		return bors_find_all($target_class_name, $target_where);
+	}
+
+	function count($where)
+	{
+		$xref_class_name = popval($where, 'xref_class_name');
+		$target_class_name = popval($where, 'target_class_name');
+		$target_field_name = popval($where, 'target_field_name');
+		return bors_count($xref_class_name, $where);
 	}
 
 	// Отладка на http://admin.aviaport.wrk.ru/projects/1/
@@ -74,4 +93,7 @@ class bors_xref_c2c extends bors_object_db
 		$xrefs = bors_find_all($xref_class_name, $where);
 		return bors_field_array_extract($xrefs, $target_field_name);
 	}
+
+	function target() { return bors_load($this->target_class_name(), $this->get($this->target_field_name())); }
+	function target_field_name() { return bors_unplural($this->target_name()).'_id'; }
 }

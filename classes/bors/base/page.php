@@ -49,8 +49,21 @@ class base_page extends bors_object
 		if($this->total_pages() < 2)
 			return '';
 
+		if(is_array($css))
+		{
+			$before = popval($css, 'before');
+			$after = popval($css, 'after');
+			$show_current = popval($css, 'show_current', true);
+			$current_page_class = popval($css, 'current_page_class', 'current_page');
+
+			$css = popval($css, 'div_css');
+		}
+
         include_once("inc/design/page_split.php");
-		$pages = '<li>'.join('</li><li>', pages_show($this, $this->total_pages(), $this->items_around_page())).'</li>';
+		$pages = '<li>'.join('</li><li>', pages_show(
+			$this, $this->total_pages(), $this->items_around_page(),
+			$show_current, $current_page_class
+		)).'</li>';
 		return '<div class="'.$css.'">'.$before.ec('<ul><li>Страницы:</li>').$pages.'</ul>'.$after.'</div>';
 	}
 

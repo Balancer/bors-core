@@ -44,7 +44,12 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 			$w = $field_cond . '\'' . addslashes($value) . '\'';
 
 		if($w)
-			$where[] = mysql_bors_join_parse($w, $class, $was_joined);
+		{
+			$w = mysql_bors_join_parse($w, $class, $was_joined);
+			// Некоторая частая оптимизация
+			$w = bors_storage_mysql::condition_optimize($w);
+			$where[] = $w;
+		}
 	}
 
 	return 'WHERE '.join(' AND ', $where);
@@ -176,6 +181,7 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 function mysql_args_compile($args, $class=NULL)
 {
 //	if(config('is_debug')) echo "<b>mysql_args_compile</b>(".print_r($args, true).", $class) <br/>\n";
+
 	if(!empty($args['*class_name']))
 	{
 		$class = $args['*class_name'];
@@ -249,8 +255,8 @@ function mysql_args_compile($args, $class=NULL)
 	else
 		$use_index = '';
 
-	$group = popval($args, '*raw_group');
-	if(!$group && !empty($args['group']))
+	$raw_group = popval($args, '*raw_group');
+	if(!$raw_group && !empty($args['group']))
 	{
 		$group = popval($args, 'group');
 		if(preg_match('/^\*BY([A-Z]+)\(UNIX_TIMESTAMP\((`\w+`)\)\)$/', $group, $m))
@@ -270,13 +276,13 @@ function mysql_args_compile($args, $class=NULL)
 			}
 		}
 
+		if($group)
+		{
+			$group = mysql_bors_join_parse($group);
+			$raw_group = "GROUP BY {$group}";
+		}
 	}
 
-	if($group)
-	{
-		$group = mysql_bors_join_parse($group);
-		$group = "GROUP BY {$group}";
-	}
 
 	$having = '';
 	if(!empty($args['having']))
@@ -290,7 +296,7 @@ function mysql_args_compile($args, $class=NULL)
 	else
 		$where = mysql_where_compile($args['where']);
 
-	return "{$use_index} {$join} {$set} {$where} {$group} {$having} {$order} {$limit}";
+	return "{$use_index} {$join} {$set} {$where} {$raw_group} {$having} {$order} {$limit}";
 }
 
 function make_id_field($table, $id_field, $oid = '%MySqlStorageOID%')

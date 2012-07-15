@@ -150,6 +150,9 @@ class bors_core_find
 		if(!$field_name)
 			bors_throw("Not defined table field for property '{$m[2]}' in class '{$class_name}' as '*{$m[1]}'");
 
+		if($sql = @$field_data['sql_function'])
+			return "$sql(`$table`.`{$field_name}`)";
+
 		return "`$table`.`{$field_name}`";
 	}
 
@@ -177,6 +180,9 @@ class bors_core_find
 		if(!$field_name)
 			bors_throw("Not defined table field for property '{$m[2]}' in class '{$class_name}' as '*{$m[1]}'");
 
+		if($sql = @$field_data['sql_function'])
+			return "$sql(`$table`.`{$field_name}`)";
+
 		return "`$table`.`{$field_name}`";
 	}
 
@@ -201,6 +207,9 @@ class bors_core_find
 		if(!$field_name)
 			bors_throw("Not defined table field for property '{$m[2]}' in class '{$class_name}' as '*{$m[1]}'");
 
+		if($sql = @$field_data['sql_function'])
+			return "$sql(`$table`.`{$field_name}`)";
+
 		return "`$table`.`{$field_name}`";
 	}
 
@@ -216,10 +225,10 @@ class bors_core_find
 			{
 				if(count($value) > 1)
 					$param = "$param ('".join("','", array_map('addslashes', $value))."')";
+				elseif(preg_match('/^(.+) NOT$/', $m[1], $mm))
+					$param = "{$mm[1]} <> '".addslashes(array_pop($value))."'";
 				else
-				{
 					$param = "{$m[1]} = '".addslashes(array_pop($value))."'";
-				}
 			}
 			else
 				bors_throw("Parse where conditions error: where('$param', '$value')");
@@ -239,6 +248,7 @@ class bors_core_find
 			$param .= "'".addslashes($value)."'";
 		}
 
+		$param = bors_storage_mysql::condition_optimize($param);
 		$this->_add_where_array('*raw_conditions', $param);
 	}
 
@@ -257,15 +267,11 @@ class bors_core_find
 			else
 				$dir = '';
 
-			if(preg_match('/^\w+$/', $property_name))
-			{
-				$field_data = bors_lib_orm::parse_property($this->_class_name, $property_name);
-				$field_name = $field_data['name'];
-			}
-			else
-				$field_name = $property_name;
+			$property_name = $this->first_parse($property_name);
+			$property_name = $this->stack_parse($property_name);
+			$property_name = $this->class_parse($property_name);
 
-			$parsed_order[] = "{$field_name}$dir";
+			$parsed_order[] = "$property_name$dir";
 		}
 
 		$this->_where['*raw_order'] = "ORDER BY ".join(', ', $parsed_order);
@@ -282,16 +288,30 @@ class bors_core_find
 
 	function group($property_name)
 	{
+		$property_name = $this->first_parse($property_name);
+		$property_name = $this->stack_parse($property_name);
+		$property_name = $this->class_parse($property_name);
+
 		if(preg_match('/^\w+$/', $property_name))
 		{
 			$field_data = bors_lib_orm::parse_property($this->_class_name, $property_name);
-			$field_name = $field_data['name'];
+			$field_name = '`'.addslashes($field_data['name']).'`';
 		}
-		else
+		elseif(strpos($property_name, '`') !== false)
 			$field_name = $property_name;
+		else
+			$field_name = '`'.addslashes($property_name).'`';
 
-		$this->_where['*raw_group'] = "GROUP BY `".addslashes($field_name)."`";
+		$this->_where['*raw_group'] = "GROUP BY $field_name";
 
 		return $this;
+	}
+
+	function between($property, $val1, $val2 = NULL)
+	{
+		if(is_array($val1))
+			list($val1, $val2) = $val1;
+
+		return $this->where("$property BETWEEN", $val1, $val2);
 	}
 }

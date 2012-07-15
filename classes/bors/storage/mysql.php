@@ -779,4 +779,19 @@ array(2) {
 
 		return $map[$type];
 	}
+
+	static function condition_optimize($condition)
+	{
+		static $_php_back_functions = array(
+			'UNIX_TIMESTAMP' => 'date_format_mysqltime',
+		);
+
+		if(preg_match("/^(UNIX_TIMESTAMP)\((.+?)\) BETWEEN '?(\d+)'? AND '?(\d+)'?$/i", trim($condition), $m))
+		{
+			if($bf = @$_php_back_functions[bors_upper($m[1])])
+				$condition = "{$m[2]} BETWEEN ".$bf($m[3])." AND ".$bf($m[4]);
+		}
+
+		return $condition;
+	}
 }

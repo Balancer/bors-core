@@ -106,7 +106,9 @@ class bors_core_find
 		else
 			$table = $join_class;
 
+		$join_cond = $this->first_parse($join_cond);
 		$join_cond = $this->stack_parse($join_cond);
+		$join_cond = $this->class_parse($join_cond);
 		$this->_add_where_array('*inner_joins', "`$table` ON ($join_cond)");
 		return $this;
 	}
@@ -143,6 +145,58 @@ class bors_core_find
 		$class_name = $this->_class_stack[$m[1]-1];
 		$table = bors_lib_orm::table_name($class_name);
 		$field_data = bors_lib_orm::parse_property($class_name, $m[2]);
+
+		$field_name = $field_data['name'];
+		if(!$field_name)
+			bors_throw("Not defined table field for property '{$m[2]}' in class '{$class_name}' as '*{$m[1]}'");
+
+		return "`$table`.`{$field_name}`";
+	}
+
+	function first_parse($s)
+	{
+		// Тест на http://www.aviaport.ru/job/ внизу модуль «Новости по теме»
+		return preg_replace_callback('/^(\w+)(?![\.\w])/', array($this, '_first_parse_callback'), $s);
+	}
+
+	private function _first_parse_callback($m)
+	{
+		if(!($class_name = $this->_class_stack[0]))
+			return $m[0];
+
+		if(!class_include($class_name))
+			return $m[0];
+
+		$table = bors_lib_orm::table_name($class_name);
+		if(!$table)
+			return $m[0];
+
+		$field_data = bors_lib_orm::parse_property($class_name, $m[1]);
+
+		$field_name = $field_data['name'];
+		if(!$field_name)
+			bors_throw("Not defined table field for property '{$m[2]}' in class '{$class_name}' as '*{$m[1]}'");
+
+		return "`$table`.`{$field_name}`";
+	}
+
+	function class_parse($s)
+	{
+		return preg_replace_callback('/(\w+)\.(\w+)/', array($this, '_class_parse_callback'), $s);
+	}
+
+	private function _class_parse_callback($m)
+	{
+		$class_name = $m[1];
+		if(!class_include($class_name))
+			return $m[0];
+
+		$table = bors_lib_orm::table_name($class_name);
+
+		$foo = new $class_name(NULL);
+
+		$field_data = bors_lib_orm::parse_property($class_name, $m[2]);
+
 		$field_name = $field_data['name'];
 		if(!$field_name)
 			bors_throw("Not defined table field for property '{$m[2]}' in class '{$class_name}' as '*{$m[1]}'");
@@ -152,12 +206,21 @@ class bors_core_find
 
 	function where_parse_set($param, $value, $value2 = NULL)
 	{
+		$param = $this->first_parse($param);
 		$param = $this->stack_parse($param);
+		$param = $this->class_parse($param);
 
-		if(preg_match('/ IN$/', $param))
+		if(preg_match('/^(.+) IN$/', $param, $m))
 		{
 			if(is_array($value))
-				$param = "$param ('".join("','", array_map('addslashes', $value))."')";
+			{
+				if(count($value) > 1)
+					$param = "$param ('".join("','", array_map('addslashes', $value))."')";
+				else
+				{
+					$param = "{$m[1]} = '".addslashes(array_pop($value))."'";
+				}
+			}
 			else
 				bors_throw("Parse where conditions error: where('$param', '$value')");
 		}

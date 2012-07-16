@@ -82,7 +82,7 @@ if($is_crowler && config('bot_lavg_limit'))
 		header('Status: 503 Service Temporarily Unavailable');
 		header('Retry-After: 600');
 
-		debug_hidden_log('system_overload_crowlers', $loadavg, false);
+		debug_hidden_log('system_overload_crowlers', $load_avg, false);
 //		@file_put_contents($file = config('debug_hidden_log_dir')."/blocked-bots.log", $_SERVER['REQUEST_URI']."/".@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."; LA={$load_avg}\n", FILE_APPEND);
 //		@chmod($file, 0666);
 		exit("Service Temporarily Unavailable");

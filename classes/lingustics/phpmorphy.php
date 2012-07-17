@@ -74,4 +74,9 @@ class lingustics_phpmorphy
 
 		return NULL;
 	}
+
+	function form_by_pattern($word, $pattern_word)
+	{
+		return $this->morphy->castFormByPattern(bors_upper($word), bors_upper($pattern_word));
+	}
 }

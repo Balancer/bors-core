@@ -6,6 +6,9 @@ function print_dd($data, $string=false){ return debug_xmp(__print_dd($data), $st
 
 function __print_dd($data, $level=0)
 {
+	if($level > 10)
+		return '...';
+
 	$s = '';
 	$step = str_repeat(' ', $level*4);
 	if(is_object($data))

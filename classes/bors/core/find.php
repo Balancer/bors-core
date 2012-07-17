@@ -159,7 +159,8 @@ class bors_core_find
 	function first_parse($s)
 	{
 		// Тест на http://www.aviaport.ru/job/ внизу модуль «Новости по теме»
-		return preg_replace_callback('/^(\w+)(?![\.\w])/', array($this, '_first_parse_callback'), $s);
+		// Ещё — на http://www.aviaport.ru/ajax/top-announces?first=1&last=3
+		return preg_replace_callback('/^(\w+)(?![\.\w\(])/', array($this, '_first_parse_callback'), $s);
 	}
 
 	private function _first_parse_callback($m)
@@ -178,7 +179,7 @@ class bors_core_find
 
 		$field_name = $field_data['name'];
 		if(!$field_name)
-			bors_throw("Not defined table field for property '{$m[2]}' in class '{$class_name}' as '*{$m[1]}'");
+			bors_throw("Not defined table field for property '{$m[1]}' in class '{$class_name}' as '*{$m[1]}'");
 
 		if($sql = @$field_data['sql_function'])
 			return "$sql(`$table`.`{$field_name}`)";

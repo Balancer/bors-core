@@ -194,7 +194,7 @@ class base_object extends base_empty
 	}
 
 	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
-	function _class_title_rp_def() { return ec('объекта ').@get_class($this); }	// РодительныйГенитив Кого? Чего?
+	function _class_title_rp_def() { return bors_object_titles::class_title_gen($this); }	// Родительный/Генитив Кого? Чего?
 	function class_title_dp() { return ec('объекту ').@get_class($this); }	// Дательный Кому? Чему?
 	function class_title_vp() { return ec('объект ').@get_class($this); }	// Винительный Кого? Что?
 	function class_title_tp() { return ec('объектом ').@get_class($this); }	// Творительный Кем? Чем?

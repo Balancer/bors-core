@@ -196,7 +196,7 @@ function find_next_open_tag($txt, $pos)
 		$pos_open  = bors_strpos($txt, '[', $pos+1); // Следующий открывающийся тэг
 //		$pos_open  = next_open_brace ($txt, $pos+1); // Следующий открывающийся тэг
 		$pos_close = bors_strpos($txt, ']', $pos+1); // Ближайший закрывающий знак
-//		echo "$pos, $pos_close = ".bors_substr($txt, $pos, $pos_close - $pos + 1)."<Br/>";
+//		if(config('is_developer')) echo "$pos, $pos_open, $pos_close = ".bors_substr($txt, $pos, $pos_close - $pos + 1)."<Br/>";
 //		$pos_close = next_close_brace($txt, $pos+1); // Ближайший закрывающий знак
 		$in = 0;
 		$end = 0;
@@ -247,6 +247,8 @@ function find_next_open_tag($txt, $pos)
 //				$pos_open  = strpos($txt, '[', $pos_open +1);
 				$pos_open  = next_open_brace ($txt, $pos_open +1);
 				$pos_close = bors_strpos($txt, ']', $pos_close+1);
+				if($pos_open === -1)
+					return array(false, false, '', '', '');
 			}
 		}
 
@@ -318,17 +320,27 @@ function find_next_open_tag($txt, $pos)
 function next_open_brace($txt, $pos)
 {
 	$strlen = bors_strlen($txt);
+
 	while($pos < $strlen)
 	{
-		$pos = bors_strpos($txt, '[', $pos);
-		if($pos === false || $pos > $strlen-3)
+		$pos_next = mb_strpos($txt, '[', $pos);
+
+		if($pos_next === false || $pos_next > $strlen-3)
 			return false;
 
-		if(preg_match("!\w|/!", bors_substr($txt, $pos+1, 1)))
-			return $pos;
+		// Странный баг на http://www.aviaport.ru/digest/2011/09/22/222102.html
+		// При кривой кодировке pos_next может оказаться меньше, чем pos — и тогда зацикливание
+		// Из pos 2546 в результате получается 2545
+		// Так что такой обход проблемы. А в вызывающем find_next_open_tag() проверяем на -1
+		if($pos_next < $pos)
+			return -1;
 
-		$pos++;
+		if(preg_match("!\w|/!", bors_substr($txt, $pos_next+1, 1)))
+			return $pos_next;
+
+		$pos = $pos_next + 1;
 	}
+
 	return false;
 }
 /*

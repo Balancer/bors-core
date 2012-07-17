@@ -15,6 +15,8 @@ class bors_templates_smarty3 extends bors_template
 
 		$data = array_merge($data, $object->body_data());
 
+		$data['this'] = $object;
+
 		return self::fetch($template, $data);
 	}
 
@@ -95,6 +97,9 @@ class bors_templates_smarty3 extends bors_template
 		}
 
 		$dirname = dirname($wo_xfile_prefix);
+		if($dirname == '.' && ($object = @$data['this']))
+			$dirname = dirname($object->real_class_file());
+
 		if(!preg_match("!^\w+:!", $dirname))
 			$dirname = "xfile:$dirname";
 		if(!($dir_names = $smarty->getTemplateVars('template_dirnames')))
@@ -116,6 +121,11 @@ class bors_templates_smarty3 extends bors_template
 			debug_execute_trace("smarty3->fetch()");
 
 		$smarty->error_reporting = E_ALL & ~E_NOTICE;
-		return $smarty->fetch($template);
+		$result = $smarty->fetch($template);
+		$dir_names = $smarty->getTemplateVars('template_dirnames');
+		array_shift($dir_names);
+		array_shift($dir_names);
+		$smarty->assign("template_dirnames", $dir_names);
+		return $result;
 	}
 }

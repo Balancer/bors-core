@@ -205,7 +205,7 @@ class bors_form extends bors_object
 		$table_css_class = defval($params, 'table_css_class', 'btab w100p');
 
 		if($fields == 'auto')
-			$fields = array_keys(array_filter($object_fields, create_function('$x', 'return defval($x, "is_editable", true);')));
+			$fields = array_keys(array_filter($object_fields, create_function('$x', 'return defval($x, "is_admin_editable", false) || defval($x, "is_editable", true);')));
 
 		if($th || !empty($fields))
 		{
@@ -288,7 +288,7 @@ class bors_form extends bors_object
 						if($f['name'] == $property_name)
 							$data = $f;
 
-				if(!defval($data, 'is_editable', true))
+				if(!defval($data, 'is_editable', true)  && !defval($data, 'is_admin_editable', false))
 					continue;
 
 				$type = $data['type'];
@@ -304,7 +304,7 @@ class bors_form extends bors_object
 				if($comment = @$data['comment'])
 					$title .="<br/><small class=\"gray\">{$comment}</small>";
 
-				if(!empty($data['class']) && $type != 'image')
+				if(!empty($data['class']) && !in_array($type, array('image', 'dropdown_id')))
 				{
 					if($type != 'radio')
 						$type = 'dropdown';

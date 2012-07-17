@@ -200,7 +200,7 @@ class base_object extends base_empty
 	function class_title_tp() { return ec('объектом ').@get_class($this); }	// Творительный Кем? Чем?
 	function class_title_pp() { return ec('объекте ').@get_class($this); }	// Предложный О ком? О чём?
 
-	function class_title_m() { return ec('объекты ').@get_class($this); }	// Множественный именительный
+	function _class_title_m_def() { return bors_object_titles::class_title_mult($this); }	// Множественный именительный
 	function class_title_tpm() { return ec('объектами ').@get_class($this); }	// Множественный Творительный Кем? Чем?
 	function class_title_dpm() { return ec('объектам ').@get_class($this); }	// Множественный дательный, Кому? Чему?
 

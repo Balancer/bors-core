@@ -20,6 +20,9 @@ class BorsXml
 
 	function parse($data)
 	{
+		if(config('internal_charset') != 'utf-8')
+			$data = dc($data, 'UTF-8');
+
 		xml_parse($this->parser, $data);
 //		echo '==================================<br/>';
 	}
@@ -43,9 +46,9 @@ class BorsXml
 			return;
 
 		if(empty($this->pointer['cdata']))
-			$this->pointer['cdata'] = dc(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
+			$this->pointer['cdata'] = ec(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
 		else
-			$this->pointer['cdata'] .= dc(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
+			$this->pointer['cdata'] .= ec(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
 	}
 
 	function tag_close($parser, $tag)

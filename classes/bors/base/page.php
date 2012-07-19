@@ -13,7 +13,7 @@ class base_page extends bors_object
 	function class_title_dp()	{ return ec('странице'); }
 	function class_title_vp()	{ return ec('страницу'); }
 
-	function page_title()		{ return $this->get('page_title', $this->title(), true); }
+	function _page_title_def() { return $this->title(); }
 
 	function browser_title()
 	{

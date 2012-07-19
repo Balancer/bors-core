@@ -43,7 +43,7 @@ config_set('upload_dir', 'uploads');
 
 // Кодировки
 if(!config('internal_charset'))
-	config_set('internal_charset', 'utf-8');		// Внутренняя кодировка фреймворка, обычно равна системной
+	config_set('internal_charset', ini_get('default_charset'));		// Внутренняя кодировка фреймворка, обычно равна системной
 if(!config('output_charset'))
 	config_set('output_charset', 'utf-8');			// Кодировка, в которой данные отдаются браузеру и сохраняются в статический кеш
 if(!config('db_charset'))

@@ -139,6 +139,11 @@ class bors_storage_htsu extends bors_storage
 		if($object->internal_charset() != 'utf-8')
 			$hts = ec($hts);
 
+		return $this->parse($hts, $object, $file);
+	}
+
+	function parse($hts, $object, $file = NULL)
+	{
 		$hts = str_replace("\r", "", $hts);
 
 		$this->obj = &$object;
@@ -194,11 +199,11 @@ class bors_storage_htsu extends bors_storage
 		if(!$object->create_time(true))
 			$this->ext('created', 'create_time');
 
-		if(!$object->create_time(true))
+		if(!$object->create_time(true) && $file)
 			// Внимание! Это не настоящий create time!
 			$object->set('create_time', filectime($file), false);
 
-		if(!$object->modify_time(true))
+		if(!$object->modify_time(true) && $file)
 			$object->set('modify_time', filemtime($file), false);
 
 		if(!$object->title_true())
@@ -209,7 +214,7 @@ class bors_storage_htsu extends bors_storage
 				$object->set_title($m[2], false);
 			}
 
-		if(!$object->title_true())
+		if(!$object->title_true() && $file)
 			$object->set('title', preg_replace('/\.htsu$/i', '', basename($file)).'.', false);
 
 		if($config_class = $this->ext('config', '-'))
@@ -218,6 +223,7 @@ class bors_storage_htsu extends bors_storage
 //		$this->hts = preg_replace_callback('/^#(template_data)_(\w+)\s+(.+)$/m', array(&$this, '_set_callback'), $this->hts);
 		$this->hts = preg_replace_callback('/^#call\s+(\w+)\s+(.+?)$/m', array(&$this, '_call_callback'), $this->hts);
 		$this->hts = preg_replace_callback('/^#set\s+(\w+)\s+(.+?)$/m', array(&$this, '_set_callback'), $this->hts);
+		$this->hts = preg_replace_callback('/^#set\s+(\w+)\[\]\s+(.+?)$/m', array(&$this, '_set_array_callback'), $this->hts);
 
 	    $this->hts = preg_replace("!^\n+!",'',$this->hts);
 
@@ -259,6 +265,18 @@ class bors_storage_htsu extends bors_storage
 		$property = $matches[1];
 		$value    = trim($matches[2]);
 		call_user_func_array(array($this->obj, 'set'), array($property, $value, false));
+		return '';
+	}
+
+	function _set_array_callback($matches)
+	{
+		$property = $matches[1];
+		$value    = trim($matches[2]);
+		$values = call_user_func_array(array($this->obj, 'get'), array($property, array()));
+
+		$values[] = $value;
+
+		call_user_func_array(array($this->obj, 'set'), array($property, $values, false));
 		return '';
 	}
 

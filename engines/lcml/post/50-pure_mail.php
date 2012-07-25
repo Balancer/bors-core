@@ -2,7 +2,10 @@
     function lcml_pure_mail($txt)
     {
 		$mail_chars = 'a-zA-Z0-9\_\-\+\.';
-        return preg_replace("!(^|[\s\]])([$mail_chars]+@[$mail_chars]+)([\s\[;\.:]|$)!ime", "'$1'.mask_email('$2', ".(config('lcml_email_nomask') ? 'false' : 'true').").'$3'", $txt);
+		if(config('lcml_email_nomask'))
+	        return preg_replace("!(^|[\s\]])([$mail_chars]+@[$mail_chars]+)([\s\[;\.:]|$)!im", "$1<a href=\"mailto:$2\">$2</a>$3", $txt);
+		else
+	        return preg_replace("!(^|[\s\]])([$mail_chars]+@[$mail_chars]+)([\s\[;\.:]|$)!ime", "'$1'.mask_email('$2', ".(config('lcml_email_nomask') ? 'false' : 'true').").'$3'", $txt);
     }
 
 	function mask_email($email, $img_mask = true, $text = NULL)

@@ -323,7 +323,7 @@ function next_open_brace($txt, $pos)
 
 	while($pos < $strlen)
 	{
-		$pos_next = mb_strpos($txt, '[', $pos);
+		$pos_next = bors_strpos($txt, '[', $pos);
 
 		if($pos_next === false || $pos_next > $strlen-3)
 			return false;

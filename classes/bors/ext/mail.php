@@ -65,6 +65,15 @@ class bors_ext_mail extends bors_empty
 					'skip_title' => true,
 				));
 		}
+
+		$attaches = NULL;
+		foreach($mail->get('mail_attaches', array()) as $a)
+		{
+			$attaches[] = array(
+				'file' => $a,
+			);
+		}
+
 /*
 		echo "send_mail(
 			".self::make_recipient($user).",
@@ -81,7 +90,8 @@ class bors_ext_mail extends bors_empty
 			$text,
 			$html,
 			self::make_recipient($from),
-			$headers
+			$headers,
+			$attaches
 		);
 	}
 
@@ -101,11 +111,19 @@ class bors_ext_mail extends bors_empty
 		if(!$user)
 			return NULL;
 
-		if(!is_object($user))
+		if(is_array($user))
+			list($email, $name) = $user;
+		elseif(!is_object($user))
 			return $user;
+		else
+		{
+			$name  = $user->title();
+			$email = $user->email();
+		}
 
-		$name  = $user->title();
-		$email = $user->email();
-		return "$name <$email>";
+		if(preg_match('/^[\w\s]+$/'))
+			return "$name <$email>";
+
+		return "=?UTF-8?B?".base64_encode($name)."?= <$email>";
 	}
 }

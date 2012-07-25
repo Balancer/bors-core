@@ -8,6 +8,8 @@ class bors_config extends base_config
 
 	function __construct(&$object)
 	{
+		$this->set_id($object);
+
 		foreach($this->object_data() as $key => $value)
 			$object->set_attr($key, $value);
 

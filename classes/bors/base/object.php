@@ -1370,7 +1370,7 @@ defined at {$this->class_file()}<br/>
 				$str);
 		}
 
-		return iconv($this->internal_charset(), $out_cs.'//IGNORE', $str);
+		return @iconv($this->internal_charset(), $out_cs.'//IGNORE', $str);
 	}
 
 	function cs_u2i($str) // utf-8 to internal

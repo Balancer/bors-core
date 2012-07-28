@@ -77,6 +77,9 @@ class bors_external_feed extends base_object_db
 //			echo "xml = ".var_dump($xml)."\n";
 
 		$data = bors_lib_xml::xml2array($xml);
+//		if($is_test)
+//			var_dump($data);
+
 		if(!empty($data['feed'])) // Это ATOM
 		{
 			$feed = self::_atom_extract($data);
@@ -117,6 +120,7 @@ class bors_external_feed extends base_object_db
 			$title = @$item['title'][0]['cdata']; // html_entity_decode($item['title'][0]['cdata'], ENT_QUOTES, 'UTF-8');
 //			echo "Check $title\n";
 			$description = $item['description'][0]['cdata']; // html_entity_decode($item['description'][0]['cdata'], ENT_QUOTES, 'UTF-8');
+//			if($is_test) echo "--- $description\n";
 			$link = $item['link'][0]['cdata'];
 			$guid = @$item['guid'][0]['cdata'];
 			$pub_date = $item['pubDate'][0]['cdata'];
@@ -253,6 +257,7 @@ class bors_external_feed extends base_object_db
 				$entry->set_keywords_string($keywords_string, true);
 				$entry->set_text($description, true);
 				$entry->set_is_suspended($is_skipped, true);
+				$entry->set_is_public($topic->is_public());
 				$was = 'updated';
 			}
 			else
@@ -269,11 +274,13 @@ class bors_external_feed extends base_object_db
 //					'target_class_name',
 //					'target_object_id',
 					'is_suspended' => $is_skipped,
+					'is_public' => $topic->is_public(),
 				));
 				$was = 'new';
 			}
 
 //			if(!$entry->target_object_id() && $this->target_topic_id())
+
 
 			if(!$is_skipped && !$is_test)
 			{

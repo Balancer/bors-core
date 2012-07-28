@@ -205,6 +205,13 @@ function http_get_ex($url, $raw = true)
 	if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация
 		$timeout = 60;
 
+//	if(config('is_debug')) { echo "url='$url'\n\n"; echo debug_trace(); }
+
+	if(preg_match('!^(https?://)([^/]*[^\w\-][^/]*)/!', $url))
+		$url = blib_idna::encode_uri($url);
+
+//	if(config('is_debug')) echo "url post ='$url'\n\n";
+
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
 		CURLOPT_TIMEOUT => $timeout,

@@ -21,7 +21,7 @@ class render_xml extends base_null
 				$res = array();
 				foreach($value as $x)
 					$res[] = $this->object_fields($x, $fields);
-				
+
 				$xml_data[$key] = $res;
 			}
 			else
@@ -32,30 +32,30 @@ class render_xml extends base_null
 
 		$tpl_source = preg_replace('!\.php$!', '.xsl', $object->class_file());
 
-        $template = new DOMDocument();	
+        $template = new DOMDocument();
 		$template->load($tpl_source);
 		$xp = new XSLTProcessor();
 		$xp->importStyleSheet($template);
-		
+
 		$dom = new DOMDocument();
 		$x = array2xml($xml_data);
 		print_d($x);
 		$dom->loadXML($x);
 
 		$result = $xp->transformToXML($dom);
-		
+
 		print_d($result);
-		
+
 		bors_exit();
 		return $result;
 	}
-	
+
 	function object_fields($object, $fields)
 	{
 		$result = array();
 		foreach(explode(' ', $fields) as $field)
 			$result[$field] = $object->$field();
-		
+
 		return $result;
 	}
 }

@@ -10,7 +10,10 @@ function lt_img($params)
 	if(!empty($params['img']))
 		$params['url'] = $params['img'];
 
-//	if(config('is_developer')) var_dump($params);
+//	if(config('is_developer')) { var_dump($params); exit(); }
+
+	if(!empty($params['htmldecode']))
+		$params['description'] = bors_entity_decode($params['description']);
 
 	while(preg_match('/%\w+/', $params['url']))
 		$params['url'] = urldecode($params['url']);
@@ -34,7 +37,10 @@ function lt_img($params)
 	if(empty($params['size']))
 	{
 		$size = config('box_sizes', 640);
-		$params['size'] = $size.'x'.$size;
+		if(is_numeric($size))
+			$params['size'] = $size.'x'.$size;
+		else
+			$params['size'] = $size;
 	}
 
 	list($geo_w, $geo_h) = explode('x', $params['size']);
@@ -94,8 +100,8 @@ function lt_img($params)
 
 				if(!file_exists($path) || filesize($path)==0)
 				{
-					$c1 = substr($data['host'],0,1);
-					$c2 = substr($data['host'],1,1);
+					$c1 = bors_substr($data['host'],0,1);
+					$c2 = bors_substr($data['host'],1,1);
 					require_once('inc/urls.php');
 					$path = config('sites_store_path')."/$c1/$c2/{$data['host']}".translite_path($data['path']);
 
@@ -190,11 +196,18 @@ function lt_img($params)
 
 				if($href = defval($params, 'href'))
 					$have_href = true;
+				elseif(defval($params, 'use_cache'))
+				{
+					$href = $uri;
+					$have_href = true;
+				}
 				else
 				{
 					$href = $img_page_uri;
 					$have_href = false;
 				}
+
+//				if(config('is_developer')) { var_dump(defval($params, 'href'), defval($params, 'use_cache'), $uri, $href, $have_href); exit(); }
 
 				require_once('HTTP/Request.php');
 				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 4,'timeout' => 5));
@@ -228,6 +241,7 @@ function lt_img($params)
 
 				if(empty($params['nohref']) || $ajax)
 				{
+//					if(config('is_developer')) { var_dump($img_w, $width, $ajax, $href, $uri, $description); exit("one"); }
 					if($img_w < $width*1.1 || $ajax == 'hoverZoom')
 					{
 						if($ajax == 'hoverZoom')

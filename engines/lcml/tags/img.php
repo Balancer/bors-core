@@ -260,7 +260,9 @@ function lt_img($params)
 						else
 							$rel = "position:'bototm', zoomWidth:400, zoomHeight:400";
 
-						$a_href_b = "<a href=\"{$href}\" class=\"cloud-zoom\" id=\"zoom-".rand()."\" rel=\"{$rel}\">";
+						$lightbox_code = save_format(jquery_lightbox::html("'a.cloud-zoom'"));
+//						$lightbox_code = "";
+						$a_href_b = "$lightbox_code<a href=\"{$href}\" class=\"cloud-zoom\" id=\"zoom-".rand()."\" rel=\"{$rel}\">";
 						$a_href_e = "</a>";
 					}
 					else

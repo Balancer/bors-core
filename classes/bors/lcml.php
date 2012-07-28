@@ -282,6 +282,12 @@ class bors_lcml
 		return $html_bb;
 	}
 
+	// Генерация html-кода для предыдущей функции
+	static function make_use($type, $arg)
+	{
+		return "<!--[[use $type=\"$arg\"]]-->";
+	}
+
 	static function _output_parse_use($matches)
 	{
 		list($origin, $type, $arg) = $matches;
@@ -289,6 +295,9 @@ class bors_lcml
 		{
 			case 'js':
 				template_js_include($arg);
+				break;
+			case 'css':
+				template_css($arg);
 				break;
 		}
 

@@ -264,6 +264,37 @@ class bors_lcml
 		return $text;
 	}
 
+	// Постобработка выводимого HTML, имеющего разметку, которая должна быть
+	// активна не в момент компиляции, а в момент показа. Например, указания
+	// системе на подключение необходимых JS и CSS.
+	// Фиксированный хардкод, расширение пока не предусмотрено. Теоретически
+	// может быть реализовано через будущий механизм хуков.
+
+	static function output_parse($html_bb)
+	{
+		// Обработка <!--[[use ...]]-->
+		$html_bb = preg_replace_callback(array(
+				'/<!--\[\[use\s+(\w+)\s*=\s*"([^"]+?)\s*"\s*\]\]-->/',
+				"/<!--\[\[use\s+(\w+)\s*=\s*'([^']+?)\s*'\s*\]\]-->/",
+				"/<!--\[\[use\s+(\w+)\s*=\s*([^\]]+?)\s*\]\]-->/",
+			), 'bors_lcml::_output_parse_use', $html_bb);
+
+		return $html_bb;
+	}
+
+	static function _output_parse_use($matches)
+	{
+		list($origin, $type, $arg) = $matches;
+		switch($type)
+		{
+			case 'js':
+				template_js_include($arg);
+				break;
+		}
+
+		return '';
+	}
+
 	static function __unit_test($suite)
 	{
 		// Одиночные теги тестируются в соответствующих классах. Так что нам тут их проверять не надо
@@ -325,5 +356,8 @@ class bors_lcml
 			$code = '[url=http://balancer.ru/forum/punbb/viewtopic.php?pid=1248520#p1248520][img]http://balancer.ru/cache/img/forums/0708/468x468/1024x768-img_0599.jpg[/img][/url]';
 			$suite->assertEquals("===", lcml($code));
 		}
+
+		self::output_parse('<!--[[use js="/_bors3rdp/js/foo.test.js"]]-->');
+		$suite->assertContains('/_bors3rdp/js/foo.test.js', base_object::template_data('js_include'));
 	}
 }

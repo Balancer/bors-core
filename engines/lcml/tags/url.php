@@ -13,7 +13,7 @@ function lp_url($text, $params)
 			return "$text ($url)";
 	}
 
-	$blacklist = $external || preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $url_data['host']);
+	$blacklist = $external || preg_match('!'.config('seo_domains_whitelist_regexp', @$_SERVER['HTTP_HOST']).'!', $url_data['host']);
 	// specialchars для http://balancer.ru/g/p2728134
 	return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"".htmlspecialchars($url)."\"$external>".lcml($text, array('html'=>'safe', 'only_tags' => true))."</a>";
 }
@@ -58,7 +58,7 @@ function lt_url($params)
 	else
 		$description = lcml($description,  array('html'=>'safe', 'only_tags' => true));
 
-	$blacklist = $external || preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $url_data['host']);
+	$blacklist = $external || preg_match('!'.config('seo_domains_whitelist_regexp', @$_SERVER['HTTP_HOST']).'!', $url_data['host']);
 
 	return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"$url\"$external>{$description}</a>";
 }

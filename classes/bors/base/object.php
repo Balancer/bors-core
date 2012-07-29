@@ -204,6 +204,9 @@ class base_object extends base_empty
 	function class_title_tpm() { return ec('объектами ').@get_class($this); }	// Множественный Творительный Кем? Чем?
 	function class_title_dpm() { return ec('объектам ').@get_class($this); }	// Множественный дательный, Кому? Чему?
 
+	// Множественный (Plural) дательный (Genitive): Архив чего? — объектов.
+	function _class_title_pg_def() { return bors_object_titles::class_title_gen_plur($this); }
+
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 
 	//TODO: под рефакторинг. Данные шаблона - отдельная сущность.

@@ -412,28 +412,33 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$class_name = $object->class_name();
 			list($select, $where) = self::__query_data_prepare($object, $where);
 		}
-//var_dump($where);
+//		var_dump($where); exit();
 		$dbh = new driver_mysql($db_name);
 		if(empty($where['group']))
 			$count = $dbh->select($table_name, 'COUNT(*)', $where, $class_name);
 		else
 		{
+//			var_dump($where['group']); exit();
 			$select = array('COUNT(*)');
 			$grouped = false;
+			// 'group' => '*BYMONTHS(create_time)*',
 			if(preg_match('/^\*BY([A-Z]+)\((\w+)\)\*$/', @$where['group'], $m))
 			{
+//				var_dump($m, $class_name); exit();
 				// тестировать на http://dev.forexpf.ru/news_arch/2010/10/01/
+				$property = $m[2];
+				$field = bors_lib_orm::property_to_field($class_name, $property);
 				switch($m[1])
 				{
 					case 'DAYS':
-						$where['group'] = "YEAR(FROM_UNIXTIME({$m[2]})),MONTH(FROM_UNIXTIME({$m[2]})),DAY(FROM_UNIXTIME({$m[2]}))";
-						$select[] = "DATE(FROM_UNIXTIME({$m[2]})) AS group_date";
+						$where['group'] = "YEAR(FROM_UNIXTIME({$field})),MONTH(FROM_UNIXTIME({$field})),DAY(FROM_UNIXTIME({$field}))";
+						$select[] = "DATE(FROM_UNIXTIME({$field})) AS group_date";
 						$where['*select_index_field*'] = 'group_date';
 						$grouped = true;
 						break;
 					case 'MONTHS':
-						$where['group'] = "YEAR(FROM_UNIXTIME({$m[2]})),MONTH(FROM_UNIXTIME({$m[2]}))";
-						$select[] = "CONCAT(YEAR(FROM_UNIXTIME({$m[2]})),'-',MONTH(FROM_UNIXTIME({$m[2]}))) AS group_date";
+						$where['group'] = "YEAR(FROM_UNIXTIME({$field})),MONTH(FROM_UNIXTIME({$field}))";
+						$select[] = "CONCAT(YEAR(FROM_UNIXTIME({$field})),'-',LPAD(MONTH(FROM_UNIXTIME({$field})),2,'0')) AS group_date";
 						$where['*select_index_field*'] = 'group_date';
 						$grouped = true;
 						break;
@@ -441,17 +446,19 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			}
 			elseif(preg_match('/^\*BY([A-Z]+)\(UNIX_TIMESTAMP\((`\w+`)\)\)\*$/', @$where['group'], $m))
 			{
+				$property = $m[2];
+				$field = bors_lib_orm::property_to_field($class_name, $property);
 				switch($m[1])
 				{
 					case 'DAYS':
-						$where['group'] = "YEAR({$m[2]}),MONTH({$m[2]}),DAY({$m[2]})";
-						$select[] = "DATE({$m[2]}) AS group_date";
+						$where['group'] = "YEAR({$field}),MONTH({$field}),DAY({$field})";
+						$select[] = "DATE({$field}) AS group_date";
 						$where['*select_index_field*'] = 'group_date';
 						$grouped = true;
 						break;
 					case 'MONTHS':
-						$where['group'] = "YEAR({$m[2]}),MONTH({$m[2]})";
-						$select[] = "CONCAT(YEAR({$m[2]}),'-',MONTH({$m[2]})) AS group_date";
+						$where['group'] = "YEAR({$field}),MONTH({$field})";
+						$select[] = "CONCAT(YEAR({$field}),'-',LPAD(MONTH({$field}),2,'0')) AS group_date";
 						$where['*select_index_field*'] = 'group_date';
 						$grouped = true;
 						break;

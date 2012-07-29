@@ -217,6 +217,9 @@ class bors_external_feeds_entry extends base_object_db
 			}
 //			$blog->store();
 
+			$blog->set_is_public($topic->is_public());
+			$post->set_is_public($topic->is_public());
+
 			return;
 		}
 
@@ -244,6 +247,7 @@ class bors_external_feeds_entry extends base_object_db
 			'source' => $source,
 			'create_time' => $this->pub_date(),
 			'markup_class_name' => @$markup,
+			'is_public' => $topic->is_public(),
 		));
 
 		$topic->recalculate();
@@ -259,7 +263,7 @@ class bors_external_feeds_entry extends base_object_db
 			'topic_id' => $topic->id(),
 			'forum_id' => $topic->forum_id(),
 			'blogged_time' => $this->pub_date(),
-			'is_public' => true,
+			'is_public' => $topic->is_public(),
 			'is_microblog' => $this->feed()->is_microblog(),
 			'blog_source_class' => $this->new_class_name(),
 			'blog_source_id'    => $this->id(),

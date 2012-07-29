@@ -274,7 +274,7 @@ class bors_external_feed extends base_object_db
 //					'target_class_name',
 //					'target_object_id',
 					'is_suspended' => $is_skipped,
-					'is_public' => $topic->is_public(),
+					'is_public' => object_property(@$topic, 'is_public'),
 				));
 				$was = 'new';
 			}

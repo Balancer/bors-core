@@ -67,12 +67,13 @@ class bors_ext_mail extends bors_empty
 		}
 
 		$attaches = NULL;
-		foreach($mail->get('mail_attaches', array()) as $a)
-		{
-			$attaches[] = array(
-				'file' => $a,
-			);
-		}
+		if(is_object($mail))
+			foreach($mail->get('mail_attaches', array()) as $a)
+			{
+				$attaches[] = array(
+					'file' => $a,
+				);
+			}
 
 /*
 		echo "send_mail(

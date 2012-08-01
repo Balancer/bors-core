@@ -113,6 +113,22 @@ class bors_core_find
 		return $this;
 	}
 
+	function left_join($join_class, $join_cond)
+	{
+		$this->class_stack_push($join_class);
+
+		if(preg_match('/^\w+$/', $join_class))
+			$table = bors_lib_orm::table_name($join_class);
+		else
+			$table = $join_class;
+
+		$join_cond = $this->first_parse($join_cond);
+		$join_cond = $this->stack_parse($join_cond);
+		$join_cond = $this->class_parse($join_cond);
+		$this->_add_where_array('*left_joins', "`$table` ON ($join_cond)");
+		return $this;
+	}
+
 	function limit($limit)
 	{
 		$this->_where['*limit'] = $limit;
@@ -314,5 +330,57 @@ class bors_core_find
 			list($val1, $val2) = $val1;
 
 		return $this->where("$property BETWEEN", $val1, $val2);
+	}
+
+	function set($property, $fields)
+	{
+		$fields = $this->first_parse($fields);
+		$fields = $this->stack_parse($fields);
+		$fields = $this->class_parse($fields);
+
+		if(!empty($this->_where['*set']))
+			$this->_where['*set'] .= ', ';
+		else
+			$this->_where['*set'] = '';
+
+		$this->_where['*set'] .= "$fields AS $property";
+		return $this;
+	}
+
+	function join_object($target_class_name, $target_fields = NULL, $property_for_target = NULL)
+	{
+		if($target_fields)
+			$target_fields = explode(',', $target_fields);
+		else
+			$target_fields = bors_lib_orm::all_field_names($target_class_name);
+
+//		var_dump($target_fields);
+
+		if(!$property_for_target)
+			$property_for_target = array_pop(explode('_', $target_class_name));
+
+		$target_properties = array();
+		foreach($target_fields as $p)
+		{
+			$fd = bors_lib_orm::parse_property($target_class_name, $p);
+//			var_dump($fd);
+			$field_name = $fd['sql_tab_name'];
+
+			if(!empty($this->_where['*set']))
+				$this->_where['*set'] .= ', ';
+			else
+				$this->_where['*set'] = '';
+
+			$target_property_name = $target_class_name.'.'.$p;
+			if(!empty($fd['post_function']))
+				$target_property_name .= "|{$fd['post_function']}";
+
+			$this->_where['*set'] .= "$field_name AS `$target_property_name`";
+			$target_properties[] = $target_property_name;
+		}
+
+		$this->_where['*join_object'][$target_class_name] = array('property_for_target' => $property_for_target, 'target_properties' => $target_properties);
+
+		return $this;
 	}
 }

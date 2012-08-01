@@ -276,6 +276,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		if(!($select = popval($where, '*select')))
 			$select = popval($where, 'select');
 
+		$target_info = popval($where, '*join_object');
+//		print_dd($target_info);
+
 		$set    = popval($where, '*set');
 
 		$must_be_configured = $object->get('must_be_configured');
@@ -313,6 +316,31 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		{
 			$object->set_id(@$data['id']);
 			$object->data = $data;
+
+			if($target_info)
+			{
+				foreach($target_info as $target_class_name => $info)
+				{
+					$target = new $target_class_name(NULL);
+					foreach($info['target_properties'] as $p)
+					{
+						$value = $data[$p];
+						$p = preg_replace('/^\w+\.(.+)$/', '$1', $p);
+						if(preg_match('/^(\w+)\|(\w+)$/', $p, $m))
+						{
+							$p = $m[1];
+							$value = $m[2]($value);
+						}
+
+						$target_data[$p] = $value;
+						unset($data[$p]);
+					}
+
+					$target->set_id(@$target_data['id']);
+					$target->data = $target_data;
+					$object->set_attr($info['property_for_target'], $target);
+				}
+			}
 
 			if($must_be_configured)
 				$object->_configure();

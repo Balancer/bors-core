@@ -114,7 +114,12 @@ class bors_lib_orm
 							'table' => $table,
 						), self::field($property, $field));
 //				if($field['name'] != 'id')
-							$fields_array[] = $field;
+						// UNIX_TIMESTAMP(`Date`) => UNIX_TIMESTAMP(`News`.`Date`)
+						if(empty($field['sql_function']))
+							$field['sql_tab_name'] = "`{$field['table']}`.`{$field['name']}`";
+						else
+							$field['sql_tab_name'] = preg_replace("/(`{$field['name']}`)/", "`{$field['table']}`.$1", $field['sql_name']);
+						$fields_array[] = $field;
 					}
 				}
 			}
@@ -125,6 +130,9 @@ class bors_lib_orm
 
 	static function all_field_names($object)
 	{
+		if(!is_object($object)) // Тогда это — имя класса
+			$object = new $object(NULL); // Подставим пустышку
+
 		$fields_array = array();
 
 		foreach(get_class_methods($object->class_name()) as $name)

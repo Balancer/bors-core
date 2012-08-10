@@ -22,7 +22,7 @@ class bors_object_titles
 	{
 		try
 		{
-			$mult = bors_lower(lingustics_morphology::case_rus($object->class_title(), 'nom,mult'));
+			$mult = bors_lower(lingustics_morphology::case_rus(object_property($object, 'class_title'), 'nom,mult'));
 		}
 		catch(Exception $e) { }
 

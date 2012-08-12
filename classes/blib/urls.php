@@ -103,4 +103,10 @@ class blib_urls
 		$data = parse_url($url);
 		return $data['host'];
 	}
+
+	static function path($url)
+	{
+		$data = parse_url($url);
+		return $data['path'];
+	}
 }

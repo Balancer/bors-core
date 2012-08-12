@@ -238,3 +238,9 @@ th.sort_ascdesc {
 	padding-right: 16px;
 	background: url(/_bors/i16/asc-desc.gif) right 5px no-repeat;
 }
+
+.box {
+	border: 1px solid #ccc;
+	margin: 0 0 4px 0;
+	padding: 4px;
+}

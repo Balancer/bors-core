@@ -208,6 +208,8 @@ function lt_img($params)
 				}
 
 //				if(config('is_developer')) { var_dump(defval($params, 'href'), defval($params, 'use_cache'), $uri, $href, $have_href); exit(); }
+				if(!$have_href)
+					$href = $uri;
 
 				require_once('HTTP/Request.php');
 				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 4,'timeout' => 5));
@@ -260,8 +262,8 @@ function lt_img($params)
 						else
 							$rel = "position:'bototm', zoomWidth:400, zoomHeight:400";
 
-						$lightbox_code = save_format(jquery_lightbox::html("'a.cloud-zoom'"));
-//						$lightbox_code = "";
+//						$lightbox_code = save_format(jquery_lightbox::html("'a.cloud-zoom'"));
+						$lightbox_code = "";
 						$a_href_b = "$lightbox_code<a href=\"{$href}\" class=\"cloud-zoom\" id=\"zoom-".rand()."\" rel=\"{$rel}\">";
 						$a_href_e = "</a>";
 					}

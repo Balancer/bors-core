@@ -50,9 +50,11 @@ class bors_admin_engine extends bors_object
 
 	function parent_delete_url()
 	{
+		$obj = $this->real_object();
+
 		if(!in_array(bors()->request()->url(), array(
-			$this->real_object()->url(),
-			$this->admin_object()->url(),
+			$obj->url(),
+			$obj->admin()->url(),
 		)))
 			return bors()->request()->url();
 

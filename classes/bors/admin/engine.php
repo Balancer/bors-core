@@ -39,15 +39,23 @@ class bors_admin_engine extends bors_object
 		if(method_exists($obj = $this->real_object(), 'delete_url'))
 			return $obj->delete_url();
 
+		$ref = urlencode($obj->admin()->parent_delete_url());
+
 		//TODO: придумать лучший вариант определения. Отказаться от has_smart_field.
 		if(method_exists($obj, 'fields') && $obj->has_smart_field('is_deleted'))
-			return '/_bors/admin/mark/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin()->parent_delete_url());
+			return '/_bors/admin/mark/delete/?object='.$obj->internal_uri().'&ref='.$ref;
 		else
-			return '/_bors/admin/delete/?object='.$obj->internal_uri().'&ref='.urlencode($obj->admin()->parent_delete_url());
+			return '/_bors/admin/delete/?object='.$obj->internal_uri().'&ref='.$ref;
 	}
 
 	function parent_delete_url()
 	{
+		if(!in_array(bors()->request()->url(), array(
+			$this->real_object()->url(),
+			$this->admin_object()->url(),
+		)))
+			return bors()->request()->url();
+
 		$ps1 = object_property(bors_load_uri($this->admin_url()), 'parents');
 		$p1 = $ps1[0];
 		$ps2 = object_property(bors_load_uri($p1), 'parents');

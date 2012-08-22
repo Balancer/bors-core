@@ -23,7 +23,12 @@ class bors_image_autothumb extends base_object
 		parent::__construct($this->origin_path = $origin_path);
 	}
 
-	function loaded() { return $this->origin_path; }
+	function loaded()
+	{
+		return $this->origin_path
+			&& !preg_match('/\.(bmp|php)$/', $this->origin_path);
+	}
+
 	function can_be_empty() { return false; }
 
 	function pre_show()

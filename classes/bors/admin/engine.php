@@ -51,19 +51,43 @@ class bors_admin_engine extends bors_object
 	function parent_delete_url()
 	{
 		$obj = $this->real_object();
+		$obj_admin_url = $obj->admin()->url();
 
-		if(!in_array(bors()->request()->url(), array(
+		// Если ссылка главного объекта не равна ссылке на удаляемый файл
+		// то родительской страницей (реферером для возврата) является главная страница
+		// Тестировать на: http://ipotek-bank.wrk.ru/admin/dbpages/10
+		if(!blib_urls::in_array(bors()->request()->url(), array(
 			$obj->url(),
-			$obj->admin()->url(),
+			$obj_admin_url,
 		)))
 			return bors()->request()->url();
 
-		$ps1 = object_property(bors_load_uri($this->admin_url()), 'parents');
-		$p1 = $ps1[0];
-		$ps2 = object_property(bors_load_uri($p1), 'parents');
-		$p2 = $ps2[0];
+		// Если у объекта есть метод admin_parent_url, то берём оттуда:
+		if($url = $obj->get('admin_parent_url'))
+			return $url;
 
-		return $p2;
+		// Иначе берём первого родителя из ссылки (если есть)
+		$ps1 = object_property(bors_load_uri($obj_admin_url), 'parents');
+		if($p1 = $ps1[0])
+			return $p1;
+
+//WTF?
+//		$ps2 = object_property(bors_load_uri($p1), 'parents');
+//		if($p2 = $ps2[0])
+//			return $p2;
+
+		// Иначе смотрим на реферер
+		// Если он не равен текущей странице, то он нам и нужен
+		if($ref = bors()->request()->referer())
+		{
+			if(!blib_urls::in_array($ref, array(
+				$obj->url(),
+				$obj->admin()->url(),
+			)))
+				return $ref;
+		}
+
+		return NULL;
 	}
 
 	function append_child_url()

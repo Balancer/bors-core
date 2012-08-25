@@ -4,7 +4,7 @@ require_once('strings.php');
 
 	function strip_text($text, $len=192, $more_text = '&#133;', $microstyle = false)
 	{
-		$text=to_one_string($text);
+		$text = to_one_string($text);
 
 		while(preg_match("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is",$text))
 			$text=preg_replace("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is","$1",$text);
@@ -63,31 +63,37 @@ require_once('strings.php');
 			$text = $res . $more_text;
 		}
 
+//		print_dd(wordwrap(bors_close_tags($text)));
+
 		return bors_close_tags($text);
 	}
 
-function bors_close_tags($text)
+// via http://rmcreative.ru/blog/post/zakryt-nezakrytye-tegi
+function bors_close_tags($html)
 {
-	$close_tags = explode(" ", "a b blockquote dd div dl dt em embed font i iframe object option p param pre s select small span table td tr tt u xmp");
+	$single_tags = array('meta','img','br','link','area','input','hr','col','param','base');
+	preg_match_all('~<([a-z0-9]+)(?: .*)?(?<![/|/ ])>~iU', $html, $result);
+	$openedtags = $result[1];
+	preg_match_all('~</([a-z0-9]+)>~iU', $html, $result);
+	$closedtags = $result[1];
+	$len_opened = count($openedtags);
 
-   	foreach($close_tags as $tag)
+	if (count($closedtags) == $len_opened)
+		return $html;
+
+	$openedtags = array_reverse($openedtags);
+	for ($i=0; $i < $len_opened; $i++)
 	{
-	   	$n = preg_match_all("!<$tag(\s|>)!i", $text, $m) - preg_match_all("!</$tag(\s|>)!i", $text, $m);
-
-		if($n == 0) // Все тэги закрыты
-			continue;
-
-		if($n > 0) // Открывающихся больше закрывающихся
+		if (!in_array($openedtags[$i], $single_tags))
 		{
-			$text .= str_repeat("</$tag>", $n);
-			continue;
+			if (FALSE !== ($key = array_search($openedtags[$i], $closedtags)))
+				unset($closedtags[$key]);
+			else
+				$html .= '</'.$openedtags[$i].'>';
 		}
+	}
 
-		// Закрывающихся больше открывающихся
-		$text = str_repeat("<$tag>", -$n) . $text;
-   	}
-
-   	return $text;
+	return $html;
 }
 
 function bors_close_bbtags($text)

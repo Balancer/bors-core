@@ -5,8 +5,14 @@ class bors_client extends base_object
 	function can_cached() { return false; }
 	function is_bot() { return @$GLOBALS['client']['is_bot']; }
 	function is_crowler() { return @$GLOBALS['client']['is_crowler']; }
+
+	static function factory($ip) { return bors_load(__CLASS__, $ip); }
+
 	function ip()
 	{
+		if($this->id())
+			return $this->id();
+
 		$ip = @$_SERVER['REMOTE_ADDR'];
 		if(empty($_SERVER['HTTP_X_FORWARDED_FOR']))
 			return $ip;

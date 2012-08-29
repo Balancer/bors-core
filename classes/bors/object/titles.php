@@ -34,7 +34,7 @@ class bors_object_titles
 
 //	static function class_title_($object) { return bors_lower(lingustics_morphology::case_rus($object->class_title(), 'gen')); }
 
-	private static function _class_title_helper($object, $case, $default)
+	private static function _class_title_helper($object, $case)
 	{
 		try
 		{

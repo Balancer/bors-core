@@ -25,14 +25,17 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 		$mime->setHTMLBody($html);
 	}
 
-	foreach($attaches as $a)
+	if($attaches)
 	{
-		$mime->addAttachment(
-			$a['file'],
-			defval($a, 'type', 'application/octet-stream'),
-			defval($a, 'name', ''),
-			defval($a, 'is_file', true)
-		);
+		foreach($attaches as $a)
+		{
+			$mime->addAttachment(
+				$a['file'],
+				defval($a, 'type', 'application/octet-stream'),
+				defval($a, 'name', ''),
+				defval($a, 'is_file', true)
+			);
+		}
 	}
 
 	if(!$from)

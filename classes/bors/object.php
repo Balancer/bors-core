@@ -133,6 +133,7 @@ class bors_object extends base_object
 	}
 
 	function _admin_searchable_properties_def() { return 'title'; }
+	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
 
 	function call($method_name)
 	{

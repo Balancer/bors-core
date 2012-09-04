@@ -199,7 +199,7 @@ function http_get_ex($url, $raw = true)
 	$header[] = "Accept-Language: ru, en";
 
 	$timeout = 15;
-	if(preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru)/', $url))
+	if(preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru|66\.ru)/', $url))
 		$timeout = 40;
 
 	if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация

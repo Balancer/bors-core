@@ -164,6 +164,7 @@ function html2bb($text, $args = array())
 	// blogger.com, обвязка сообщений
 	$text = preg_replace('!<div class="separator" style="clear: both; text-align: center;">(.*?)</div>!s', '[div align="center"]$1[/div]', $text);
 	$text = preg_replace('!<div class="blogger-post-footer">(.*?)</div>!s', '[div]$1[/div]', $text);
+	$text = preg_replace('!<span style="font-size: x-small;">(.+?)</span>!', '[small]$1[/small]', $text);
 
 	// blogger.com, исправление картинок вида src="http://%D0%BD%D1%8E%D1%81%D0%B0%D0%B9%D1%82
 	$text = preg_replace('!="(http://%D0[^"]+)"!e', "'=\"'.urldecode(\"$1\").'\"'", $text);
@@ -188,11 +189,11 @@ function html2bb($text, $args = array())
 
 	// Нормализуем картинки, когда они же — ссылки на полноразмер.
 	// [url=http://fap.to/images/full/43/495/495898172.jpg][img]http://fap.to/images/full/43/495/495898172.jpg[/img][/url]
-	$text = preg_replace('!\[url=([^\]]+)\]\[img\]\1\[/img\]\[/url\]!is', "[img url=\"$1\" use_cache=\"1\" description='<a href=\"$1\">оригинал</a> | <a href=\"%IMAGE_PAGE_URL%\">кеш</a>' htmldecode=\"1\" ]", $text);
+	$text = preg_replace('!\[url=([^\]]+)\]\[img\]\1\[/img\]\[/url\]!is', "[img url=\"$1\" use_cache=\"1\" description=\"<a href='$1'>оригинал</a> &#124; <a href='%IMAGE_PAGE_URL%'>кеш</a>\" htmldecode=\"1\" ]", $text);
 
 	// Ссылки на внешние страницы автоматизируем
 	// [url=http://2.bp.blogspot.com/--0AOeJRq694/T8koZzdmfzI/AAAAAAAAGDQ/rzvNIj3EkPg/s1600/oMetArt_Preseting-Ashley_Ashley-Doll_by_Emslie_medium_0016.jpg][img]http://2.bp.blogspot.com/--0AOeJRq694/T8koZzdmfzI/AAAAAAAAGDQ/rzvNIj3EkPg/s640/oMetArt_Preseting-Ashley_Ashley-Doll_by_Emslie_medium_0016.jpg[/img][/url]
-	$text = preg_replace('!\[url=([^\]]+\.jpe?g)\]\[img\]([^\[]+?)\[/img\]\[/url\]!is', "[img url=\"$1\" href=\"$1\" use_cache=\"1\" description='<a href=\"$1\">оригинал</a> | <a href=\"%IMAGE_PAGE_URL%\">кеш</a>' htmldecode=\"1\" ]", $text);
+	$text = preg_replace('!\[url=([^\]]+\.jpe?g)\]\[img\]([^\[]+?)\[/img\]\[/url\]!is', "[img url=\"$1\" href=\"$1\" use_cache=\"1\" description=\"<a href='$1'>оригинал</a> &#124; <a href='%IMAGE_PAGE_URL%'>кеш</a>\" htmldecode=\"1\" ]", $text);
 
 //	if(config('is_debug')) echo "===$text===\n\n";
 	return trim($text);

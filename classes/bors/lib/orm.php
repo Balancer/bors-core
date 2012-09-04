@@ -113,12 +113,14 @@ class bors_lib_orm
 							'db' => $db,
 							'table' => $table,
 						), self::field($property, $field));
-//				if($field['name'] != 'id')
+
+//						if($field['name'] != 'id')
 						// UNIX_TIMESTAMP(`Date`) => UNIX_TIMESTAMP(`News`.`Date`)
 						if(empty($field['sql_function']))
 							$field['sql_tab_name'] = "`{$field['table']}`.`{$field['name']}`";
 						else
 							$field['sql_tab_name'] = preg_replace("/(`{$field['name']}`)/", "`{$field['table']}`.$1", $field['sql_name']);
+
 						$fields_array[] = $field;
 					}
 				}
@@ -273,7 +275,12 @@ class bors_lib_orm
 			// Поддержка переменных вида %config.value%
 			$value = preg_replace('/%config\.(\w+)%/e', "config('$1');", $value);
 			// Поддержка переменных вида %this.property%
-			$value = preg_replace_callback('/%this\.(\w+)%/', function($m) use ($object) { return $object->get($m[1]); }, $value);
+			// Костыль под 5.2. Должно быть так:
+//			$value = preg_replace_callback('/%this\.(\w+)%/', function($m) use ($object) { return $object->get($m[1]); }, $value);
+			// Приходится извращаться так:
+			// Проверка на aviaport_export_full_rss_digest и aviaport_export_full_rss_news
+			$GLOBALS['___lib_orm_notation_object'] = $object;
+			$value = preg_replace_callback('/%this\.(\w+)%/', create_function('$m', 'return $GLOBALS["___lib_orm_notation_object"]->get($m[1]);'), $value);
 			return $value;
 		}
 

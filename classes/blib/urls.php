@@ -103,4 +103,42 @@ class blib_urls
 		$data = parse_url($url);
 		return $data['host'];
 	}
+
+	static function path($url)
+	{
+		$data = parse_url($url);
+		return $data['path'];
+	}
+
+	// Сравнение двух URL. Если один из URL не содержит хоста,
+	// то сравниваются только пути
+	//TODO: сделать корректным сравнение с GET-запросами с разным порядком параметров
+	static function eq($url1, $url2)
+	{
+		if(preg_match('!^\w+://!', $url1) && preg_match('!^\w+://!', $url2))
+			return $url1 == $url2;
+
+		return self::path($url1) == self::path($url2);
+	}
+
+	static function in_array($test_url, $urls_array)
+	{
+		foreach($urls_array as $url)
+			if(self::eq($test_url, $url))
+				return true;
+
+		return false;
+	}
+
+	static function __unit_test($suite)
+	{
+		$url1 = "http://balancer.ru/blog/";
+		$suite->assertTrue(self::eq($url1, '/blog/'));
+		$suite->assertTrue(self::eq($url1, 'http://balancer.ru/blog/'));
+		$suite->assertFalse(self::eq($url1, '/blogs/'));
+		$suite->assertFalse(self::eq($url1, 'http://foo.bar/blog/'));
+
+		$suite->assertTrue(self::in_array($url1, array('/blog/', '/blogs/')));
+		$suite->assertFalse(self::in_array($url1, array('/blogs1/', '/blogs2/')));
+	}
 }

@@ -355,6 +355,8 @@ function class_load_by_local_url($url, $args)
 	$is_query = !empty($url_data['query']);
 	$host_helper = "!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)";
 
+//	var_dump($GLOBALS['bors_map']);
+
 	foreach($GLOBALS['bors_map'] as $pair)
 	{
 		if(!preg_match('!^(.*)\s*=>\s*(.+)$!', $pair, $match))

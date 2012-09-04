@@ -31,24 +31,7 @@ class base_list extends base_empty
 
 	static function make($class_name, $where = array(), $data = array())
 	{
-		if(empty($data['have_null']))
-			$list = array(0 => '');
-		else
-			$list = array(NULL => '');
-
-		if(!empty($data['non_empty']))
-			$list = array();
-
-		$foo = new $class_name(NULL);
-		$order = $foo->get('list_fields_sort', 'title');
-
-		$format = $foo->get('list_fields_format', '%title%');
-
-		foreach(bors_find_all($class_name, array_merge(array('order' => $order), $where)) as $x)
-			if($x->id() && ($t = preg_replace_callback('/(%(\w+)%)/', function($m) use ($x) { return $x->get($m[2]); }, $format )))
-				$list[$x->id()] = $t;
-
-		return $list;
+		return bors_legacy::make_base_list($class_name, $where, $data);
 	}
 
 	function __toString()

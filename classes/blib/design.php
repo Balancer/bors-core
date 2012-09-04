@@ -51,6 +51,9 @@ class blib_design
 				."><a href=\"".$object->url($x['page'])."\">{$x['page']}</a></li>";
 		}
 
+		if(!$html)
+			return '';
+
 		return "<div".blib_css::mk_class($args, 'div_class').">"
 			.defval($args, 'before')."<ul>".join('', $html)."</ul></div>";
 	}

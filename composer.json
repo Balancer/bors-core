@@ -6,5 +6,9 @@
 			"name": "Roman =Balancer= Karshiev",
 			"email": "balancer@balancer.ru"
 		}
-	]
+	],
+
+    "require": {
+        "smarty/smarty": "3.*"
+    }
 }

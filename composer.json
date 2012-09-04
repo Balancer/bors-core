@@ -1,0 +1,10 @@
+{
+	"name": "balancer/bors-core",
+	"description": "PHP Framework",
+	"authors": [
+		{
+			"name": "Roman =Balancer= Karshiev",
+			"email": "balancer@balancer.ru"
+		}
+	]
+}

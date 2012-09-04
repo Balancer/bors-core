@@ -2,7 +2,9 @@
 
 class blib_object
 {
-	private $_value = NULL;
+	protected $_value = NULL;
+
+	function val() { return $this->_value; }
 	function value() { return $this->_value; }
 
 	function __construct($init_value = NULL)

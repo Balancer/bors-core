@@ -1,6 +1,7 @@
 {
 	"name": "balancer/bors-core",
 	"description": "PHP Framework",
+	"homepage": "http://bors.balancer.ru/",
 	"authors": [
 		{
 			"name": "Roman =Balancer= Karshiev",
@@ -8,7 +9,14 @@
 		}
 	],
 
-    "require": {
-        "smarty/smarty": "3.*"
-    }
+	"support": {
+		"issues": "http://trac.balancer.ru/bors-core/",
+		"forum": "http://balancer.ru/support/viewforum.php?id=60",
+		"source": "http://hg.balancer.ru/bors-core/"
+	},
+
+	"require": {
+		"php": ">=5.1",
+		"smarty/smarty": "3.*"
+	}
 }

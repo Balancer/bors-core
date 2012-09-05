@@ -15,6 +15,9 @@ if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 if(preg_match('!^(.+):\d+$!', $_SERVER['HTTP_HOST'], $m))
 	$_SERVER['HTTP_HOST'] = $m[1];
 
+// Если в имени хоста есть www, то убираем
+$_SERVER['HTTP_HOST'] = preg_replace('!^www\.!', '', $_SERVER['HTTP_HOST']);
+
 // DOCUMENT_ROOT должен быть без слеша в конце.
 if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 	$_SERVER['DOCUMENT_ROOT'] = $m[1];

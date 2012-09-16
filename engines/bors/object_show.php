@@ -52,6 +52,8 @@
 
 		if(!$access_object->can_read())
 		{
+			template_noindex();
+
 			if(bors()->user())
 			{
 				$msg = ec("Извините, ").bors()->user()->title()

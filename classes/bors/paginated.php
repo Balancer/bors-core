@@ -6,10 +6,18 @@ class bors_paginated extends base_page_paged
 	{
 		$class_name = $this->main_class();
 		$foo = new $class_name(NULL);
-		if($data = $foo->get('item_list_fields'))
+
+		if($this->args('is_admin_list') || $this->get('is_admin_list'))
+			$data = $foo->get('item_list_admin_fields');
+
+		if(empty($data))
+			$data = $foo->get('item_list_fields');
+
+		if($data)
 			return $data;
 
 		return array(
+			'mtime' => ec('Дата изменения'),
 			'title' => ec('Название'),
 			'id' => ec('ID'),
 		);

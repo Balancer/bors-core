@@ -8,15 +8,15 @@
 
 <table class="btab w100p">
 <tr>
-	<th>Дата изменения</th>
-	<th>Название</th>
-	<th>ID</th>
+{foreach $item_fields as $prop_name => $prop_title}
+	<th>{$prop_title}</th>
+{/foreach}
 </tr>
 {foreach from=$items item="x"}
 <tr>
-	<td>{$x->get('modify_time')|short_time}</td>
-	<td>{$x->admin()->imaged_titled_link()}</td>
-	<td>{$x->id()}</td>
+	{foreach $item_fields as $prop_name => $prop_title}
+		<td>{$x->get($prop_name)}</td>
+	{/foreach}
 </tr>
 {/foreach}
 </table>

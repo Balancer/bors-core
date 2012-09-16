@@ -20,4 +20,6 @@ class bors_admin_paginated extends bors_paginated
 
 		return parent::pre_show();
 	}
+
+	function _is_admin_list_def() { return true; }
 }

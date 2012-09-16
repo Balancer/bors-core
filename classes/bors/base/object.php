@@ -193,9 +193,10 @@ class base_object extends base_empty
 		return $this->__setc(class_name_to_id($this));
 	}
 
-	function class_title()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
+	function _class_title_def()    { return ec('Объект ').@get_class($this); }	// Именительный: Кто? Что?
 	function _class_title_rp_def() { return bors_object_titles::class_title_gen($this); }	// Родительный/Генитив Кого? Чего?
-	function class_title_dp() { return ec('объекту ').@get_class($this); }	// Дательный Кому? Чему?
+	function _class_title_dp_def() { return bors_object_titles::class_title_dat($this); }	// Дательный Кому? Чему?
+
 	function class_title_vp() { return ec('объект ').@get_class($this); }	// Винительный Кого? Что?
 	function class_title_tp() { return ec('объектом ').@get_class($this); }	// Творительный Кем? Чем?
 	function class_title_pp() { return ec('объекте ').@get_class($this); }	// Предложный О ком? О чём?

@@ -66,45 +66,65 @@ class bors_admin_edit_smart extends base_page
 		if(method_exists($this->object(), 'editor_fields_list'))
 			foreach($this->object()->editor_fields_list() as $field_title => $x)
 		{
-			$data = array();
-			$field_name = $x;
-
-			$type = 'input';
-			if(preg_match('/^(\w+)\|(.+)$/', $field_name, $m)) // source|textarea=4
+			if(is_array($x))
 			{
-				$field_name = $m[1];
-				$type = $m[2];
+				$property_name = defval($x, 'property');
+				$data = $x;
+				$data = array_merge(bors_lib_orm::parse_property($this->object()->class_name(), $property_name), $data);
+				$type = defval($data, 'type');
 			}
-
-			if(preg_match('/^(\w+)\((.+)\)$/', $type, $m))
+			else
 			{
-				$type = $m[1];
-				foreach(explode(',', $m[2]) as $pair)
-					if(preg_match('/^(\w+)=(.+)$/', $pair, $mm))
-						$args[$mm[1]] = $mm[2];
-			}
-			if(preg_match('/^(\w+)=(.+)$/', $type, $m))
-			{
-				$type = $m[1];
-				switch($type)
+				$property_name = $x;
+				$data = array();
+				if(preg_match('/^\w+$/', $property_name))
 				{
-					case 'dropdown':
-						$data['named_list'] = $m[2];
-						break;
-					case 'image':
-						$data['geometry'] = $m[2];
-						break;
-					case 'textarea':
-					case 'bbcode':
-						$data['rows'] = $m[2];
-						break;
+					$data = bors_lib_orm::parse_property($this->object()->class_name(), $property_name);
+//					print_dd($data);
+					$type = defval($data, 'type');
+				}
+				else
+				{
+					$property_name = $x;
+					$type = 'input';
+					if(preg_match('/^(\w+)\|(.+)$/', $property_name, $m)) // source|textarea=4
+					{
+						$property_name = $m[1];
+						$type = $m[2];
+					}
+
+					if(preg_match('/^(\w+)\((.+)\)$/', $type, $m))
+					{
+						$type = $m[1];
+						foreach(explode(',', $m[2]) as $pair)
+							if(preg_match('/^(\w+)=(.+)$/', $pair, $mm))
+								$args[$mm[1]] = $mm[2];
+					}
+
+					if(preg_match('/^(\w+)=(.+)$/', $type, $m))
+					{
+						$type = $m[1];
+						switch($type)
+						{
+							case 'dropdown':
+								$data['named_list'] = $m[2];
+								break;
+							case 'image':
+								$data['geometry'] = $m[2];
+								break;
+							case 'textarea':
+							case 'bbcode':
+								$data['rows'] = $m[2];
+							break;
+						}
+					}
 				}
 			}
 
 			if(empty($type))
 				$type = 'input';
 
-			$fields[$field_title] = array_merge($data, array('title' => $field_title, 'name' => $field_name, 'origin' => $x, 'type' => $type, 'args' => $args));
+			$fields[$field_title] = array_merge($data, array('title' => $field_title, 'name' => $property_name, 'origin' => $x, 'type' => $type, 'args' => $args));
 		}
 
 		if(!$fields)

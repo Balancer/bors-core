@@ -59,6 +59,8 @@ class bors_lib_orm
 			}
 			elseif(preg_match('/text/', $property))
 				$field['type'] = 'text';
+			elseif(preg_match('/description/', $property))
+				$field['type'] = 'bbcode';
 			elseif(preg_match('/^\w+$/', $property))
 				$field['type'] = 'string';
 			else

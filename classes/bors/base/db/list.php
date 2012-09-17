@@ -70,7 +70,9 @@ class base_db_list extends base_object
 		if(!$this->_dbh)
 			$this->__construct(NULL);
 
-		$list = $this->zero_item() === false ? array() : array(0 => $this->zero_item());
+		$zero_item_idx = $this->get('have_null') ? '' : 0;
+
+		$list = $this->zero_item() === false ? array() : array($zero_item_idx => $this->zero_item());
 
 		$where = "";
 		if($w = $this->where())

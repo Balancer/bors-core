@@ -83,7 +83,7 @@ class bors_forms_saver extends base_empty
 		if(!$object->set_fields($data, true))
 			return true;
 
-//		echo "Data ="; print_d($data); echo "<b style='color:red'>Cahnged fields =</b>"; var_dump($object->changed_fields); echo "has changed = "; var_dump($object->has_changed()); exit();
+//		echo "Data ="; print_dd($data); echo "<b style='color:red'>Cahnged fields =</b>"; var_dump($object->changed_fields); echo "has changed = "; var_dump($object->has_changed()); exit();
 
 		$was_new = false;
 

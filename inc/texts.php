@@ -63,8 +63,6 @@ require_once('strings.php');
 			$text = $res . $more_text;
 		}
 
-//		print_dd(wordwrap(bors_close_tags($text)));
-
 		return bors_close_tags($text);
 	}
 
@@ -72,7 +70,7 @@ require_once('strings.php');
 function bors_close_tags($html)
 {
 	$single_tags = array('meta','img','br','link','area','input','hr','col','param','base');
-	preg_match_all('~<([a-z0-9]+)(?: .*)?(?<![/|/ ])>~iU', $html, $result);
+	preg_match_all('~<([a-z0-9]+)(?: [^>]*)?(?<![/|/ ])>~iU', $html, $result);
 	$openedtags = $result[1];
 	preg_match_all('~</([a-z0-9]+)>~iU', $html, $result);
 	$closedtags = $result[1];

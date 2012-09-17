@@ -57,7 +57,7 @@ class bors_admin_engine extends bors_object
 		// то родительской страницей (реферером для возврата) является главная страница
 		// Тестировать на: http://ipotek-bank.wrk.ru/admin/dbpages/10
 		if(!blib_urls::in_array(bors()->request()->url(), array(
-			$obj->url(),
+			$obj->get('url'),
 			$obj_admin_url,
 		)))
 			return bors()->request()->url();

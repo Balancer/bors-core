@@ -1,6 +1,6 @@
 <?php
 
-class bors_time_meta extends bors_object //TODO: придумать название «пустого» класса вместо base_empty
+class bors_time_meta extends bors_property
 {
 	var $is_null = false;
 

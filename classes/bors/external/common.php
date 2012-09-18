@@ -12,7 +12,7 @@ class bors_external_common extends bors_object
 		$html = bors_lib_http::get_cached($url, 7200);
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
-//		if(config('is_developer')) { echo "$url:<br/>"; var_dump($meta); var_dump($html); exit(); }
+//		if(config('is_developer')) { echo "$url:<br/>"; var_dump($meta); }
 
 		$title = @$meta['og:title'];
 		if(!$title)

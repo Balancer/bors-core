@@ -24,11 +24,11 @@ class bors_lib_html
 			if(preg_match("!<meta[^>]+(name|property)=\"([\w:]+)\"[^>]+(content|value)=\"([^>]+)\"(.*?)>!is", trim($s), $m))
 				$meta[bors_lower($m[2])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'), $m[2]);
 
-			if(preg_match("!<meta[^>]+(http\-equiv|name)=['\"]([\w:]+)['\"][^>]+(content|value)='([^']*)'!is", trim($s), $m))
+			if(preg_match("!<meta[^>]+(http\-equiv|name|property)=['\"]([\w:]+)['\"][^>]+(content|value)='([^']*)'!is", trim($s), $m))
 				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
 
-			if(preg_match("!<meta[^>]+name=([\w:]+)[^>]+(content|value)=\"([^>]+)\"(.*?)>!is", trim($s), $m))
-				$meta[bors_lower($m[1])] = html_entity_decode(html_entity_decode($m[3], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
+			if(preg_match("!<meta[^>]+(name|property)=([\w:]+)[^>]+(content|value)=\"([^>]+)\"(.*?)>!is", trim($s), $m))
+				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
 
 			// <link rel="image_src" href="http://infox.ru/photos/2011/17/112717/300x168_IRp6fXolYdFHbUso28YKRYQS8y3fn0Ca.jpg" >
 			if(preg_match("!<link [^>]*rel=['\"]?([\w:]+)['\"]?[^>]+(href)=\"(.*?)\"!is", trim($s), $m))

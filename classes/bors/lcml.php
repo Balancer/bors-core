@@ -117,6 +117,33 @@ class bors_lcml
 	private $params;
 	function set_params($params) { $this->params = $params; }
 
+	static function is_tag_enabled($tag_name, $default_enabled = true)
+	{
+		// Если тэг разрешён явно, то всё ок.
+		if(config('lcml.tag.'.$tag_name.'.enable'))
+			return true;
+
+		$disabled_tags = config('lcml_tags_disabled',  array());
+		$enabled_tags  = config('lcml_tags_enabled',  array());
+
+		// Если тэг разрешён явно, то всё ок.
+		if(in_array($tag_name, $enabled_tags))
+			return true;
+
+		// Если тэг отсутствует в запрещённых, то…
+		if(!in_array($tag_name, $disabled_tags))
+		{
+			// Если при этом есть список разрешённых тэгов, то по умолчанию всё запрещено
+			if($enabled_tags)
+				return false;
+
+			// В противном случае используем параметр указания, как реагировать на неявное:
+			return $default_enabled;
+		}
+
+		return false;
+	}
+
 	function parse($text, $params = array())
 	{
 		$params = array_merge($this->params, $params);

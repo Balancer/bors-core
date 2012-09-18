@@ -211,7 +211,7 @@ class base_object extends base_empty
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 
 	//TODO: под рефакторинг. Данные шаблона - отдельная сущность.
-	function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
+	static function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
 
 	private $template_data = array();
 	function add_local_template_data($var_name, $value)
@@ -1007,13 +1007,13 @@ defined at {$this->class_file()}<br/>
 	 * @param  $page - опциональный параметр номера страницы при многостраничной разбивке объекта при выводе
 	 * @return Строка со ссылкой
 	 */
-	function url($page = NULL, $exactly = false)
+	function url($page = NULL)
 	{
 		if(empty($this->attr['_url_engine_object'])/* || !$this->_url_engine->id() ?? */)
 			if(!($this->attr['_url_engine_object'] = object_load($this->get('url_engine'), $this)))
 				bors_throw("Can't load url engine '{$this->get('url_engine')}' for class {$this}");
 
-		return $this->attr['_url_engine_object']->url($page, $exactly);
+		return $this->attr['_url_engine_object']->url($page);
 	}
 
 	function url_ex($args)

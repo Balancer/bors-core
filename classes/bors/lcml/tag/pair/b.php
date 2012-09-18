@@ -4,12 +4,12 @@
 
 class bors_lcml_tag_pair_b extends bors_lcml_tag_pair
 {
-	function html($text)
+	function html($text, &$params)
 	{
 		return "<strong>".$this->lcml($text)."</strong>";
 	}
 
-	function text($text)
+	function text($text, &$params)
 	{
 		return "*".$this->lcml($text)."*";
 	}

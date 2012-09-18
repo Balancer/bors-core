@@ -10,8 +10,6 @@ function lt_img($params)
 	if(!empty($params['img']))
 		$params['url'] = $params['img'];
 
-//	if(config('is_developer')) { var_dump($params); exit(); }
-
 	if(!empty($params['htmldecode']))
 		$params['description'] = bors_entity_decode($params['description']);
 
@@ -157,7 +155,7 @@ function lt_img($params)
 				if(file_exists($path) && filesize($path)>0)
 				{
 					$remote = $uri;
-					$uri = str_replace(config('sites_store_path'), config('sites_store_uri'), $path);
+					$uri = str_replace(config('sites_store_path'), config('sites_store_url'), $path);
 					$data['local'] = true;
 
 					$db = new driver_mysql(config('main_bors_db'));
@@ -211,20 +209,14 @@ function lt_img($params)
 				if(!$have_href)
 					$href = $uri;
 
-				require_once('HTTP/Request.php');
-				$req = new HTTP_Request($img_ico_uri, array('allowRedirects' => true,'maxRedirects' => 4,'timeout' => 5));
-				$response = $req->sendRequest();
-				if(!empty($response) && PEAR::isError($response))
-				{
-					sleep(5);
-					$response = $req->sendRequest(array('allowRedirects' => true,'maxRedirects' => 2,'timeout' => 8));
-				}
+				// Дёргаем превьюшку, чтобы могла сгенерироваться.
+				blib_http::get($img_ico_uri);
 
-				list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
+				list($width, $height, $type, $attr) = @getimagesize($img_ico_uri);
 				@list($img_w, $img_h) = getimagesize($uri);
 
 				if(!intval($width) || !intval($height))
-					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get icon's size]<!-- {$img_ico_uri} -->";
+					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get <a href=\"{$img_ico_uri}\">icon's</a> size]";
 
 				if(empty($params['description']))
 					$params['description'] = "";

@@ -123,6 +123,8 @@ function bors_message($text, $params=array())
 		'is_error' => $is_error,
 	);
 
+	$page->set_fields($data, false);
+
 	if($is_error)
 		$data['skip_nav'] = true;
 

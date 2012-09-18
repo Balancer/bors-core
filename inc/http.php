@@ -93,10 +93,10 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 	if($data === false)
 	{
-		echo '<small><i>[1] Curl '.$url.' error: ' . curl_error($ch) . '</i></small><br/>';
+//		echo '<small><i>[1] Curl '.$url.' error: ' . curl_error($ch) . '</i></small><br/>';
 //		echo debug_trace();
 //		if(config('is_developer')) { var_dump($data); exit(); }
-		return '';
+		return NULL;
 	}
 
 	$adat = explode("\n", $data);

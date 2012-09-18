@@ -5,7 +5,7 @@ require_once('engines/bors.php');
 require_once('inc/global-data.php');
 require_once('inc/texts.php');
 
-class DataBase extends base_object
+class DataBase
 {
 	protected $dbh;
 	protected $result;
@@ -624,7 +624,7 @@ class DataBase extends base_object
 	{
 		if(!$this->dbh)
 			return;
-			
+
 //		mysql_close($this->dbh);
 		debug_hidden_log("SerializeOfDataBase");
 		return array_keys(get_object_vars($this));

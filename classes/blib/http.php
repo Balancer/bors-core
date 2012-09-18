@@ -2,14 +2,14 @@
 
 class blib_http
 {
-	function get($url, $raw = false, $max_length = false)
+	static function get($url, $raw = false, $max_length = false)
 	{
 		require_once('inc/http.php');
 		return http_get_content($url, $raw, $max_length);
 	}
 
 	// Работает с объектами не более одного мегабайта. Можно настроить новым параметром max_length
-	function get_cached($url, $ttl = 86400, $raw = false, $force = false, $max_length = 1000000)
+	static function get_cached($url, $ttl = 86400, $raw = false, $force = false, $max_length = 1000000)
 	{
 		//FIXME: Придумать более изящный способ
 		$cache_status_save = config('cache_disabled');
@@ -55,7 +55,7 @@ class blib_http
 		return self::url_unshort($head['Location'], $type, $loop+1);
 	}
 
-	function get_header($url)
+	static function get_header($url)
 	{
 		$ch = curl_init($url);
 		curl_setopt_array($ch, array(
@@ -137,7 +137,7 @@ class blib_http
 	}
 
 	// Спёрто с http://stackoverflow.com/questions/5483851/manually-parse-raw-http-data-with-php
-	function parse_raw_http_request($data, $content_type)
+	static function parse_raw_http_request($data, $content_type)
 	{
 		// grab multipart boundary from content type header
 		preg_match('/boundary=(.*)$/', $content_type, $matches);
@@ -180,7 +180,7 @@ class blib_http
 		return $url;
 	}
 
-	function get_ex($url, $params = array())
+	static function get_ex($url, $params = array())
 	{
 		$raw = popval($params, 'is_raw');
 

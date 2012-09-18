@@ -501,7 +501,7 @@ class bors_form extends bors_object
 						break;
 
 					default:
-						$html .= ec("Неизвестный тип '{$type}'");
+						$html .= ec("Неизвестный тип '{$type}' поля '{$property_name}'");
 //						print_dd($data);
 //						echo defval($data, 'value');
 //						echo defval($data, 'value');

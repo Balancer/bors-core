@@ -1,6 +1,6 @@
 <?php
 
-class base_config extends base_object
+class base_config extends bors_object_simple
 {
 	function target_configure()
 	{

@@ -56,7 +56,7 @@ class bors_template
 		return $original_template_name;
 	}
 
-	function page_data($args = NULL)
+	static function page_data($args = NULL)
 	{
 		$data = array(
 			'now' => $GLOBALS['now'],

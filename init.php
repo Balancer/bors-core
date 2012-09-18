@@ -316,25 +316,35 @@ function bors_include($file, $warn = false, $once = false)
 
 /**
  * Извлекает поле $name из массива $data, если оно есть.
- * В противном случае возвращает $default. 
- * Если установлено $must_be_set, то при отсутствии
- * соответствующего элемента массива он создаётся в нём.
+ * В противном случае возвращает $default.
  * @param array $data 
  * @param string $name
  * @param mixed $default
- * @param bool $must_be_set
  * @return mixed
  */
-function defval(&$data, $name, $default=NULL, $must_be_set = false)
+
+function defval($data, $name, $default=NULL)
 {
 	if($data && array_key_exists($name, $data))
 		return $data[$name];
 
-	//TODO: вынести в отдельную функцию
-	if($must_be_set)
-		$data[$name] = $default;
-
 	return $default;
+}
+
+/**
+ * Работает как и defval(), но при отсутствии
+ * соответствующего элемента массива он создаётся в нём.
+ * @param array $data
+ * @param string $name
+ * @param mixed $default
+ * @return mixed
+ */
+function defvalset(&$data, $name, $default=NULL)
+{
+	if($data && array_key_exists($name, $data))
+		return $data[$name];
+
+	return $data[$name] = $default;
 }
 
 /**

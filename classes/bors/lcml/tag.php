@@ -21,8 +21,8 @@ class bors_lcml_tag
 	function lcml($code) { return $this->lcml->parse($code); }
 
 	// Заглушки
-	function html($text) { return $text; }
-	function html_compact($text) { return $this->html(); }
-	function html_simple($text) { return $this->html(); }
-	function text($text) { return strip_tags($this->html()); }
+	function html($text, &$params) { return $text; }
+	function html_compact($text, &$params) { return $this->html(); }
+	function html_simple($text, &$params) { return $this->html(); }
+	function text($text, &$params) { return strip_tags($this->html()); }
 }

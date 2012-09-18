@@ -1,6 +1,10 @@
 <?php
-    function lt_module($params)
-    {
+
+function lt_module($params)
+{
+	if(!bors_lcml::is_tag_enabled('module', false))
+		return ec("Использование тэга [module] запрещено");
+
 		if($class_name = @$params['class'])
 		{
 			if(class_include($mcn = "module_{$class_name}"))
@@ -19,8 +23,8 @@
 
 			$ps = array();
 			foreach($params as $k => $v)
-				$ps[] = '"'.addslashes($k).'" => "'.addslashes($v).'"';
-
+				$ps[] = '"'.addslashes($k).'" => "'.@addslashes($v).'"';
+/*
 			$result = "<?php
 \$obj = bors_load_ex(\"$class_name\", \"$id\", array(".join(',', $ps)."));
 if(\$obj)
@@ -28,7 +32,13 @@ if(\$obj)
 else
 	\$content = ec('Неизвестный класс «').\"$class_name\".ec(\"»\");
 ?>";
-			return save_format($result);
+*/
+			if($module = bors_load_ex($class_name, $id, $params))
+				$content = method_exists($module, 'html_code') ? $module->html_code() : $module->html();
+			else
+				$content = ec('Неизвестный класс «').$class_name.ec("»");
+
+			return save_format($content);
 		}
 
 //        if(!check_lcml_access('usemodules',true))
@@ -45,4 +55,4 @@ else
 		unset($GLOBALS['module_data']);
 
 		return save_format($out);
-    }
+}

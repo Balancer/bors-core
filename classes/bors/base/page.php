@@ -324,7 +324,7 @@ class base_page extends bors_object
 		);
 	}
 
-	function merge_template_data_array($key, $merge_values)
+	static function merge_template_data_array($key, $merge_values)
 	{
 		$prev = self::template_data($key);
 		if(!$prev)

@@ -12,7 +12,7 @@ class bors_lcml_tag_pair_h2 extends bors_lcml_tag_pair
 		return save_format("\n\n<h2>".lcml($title)."</h2>\n");
 	}
 
-	function text($title, $params)
+	function text($title, &$params)
 	{
 		$params['skip_around_cr'] = true;
 

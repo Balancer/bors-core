@@ -29,7 +29,7 @@ class bors_request extends base_object
 		return $val;
 	}
 
-	function url() { return @$GLOBALS['bors_full_request_url']; }
+	function url($foo=NULL) { return @$GLOBALS['bors_full_request_url']; }
 	function referer() { return defval($_GET, 'ref', @$_SERVER['HTTP_REFERER']); }
 
 	function pure_url()

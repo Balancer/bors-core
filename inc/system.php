@@ -90,7 +90,11 @@ function session_var($name, $def = NULL, $set = false)
 		return $def;
 
 	__session_init();
-	return defval($_SESSION, $name, $def, $set);
+
+	if($set)
+		return defvalset($_SESSION, $name, $def);
+
+	return defval($_SESSION, $name, $def);
 }
 
 function pop_session_var($name, $def = NULL)

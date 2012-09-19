@@ -133,6 +133,9 @@ $_GET = array_merge($_GET, $_POST); // но, вообще, нужно с эти�
 
 if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 {
+	$session_user_load_summary = session_var('user.stat.load_summary', 0);
+//	debug_hidden_log('system_overload_test_session', 'summary load: '.print_r($session_user_load_summary, true), 0);
+
 	$common_overload = config('overload_time', 0);
 	$user_overload = config('user_overload_time', $common_overload);
 	$bot_overload = config('bot_overload_time', $common_overload);
@@ -140,26 +143,29 @@ if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 
 	if($user_overload || $bot_overload)
 	{
-		$dbh = new driver_mysql(config('main_bors_db'));
-		$total = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
-			'user_ip' => $_SERVER['REMOTE_ADDR'],
-			'access_time>' => time() - 600,
-		));
-
-//		debug_hidden_log('system_overload_test', $total, 0);
-
-		if(!$is_crowler && $user_overload && $total > $user_overload)
+		if(!$session_user_load_summary)
 		{
-			debug_hidden_log('system_overload_users', $total.' of '.$user_overload, 0);
+			$dbh = new driver_mysql(config('main_bors_db'));
+			$session_user_load_summary = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
+				'user_ip' => $_SERVER['REMOTE_ADDR'],
+				'access_time>' => time() - 600,
+			));
+		}
+
+//		debug_hidden_log('system_overload_test', $session_user_load_summary, 0);
+
+		if(!$is_crowler && $user_overload && $session_user_load_summary > $user_overload)
+		{
+			debug_hidden_log('system_overload_users', $session_user_load_summary.' of '.$user_overload, 0);
 
 			header('Status: 503 Service Temporarily Unavailable');
 			header('Retry-After: 600');
 			exit("Service Temporarily Unavailable");
 		}
 
-		if($is_crowler && $bot_overload && $total > $bot_overload)
+		if($is_crowler && $bot_overload && $session_user_load_summary > $bot_overload)
 		{
-			debug_hidden_log('system_overload_crowlers', $total.' of '.$bot_overload, 0);
+			debug_hidden_log('system_overload_crowlers', $session_user_load_summary.' of '.$bot_overload, 0);
 
 			header('Status: 503 Service Temporarily Unavailable');
 			header('Retry-After: 600');
@@ -169,7 +175,7 @@ if(config('access_log') && $_SERVER['REMOTE_ADDR'] != '127.0.0.1')
 }
 
 //if($is_bot || $is_crowler)
-//	debug_hidden_log('system_overload_test', "$is_bot/$is_crowler, lavg=$load_avg, total=$total, bot_overload=$bot_overload");
+//	debug_hidden_log('system_overload_test', "$is_bot/$is_crowler, lavg=$load_avg, total=$session_user_load_summary, bot_overload=$bot_overload");
 
 // Если кодировка вывода в браузер не та же, что внутренняя - то перекодируем
 // все входные данные во внутреннюю кодировку
@@ -277,13 +283,15 @@ if(config('debug.execute_trace'))
 // Записываем, если нужно, кто получал объект и сколько ушло времени на его получение.
 if(config('access_log'))
 {
+	$operation_time = microtime(true) - $GLOBALS['stat']['start_microtime'];
+
 	$data = array(
 		'user_ip' => $_SERVER['REMOTE_ADDR'],
 		'user_id' => bors()->user_id(),
 		'server_uri' => $uri,
 		'referer' => @$_SERVER['HTTP_REFERER'],
 		'access_time' => round($GLOBALS['stat']['start_microtime']),
-		'operation_time' =>  str_replace(',', '.', microtime(true) - $GLOBALS['stat']['start_microtime']),
+		'operation_time' =>  str_replace(',', '.', $operation_time),
 		'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
 		'is_bot' => $is_bot,
 	);
@@ -302,6 +310,7 @@ if(config('access_log'))
 	}
 
 	bors_new('bors_access_log', $data);
+	set_session_var('user.stat.load_summary', $session_user_load_summary + $operation_time);
 }
 
 try

@@ -262,7 +262,7 @@ class bors_lib_orm
 	static function get_notation($object, $name)
 	{
 		// Парсим файл класса на предмет @-нотаций
-		if(!($class_file = $object->class_file()))
+		if(!method_exists($object, 'class_file') || !($class_file = $object->class_file()))
 			return false;
 
 		if(!($class_source = file_get_contents($class_file)))
@@ -295,7 +295,7 @@ class bors_lib_orm
 		if(is_null(@$object->attr['__yaml_notations']))
 		{
 			$object->attr['__yaml_notations'] = array();
-			if($class_file = $object->class_file())
+			if(method_exists($object, 'class_file') && $class_file = $object->class_file())
 				if($class_source = file_get_contents($class_file))
 					if(preg_match_all("!^/\*\*(.+?)^\*/!ms", $class_source, $match, PREG_SET_ORDER))
 						foreach($match as $m)

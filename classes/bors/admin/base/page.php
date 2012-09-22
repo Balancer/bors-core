@@ -2,7 +2,7 @@
 
 // Прототип страниц администрирования объектов-страниц сайта.
 
-class bors_admin_base_page extends base_page
+class bors_admin_base_page extends bors_admin_page
 {
 	function config_class() { return config('admin_config_class'); }
 	function parents() { return array($this->object()->url()); }

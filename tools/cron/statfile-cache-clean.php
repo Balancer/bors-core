@@ -47,11 +47,12 @@ try
 				bors_object_create($obj);
 			}
 			else
-				debug_hidden_log('static-cache', "Can't load recreateable object {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
+//				debug_hidden_log('static-cache', "Can't load recreateable object {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
 			echo "Recreated";
 		}
 		else
 		{
+//			debug_hidden_log('static-clean-unlink3', "{$x->id()}", false);
 			@unlink($x->id());
 
 			if(file_exists($x->id()))

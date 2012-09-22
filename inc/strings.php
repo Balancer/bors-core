@@ -80,11 +80,7 @@ function bors_str_cat($string1, $string2, $explode_delimiter = ',', $join_delimi
 
 bors_function_include('string/bors_starts_with');
 bors_function_include('string/bors_ends_with');
-
-function bors_entity_decode($string)
-{
-	return html_entity_decode($string, ENT_COMPAT, config('internal_charset'));
-}
+bors_function_include('html/bors_entity_decode');
 
 function bors_comma_join($s1, $s2 = NULL)
 {

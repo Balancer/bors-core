@@ -5,7 +5,7 @@
 	Например, bors_time.
 */
 
-class bors_property extends bors_object	//TODO: придумать название «пустого» класса вместо base_empty
+class bors_property extends bors_object_simple
 {
 	protected $_value		= NULL;
 	protected $_is_set		= false;

@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_edit_var extends base_page
+class bors_admin_edit_var extends bors_admin_page
 {
 	function title() { return $this->variable()->title(); }
 

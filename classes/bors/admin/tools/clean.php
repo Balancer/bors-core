@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_tools_clean extends base_page
+class bors_admin_tools_clean extends bors_admin_page
 {
 	function config_class() { return config('admin_config_class'); }
 

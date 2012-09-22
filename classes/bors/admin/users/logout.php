@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_users_logout extends base_page
+class bors_admin_users_logout extends bors_admin_page
 {
 	function title() { return ec('Выход из системы'); }
 

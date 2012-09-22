@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_main extends base_page
+class bors_admin_main extends bors_page
 {
 	function title() { return ec('Управление системой BORS©'); }
 	function nav_name() { return ec('администрирование'); }

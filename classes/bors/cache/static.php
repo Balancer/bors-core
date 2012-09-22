@@ -65,6 +65,7 @@ class cache_static extends base_object_db
 		foreach($caches as $cache)
 		{
 //			echo "unlink {$cache->id()}<br/>";
+//			debug_hidden_log('static-clean-unlink-5', "{$cache->id()}");
 			@unlink($cache->id());
 			$d = dirname($cache->id());
 			while($d && $d != '/')

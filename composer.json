@@ -18,5 +18,9 @@
 	"require": {
 		"php": ">=5.1",
 		"smarty/smarty": "3.*"
-	}
+	},
+
+    "autoload": {
+		"classmap": ["classes/"]
+    }
 }

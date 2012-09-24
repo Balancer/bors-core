@@ -465,13 +465,15 @@ defined at {$this->class_file()}<br/>
 	function _description_def() { return @$this->data['description']; }
 	function set_description($description, $db_update=true) { return $this->set('description', $description, $db_update); }
 
-	function nav_name($exact = false)
+	function nav_name()
 	{
-		if(($nav_name = $this->get('nav_name', NULL, true)) || $exact)
+		if(($nav_name = $this->get('nav_name', NULL, true)))
 			return $nav_name;
 
 		return  $this->get('nav_name_lower', config('nav_name_lower')) ? bors_lower($this->title()) : $this->title();
 	}
+
+	function nav_name_true() { return $this->get('nav_name', NULL, true); }
 
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 

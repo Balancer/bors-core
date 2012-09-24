@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_mark_delete extends base_page
+class bors_admin_mark_delete extends bors_admin_page
 {
 	function config_class() { return config('admin_config_class'); }
 
@@ -14,6 +14,9 @@ class bors_admin_mark_delete extends base_page
 	function nav_name() { return ec('удаление'); }
 
 	function object() { return object_load($this->id()); }
+
+	function can_be_empty() { return false; }
+	function loaded() { return (bool) $this->object(); }
 
 	function on_action_delete($data)
 	{

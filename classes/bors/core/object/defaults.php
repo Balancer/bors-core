@@ -47,6 +47,8 @@ class bors_core_object_defaults
 
 	static function item_name($class_name)
 	{
-		return array_pop(explode('_', $class_name));
+		// @ для маскировки
+		// Strict standards:  Only variables should be passed by reference
+		return @array_pop(explode('_', $class_name));
 	}
 }

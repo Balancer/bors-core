@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_append_new extends base_page
+class bors_admin_append_new extends bors_admin_page
 {
 	function config_class() { return config('admin_config_class'); }
 	function parents() { return array(dirname($this->id()).'/'); }

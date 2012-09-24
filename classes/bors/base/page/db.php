@@ -69,6 +69,8 @@ class base_page_db extends base_page
 			);
 		}
 
+		bors_use('natural/bors_plural');
+
 		return array(
 			$this->main_db(config('main_bors_db')) => array(
 				$this->main_table(bors_plural($this->class_name())) => $this->main_table_fields()

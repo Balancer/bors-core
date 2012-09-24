@@ -72,13 +72,15 @@ class base_object extends base_empty
 			if(is_object($c))
 			{
 				if(empty($child_objects[$c->internal_uri_ascii()]))
-					$child_objects[$c->internal_uri_ascii()] = $c;
+					if(!$c->get('is_deleted'))
+						$child_objects[$c->internal_uri_ascii()] = $c;
 			}
 			else
 			{
 				if($c = bors_load_uri(trim($c)))
 					if(empty($child_objects[$c->internal_uri_ascii()]))
-						$child_objects[$c->internal_uri_ascii()] = $c;
+						if(!$c->get('is_deleted'))
+							$child_objects[$c->internal_uri_ascii()] = $c;
 			}
 		}
 

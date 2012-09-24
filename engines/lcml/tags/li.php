@@ -18,7 +18,10 @@ function lp_ul($text, &$param)
 	else
 		$type = "";
 
-//	$param['skip_around_cr'] = true;
+	// Комментарий убран, чтобы не было пустых полей вокруг списков.
+	// Если что, обратить внимание на http://ipotek-bank.wrk.ru/services/10/kredit-zalogovyj/
+	// Непонятно, зачем очистка переводов строк вокруг была убрана раньше.
+	$param['skip_around_cr'] = 'one';
 	return save_format("\n<ul$type>".lcml(trim($text))."</ul>\n");
 }
 
@@ -29,6 +32,7 @@ function lp_ol($text, $param)
 	else
 		$type = "";
 
+	$param['skip_around_cr'] = 'one';
 	return save_format("\n<ol$type>".lcml($text)."</ol>\n");
 }
 

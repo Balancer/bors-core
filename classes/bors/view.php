@@ -95,6 +95,7 @@ class bors_view extends bors_page
 	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
 	function _section_name_def() { return $this->object()->get('section_name'); }
 	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
+	function _is_deleted_def() { return $this->object()->get('is_deleted'); }
 
 	function html_auto()
 	{

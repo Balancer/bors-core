@@ -105,7 +105,12 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 
 							if($tag_params['skip_around_cr'])
 							{
-								if($tag_params['skip_around_cr'] == 'full')
+								if($tag_params['skip_around_cr'] == 'one')
+								{
+									$part1 = preg_replace("/\n$/", "", $part1);
+									$part3 = preg_replace("/^\n/", "", $part3);
+								}
+								elseif($tag_params['skip_around_cr'] == 'full')
 								{
 									$part1 = preg_replace("/\n+$/s", "", $part1);
 									$part3 = preg_replace("/^\n+/s", "", $part3);

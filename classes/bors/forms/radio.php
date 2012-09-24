@@ -11,10 +11,10 @@ class bors_forms_radio extends bors_forms_element
 
 		$obj = $form->object();
 
-		$params = "";
+		$tag_params = "";
 		foreach(explode(' ', 'size style') as $p)
 			if(!empty($$p))
-				$params .= " $p=\"{$$p}\"";
+				$tag_params .= " $p=\"{$$p}\"";
 
 		if(!is_array($list))
 		{
@@ -51,7 +51,8 @@ class bors_forms_radio extends bors_forms_element
 
 		if(empty($object))
 		{
-			$current = $obj ? $obj->$name() : @$def;
+//			$current = $obj ? $obj->$name() : @$def;
+			$current = self::value($params, $form);
 			$object = "";
 		}
 		else
@@ -82,9 +83,26 @@ class bors_forms_radio extends bors_forms_element
 		else
 			$label_css_class = "";
 
+		$colorize = @explode(',', @$pos_colorize);
+
 		$html = '';
+		$colorpos = 0;
 		foreach($list as $id => $iname)
-			$html .= "<label{$label_css_class}><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$params />&nbsp;$iname</label>$delim\n";
+		{
+			$style = array();
+			if($color = @$colorize[$colorpos++])
+				$style[] = "color: $color";
+
+			if($id == $current && !empty($current_bold))
+				$style[] = "font-weight: bold";
+
+			if($style)
+				$style = " style=\"".join(";", $style)."\"";
+			else
+				$style = "";
+
+			$html .= "<label{$label_css_class}{$style}><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$tag_params />&nbsp;$iname</label>$delim\n";
+		}
 
 		return $html;
 	}

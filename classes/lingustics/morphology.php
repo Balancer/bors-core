@@ -38,7 +38,9 @@ class lingustics_morphology
 		foreach(preg_split('/\s*,\s*/', $case) as $c)
 			$cases[] = $case_rus[$c];
 
-		$g = $m->find_word($word);
+		if(!($g = $m->find_word($word)))
+			return $word;
+
 		$w = $m->word_form_by_grammems($g, $cases);
 		return $w ? $w : $word;
 	}

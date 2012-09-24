@@ -46,7 +46,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 //			$data['storage_engine'] = popval($data, 'storage_engine', 'bors_storage_mysql');
 
 //		if(preg_match('/entity/', $class_name)) var_dump($data);
-		$class = "class ".popval($data, 'class', $class_name)." extends ".popval($data, 'extends', $properties ? 'base_object_db' : 'bors_object')
+		$class = "class ".popval($data, 'class', $class_name)." extends ".popval($data, 'extends', config('project.name').($properties ? '_object_db' : '_page'))
 			."\n{\n";
 
 		if($table_fields)

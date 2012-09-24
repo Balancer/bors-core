@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_users_login extends bors_admin_page
+class bors_admin_users_login extends bors_page
 {
 	function title() { return ec('Аутентификация'); }
 

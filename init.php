@@ -231,25 +231,25 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 	$map = array();
 
 	if(file_exists($file = BORS_HOST.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		include($file);
+		require_once($file);
 	elseif(file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		include($file);
+		require_once($file);
 	elseif(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		include($file);
+		require_once($file);
 
 	$map2 = $map;
 
 	if(file_exists($file = $bors_site.'/handlers/bors_map.php'))
-		include($file);
+		require_once($file);
 
 	if(file_exists($file = $bors_site.'/bors_map.php'))
-		include($file);
+		require_once($file);
 
 	if(file_exists($file = $bors_site.'/url_map.php'))
-		include($file);
+		require_once($file);
 
 	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
-		include($file);
+		require_once($file);
 
 //	echo "$host: <xmp>"; print_r($map); echo "</xmp>";
 

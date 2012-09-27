@@ -36,12 +36,20 @@ class lingustics_morphology
 
 		$cases = array();
 		foreach(preg_split('/\s*,\s*/', $case) as $c)
-			$cases[] = $case_rus[$c];
+			$cases[] = ec($case_rus[$c]);
 
 		if(!($g = $m->find_word($word)))
 			return $word;
 
 		$w = $m->word_form_by_grammems($g, $cases);
 		return $w ? $w : $word;
+	}
+
+	static function __unit_test($suite)
+	{
+		$suite->assertEquals('авиакомпании', bors_lower(lingustics_morphology::case_rus('авиакомпания', 'acc')));
+		$suite->assertEquals('авиакомпании', bors_lower(lingustics_morphology::case_rus('авиакомпания', 'plur')));
+		$suite->assertEquals('авиакомпаний', bors_lower(lingustics_morphology::case_rus('авиакомпания', 'gen,plur')));
+		$suite->assertEquals('авиакомпании', bors_lower(lingustics_morphology::case_rus('авиакомпания', 'nom,plur')));
 	}
 }

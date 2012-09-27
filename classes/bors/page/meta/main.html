@@ -1,0 +1,18 @@
+{$this->pages_links_nul()}
+
+<table class="btab w100p">
+<tr>
+{foreach $item_fields as $prop_name => $prop_title}
+	<th>{$prop_title}</th>
+{/foreach}
+</tr>
+{foreach from=$items item="x"}
+<tr>
+	{foreach $item_fields as $prop_name => $prop_title}
+		<td>{$x->get($prop_name)}</td>
+	{/foreach}
+</tr>
+{/foreach}
+</table>
+
+{$this->pages_links_nul()}

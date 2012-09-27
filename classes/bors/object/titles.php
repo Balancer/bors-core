@@ -18,18 +18,21 @@ class bors_object_titles
 
 	// Архив чего? — объектов
 	static function class_title_gen_plur($object) { return self::_class_title_helper($object, 'gen,plur'); }
-	static function class_title_mult($object)
+	static function class_title_plur($object)
 	{
+		if(ini_get('default_charset') != 'utf-8')
+			bors_throw(ec('phpMorphy работает только в UTF-8'));
+
 		try
 		{
-			$mult = bors_lower(lingustics_morphology::case_rus(object_property($object, 'class_title'), 'nom,mult'));
+			$plur = bors_lower(lingustics_morphology::case_rus(object_property($object, 'class_title'), 'plur'));
 		}
 		catch(Exception $e) { }
 
-		if(empty($mult))
-			$mult = ec('объекты ').@get_class($object);
+		if(empty($plur))
+			$plur = ec('объекты ').@get_class($object);
 
-		return $mult;
+		return $plur;
 	}
 
 //	static function class_title_($object) { return bors_lower(lingustics_morphology::case_rus($object->class_title(), 'gen')); }

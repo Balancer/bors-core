@@ -203,7 +203,8 @@ class base_object extends base_empty
 	function class_title_tp() { return ec('объектом ').@get_class($this); }	// Творительный Кем? Чем?
 	function class_title_pp() { return ec('объекте ').@get_class($this); }	// Предложный О ком? О чём?
 
-	function _class_title_m_def() { return bors_object_titles::class_title_mult($this); }	// Множественный именительный
+	function _class_title_m_def() { return bors_object_titles::class_title_plur($this); }	// Множественный именительный
+	function _class_title_rpm_def() { return bors_object_titles::class_title_gen_plur($this); }	// Множественный родительный
 	function class_title_tpm() { return ec('объектами ').@get_class($this); }	// Множественный Творительный Кем? Чем?
 	function class_title_dpm() { return ec('объектам ').@get_class($this); }	// Множественный дательный, Кому? Чему?
 
@@ -465,7 +466,7 @@ defined at {$this->class_file()}<br/>
 	function _description_def() { return @$this->data['description']; }
 	function set_description($description, $db_update=true) { return $this->set('description', $description, $db_update); }
 
-	function nav_name()
+	function _nav_name_def()
 	{
 		if(($nav_name = $this->get('nav_name', NULL, true)))
 			return $nav_name;
@@ -473,7 +474,7 @@ defined at {$this->class_file()}<br/>
 		return  $this->get('nav_name_lower', config('nav_name_lower')) ? bors_lower($this->title()) : $this->title();
 	}
 
-	function nav_name_true() { return $this->get('nav_name', NULL, true); }
+	function _nav_name_true_def() { return $this->get('nav_name', NULL, true); }
 
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 

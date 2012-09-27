@@ -2,6 +2,8 @@
 
 class bors_paginated extends base_page_paged
 {
+	function foo_object() { $class_name = $this->main_class(); return new $class_name(NULL); }
+
 	function item_fields()
 	{
 		$class_name = $this->main_class();

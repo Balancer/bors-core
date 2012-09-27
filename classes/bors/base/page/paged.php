@@ -90,8 +90,10 @@ class base_page_paged extends bors_page
 
 	function body_data()
 	{
+		$items = $this->items();
 		return array_merge(parent::body_data(), array(
-			$this->items_name() => $this->items(),
+			$this->items_name() => $items,
+			'items' => $items,
 		));
 	}
 

@@ -12,10 +12,18 @@ class bors_xref_c2c extends bors_object_db
 		$object_field_name = bors_unplural(self::object_name($xref_class_name)).'_id';
 		$target_field_name = bors_unplural(self::target_name($xref_class_name)).'_id';
 
-		$args[$object_field_name] = $object->id();
-		$args[$target_field_name] = $target->id();
+		$args[$object_field_name] = is_object($object) ? $object->id() : $object;
+		$args[$target_field_name] = is_object($target) ? $target->id() : $target;
 
 		bors_new($xref_class_name, $args);
+	}
+
+	static function _object_field_name_def($xref_class_name = NULL)
+	{
+		if(!$xref_class_name)
+			$xref_class_name = get_called_class();
+
+		return bors_unplural(self::object_name($xref_class_name)).'_id';
 	}
 
 	static function object_name($xref_class_name)

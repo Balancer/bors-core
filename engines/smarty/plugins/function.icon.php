@@ -25,6 +25,9 @@ function smarty_function_icon($params, &$smarty)
 	if(!empty($target))
 		$link .= '&target='.$target->internal_uri_ascii();
 
+	if(!empty($ref))
+		$link .= '&ref='.urlencode($ref);
+
 	if(empty($link_target))
 		$link_target = "";
 	else

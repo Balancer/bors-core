@@ -66,33 +66,7 @@ require_once('strings.php');
 		return bors_close_tags($text);
 	}
 
-// via http://rmcreative.ru/blog/post/zakryt-nezakrytye-tegi
-function bors_close_tags($html)
-{
-	$single_tags = array('meta','img','br','link','area','input','hr','col','param','base');
-	preg_match_all('~<([a-z0-9]+)(?: [^>]*)?(?<![/|/ ])>~iU', $html, $result);
-	$openedtags = $result[1];
-	preg_match_all('~</([a-z0-9]+)>~iU', $html, $result);
-	$closedtags = $result[1];
-	$len_opened = count($openedtags);
-
-	if (count($closedtags) == $len_opened)
-		return $html;
-
-	$openedtags = array_reverse($openedtags);
-	for ($i=0; $i < $len_opened; $i++)
-	{
-		if (!in_array($openedtags[$i], $single_tags))
-		{
-			if (FALSE !== ($key = array_search($openedtags[$i], $closedtags)))
-				unset($closedtags[$key]);
-			else
-				$html .= '</'.$openedtags[$i].'>';
-		}
-	}
-
-	return $html;
-}
+function bors_close_tags($html) { return blib_html::close_tags($html); }
 
 function bors_close_bbtags($text)
 {

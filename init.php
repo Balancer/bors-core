@@ -508,6 +508,12 @@ function bors_use($uses)
 			continue;
 		}
 
+		if(preg_match('/\.js$/', $u))
+		{
+			template_js_include($u);
+			continue;
+		}
+
 		if(preg_match('/^\w+$/', $u))
 		{
 			if(function_exists($f = "bors_use_{$u}"))

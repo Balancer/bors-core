@@ -8,10 +8,13 @@ $(function() {
 
 	$('.bors_lazy_load').show();
 
+/*
 	jQuery('.bors_lazy_ad').lazyLoadAd({
 		threshold: 200,
 		timeout: 2000,
 	})
+*/
+
 /*
 	$("div.box img").lazyload({
 		placeholder : "img/grey.gif",

@@ -127,6 +127,18 @@ class bors_page extends base_page
 */
 	function pre_show()
 	{
+		if($config = $this->config())
+		{
+			if(method_exists($config, 'pre_show'))
+			{
+				$config_result = $config->pre_show();
+				if($config_result === true)
+					return true;
+			}
+			else
+				debug_hidden_log('obsolete_warning', "Config class '{$config->class_name()}' defined at '{$config->class_file()}' have not pre_show() method. Wrong extends?");
+		}
+
 		if($this->is_smart())
 		{
 			$class_file_base = str_replace('.php', '', $this->class_file());
@@ -186,5 +198,10 @@ class bors_page extends base_page
 			default:
 				return lcml($this->source());
 		}
+	}
+
+	function _project_def()
+	{
+		return bors_load('bors_project', NULL);
 	}
 }

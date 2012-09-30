@@ -16,6 +16,7 @@ class bors_server extends base_object
 	function document_root() { return $this->_web_server ? $this->_web_server->_root : @$_SERVER['DOCUMENT_ROOT']; }
 	function root() { return $this->_web_server ? $this->_web_server->_root : @$_SERVER['DOCUMENT_ROOT']; }
 	function host() { return $this->_web_server ? $this->_web_server->_host : @$_SERVER['HTTP_HOST']; }
+	function host_strip() { return str_replace('www.', '', $this->host()); }
 	function port() { return $this->_web_server ? $this->_web_server->_port : @$_SERVER['HTTP_PORT']; }
 
 	function portize($url)

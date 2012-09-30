@@ -2,14 +2,16 @@
 
 require_once('strings.php');
 
-	function strip_text($text, $len=192, $more_text = '&#133;', $microstyle = false)
+	function strip_text($text, $len=192, $more_text = NULL, $microstyle = false)
 	{
+		if(is_null($more_text))
+			$more_text = ec('…');
+
 		$text = to_one_string($text);
 
 		while(preg_match("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is",$text))
 			$text=preg_replace("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is","$1",$text);
 
-	// 
 		$text=preg_replace("!(^|<p>|<br>|<br />)+(<font[^>]+>)(<p>)?[^\s<]*>.+?(<br />|<br>|<p>|$)+!i","",$text);
 		$text=preg_replace("!(^|<p>|<br>|<br />)+(<font[^>]+>)(<a [^>]+>)?[^\s<]*</a>>.+?(<br />|<br>|<p>|$)+!i","",$text);
 		$text=preg_replace("!<font size=\-2 color=#\d\d\d\d\d\d><b>.+?</b>>.+?</font>(<br>)+!is","",$text);
@@ -62,6 +64,9 @@ require_once('strings.php');
 			}
 			$text = $res . $more_text;
 		}
+
+		if(config('is_test'))
+			echo $text, PHP_EOL, PHP_EOL;
 
 		return bors_close_tags($text);
 	}

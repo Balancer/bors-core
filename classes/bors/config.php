@@ -15,4 +15,9 @@ class bors_config extends base_config
 
 		parent::__construct($object);
 	}
+
+	function pre_show()
+	{
+		return false;
+	}
 }

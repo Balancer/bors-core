@@ -2,9 +2,9 @@
 
 class base_page_paged extends bors_page
 {
-	function where() { return array(); }
-	function order() { return '-create_time'; } // Всегда! Не менять в будущем. Унификация.
-	function group() { return false; }
+	function _where_def() { return array(); }
+	function _order_def() { return '-create_time'; } // Всегда! Не менять в будущем. Унификация.
+	function _group_def() { return false; }
 
 	function _inner_join_def() { return false; }
 	function _item_properties_set_def() { return false; }

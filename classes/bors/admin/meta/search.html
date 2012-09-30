@@ -1,4 +1,4 @@
-<form class="search" action="{$this->url()}" method="post">
+<form class="search" action="{$this->url()}" method="get">
 <fieldset>
 <legend>Поиск:</legend>
 <center>
@@ -15,7 +15,7 @@
 {if $items}
 {if $this->get('append_template')}
 <br/>
-{include file=$this->get('append_template')}
+{include file=$this->get('append_template') items=$items}
 {else}
 ??
 {/if}

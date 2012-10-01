@@ -132,7 +132,16 @@ class bors_object extends base_object
 		return bors_load('bors_time', $this->modify_time());
 	}
 
-	function _admin_searchable_properties_def() { return 'title'; }
+	function _admin_searchable_properties_def()
+	{
+		$properties = array();
+		foreach(bors_lib_orm::fields($this) as $x)
+			if(!empty($x['is_admin_searchable']))
+				$properties[] = $x['property'];
+
+		return $properties ? join(' ', $properties) : 'title';
+	}
+
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
 
 	function call($method_name)

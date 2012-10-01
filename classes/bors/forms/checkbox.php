@@ -21,6 +21,10 @@ class bors_forms_checkbox extends bors_forms_element
 
 		$html = "";
 
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+		if($th = defval($params, 'th'))
+			$html .= "<tr><th>{$th}</th><td>";
+
 		if(!empty($label_css_class))
 			$label_css_class = " class=\"$label_css_class\"";
 		else
@@ -44,6 +48,9 @@ class bors_forms_checkbox extends bors_forms_element
 
 		if($label)
 			$html .= "{$delim}{$label}</label>{$br}";
+
+		if($th)
+			$html .=  "</td></tr>\n";
 
 		$html .= "\n";
 

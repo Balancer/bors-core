@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_meta_search extends bors_admin_page
+class bors_admin_meta_search extends bors_admin_paginated
 {
 	function config_class() { return config('admin_config_class'); }
 
@@ -25,10 +25,14 @@ class bors_admin_meta_search extends bors_admin_page
 
 		$data['query'] = trim(urldecode(@$_GET['q']));
 
+		$main_class = $this->main_class();
+		$foo = new $main_class(NULL);
+		$data['item_fields'] = $foo->item_fields();
+
 		return $data;
 	}
 
-	function order() { return 'title'; }
+	function _order_def() { return 'title'; }
 
 	function total_items()
 	{
@@ -43,7 +47,11 @@ class bors_admin_meta_search extends bors_admin_page
 		$q = "'%".addslashes(trim(urldecode($_GET['q'])))."%'";
 
 		$qq = array();
-		$properties = explode(' ', bors_lib_object::get_static($this->main_class(), 'admin_searchable_properties'));
+
+		$main_class = $this->main_class();
+		$foo = new $main_class(NULL);
+
+		$properties = explode(' ', $foo->admin_searchable_properties());
 
 		foreach($properties as $p)
 		{
@@ -51,7 +59,9 @@ class bors_admin_meta_search extends bors_admin_page
 			$qq[] = "`{$p['name']}` LIKE {$q}";
 		}
 
-		return array('('.join(' OR ', $qq).')');
+		$where = array('('.join(' OR ', $qq).')');
+//		var_dump($where);
+		return $where;
 	}
 
 	function append_template() { return 'xfile:main.html'; }

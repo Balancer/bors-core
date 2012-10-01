@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_config extends base_config
+class bors_admin_config extends bors_config
 {
 	function config_data()
 	{

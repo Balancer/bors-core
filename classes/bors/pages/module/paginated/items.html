@@ -1,9 +1,12 @@
-<table class="btab w100p">
+<table class="{$table_classes}">
+<thead>
 <tr>
 {foreach $item_list_fields as $p => $t}
 	{$this->make_sortable_th($p, $t)}
 {/foreach}
 </tr>
+</thead>
+<tbody>
 {foreach from=$items item="x"}
 <tr>
 	{foreach $item_list_fields as $p => $t}
@@ -16,6 +19,7 @@
 	{/foreach}
 </tr>
 {/foreach}
+</tbody>
 </table>
 
 {if $more}

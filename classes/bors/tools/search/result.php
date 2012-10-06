@@ -224,7 +224,7 @@ class bors_tools_search_result extends bors_tools_search
 
 			$loop = 0;
 			foreach($posts as $pid => $p)
-				$docs[$loop++] = strip_tags($p->source());
+				$docs[$loop++] = strip_tags($p->body());
 
 			if($post_ids)
 			{

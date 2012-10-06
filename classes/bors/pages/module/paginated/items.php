@@ -7,6 +7,14 @@ class bors_pages_module_paginated_items extends bors_module
 		$items = $this->args('items');
 		$data = $this->args('table_columns');
 
+		$table_classes = array('btab', 'w100p');
+
+		if($ajax_sortable = $this->args('ajax_sortable'))
+		{
+			jquery_tablesorter::on("'.tablesorter'");
+			$table_classes[] = 'tablesorter';
+		}
+
 		if(!$data)
 		{
 			if($class_name = $this->args('class'))
@@ -52,6 +60,7 @@ class bors_pages_module_paginated_items extends bors_module
 		}
 
 		$body_data['more'] = $more;
+		$body_data['table_classes'] = join(' ', $table_classes);
 
 		return $body_data;
 	}

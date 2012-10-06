@@ -606,6 +606,8 @@ defined at {$this->class_file()}<br/>
 		if(!($url = defval($params, 'url')))
 			$url = $this->url_ex(array('page' => $page));
 
+		$url = str_replace('%OBJECT_ID%', $this->id(), $url);
+
 		return '<a href="'.$url.defval($params, 'url_append')."\"{$popup}{$target}{$class}{$style}>{$title}</a>"; 
 	}
 	function titled_link_target($target) { return $this->titled_link_ex(array('target' => $target)); }

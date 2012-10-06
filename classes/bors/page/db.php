@@ -6,7 +6,7 @@ class bors_page_db extends base_object_db
 	function _body_def() { return bors_lib_page::body($this); }
 	function _body_class_def() { return 'bors_bodies_page'; }
 
-	function _browser_title_def() { return $this->title(); }
+	function _browser_title_def() { return $this->page_title(); }
 	function _page_title_def() { return $this->title(); }
 
 	function _is_smart_def() { return true; }

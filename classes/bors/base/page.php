@@ -12,12 +12,12 @@ class base_page extends bors_object
 
 	function _page_title_def() { return $this->title(); }
 
-	function browser_title()
+	function _browser_title_def()
 	{
 		if($t = $this->get('browser_title', NULL, true))
 			return $t;
 
-		return $this->title();
+		return $this->page_title();
 	}
 
 	function source() { return @$this->data['source']; }

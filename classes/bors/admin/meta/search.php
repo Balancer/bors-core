@@ -1,8 +1,10 @@
 <?php
 
-class bors_admin_meta_search extends bors_admin_paginated
+class bors_admin_meta_search extends bors_admin_meta_main
 {
 	function config_class() { return config('admin_config_class'); }
+
+	function admin_search_url() { return $this->url(); }
 
 	function title() { return ec('Поиск'); }
 	function nav_name() { return ec('поиск'); }
@@ -12,7 +14,7 @@ class bors_admin_meta_search extends bors_admin_paginated
 
 	function body_data()
 	{
-		$data = array();
+		$data = parent::body_data();
 
 		if(empty($_GET['q']))
 			return $data;
@@ -27,7 +29,13 @@ class bors_admin_meta_search extends bors_admin_paginated
 
 		$main_class = $this->main_class();
 		$foo = new $main_class(NULL);
-		$data['item_fields'] = $foo->item_fields();
+
+
+		$fields = $this->get('item_fields');
+		if(!$fields)
+			$fields = bors_lib_object::get_foo($this->main_class(), 'item_list_admin_fields');
+
+		$data['item_fields'] = $fields;
 
 		return $data;
 	}

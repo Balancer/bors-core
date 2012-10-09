@@ -12,6 +12,7 @@ class bors_legacy_53
 		if(!empty($data['non_empty']))
 			$list = array();
 
+//		echo debug_trace();
 		$foo = new $class_name(NULL);
 		$order = $foo->get('list_fields_sort', 'title');
 

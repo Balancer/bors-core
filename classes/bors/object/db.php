@@ -250,7 +250,7 @@ class bors_object_db extends base_object_db
 		return $p;
 	}
 
-	function __toString() { return $this->title(); }
+	function __toString() { return $this->get('title'); }
 
 	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }

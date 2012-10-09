@@ -5,6 +5,14 @@
 class bors_xref_c2c extends bors_object_db
 {
 	function class_title() { return ec('Связь'); }
+	function access() { return $this->foo_object()->access(); }
+	function foo_object()
+	{
+		$class_name = $this->object_class_name();
+		return new $class_name(NULL);
+	}
+
+	function _object_class_name_def() { return preg_replace('/^([\w]+)_xref_\w+?$/', '$1', $this->class_name()); }
 
 	static function add($object, $target, $args = array(), $xref_class_name = NULL)
 	{
@@ -104,6 +112,9 @@ class bors_xref_c2c extends bors_object_db
 		return bors_field_array_extract($xrefs, $target_field_name);
 	}
 
+	function object() { return bors_load($this->object_class_name(), $this->get($this->object_field_name())); }
 	function target() { return bors_load($this->target_class_name(), $this->get($this->target_field_name())); }
 	function target_field_name() { return bors_unplural($this->target_name()).'_id'; }
+
+	function admin_parent_url() { return $this->object()->admin()->urls(bors_plural($this->target_name())); }
 }

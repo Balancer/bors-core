@@ -53,10 +53,20 @@ class bors_admin_engine extends bors_object
 		$obj = $this->real_object();
 		$obj_admin_url = $obj->admin()->url();
 
+		$request_url = bors()->request()->url();
+		// Хак для edit-smart: http://admin.aviaport.ru/_bors/admin/edit-smart/?object=aviaport_directory_airline_xref_plane__3
+		if($x = $this->get('object'))
+		{
+			$obj = $x;
+			$obj_admin_url = $obj->admin()->url();
+			$request_url = $x->get('url');
+		}
+
 		// Если ссылка главного объекта не равна ссылке на удаляемый файл
 		// то родительской страницей (реферером для возврата) является главная страница
 		// Тестировать на: http://ipotek-bank.wrk.ru/admin/dbpages/10
-		if(!blib_urls::in_array(bors()->request()->url(), array(
+//		var_dump($request_url, $obj->get('url'), $obj_admin_url);
+		if(!blib_urls::in_array($request_url, array(
 			$obj->get('url'),
 			$obj_admin_url,
 		)))

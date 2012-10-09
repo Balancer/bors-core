@@ -18,8 +18,8 @@ class bors_admin_meta_edit extends bors_admin_page
 	function title()
 	{
 		return $this->id() ?
-			ec('Редактирование ').call_user_func(array($this->main_class(), 'class_title_rp'))
-			: ec('Добавление ').call_user_func(array($this->main_class(), 'class_title_rp'))
+			ec('Редактирование ').bors_lib_object::get_foo($this->main_class(), 'class_title_rp')
+			: ec('Добавление ').bors_lib_object::get_foo($this->main_class(), 'class_title_rp')
 		;
 	}
 

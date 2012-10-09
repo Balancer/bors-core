@@ -151,4 +151,6 @@ class bors_object extends base_object
 //		var_dump($method_name, $args);
 		return call_user_func_array(array($this, $method_name), $args);
 	}
+
+	function _item_list_admin_fields_def() { return $this->item_list_fields(); }
 }

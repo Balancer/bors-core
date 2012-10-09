@@ -4,6 +4,8 @@
 
 class bors_xref_c2c extends bors_object_db
 {
+	function class_title() { return ec('Связь'); }
+
 	static function add($object, $target, $args = array(), $xref_class_name = NULL)
 	{
 		if(!$xref_class_name)

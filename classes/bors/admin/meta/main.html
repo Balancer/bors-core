@@ -4,14 +4,29 @@
 </ul>
 {/if}
 
+{if $admin_search_url}
+<form class="admin-top-search" action="{$admin_search_url}" style="margin-bottom: 10px">
+<fieldset>
+<legend>Поиск:</legend>
+<center><label>Подстрока:</label> <input type="text" name="q" size="40" />
+<input type="hidden" name="w" value="t" />
+<input type="submit" class="search-submit" value="Искать" />
+</center>
+</fieldset>
+</form>
+{/if}
+
 {$this->pages_links_nul()}
 
 <table class="btab w100p">
+<thead>
 <tr>
 {foreach $item_fields as $prop_name => $prop_title}
-	<th>{$prop_title}</th>
+	{$this->make_sortable_th($prop_name, $prop_title)}
 {/foreach}
 </tr>
+</thead>
+<tbody>
 {foreach from=$items item="x"}
 <tr>
 	{foreach $item_fields as $prop_name => $prop_title}
@@ -19,6 +34,7 @@
 	{/foreach}
 </tr>
 {/foreach}
+</tbody>
 </table>
 
 {$this->pages_links_nul()}

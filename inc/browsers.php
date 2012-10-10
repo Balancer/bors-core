@@ -49,6 +49,15 @@ function get_browser_info($user_agent, $log_unknown = true)
 		$os = 'Linux';
 		$device = 'Amazon Kindle';
 	}
+	elseif(preg_match('!P3400!i', $user_agent))
+	{
+		$os = 'Windows Mobile';
+		$ov = '2005';
+		$device = 'P3400 Gene';
+		$os_img = 'pocketpc';
+		$device_img = 'communicator-old';
+//		$device_img = 'htc';
+	}
 
 	// ************************************************************
 	// Обнаруживаем ОС и устройства
@@ -227,7 +236,7 @@ function get_browser_info($user_agent, $log_unknown = true)
 	if(!$is_bot && (!$browser or !$os) && $log_unknown)
 		debug_hidden_log('user_agents', "Unknown user agent '{$user_agent}'");
 
-	return array($os, $browser, $ov, $bv, $is_bot, $device);
+	return array($os, $browser, $ov, $bv, $is_bot, $device, @$os_img, @$browser_img, @$device_img);
 }
 
 function bors_find_shared_file($base_name, $path, $default = 'unknown.png')
@@ -259,10 +268,10 @@ function bors_browser_images($ua, $ip = NULL)
 		return '<span title="'.htmlspecialchars($client_name)."\"><img src=\"{$client_image}\" width=\"16\" height=\"16\"></span>";
 	}
 
-	list($os, $browser, $osver, $bver, $is_bot, $device) = get_browser_info($ua);
+	list($os, $browser, $osver, $bver, $is_bot, $device, $os_img, $browser_img, $device_img) = get_browser_info($ua);
 
 	$short = array();
-	if($browser || $bver)	
+	if($browser || $bver)
 		$short[] = trim("$browser $bver");
 	if($os || $osver)
 		$short[] = trim("$os $osver");
@@ -284,19 +293,23 @@ function bors_browser_images($ua, $ip = NULL)
 
 	if(!$is_bot)
 	{
-		if(($ofile = bors_find_shared_file("$os-$osver", 'images/os', false)))
+		if(!empty($os_img) && ($bfile = bors_find_shared_file($os_img, 'images/os', false)))
+			$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+		elseif(($ofile = bors_find_shared_file("$os-$osver", 'images/os', false)))
 			$info[] = "<img src=\"/_bors/$ofile\" class=\"i16\" alt=\"$bver\"/>";
 		elseif(($ofile = bors_find_shared_file($os, 'images/os', false)))
 			$info[] = "<img src=\"/_bors/$ofile\" class=\"i16\" alt=\"$bver\"/>";
 	}
 
-	if(($device_image = bors_find_shared_file("$device", 'i16/dev', false)))
+	if(!empty($device_img) && ($device_image = bors_find_shared_file($device_img, 'i16/dev', false)))
+		$info[] = "<img src=\"/_bors/$device_image\" class=\"i16\" alt=\"$over\"/>";
+	elseif(($device_image = bors_find_shared_file("$device", 'i16/dev', false)))
 		$info[] = "<img src=\"/_bors/$device_image\" class=\"i16\" alt=\"$over\"/>";
 
 	if(empty($info))
 	{
 		$info[] = "<img src=\"/_bors/i/unknown-16.png\" class=\"i16\" alt=\"Unknown\"/>";
-		debug_hidden_log('append_data', "Unknown user agent $ua - $ip");
+		debug_hidden_log('append_data', "Unknown user agent $ua - $ip [browser=$browser; bver=$bver; os=$os; osver=$osver]");
 	}
 
 	return "<span title=\"$title\">".join('', $info)."</span>";

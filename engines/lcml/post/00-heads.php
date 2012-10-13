@@ -9,7 +9,7 @@ function lcml_heads($txt)
 	    $txt=preg_replace("/^!!(.+)$/me","'<h3>'.lcml(\"$1\").'</h3> '",$txt);
 		$txt=preg_replace("/^!(.+)$/me","'<h2>'.lcml(\"$1\").'</h2> '",$txt);
 	}
-	
+
 //		echo "<xmp>"; echo $txt; echo "</xmp>"; exit();
         return $txt;
 }

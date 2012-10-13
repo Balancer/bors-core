@@ -1,5 +1,8 @@
 <?php
 
+// Для тестов.
+// Пример .hts — http://www.aviaport.ru/pages/2012/save-il-14/
+
 bors_function_include('debug/log_var');
 
 class bors_storage_htsu extends bors_storage
@@ -28,7 +31,9 @@ class bors_storage_htsu extends bors_storage
 
 	private function __find($object)
 	{
-		if(preg_match('/\.htsu?$/', $object->id()) && file_exists($object->id()))
+		$ext = $object->get('hts_extension', 'htsu');
+
+		if(preg_match("/\.$ext?$/", $object->id()) && file_exists($object->id()))
 			return $object->id();
 
 		$dir = $object->dir();
@@ -46,75 +51,75 @@ class bors_storage_htsu extends bors_storage
 			$rel = preg_replace("!/$ut(/|$)!", '', $rel);
 		}
 
-		if($base && file_exists($file = "{$dir}/{$base}.htsu"))
+		if($base && file_exists($file = "{$dir}/{$base}.{$ext}"))
 			return $file;
 
-		if($base && file_exists($file = "{$dir}/{$base}/main.htsu"))
+		if($base && file_exists($file = "{$dir}/{$base}/main.{$ext}"))
 			return $file;
 
-		if($base && file_exists($file = "{$dir}/{$base}/index.htsu"))
+		if($base && file_exists($file = "{$dir}/{$base}/index.{$ext}"))
 			return $file;
 
 //		if($base && file_exists($file = "{$dir}/{$base}"))
 //			return $file;
 
-		if(!$base && file_exists($file = "{$dir}/index.htsu"))
+		if(!$base && file_exists($file = "{$dir}/index.{$ext}"))
 			return $file;
 
-		if(!$base && file_exists($file = "{$dir}.htsu"))
+		if(!$base && file_exists($file = "{$dir}.{$ext}"))
 			return $file;
 
 		if($object->host() == bors()->server()->host())
 		{
 			foreach(bors_dirs() as $d)
 			{
-				if($base && file_exists($file = secure_path("{$d}/webroot/{$rel}/{$base}.htsu")))
+				if($base && file_exists($file = secure_path("{$d}/webroot/{$rel}/{$base}.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/webroot/{$rel}.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/webroot/{$rel}.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/webroot/{$rel}/index.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/webroot/{$rel}/index.{$ext}")))
 					return $file;
 
-				if($base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}/{$base}.htsu")))
+				if($base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}/{$base}.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}/index.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}/index.{$ext}")))
 					return $file;
 
-				if($base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/{$base}.htsu")))
+				if($base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/{$base}.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/data/fs/{$rel}.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/data/fs/{$rel}.{$ext}")))
 					return $file;
 
-				if(!$base  && file_exists($file = secure_path("{$d}/data/fs/{$rel}/main.htsu")))
+				if(!$base  && file_exists($file = secure_path("{$d}/data/fs/{$rel}/main.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}/index.htsu")))
+				if(!$base && file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}/index.{$ext}")))
 					return $file;
 			}
 		}
 		else
 		{
 			$data = bors_vhost_data($object->host());
-			if(file_exists($file = "{$data['bors_site']}/data/fs/{$rel}main.htsu"))
+			if(file_exists($file = "{$data['bors_site']}/data/fs/{$rel}main.{$ext}"))
 				return $file;
 
-			if(file_exists($file = "{$data['bors_site']}/data/fs/{$rel}index.htsu"))
+			if(file_exists($file = "{$data['bors_site']}/data/fs/{$rel}index.{$ext}"))
 				return $file;
 
-			if(file_exists($file = "{$data['bors_site']}/data/fs{$rel}.htsu"))
+			if(file_exists($file = "{$data['bors_site']}/data/fs{$rel}.{$ext}"))
 				return $file;
 		}
 
@@ -125,6 +130,8 @@ class bors_storage_htsu extends bors_storage
 	{
 		if(!($file = $object->get('htsu_file')))
 			$file = $this->__find($object);
+
+//		echo "Found hts at $file<br/>\n";
 
 		if(!$file)
 			return $object->set_loaded(false);
@@ -215,7 +222,10 @@ class bors_storage_htsu extends bors_storage
 			}
 
 		if(!$object->title_true() && $file)
-			$object->set('title', preg_replace('/\.htsu$/i', '', basename($file)).'.', false);
+		{
+			$ext = $object->get('hts_extension', 'htsu');
+			$object->set('title', preg_replace("/\.$ext$/i", '', basename($file)).'.', false);
+		}
 
 		if($config_class = $this->ext('config', '-'))
 			$object->set_config_class($config_class, false);

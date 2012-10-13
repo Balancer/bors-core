@@ -15,4 +15,4 @@ for($i=1; $i<=3; $i++)
 
 // lp_h4, lp_l5, lp_h6...
 for($i=4; $i<=6; $i++)
-	eval("function lp_h{$i}(\$text, &\$params) { \$params['skip_around_cr'] = true; return \"\n\n<h{$i} class=\\\"html\\\">\".lcml(\$text).\"</h{$i}>\n\"; }");
+	eval("function lp_h{$i}(\$text, &\$params) { \$params['skip_around_cr'] = 'one'; return \"\n\n<h{$i} class=\\\"html\\\">\".lcml(\$text).\"</h{$i}>\n\"; }");

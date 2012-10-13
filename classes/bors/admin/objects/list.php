@@ -4,7 +4,7 @@ class bors_admin_objects_list extends bors_admin_meta_main
 {
 	function main_class() { return $this->id(); }
 
-	function parents() { return array(bors_lib_object::get_static($this->main_class(), 'admin_parent_url')); }
+	function parents() { return array(bors_lib_object::get_foo($this->main_class(), 'admin_parent_url')); }
 
 	function nav_name() { return bors_lower($this->title()); }
 

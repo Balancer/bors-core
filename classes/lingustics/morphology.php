@@ -29,6 +29,7 @@ class lingustics_morphology
 			'dat' => 'ДТ',
 			'acc' => 'ВН',
 			'ins' => 'ТВ',
+			'abl' => 'ТВ',
 			'pre' => 'ПР',
 			'mult' => 'МН',
 			'plur' => 'МН',

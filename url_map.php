@@ -74,7 +74,7 @@ $map = array(
 	'.* => auto_object_php(url)',
 	'.* => bors_page_fs_bbh(url)',
 	'.* => bors_page_fs_markdown(url)',
-	'.* => bors_page_fs_htsu(url)',
+	'.* => bors_page_fs_htsu(url)', //TODO: снести нафиг после конвертации старых hts Авиабазы
 );
 
 bors_objects_loaders_yaml::register();

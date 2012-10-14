@@ -21,13 +21,10 @@ class base_object extends base_empty
 	private $__match;
 	function set_match($match) { return $this->__match = $match; }
 
-	function parents($exact = false)
+	function parents()
 	{
 		if($ps = $this->get_data('parents'))
 			return $ps;
-
-		if($exact)
-			return $this->data['parents'] = array();
 
 		if(empty($this->__match[2]))
 			$parent = secure_path(dirname($this->called_url()).'/');
@@ -344,7 +341,8 @@ class base_object extends base_empty
 
 		if($this->strict_auto_fields_check())
 		{
-			$trace = array_shift(debug_backtrace());
+			$trace = debug_backtrace();
+			$trace = array_shift($trace);
 			bors_throw("__call[".__LINE__."]:
 undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>
 defined at {$this->class_file()}<br/>
@@ -433,24 +431,24 @@ defined at {$this->class_file()}<br/>
 	function template_local_vars() { return 'create_time description id modify_time nav_name title'; }
 
 	function set_create_time($unix_time, $db_update = true) { return $this->set('create_time', intval($unix_time), $db_update); }
-	function create_time($exactly = false)
+	function create_time()
 	{
-		if($exactly || !empty($this->data['create_time']))
-			return @$this->data['create_time'];
+		if(!empty($this->data['create_time']))
+			return $this->data['create_time'];
 
 		if(!empty($this->data['modify_time']))
 			return $this->data['modify_time'];
 
-		return time();
+		return NULL;
 	}
 
 	function set_modify_time($unix_time, $db_update = true) { return $this->set('modify_time', $unix_time, $db_update); }
-	function modify_time($exactly = false)
+	function modify_time()
 	{
-		if($exactly || !empty($this->data['modify_time']))
-			return @$this->data['modify_time'];
+		if(!empty($this->data['modify_time']))
+			return $this->data['modify_time'];
 
-		return time();
+		return NULL;
 	}
 
 	/** Истинный заголовок объекта. Метод или параметр объекта. */
@@ -989,8 +987,8 @@ defined at {$this->class_file()}<br/>
 
 		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii(); 
 	}
-//	function admin_url($exact = false) { return $exact ? NULL : '/_bors/admin/?object='.urlencode($this->internal_uri()); }
-	function admin_url($exact = false) { return $exact ? NULL : $this->edit_url(); }
+
+	function admin_url() { return $this->edit_url(); }
 	function new_url()  { return '/_bors/admin/new-smart/?object='.urlencode($this->internal_uri()); }
 	function admin_parent_url()
 	{

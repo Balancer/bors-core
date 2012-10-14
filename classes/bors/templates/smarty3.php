@@ -26,9 +26,6 @@ class bors_templates_smarty3 extends bors_template
 		$smarty = new Smarty();
 		require('classes/bors/templates/smarty3-register.php');
 
-//		$smarty->template_dir = '/web/www.example.com/guestbook/templates/';
-//		$smarty->config_dir   = '/web/www.example.com/guestbook/configs/';
-
 		$smarty->compile_dir = config('cache_dir').'/smarty3-templates_c/';
 		$smarty->auto_literal = false; //TODO: придумать, как сделать разрешение для отдельных шаблонов.
 /*

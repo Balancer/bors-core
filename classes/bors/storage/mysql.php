@@ -7,8 +7,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		if($object)
 		{
 			$this->__object = $object;
-			$this->__db_name = $object->db_name();
-			$this->__table_name = $object->table_name();
+			$this->__db_name = $object->get('db_name');
+			$this->__table_name = $object->get('table_name');
 		}
 	}
 
@@ -84,8 +84,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		);
 
 		$update = array();
-		$db_name = $object->db_name();
-		$table_name = $object->table_name();
+		$db_name = $object->get('db_name');
+		$table_name = $object->get('table_name');
 
 		$skip_joins = false;
 
@@ -142,8 +142,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 	{
 		$where['*class_name'] = $object->class_name();
 
-		$main_db = $object->db_name();
-		$main_table = $object->table_name();
+		$main_db = $object->get('db_name');
+		$main_table = $object->get('table_name');
 		$main_id_field = $object->id_field();
 
 		$join = $object->get("{$type}_join_fields");

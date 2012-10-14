@@ -208,7 +208,7 @@ class bors_object_db extends base_object_db
 		return $fields;
 	}
 
-	function url()
+	function url($page = NULL)
 	{
 		$site_url = config('main_site_url');
 		$class_name = $this->class_name();
@@ -221,7 +221,7 @@ class bors_object_db extends base_object_db
 		if(preg_match('/^'.$this->project_name().'_(\w+)$/i', $class_name, $m))
 			return $site_url.'/'.join('/', array_map('bors_plural', explode('_', bors_lower($m[1])))).'/'.$this->id().'/';
 
-		return $site_url.'/'.$this->_item_name_m().'/'.$this->id().'/';
+		return $site_url.'/'.$this->_item_name_m().'/'.$this->id().'/' . ($page > 1 ? $page.'.html' : '');
 	}
 
 	function admin_url()

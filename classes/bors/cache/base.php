@@ -11,7 +11,7 @@ class bors_cache_base
 
 	function __construct() { $this->init(); }
 
-	function get($type, $key, $default = NULL, $object = NULL)
+	function get($type, $key, $default = NULL)
 	{
 		$this->type = $type;
 		$this->key  = $key;
@@ -19,7 +19,7 @@ class bors_cache_base
 		return $this->last = $default;
 	}
 
-	function check($type, $key, $default = NULL, $object = NULL)
+	function check($type, $key, $default = NULL)
 	{
 		$this->type = $type;
 		$this->key  = $key;
@@ -27,7 +27,7 @@ class bors_cache_base
 		return $this->last = $default;
 	}
 
-	function set($value, $expire, $cache_id = NULL) { return $this->last = $value; }
+	function set($value, $expire) { return $this->last = $value; }
 
 	function last() { return $this->last; }
 

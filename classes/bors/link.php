@@ -1,12 +1,12 @@
 <?php
 
-class bors_link extends base_object_db
+class bors_link extends bors_object_db
 {
 	private $replace = false;
 
 	function storage_engine() { return 'bors_storage_mysql'; }
-	function main_table() { return 'bors_cross'; }
-	function main_table_fields()
+	function table_name() { return 'bors_cross'; }
+	function table_fields()
 	{
 		return array(
 			'id',

@@ -12,6 +12,8 @@ class base_object_db extends bors_object
 	function db_driver() { return 'driver_mysql'; }
 	function can_be_empty() { return false; }
 
+	function _db_name_def() { return config('main_bors_db'); }
+
 	function uri2id($id) { return $id; }
 
 	function __construct($id)

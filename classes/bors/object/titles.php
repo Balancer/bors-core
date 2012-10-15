@@ -16,7 +16,7 @@ class bors_object_titles
 
 	static function class_title_gen($object) { return self::_class_title_helper($object, 'gen'); }
 	static function class_title_dat($object) { return self::_class_title_helper($object, 'dat'); }
-	static function class_title_acc($object) { return self::_class_title_helper($object, 'acct'); }
+	static function class_title_acc($object) { return self::_class_title_helper($object, 'acc'); }
 	static function class_title_abl($object) { return self::_class_title_helper($object, 'abl'); }
 
 	// Архив чего? — объектов

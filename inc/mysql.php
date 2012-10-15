@@ -52,7 +52,7 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 		}
 	}
 
-	return 'WHERE '.join(' AND ', $where);
+	return $where ? 'WHERE '.join(' AND ', $where) : '';
 }
 
 function mysql_order_compile($order_list, $class_name = false)

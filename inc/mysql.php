@@ -32,6 +32,10 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 		{
 			$w = mysql_bors_join_parse($field_cond, $class) . ' ' . $value[0] . ' AND ' . $value[1];
 		}
+		elseif(preg_match('! LIKE$!', $field_cond))
+		{
+			$w = mysql_bors_join_parse($field_cond, $class) . ' "%' . addslashes($value) . '%"';
+		}
 		elseif(is_numeric($field_cond)) // Готовое условие
 			$w = $value;
 		elseif(preg_match('!^\w+$!', $field_cond))

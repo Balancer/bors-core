@@ -7,9 +7,10 @@ class base_object extends base_empty
 	function attr_preset() { return array(
 		'title' => $this->class_title().' '.$this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
 		'config_class' => config('config_class'),
-		'access_engine' => '',
 		'url_engine' => 'url_calling2',
 	); }
+
+	function _access_engine_def() { return NULL; }
 
 	function properties_preset() { return array(
 	); }

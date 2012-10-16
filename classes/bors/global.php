@@ -59,7 +59,11 @@ class bors_global extends base_empty
 
 	private $changed_objects = array();
 
-	function add_changed_object($obj) { $this->changed_objects[$obj->internal_uri()] = $obj; }
+	function add_changed_object($obj)
+	{
+//		echo "Add {$obj->debug_title()}<Br/>"; echo debug_trace();
+		$this->changed_objects[$obj->internal_uri()] = $obj;
+	}
 
 	function drop_changed_object($obj)
 	{

@@ -24,7 +24,7 @@ class bors_auto_search_result extends bors_auto_search
 		$class_name = $this->main_class();
 
 		$qq = array();
-		$properties = explode(' ', bors_lib_object::get_static($class_name, 'admin_searchable_properties'));
+		$properties = explode(' ', bors_lib_object::get_foo($class_name, 'admin_searchable_properties'));
 
 		foreach($properties as $p)
 		{

@@ -26,14 +26,15 @@ class bors_core_object_defaults
 	{
 		$class_file = $object->class_file();
 		// "/data/var/www/ru/wrk/ucrm/bors-site/classes/ucrm/projects/main.yaml"
-		$name = preg_replace('!^.+/bors-site/classes/'.$object->project_name().'(/admin)?/(\w+)/.+$!', '$2', $class_file);
+		$name = preg_replace('!^.+/bors-site/classes/'.$object->get('project_name').'(/admin)?/(\w+)/.+$!', '$2', $class_file);
 
 		if(!preg_match('/^\w+$/', $name))
 		{
 			// "/data/var/www/ru/wrk/ucrm/bors-site/classes/ucrm/person.yaml"
-			$name = bors_plural(preg_replace('!^.+/bors-site/classes/'.$object->project_name().'(/admin)?/(\w+)\.\w+.+$!', '$2', $class_file));
+			$name = bors_plural(preg_replace('!^.+/bors-site/classes/'.$object->get('project_name').'(/admin)?/(\w+)\.\w+.+$!', '$2', $class_file));
 		}
 
+//FIXME FOR http://matf.aviaport.ru/
 		if(!preg_match('/^\w+$/', $name))
 			bors_throw(ec('Не задано имя раздела сайта и не получилось его вычислить через class_file=').$class_file);
 

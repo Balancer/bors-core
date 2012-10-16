@@ -1,6 +1,6 @@
 <?php
 
-class bors_client extends base_object
+class bors_client extends bors_object_simple
 {
 	function can_cached() { return false; }
 	function is_bot() { return @$GLOBALS['client']['is_bot']; }

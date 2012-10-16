@@ -203,6 +203,7 @@ class base_page extends bors_object
 					$data[$qname] = $db->get_array($q, false, $cache);
 			}
 		}
+
 		$data['template_dir'] = $this->class_dir();
 		$data['this'] = $this;
 

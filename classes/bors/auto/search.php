@@ -86,4 +86,7 @@ array
 	function page() { return bors()->request()->data('p', $this->default_page()); }
 
 	function url_skip_keys() { return 'q'; }
+
+	function _order_def() { return $this->args('order', 'title'); }
+//	function _order_def() { return $this->args('order', 'title'); }
 }

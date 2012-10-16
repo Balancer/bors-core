@@ -5,22 +5,21 @@
 </tr></table>
 {/form}
 
-{if $items}
-<br />
 <table class="btab w100p">
+<thead>
 <tr>
-{foreach $this->result_fields() as $p => $t}
-	<th>{$t}</th>
+{foreach $item_fields as $prop_name => $prop_title}
+	{$this->make_sortable_th($prop_name, $prop_title)}
 {/foreach}
 </tr>
+</thead>
+<tbody>
 {foreach from=$items item="x"}
 <tr>
-	{foreach $this->result_fields() as $p => $t}
-	<td>{$x->get($p)}</td>
+	{foreach $item_fields as $prop_name => $prop_title}
+		<td>{$x->get($prop_name)}</td>
 	{/foreach}
 </tr>
 {/foreach}
+</tbody>
 </table>
-
-{$this->pages_links_nul()}
-{/if}

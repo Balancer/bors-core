@@ -137,14 +137,12 @@ function show_page($uri, $data = true)
 			if($tpl{0} == "/")
 				$tpl = "xfile:$tpl";
 		}
-//		echo $tpl;
-//		echo $smarty->template_dir;
-//		if(empty($smarty->template_dir))
+
 		$smarty->template_dir = dirname(preg_replace("!^xfile:!", "", $tpl));
-		
+
 		if(preg_match("!^http://!", $tpl))
 			$tpl = "hts:$tpl";
-		
+
 //		echo "<br/>base={$GLOBALS['cms']['base_uri']}; tpl='$tpl' Using template $template";	exit();
 
 		if(empty($GLOBALS['cms']['autoinc_views_disabled']))
@@ -161,7 +159,7 @@ function show_page($uri, $data = true)
 //		$level = $us->data('level');
 		$user_id = $me ? $me->id() : NULL;
 		$user_name = $me ? $me->title() : NULL;
-		
+
 //		include_once("funcs/actions/subscribe.php");
 		$subscribed = false; //cms_funcs_action_is_subscribed($page);
 
@@ -171,7 +169,7 @@ function show_page($uri, $data = true)
         if($nocache || !$smarty->is_cached($tpl, $page))
         {
 			$GLOBALS['cms']['cached_copy'] = 0;	
-		
+
             $page_vars = 'author copyright compile_time create_time description modify_time publisher right_column subscribe title version views views_first views_last';
 
             foreach(explode(' ', $page_vars) as $key)

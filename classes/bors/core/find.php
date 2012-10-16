@@ -24,6 +24,11 @@ class bors_core_find
 		return array_pop($this->all(1));
 	}
 
+	function page($page, $items_per_page)
+	{
+		$this->_where['*limit'] = array(($page-1)*$items_per_page, $items_per_page);
+	}
+
 	// Найти все объекты, соответствующие заданным критериям
 	function all($limit1=NULL, $limit2=NULL)
 	{
@@ -257,6 +262,10 @@ class bors_core_find
 			else
 				$param = "$param '".addslashes($value)."' AND '".addslashes($value2)."'";
 		}
+		elseif(preg_match('/ LIKE$/', $param))
+		{
+			$param = "$param '%".addslashes($value)."%'";
+		}
 		elseif(count(func_get_args()) == 2)
 		{
 			if(preg_match('/[\w`]$/', $param))
@@ -330,6 +339,15 @@ class bors_core_find
 			list($val1, $val2) = $val1;
 
 		return $this->where("$property BETWEEN", $val1, $val2);
+	}
+
+	function like($property_name, $value)
+	{
+		$property_name = $this->first_parse($property_name);
+		$property_name = $this->stack_parse($property_name);
+		$property_name = $this->class_parse($property_name);
+
+		return $this->where("$property_name LIKE", $value);
 	}
 
 	function set($property, $fields)

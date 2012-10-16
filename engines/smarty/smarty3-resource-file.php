@@ -66,7 +66,21 @@
 				}
 			}
 
-		if(!$found && file_exists($fn = $smarty->template_dir."/".$tpl_name))
+		// WTF? Так и не удалось понять, откуда сюда подлезает массив в http://airbase.home.balancer.ru/
+		if(!$found && is_array($smarty->template_dir))
+		{
+			foreach($smarty->template_dir as $dir)
+			{
+				if(file_exists($fn = "$dir/$tpl_name"))
+				{
+					$tpl_timestamp = filemtime($fn);
+					$found = true;
+					break;
+				}
+			}
+		}
+
+		if(!$found && !is_array($smarty->template_dir) && file_exists($fn = $smarty->template_dir."/".$tpl_name))
 		{
 			$tpl_timestamp = filemtime($fn);
 			$found = true;

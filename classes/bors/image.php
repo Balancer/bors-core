@@ -1,6 +1,6 @@
 <?php
 
-class bors_image extends base_object_db
+class bors_image extends bors_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
 

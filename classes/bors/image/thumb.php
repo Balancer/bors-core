@@ -78,7 +78,6 @@ class bors_image_thumb extends bors_image
 
 		$this->set_relative_path($new_path, $caching);
 
-
 		if($original_url = $this->original->full_url())
 			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
 		else
@@ -122,7 +121,7 @@ class bors_image_thumb extends bors_image
 			$file_thumb_r = $file_thumb;
 			//TODO: придумать обработку больших картинок.
 			$fsize_thumb = @filesize($file_thumb_r);
-			$this->set_full_file_name($file_thumb, true);
+			$this->set_full_file_name($file_thumb, $caching);
 		}
 
 		$this->set_size($fsize_thumb, $caching);

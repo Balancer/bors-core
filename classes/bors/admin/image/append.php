@@ -6,12 +6,15 @@ class bors_admin_image_append extends base_object
 {
 	var $_last_image;
 
+	// Перед сносом проверить на http://admin.aviaport.ru/directory/persons/50/ от простого пользователя
 	function config_class() { return config('admin_config_class');}
 	function acl_edit_sections() { return array('*' => 1); }
 	function auto_search_index() { return false; }
 
 	function new_instance() { $this->set_id(true); }
 	function skip_save() { return true; }
+
+	function access() { return $this->object()->access(); }
 
 	function upload_image_file(&$data, &$get)
 	{

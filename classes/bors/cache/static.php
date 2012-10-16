@@ -1,11 +1,11 @@
 <?php
 
-class cache_static extends base_object_db
+class cache_static extends bors_object_db
 {
-	function main_db() { return config('cache_database'); }
-	function main_table() { return 'cached_files'; }
+	function db_name() { return config('cache_database'); }
+	function table_name() { return 'cached_files'; }
 	function storage_engine() { return 'bors_storage_mysql'; }
-	function main_table_fields()
+	function table_fields()
 	{
 		return array(
 			'id' => 'file',

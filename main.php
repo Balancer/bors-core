@@ -310,7 +310,10 @@ if(config('access_log'))
 	}
 
 	bors_new('bors_access_log', $data);
-	set_session_var('user.stat.load_summary', $session_user_load_summary + $operation_time);
+
+//	NOTIFY - переменная не найдена. Найти.
+//	if($session_user_load_summary)
+//		set_session_var('user.stat.load_summary', $session_user_load_summary + $operation_time);
 }
 
 try

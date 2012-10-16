@@ -1,12 +1,12 @@
 <?php
 
-class bors_synonym extends base_object_db
+class bors_synonym extends bors_object_db
 {
 	function _class_title_rp_def() { return ec('синонима'); }
 	function class_title_vp() { return ec('синоним'); }
-	function main_table() { return config('synonyms_table', 'bors_synonyms'); }
+	function table_name() { return config('synonyms_table', 'bors_synonyms'); }
 
-	function main_table_fields()
+	function table_fields()
 	{
 		return array(
 			'id',

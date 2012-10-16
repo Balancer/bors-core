@@ -1,10 +1,10 @@
 <?php
 
-class cache_group extends base_object_db
+class cache_group extends bors_object_db
 {
-	function main_db() { return config('cache_database'); }
-	function main_table() { return 'cache_groups'; }
-	function main_table_fields() { return array('id', 'cache_group', '_target_class_id', '_target_object_id', 'create_time'); }
+	function db_name() { return config('cache_database'); }
+	function table_name() { return 'cache_groups'; }
+	function table_fields() { return array('id', 'cache_group', '_target_class_id', '_target_object_id', 'create_time'); }
 
 	static function register($group, $obj)
 	{

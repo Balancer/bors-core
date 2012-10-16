@@ -8,9 +8,10 @@
 <form class="admin-top-search" action="{$admin_search_url}" style="margin-bottom: 10px">
 <fieldset>
 <legend>Поиск:</legend>
-<center><label>Подстрока:</label> <input type="text" name="q" size="40" />
-<input type="hidden" name="w" value="t" />
-<input type="submit" class="search-submit" value="Искать" />
+<center>
+	<label>Искать:</label> <input type="text" name="q" size="40" value="{$query|htmlspecialchars}" />
+	<input type="hidden" name="w" value="t" />
+	<input type="submit" class="search-submit" value="Искать" />
 </center>
 </fieldset>
 </form>

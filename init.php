@@ -267,6 +267,34 @@ function bors_url_map($map_array)
 	$bors_map = array_merge($bors_map, $map_array);
 }
 
+function set_bors_project($project_name)
+{
+	$GLOBALS['bors_current_project'] = $project_name;
+}
+
+function bors_current_project()
+{
+	return $GLOBALS['bors_current_project'];
+}
+
+/**
+	Сгенерировать автоматический класс, подключаемый к $url
+	$attrs — атрибуты класса
+	$project — проект, к которому привязывается класс. Если не указано, то текущий проект
+	bors_auto_class('directory_airline', 'search', 'bors_meta_search')
+*/
+
+function bors_auto_class($item_name, $action_name, $base_class_name, $attrs = array())
+{
+	$project = bors_current_project();
+	$new_class_name = "{$project}_{$item_name}_{$action_name}";
+	$funcs = array();
+	foreach($attrs as $property => $value)
+		$funcs[] = "function _{$property}_def() { return $value; }";
+	$code = "class {$new_class_name} extends {$base_class_name} { ".join("\n", $funcs)." }";
+	eval($code);
+}
+
 function mkpath($strPath, $mode=0777)
 {
     if(!$strPath || is_dir($strPath) || $strPath=='/')

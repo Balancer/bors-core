@@ -23,7 +23,13 @@ class bors_admin_meta_edit extends bors_admin_page
 		;
 	}
 
-	function target() { return $this->id() ? bors_load($this->main_class(), $this->id()) : NULL; }
+	function target()
+	{
+		if(!class_include($this->main_class()))
+			bors_throw("Can't find main class '{$this->main_class()}'");
+
+		return $this->id() ? bors_load($this->main_class(), $this->id()) : NULL;
+	}
 
 	function main_class()
 	{

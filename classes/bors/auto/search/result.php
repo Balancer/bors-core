@@ -2,14 +2,14 @@
 
 class bors_auto_search_result extends bors_auto_search
 {
-	function title()
+	function _title_def()
 	{
 		return ec('Результат поиска по ').call_user_func(array($this->main_class(), 'class_title_dpm')).ec(' по запросу «').$this->query().ec('»');
 	}
 
-	function nav_name() { return ec('«').$this->query().ec('»'); }
+	function _nav_name_def() { return ec('«').$this->query().ec('»'); }
 
-	function order() { return bors_lib_object::get_static($this->main_class(), 'admin_items_list_order', '-create_time'); }
+	function _order_def() { return bors_lib_object::get_foo($this->main_class(), 'admin_items_list_order', '-create_time'); }
 
 	function where()
 	{

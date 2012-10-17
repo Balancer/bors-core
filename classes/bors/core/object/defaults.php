@@ -36,7 +36,8 @@ class bors_core_object_defaults
 
 //FIXME FOR http://matf.aviaport.ru/
 		if(!preg_match('/^\w+$/', $name))
-			bors_throw(ec('Не задано имя раздела сайта и не получилось его вычислить через class_file=').$class_file);
+			$name = NULL;
+//			bors_throw(ec('Не задано имя раздела сайта и не получилось его вычислить через class_file=').$class_file);
 
 		return $name;
 	}

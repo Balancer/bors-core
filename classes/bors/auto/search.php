@@ -50,7 +50,9 @@ array
   'called_url' => string 'http://ucrm.wrk.ru/persons/search/' (length=34)
   'project' => string 'ucrm' (length=4)
 */
-		return parent::body_data();
+		return array_merge(parent::body_data(), array(
+			'item_fields' => $this->get('result_fields'),
+		));
 	}
 
 	function query()

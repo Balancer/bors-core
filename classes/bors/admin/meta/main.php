@@ -43,45 +43,6 @@ class bors_admin_meta_main extends bors_admin_paginated
 		));
 	}
 
-	function make_sortable_th($property, $title)
-	{
-		$sorts = $this->get('sortable', array());
-
-		if(!($sort_key = @$sorts[$property]))
-			return "<th>$title</th>";
-
-		$current_sort = bors()->request()->data_parse('signed_names', 'sort');
-		if(preg_match('/^(.+)\*$/', $sort_key, $m))
-		{
-			$sort_key = $m[1];
-			$is_default = true;
-		}
-		else
-			$is_default = false;
-
-		if($is_default && !$current_sort)
-			$current_sort = $sort_key;
-
-		$sort = bors_lib_orm::reverse_sign($sort_key, $current_sort);
-
-		$sign = bors_lib_orm::property_sign($sort);
-		if($is_default && $sort_key == $sort)
-			$sort = NULL;
-
-		$url = bors()->request()->url();
-
-		$url = bors_lib_urls::replace_query($url, 'sort', $sort);
-
-		bors_lib_orm::property_sign($current_sort, true);
-		bors_lib_orm::property_sign($sort_key, true);
-		if($current_sort != $sort_key)
-			$sort_class = 'sort_ascdesc';
-		else
-			$sort_class = $sign == '-' ? 'sort_asc' : 'sort_desc';
-
-		return "<th class=\"$sort_class\"><a href=\"{$url}\">$title</a></th>";
-	}
-
 	function _order_def()
 	{
 		if($current_sort = bors()->request()->data_parse('signed_names', 'sort'))

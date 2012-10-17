@@ -125,4 +125,7 @@ class bors_admin_meta_edit extends bors_admin_page
 	function go_edit_url() { return 'admin_parent'; }
 
 	function owner_id() { return object_property($this->target(), 'owner_id'); }
+
+	function parents() { return array($this->target()->admin_url()); }
+	function admin_parent_url() { return $this->target()->admin_url(); }
 }

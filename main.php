@@ -343,6 +343,7 @@ if(config('debug.timing') && is_string($res))
 {
 	$deb = "<!--\n=== debug-info ===\n"
 		."BORS_CORE = ".BORS_CORE."\n"
+		."log_dir = ".config('debug_hidden_log_dir')."\n"
 		."created = ".date('r')."\n";
 
 	if($object)

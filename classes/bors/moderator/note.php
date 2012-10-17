@@ -1,10 +1,10 @@
 <?php
 
-class bors_moderator_note extends base_page_db
+class bors_moderator_note extends ors_page_db
 {
-	function main_db() { return config('main_bors_db'); }
-	function main_table() { return 'moderator_notes'; }
-	function main_table_fields()
+	function db_name() { return config('main_bors_db'); }
+	function table_name() { return 'moderator_notes'; }
+	function table_fields()
 	{
 		return array(
 			'id',

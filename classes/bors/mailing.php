@@ -1,10 +1,10 @@
 <?php
 
-class bors_mailing extends base_object_db
+class bors_mailing extends bors_object_db
 {
-	function main_db() { return 'BORS'; }
-	function main_table() { return 'bors_mailing'; }
-	function main_table_fields()
+	function db_name() { return 'BORS'; }
+	function table_name() { return 'bors_mailing'; }
+	function table_fields()
 	{
 		return array(
 			'id',

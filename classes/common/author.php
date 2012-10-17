@@ -1,11 +1,11 @@
 <?php
 
-class common_author extends base_page_db
+class common_author extends bors_page_db
 {
-	function main_db(){ return 'common'; }
-	function main_table() { return 'authors'; }
+	function db_name(){ return 'common'; }
+	function table_name() { return 'authors'; }
 
-	function main_table_fields()
+	function table_fields()
 	{
 		return array(
 			'id',

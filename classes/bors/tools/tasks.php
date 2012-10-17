@@ -1,10 +1,10 @@
 <?php
 
-class bors_tools_tasks extends base_object_db
+class bors_tools_tasks extends bors_object_db
 {
-	function main_db() { return config('bors_core_db'); }
-	function main_table() { return 'bors_tasks'; }
-	function main_table_fields()
+	function db_name() { return config('bors_core_db'); }
+	function table_name() { return 'bors_tasks'; }
+	function table_fields()
 	{
 		return array('id', 'target_class_id', 'target_object_id', 'working_class_id', 'create_time', 'execute_time', 'priority');
 	}

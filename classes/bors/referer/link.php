@@ -1,10 +1,10 @@
 <?php
 
-class bors_referer_link extends base_object_db
+class bors_referer_link extends bors_object_db
 {
-	function main_table() { return 'bors_referer_links'; }
+	function table_name() { return 'bors_referer_links'; }
 
-	function main_table_fields()
+	function table_fields()
 	{
 		return array(
 			'id',

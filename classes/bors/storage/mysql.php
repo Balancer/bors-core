@@ -215,10 +215,14 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$select = array();
 		$post_functions = array();
 
+//		if(config('is_developer')) { bors_use('debug/print_dd'); echo "<b>Load: {$object->class_name()}</b><br/>"; print_dd($where); print_dd(bors_lib_orm::main_fields($object)); }
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
 			if(preg_match('/^\w+$/', $sql_name = $f['sql_name']))
 				$x = '`'.$sql_name.'`'; // убирать апострофы нельзя, иначе тупо не работабт поля с некорректными именами
+			elseif(preg_match('/^(\w+)\+(\w+)$/', $f['sql_name'], $m)) // id => forum_id+group_id
+				// http://forums.airbase.ru/2008/06/t62054,12--poslednij-pokhod-unikalnogo-korablya.html
+				$x = "CONCAT({$m[1]},':',{$m[2]})";
 			else
 				$x = $sql_name;
 
@@ -230,6 +234,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			if(!empty($f['post_function']))
 				$post_functions[$f['property']] = $f['post_function'];
 		}
+
+//		if(config('is_developer')) { bors_use('debug/print_dd'); echo "<b>Load: {$object->class_name()}</b><br/>"; print_dd($select); print_dd($where); }
 
 		$where = array('`'.$object->id_field().'`=' => $object->id());
 

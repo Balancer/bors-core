@@ -51,13 +51,8 @@ class base_object_db extends bors_object
 
 	function main_table()
 	{
-		if($default)
-		{
-			if($tab = $this->get('table_name', NULL, true))
-				return $tab;
-
-			return $default;
-		}
+		if($tab = $this->get('table_name', NULL, true))
+			return $tab;
 
 		return array_shift(array_keys(array_shift($this->fields())));
 	}

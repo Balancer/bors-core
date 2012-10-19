@@ -126,7 +126,7 @@ class bors_admin_meta_edit extends bors_admin_page
 
 	function owner_id() { return object_property($this->target(), 'owner_id'); }
 
-	function parents() { return array($this->target() ? $this->target()->admin_url() : parent::parents()); }
-	function admin_parent_url() { return $this->target() ? $this->target()->admin_url() : parent::admin_parent_url(); }
-	function access() { return $this->target() ? $this->target()->access() : parent::access(); }
+//	function parents() { return $this->admin_target() ? $this->admin_target()->parents() : parent::parents(); }
+	function admin_parent_url() { return $this->admin_target() ? $this->admin_target()->admin_url() : parent::admin_parent_url(); }
+	function access() { return $this->admin_target() ? $this->admin_target()->access() : parent::access(); }
 }

@@ -60,4 +60,6 @@ class bors_auto_search_result extends bors_auto_search
 			'id' => ec('ID'),
 		);
 	}
+
+	function access() { return bors_lib_object::get_foo($this->main_class(), 'access'); }
 }

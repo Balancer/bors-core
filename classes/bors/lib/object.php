@@ -55,7 +55,13 @@ class bors_lib_object
 
 	function get_foo($class_name, $name, $default = NULL)
 	{
-		$foo = new $class_name(NULL);
+		static $objects = array();
+		$foo = @$objects[$class_name];
+
+		if(!$foo)
+			$foo = $objects[$class_name] = new $class_name(NULL);
+
+		$foo->_configure();
 		return $foo->get($name, $default);
 	}
 }

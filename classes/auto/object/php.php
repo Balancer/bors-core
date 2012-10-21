@@ -75,6 +75,25 @@ class auto_object_php extends base_object
 				$object_id = $m[2];
 			}
 		}
+		elseif(preg_match('!^(\w+)_(\d+)(_\w+)$!', $class_path, $m))
+		{
+			if(class_include($class_base.($cp = $m[1].$m[3])))
+			{
+				$class_path = $cp;
+				$object_id = $m[2];
+				$is_auto = true;
+//				var_dump($class_path, $object_id);
+			}
+			elseif(class_include($class_base.($cp = $m[1].$m[3].'_main'))) // http://aviaport.wrk.ru/directory/airlines/264/monitoring/
+			{
+				$class_path = $cp;
+				$object_id = $m[2];
+				$is_auto = true;
+				var_dump($class_path, $object_id);
+			}
+			else
+				$object_id = $this->id();
+		}
 		else
 			$object_id = $this->id();
 

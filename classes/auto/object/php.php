@@ -89,7 +89,7 @@ class auto_object_php extends base_object
 				$class_path = $cp;
 				$object_id = $m[2];
 				$is_auto = true;
-				var_dump($class_path, $object_id);
+//				var_dump($class_path, $object_id);
 			}
 			else
 				$object_id = $this->id();

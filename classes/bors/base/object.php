@@ -198,7 +198,7 @@ class base_object extends base_empty
 	function _class_title_dp_def() { return bors_object_titles::class_title_dat($this); }	// Дательный Кому? Чему?
 
 	function _class_title_vp_def() { return bors_object_titles::class_title_acc($this); }	// Accusativ, Винительный Кого? Что?
-	function class_title_tp() { return ec('объектом ').@get_class($this); }	// Творительный Кем? Чем?
+	function _class_title_tp_def() { return bors_object_titles::class_title_abl($this); }	// Творительный Кем? Чем?
 	function class_title_pp() { return ec('объекте ').@get_class($this); }	// Предложный О ком? О чём?
 
 	function _class_title_m_def() { return bors_object_titles::class_title_plur($this); }	// Множественный именительный

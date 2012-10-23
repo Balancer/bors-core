@@ -180,7 +180,7 @@ function bors_search_sphinx($query, $params = array())
 	return false;
 }
 
-function bors_search_sphinx_find_links($object, $delete_old = false)
+function bors_search_sphinx_find_links($object, $delete_old = false, $is_auto = true)
 {
 	bors_synonym::add_object($object, array('is_auto' => true));
 	bors()->changed_save();
@@ -194,21 +194,22 @@ function bors_search_sphinx_find_links($object, $delete_old = false)
 	static $loop_count = 0;
 	$verbose = 0;
 
-	$log = "<br/>\nSynonyms for {$object}: ".join(', ', $object->get('all_names'));
-	$synonyms = bors_synonym::synonyms($object, array('is_disabled' => 0));
-	$log .= " [".join(', ', bors_field_array_extract($synonyms, 'norm_title'))."]";
+	$names = array();
+	foreach($object->get('all_names') as $name)
+		$names[$name] = false;
 
-	foreach($synonyms as $synonym)
+	foreach(bors_synonym::synonyms($object, array('is_disabled' => 0)) as $syn)
+		if($syn)
+			$names[$syn->is_exactly() ? bors_lower($syn->title()) : bors_text_clear($syn->title(), false)] = $syn->is_exactly();
+
+	$log = "Names = [".join(', ', $names)."]";
+
+
+	foreach($names as $name => $is_exactly)
 	{
-		$is_exactly = $synonym->is_exactly();
-		$synonym->set_norm_title($is_exactly ? bors_lower($synonym->title()) : bors_text_clear($synonym->title(), false));
-		$norm_title = $synonym->norm_title();
 		$ch = new Cache();
-//		$quoted_norm_title = '!\b'.preg_quote($norm_title, '\b!').'!';
-//		echo "q='$quoted_norm_title'<br/>";
-//		continue;
 
-		$objects = bors_search_sphinx($synonym->title(), array(
+		$objects = bors_search_sphinx($name, array(
 			'indexes' => 'news,news_delta,digest,digest_delta',
 			'only_objects' => true,
 			'page' => 1,
@@ -219,11 +220,11 @@ function bors_search_sphinx_find_links($object, $delete_old = false)
 
 		if(!$objects)
 		{
-			$log .= "<br/>\nTotal found for ".("{$synonym->title()}/{$norm_title}").": NULL";
+			$log .= "<br/>\nTotal found for ".("{$name}").": NULL";
 			continue;
 		}
 
-		$log .= "<br/>\nTotal found for ".("'{$synonym->title()}'/'{$norm_title}'").": ".count($objects).": ";
+		$log .= "<br/>\nTotal found for ".("'{$name}'").": ".count($objects).": ";
 
 		foreach($objects as $x)
 		{
@@ -254,7 +255,7 @@ function bors_search_sphinx_find_links($object, $delete_old = false)
 //				if($x->id() == 28880)
 //					echo "$v<hr/>";
 
-				if(strpos($v, $norm_title) !== false)
+				if(strpos($v, $name) !== false)
 				{
 //					echo str_replace($norm_title, "<b>".$quoted_norm_title."</b>", $v)."<hr/>";
 //					echo preg_replace($quoted_norm_title, "<b>".$quoted_norm_title."</b>", $v)."<hr/>";
@@ -270,8 +271,9 @@ function bors_search_sphinx_find_links($object, $delete_old = false)
 					@$total[$type_id][$x->internal_uri_ascii()] = 1;
 					bors_link::link_objects($x, $object, array(
 						'owner_id' => '-1002151031', 
-						'comment' => "autolink {$object->internal_uri_ascii()}/{$norm_title}[{$is_exactly}]",
+						'comment' => "autolink {$object->internal_uri_ascii()}/{$name}",
 						'type_id' => $type_id,
+						'is_auto' => $is_auto,
 					));
 
 					$found = true;

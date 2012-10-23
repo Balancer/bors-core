@@ -94,6 +94,15 @@ class auto_object_php extends base_object
 			else
 				$object_id = $this->id();
 		}
+		// http://admin.aviaport.ru/digest/origins/list.xls
+		elseif(preg_match('!^(\w+_[a-z0-9]+)\.(\w{1,4})$!', $class_path, $m))
+		{
+			if(class_include($class_base.($cp = $m[1])))
+			{
+				$class_path = $cp;
+				$object_id = NULL;
+			}
+		}
 		else
 			$object_id = $this->id();
 

@@ -532,7 +532,11 @@ function bors_use($uses)
 
 		if(preg_match('/\.css$/', $u))
 		{
-			template_css($u);
+			if(preg_match('/^pre:(.+)$/', $u, $m))
+				template_css($m[1], true);
+			else
+				template_css($u);
+
 			continue;
 		}
 

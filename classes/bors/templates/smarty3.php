@@ -27,7 +27,10 @@ class bors_templates_smarty3 extends bors_template
 		require('classes/bors/templates/smarty3-register.php');
 
 		$smarty->compile_dir = config('cache_dir').'/smarty3-templates_c/';
-		$smarty->auto_literal = false; //TODO: придумать, как сделать разрешение для отдельных шаблонов.
+		//TODO: придумать, как сделать разрешение для отдельных шаблонов.
+		//		Хотя ниже есть вариант через данные шаблона.
+		$smarty->auto_literal = true;
+
 /*
 		$smarty->compile_id = defval($data, 'compile_id');
 		if(strlen($smarty->compile_id) > 128)

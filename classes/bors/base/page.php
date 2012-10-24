@@ -119,7 +119,7 @@ class base_page extends bors_object
 	private $__total_items = -1;
 	function total_items() { return $this->__total_items; }
 	function set_total_items($count) { return $this->__total_items = $count; }
-	function items_offset() { return ($this->page()-1)*$this->items_per_page(); }
+	function items_offset() { $p = $this->page(); return $p > 1 ? ($this->page()-1)*$this->items_per_page() : 0; }
 
 	function body()
 	{

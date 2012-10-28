@@ -94,7 +94,7 @@ class cache_smart extends cache_base
 //		if($do_time < 0.01 && $time_to_expire > 0)
 //			debug_hidden_log('cache-not-needed', $do_time);
 
-		if($time_to_expire > 0 && $do_time > 0.1)
+		if($time_to_expire > 0 && $do_time > 0.01)
 		{
 			$dbh = new driver_mysql(config('cache_database'));
     		$dbh->replace('cache', array(

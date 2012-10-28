@@ -1,6 +1,6 @@
 <?php
 
-$extends = config('smarty3_enable') ? '3' : '2';
+$extends = config('smarty3_enable', true) ? '3' : '2';
 
 $class_code = "
 class bors_templates_smarty extends bors_templates_smarty{$extends}

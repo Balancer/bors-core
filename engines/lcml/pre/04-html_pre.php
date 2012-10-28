@@ -24,6 +24,8 @@ function lcml_html_pre($txt)
 
 //		echo "***";
 
+		$txt = preg_replace('!<script.*/script.*?>!i', '[warning]Javascript disabled[/warning]', $txt);
+
 //		$txt = preg_replace("!</p>!","", $txt);
 //		$txt = preg_replace("!<p>!","<br /><br />", $txt);
 		$txt = preg_replace("!<tr!","<tabtr", $txt);

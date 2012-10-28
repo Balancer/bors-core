@@ -1,6 +1,6 @@
 <?php
 
-if(config('smarty3_enable'))
+if(config('smarty3_enable', true))
 {
 	debug_hidden_log('__obsolete', "Call obsolete smarty2");
 	bors_throw(ec('[bors] Попытка использования Smarty2 при активном Smarty3'));

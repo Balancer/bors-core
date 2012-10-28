@@ -2,9 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>{$this->browser_title()}</title>
+
 	<meta http-equiv="content-type" content="text/html; charset={$this->output_charset()}" />
+{if not empty($meta)}{foreach key=key item=value from=$meta}
+	<meta name="{$key}" content="{$value|htmlspecialchars}" />
+{/foreach}{/if}
+
 	<link rel="SHORTCUT ICON" href="/favicon.ico" />
-	<script type="text/javascript" src="/_bors/js/cfuncs.js"></script>
 	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
 	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/style.css" />
 	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/color-gray.css" />
@@ -13,9 +17,6 @@
 	<link rel="stylesheet" type="text/css" href="{$css}" />
 {/foreach}
 
-{if not empty($css_list)}{foreach item=css from=$css_list}
-<link rel="stylesheet" type="text/css" href="{$css}" />
-{/foreach}{/if}
 {if not empty($style)}
 <style type="text/css" media="all"><!--
 {foreach from=$style item="s"}
@@ -24,25 +25,25 @@
 --></style>
 {/if}
 
-{if not empty($header)}{foreach from=$header item="h"}
-{$h}
-{/foreach}{/if}
-{if not empty($meta)}{foreach key=key item=value from=$meta}
-<meta name="{$key}" content="{$value|htmlspecialchars}" />
-{/foreach}{/if}
+	<script type="text/javascript" src="/_bors/js/cfuncs.js"></script>
 {if not empty($js_include)}{foreach from=$js_include item="s"}
-<script type="text/javascript" src="{$s}"></script>
+	<script type="text/javascript" src="{$s}"></script>
 {/foreach}{/if}
 {if not empty($javascript)}
-<script type="text/javascript"><!--
+	<script type="text/javascript"><!--
 {foreach from=$javascript item="s"}
 {$s}
 {/foreach}
 --></script>
 {/if}
 {if $bors_touch_params}
-<script type="text/javascript">$(function(){literal}{{/literal}$.getScript('/_bors/js/touch?{$bors_touch_params}'){literal}}{/literal});</script>
+	<script type="text/javascript">$(function(){literal}{{/literal}$.getScript('/_bors/js/touch?{$bors_touch_params}'){literal}}{/literal});</script>
 {/if}
+
+{if not empty($header)}{foreach from=$header item="h"}
+{$h}
+{/foreach}{/if}
+
 {foreach item=s from=$head_append}
 {$s}
 {/foreach}

@@ -356,7 +356,7 @@ if(config('debug.timing') && is_string($res))
 			$deb .= "cache static expire = ". date('r', time()+$cs)."\n";
 	}
 
-	$deb .= "smarty = ".(config('smarty3_enable') ? 3 : 2)."\n";
+	$deb .= "smarty = ".(config('smarty3_enable', true) ? 3 : 2)."\n";
 
 	if(config('is_developer'))
 	{

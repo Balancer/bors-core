@@ -87,7 +87,7 @@ function bors_message($text, $params=array())
 		$data['choises'] = $choises;
 	}
 
-	if(config('smarty3_enable'))
+	if(config('smarty3_enable', true))
 	{
 		$body = bors_templates_smarty::fetch($body_template, $data);
 	}
@@ -139,7 +139,7 @@ function bors_message($text, $params=array())
 //	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 //		$template = "xfile:$template";
 
-	if(config('smarty3_enable'))
+	if(config('smarty3_enable', true))
 		$message = bors_templates_smarty::fetch($template, $data);
 	else
 		$message = template_assign_data($template, $data);

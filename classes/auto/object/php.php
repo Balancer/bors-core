@@ -40,24 +40,25 @@ class auto_object_php extends base_object
 			$class_base .= '_';
 
 		$is_auto = false;
+		$object_id = false;
+
 		if(preg_match('!^(.+)_(\d+|new)$!', $class_path, $m))
 		{
-			if(class_include($class_base.($cp = $m[1].'_view')))
+			$object_id = $m[2];
+
+			if(is_numeric($object_id) && class_include($class_base.($cp = $m[1].'_view')))
 			{
 				$class_path = $cp;
-				$object_id = $m[2];
 				$is_auto = true;
 			}
-			elseif(class_include($class_base.($cp = bors_unplural($m[1]).'_view')))
+			elseif(is_numeric($object_id) && class_include($class_base.($cp = bors_unplural($m[1]).'_view')))
 			{
 				$class_path = $cp;
-				$object_id = $m[2];
 				$is_auto = true;
 			}
 			elseif(class_include($class_base.($cp = $m[1].'_edit')))
 			{
 				$class_path = $cp;
-				$object_id = $m[2];
 			}
 			elseif(class_include($class_base.($cp = $m[1].'_'.$m[2].'_main')))
 			{
@@ -91,8 +92,6 @@ class auto_object_php extends base_object
 				$is_auto = true;
 //				var_dump($class_path, $object_id);
 			}
-			else
-				$object_id = $this->id();
 		}
 		// http://admin.aviaport.ru/digest/origins/list.xls
 		elseif(preg_match('!^(\w+_[a-z0-9]+)\.(\w{1,4})$!', $class_path, $m))
@@ -103,7 +102,8 @@ class auto_object_php extends base_object
 				$object_id = NULL;
 			}
 		}
-		else
+
+		if($object_id === false)
 			$object_id = $this->id();
 
 		if($object_id == 'new')

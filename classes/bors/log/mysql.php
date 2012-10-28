@@ -2,8 +2,8 @@
 
 class bors_log_mysql extends base_object_db
 {
-	function main_table() { return 'bors_logging'; }
-	function main_table_fields()
+	function table_name() { return 'bors_logging'; }
+	function table_fields()
 	{
 		return array(
 			'id',

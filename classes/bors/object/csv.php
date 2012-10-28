@@ -2,7 +2,7 @@
 
 class bors_object_csv extends bors_object
 {
-	function _storage_class_def() { return 'bors_storage_csv'; }
+	function storage_engine() { return 'bors_storage_csv'; }
 
 	// Имя файла с данными.
 	// Если не переопределено, то вычисляется из имени класса.
@@ -12,7 +12,7 @@ class bors_object_csv extends bors_object
 	}
 
 	// Имена столбцов CVS
-	function _field_names_def()
+	function _fields_def()
 	{
 		bors_throw('Не заданы имена столбцов');
 	}

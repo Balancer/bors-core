@@ -12,14 +12,16 @@ class bors_storage_csv extends bors_storage
 			return;
 
 		$fh = fopen($obj->file_name(), 'rt');
-		$fields = $obj->field_names();
-		while($row = fgetcsv($fh))
+		$fields = $obj->fields();
+		$delimiter = $obj->get('delimiter', ',');
+		while($row = fgetcsv($fh, 0, $delimiter))
 		{
 			$x = array();
 			foreach($fields as $id => $title)
 				$x[$title] = $row[$id];
 			$this->data[] = $x;
 		}
+		fclose($fh);
 
 		$is_loaded = true;
 	}
@@ -32,7 +34,10 @@ class bors_storage_csv extends bors_storage
 			$obj->_configure();
 		}
 		else
+		{
 			$obj = $class_name_or_foo_object;
+			$class_name = $obj->class_name();
+		}
 
 		$this->init($obj);
 

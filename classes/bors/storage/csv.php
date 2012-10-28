@@ -2,13 +2,16 @@
 
 class bors_storage_csv extends bors_storage
 {
-	var $data;
+	var $data = array();
 
 	// Загрузчик и парсер
 	function init($obj)
 	{
 		static $is_loaded = false;
 		if($is_loaded)
+			return;
+
+		if(!file_exists($obj->file_name()))
 			return;
 
 		$fh = fopen($obj->file_name(), 'rt');
@@ -42,6 +45,9 @@ class bors_storage_csv extends bors_storage
 		$this->init($obj);
 
 		$result = array();
+
+		if(empty($this->data))
+			return $result;
 
 		foreach($this->data as $row)
 		{

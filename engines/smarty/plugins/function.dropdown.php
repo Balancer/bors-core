@@ -84,7 +84,7 @@ function smarty_function_dropdown($params, &$smarty)
 			$current =  isset($value) ? $value : 0;
 	}
 	else
-		$current = $obj->$get();
+		$current = object_property($obj, $get);
 
 	if(!$current && !empty($list['default']))
 		$current = $list['default'];

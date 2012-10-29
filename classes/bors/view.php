@@ -50,13 +50,16 @@ class bors_view extends bors_page
 
 	function referent_class() { return $this->main_class(); }
 
-	function title($exact = false) { return $this->object()->title($exact); }
+	function object() { return $this->target(); } // Для совместимости
+
+	function title() { return $this->object()->title(); }
 	function nav_name() { return $this->object()->nav_name(); }
 	function description() { return $this->object()->description(); }
 	function create_time($exact = false) { return $this->object()->create_time($exact); }
 	function modify_time($exact = false) { return $this->object()->modify_time($exact); }
 
-	function object() { return $this->target(); } // Для совместимости
+	function _image_def() { return $this->object()->get('image'); }
+
 
 	function target_name()
 	{

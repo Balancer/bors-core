@@ -40,7 +40,7 @@ class bors_data_yaml extends bors_data_meta
 		}
 		else
 		{
-			require_once '/usr/share/php/SymfonyComponents/YAML/sfYamlParser.php';
+			require_once config('symphony.components_path', '/usr/share/php/SymfonyComponents').'/YAML/sfYamlParser.php';
 			$yaml = new sfYamlParser();
 			try {
 				$data = $yaml->parse($string);

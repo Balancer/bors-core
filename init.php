@@ -430,7 +430,7 @@ function configh($section, $hash, $key, $def = NULL) { return @array_key_exists(
 
 function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 {
-	if(preg_match('/^(\w+)=>(\w+)$/', nospace($db), $m))
+	if(preg_match('/^(\w+)=>([\w\-]+)$/', nospace($db), $m))
 	{
 		$db = $m[1];
 		$db_real = $m[2];

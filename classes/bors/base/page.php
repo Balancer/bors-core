@@ -250,6 +250,18 @@ class base_page extends bors_object
 		@header('Content-Type: text/html; charset='.config('output_charset', config('internal_charset', 'utf-8')));
 		@header('Content-Language: '.config('page_lang', 'ru'));
 
+		if($config = $this->config())
+		{
+			if(method_exists($config, 'pre_show'))
+			{
+				$config_result = $config->pre_show();
+				if($config_result === true)
+					return true;
+			}
+			else
+				debug_hidden_log('obsolete_warning', "Config class '{$config->class_name()}' defined at '{$config->class_file()}' have not pre_show() method. Wrong extends?");
+		}
+
 		return parent::pre_show();
 	}
 

@@ -413,3 +413,10 @@ function bors_find($class_name)
 {
 	return new bors_core_find($class_name);
 }
+
+function bors_foo($class_name)
+{
+	$object = new $class_name(NULL);
+	$object->_configure();
+	return $object;
+}

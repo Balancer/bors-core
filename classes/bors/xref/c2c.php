@@ -83,6 +83,7 @@ class bors_xref_c2c extends bors_object_db
 	}
 
 	// Отладка на http://pfo.wrk.ru/
+	// И на http://www.aviaport.ru/directory/aviafirms/727/ — социальные сети
 	function find_targets($where)
 	{
 		$xref_class_name = popval($where, 'xref_class_name');
@@ -93,6 +94,19 @@ class bors_xref_c2c extends bors_object_db
 		$ids = bors_field_array_extract($xrefs, $target_field_name);
 		$target_where['id IN'] = $ids;
 		return bors_find_all($target_class_name, $target_where);
+	}
+
+	function xrefs($where = array())
+	{
+		return bors_find_all($this->class_name(), $where);
+	}
+
+	function targets($xrefs_where = array(), $targets_where = array())
+	{
+		$xrefs = bors_find_all($this->class_name(), $xrefs_where);
+		$target_ids = bors_field_array_extract($xrefs, $this->target_field_name());
+		$targets_where['id IN'] = $target_ids;
+		return bors_find_all($this->target_class_name(), $targets_where);
 	}
 
 	function count($where)

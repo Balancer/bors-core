@@ -96,10 +96,17 @@ class bors_admin_meta_edit extends bors_admin_page
 		else
 		{
 			$data = array();
-			if(preg_match('!/(\w+s)/(\d+)/?$!', bors()->request()->referer(), $m))
+			if($ref = bors()->request()->referer())
+				$this->set_attr('go_new_url', $ref);
+//var_dump($ref);
+			if(preg_match('!/(\w+s)/(\d+)/?$!', $ref, $m)
+				|| preg_match('!/(\w+s)/(\d+)/\w+/?$!', $ref, $m)
+			)
+			{
+//				var_dump($m);
 				set_session_var("form_value_".bors_unplural($m[1]).'_id', $m[2]);
-			elseif(preg_match('!/(\w+s)/(\d+)/\w+/?$!', bors()->request()->referer(), $m))
-				set_session_var("form_value_".bors_unplural($m[1]).'_id', $m[2]);
+			}
+
 		}
 
 		$target = $this->id() ? $this->target() : NULL;
@@ -120,7 +127,7 @@ class bors_admin_meta_edit extends bors_admin_page
 
 	// Куда переходим после сохранения нового объекта
 	// По умолчанию — на редактирование этого же объекта
-	function go_new_url() { return 'newpage_admin'; }
+	function _go_new_url_def() { return 'newpage_admin'; }
 	// Куда переходим после сохранения изменённого старого объекта
 	// По умолчанию — на страницу-родителя
 	function go_edit_url() { return 'admin_parent'; }

@@ -125,7 +125,7 @@
 		if($taglist && empty($taglist['post_urls']))
 			return $txt;
 
-        $txt = preg_replace("!(^|\n)(https?://\S+)(\n|$)!sie","'$1'.lcml_urls_title('$2',1).'$3'",$txt);
+        $txt = preg_replace("!(^|\n)(https?://\S+)(?=\n|$)!sie","'$1'.lcml_urls_title('$2',1)",$txt);
 
         $txt=preg_replace("!\[(http://[^\s\|\]]+?)\]!ie","lcml_urls_title('$1')",$txt);
         $txt=preg_replace("!\[(www\.[^\s\|\]]+?)\]!ie","lcml_urls_title('http://$1')",$txt);

@@ -163,7 +163,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 //	var_dump($charset, $data);
 
 	if($charset)
-		$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
+		$data = @iconv($charset, config('internal_charset').'//IGNORE', $data);
 
 //	if(config('is_developer')) { var_dump($raw, $charset, $header, $data); }
 

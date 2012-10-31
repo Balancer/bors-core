@@ -542,7 +542,11 @@ function bors_use($uses)
 
 		if(preg_match('/\.js$/', $u))
 		{
-			template_js_include($u);
+			if(preg_match('/^pre:(.+)$/', $u, $m))
+				template_js_include($m[1], true);
+			else
+				template_js_include($u);
+
 			continue;
 		}
 

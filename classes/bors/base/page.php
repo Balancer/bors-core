@@ -259,7 +259,7 @@ class base_page extends bors_object
 					return true;
 			}
 			else
-				debug_hidden_log('obsolete_warning', "Config class '{$config->class_name()}' defined at '{$config->class_file()}' have not pre_show() method. Wrong extends?");
+				debug_hidden_log('obsolete_warning', "Config class '{$config->get('class_name')}' defined at '{$config->get('class_file')}' have not pre_show() method. Wrong extends?");
 		}
 
 		return parent::pre_show();

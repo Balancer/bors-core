@@ -18,13 +18,18 @@ function template_noindex()
 	bors_page::add_template_data_array('meta[robots]', 'noindex, follow');
 }
 
-function template_js_include($js_link)
+function template_js_include($js_link, $prepend = false)
 {
 	$hash = md5(print_r($js_link, true));
 	if(bors_page::template_data('template_js_include_'.$hash))
 		return;
 
-	bors_page::add_template_data_array('js_include', $js_link);
+//	bors_page::add_template_data_array('js_include', $js_link);
+	if($prepend)
+		bors_page::prepend_template_data_array('js_include', array($js_link));
+	else
+		bors_page::merge_template_data_array('js_include', array($js_link));
+
 	bors_page::add_template_data('template_js_include_'.$hash, true);
 }
 

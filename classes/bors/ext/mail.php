@@ -17,7 +17,7 @@ class bors_ext_mail extends bors_empty
 		Если $mail - текст, то он считается текстом в автоматически пределяемой разметке:
 			- Если первые две строки - заголовок в markdown-разметке, то markdown
 
-		Если $mail - массив, то он считается массивом вида ($subject, $text)
+		Если $mail - массив, то он считается массивом вида ($subject, $text, $html = NULL, $header = array(), $template_data = array())
 	*/
 	static function send($user, $mail, $from = NULL)
 	{
@@ -29,6 +29,7 @@ class bors_ext_mail extends bors_empty
 			$text  = $mail[1];
 			$html  = @$mail[2];
 			$headers = @$mail[3];
+			$template_data = @$mail[4];
 		}
 		elseif(is_object($mail))
 		{
@@ -52,6 +53,9 @@ class bors_ext_mail extends bors_empty
 			$headers = $mail->get('headers');
 		}
 
+		if(!$template_data)
+			$template_data = array();
+
 		require_once("engines/smarty/assign.php");
 		//  'xfile:aviaport/mail.txt'
 		if($tpl = config('mail.template.txt'))
@@ -60,10 +64,10 @@ class bors_ext_mail extends bors_empty
 		if($html)
 		{
 			if($tpl = config('mail.template.html')) // , 'xfile:aviaport/mail.html'
-				$html = template_assign_data($tpl, array(
+				$html = template_assign_data($tpl, array_merge(array(
 					'body' => $html,
 					'skip_title' => true,
-				));
+				), $template_data));
 		}
 
 		$attaches = NULL;

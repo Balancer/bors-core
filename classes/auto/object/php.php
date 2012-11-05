@@ -131,7 +131,7 @@ class auto_object_php extends base_object
 			$object->_set_arg('page', $page);
 
 			$object->set_called_url($this->id());
-			bors()->set_main_object($object);
+//			bors()->set_main_object($object);
 			if(!$object->parents(true))
 				$object->set_parents(array(secure_path(dirname($path).'/')), false);
 

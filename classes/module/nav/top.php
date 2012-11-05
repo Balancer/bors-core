@@ -3,7 +3,7 @@
 class module_nav_top extends bors_module
 {
 	function body_engine() { return 'body_php'; }
-	function body_cache_ttl() { return 86400; }
+	function body_cache_ttl() { return rand(600, 900); }
 
 	private $visited_pairs;
 

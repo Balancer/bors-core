@@ -74,10 +74,12 @@ class bors_renderers_page extends base_null
 		else
 		{
 			foreach(explode(' ', $object->template_vars()) as $var)
-				$data[$var] = $object->$var();
+				if(!array_key_exists($var, $data))
+					$data[$var] = $object->$var();
 
 			foreach(explode(' ', $object->template_local_vars()) as $var)
-				$data[$var] = $object->$var();
+				if(!array_key_exists($var, $data))
+					$data[$var] = $object->$var();
 		}
 
 		$data = bors_template::page_data(array_merge($object->data, $data, $object->local_template_data_array()));

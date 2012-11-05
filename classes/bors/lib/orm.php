@@ -46,7 +46,9 @@ class bors_lib_orm
 
 		if(empty($field['type']))
 		{
-			if(preg_match('/^\w+_id$/', $property) || $property == 'id')
+			if(preg_match('/^\w*image.*_id$/', $property))
+				$field['type'] = 'image';
+			elseif(preg_match('/^\w+_id$/', $property) || $property == 'id')
 				$field['type'] = 'uint';
 			elseif(preg_match('/order$/', $property))
 				$field['type'] = 'int';

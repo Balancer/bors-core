@@ -1,16 +1,17 @@
 <?php
 
-class module_nav_top extends base_page
+class module_nav_top extends bors_module
 {
 	function body_engine() { return 'body_php'; }
+	function body_cache_ttl() { return 86400; }
 
 	private $visited_pairs;
 
-	function local_data()
+	function body_data()
 	{
 		$this->visited_pairs = array();
 
-		$obj = &$this->id();
+		$obj = $this->id();
 
         return array(
 			'links' => $this->link_line($this->args('show_self', true)),

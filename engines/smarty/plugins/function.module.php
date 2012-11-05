@@ -28,8 +28,11 @@ function smarty_function_module($params, &$smarty)
 		if(!$obj)
 			return "Can't load class module '{$class}'";
 
-		if(method_exists($obj, 'html_code'))
-			return $obj->html_code();
+		if(method_exists($obj, 'html'))
+			return $obj->html();
+
+//		if(method_exists($obj, 'html_code'))
+//			return $obj->html_code();
 
 		return $obj->body();
 	}

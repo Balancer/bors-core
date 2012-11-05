@@ -54,7 +54,22 @@ class bors_global extends base_empty
 		return ($user = $this->user()) ? $user->title() : NULL;
 	}
 
-	function set_main_object($obj) { return $this->__main_object = $obj; }
+	function set_main_object($obj)
+	{
+		if($this->__main_object)
+		{
+			debug_hidden_log('__arch_error', "Set new main object '{$obj->debug_title()}' with extsts '{$this->__main_object->debug_title()}'");
+			if(config('is_developer'))
+			{
+				echo "Set main object {$obj}";
+				echo debug_trace();
+			}
+			return $this->__main_object;
+		}
+
+		return $this->__main_object = $obj;
+	}
+
 	function main_object() { return $this->__main_object; }
 
 	private $changed_objects = array();

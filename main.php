@@ -131,7 +131,10 @@ $_GET = array_merge($_GET, $_POST); // но, вообще, нужно с эти�
 // Проверка на загрузку системы данным пользователем или ботом
 // Если делает много тяжёлых запросов - просим подождать.
 
-if(config('access_log') && !in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '89.108.118.15')))
+if(config('access_log')
+		&& !in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '89.108.118.15'))
+		&& !config('locked_db_time')
+	)
 {
 	$session_user_load_summary = false; // session_var('user.stat.load_summary', 0);
 //	debug_hidden_log('system_overload_test_session', 'summary load: '.print_r($session_user_load_summary, true), 0);

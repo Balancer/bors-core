@@ -56,7 +56,7 @@ class bors_global extends base_empty
 
 	function set_main_object($obj)
 	{
-		if($this->__main_object)
+		if($this->__main_object && $obj)
 		{
 			debug_hidden_log('__arch_error', "Set new main object '{$obj->debug_title()}' with extsts '{$this->__main_object->debug_title()}'");
 			if(config('is_developer'))

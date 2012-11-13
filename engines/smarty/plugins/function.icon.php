@@ -10,12 +10,24 @@ function smarty_function_icon($params, &$smarty)
 		$class = " class=\"$css_class\"";
 
 	if(!preg_match('/\.(png|gif)$/', $image))
-		if(file_exists(BORS_CORE.'/shared/i16/'.$image.'.png'))
-			$image .= '.png';
-		else
-			$image .= '.gif';
+	{
+		foreach(array(BORS_CORE.'/shared/i16' => '/_bors/i16', BORS_EXT.'/htdocs/_bors-ext/i16' => '/_bors-ext/i16') as $dir => $path)
+		{
+			if(file_exists("$dir/$image.png"))
+			{
+				$image = "$path/$image.png";
+				break;
+			}
 
-	$img = "<img src=\"/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$action\" style=\"vertical-align: middle\"$class />";
+			if(file_exists("$dir/$image.gif"))
+			{
+				$image = "$path/$image.gif";
+				break;
+			}
+		}
+	}
+
+	$img = "<img src=\"$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$action\" style=\"vertical-align: middle\"$class />";
 
 	$self = bors_templates_smarty::get_var($smarty, 'this');
 

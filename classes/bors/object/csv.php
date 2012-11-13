@@ -17,4 +17,6 @@ class bors_object_csv extends bors_object
 		bors_throw('Не заданы имена столбцов');
 	}
 
+	// Имена столбцов берутся из первой строки
+	function first_line_header() { return false; }
 }

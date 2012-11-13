@@ -95,5 +95,5 @@ function bors_comma_join($s1, $s2 = NULL)
 	else
 		$s2 = array();
 
-	return join(', ', array_merge($s1, $s2));
+	return join(', ', array_filter(array_merge($s1, $s2)));
 }

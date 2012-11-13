@@ -9,8 +9,8 @@ class bors_admin_edit_smart extends bors_admin_page
 		if(!($obj = $this->object()))
 			return array();
 
-		if(($adm = $obj->admin_parent_url()) && $adm != $this->url())
-			return array($adm);
+//		if(($adm = $obj->admin_parent_url()) && $adm != $this->url())
+//			return array($adm);
 
 		return array($obj->url());
 	}

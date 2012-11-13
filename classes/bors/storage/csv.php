@@ -14,9 +14,14 @@ class bors_storage_csv extends bors_storage
 		if(!file_exists($obj->file_name()))
 			return;
 
-		$fh = fopen($obj->file_name(), 'rt');
-		$fields = $obj->fields();
 		$delimiter = $obj->get('delimiter', ',');
+
+		$fh = fopen($obj->file_name(), 'rt');
+		if($obj->first_line_header())
+			$fields = fgetcsv($fh, 0, $delimiter);
+		else
+			$fields = $obj->fields();
+
 		while($row = fgetcsv($fh, 0, $delimiter))
 		{
 			$x = array();

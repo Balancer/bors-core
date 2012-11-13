@@ -70,7 +70,7 @@ class bors_forms_input extends bors_forms_element
 
 		$result .= "<input type=\"text\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
 
-		foreach(explode(' ', 'class id maxlength size style') as $p)
+		foreach(explode(' ', 'class id maxlength size style placeholder') as $p)
 			if(!empty($$p))
 				$result .=  " $p=\"{$$p}\"";
 

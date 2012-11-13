@@ -231,7 +231,11 @@ class bors_object_db extends base_object_db
 		if($admin != config('main_site_url'))
 			return $this->url();
 
-		return $admin.'/'.$this->_item_name_m().'/'.$this->id().'/edit/';
+		$url = $admin.'/'.$this->_item_name_m().'/'.$this->id().'/edit/';
+		if(bors_load($url))
+			return $url;
+
+		return $admin.'/_bors/admin/edit-smart/?object='.$this->internal_uri_ascii(); 
 	}
 
 	function auto_objects()

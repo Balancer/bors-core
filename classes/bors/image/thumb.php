@@ -59,6 +59,7 @@ class bors_image_thumb extends bors_image
 			return $this->set_loaded(false);
 
 		//TODO: сделать вариант, совместимый с safe_mod!
+//		var_dump($this->width(), $this->file_name_with_path(), $this->data);
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_loaded(true);
 

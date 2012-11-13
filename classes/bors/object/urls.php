@@ -27,4 +27,14 @@ class bors_object_urls extends base_empty
 
 		return $go;
 	}
+
+	function urls($type)
+	{
+		$obj = $this->id();
+
+		if(preg_match('!^action/public/(\w+)$!', $type, $m))
+			return "/_bors/tools/act/pub/{$obj->class_name()}/{$obj->id()}/{$m[1]}";
+
+		return NULL;
+	}
 }

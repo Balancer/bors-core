@@ -407,6 +407,14 @@ defined at {$this->class_file()}<br/>
 		return $this->data[$field] = $value;
 	}
 
+	function set_def($property, $default, $db_update=true)
+	{
+		if($prev = $this->get($property))
+			return $prev;
+
+		return $this->set($property, $default, $db_update);
+	}
+
 	function have_data() { return !empty($this->data); }
 	function has_changed()
 	{
@@ -687,10 +695,11 @@ defined at {$this->class_file()}<br/>
 	function tools() { return bors_load('bors_object_tools', $this); }
 	function urls($type = NULL)
 	{
+		$helper = bors_load('bors_object_urls',  $this);
 		if(!$type)
-			return bors_load('bors_object_urls',  $this);
+			return $helper;
 
-		return NULL;
+		return $helper->urls($type);
 	}
 
 	function admin_delete_link()

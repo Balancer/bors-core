@@ -32,6 +32,7 @@ class bors_core_find
 	// Найти все объекты, соответствующие заданным критериям
 	function all($limit1=NULL, $limit2=NULL)
 	{
+		bors_function_include('debug/timing_start');
 		debug_timing_start('bors_find::all()');
 
 		$args = func_get_args();

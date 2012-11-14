@@ -52,10 +52,19 @@ function http_get_content($url, $raw = false, $max_length = false)
 		return "";
 
 	$header = array();
-	if(($cs = config('lcml_request_charset_default')))
-		$header[] = "Accept-Charset: utf-8, ".$cs;
-	else
-		$header[] = "Accept-Charset: utf-8";
+
+	// http://asozd2.duma.gov.ru/main.nsf/(SpravkaNew)?OpenAgent&RN=161207-6&02
+	// На запрос возвращает страницу в utf-8, но в заголовках говорит от 1251
+	// http://juick.com/Balancer/2130599
+	// http://www.balancer.ru/g/p2981109
+	if(!preg_match('!http://asozd2.duma.gov.ru!', $url))
+	{
+		if(($cs = config('lcml_request_charset_default')))
+			$header[] = "Accept-Charset: utf-8, ".$cs;
+		else
+			$header[] = "Accept-Charset: utf-8";
+	}
+
 	$header[] = "Accept-Language: ru, en";
 
 	bors_function_include('debug/timing_start');
@@ -121,14 +130,14 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
-    if(preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
+    if(preg_match("!charset\s*=\s*([\w\-]+)!i", $content_type, $m))
         $charset = $m[1];
     elseif(preg_match("!<\?xml\s+version=\S+\s+encoding\s*=\s*\"(.+?)\"!i", $data, $m))
         $charset = $m[1];
     elseif(preg_match("!(Microsoft\-IIS|X\-Powered\-By: ASP\.NET)!", $header))
         $charset = 'windows-1251';
 	// <meta http-equiv="Content-Type" content="text/html;UTF-8">
-	elseif(preg_match("!<meta [^>]+Content-Type[^>]+content=\"text/html;([^>]+)\">!i", $data, $m))
+	elseif(preg_match("!<meta [^>]+Content-Type[^>]+content=\"text/html;\s*([\w\-]+)\">!i", $data, $m))
         $charset = $m[1];
 	else
         $charset = '';
@@ -140,12 +149,15 @@ function http_get_content($url, $raw = false, $max_length = false)
 	if($raw)
 		return $data;
 
+	if(preg_match('/JFIF/', $data))
+		debug_hidden_log('jpeg-not-raw', $url);
+
 	if(empty($charset))
 	{
-        if(preg_match("!<meta\s+http\-equiv\s*=\s*(\"|')Content\-Type(\"|')[^>]+charset\s*=\s*(.+?)(\"|')!i", $data, $m))
+        if(preg_match("!<meta\s+http\-equiv\s*=\s*(\"|')Content\-Type(\"|')[^>]+charset\s*=\s*([\w\-]+)(\"|')!i", $data, $m))
 	        $charset = $m[3];
-		elseif(preg_match("!<meta[^>]+charset\s*=\s*(.+?)(\"|')!i", $data, $m))
-	        $charset = $m[1];
+		elseif(preg_match("!<meta[^>]+charset\s*=\s*([\w\-]+)(\"|')!i", $data, $m))
+			$charset = $m[1];
 	}
 
     if(!$charset)
@@ -156,8 +168,9 @@ function http_get_content($url, $raw = false, $max_length = false)
 		echo "url = '$url'";
 		echo "Content-type = '$content_type'<br/>";
 		echo "charset = '$charset'<br/>";
-		echo print_d(substr($data, 0, 1000));
-		print_d(iconv($charset, config('internal_charset').'//IGNORE', $data));
+		echo print_dd(substr($data, 0, 1000));
+		print_dd(iconv($charset, config('internal_charset').'//IGNORE', $data));
+		exit('end');
 	}
 */
 //	var_dump($charset, $data);

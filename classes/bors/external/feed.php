@@ -72,13 +72,25 @@ class bors_external_feed extends base_object_db
 		$xml = bors_lib_http::get_ex($this->feed_url(), array('charset' => $this->charset()));
 
 		$xml = $xml['content'];
-
-//		if($is_test)
-//			echo "xml = ".var_dump($xml)."\n";
-
+/*
+		if($is_test)
+		{
+			echo "xml = ";
+			var_dump($xml)."\n";
+			file_put_contents('test.xml', $xml);
+			exit();
+		}
+*/
 		$data = bors_lib_xml::xml2array($xml);
-//		if($is_test)
-//			var_dump($data);
+/*
+		if($is_test)
+		{
+			echo "data = ";
+			var_dump($data)."\n";
+			file_put_contents('test.dat', print_r($data, true));
+			exit();
+		}
+*/
 
 		if(!empty($data['feed'])) // Это ATOM
 		{
@@ -249,6 +261,7 @@ class bors_external_feed extends base_object_db
 
 			$tags = array_merge(array_map('trim', explode(',', $this->append_keywords())), $tags);
 
+//			echo "Entry: $entry\n";
 			if($entry)
 			{
 				$entry->set_pub_date(max($entry->pub_date(), $pub_date), true);
@@ -256,13 +269,14 @@ class bors_external_feed extends base_object_db
 				$entry->set_author_name($author_name, true);
 				$entry->set_keywords_string($keywords_string, true);
 				$entry->set_text($description, true);
+//				print_dd($description);
 				$entry->set_is_suspended($is_skipped, true);
 				$entry->set_is_public($topic->is_public());
 				$was = 'updated';
 			}
 			else
 			{
-				$entry = object_new_instance('bors_external_feeds_entry', array(
+				$entry = bors_new('bors_external_feeds_entry', array(
 					'entry_url' => $link,
 					'pub_date' => time(), // $pub_date,
 					'title' => $title,
@@ -276,11 +290,13 @@ class bors_external_feed extends base_object_db
 					'is_suspended' => $is_skipped,
 					'is_public' => object_property(@$topic, 'is_public'),
 				));
+
 				$was = 'new';
 			}
 
 //			if(!$entry->target_object_id() && $this->target_topic_id())
 
+			$entry->store();
 
 			if(!$is_skipped && !$is_test)
 			{
@@ -298,6 +314,8 @@ class bors_external_feed extends base_object_db
 //			echo "update_target($forum_id, {$this->target_topic_id()});\n";
 //			if(!$is_skipped)
 //				return;
+
+//			break;
 		} // endforeach $items
 	}
 

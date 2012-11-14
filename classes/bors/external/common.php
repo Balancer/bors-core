@@ -9,10 +9,11 @@ class bors_external_common extends bors_object
 
 		$more = false;
 
+//		$html = bors_lib_http::get($url);
 		$html = bors_lib_http::get_cached($url, 7200);
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
-//		if(config('is_developer')) { echo "$url:<br/>"; var_dump($meta); }
+//		if(config('is_developer')) { echo "$url:<br/>"; var_dump($meta); exit(); }
 
 		$title = @$meta['og:title'];
 		if(!$title)
@@ -137,6 +138,12 @@ if(config('is_developer')) { exit($img); }
 		{
 			require_once('inc/texts.php');
 			$description = clause_truncate_ceil($description, $limit);
+
+			// Из-за таких козлов:
+			// http://www.balancer.ru/g/p2977129
+			// http://www.balancer.ru/g/p2981105
+			$title = htmlspecialchars(strip_tags($title));
+			$description = htmlspecialchars(strip_tags($description));
 
 			$bbshort = "[round_box]{$img}[h][a href=\"{$url}\"]{$title}[/a][/h]
 {$description}

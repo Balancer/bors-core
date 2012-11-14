@@ -240,7 +240,7 @@ class bors_external_feeds_entry extends base_object_db
 
 		$forum = $topic->forum();
 
-		$post = object_new_instance('balancer_board_post', array(
+		$post = bors_new('balancer_board_post', array(
 			'topic_id' => $topic->id(),
 			'owner_id' => $owner_id,
 			'author_name' => $owner_name,
@@ -256,7 +256,7 @@ class bors_external_feeds_entry extends base_object_db
 
 		$forum->update_num_topics();
 
-		$blog = object_new_instance('balancer_board_blog', array(
+		$blog = bors_new('balancer_board_blog', array(
 			'id' => $post->id(),
 			'keywords_string' => $keywords,
 			'owner_id' => $owner_id,
@@ -265,7 +265,7 @@ class bors_external_feeds_entry extends base_object_db
 			'blogged_time' => $this->pub_date(),
 			'is_public' => $topic->is_public(),
 			'is_microblog' => $this->feed()->is_microblog(),
-			'blog_source_class' => $this->new_class_name(),
+			'blog_source_class' => $this->class_name(),
 			'blog_source_id'    => $this->id(),
 		));
 

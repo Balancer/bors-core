@@ -45,10 +45,15 @@ class BorsXml
 		if(!$this->in_tag)
 			return;
 
+//		var_dump($cdata);
+		// Экранирование убрано ради http://www.balancer.ru/g/p2981105
+		// Если где-то понадобится, тщательно проверить.
 		if(empty($this->pointer['cdata']))
-			$this->pointer['cdata'] = ec(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
+//			$this->pointer['cdata'] = ec(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
+			$this->pointer['cdata'] = ec($cdata, 'UTF-8');
 		else
-			$this->pointer['cdata'] .= ec(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
+//			$this->pointer['cdata'] .= ec(html_entity_decode($cdata, ENT_QUOTES, 'UTF-8'));
+			$this->pointer['cdata'] .= ec($cdata);
 	}
 
 	function tag_close($parser, $tag)

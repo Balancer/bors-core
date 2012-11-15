@@ -153,6 +153,9 @@ class bors_lcml
 		if(!trim($text))
 			return '';
 
+		if($this->_params['level'] == 1)
+			$text = "\n{$text}\n";
+
 		$need_prepare = popval($this->_params, 'prepare');
 
 		if($this->_params['level'] == 1
@@ -161,6 +164,7 @@ class bors_lcml
 			&& empty($params['nocache'])
 		)
 		{
+
 			$cache = new Cache();
 			if($cache->get('lcml-cache-v'.config('lcml.cache_tag'), $text))
 				return $cache->last();
@@ -252,7 +256,14 @@ class bors_lcml
 		$text = $result;
 
 		if($this->_params['level'] == 1)
+		{
+			if(preg_match("/^\n/", $text))
+				$text = substr($text, 1);
+			if(preg_match("/\n$/", $text))
+				$text = substr($text, 0, strlen($text)-1);
+
 			$text = $this->functions_do(bors_lcml::$data['post_whole_functions'], $text, 'post_whole');
+		}
 
 		return $cache ? $cache->set($text, 86400) : $text;
 	}

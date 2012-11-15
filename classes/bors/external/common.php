@@ -65,6 +65,13 @@ class bors_external_common extends bors_object
 		if(preg_match('/^\w+/', $img) && !preg_match('/^\w+:/', $img)) // Это тупо "images/stories/img/big/m1a2_2.jpg" — вроде, как от корня сайта
 			$img = 'http://'.$meta['host'].'/'.$img;
 
+		if(!$img)
+		{
+			// Ставим герерацию превьюшки
+			$id = base64_encode($url);
+			$img = "http://www.balancer.ru/_cg/_st/{$id[0]}/{$id[1]}/{$id}-400x300.png";
+		}
+
 		if($img)
 			$img = "[img={$img} 200x200 left flow nohref]";
 
@@ -84,9 +91,10 @@ if(config('is_developer')) { exit($img); }
 
 		if(!$description)
 		{
-//			print_dd($html);
 			$dom = new DOMDocument('1.0', 'UTF-8');
-			$html = iconv('utf-8', 'utf-8//ignore', preg_replace('!<meta [^>]+?>!is', '', $html));
+			$html = preg_replace('!<meta [^>]+?>!is', '', $html);
+			$html = iconv('utf-8', 'utf-8//ignore', $html);
+//			if(config('is_developer')) { var_dump($html); }
 			$html = preg_replace('!<script[^>]*>.+?</script>!is', '', $html);
 			$html = str_replace("\r", "", $html);
 
@@ -96,8 +104,6 @@ if(config('is_developer')) { exit($img); }
 				$dom->loadHTML($html);
 				$xpath = new DOMXPath($dom);
 
-//				if(config('is_developer')) { var_dump($html, $dom->saveHTML()); exit(); }
-
 				foreach(array(
 					'//script',
 					'//style',
@@ -105,12 +111,20 @@ if(config('is_developer')) { exit($img); }
 					foreach($xpath->query($query) as $node)
 						$node->parentNode->removeChild($node);
 
-				if($divs = $xpath->query('//div[@id="content"]'))
+//				if($divs = $xpath->query('//div[@id="content"]'))
+				// Тест на http://www.balancer.ru/g/p2982207
+				if($divs = $xpath->query('//p'))
 				{
 					$content = /*bors_lib_dom::element_html*/($divs->item(0));
 					$source = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
 					if(strpos($source, 'Ð') !== false)
-						$source = '';
+					{
+						// Грязный хак для непонятных «Ð�Ð»Ð°Ð²Ð° Ð°Ð´Ð¼Ð¸Ð½Ð¸Ñ�Ñ�Ñ�Ð°Ñ�Ð¸Ð¸ Ð¿Ñ�ÐµÐ·Ð¸Ð»
+						$source = iconv('utf8', 'latin1//ignore', $source);
+						// Хак для убирания порезанных в конце символов
+						$source = bors_substr($source, 0, bors_strlen($source) - 1);
+//						if(config('is_developer')) { var_dump($source); exit(); }
+					}
 //					var_dump($source); exit();
 					$source = preg_replace("/\s*\n+\s*/", "\n", $source);
 					$source = array_filter(explode("\n", $source));

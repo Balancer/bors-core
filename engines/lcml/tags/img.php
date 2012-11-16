@@ -152,7 +152,8 @@ function lt_img($params)
 					@chmod($path, 0666);
 				}
 
-				if(file_exists($path) && filesize($path)>0)
+				// test: http://www.aviaport.ru/conferences/40911/rss/
+				if(file_exists($path) && filesize($path)>0 && config('lcml.airbase.register.images'))
 				{
 					$remote = $uri;
 					$uri = str_replace(config('sites_store_path'), config('sites_store_url'), $path);

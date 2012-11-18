@@ -52,6 +52,8 @@ class bors_view extends bors_page
 
 	function object() { return $this->target(); } // Для совместимости
 
+	function model()  { return $this->target(); } // А это — будет основной вариант!
+
 	function title() { return $this->object()->title(); }
 	function nav_name() { return $this->object()->nav_name(); }
 	function description() { return $this->object()->description(); }
@@ -82,6 +84,7 @@ class bors_view extends bors_page
 		$data = array(
 			$this->item_name() => $target,
 			'target' => $target,
+			'model' => $target,
 			'view' => $this,
 			'self' => $this,
 		);

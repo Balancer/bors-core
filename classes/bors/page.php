@@ -63,8 +63,18 @@ class bors_page extends base_page
 		while($current_class)
 		{
 			$base = preg_replace("!(.+/\w+)\..+?$!", "$1.", $class_files[$current_class]);
+//			echo "Check $current_class for $base$ext<Br/>";
 			if($is_smart)
 			{
+				// Было перед .html Из-за этого на страницах с переназначаемым расширением, типа
+				// http://www.aviaport.ru/events/apczima2012/
+				// грузились базовые формы.
+				if(file_exists($bt = $base.$ext))
+				{
+					$this->attr['body_template'] = $bt;
+					$this->attr['body_template_class'] = $this->body_template_class();
+					return;
+				}
 				if(file_exists($bt = $base.'tpl.php'))
 				{
 					$this->attr['body_template'] = $bt;
@@ -81,12 +91,6 @@ class bors_page extends base_page
 				{
 					$this->attr['body_template'] = $bt;
 					$this->attr['body_template_class'] = 'bors_templates_smarty';
-					return;
-				}
-				if(file_exists($bt = $base.$ext))
-				{
-					$this->attr['body_template'] = $bt;
-					$this->attr['body_template_class'] = $this->body_template_class();
 					return;
 				}
 			}

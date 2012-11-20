@@ -172,6 +172,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 //		echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
 
 	debug_log_var('try_object_load_by_map.url_pattern', $url_pattern);
+	debug_log_var('try_object_load_by_map.check_class', $check_class);
 
 	$id = NULL;
 	$page = NULL;

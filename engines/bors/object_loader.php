@@ -3,6 +3,7 @@
 spl_autoload_register('class_include');
 
 bors_function_include('debug/count_inc');
+bors_function_include('debug/log_var');
 
 function bors_object_caches_drop()
 {
@@ -17,16 +18,11 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 	if(is_object($id) || @$args['no_load_cache'])
 		return $obj;
 
-//	$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()]
 	if(!empty($GLOBALS['bors_data']['cached_objects4'][$class_name][$id]))
 	{
 		$obj = &$GLOBALS['bors_data']['cached_objects4'][$class_name][$id];
 
 		$updated = bors_class_loader_meta::cache_updated($obj);
-
-//		if(config('is_developer'))
-//			echo "Found in memory <b>$class_name</b>('$id'); can_cached={$obj->can_cached()}; updated = $updated (me=".method_exists($obj, 'class_filemtime')."; ".filemtime($obj->real_class_file()).' > '.$obj->class_filemtime().")<br />";
-//		echo "load {$class_name}($id), nocache=".@$args['no_load_cache']."<br/>\n";
 
 		if($obj->can_cached() && !$updated)
 		{
@@ -141,7 +137,6 @@ function class_load($class, $id = NULL, $args=array())
 			// Фиксим некорректные ссылки с форумов, например, оканчивающиеся на «.html,»
 			$class = preg_replace('/[\.,\)\]!\?…"\']+$/', '', $class);
 
-//			echo "Try load $class<Br/>\n";
 			if(preg_match('!^(.+)#(.+)$!', $class, $m))
 				$class = $m[1];
 
@@ -168,7 +163,7 @@ function class_load_by_url($url, $args)
 
 function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match, $url_pattern, $skip)
 {
-//	if(config('debug_mode'))
+//	if(config('is_developer'))
 //		echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
 
 	debug_log_var('try_object_load_by_map.url_pattern', $url_pattern);
@@ -394,6 +389,8 @@ function class_load_by_vhosts_url($url)
 		debug_hidden_log('class-loader-errors', ec("Error. Try to load class for incorrect URL format: ").$url);
 		return NULL;
 	}
+
+	$data['host'] = preg_replace('/^www\./', '', $data['host']);
 
 	global $bors_data;
 

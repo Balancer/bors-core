@@ -4,6 +4,8 @@ class bors_core_vhost
 {
 	function register($host, $documents_root=NULL, $bors_host=NULL)
 	{
+		$host = preg_replace('/^www\./', '', $host);
+
 		global $bors_data;
 
 		if(empty($documents_root))

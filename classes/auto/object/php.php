@@ -2,10 +2,10 @@
 
 bors_function_include('natural/bors_unplural');
 
-class auto_object_php extends base_object
+class auto_object_php extends bors_object
 {
 	function init() { }
-	function loaded() { return $this->object(); }
+	function loaded() { return $this->object(); } // Не приводить к bool, это реально загруженный объект
 	function can_be_empty() { return false; }
 	function nav_name() { return $this->object()->nav_name(); }
 
@@ -144,8 +144,8 @@ class auto_object_php extends base_object
 	}
 
 	function content() { return $this->object()->content(); }
-	function create_time($exactly = false) { return $this->object()->create_time($exactly); }
-	function modify_time($exactly = false) { return $this->object()->modify_time($exactly); }
+	function create_time() { return $this->object()->create_time(); }
+	function modify_time() { return $this->object()->modify_time(); }
 
 	function action_target() { return $this->object(); }
 

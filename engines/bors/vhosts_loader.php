@@ -10,6 +10,8 @@ function bors_vhosts()
 
 function bors_vhost_data($host, $key = NULL, $def = NULL)
 {
+	$host = preg_replace('/^www\./', '', $host);
+
 	$data = @$GLOBALS['bors_data']['vhosts'][$host];
 	if($key)
 		return defval($data, $key, $def);

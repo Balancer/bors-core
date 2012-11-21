@@ -215,6 +215,8 @@ if(file_exists(BORS_HOST.'/config-post.php'))
 
 function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 {
+	$host = preg_replace('/^www\./', '', $host);
+
 	global $bors_data;
 
 	if(empty($documents_root))
@@ -251,10 +253,13 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
 		require_once($file);
 
-//	echo "$host: <xmp>"; print_r($map); echo "</xmp>";
+	if(!($prev = @$bors_data['vhosts'][$host]['bors_map']))
+		$prev = array();
+
+	$bors_map = array_merge($prev, $map2, $map);
 
 	$bors_data['vhosts'][$host] = array(
-		'bors_map' => array_merge($map2, $map),
+		'bors_map' => $bors_map,
 		'bors_local' => $bors_host,
 		'bors_site' => $bors_site,
 		'document_root' => $documents_root,

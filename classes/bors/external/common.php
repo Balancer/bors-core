@@ -70,6 +70,8 @@ class bors_external_common extends bors_object
 			// Ставим герерацию превьюшки
 			$id = base64_encode($url);
 			$img = "http://www.balancer.ru/_cg/_st/{$id[0]}/{$id[1]}/{$id}-400x300.png";
+			// Дёрнем, чтобы сгенерировалось
+			file_get_contents($img);
 		}
 
 		if($img)

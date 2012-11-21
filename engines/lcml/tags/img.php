@@ -125,7 +125,7 @@ function lt_img($params)
 					// http://balancer.ru/g/p2728087 для http://video.yandex.ru/users/cnewstv/view/3/
 					if($content_type && !preg_match("!image!", $content_type))
 					{
-						debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type."\n".$content); // Это не картинка
+//						debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type."\n".$content); // Это не картинка
 						return lcml_urls_title($params['url']).'<small> [not image]</small>';
 					}
 

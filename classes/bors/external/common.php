@@ -4,16 +4,16 @@ class bors_external_common extends bors_object
 {
 	static function content_extract($url, $limit=1500)
 	{
-		if(preg_match('/\.(jpg|jpeg|png|gif)$/i', $url))
+		if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt|ppt)$/i", $url))
 			return array('bbshort' => "[img url=\"$url\" 468x468]", 'tags' => array());
 
 		$more = false;
 
 //		$html = bors_lib_http::get($url);
-		$html = bors_lib_http::get_cached($url, 7200);
+		$html = bors_lib_http::get_cached($url, 7200 /*, false, true*/ ); // Для сборса кеша
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
-//		if(config('is_developer')) { echo "$url:<br/>"; var_dump($meta); exit(); }
+//		if(config('is_developer')) { echo "$url:<br/>"; var_dump($html); exit(); }
 
 		$title = @$meta['og:title'];
 		if(!$title)
@@ -68,10 +68,24 @@ class bors_external_common extends bors_object
 		if(!$img)
 		{
 			// Ставим герерацию превьюшки
-			$id = base64_encode($url);
-			$img = "http://www.balancer.ru/_cg/_st/{$id[0]}/{$id[1]}/{$id}-400x300.png";
+			if(preg_match('/%\w\w%/i', $url))
+				$url = urldecode($url);
+
+			$url_data = parse_url($url);
+			$host = preg_replace('/^www\./', '', $url_data['host']);
+			$host_parts = array_reverse(explode('.', $host));
+
+			$id = blib_string::base64_encode2($url);
+
+			$img = "http://www.balancer.ru/_cg/_st/{$host_parts[0]}/{$host_parts[1][0]}/{$host_parts[1]}/{$id}-400x300.png";
 			// Дёрнем, чтобы сгенерировалось
-			file_get_contents($img);
+			$x = blib_http::get_bin($img, array('timeout' => 15));
+
+			if(config('is_debug') && !$x)
+			{
+				var_dump($url, $id, $host_parts, "http://www.balancer.ru/_cg/_st/{$host_parts[0]}/{$host_parts[1][0]}/{$host_parts[1]}/{$id}-400x300.png", $x);
+				exit();
+			}
 		}
 
 		if($img)
@@ -91,12 +105,14 @@ class bors_external_common extends bors_object
 if(config('is_developer')) { exit($img); }
 */
 
+//		if(config('is_developer')) { var_dump($description); exit(); }
+
 		if(!$description)
 		{
 			$dom = new DOMDocument('1.0', 'UTF-8');
 			$html = preg_replace('!<meta [^>]+?>!is', '', $html);
 			$html = iconv('utf-8', 'utf-8//ignore', $html);
-//			if(config('is_developer')) { var_dump($html); }
+//			if(config('is_developer')) { var_dump($html); exit(); }
 			$html = preg_replace('!<script[^>]*>.+?</script>!is', '', $html);
 			$html = str_replace("\r", "", $html);
 

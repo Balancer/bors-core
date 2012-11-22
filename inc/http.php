@@ -110,20 +110,20 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 	$adat = explode("\n", $data);
 
-//	if(config('is_developer')) { var_dump(file_get_contents($url)); }
-
 	$pos = 0;
 	$header = '';
 	for($i=0; $i<count($adat); $i++)
 	{
 		$pos += strlen($adat[$i])+1;
-		if(!trim($adat[$i]))
+		if(!trim($adat[$i]) && !preg_match('/^HTTP/', $adat[$i+1]))
 		{
 			$header = join("\n", array_slice($adat, 0, $i-1));
 			$data   = join("\n", array_slice($adat, $i+1));
 			break;
 		}
 	}
+
+//	if(config('is_developer')) { print_dd($data); }
 
 	$data = trim($data);
 //	$data = trim(curl_redir_exec($ch));

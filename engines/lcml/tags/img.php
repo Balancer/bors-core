@@ -169,6 +169,9 @@ function lt_img($params)
 					}
 
 					$db->update('images', array('id' => $id), array('local_path' => $path));
+
+					$img = airbase_image::register_file($path, true, true, 'airbase_image');
+					balancer_board_posts_object::register($img, $params);
 				}
 			}
 

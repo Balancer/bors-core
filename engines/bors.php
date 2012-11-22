@@ -393,7 +393,13 @@ function bors_each($class_name, $where)
 	return $storage->each($class_name, $where);
 }
 
-function bors_new($class_name, $data = array()) { return object_new_instance($class_name, $data); }
+function bors_new($class_name, $data = array())
+{
+	if(is_null($data))
+		return object_new($class_name); // Пустой объект
+
+	return object_new_instance($class_name, $data); // Создаём объект
+}
 
 function bors_delete($class_name, $where)
 {

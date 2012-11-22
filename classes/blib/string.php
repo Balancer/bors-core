@@ -126,4 +126,14 @@ class blib_string extends blib_object
 		$str = str_repeat("однажды в студёную зимнюю пору я из лесу вышел, был сильный мороз", 100);
 		blib_benchmark::run('blib_string::_mb_wordwrap1', array($str, 200, "\n", true));
 	}
+
+	static function base64_encode2($str)
+	{
+		return str_replace(array('/','+'), array('_', '-'), base64_encode($str));
+	}
+
+	static function base64_decode2($str)
+	{
+		return base64_decode(str_replace(array('_','-'), array('/', '+'), $str));
+	}
 }

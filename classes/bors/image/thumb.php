@@ -132,6 +132,8 @@ class bors_image_thumb extends bors_image
 
 		mkpath($this->image_dir(), 0777);
 
+//		debug_hidden_log('000', "$file_orig_r :".@filesize($file_orig_r));
+
 		if(!$this->thumb_create($abs))
 			return $this->set_loaded(false);
 

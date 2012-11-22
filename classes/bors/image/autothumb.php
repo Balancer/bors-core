@@ -1,5 +1,9 @@
 <?php
 
+/*
+	Автоматическая генерация превьюшек для /cache/
+*/
+
 class bors_image_autothumb extends base_object
 {
 	var $origin_path = NULL;
@@ -9,14 +13,13 @@ class bors_image_autothumb extends base_object
 	{
 		if(preg_match('/%D0/', $thumb_path))
 			$thumb_path = urldecode($thumb_path);
-
 		if(!preg_match('!^(/.*/)(\d*x\d*)/([^/]+)$!', $thumb_path, $m))
 			if(!preg_match('!^(/.*/)(\d*x\d*\([^)]+\))/([^/]+)$!', $thumb_path, $m))
 				return;
 
 		$origin_path = $m[1].$m[3];
 		$this->geo = $m[2];
-
+//echo $_SERVER['DOCUMENT_ROOT'] . $origin_path, PHP_EOL;
 		if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $origin_path))
 			return;
 

@@ -73,8 +73,12 @@ function http_get_content($url, $raw = false, $max_length = false)
 	debug_timing_start('http-get-total');
 	$ch = curl_init($url);
 
+	$timeout = 5;
+	if(preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru|66\.ru|ria\.ru)/', $url))
+		$timeout = 20;
+
 	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => 5,
+		CURLOPT_TIMEOUT => $timeout,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_MAXREDIRS => 5,
 		CURLOPT_ENCODING => 'gzip,deflate',
@@ -212,7 +216,7 @@ function http_get_ex($url, $raw = true)
 	$header[] = "Accept-Language: ru, en";
 
 	$timeout = 15;
-	if(preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru|66\.ru)/', $url))
+	if(preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru|66\.ru|ria\.ru)/', $url))
 		$timeout = 40;
 
 	if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация

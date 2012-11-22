@@ -252,16 +252,19 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 	// Регистрация файла по абсолютному или относительному к DOCUMENTS_ROOT пути.
 	// Возвращает объект изображения.
-	static function register_file($file, $new_instance = true, $exists_check = true)
+	static function register_file($file, $new_instance = true, $exists_check = true, $class_name = NULL)
 	{
 //		echo debug_trace();
 //		bors_exit(debug_trace());
 
-		$img = object_new('bors_image');
+		if(!$class_name)
+			$class_name = 'bors_image';
+
+		$img = bors_new($class_name, NULL);
 
 		$data = url_parse($file);
 
-		if($exists_check && $img2 = objects_first('bors_image', array('full_file_name' => $data['local_path'])))
+		if($exists_check && $img2 = bors_find_first($class_name, array('full_file_name' => $data['local_path'])))
 			return $img2;
 
 		$img->set_original_filename(basename($file), $new_instance);

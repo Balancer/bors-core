@@ -36,18 +36,16 @@ function debug_trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
 
 		$Line = (isset($arr['line'])? $arr['line'] : "unknown");
 		$File = (isset($arr['file'])? $arr['file'] : "unknown");
-		if($html)
-			$s .= "$indent<span style=\"font-size:8pt;margin:0;padding:0;color:#999\">{$File}:{$Line}</span>";
-		else
-			$s .= "[{$File}:{$Line}]";
 
 		$s .= "\n$indent";
 
 		$tabs++;
 		if($html)
 			$s .= '<span style="font-family:monospace;size:9pt;padding:0;margin:0">';
+
 		if(isset($arr['class']))
 			$s .= $arr['class'].'.';
+
 		$args = array();
 		if(!empty($arr['args']))
 		{
@@ -71,11 +69,24 @@ function debug_trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
 		else
 			$s .= $arr['function'];
 
-		$s .= '('.implode(', ',$args).')';
+		$targs = implode(', ',$args);
+		if($html)
+		{
+			$targs = preg_replace('/(".+?")/', '<font color="green">$1</font>', $targs);
+			$targs = preg_replace('/(true|false)/', '<font color="brown">$1</font>', $targs);
+			$s .= '<font color="#999">(</font>'.$targs.'<font color="#999">)</font>';
+		}
+		else
+			$s .= '('.$targs.')';
 
 		if($html)
 			$s .= '</span>';
 		$s .= "\n";
+
+		if($html)
+			$s .= "$indent<span style=\"font-size:8pt;margin:0;padding:0;color:#ccc\">{$File}:{$Line}</span>";
+		else
+			$s .= "[{$File}:{$Line}]";
 	}
 
 	if($html)

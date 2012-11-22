@@ -94,3 +94,12 @@ jQuery
 ------
  * http://docs.jquery.com/UI/Tabs
  * HashMask http://lab.arc90.com/2009/07/09/hashmask-another-more-secure-experiment-in-password-masking/
+
+Описание проекта
+----------------
+project.name — не уникальное. У одного проекта может быть более одного репозитория
+				Является ключом для прописи роутинга.
+routing.php — собственно роутинг. Предварительно надо задать хост и корень (base).
+routes.conf — /planes/{id}/?	/* def: project_plane_view */
+
+static function route() { '{project_base}/planes/{id}/'; }

@@ -7,7 +7,7 @@ class bors_admin_links_search extends bors_admin_links_main
 
 	function xpre_show()
 	{
-		var_dump($_GET);
+//		var_dump($_GET);
 		return parent::pre_show();
 	}
 

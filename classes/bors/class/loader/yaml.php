@@ -17,7 +17,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		if($properties = popval($data, 'properties'))
 		{
-			var_dump($properties);
+//			var_dump($properties);
 			$table_fields = array();
 			foreach($properties as $p)
 			{

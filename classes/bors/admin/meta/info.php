@@ -7,7 +7,7 @@ class bors_admin_meta_info extends bors_page
 	function nav_name() { return $this->target()->nav_name(); }
 	function title()
 	{
-		return ec('Информация о ').call_user_func(array($this->main_class(), 'class_title_pp'));
+		return ec('Информация о ').$this->target()->class_title_pp().' '.$this->target()->title();
 	}
 
 	function target() { return $this->id() ? bors_load($this->main_class(), $this->id()) : NULL; }

@@ -146,6 +146,7 @@ static expire = {$this->cache_static_expire()|date:'r'}
 {/if}
 class_template = {$this->template()}
 BORS_CORE={$smarty.const.BORS_CORE}
+server_name={config('debug.server_name')}
 -->
 </body>
 {foreach from=$js_include_post item="s"}

@@ -118,7 +118,7 @@ class driver_dbal
 
 	function args_compile($where)
 	{
-		var_dump($where);
+//		var_dump($where);
 		return mysql_args_compile($where);
 	}
 

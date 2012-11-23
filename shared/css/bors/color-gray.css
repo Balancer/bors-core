@@ -258,3 +258,26 @@ input { border-color: #ccc; }
 .shadow {
 	box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
+
+dl.box {
+    border-color: #ccc;
+    background-color: white;
+    -moz-box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    -webkit-box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+}
+
+dl.box dt, dl.box dt a {
+    margin: 0px;
+    color: white;
+    background-color: #9bd;
+    padding: 1px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+dl.box dd {margin: 4px; padding: 4px; }
+
+dl.w200 dd { margin: 2px; font-size: xx-small; padding: 2px; }
+
+dl.box dt a {color: #ffffd0;}

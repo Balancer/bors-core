@@ -50,7 +50,7 @@ class blib_string extends blib_object
 		while ($i < $while_what)
 		{
 			preg_match($regexp, $str, $matches);
-			var_dump($regexp, $str, $matches);
+//			var_dump($regexp, $str, $matches);
 			$string = $matches[0];
 			$return .= $string.$break;
 			$str = substr($str, strlen($string));

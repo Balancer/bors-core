@@ -1,14 +1,20 @@
 <?php
 
-function bors_truncate($string, $length = 80, $etc = '&#133;', $break_words = false, $middle = false)
+function bors_truncate($string, $length = 80, $etc = NULL, $break_words = false, $middle = false)
 {
+	if(is_null($etc))
+		$etc = ec('…');
+
 	return truncate($string, $length, $etc, $break_words, $middle);
 }
 
-function truncate($string, $length = 80, $etc = '&#133;', $break_words = false, $middle = false)
+function truncate($string, $length = 80, $etc = NULL, $break_words = false, $middle = false)
 {
     if($length == 0)
         return '';
+
+	if(is_null($etc))
+		$etc = ec('…');
 
     if(bors_strlen($string) <= $length)
         return $string;

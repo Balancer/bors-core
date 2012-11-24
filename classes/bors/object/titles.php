@@ -22,6 +22,7 @@ class bors_object_titles
 
 	// Архив чего? — объектов
 	static function class_title_gen_plur($object) { return self::_class_title_helper($object, 'gen,plur'); }
+	static function class_title_dat_plur($object) { return self::_class_title_helper($object, 'dat,plur'); }
 	static function class_title_abl_plur($object) { return self::_class_title_helper($object, 'abl,plur'); }
 	static function class_title_plur($object)
 	{

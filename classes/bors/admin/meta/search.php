@@ -6,7 +6,7 @@ class bors_admin_meta_search extends bors_admin_meta_main
 
 	function admin_search_url() { return $this->url(); }
 
-	function title() { return ec('Поиск'); }
+	function title() { return ec('Поиск по ').$this->foo_object()->class_title_dpm(); }
 	function nav_name() { return ec('поиск'); }
 	function is_auto_url_mapped_class() { return true; }
 

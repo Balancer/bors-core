@@ -41,6 +41,6 @@
 
 {if $this->get('search_request_url')}
 <form style="padding: 0 0 10px 10px; margin: 0;" action="{$this->get('search_request_url')}">
-<input type="text" name="q" size="15" placeholder="запрос"/><input type="submit" class="search-submit" value="искать" />
+<input type="text" name="q" size="15" placeholder="запрос" value="{$smarty.get.q}" /><input type="submit" class="search-submit" value="искать" />
 </form>
 {/if}

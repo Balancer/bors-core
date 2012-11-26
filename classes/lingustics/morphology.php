@@ -31,6 +31,7 @@ class lingustics_morphology
 			'pre' => 'ПР',
 			'mult' => 'МН',
 			'plur' => 'МН',
+			'plural' => 'МН',
 		);
 
 		$cases = array();

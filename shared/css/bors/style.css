@@ -188,17 +188,22 @@ li.imaged {
 }
 
 li.type-categories{background-image: url(/_bors/i16/obj-types/categories.png)}
+li.type-clients{background-image: url(/_bors/i16/obj-types/clients.png)}
+li.type-closed{background-image: url(/_bors/i16/obj-types/closed.png)}
 li.type-commercial{background-image: url(/_bors/i16/obj-types/commercial.png)}
+li.type-company{background-image: url(/_bors/i16/obj-types/company.png)}
 li.type-delete{background-image: url(/_bors/i16/delete.png)}
 li.type-edit{background-image: url(/_bors/i16/edit.png)}
 li.type-exchange-rate{background-image: url(/_bors/i16/misc/exchange_rate.png)}
 li.type-image{background-image: url(/_bors/i16/obj-types/image.png)}
+li.type-important{background-image: url(/_bors/i16/obj-types/important.png)}
 li.type-logout{background-image: url(/_bors/i16/logout.gif)}
 li.type-page{background-image: url(/_bors/i16/obj-types/page.png)}
 li.type-search{background-image: url(/_bors/i16/search.png)}
 li.type-unknown{background-image: url(/_bors/i16/obj-types/unknown.png)}
 li.type-unplaced{background-image: url(/_bors/i16/obj-types/unplaced.png)}
 li.type-unpublished{background-image: url(/_bors/i16/obj-types/unpublished.png)}
+li.type-export-xls{background-image: url(/_bors/i16/file-types/excel.png)}
 
 div.right-menu h2, div.right-menu p, div.right-menu ul {
 	margin-top: 0;

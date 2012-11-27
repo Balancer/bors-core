@@ -2,7 +2,7 @@
 
 class bors_forms_combobox extends bors_forms_element
 {
-	static function html($params, &$form)
+	static function html($params, &$form = NULL)
 	{
 		include_once('inc/bors/lists.php');
 

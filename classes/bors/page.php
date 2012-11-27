@@ -35,7 +35,7 @@ class bors_page extends base_page
 		return config('body_template_class', $this->page_template_class());
 	}
 
-	function body_template()
+	function _body_template_def()
 	{
 		if($this->is_smart())
 		{
@@ -44,7 +44,7 @@ class bors_page extends base_page
 				return $this->attr['body_template'];
 		}
 
-		return parent::body_template();
+		return parent::_body_template_def();
 	}
 
 	// Вынесено в bors_lib_page. Проверить.

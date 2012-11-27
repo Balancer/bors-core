@@ -220,7 +220,7 @@ class base_page extends bors_object
 
 	function body_template_ext() { return 'html'; }
 
-	function body_template()
+	function _body_template_def()
 	{
 		$current_class = get_class($this);
 		$class_files = $GLOBALS['bors_data']['classes_included'];

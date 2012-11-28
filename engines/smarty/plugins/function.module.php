@@ -34,7 +34,18 @@ function smarty_function_module($params, &$smarty)
 //		if(method_exists($obj, 'html_code'))
 //			return $obj->html_code();
 
-		return $obj->body();
+		$body = NULL;
+		try {
+			$body = $obj->body();
+		}
+		catch(Exception $e)
+		{
+			$error = bors_lib_exception::catch_html_code($e, 'Module error');
+//			bors_hidden_log('error-module', print_r($e, true));
+			return "Module error\n<!-- {$error} -->";
+		}
+
+		return $body;
 	}
 
 	unset($GLOBALS['module_data']);

@@ -122,6 +122,9 @@ class bors_forms_saver extends base_empty
 
 		$go = defval($data, 'go', $go);
 
+		if(!$go)
+			$go = 'admin_parent';
+
 		if($go)
 		{
 //			var_dump($form_object);

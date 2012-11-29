@@ -2,9 +2,15 @@
 
 class bors_admin_config extends bors_config
 {
-	function config_data()
+	function object_data()
 	{
-		$data = parent::config_data();
+		static $recurse = false;
+		if($recurse)
+			return array();
+
+		$recurse = true;
+
+		$data = parent::object_data();
 		$data['access_engine'] = config('admin_access_default');
 		if($class_name = object_property($this->id(), 'main_class'))
 		{
@@ -12,10 +18,7 @@ class bors_admin_config extends bors_config
 			if(class_exists($class_name))
 			{
 				if(bors_load_uri($data['new_sublink']))
-				{
-					$foo = new $class_name(NULL);
-					$data['new_title'] = ec('Добавить ').$foo->get('class_title_vp');
-				}
+					$data['new_title'] = ec('Добавить ').bors_foo($class_name)->get('class_title_vp');
 				else
 					unset($data['new_sublink']);
 			}
@@ -23,6 +26,7 @@ class bors_admin_config extends bors_config
 
 		$data['template'] = config('admin_template', 'default');
 
+		$recurse = false;
 		return $data;
 	}
 

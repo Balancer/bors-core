@@ -4,6 +4,8 @@ class bors_time_meta extends bors_property
 {
 	var $is_null = false;
 
+	static function factory($timestamp) { return new bors_time($timestamp); }
+
 	function short($def = '') { return bors_lib_time::short($this->timestamp(), $def); }
 	function full_hdate()
 	{

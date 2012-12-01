@@ -11,6 +11,9 @@ class bors_forms_radio extends bors_forms_element
 
 		$obj = $form->object();
 
+		if(!empty($property))
+			$name = $property;
+
 		$tag_params = "";
 		foreach(explode(' ', 'size style') as $p)
 			if(!empty($$p))
@@ -86,6 +89,15 @@ class bors_forms_radio extends bors_forms_element
 		$colorize = @explode(',', @$pos_colorize);
 
 		$html = '';
+
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+		if($th = defval($params, 'th'))
+		{
+			$html .= "<tr><th>{$th}</th><td>";
+			if(empty($style))
+				$style = "width: 99%";
+		}
+
 		$colorpos = 0;
 		foreach($list as $id => $iname)
 		{
@@ -103,6 +115,9 @@ class bors_forms_radio extends bors_forms_element
 
 			$html .= "<label{$label_css_class}{$style}><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$tag_params />&nbsp;$iname</label>$delim\n";
 		}
+
+		if($th)
+			$html .= "</td></tr>\n";
 
 		return $html;
 	}

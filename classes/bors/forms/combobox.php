@@ -30,7 +30,7 @@ class bors_forms_combobox extends bors_forms_element
 		$html .= "<div id=\"{$name}\"";
 
 		$class = join(' ', $css_classes);
-		$stype = join(';', $css_style);
+		$style = join(';', $css_style);
 
 		foreach(explode(' ', 'id size style multiple class onchange') as $p)
 			if(!empty($$p))

@@ -28,7 +28,7 @@
 		{/foreach}
 	{/foreach}
 {else}
-	{if $this->get('admin_group_url')}<li class="imaged type-unknown"><a href="{$this->get('admin_group_url')}">Главная</a></li>{/if}
+	{if $this->get('admin_group_url')}<li class="imaged type-unknown"><a href="{$this->admin_group_url()}">{bors_load_uri($this->admin_group_url())|get:nav_name|bors_ucfirst}</a></li>{/if}
 {/if}
 </ul>
 {if $this->get('admin_group_url')}

@@ -72,6 +72,9 @@ if(!config('cache_dir'))
 	if(!empty($_SERVER['USER']))
 		$cache_dirs_parts[] = strtolower($_SERVER['USER']);
 	$cache_dirs_parts[] = config('internal_charset');
+	$cache_dirs_parts[] = config('output_charset');
+
+//	var_dump($cache_dirs_parts);
 
 	config_set('cache_dir', '/tmp/bors-cache/'.join('-', array_filter($cache_dirs_parts)));
 }

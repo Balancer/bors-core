@@ -36,7 +36,7 @@ class bors_forms_date_simple extends bors_forms_element
 		{
 			$html .= " ".date('H:i', $date);
 			if(!empty($seconds))
-				$html .= " ".date(':s', $date);
+				$html .= date(':s', $date);
 		}
 
 		$html .= '" ';
@@ -53,7 +53,10 @@ class bors_forms_date_simple extends bors_forms_element
 		{
 			template_jquery();
 			$html .= ec("&nbsp;<label><input name=\"time_on_post\" type=\"checkbox\" checked=\"checked\" />&nbsp;использовать время отсылки</label>");
-			template_js("$(function () { $('input[name=\"time_on_post\"]').change(function() { x=$('input[name=\"$name\"]'); if($(this).attr('checked')) x.attr('disabled', 'disabled'); else x.removeAttr('disabled') }); })");
+			jquery::on_ready("$('input[name=\"time_on_post\"]').change(function() { x=$('input[name=\"$name\"]'); if($(this).attr('checked')) x.attr('disabled', 'disabled'); else x.removeAttr('disabled') })");
+			jquery::plugin('timers');
+			jquery::plugin('strftime');
+			jquery::on_ready("$('input[name=\"$name\"]').everyTime(1000, function(i) { if($('input[name=\"time_on_post\"]').attr('checked')) $(this).val($.strftime('%d.%m.%Y %H:%M".($seconds ? ':%S' : '')."'))})");
 		}
 
 		if($th)

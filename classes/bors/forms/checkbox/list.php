@@ -78,6 +78,7 @@ class bors_forms_checkbox_list extends bors_forms_element
 			$current = $values;
 
 		$class = explode(' ', defval($params, 'class'));
+
 		if(in_array($name, explode(',', session_var('error_fields'))))
 			$class[] = "error";
 
@@ -88,6 +89,14 @@ class bors_forms_checkbox_list extends bors_forms_element
 
 		$html = '';
 
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
+		if($th = defval($params, 'th'))
+		{
+			$html .= "<tr><th>{$th}</th><td>";
+			if(empty($style))
+				$style = "width: 99%";
+		}
+
 		foreach($list as $id => $iname)
 		{
 			$ids[] = $id;
@@ -96,6 +105,9 @@ class bors_forms_checkbox_list extends bors_forms_element
 		}
 
 		$form->append_attr('checkboxes_list', $name);
+
+		if($th)
+			$html .= "</td></tr>\n";
 
 		return $html;
 	}

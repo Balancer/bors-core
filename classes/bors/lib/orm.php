@@ -45,7 +45,7 @@ class bors_lib_orm
 		// Если имя поля вида 'Header|bors_entity_decode', то вторая часть — постфункция.
 		if(preg_match('!^(\w+)\|(\w+)$!', $field['name'], $m))
 		{
-			$field['name'] = $m[1];
+			$field['sql_name'] = $field['name'] = $m[1];
 			$field['post_function'] = $m[2];
 		}
 

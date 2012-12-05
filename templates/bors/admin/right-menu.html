@@ -11,12 +11,14 @@
 {assign var="new_object_type" value=" imaged type-"|cat:$this->get('new_object_type')}
 {/if}
 
+{if $this->get('new_sublink') || $real_object}
 <h2>Действия</h2>
 <ul>
 {if $this->get('new_sublink')}<li class="b{$new_object_type}"><a href="{$this->get('new_sublink')}">{$this->get('new_title')}</a></li>{/if}
 {if $real_object}<li{$c_li_type}><a href="{$real_object->url()}" target="_blank">Посмотреть на сайте</a></li>{/if}
 </ul>
 <br/>
+{/if}
 
 <ul>
 {if $this->get('search_link')}<li class="imaged type-search"><a href="{$this->get('search_link')}">Поиск</a></li>{/if}

@@ -7,7 +7,7 @@ class bors_admin_main extends bors_page
 	function can_cache() { return false; }
 	function admin() { return false; }
 
-	function template()
+	function _template_def()
 	{
 		if(!bors()->user() && ($tpl = config('admin_login_template')))
 			return $tpl;

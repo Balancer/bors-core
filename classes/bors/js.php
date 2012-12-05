@@ -4,7 +4,7 @@ class bors_js extends base_page
 {
 	function body_template_ext() { return 'js'; }
 	function use_temporary_static_file() { return false; }
-	function template() { return 'null.html'; }
+	function _template_def() { return 'null.html'; }
 
 	function pre_show()
 	{

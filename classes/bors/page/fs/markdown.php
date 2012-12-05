@@ -16,12 +16,12 @@ class bors_page_fs_markdown extends bors_page
 
 //	function cache_static() { return rand(10*86400, 30*86400); }
 
-	function template()
+	function _template_def()
 	{
 		$this->add_template_data('skip_page_title', true);
 		$this->add_template_data('skip_page_admin', true);
 
-		return parent::template();
+		return parent::_template_def();
 	}
 
 	function body()

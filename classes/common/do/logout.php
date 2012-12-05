@@ -3,7 +3,7 @@
 class common_do_logout extends base_page
 {
 	function title() { return ec('Аутентификация'); }
-	function template() { return 'forum/common.html'; }
+	function _template_def() { return 'forum/common.html'; }
 
 	function pre_parse()
 	{

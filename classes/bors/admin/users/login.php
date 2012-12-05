@@ -4,7 +4,7 @@ class bors_admin_users_login extends bors_page
 {
 	function title() { return ec('Аутентификация'); }
 
-	function template()
+	function _template_def()
 	{
 		return 'default/index.html';
 //		return 'admin/net-dreams/login.html';

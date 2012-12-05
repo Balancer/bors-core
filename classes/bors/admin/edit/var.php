@@ -6,7 +6,7 @@ class bors_admin_edit_var extends bors_admin_page
 
 	function config_class() { return config('admin_config_class'); }
 
-	function template() { return 'xfile:default/popup.html'; }
+	function _template_def() { return 'xfile:default/popup.html'; }
 
 	function variable()
 	{

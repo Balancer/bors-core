@@ -87,8 +87,14 @@ class bors_xref_c2c extends bors_object_db
 	function find_targets($where)
 	{
 		$xref_class_name = popval($where, 'xref_class_name');
+		if(!$xref_class_name)
+			$xref_class_name = $this->class_name();
 		$target_class_name = popval($where, 'target_class_name');
+		if(!$target_class_name)
+			$target_class_name = $this->target_class_name();
 		$target_field_name = popval($where, 'target_field_name');
+		if(!$target_field_name)
+			$target_field_name = $this->target_field_name();
 		$target_where = popval($where, 'target', array());
 		$xrefs = bors_find_all($xref_class_name, $where);
 		$ids = bors_field_array_extract($xrefs, $target_field_name);
@@ -99,6 +105,14 @@ class bors_xref_c2c extends bors_object_db
 	function xrefs($where = array())
 	{
 		return bors_find_all($this->class_name(), $where);
+	}
+
+	function objects($xrefs_where = array(), $objects_where = array())
+	{
+		$xrefs = bors_find_all($this->class_name(), $xrefs_where);
+		$object_ids = bors_field_array_extract($xrefs, $this->object_field_name());
+		$objects_where['id IN'] = $object_ids;
+		return bors_find_all($this->object_class_name(), $objects_where);
 	}
 
 	function targets($xrefs_where = array(), $targets_where = array())

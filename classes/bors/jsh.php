@@ -9,7 +9,7 @@
 class bors_jsh extends base_page
 {
 	function use_temporary_static_file() { return false; }
-	function template() { return 'null.html'; }
+	function _template_def() { return 'null.html'; }
 
 	function pre_show()
 	{

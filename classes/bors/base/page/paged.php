@@ -14,11 +14,24 @@ class base_page_paged extends bors_page
 	{
 		$where = array_merge(object_property($this, 'where', array()), $where);
 
-		if($group = $this->group())
-			$where['group'] = $group;
-
 		if($set = $this->item_properties_set())
 			$where['*set'] = $set;
+
+		if($group = $this->group())
+		{
+			$where['group'] = $group;
+			if($this->get('__no_join'))
+			{
+				if($this->get('counts_in_list'))
+				{
+					$count = 'COUNT(*) AS `group_count`';
+					if(empty($where['*set']))
+						$where['*set'] = $count;
+					else
+						$where['*set'] .= ",$count";
+				}
+			}
+		}
 
 		if($inner = $this->inner_join())
 			$where['inner_join'] = $inner;

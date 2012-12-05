@@ -1,6 +1,6 @@
 <?php
 
-class bors_admin_edit_go extends bors_page
+class bors_admin_edit_go extends bors_admin_page
 {
 	function pre_show()
 	{

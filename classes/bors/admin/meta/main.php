@@ -27,18 +27,38 @@ class bors_admin_meta_main extends bors_admin_paginated
 
 	function body_data()
 	{
+		$foo = bors_foo($this->main_class());
+
 		$new_link_title = false;
 		if(!$this->get('skip_auto_admin_new'))
-			if(!bors_lib_object::get_foo($this->main_class(), 'skip_auto_admin_new'))
-				$new_link_title = bors_lib_object::get_foo($this->main_class(), 'class_title_vp');
+			if(!$foo->get('skip_auto_admin_new'))
+				$new_link_title = $foo->class_title_vp();
 
 		$fields = $this->get('item_fields');
 		if(!$fields)
-			$fields = bors_lib_object::get_foo($this->main_class(), 'item_list_admin_fields');
+			$fields = $foo->item_list_admin_fields();
+
+		$parsed_fields = array();
+		$sortable = array();
+		foreach($fields as $p => $t)
+		{
+			if(is_numeric($p))
+			{
+				$p = $t;
+				$x = bors_lib_orm::parse_property($this->main_class(), $p);
+				$t = defval($x, 'title', $p);
+				if(!empty($x['admin_sortable']))
+					$sortable[] = $p;
+			}
+
+			$parsed_fields[$p] = $t;
+		}
+
+		$this->set_attr('_sortable_append', $sortable);
 
 		return array_merge(parent::body_data(), array(
 			'new_link_title' => $new_link_title,
-			'item_fields' => $fields,
+			'item_fields' => $parsed_fields,
 			'admin_search_url' => $this->page() > 2 ? false : $this->get('admin_search_url'),
 		));
 	}

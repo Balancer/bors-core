@@ -15,8 +15,14 @@ class bors_page_meta_main extends bors_paginated
 
 	function body_data()
 	{
+		$target_foo = $this->foo_object();
+		$fields = $this->get('item_fields');
+
+		if(!$fields)
+			$fields = $target_foo->item_list_fields();
+
 		return array_merge(parent::body_data(), array(
-			'item_fields' => $this->foo_object()->item_fields(),
+			'item_fields' => $fields,
 		));
 	}
 }

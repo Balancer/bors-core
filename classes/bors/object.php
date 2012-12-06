@@ -153,4 +153,20 @@ class bors_object extends base_object
 	}
 
 	function _item_list_admin_fields_def() { return $this->item_list_fields(); }
+
+	function module($module_name) { return $this->module_ex($module_name, array()); }
+
+	// http://aviaport.wrk.ru/directory/aviafirms/groups/
+	function module_ex($module_name, $attrs)
+	{
+		$class_name = $this->class_name();
+		$class_name = preg_replace('/_(main|edit|view)$/', '', $class_name);
+		$module_class = bors_plural($class_name).'_modules_'.$module_name;
+		set_def($attrs, 'model', $this);
+		$mod = bors_load_ex($module_class, $this, $attrs);
+		if(!$mod)
+			bors_throw(ec("Не могу загрузить модуль '$module_class'"));
+
+		return $mod;
+	}
 }

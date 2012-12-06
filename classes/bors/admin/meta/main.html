@@ -1,3 +1,4 @@
+{block name="body_header"}
 {if $new_link_title}
 <ul>
 <li><a href="new/">Добавить {$new_link_title}</a></li>
@@ -16,6 +17,7 @@
 </fieldset>
 </form>
 {/if}
+{/block}
 
 {$this->pages_links_nul()}
 
@@ -29,7 +31,7 @@
 </thead>
 <tbody>
 {foreach from=$items item="x"}
-<tr>
+<tr{if $x->get('items_list_table_row_class')} class="{join(' ', $x->get('items_list_table_row_class'))}"{/if}>
 	{foreach $item_fields as $prop_name => $prop_title}
 		<td>{$x->get($prop_name)}</td>
 	{/foreach}

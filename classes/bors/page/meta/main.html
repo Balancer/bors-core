@@ -1,11 +1,14 @@
 {$this->pages_links_nul()}
 
 <table class="btab w100p">
+<thead>
 <tr>
 {foreach $item_fields as $prop_name => $prop_title}
-	<th>{$prop_title}</th>
+	{$this->make_sortable_th($prop_name, $prop_title)}
 {/foreach}
 </tr>
+</thead>
+<tbody>
 {foreach from=$items item="x"}
 <tr>
 	{foreach $item_fields as $prop_name => $prop_title}
@@ -13,6 +16,7 @@
 	{/foreach}
 </tr>
 {/foreach}
+</tbody>
 </table>
 
 {$this->pages_links_nul()}

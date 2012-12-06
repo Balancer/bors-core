@@ -65,6 +65,8 @@ class bors_paginated extends base_page_paged
 				$where[] = "$inner_field IN (SELECT $inner_field FROM `$db_name`.`$table_name`)";
 
 		}
+		else
+			$this->set_attr('__no_join', true);
 
 		return $where;
 	}
@@ -72,6 +74,24 @@ class bors_paginated extends base_page_paged
 	function make_sortable_th($property, $title)
 	{
 		$sorts = $this->get('sortable', array());
+		if($x = $this->get('_sortable_append', array()))
+			$sorts = array_merge($x, $sorts);
+
+		$parsed_sorts = array();
+
+		foreach($sorts as $f => $p)
+		{
+			if(is_numeric($f))
+			{
+				$f = $p;
+				$x = bors_lib_orm::parse_property($this->main_class(), $f);
+				$t = defval($x, 'title', $f);
+			}
+
+			$parsed_sorts[$f] = $p;
+		}
+
+		$sorts = $parsed_sorts;
 
 		if(!($sort_key = @$sorts[$property]))
 			return "<th>$title</th>";

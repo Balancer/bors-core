@@ -171,8 +171,32 @@ function bors_icon($image, $params = array())
 {
 	$title = defval($params, 'title');
 	$alt   = defval($params, 'alt', '[IMG]');
-	//TODO: вынести хардкод
-	$html = "<img src=\"http://s.wrk.ru/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$alt\" class=\"flag\" />";
+
+	if(!preg_match('/\.(png|gif)$/', $image))
+	{
+		foreach(array(BORS_CORE.'/shared/i16' => '/_bors/i16', BORS_EXT.'/htdocs/_bors-ext/i16' => '/_bors-ext/i16') as $dir => $path)
+		{
+			if(file_exists("$dir/$image.png"))
+			{
+				$image = "$path/$image.png";
+				break;
+			}
+
+			if(file_exists("$dir/$image.gif"))
+			{
+				$image = "$path/$image.gif";
+				break;
+			}
+		}
+
+		$html = "<img src=\"$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$action\" style=\"vertical-align: middle\"$class />";
+	}
+	else
+	{
+		//TODO: вынести хардкод
+		$html = "<img src=\"http://s.wrk.ru/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$alt\" class=\"flag\" />";
+	}
+
 	if($url = defval($params, 'url'))
 		$html = "<a href=\"$url\">{$html}</a>";
 

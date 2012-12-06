@@ -121,7 +121,7 @@ class base_page extends bors_object
 	function set_total_items($count) { return $this->__total_items = $count; }
 	function items_offset() { $p = $this->page(); return $p > 1 ? ($this->page()-1)*$this->items_per_page() : 0; }
 
-	function body()
+	function _body_def()
 	{
 		if(config('debug.execute_trace'))
 			debug_execute_trace("{$this->debug_title_short()}->body() begin...");

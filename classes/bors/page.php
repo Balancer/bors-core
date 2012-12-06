@@ -81,6 +81,12 @@ class bors_page extends base_page
 					$this->attr['body_template_class'] = 'bors_templates_php';
 					return;
 				}
+				if(file_exists($bt = $base.'tpl'))
+				{
+					$this->attr['body_template'] = $bt;
+					$this->attr['body_template_class'] = 'bors_templates_smarty';
+					return;
+				}
 				if(file_exists($bt = $base.'haml') && class_exists('bors_templates_phaml'))
 				{
 					$this->attr['body_template'] = $bt;

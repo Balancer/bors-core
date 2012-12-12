@@ -64,7 +64,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 			if(is_array($value))
 			{
 				$value = "array(\n".self::tr_array($value, 3)."\n\t\t)";
-				// fiels[]: values — это добавляемый к parent массив
+				// fields[]: values — это добавляемый к parent массив
 				if(preg_match('/^(\w+)\[\]$/', $key, $m))
 				{
 					$key = $m[1];

@@ -91,6 +91,9 @@ function os_image($os_name)
 		case 'Windows':
 			return '/bors-shared/images/os/windows.gif';
 			break;
+		case 'Windows8':
+			return '/bors-shared/images/os/windows-8.png';
+			break;
 		default:
 	}
 

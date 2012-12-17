@@ -111,6 +111,7 @@ function lt_img($params)
 				}
 
 				$image_size = @getimagesize($path);
+
 				if(!file_exists($path) || filesize($path)==0 || !$image_size)
 				{
 					require_once('inc/http.php');
@@ -305,6 +306,8 @@ function lt_img($params)
 
 				return $out;
 			}
+
+		return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't download]</small>";
 	}
 
 	return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [empty url]</small>";

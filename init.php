@@ -513,7 +513,12 @@ function bors_function_include($req_name)
  */
 function bors_config_ini($file)
 {
-	foreach(parse_ini_file($file, true) as $section_name => $data)
+	$ini_data = parse_ini_file($file, true);
+
+	if($ini_data === false)
+		bors_throw("'$file' parse error");
+
+	foreach($ini_data as $section_name => $data)
 	{
 		if($section_name == 'global' || $section_name == 'config')
 			$GLOBALS['cms']['config'] = array_merge($GLOBALS['cms']['config'], $data);

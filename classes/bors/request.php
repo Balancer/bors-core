@@ -23,6 +23,15 @@ class bors_request extends base_object
 					if(!preg_match('/^([\-\+]*\w+\s*,?\s*)+$/', $val))
 						$val = NULL;
 					break;
+				case 'bool':
+					$val = (bool) $val;
+					break;
+				case 'int':
+					$val = intval($val);
+					break;
+				case 'float_str':
+					$val = str_replace(',', '.', floatval($val));
+					break;
 			}
 		}
 

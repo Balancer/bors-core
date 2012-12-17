@@ -43,6 +43,7 @@ class bors_forms_checkbox extends bors_forms_element
 
 		if(empty($delim))
 			$delim = '&nbsp;';
+
 		if(empty($br))
 			$br = "<br/>\n";
 

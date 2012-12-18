@@ -79,6 +79,12 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 			if(preg_match('/^(\w+)\(\)$/', $key, $m)) // function(): ...
 				$key = $m[1];
+			elseif(preg_match('/^(\w+)&parent\(\)$/', $key, $m)) // function&parent(): ... { ... return parent::function() }
+			{
+				$function = $m[1];
+				$class .= "\n\tfunction $function() { $value; return parent::$function(); }\n";
+				continue;
+			}
 			elseif(preg_match('/^(\w+) \( ([^\)]+) \)$/x', $key, $m)) // function($arg): ...
 			{
 				$key = $m[1];

@@ -50,6 +50,10 @@ class bors_paginated extends base_page_paged
 			else
 				$inner_field = bors_core_object_defaults::item_name($this->main_class()).'_id';
 
+			// http://matf.aviaport.ru/companies/countries/
+			// http://matf.aviaport.ru/companies/regions/
+			// http://admin.aviaport.ru/job/cabinets/
+
 			if($this->get('counts_in_list'))
 			{
 				if($join_type == 'inner')
@@ -62,7 +66,7 @@ class bors_paginated extends base_page_paged
 					$where['*set'] = "'$join_class' AS `b_counter_class`";
 			}
 			else
-				$where[] = "$inner_field IN (SELECT $inner_field FROM `$db_name`.`$table_name`)";
+				$where[] = "{$this->main_class()}.id IN (SELECT $inner_field FROM `$db_name`.`$table_name`)";
 
 		}
 		else

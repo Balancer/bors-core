@@ -103,6 +103,8 @@ class base_page_paged extends bors_page
 
 	function body_data()
 	{
+//		print_dd($this->config()->object_data());
+
 		$items = $this->items();
 
 		return array_merge(parent::body_data(), array(

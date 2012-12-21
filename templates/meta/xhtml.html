@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+{block name="html_head"}
+	<title>{$this->browser_title()}</title>
+
+	<meta http-equiv="content-type" content="text/html; charset={$this->output_charset()}" />
+{if not empty($meta)}{foreach $meta as $key => $value}
+	<meta name="{$key}" content="{$value|htmlspecialchars}" />
+{/foreach}{/if}
+
+	<link rel="SHORTCUT ICON" href="/favicon.ico" />
+{block name="html_head_css"}
+	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/core.css" />
+	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/style.css" />
+	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/color-gray.css" />
+	<link rel="stylesheet" type="text/css" href="/_bors/css/bors/style-modificators.css" />
+	{foreach $css_list as $css}
+		<link rel="stylesheet" type="text/css" href="{$css}" />
+	{/foreach}
+{/block}
+
+{if not empty($style)}
+<style type="text/css" media="all"><!--
+{foreach from=$style item="s"}
+{$s}
+{/foreach}
+--></style>
+{/if}
+
+	<script type="text/javascript" src="/_bors/js/cfuncs.js"></script>
+{if not empty($js_include)}{foreach from=$js_include item="s"}
+	<script type="text/javascript" src="{$s}"></script>
+{/foreach}{/if}
+{if not empty($javascript)}
+	<script type="text/javascript"><!--
+{foreach from=$javascript item="s"}
+{$s}
+{/foreach}
+--></script>
+{/if}
+{if $bors_touch_params}
+	<script type="text/javascript">$(function(){literal}{{/literal}$.getScript('/_bors/js/touch?{$bors_touch_params}'){literal}}{/literal});</script>
+{/if}
+
+{if not empty($header)}{foreach from=$header item="h"}
+{$h}
+{/foreach}{/if}
+
+{foreach item=s from=$head_append}
+{$s}
+{/foreach}
+{/block}
+</head>
+
+{* Идея с http://kobzarev.com/makeup/getting-rid-of-css-hacks-in-internet-explorer.html *}
+<!--[if lt IE 7]><body class="ie ie6 ltie9 ltie8 ltie7"><![endif]-->
+<!--[if IE 7]><body class="ie ie7 ltie9 ltie8"><![endif]-->
+<!--[if IE 8]><body class="ie ie8 ltie9"><![endif]-->
+<!--[if IE 9]><body class="ie ie9"><![endif]-->
+<!--[if gt IE 9]><body class="ie"><![endif]-->
+<!--[if !IE]><!--><body><!--<![endif]-->
+
+{block name="navbar"}
+{if $template_top_menu}
+<div class="header">
+<ul class="top-tabs">
+{foreach from=$template_top_menu item="t" key="d"}
+{if $d|regex_match:'^\w+$'}
+{assign var="url" value='/'|cat:$d|cat:'/'}
+<li{if $main_uri|regex_match:$url
+	or $this->url()|regex_match:$url
+} class="selected"{/if}><a href="{$url}">{$t}</a></li>
+{else}{if $d}
+<li><a href="{$d}">{$t}</a></li>
+{else}
+<li{if $main_uri|regex_match:'^http://[^/]+/$'} class="selected"{/if}><a href="/">{$t}</a></li>
+{/if}{/if}
+{/foreach}
+</ul>
+</div>
+{/if}
+{/block}
+
+<div class="body" {if not $right_menu and not $default_right_menu and not $right_menu_append and not $right_menu_prepend} style="margin-right: 20px"{/if}>
+{block name="body_title"}
+<div class="clear">&nbsp;</div>
+{if not $skip_page_title}<h1>{$this->page_title()}</h1>{/if}
+<div class="top-nav">{module class="nav_top" id=$this}</div>
+<div style="font-style:italic; margin-right: 0; display: block; float: right; width: 40%; text-align: justify">{$this->description()|lcml_bbh}</div>
+<div class="clear">&nbsp;</div>
+{/block}
+
+{$under_head_insert}
+
+{if $error_message}<div class="red_box"   >{$error_message}</div>{/if}
+{if $notice_message}<div class="yellow_box">{$notice_message}</div>{/if}
+{if $success_message}<div class="green_box" >{$success_message}</div>{/if}
+
+{if $system_message}<div class="yellow_box">{$system_message}</div>{/if}
+
+{if $page_tabs}
+<ul class="pages-tabs">
+{foreach from=$page_tabs key="u" item="t"}
+<li{if $main_uri|url_equals:$u
+	or $current_page|url_equals:$u
+	or $this->url()|url_equals:$u
+} class="selected"{/if}><a href="{$u}">{$t}</a></li>
+{/foreach}
+</ul>
+{/if}
+
+{$body}
+
+<div class="right-menu">
+{if $right_menu_prepend}
+	{foreach from=$right_menu_prepend item="f"}
+		{include file=$f}
+	{/foreach}
+{/if}
+{if $right_menu}
+<!-- right menu = {$right_menu} -->
+	{include file=$right_menu}
+{else}
+	{if $default_right_menu}
+<!-- default right menu = {$default_right_menu} -->
+		{include file=$default_right_menu}
+	{/if}
+{/if}
+{if $right_menu_append}
+	{foreach from=$right_menu_append item="f"}
+		{include file=$f}
+	{/foreach}
+{/if}
+</div>
+
+<div class="clear">&nbsp;</div>
+
+{if not $skip_signature}
+<div style="text-align:right">Powered by <a href="http://bors.balancer.ru/">BORS© OpenSource PHP Framework</a></div>
+{/if}
+
+</div>
+
+
+{if $bottom_counters}{include file=$bottom_counters}{/if}
+
+<!--
+class = {$this->class_name()}
+class_file = {$this->class_file()}
+{if $this->cache_static()}
+static expire = {$this->cache_static_expire()|date:'r'}
+{/if}
+class_template = {$this->template()}
+BORS_CORE={$smarty.const.BORS_CORE}
+server_name={config('debug.server_name')}
+-->
+</body>
+{foreach from=$js_include_post item="s"}
+<script type="text/javascript" src="{$s}"></script>
+{/foreach}
+{if $javascript_post || $jquery_document_ready}
+<script type="text/javascript"><!--
+{foreach from=$javascript_post item="s"}
+{$s}
+{/foreach}
+{if $jquery_document_ready}
+$(document).ready(function(){literal}{{/literal}
+{foreach from=$jquery_document_ready item="s"}
+{$s}
+{/foreach}
+})
+{/if}
+--></script>
+{/if}
+</html>

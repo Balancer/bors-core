@@ -46,9 +46,12 @@ function objects_array($class, $args = array())
 
 		if(config('debug_objects_create_counting_details'))
 		{
-			debug_count_inc($class.': bors_find_all_calls');
-			debug_count_inc($class.': bors_find_all_total ', count($objects));
+			debug_count_inc("bors_find_all($class) calls");
+			debug_count_inc("bors_find_all($class) count", count($objects));
 		}
+
+		if(config('debug_trace_object_load'))
+			debug_hidden_log('objects_load', "all $class(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
 
 		if($preload)
 		{
@@ -70,10 +73,11 @@ function objects_first($class, $args = array())
 		$args['limit'] = 1;
 	$objs = objects_array($class, $args);
 	if(config('debug_objects_create_counting_details'))
-	{
-		debug_count_inc($class.': bors_find_first_calls');
-		debug_count_inc($class.': bors_find_first_total', count($objs));
-	}
+		debug_count_inc("bors_find_first($class)");
+
+	if(config('debug_trace_object_load'))
+		debug_hidden_log('objects_load', "first $class(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
+
 	return $objs ? $objs[0] : NULL;
 }
 

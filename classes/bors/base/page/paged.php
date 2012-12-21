@@ -42,7 +42,34 @@ class base_page_paged extends bors_page
 		return $where;
 	}
 
-	function on_items_load(&$items) { }
+	function on_items_load(&$items)
+	{
+		if($preload = $this->get('postload_objects'))
+		{
+			$parsed = array();
+
+			foreach($preload as $property => $class_name)
+			{
+				if(preg_match('/^(\w+)\((\w+)\)$/', $class_name, $m))
+				{
+					$class_name = $m[1];
+					$id_property = $m[2];
+				}
+				else
+					$id_property = $property . '_id';
+
+				$parsed[$id_property] = array($class_name, $property);
+			}
+
+			$objs = array();
+
+			foreach(bors_fields_array_extract($items, array_keys($parsed)) as $id_property => $values)
+			{
+				list($class_name, $property) = $parsed[$id_property];
+				bors_find_all($class_name, array('id IN' => $values));
+			}
+		}
+	}
 
 	private $_items;
 	function items()

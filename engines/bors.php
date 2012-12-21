@@ -16,7 +16,10 @@ function object_load($class, $object_id=NULL, $args=array())
 		$class = class_id_to_name($class);
 
 	if(config('debug_trace_object_load'))
+	{
+		bors_function_include('debug/hidden_log');
 		debug_hidden_log('objects_load', "$class($object_id)", config('debug_trace_object_load_trace'));
+	}
 
 	if(!$class)
 		return;
@@ -36,6 +39,9 @@ function object_load($class, $object_id=NULL, $args=array())
 			$object_id = base64_decode($object_id);
 		}
 	}
+
+	if(config('debug_objects_create_counting_details'))
+		debug_count_inc("bors_load($class)");
 
 	if($object = class_load($class, $object_id, $args))
 		return $object;

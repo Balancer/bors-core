@@ -57,7 +57,7 @@ class bors_object_db extends base_object_db
 //		echo "1: {$this->class_name()}<br/>";
 		$dbh = new driver_mysql($this->db_name());
 		$info = $dbh->get("SHOW CREATE TABLE ".$this->table_name());
-//		var_dump($info);
+//		print_dd($info);
 //		var_dump($this->_access_name());
 
 		$project = $this->_project_name();
@@ -96,7 +96,7 @@ class bors_object_db extends base_object_db
 				$foreign_table = $mm[2];
 				$foreign_db = $mm[3];
 				if(empty($fields[$field_name]['class']))
-					bors_throw(ec('Не могу автоматически определить имя класса в сторонней БД: ')."`{$foreign_db}`.`{$foreign_table}`");
+					bors_throw(ec('Не могу автоматически определить имя класса в сторонней БД (')."`{$foreign_db}`.`{$foreign_table}`)".ec(' для класса ').$this->class_name());
 				$item_class = $fields[$field_name]['class'];
 				$fields[$field_name]['have_null'] = "true";
 				$auto_class_name = preg_replace('/_[a-z]+$/', '', $mm[1]);

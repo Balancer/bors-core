@@ -69,7 +69,6 @@ class bors_forms_dropdown extends bors_forms_element
 			else
 				$list = array();
 		}
-
 		$have_null = in_array(NULL, $list);
 		$strict = defval($params, 'strict', $have_null);
 		$is_int = defval($params, 'is_int');

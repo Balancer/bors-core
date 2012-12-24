@@ -41,7 +41,11 @@ function object_load($class, $object_id=NULL, $args=array())
 	}
 
 	if(config('debug_objects_create_counting_details'))
+	{
 		debug_count_inc("bors_load($class)");
+//		if(preg_match('!matf.aviaport.ru/companies/\d+/edit!', $class))
+//			echo debug_trace();
+	}
 
 	if($object = class_load($class, $object_id, $args))
 		return $object;

@@ -690,7 +690,7 @@ defined at {$this->class_file()}<br/>
 	}
 
 	function admin_engine() { return config('admin_engine', 'bors_admin_engine'); }
-	function admin() { return object_load($this->admin_engine(), $this); }
+	function admin() { return bors_load($this->admin_engine(), $this); }
 	// Используется только при подключении BORS_EXT
 	function tools() { return bors_load('bors_object_tools', $this); }
 	function urls($type = NULL)

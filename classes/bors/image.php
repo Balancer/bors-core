@@ -254,6 +254,10 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 	// Возвращает объект изображения.
 	static function register_file($file, $new_instance = true, $exists_check = true, $class_name = NULL)
 	{
+		$ch = new bors_cache_fast(NULL);
+		if($l = $ch->get('bors_image_register', $file))
+			return $l;
+
 //		echo debug_trace();
 //		bors_exit(debug_trace());
 
@@ -265,7 +269,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		$data = url_parse($file);
 
 		if($exists_check && $img2 = bors_find_first($class_name, array('full_file_name' => $data['local_path'])))
-			return $img2;
+			return $ch->set($img2, rand(3600, 86400));
 
 		$img->set_original_filename(basename($file), $new_instance);
 		$img->set_relative_path(str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($file)), $new_instance);
@@ -281,7 +285,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		if($new_instance)
 			$img->new_instance();
 
-		return $img;
+		return $ch->set($img, rand(3600, 86400));
 	}
 
 	function cross_objects() { return bors_link::objects($this); }

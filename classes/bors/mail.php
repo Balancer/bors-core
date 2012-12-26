@@ -30,7 +30,39 @@ class bors_mail
 		return $mail;
 	}
 
-	function to($to)			{ $this->to			= $to;		return $this; }
+	function to($to)
+	{
+		$this->to = $to;
+		return $this;
+	}
+
+	function to2($email, $title)
+	{
+		$this->to = self::make_recipient(array($email, $title));
+		return $this;
+	}
+
+	static function make_recipient($user)
+	{
+		if(!$user)
+			return NULL;
+
+		if(is_array($user))
+			list($email, $name) = $user;
+		elseif(!is_object($user))
+			return $user;
+		else
+		{
+			$name  = $user->title();
+			$email = $user->email();
+		}
+
+		if(preg_match('/^[\w\s]+$/'))
+			return "$name <$email>";
+
+		return "=?UTF-8?B?".base64_encode($name)."?= <$email>";
+	}
+
 	function from($from)
 	{
 		if(preg_match('/^(.*?) <(.*)>$/', $from, $m))

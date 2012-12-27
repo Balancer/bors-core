@@ -7,6 +7,8 @@ class blib_string extends blib_object
 		$this->_value = (string) $init_value;
 	}
 
+	static function factory($string) { return new blib_string($string); }
+
 	function __toString() { return $this->_value; }
 
 	function write() { echo $this->_value; return $this; }
@@ -119,6 +121,9 @@ class blib_string extends blib_object
 		$test->assertEquals('однажды в студёную=зимнюю пору я из=лесу', bors_substr(blib_string::wordwrap($str, 20, '='), 0, 40));
 		$test->assertEquals('однажды=в=студёну=ю=зимнюю=пору я=из лес', bors_substr(blib_string::wordwrap($str, 7, '=', true), 0, 40));
 		$test->assertEquals('однажды=в=студёную=зимнюю=пору я=из лесу', bors_substr(blib_string::wordwrap($str, 7, '='), 0, 40));
+
+		$x = blib_string::factory("Test 123");
+		$test->assertEquals('Test/123', $x->split(' ')->join('/'));
 	}
 
 	static function __benchmark()
@@ -135,5 +140,10 @@ class blib_string extends blib_object
 	static function base64_decode2($str)
 	{
 		return base64_decode(str_replace(array('_','-'), array('/', '+'), $str));
+	}
+
+	function split($delimiter)
+	{
+		return blib_array::factory(explode($delimiter, $this->_value));
 	}
 }

@@ -73,6 +73,13 @@ class bors_mail
 
 		return $this;
 	}
+
+	function from2($email, $title)
+	{
+		$this->from = self::make_recipient(array($email, $title));
+		return $this;
+	}
+
 	function subject($subject)	{ $this->subject	= $subject;	return $this; }
 	function text($text)		{ $this->text		= $text;	return $this; }
 	function html($html)		{ $this->html		= $html;	return $this; }

@@ -120,6 +120,12 @@ class bors_forms_saver extends base_empty
 		if(method_exists($object, 'post_save'))
 			$object->post_save($data);
 
+		if(($memcache_instance = config('memcached_instance')))
+		{
+			$hash = 'bors_v'.config('memcached_tag').'_'.$this->class_name().'://'.$this->id();
+			$memcache_instance->set($hash, serialize($this), 0, 0);
+		}
+
 		$go = defval($data, 'go', $go);
 
 		if(!$go)

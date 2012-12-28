@@ -819,6 +819,9 @@ defined at {$this->class_file()}<br/>
 		}
 
 		$storage->save($this);
+
+		bors_objects_helper::update_cached($this);
+
 		$this->changed_fields = array();
 
 		if(config('debug_trace_changed_save'))
@@ -1454,6 +1457,9 @@ defined at {$this->class_file()}<br/>
 
 		if($use_static || $recreate)
 			cache_static::save($this, $content);
+
+		if(config('use_memcached_objects') || $recreate)
+			bors_objects_helper::cache_registers($this);
 
 		return $output_content;
 	}

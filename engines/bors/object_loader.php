@@ -31,8 +31,9 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 		}
 	}
 
-	if(($memcache = config('memcached_instance')) && call_user_func(array($class_name, 'can_cached')))
+	if(config('use_memcached_objects') && ($memcache = config('memcached_instance')) && call_user_func(array($class_name, 'can_cached')))
 	{
+
 		debug_count_inc('memcached checks');
 		$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id;
 		if($x = unserialize($memcache->get($hash)))
@@ -70,9 +71,9 @@ function save_cached_object($object, $delete = false, $use_memcache = true)
 	if(!method_exists($object, 'id') || is_object($object->id()))
 		return;
 
-	if($use_memcache && ($memcache = config('memcached_instance')) && $object->can_cached())
+	if($use_memcache && config('use_memcached_objects') && ($memcache = config('memcached_instance')) && $object->can_cached())
 	{
-		$hash = 'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
+		$hash = bors_objects_helper::memcache_hash_key($object);
 
 		if($delete)
 			$memcache->delete($hash); //TODO: нужен фикс вместо маскировки: http://balancer.ru/_bors/igo?o=forum_post__2171516

@@ -57,8 +57,8 @@ class bors_view extends bors_page
 	function title() { return $this->object()->title(); }
 	function nav_name() { return $this->object()->nav_name(); }
 	function description() { return $this->object()->description(); }
-	function create_time($exact = false) { return $this->object()->create_time($exact); }
-	function modify_time($exact = false) { return $this->object()->modify_time($exact); }
+	function create_time() { return $this->object()->create_time(); }
+	function modify_time() { return $this->object()->modify_time(); }
 
 	function _image_def() { return $this->object()->get('image'); }
 
@@ -152,5 +152,15 @@ class bors_view extends bors_page
 		$access = $this->target()->access();
 		$access->set_attr('view', $this);
 		return $access;
+	}
+
+	/**
+		Добавляем модель (выводимый объект) в список объектов, от которых
+		зависит наше представление, чтобы при изменениях в модели
+		сбрасывать кеши представления
+	*/
+	function cache_parents()
+	{
+		return array_merge(parent::cache_parents(), array($this->model()));
 	}
 }

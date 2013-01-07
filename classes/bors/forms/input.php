@@ -4,6 +4,9 @@ class bors_forms_input extends bors_forms_element
 {
 	static function html($params, &$form = NULL)
 	{
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
 		if(!$form)
 			$form = bors_form::$_current_form;
 

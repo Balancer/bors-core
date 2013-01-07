@@ -29,6 +29,6 @@ class bors_forms_submit extends bors_forms_element
 		if($th || $form->attr('has_form_table'))
 			$html = "<tr><th colspan=\"2\">{$html}</th></tr>\n";
 
-		echo $html;
+		return $html;
 	}
 }

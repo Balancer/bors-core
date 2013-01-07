@@ -1,9 +1,18 @@
 <?php
 
+// Отработка на:
+//	http://admin2.aviaport.wrk.ru/directory/airlines/1/airports/
+//		— старый вариант, с bors_form
+//	http://admin2.aviaport.wrk.ru/digest/new/
+//		— новый вариант, с bors_admin_newstep
+
 class bors_forms_combobox extends bors_forms_element
 {
 	static function html($params, &$form = NULL)
 	{
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
 		include_once('inc/bors/lists.php');
 
 		extract($params);
@@ -27,7 +36,12 @@ class bors_forms_combobox extends bors_forms_element
 			$css_style[] = "width: 99%";
 		}
 
-		$html .= "<div id=\"{$name}\"";
+		if(!empty($fixed))
+		{
+			$html .= "<label><input type=\"radio\" name=\"_{$name}\" style=\"float: left\" value=\"\" />&nbsp;";
+		}
+
+		$html .= "<div id=\"{$name}\" style=\"display: inline;\"";
 
 		$class = join(' ', $css_classes);
 		$style = join(';', $css_style);
@@ -110,7 +124,18 @@ class bors_forms_combobox extends bors_forms_element
 //			if($id !== 'default')
 //				$html .= "\t\t\t<option value=\"$id\"".(in_array($id, $current, $strict) ? " selected=\"selected\"" : "").">$iname</option>\n";
 
-		$html .= "\t\t</div>\n";
+		$html .= "\t\t</div>";
+
+		if(!empty($fixed))
+		{
+			$html .= "</label>\n<div class=\"clear\">&nbsp;</div>\n";
+			foreach($fixed as $title => $value)
+				$html .= "<label><input type=\"radio\" name=\"_{$name}\" value=\"{$value}\" />&nbsp;$title</label>\n";
+
+			$form->append_attr('override_fields', "!_{$name}");
+		}
+		else
+			$html .= "\n";
 
 		if($th)
 			$html .= "</td></tr>\n";

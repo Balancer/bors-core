@@ -15,6 +15,7 @@ class bors_admin_newstep extends bors_admin_page
 
 		$form = new bors_form(NULL);
 		bors_form::$_current_form = $form;
+		$form->set_attr('has_form_table', true);
 
 		$result_html[] = $form->html_open(array(
 			'th' => '-',
@@ -89,6 +90,8 @@ class bors_admin_newstep extends bors_admin_page
 		}
 
 //		var_dump($result_html);
+
+		$result_html[] = bors_forms_submit::html(array('value' => ec('Сохранить')), $form);
 
 		$result_html[] = $form->html_close();
 

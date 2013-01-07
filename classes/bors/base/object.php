@@ -1268,15 +1268,29 @@ defined at {$this->class_file()}<br/>
 		{
 			foreach(explode(',', $overrides) as $name)
 			{
-				// формат 'func(name1,name2)' — обработка функцией для _name и добавление к результату name
+				// формат 'func(name1+name2)' — обработка функцией для _name и добавление к результату name
 				if(preg_match('!^(\w+)\((\w+)\+(\w+)\)$!', $name, $m))
 				{
-					$data[$m[2]] = $m[1](@$data[$m[2]], @$data[$m[3]]);
+					$func = $m[1];
+					if(!$func == 'bors_comma_join')
+						bors_throw(ec('Ещё не реализовано')); // Добавить проверку безопасности
+					$data[$m[2]] = $func(@$data[$m[2]], @$data[$m[3]]);
 					unset($data[$m[3]]);
 				}
 				// формат 'func(name)' — прямая обработка функцией
 				elseif(preg_match('!^(\w+)\((\w+)\)$!', $name, $m))
-					$data[$m[2]] = $m[1]($data['_'.$m[2]]);
+				{
+					$func = $m[1];
+					bors_throw(ec('Ещё не реализовано')); // Добавить проверку безопасности
+					$data[$m[2]] = $func($data['_'.$m[2]]);
+				}
+				// !_origin_id
+				// Прямое присваивание при ненулевом значении
+				elseif(preg_match('/^!_(\w+)$/', $name, $m))
+				{
+					if($val = popval($data, '_'.$m[1]))
+						$data[$m[1]] = $val;
+				}
 				// Прямое присваивание.
 				else
 					$data[$name] = $data['_'.$name];

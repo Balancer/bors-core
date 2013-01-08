@@ -162,6 +162,10 @@
 		return $content;
 	}
 
+/*
+	Создание объекта, если нужно, в виде статической копии
+*/
+
 function bors_object_create($obj)
 {
 	if(!$obj)
@@ -186,7 +190,9 @@ function bors_object_create($obj)
 		unset($GLOBALS['cms']['templates']);
 		$GLOBALS['main_uri'] = $obj->url($obj->page());
 
-		return $obj->content(true, true);
+		$obj->set_attr('recreate_on_content', true);
+
+		return $obj->content();
 	}
 
 	return NULL;

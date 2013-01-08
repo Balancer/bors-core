@@ -37,9 +37,7 @@ class bors_forms_combobox extends bors_forms_element
 		}
 
 		if(!empty($fixed))
-		{
-			$html .= "<label><input type=\"radio\" name=\"_{$name}\" style=\"float: left\" value=\"\" />&nbsp;";
-		}
+			$html .= "<label><input type=\"radio\" name=\"_{$name}\" style=\"float: left\" value=\"\" />&nbsp;</label>";
 
 		$html .= "<div id=\"{$name}\" style=\"display: inline;\"";
 
@@ -126,13 +124,22 @@ class bors_forms_combobox extends bors_forms_element
 
 		$html .= "\t\t</div>";
 
+		$attrs = array();
+
 		if(!empty($fixed))
 		{
-			$html .= "</label>\n<div class=\"clear\">&nbsp;</div>\n";
+			$html .= "\n<div class=\"clear\">&nbsp;</div>\n";
 			foreach($fixed as $title => $value)
 				$html .= "<label><input type=\"radio\" name=\"_{$name}\" value=\"{$value}\" />&nbsp;$title</label>\n";
 
 			$form->append_attr('override_fields', "!_{$name}");
+
+//			$attrs['onSelect'] = 'function() { alert("Sel="+this.value+", hid="+this.getAttribute("hiddenValue"))  }';
+//			$attrs['onSelect'] = 'function() { alert(123) }';
+			// Костыль для Firefox
+			// http://fairwaytech.com/flexbox
+			$attrs['onSelect'] = "function() { \$('input:radio[name=\"_{$name}\"]').first().attr('checked', 'checked'); }";
+
 		}
 		else
 			$html .= "\n";
@@ -140,7 +147,6 @@ class bors_forms_combobox extends bors_forms_element
 		if($th)
 			$html .= "</td></tr>\n";
 
-		$attrs = array();
 		if(!empty($per_page))
 			$attrs['paging'] = array('pageSize' => $per_page);
 

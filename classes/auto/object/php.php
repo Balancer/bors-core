@@ -4,7 +4,7 @@ bors_function_include('natural/bors_unplural');
 
 class auto_object_php extends bors_object
 {
-	function init() { }
+	function init($data_load = true) { }
 	function loaded() { return $this->object(); } // Не приводить к bool, это реально загруженный объект
 	function can_be_empty() { return false; }
 	function nav_name() { return $this->object()->nav_name(); }

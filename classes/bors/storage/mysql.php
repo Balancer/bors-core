@@ -760,12 +760,17 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$this->create_table();
 	}
 
-	static function add_field($class_name, $field_name)
+	static function add_field($class_name, $field_name, $type = NULL)
 	{
 		$class = new $class_name(NULL);
 		$db = new driver_mysql($class->db_name());
-		$type = bors_lib_orm::property_type_autodetect($field_name);
-		$db->query("ALTER TABLE `{$class->table_name()}` ADD `$field_name` ".self::bors_type_to_sql($type));
+
+		if(!$type)
+			$type = bors_lib_orm::property_type_autodetect($field_name);
+
+		$q = "ALTER TABLE `{$class->table_name()}` ADD `$field_name` ".self::bors_type_to_sql($type)." NULL";
+		echo $q.PHP_EOL;
+		$db->query($q);
 		bors_function_include('cache/clear_global_key');
 		clear_global_key('bors_lib_orm_class_fields-0', $class_name);
 		clear_global_key('bors_lib_orm_class_fields-1', $class_name);
@@ -809,6 +814,8 @@ array(2) {
 	{
 		static $map = array(
 			'string'	=>	'VARCHAR(255)',
+			'str2'		=>	'VARCHAR(2)',
+			'str3'		=>	'VARCHAR(3)',
 			'text'		=>	'TEXT',
 			'timestamp'	=>	'TIMESTAMP',
 			'int'		=>	'INT',

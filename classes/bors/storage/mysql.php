@@ -777,6 +777,20 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$class->clear_table_fields_cache();
 	}
 
+	static function del_field($class_name, $field_name, $confirm = false)
+	{
+		$class = new $class_name(NULL);
+		$db = new driver_mysql($class->db_name());
+
+		$q = "ALTER TABLE `{$class->table_name()}` DROP `$field_name`";
+		echo $q.PHP_EOL;
+		$db->query($q);
+		bors_function_include('cache/clear_global_key');
+		clear_global_key('bors_lib_orm_class_fields-0', $class_name);
+		clear_global_key('bors_lib_orm_class_fields-1', $class_name);
+		$class->clear_table_fields_cache();
+	}
+
 	static function check_properties($class_name, $properties) // ucrm_stat_counts
 	{
 		foreach($properties as $field_name)

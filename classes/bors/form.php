@@ -310,6 +310,7 @@ class bors_form extends bors_object
 						$type = 'dropdown';
 
 					$class = $data['class'];
+					$data['main_class'] = $class;
 				}
 
 				if(!empty($data['named_list']))
@@ -349,7 +350,9 @@ class bors_form extends bors_object
 
 				$html_append = '';
 
-				switch($type)
+				$edit_type = defval($data, 'edit_type', $type);
+
+				switch($edit_type)
 				{
 					case 'string':
 					case 'input':
@@ -361,7 +364,7 @@ class bors_form extends bors_object
 					case 'input_date':
 					case 'date':
 					case 'freedate':
-						if($type == 'freedate')
+						if($edit_type == 'freedate')
 						{
 							$data['can_drop'] = true;
 							$data['is_integer'] = 8;
@@ -401,10 +404,14 @@ class bors_form extends bors_object
 						$html .= bors_forms_radio::html($data, $this);
 						break;
 
+					case 'combobox':
+						$html .= bors_forms_combobox::html($data, $this);
+						break;
+
 					case 'dropdown':
 					case 'dropdown_id':
 					case 'dropdown_edit':
-						if($type == 'dropdown_id')
+						if($edit_type == 'dropdown_id')
 						{
 							$saveclass = @$data['class'];
 							$data['class'] = 'wa';
@@ -424,7 +431,7 @@ class bors_form extends bors_object
 							$data['class'] = $saveclass;
 						}
 
-						if($type == 'dropdown_edit')
+						if($edit_type == 'dropdown_edit')
 						{
 							$saveclass = @$data['class'];
 							$data['class'] = 'w50p';
@@ -501,7 +508,7 @@ class bors_form extends bors_object
 						break;
 
 					default:
-						$html .= ec("Неизвестный тип '{$type}' поля '{$property_name}'");
+						$html .= ec("Неизвестный тип '{$edit_type}' поля '{$property_name}'");
 //						print_dd($data);
 //						echo defval($data, 'value');
 //						echo defval($data, 'value');

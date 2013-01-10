@@ -153,6 +153,12 @@ class bors_forms_combobox extends bors_forms_element
 		if(!empty($width))
 			$attrs['width'] = $width;
 
+		if(empty($json))
+		{
+//			var_dump($params);
+			$json = "/_bors/data/lists/{$main_class}.json";
+		}
+
 		jquery_flexbox::appear("'#{$name}'", $json, $attrs);
 
 		return $html;

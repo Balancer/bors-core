@@ -345,7 +345,7 @@ class base_page extends bors_object
 		self::add_template_data($key, array_merge($prev, $merge_values));
 	}
 
-	function prepend_template_data_array($key, $prepend_values)
+	static function prepend_template_data_array($key, $prepend_values)
 	{
 		$prev = self::template_data($key);
 		if(!$prev)

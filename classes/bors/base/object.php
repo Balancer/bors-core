@@ -1425,10 +1425,12 @@ defined at {$this->class_file()}<br/>
 
 //	function __use_static() { return config('cache_static') && $this->cache_static() > 0; }
 
-	function content($can_use_static = true, $recreate = false)
+	function content()
 	{
+		$recreate = $this->get('recreate_on_content');
+
 		$use_static = config('cache_static')
-			&& ($recreate || ($can_use_static && $this->cache_static() > 0));
+			&& ($recreate || $this->cache_static() > 0);
 
 		$file = $this->static_file();
 		$fe = file_exists($file);

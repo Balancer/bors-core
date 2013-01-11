@@ -82,6 +82,9 @@ class bors_storage_htsu extends bors_storage
 				if(!$base && file_exists($file = secure_path("{$d}/webroot/{$rel}/index.{$ext}")))
 					return $file;
 
+				if(!$base && file_exists($file = secure_path("{$d}/webroot/{$rel}/main.{$ext}")))
+					return $file;
+
 				if($base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}/{$base}.{$ext}")))
 					return $file;
 

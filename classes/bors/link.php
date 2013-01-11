@@ -249,6 +249,9 @@ class bors_link extends bors_object_db
 
 		$links = bors_link::links($object, $params);
 
+//		print_dd($links);
+//		echo debug_trace();
+
 		foreach($links as $link)
 			$objs[$link->target_class_id()][$link->target_object_id()] = true;
 

@@ -48,10 +48,11 @@ class bors_templates_smarty3 extends bors_template
 		if(!file_exists($smarty->cache_dir))
 			mkpath($smarty->cache_dir, 0777);
 
-		$plugins_dir = array();
+		$plugins_dir = array(BORS_3RD_PARTY.'/'.dirname(config('smarty3_include')).'/plugins');
 		foreach(bors_dirs(true) as $dir)
 			$plugins_dir[] = $dir.'/engines/smarty/plugins';
-
+//echo '.';
+//print_dd($plugins_dir);
 		$smarty->setPluginsDir($plugins_dir);
 
 		$smarty->compile_check = true;

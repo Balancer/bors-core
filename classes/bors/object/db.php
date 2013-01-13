@@ -224,7 +224,7 @@ class bors_object_db extends base_object_db
 		return $site_url.'/'.$this->_item_name_m().'/'.$this->id().'/' . ($page > 1 ? $page.'.html' : '');
 	}
 
-	function admin_url()
+	function _admin_url_def()
 	{
 		$admin = config('admin_site_url');
 		//TODO: Костыль для сайтов без вынесенной админки. Придумать лучше.

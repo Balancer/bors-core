@@ -85,8 +85,11 @@ class base_page_paged extends bors_page
 				'order' => $this->order(),
 			)));
 		}
+
 		catch(Exception $e)
 		{
+			$msg = bors_lib_exception::catch_trace($e);
+			debug_hidden_log('items_list_exception', $msg);
 			$this->_items = array();
 		}
 

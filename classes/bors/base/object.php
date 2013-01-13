@@ -1001,7 +1001,7 @@ defined at {$this->class_file()}<br/>
 		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii(); 
 	}
 
-	function admin_url() { return $this->edit_url(); }
+	function _admin_url_def() { return $this->edit_url(); }
 	function new_url()  { return '/_bors/admin/new-smart/?object='.urlencode($this->internal_uri()); }
 	function admin_parent_url()
 	{

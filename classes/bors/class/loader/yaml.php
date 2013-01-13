@@ -17,25 +17,47 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		if($properties = popval($data, 'properties'))
 		{
-//			var_dump($properties);
 			$table_fields = array();
-			foreach($properties as $p)
-			{
-				$fields = array();
-				if(preg_match('!^(.+) // (.+)$!', $p, $m))
-				{
-					$fields['title'] = trim($m[2]);
-					$p = trim($m[1]);
-				}
-				if(preg_match('!^(\w+)\[(\w+)\]$!', $p, $m))
-				{
-					$fields['class'] = trim($m[2]);
-					$p = trim($m[1]);
-				}
-//				$fields['name'] = $p;
 
-				$table_fields[$p] = $fields;
+//			print_dd($properties);
+
+			foreach($properties as $property => $fields)
+			{
+				// http://admin.aviaport.ru/directory/dict/groups/
+				if(is_array($fields) && is_numeric($property))
+					list($property, $fields) = each($fields);
+
+				$desc = array();
+
+				if(!is_array($fields) && preg_match('!^(.*)// (.+)$!', $fields, $m))
+				{
+					$desc['title'] = trim($m[2]);
+					$fields = trim($m[1]);
+				}
+
+				if(!is_array($fields) && preg_match('!^(\w+)\[(\w+)\]$!', $fields, $m))
+				{
+					$desc['class'] = trim($m[2]);
+					$fields = trim($m[1]);
+				}
+
+//				var_dump($property); print_dd($fields);
+
+				// http://admin.aviaport.ru/directory/dict/groups/1/
+				if(is_array($fields))
+					$desc += $fields;
+				else
+				{
+					if(is_numeric($property))
+						$property = $fields;
+
+					$desc['name'] = $fields ? $fields : $property;
+				}
+
+				$table_fields[$property] = $desc;
 			}
+
+//			print_dd($table_fields);
 
 			$data['table_fields'] = $table_fields;
 		}

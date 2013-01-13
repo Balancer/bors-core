@@ -2,8 +2,6 @@
 
 class bors_admin_meta_search extends bors_admin_meta_main
 {
-	function config_class() { return config('admin_config_class'); }
-
 	function admin_search_url() { return $this->url(); }
 
 	function title() { return ec('Поиск по ').$this->foo_object()->class_title_dpm(); }

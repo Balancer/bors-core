@@ -146,6 +146,8 @@ class bors_forms_saver extends base_empty
 					return go($object->admin_url(1));
 				case 'newpage_edit_parent':
 				case 'admin_parent':
+					if($p = $form_object->get('admin_parent_url'))
+						return go($p);
 					if($p = bors_load_uri($form_object->admin_url(1)))
 					{
 						$p = $p->parents();

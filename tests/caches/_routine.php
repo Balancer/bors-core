@@ -4,9 +4,9 @@ define('BORS_SITE', __DIR__);
 
 require_once('../config.php');
 
-define('LOOPS', 1000000);
+define('LOOPS', 1000);
 define('WAIT', 1000);
-define('ENGINES', 'bors_cache_redis bors_cache_mysql');
+define('ENGINES', 'bors_cache_redis bors_cache_memcache');
 //define('ENGINES', 'bors_cache_memcache bors_cache_mysql bors_cache_smart bors_cache_zend_file bors_cache_redis');
 //define('ENGINES', 'bors_cache_zend_file');
 

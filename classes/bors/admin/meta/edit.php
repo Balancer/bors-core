@@ -5,7 +5,7 @@ class bors_admin_meta_edit extends bors_admin_page
 	function can_be_empty() { return false; }
 	function loaded() { return !$this->id() || $this->target(); }
 
-	function config_class() { return config('admin_config_class'); }
+	function _config_class_def() { return config('admin_config_class'); }
 
 	function nav_name()
 	{
@@ -136,5 +136,7 @@ class bors_admin_meta_edit extends bors_admin_page
 
 //	function parents() { return $this->admin_target() ? $this->admin_target()->parents() : parent::parents(); }
 	function admin_parent_url() { return $this->admin_target() ? $this->admin_target()->admin_url() : parent::admin_parent_url(); }
-	function access() { return $this->admin_target() ? $this->admin_target()->access() : parent::access(); }
+
+	// Нельзя так: возможна ситуация, когда объект читать можно, а вот редактировать — нет. Тогда он будет показан!
+//	function access() { return $this->admin_target() ? $this->admin_target()->access() : parent::access(); }
 }

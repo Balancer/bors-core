@@ -1,5 +1,7 @@
 <?php
 
+//	http://admin.aviaport.ru/digest/origins/search/?q=%D0%B4%D0%BE%D0%BC%D0%BE
+
 class bors_admin_meta_search extends bors_admin_meta_main
 {
 	function admin_search_url() { return $this->url(); }
@@ -57,12 +59,21 @@ class bors_admin_meta_search extends bors_admin_meta_main
 		$main_class = $this->main_class();
 		$foo = new $main_class(NULL);
 
-		$properties = explode(' ', $foo->admin_searchable_properties());
+		$properties = $foo->admin_searchable_properties();
+		if(!is_array($properties))
+			$properties = explode(' ', $properties);
 
 		foreach($properties as $p)
 		{
-			bors_lib_orm::field($this->main_class(), $p);
-			$qq[] = "`{$p['name']}` LIKE {$q}";
+			if(strpos($p, '`') === false)
+			{
+				$x = bors_lib_orm::parse_property($this->main_class(), $p);
+				$field = "`{$x['name']}`";
+			}
+			else
+				$field = $p;
+//			var_dump($this->main_class(), $p, $field);
+			$qq[] = "$field LIKE {$q}";
 		}
 
 		$where = array('('.join(' OR ', $qq).')');

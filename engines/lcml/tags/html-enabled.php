@@ -18,7 +18,7 @@ function lp_html_iframe($inner, $params)
 
 	$params['src'] = html_entity_decode(@$params['src']);
 
-	return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling marginheight marginwidth src').">$inner</iframe>";
+	return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling marginheight marginwidth src webkitAllowFullScreen mozallowfullscreen allowfullscreen').">$inner</iframe>";
 }
 
 /*

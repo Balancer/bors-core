@@ -4,7 +4,7 @@ bors_function_include('cache/is_global_key');
 bors_function_include('cache/global_key');
 bors_function_include('cache/set_global_key');
 
-	$punbb_db = 'punbb';
+	$punbb_db = 'AB_FORUMS';
 
 	// db table get-field where-field
     $GLOBALS['forums_data']=array(
@@ -67,7 +67,7 @@ bors_function_include('cache/set_global_key');
         else
 		{
 			list($base, $table, $field, $key) = explode(" ",$forums_data[$key]);
-	        $dbp = new DataBase('punbb');
+	        $dbp = new DataBase('AB_FORUMS');
             $value = $dbp->get("SELECT $field FROM $base.$table WHERE $key=$member_id");
        	}
        
@@ -99,7 +99,7 @@ bors_function_include('cache/set_global_key');
         }
 		else
 		{
-	        $db = new DataBase('punbb');
+	        $db = new DataBase('AB_FORUMS');
 			list($base, $table, $field, $where) = explode(" ", $forums_data[$key]);
             $db->query("UPDATE `$base`.`$table` SET `$field` = '".addslashes($value)."' WHERE `$where` = ".intval($member_id));
 		}
@@ -214,7 +214,7 @@ bors_function_include('cache/set_global_key');
 				$this->id = $id;
     		    if(!preg_match("!^\d+$!", $id))
 				{
-					$db = new DataBase('punbb');
+					$db = new DataBase('AB_FORUMS');
             		$this->id = $db->get("SELECT id FROM users WHERE username = '".addslashes($id)."'");
 				}
 			}
@@ -280,7 +280,7 @@ bors_function_include('cache/set_global_key');
 				return;
 			}
 
-			$db = new driver_mysql(config('punbb.database', 'punbb'));
+			$db = new driver_mysql(config('punbb.database', 'AB_FORUMS'));
 
 			$this->id = 1;
 			if($user_hash_password)
@@ -324,7 +324,7 @@ bors_function_include('cache/set_global_key');
 
 	    function do_login($user, $password, $handle_error = true)
     	{
-	        $db = new DataBase('punbb');
+	        $db = new DataBase('AB_FORUMS');
 //			loglevel(10);
 			$this->id = intval($db->get("SELECT id FROM punbb.users WHERE username = '".addslashes($user)."' LIMIT 1"));
 //			echo "Id={$this->id}";

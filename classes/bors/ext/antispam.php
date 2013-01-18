@@ -8,9 +8,9 @@ class bors_ext_antispam extends base_object
 	function __construct()
 	{
 		config_set('mysql_use_pool2', false);
-		$this->dbh = new driver_mysql('punbb');
+		$this->dbh = new driver_mysql('AB_FORUMS');
 		$config_b8 = array('storage' => 'mysql');
-		$config_database = array('database' => 'punbb', 'connection' => $this->dbh->connection());
+		$config_database = array('database' => 'AB_FORUMS', 'connection' => $this->dbh->connection());
 
 		require_once(config('b8_include'));
 		$this->b8 = new b8($config_b8, $config_database);

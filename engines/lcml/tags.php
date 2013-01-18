@@ -403,6 +403,10 @@ function next_open_brace($txt, $pos)
 			if(preg_match("!^notitle$!", $param)) { $params['notitle'] = true; continue;}
 			if(preg_match("!^direct$!", $param)) { $params['is_direct'] = true; continue;}
 			if(preg_match("!^blank$!", $param)) { $params['is_blank'] = true; continue;}
+			// http://www.balancer.ru/g/p3038913
+			if(preg_match("!^webkitAllowFullScreen$!", $param)) { $params['webkitAllowFullScreen'] = true; continue;}
+			if(preg_match("!^mozallowfullscreen$!", $param)) { $params['mozallowfullscreen'] = true; continue;}
+			if(preg_match("!^allowfullscreen$!", $param)) { $params['allowfullscreen'] = true; continue;}
 //			if(preg_match("!^(\w+)=\"([^\"]+)\"$!s",$param,$m)) { $params[$m[1]]=$m[2]; continue;}
 			if(empty($params['url']))
 			{
@@ -497,14 +501,19 @@ function next_open_brace($txt, $pos)
 
 function make_enabled_params($params, $names_list, $skip_list = '')
 {
+//	var_dump($params, $names_list);
 	$res = array();
 	foreach(explode(' ', $names_list) as $name)
 	{
 		if(isset($params[$name]))
 			$res[] = "$name=\"".str_replace('&amp;', '&', $params[$name])."\"";
+		elseif(array_key_exists($name, $params))
+			$res[] = $name;
 
 		unset($params[$name]);
 	}
+
+//var_dump($res);
 
 	if($params)
 	{

@@ -39,16 +39,16 @@ class bors_paginated extends base_page_paged
 
 		if($join_class)
 		{
-			$db_name = bors_lib_orm::db_name($join_class);
-			$table_name = bors_lib_orm::table_name($join_class);
-
 			if(preg_match('/^(\w+)\((\w+)\)$/', $join_class, $m))
 			{
 				$inner_field = $m[2];
-				$inner_join_class = $m[1];
+				$join_class = $m[1];
 			}
 			else
 				$inner_field = bors_core_object_defaults::item_name($this->main_class()).'_id';
+
+			$db_name = bors_lib_orm::db_name($join_class);
+			$table_name = bors_lib_orm::table_name($join_class);
 
 			// http://matf.aviaport.ru/companies/countries/
 			// http://matf.aviaport.ru/companies/regions/

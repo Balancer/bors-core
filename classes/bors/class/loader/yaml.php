@@ -80,7 +80,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		if(empty($data['class_file']))
 			$data['class_file'] = $class_file;
-
+// var_dump($data);
 		foreach($data as $key => $value)
 		{
 			if(is_array($value))

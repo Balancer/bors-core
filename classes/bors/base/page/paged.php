@@ -107,13 +107,20 @@ class base_page_paged extends bors_page
 		if(!is_null($this->_total))
 			return $this->_total;
 
-//		try
+		// Если уберём try, проверить на http://admin.aviaport.ru/commerce/pressrelease/export.xls
+		try
 		{
-			$count = $this->_total = bors_count($this->main_class(), $this->_where());
+			$count = $this->_total = bors_count($this->main_class(), $this->where());
 		}
-//		catch(Exception $e)
+		catch(Exception $e)
 		{
-//			$count = 0;
+			$msg = bors_lib_exception::catch_trace($e);
+			debug_hidden_log('paginated_items_count_exception', $msg);
+
+			var_dump(get_class($this), $this->where(), $this->get('inner_join_filter'));
+			print_dd($msg);
+
+			$count = 0;
 		}
 
 		return $count;

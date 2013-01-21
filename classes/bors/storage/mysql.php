@@ -539,10 +539,17 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static function each($class_name, $where)
 	{
+		$set    = popval($where, '*set');
+
 		$object = new $class_name(NULL);
 		list($select, $where) = self::__query_data_prepare($object, $where);
 		$db_name = $object->db_name();
 		$table_name = $object->table_name();
+
+		// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')
+		if($set)
+			foreach(preg_split('/,\s*/', $set) as $s)
+				$select[] = $s;
 
 		$iterator = new bors_storage_mysql();
 		$iterator->object = $object;

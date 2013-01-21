@@ -24,7 +24,7 @@ if(0 && config('rediska.include'))
 // Если определён memcached — то он
 if(config('memcached') && class_exists('Memcache'))
 {
-	echo "Ok!";
+//	echo "Ok!";
 	eval("class bors_cache_fast extends bors_cache_memcache { }");
 	return;
 }

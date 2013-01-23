@@ -143,6 +143,7 @@ class base_object extends base_empty
 
 		if(($config = $this->config_class()))
 		{
+//			var_dump($this, $config);
 //			if(!preg_match($config))
 			$this->config = new $config($this);
 

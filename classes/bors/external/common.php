@@ -65,6 +65,11 @@ class bors_external_common extends bors_object
 		if(preg_match('/^\w+/', $img) && !preg_match('/^\w+:/', $img)) // Это тупо "images/stories/img/big/m1a2_2.jpg" — вроде, как от корня сайта
 			$img = 'http://'.$meta['host'].'/'.$img;
 
+		// http://www.balancer.ru/g/p3038945
+		// http://www.rg.ru/2013/01/17/voda.html
+		if(preg_match('!^/!', $img)) // от корня сайта
+			$img = 'http://'.$meta['host'].$img;
+
 		if(!$img)
 		{
 			// Ставим герерацию превьюшки

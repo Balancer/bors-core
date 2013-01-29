@@ -24,6 +24,9 @@ class bors_lib_html
 			if(preg_match("!<meta[^>]+(name|property)=\"([\w:]+)\"[^>]+(content|value)=\"([^>]+)\"(.*?)>!is", trim($s), $m))
 				$meta[bors_lower($m[2])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'), $m[2]);
 
+			if(preg_match("!<meta[^>]+(content|value)=\"([^>]+)\"[^>]+(name|property)=\"([\w:]+)\"(.*?)>!is", trim($s), $m))
+				$meta[bors_lower($m[4])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[2], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'), $m[4]);
+
 			if(preg_match("!<meta[^>]+(http\-equiv|name|property)=['\"]([\w:]+)['\"][^>]+(content|value)='([^']*)'!is", trim($s), $m))
 				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
 

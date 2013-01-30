@@ -2,7 +2,7 @@
 
 class lingustics_morphology
 {
-	function case_rus($word, $case)
+	static function case_rus($word, $case)
 	{
 		static $m = NULL;
 		if(!$m)

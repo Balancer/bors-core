@@ -12,7 +12,7 @@ class lingustics_phpmorphy
 {
 	var $morphy = NULL;
 
-	function factory()
+	static function factory()
 	{
 		if(ini_get('default_charset') != 'utf-8')
 			bors_throw('phpMorphy работает только в UTF-8');

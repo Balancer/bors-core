@@ -60,7 +60,7 @@ class bors_storage_fs_markdown extends bors_storage
 	{
 		$file = $this->__find($object);
 		if(!$file)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		$object->set_markup('bors_markup_markdown', false);
 
@@ -69,10 +69,10 @@ class bors_storage_fs_markdown extends bors_storage
 			$object->set_title($m[2], false);
 
 		if(!$object->title_true())
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		$object->set_source($content, false);
 
-		return $object->set_loaded(true);
+		return $object->set_is_loaded(true);
 	}
 }

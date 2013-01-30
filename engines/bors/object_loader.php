@@ -308,7 +308,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	if(!$obj)
 		return NULL;
 
-	if($obj->can_be_empty() || $obj->loaded())
+	if($obj->can_be_empty() || $obj->is_loaded())
 	{
 		if($redirect)
 		{
@@ -599,15 +599,15 @@ function object_init($class_name, $object_id, $args = array())
 
 	$obj->_configure();
 
-	$loaded = $obj->loaded();
+	$loaded = $obj->is_loaded();
 
 	if(is_object($loaded))
 		$obj = $loaded;
 
 	if(!$loaded)
-		$loaded = $obj->init();
+		$loaded = $obj->data_load();
 
-	if(/*($object_id || $url) && */!$obj->can_be_empty() && !$obj->loaded())
+	if(/*($object_id || $url) && */!$obj->can_be_empty() && !$obj->is_loaded())
 		return NULL;
 
 	if(!empty($args['need_check_to_public_load']))

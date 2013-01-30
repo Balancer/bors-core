@@ -33,7 +33,7 @@ class bors_storage_oci extends bors_storage
 //		if(!empty($post_functions))
 //			self::post_functions_do($object, $post_functions);
 
-		$object->set_loaded(true);
+		$object->set_is_loaded(true);
 
 //		print_d($data);
 
@@ -66,7 +66,7 @@ class bors_storage_oci extends bors_storage
 		{
 			$object->set_id($data['id']);
 			$object->data = $data;
-			$object->set_loaded(true);
+			$object->set_is_loaded(true);
 
 			if($by_id === true)
 				$objects[$object->id()] = $object;

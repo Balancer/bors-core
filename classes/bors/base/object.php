@@ -16,8 +16,8 @@ class base_object extends base_empty
 	); }
 
 	var $___loaded = false;
-	function loaded() { return $this->___loaded; }
-	function set_loaded($value = true) { return $this->___loaded = $value; }
+	function is_loaded() { return $this->___loaded; }
+	function set_is_loaded($value) { return $this->___loaded = $value; }
 
 	private $__match;
 	function set_match($match) { return $this->__match = $match; }
@@ -154,11 +154,8 @@ class base_object extends base_empty
 		}
 	}
 
-	function init($data_load = true)
+	function data_load()
 	{
-		if(!$data_load)
-			return false;
-
 		if(@$this->__loaded)
 			return true;
 

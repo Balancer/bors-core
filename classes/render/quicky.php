@@ -4,7 +4,7 @@ class render_quicky extends base_null
 {
 	function render($object)
 	{
-		if(!$object->loaded() && !$object->can_be_empty())
+		if(!$object->is_loaded() && !$object->can_be_empty())
 			return false;
 
 		require_once('quicky/Quicky.class.php');

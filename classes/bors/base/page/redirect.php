@@ -2,10 +2,10 @@
 
 class base_page_redirect extends base_page
 {
-	function loaded() { return false; }
+	function is_loaded() { return true; }
 
-	function init()
+	function pre_show()
 	{
-		go($this->args('go'));
+		return go($this->args('go'));
 	}
 }

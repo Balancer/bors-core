@@ -252,7 +252,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$data = $dbh->select($object->table_name(), join(',', $select), $where);
 
 		if(!$data)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		$object->data = $data;
 
@@ -262,7 +262,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		if(!empty($post_functions))
 			self::post_functions_do($object, $post_functions);
 
-		$object->set_loaded(true);
+		$object->set_is_loaded(true);
 		save_cached_object($object);
 
 		return true;
@@ -351,7 +351,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			if($must_be_configured)
 				$object->_configure();
 
-			$object->set_loaded(true);
+			$object->set_is_loaded(true);
 
 			if(!empty($post_functions))
 				self::post_functions_do($object, $post_functions);
@@ -413,7 +413,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$object->set_id(@$data['id']);
 			$object->data = $data;
 
-			$object->set_loaded(true);
+			$object->set_is_loaded(true);
 
 			if(!empty($post[$class_name]))
 				self::post_functions_do($object, $post[$class_name]);
@@ -583,7 +583,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$object = new $class_name($data['id']);
 //		$object->set_id($data['id']);
 		$object->data = $data;
-		$object->set_loaded(true);
+		$object->set_is_loaded(true);
 		return $this->object = $object;
 	}
 

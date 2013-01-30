@@ -37,7 +37,7 @@ class bors_storage_fs_bbh extends bors_storage
 	{
 		$file = $this->__find($object);
 		if(!$file)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		$object->set_markup('bors_markup_lcmlbbh', false);
 
@@ -50,6 +50,6 @@ class bors_storage_fs_bbh extends bors_storage
 
 		$object->set_source($content, false);
 
-		return $object->set_loaded(true);
+		return $object->set_is_loaded(true);
 	}
 }

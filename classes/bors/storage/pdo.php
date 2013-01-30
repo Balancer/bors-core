@@ -56,14 +56,14 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		$data = $dbh->select($object->table_name(), join(',', $select), $where);
 
 		if(!$data)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		$object->data = $data;
 
 		if(!empty($post_functions))
 			self::post_functions_do($object, $post_functions);
 
-		$object->set_loaded(true);
+		$object->set_is_loaded(true);
 
 //		print_d($data);
 
@@ -102,7 +102,7 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		{
 			$object->set_id($data['id']);
 			$object->data = $data;
-			$object->set_loaded(true);
+			$object->set_is_loaded(true);
 			$objects[] = $object;
 			$object = new $class_name(NULL);
 		}
@@ -303,7 +303,7 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		$object = new $class_name($data['id']);
 //		$object->set_id($data['id']);
 		$object->data = $data;
-		$object->set_loaded(true);
+		$object->set_is_loaded(true);
 		return $this->object = $object;
 	}
 

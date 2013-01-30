@@ -6,7 +6,7 @@ class render_xml extends base_null
 {
 	function render($object)
 	{
-		if(!$object->loaded() && !$object->can_be_empty())
+		if(!$object->is_loaded() && !$object->can_be_empty())
 			return false;
 
 		$object_data = $object->local_template_data_set();

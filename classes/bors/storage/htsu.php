@@ -137,14 +137,14 @@ class bors_storage_htsu extends bors_storage
 //		echo "Found hts at $file<br/>\n";
 
 		if(!$file)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		// По дефолту в index.hts разрешёны HTML и все BB-тэги.
 		$object->set_html_disable(false, false);
 		$object->set_lcml_tags_enabled(NULL, false);
 
 		if(!($hts = @file_get_contents($file)))
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		if($object->internal_charset() != 'utf-8')
 			$hts = ec($hts);
@@ -250,7 +250,7 @@ class bors_storage_htsu extends bors_storage
 
 		debug_log_var('data_file', $file);
 
-		return $object->set_loaded(true);
+		return $object->set_is_loaded(true);
 	}
 
 	function _call_callback($matches)

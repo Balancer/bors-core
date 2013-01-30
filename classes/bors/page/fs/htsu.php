@@ -13,15 +13,6 @@ class bors_page_fs_htsu extends bors_page
 	function parents() { return $this->parents ? $this->parents : parent::parents(); }
 	function set_parents($arr, $dbup) { return $this->parents = &$arr; }
 
-	function init()
-	{
-//		TODO: убедиться, что нет левых редиректов, типа http://balancer.ru/g/p351551
-//		if(preg_match('/^(.+)\.phtml$/', $this->called_url(), $m))
-//			go($m[1].'/', true);
-
-		return parent::init();
-	}
-
 	function pre_show()
 	{
 		if($redirect = $this->get('show_redirect'))

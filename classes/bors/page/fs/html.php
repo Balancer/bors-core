@@ -12,16 +12,11 @@ class bors_page_fs_html extends bors_page
 	function parents() { return $this->parents ? $this->parents : parent::parents(); }
 	function set_parents($arr, $dbup) { return $this->parents = &$arr; }
 
-	function init()
-	{
-		if(preg_match('/^(.+)\.phtml$/', $this->called_url(), $m))
-			go($m[1].'/', true);
-
-		return parent::init();
-	}
-
 	function pre_show()
 	{
+		if(preg_match('/^(.+)\.phtml$/', $this->called_url(), $m))
+			return go($m[1].'/', true);
+
 		config_set('cache_disabled', true);
 		return parent::pre_show();
 	}

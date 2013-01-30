@@ -21,14 +21,14 @@ class bors_objects_loaders_yaml extends bors_objects_loaders_meta
 		$object->class_filemtime = @$data['attrs']['filemtime'];
 
 		$object->_configure();
-		$loaded = $object->loaded();
+		$loaded = $object->is_loaded();
 		if(is_object($loaded))
 			$object = $loaded;
 
 		if(!$loaded)
-			$loaded = $object->init();
+			$loaded = $object->data_load();
 
-		if(!$object->can_be_empty() && !$object->loaded())
+		if(!$object->can_be_empty() && !$object->is_loaded())
 			return NULL;
 
 		return $object;

@@ -26,7 +26,7 @@ class bors_image_autothumb extends base_object
 		parent::__construct($this->origin_path = $origin_path);
 	}
 
-	function loaded()
+	function is_loaded()
 	{
 		return $this->origin_path
 			&& !preg_match('/\.(bmp|php)$/', $this->origin_path);

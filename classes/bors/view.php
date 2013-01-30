@@ -7,7 +7,7 @@
 class bors_view extends bors_page
 {
 	function can_be_empty() { return false; }
-	function loaded() { return (bool) $this->target(); }
+	function is_loaded() { return (bool) $this->target(); }
 
 	function _class_title_rp_def() { return $this->object()->class_title_rp(); }
 

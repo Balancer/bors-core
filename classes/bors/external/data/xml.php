@@ -15,7 +15,7 @@ class bors_external_data_xml extends bors_object_data
 
 		$data = self::_array_path($data, $this->xml_root());
 		if(!$data)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 //		var_dump($data);
 
@@ -48,7 +48,7 @@ class bors_external_data_xml extends bors_object_data
 		}
 
 //		print_dd($object->data);
-		$object->set_loaded(true);
+		$object->set_is_loaded(true);
 		return true;
 	}
 
@@ -97,7 +97,7 @@ class bors_external_data_xml extends bors_object_data
 
 		$data = self::_array_path($data, $this->xml_root());
 		if(!$data)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 //		print_dd($data);
 
 		foreach($data as $item)
@@ -131,7 +131,7 @@ class bors_external_data_xml extends bors_object_data
 				$object->set($property, $val, false);
 			}
 
-			$object->set_loaded(true);
+			$object->set_is_loaded(true);
 			$objects[] = $object;
 			$object = new $class_name(NULL);
 		}

@@ -68,8 +68,6 @@ function &object_new($class, $id = NULL)
 
 	$obj->_configure();
 
-	$obj->init(false);
-
 	return $obj;
 }
 
@@ -104,7 +102,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	$object->set_attr('__replace_on_new_instance', $replace);
 	$object->new_instance();
 	$object->_configure();
-	$object->set_loaded(true);
+	$object->set_is_loaded(true);
 	return $object;
 }
 

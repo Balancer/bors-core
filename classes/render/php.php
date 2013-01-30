@@ -8,7 +8,7 @@ class render_php extends base_null
 	{
 		debug_timing_start('render_global_php');
 
-		if(!$object->loaded() && !$object->can_be_empty())
+		if(!$object->is_loaded() && !$object->can_be_empty())
 		{
 			debug_timing_stop('render_global_php');
 			return false;

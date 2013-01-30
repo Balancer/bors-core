@@ -36,7 +36,7 @@ class storage_fs_separate extends base_null
 		}
 
 		if(!$found)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		bors_function_include('debug/log_var');
 		debug_log_var('fs.separate.dir', $dir);
@@ -98,7 +98,7 @@ class storage_fs_separate extends base_null
 			$object->set_modify_time($modify_time, true);
 
 		$object->set___loaded_fields($loaded_fields, false);
-		return $object->set_loaded(true);
+		return $object->set_is_loaded(true);
 	}
 
 	function save($object)
@@ -189,7 +189,7 @@ class storage_fs_separate extends base_null
 				// Если там есть [.]title.txt - то это страница
 				$object = new page_fs_separate(NULL);
 				self::__load_object($object, $subdir, $prefix);
-				if($object->loaded())
+				if($object->is_loaded())
 					$found[] = $object;
 			}
 			else
@@ -263,6 +263,6 @@ class storage_fs_separate extends base_null
 			$object->set_modify_time($modify_time, true);
 
 		$object->set___loaded_fields($loaded_fields, false);
-		return $object->set_loaded(true);
+		return $object->set_is_loaded(true);
 	}
 }

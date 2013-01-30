@@ -47,7 +47,7 @@ class bors_storage_csv extends bors_storage
 			$class_name = $obj->class_name();
 		}
 
-		$this->init($obj);
+		$this->data_load($obj);
 
 		$result = array();
 

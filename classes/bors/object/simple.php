@@ -226,7 +226,7 @@ class bors_object_simple extends bors_object_empty
 	}
 
 	function storage_engine() { return ''; }
-	function loaded() { return true; }
+	function is_loaded() { return true; }
 	function internal_uri() { return get_class($this).'://'.$this->id(); }
 	function cache_clean() { }
 

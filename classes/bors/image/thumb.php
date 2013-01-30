@@ -56,17 +56,17 @@ class bors_image_thumb extends bors_image
 			$this->geo_opts   = $m[5];
 		}
 		else
-			return $this->set_loaded(false);
+			return $this->set_is_loaded(false);
 
 		//TODO: сделать вариант, совместимый с safe_mod!
 //		var_dump($this->width(), $this->file_name_with_path(), $this->data);
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
-			return $this->set_loaded(true);
+			return $this->set_is_loaded(true);
 
 		$this->original = object_load($this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
-			return $this->set_loaded(false);
+			return $this->set_is_loaded(false);
 
 //		$this->delete();
 
@@ -135,7 +135,7 @@ class bors_image_thumb extends bors_image
 //		debug_hidden_log('000', "$file_orig_r :".@filesize($file_orig_r));
 
 		if(!$this->thumb_create($abs))
-			return $this->set_loaded(false);
+			return $this->set_is_loaded(false);
 
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
@@ -162,7 +162,7 @@ class bors_image_thumb extends bors_image
 //		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
 
 //		echo "{$this}: {$this->wxh()}<br />\n";
-		$this->set_loaded(true);
+		$this->set_is_loaded(true);
 	}
 
 	private function thumb_create($abs = false)

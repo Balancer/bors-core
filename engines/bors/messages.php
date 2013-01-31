@@ -87,15 +87,7 @@ function bors_message($text, $params=array())
 		$data['choises'] = $choises;
 	}
 
-	if(config('smarty3_enable', true))
-	{
-		$body = bors_templates_smarty::fetch($body_template, $data);
-	}
-	else
-	{
-		require_once('engines/smarty/assign.php');
-		$body = template_assign_data($body_template, $data);
-	}
+	$body = bors_templates_smarty::fetch($body_template, $data);
 
 	// Если возникла какая-то ошибка рендеринга, выводим исходный текст.
 	if(!$body)
@@ -139,10 +131,7 @@ function bors_message($text, $params=array())
 //	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 //		$template = "xfile:$template";
 
-	if(config('smarty3_enable', true))
-		$message = bors_templates_smarty::fetch($template, $data);
-	else
-		$message = template_assign_data($template, $data);
+	$message = bors_templates_smarty::fetch($template, $data);
 
 	if(!$message) // Если всё плохо
 		$message = $body;

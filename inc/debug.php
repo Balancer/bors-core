@@ -46,8 +46,6 @@ function debug_exit($message)
 		$deb = "\n=== debug-info ===\n"
 			."created = ".date('r')."\n";
 
-		$deb .= "smarty = ".(config('smarty3_enable', true) ? 3 : 2)."\n";
-
 		if($deb_vars = debug_vars_info())
 		{
 			$deb .= "\n=== debug vars: ===\n";

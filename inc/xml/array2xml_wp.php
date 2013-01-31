@@ -46,7 +46,7 @@ function array2xml_wp($data, $root = NULL)
 {
 	if(is_null($root))
 	{
-		$root = array_pop(array_keys($data));
+		$root = @array_pop(array_keys($data));
 		$data = $data[$root];
 	}
 

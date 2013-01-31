@@ -28,10 +28,7 @@ function smarty_function_bors_object_load($params, &$smarty)
 
 	if($var)
 	{
-		if(config('smarty3_enable', true))
-		   	$smarty->assignByRef($var, $obj);
-		else
-		   	$smarty->assign_by_ref($var, $obj);
+	   	$smarty->assignByRef($var, $obj);
 		return;
 	}
 

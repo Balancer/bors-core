@@ -2,7 +2,7 @@
 
 function lt_module($params)
 {
-	if(!bors_lcml::is_tag_enabled('module', false))
+	if(!bors_lcml::is_tag_enabled('module', false) && !config('lcml.tag.module.enable'))
 		return ec("Использование тэга [module] запрещено");
 
 		if($class_name = @$params['class'])

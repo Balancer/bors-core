@@ -148,7 +148,7 @@ bors_function_include('url/parse');
 		$uri = preg_replace('/\W/', '-', $uri);
 		$uri = preg_replace('/\-+/', '-', $uri);
 		$uri = trim($uri, '-');
-		
+
 		return $uri;
 
         $uri = strtr($uri, array(
@@ -176,7 +176,7 @@ bors_function_include('url/parse');
         $uri = preg_replace("!\-+$!",'', $uri);
         $uri = preg_replace("!\.$!",'', $uri);
         $uri = preg_replace("!(,|\.)-!",'$1', $uri);
-        return $uri;        
+        return $uri;
     }
 
     function translite_path_simple($path)

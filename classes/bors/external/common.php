@@ -15,6 +15,9 @@ class bors_external_common extends bors_object
 
 //		if(config('is_developer')) { echo "$url:<br/>"; var_dump($html); exit(); }
 
+		if(preg_match('/503 - Forwarding failure/', $html))
+			$html = '';
+
 		$title = @$meta['og:title'];
 		if(!$title)
 			$title = @$meta['title'];

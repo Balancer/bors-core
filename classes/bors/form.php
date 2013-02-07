@@ -182,8 +182,12 @@ class bors_form extends bors_object
 			if(!empty($$v) && ($$v != 'NULL'))
 				$html .= " $p=\"{$$v}\"";
 
+		//TODO: найти все использования и снести в пользу следующего
 		if(!empty($dom_form_id))
 			$html .= " id=\"$dom_form_id\"";
+
+		if(!empty($dom_id))
+			$html .= " id=\"$dom_id\"";
 
 		$html .= ">\n";
 

@@ -670,7 +670,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$map = array(
 			'string'	=>	'VARCHAR(255)',
 			'text'		=>	'TEXT',
-			'timestamp'	=>	'TIMESTAMP',
+			'timestamp'	=>	'TIMESTAMP NULL',
 			'int'		=>	'INT',
 			'uint'		=>	'INT UNSIGNED',
 			'bool'		=>	'TINYINT(1) UNSIGNED',
@@ -690,14 +690,14 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$object = $this->__object;
 			$db_name = $this->__db_name;
 			$table_name = $this->__table_name;
-			$db =$this->__dbh;
+			$db = $this->db();
 		}
 
 		$db_fields = array();
 		$primary = false;
 
 		$fields = bors_lib_orm::main_fields($object);
-//		var_dump($fields);
+
 		foreach($fields as $field)
 		{
 			$db_field = '`'.$field['name'].'` '.$map[$field['type']];
@@ -722,7 +722,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$db->query($query);
 //		$db->close();
-
 	}
 
 	static function drop_table($class_name)

@@ -47,6 +47,7 @@ class bors_image_autothumb extends base_object
 			$img = bors_image::register_file($this->origin_path);
 
 		$thumb = $img->thumbnail($this->geo);
+
 		if($thumb->pre_show())
 			return true;
 

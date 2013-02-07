@@ -48,8 +48,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 			if($field_name != $f['property'] || !empty($f['sql_function']))
 			{
-//				var_dump($where);
-//				echo "{$f['property']} -> {$f['name']}<br/>";
 				$x .= " AS `{$f['property']}`";
 				if(array_key_exists($f['property'], $where))
 				{
@@ -63,12 +61,11 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			if(!empty($f['post_function']))
 				$post_functions[$f['property']] = $f['post_function'];
 		}
-//		var_dump($select);
+
 		$dummy = array();
 		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
 		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
 
-//		$dbh = new driver_mysql($object->db_name());
 		return array($select, $where, $post_functions);
 	}
 

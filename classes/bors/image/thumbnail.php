@@ -30,13 +30,13 @@ class bors_image_thumbnail extends bors_image
 		);
 	}
 
-	function init()
+	function data_load()
 	{
 		if(is_numeric($this->id()) && $this->args('geometry'))
 			$this->set_id($this->id().','.$this->args('geometry'));
 
 		if(config('cache_database'))
-			parent::init();
+			parent::data_load();
 
 		if(preg_match('!^(\d+),((\d*)x(\d*))$!', $this->id(), $m))
 		{
@@ -177,7 +177,7 @@ class bors_image_thumbnail extends bors_image
 		return $err == NULL;
 	}
 
-	function fullsized_url() { $this->init(); return $this->original ? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : $this->html_code(); }
+	function fullsized_url() { $this->data_load(); return $this->original ? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : $this->html_code(); }
 
 	function alt() { return $this->original ? $this->original->alt() : ""; }
 

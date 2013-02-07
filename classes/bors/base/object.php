@@ -652,7 +652,8 @@ defined at {$this->class_file()}<br/>
 	{
 		if($title === NULL)
 			$title = ec('Редактировать ').bors_lower($this->class_title_rp());
-		return "<a rel=\"nofollow\" href=\"{$this->admin_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
+
+		return "<a rel=\"nofollow\" href=\"{$this->edit_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
 	}
 
 	function titled_new_link($title = NULL)

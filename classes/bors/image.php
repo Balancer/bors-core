@@ -133,9 +133,9 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		));
 	}
 
-	function init()
+	function data_load()
 	{
-		parent::init();
+		parent::data_load();
 		if(!$this->width())
 			$this->recalculate(true);
 	}

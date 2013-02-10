@@ -3,7 +3,7 @@
 class bors_admin_meta_edit extends bors_admin_page
 {
 	function can_be_empty() { return false; }
-	function is_loaded() { return empty($this->id()) || (bool) $this->target(); }
+	function is_loaded() { return $this->id() && (bool) $this->target(); }
 
 	function _config_class_def() { return config('admin_config_class'); }
 

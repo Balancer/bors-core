@@ -7,7 +7,7 @@ class base_object_db extends bors_object
 {
 	function can_cached() { return true; } //TODO: пока не разберусь, откуда глюки сохранения memcache
 
-	function storage_engine() { return config('storage.default.class_name', 'storage_db_mysql_smart'); }
+	function storage_engine() { return config('storage.default.class_name', 'bors_storage_mysql'); }
 
 	function db_driver() { return 'driver_mysql'; }
 	function can_be_empty() { return false; }

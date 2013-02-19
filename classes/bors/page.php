@@ -55,6 +55,18 @@ class bors_page extends base_page
 
 		$this->attr['__smart_body_template_checked'] = true;
 
+		if(!empty($this->attr['body_template']))
+		{
+			switch(pathinfo($this->attr['body_template'], PATHINFO_EXTENSION))
+			{
+				case 'tpl':
+				{
+					$this->attr['body_template_class'] = 'bors_templates_smarty';
+					return;
+				}
+			}
+		}
+
 		$current_class = get_class($this);
 		$class_files = $GLOBALS['bors_data']['classes_included'];
 		$ext = $this->body_template_ext();

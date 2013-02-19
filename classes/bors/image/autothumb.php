@@ -4,7 +4,7 @@
 	Автоматическая генерация превьюшек для /cache/
 */
 
-class bors_image_autothumb extends base_object
+class bors_image_autothumb extends bors_object
 {
 	var $origin_path = NULL;
 	var $geo = NULL;

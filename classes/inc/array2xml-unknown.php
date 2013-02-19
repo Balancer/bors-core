@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__).'/../strings.php'); // нужно только для bors_unplural
+require_once('inc/strings.php'); // нужно только для bors_unplural
 
 class Array2XML
 {

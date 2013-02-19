@@ -13,7 +13,7 @@ if(class_exists('XMLWriter'))
 }
 
 // Вариант на DOM
-if(class_exists('DOMDocument'))
+elseif(class_exists('DOMDocument'))
 {
 	function array2xml($data, $root = NULL)
 	{

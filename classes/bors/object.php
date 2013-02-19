@@ -169,4 +169,21 @@ class bors_object extends base_object
 
 		return $mod;
 	}
+
+	function _default_view_class_def()
+	{
+		$view_class = bors_plural($this->class_name()).'_view';
+		return $this->set_attr('default_view_class', $view_class);
+	}
+
+	function _view_def()
+	{
+		$model_class = $this->default_view_class();
+		$view = new $model_class(NULL);
+		$view->set_model($this);
+
+		$this->set('view', $view, false);
+
+		return $view;
+	}
 }

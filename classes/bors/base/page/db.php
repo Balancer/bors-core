@@ -49,7 +49,7 @@ class base_page_db extends base_page
 
 	function db_driver() { return 'driver_mysql'; }
 
-	function storage_engine() { return config('storage.default.class_name', 'storage_db_mysql_smart'); }
+	function storage_engine() { return config('storage.default.class_name', 'bors_storage_mysql'); }
 
 	function fields_first() { return NULL; }
 

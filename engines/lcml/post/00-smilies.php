@@ -23,7 +23,7 @@ function lcml_smilies_by_list(&$txt)
 	global $smilies_list;
 
 	if(empty($smilies_list))
-		$smilies_list = file(config('smilies_dir')."/list.txt");
+		$smilies_list = @file(config('smilies_dir')."/list.txt");
 
 	foreach($smilies_list as $x)
 	{

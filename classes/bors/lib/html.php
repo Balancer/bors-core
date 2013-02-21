@@ -2,7 +2,7 @@
 
 class bors_lib_html
 {
-	function get_meta_data($content, $url = NULL) // via http://ru2.php.net/get_meta_tags
+	static function get_meta_data($content, $url = NULL) // via http://ru2.php.net/get_meta_tags
 	{
 		$content = preg_replace("'<style[^>]*>.*</style>'siU",'',$content);  // strip js
 		$content = preg_replace("'<script[^>]*>.*</script>'siU",'',$content); // strip css

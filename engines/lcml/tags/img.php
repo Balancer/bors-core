@@ -142,6 +142,7 @@ function lt_img($params)
 					mkpath(dirname($path), 0777);
 					if(!is_writable(dirname($path)))
 					{
+						bors_use('debug_hidden_log');
 						debug_hidden_log('access_error', "Can't write to ".dirname($path));
 						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$path']</small>";
 					}

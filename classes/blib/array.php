@@ -10,7 +10,7 @@ class blib_array extends blib_object implements ArrayAccess
 		$this->_value = array();
 	}
 
-	static function factory($array) { return new blib_array($array); }
+	static function factory($array = NULL) { return new blib_array($array); }
 
 	function map($function)
 	{
@@ -61,6 +61,17 @@ class blib_array extends blib_object implements ArrayAccess
 		return self::factory($result);
 	}
 
+	function range($start, $stop = NULL, $step = 1)
+	{
+		if(is_null($stop))
+		{
+			$stop = $start - 1;
+			$start = 0;
+		}
+
+		$this->_value = range($start, $stop, $step);
+		return $this;
+	}
 
 	function __toString()
 	{

@@ -79,12 +79,13 @@ class base_page_paged extends bors_page
 
 //		try
 		{
-			$this->_items = bors_find_all($this->main_class(), $this->where(array(
+			$this->_items = bors_find_all($this->main_class(), $this->_where(array(
 				'page' => $this->page(),
 				'per_page' => $this->items_per_page(),
 				'order' => $this->order(),
 			)));
 		}
+
 /*
 		catch(Exception $e)
 		{

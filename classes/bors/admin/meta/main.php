@@ -8,8 +8,16 @@ class bors_admin_meta_main extends bors_admin_paginated
 	function _title_def() { return ec('Управление ').bors_lib_object::get_foo($this->main_class(), 'class_title_tpm'); }
 	function _nav_name_def() { return bors_lib_object::get_foo($this->main_class(), 'class_title_m'); }
 
+	function _model_class_def()
+	{
+		return NULL;
+	}
+
 	function _main_class_def()
 	{
+		if($c = $this->model_class())
+			return $c;
+
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		$class_name = str_replace('_main', '', $class_name);
 		return bors_unplural($class_name);

@@ -59,7 +59,7 @@ class base_image extends base_object
 		return parent::delete();
 	}
 
-	function class_title() { return ec('изображение'); }
+	function _class_title_def() { return ec('изображение'); }
 
 	function description_or_title()
 	{

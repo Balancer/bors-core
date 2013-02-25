@@ -18,7 +18,7 @@ class bors_lib_orm
 		if(!is_array($field))
 		{
 			if(strpos($field, '|') !== false && preg_match('/^(\w+)\|(\w+)$/', $field, $m))
-			// Это запись вида 'property' => 'fiels|post_function'
+			// Это запись вида 'property' => 'field|post_function'
 				$field = array('name' => $m[1], 'post_function' => $m[2]);
 			elseif(preg_match('/^(\w+),(\w+)$/', $field, $m))
 			//	Запись вида 'id' => 'company_id,user_id' — составной первичный или уникальный ключ

@@ -103,6 +103,8 @@ class bors_core_find
 		return $this;
 	}
 
+	function eq($property, $value) { $this->where_parse_set($property, $value); return $this; }
+
 	function inner_join($join_class, $join_cond)
 	{
 		$this->class_stack_push($join_class);

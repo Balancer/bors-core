@@ -1,5 +1,12 @@
 <?php
 
+/*
+	Полезные ссылки:
+
+	Индексный доступ к Multibyte-строкам на PHP или изучение ООП на практике
+	http://habrahabr.ru/post/165107/
+*/
+
 class blib_string extends blib_object
 {
 	function __construct($init_value = NULL)

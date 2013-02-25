@@ -31,7 +31,7 @@ class bors_external_feed extends base_object_db
 		);
 	}
 
-	function class_title() { return ec('лента'); }
+	function _class_title_def() { return ec('лента'); }
 	function _class_title_rp_def() { return ec('ленты'); }
 	function class_title_vp() { return ec('ленту'); }
 	function class_title_tpm() { return ec('лентами'); }

@@ -89,7 +89,10 @@ class bors_forms_dropdown extends bors_forms_element
 			$current = $object->$get();
 
 		if(!$current && !empty($list['default']))
+		{
 			$current = $list['default'];
+			unset($list['default']);
+		}
 
 		if(empty($current))
 			$current = session_var("form_value_{$name}");

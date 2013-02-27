@@ -67,7 +67,7 @@ class bors_admin_meta_main extends bors_admin_paginated
 		return array_merge(parent::body_data(), array(
 			'new_link_title' => $new_link_title,
 			'item_fields' => $parsed_fields,
-			'admin_search_url' => $this->page() > 2 ? false : $this->get('admin_search_url'),
+			'admin_search_url' => $this->page() > 1 ? false : $this->get('admin_search_url'),
 		));
 	}
 

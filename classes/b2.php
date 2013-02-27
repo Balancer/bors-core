@@ -7,7 +7,8 @@ class b2
 		return bors_load($class_name, $object_id);
 	}
 
-	function find()
+	function find($class_name)
 	{
+		return new b2_core_find($class_name);
 	}
 }

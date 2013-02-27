@@ -19,6 +19,9 @@ class blib_array extends blib_object implements ArrayAccess
 
 	static function factory($array = NULL) { return new blib_array($array); }
 
+	function is_array() { return true; }
+	function to_array() { return $this->_value; }
+
 	function map($function)
 	{
 		$this->_value = array_map($function, $this->_value);
@@ -93,6 +96,19 @@ class blib_array extends blib_object implements ArrayAccess
 	function json()
 	{
 		return json_encode($this->_value);
+	}
+
+	// Извлечь из каждого объекта массива свойство $property_name
+	// и вернуть массив результатов
+	function extract($property_name)
+	{
+		$result = array();
+		foreach($this->_value as $x)
+			$result[] = $x->get($property_name);
+
+		$this->_value = $result;
+
+		return $this;
 	}
 
 	/* Реализация методов интерфейса ArrayAccess */

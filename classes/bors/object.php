@@ -132,14 +132,35 @@ class bors_object extends base_object
 		return bors_load('bors_time', $this->modify_time());
 	}
 
-	function _admin_searchable_properties_def()
+	function _admin_searchable_title_properties_def()
+	{
+		return $this->_admin_searchable_properties_def(false);
+	}
+
+	function _admin_searchable_properties_def($any = true)
 	{
 		$properties = array();
+		$title_properties = array();
 		foreach(bors_lib_orm::fields($this) as $x)
 			if(!empty($x['is_admin_searchable']))
-				$properties[] = $x['property'];
+				if(empty($x['is_title']))
+					$properties[] = $x['property'];
+				else
+					$title_properties[] = $x['property'];
 
-		return $properties ? join(' ', $properties) : 'title';
+		if($title_properties && !$any)
+			$properties = $title_properties;
+
+		if(!$properties)
+			$properties[] = 'title';
+
+		if($x = $this->get('searchable_title_properties'))
+			$properties += $x;
+
+		if($any && ($x = $this->get('searchable_more_properties')))
+			$properties += $x;
+
+		return join(' ', array_unique($properties));
 	}
 
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
@@ -168,22 +189,5 @@ class bors_object extends base_object
 			bors_throw(ec("Не могу загрузить модуль '$module_class'"));
 
 		return $mod;
-	}
-
-	function _default_view_class_def()
-	{
-		$view_class = bors_plural($this->class_name()).'_view';
-		return $this->set_attr('default_view_class', $view_class);
-	}
-
-	function _view_def()
-	{
-		$model_class = $this->default_view_class();
-		$view = new $model_class(NULL);
-		$view->set_model($this);
-
-		$this->set('view', $view, false);
-
-		return $view;
 	}
 }

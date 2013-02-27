@@ -71,7 +71,7 @@ class bors_tools_search_result extends bors_tools_search
 				break;
 			case 't':
 				$index = "topic_titles";
-				$weights = array ('topic_titles');
+//				$weights = array ('topic_titles' => 100);
 				break;
 			default:
 				$index = "topic_titles,topic_descriptions,topic_keywords";

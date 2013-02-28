@@ -148,6 +148,9 @@ class bors_external_feed extends base_object_db
 			if(!$author_name)
 				$author_name = @$item['lj:poster'][0]['cdata'];
 
+			if(preg_match('/^\S+@\S+ \((.+)\)$/', $author_name, $m))
+				$author_name = $m[1];
+
 			if(empty($guid))
 				$guid = $link;
 
@@ -220,6 +223,7 @@ class bors_external_feed extends base_object_db
 
 			if($entry
 					&& $pub_date <= $entry->pub_date()
+					&& $author_name == $entry->author_name()
 					&& bors_substr($title, 0, 255) == bors_substr($entry->title(), 0, 255)
 					&& $description == $entry->text()
 					&& $keywords_string == $entry->keywords_string()
@@ -227,7 +231,7 @@ class bors_external_feed extends base_object_db
 				continue;
 
 			if($entry)
-				debug_hidden_log('__keywords_delete', "check 1: why not skipped? entry={$entry->id()}; entry=".((bool)$entry)
+				debug_hidden_log('__rss_update', "check 1: why not skipped? entry={$entry->id()}; entry=".((bool)$entry)
 					." && pubdate <= :".($pub_date <= $entry->pub_date())
 					." && title==:".($title == $entry->title())
 					." && desc==:".($description == $entry->text())
@@ -271,7 +275,8 @@ class bors_external_feed extends base_object_db
 				$entry->set_text($description, true);
 //				print_dd($description);
 				$entry->set_is_suspended($is_skipped, true);
-				$entry->set_is_public($topic->is_public());
+				if(@$topic)
+					$entry->set_is_public($topic->is_public());
 				$was = 'updated';
 			}
 			else
@@ -302,7 +307,7 @@ class bors_external_feed extends base_object_db
 			{
 
 				if($entry)
-					debug_hidden_log('__keywords_delete', "why not skipped? entry={$entry->debug_title()}; was=$was; entry=".((bool)$entry)
+					debug_hidden_log('__rss-update2', "why not skipped? entry={$entry->debug_title()}; was=$was; entry=".((bool)$entry)
 						." && pubdate <= :".($pub_date <= $entry->pub_date())
 						." && title==:".($title == $entry->title())
 						." && desc==:".($description == $entry->text())

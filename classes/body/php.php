@@ -9,7 +9,7 @@ class body_php extends base_null
 {
 	function body($object)
 	{
-		if(!$object->loaded() && !$object->can_be_empty())
+		if(!$object->is_loaded() && !$object->can_be_empty())
 			return false;
 
 		debug_timing_start('body_php_body-'.$object->class_name());

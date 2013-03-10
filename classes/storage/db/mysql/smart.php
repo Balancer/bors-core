@@ -1,5 +1,11 @@
 <?php
 
+if(!config('obsolete.use_mysql_smart'))
+{
+	debug_hidden_log('obsolete_error', "Try to use storage_db_mysql_smart");
+	bors_throw('Error: Try to use storage_db_mysql_smart');
+}
+
 class storage_db_mysql_smart extends base_null
 {
 	private $_back_functions = array(
@@ -286,12 +292,12 @@ class storage_db_mysql_smart extends base_null
 					$was_loaded = true;
 				}
 
-				$object->set_loaded($was_loaded);
+				$object->set_is_loaded($was_loaded);
 				save_cached_object($object, false, !$common_where);
 
 				if($common_where)
 				{
-					if($object->loaded()) // метод может переопределяться для проверки данных
+					if($object->is_loaded()) // метод может переопределяться для проверки данных
 						if($by_id)
 							$result[$object->$by_id()] = $object;
 						else

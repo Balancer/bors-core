@@ -19,7 +19,7 @@ class bors_admin_edit_smart extends bors_admin_page
 	function nav_name() { return $this->object() ? $this->object()->nav_name() : ec('редактор'); }
 
 	function can_be_empty() { return false; }
-	function loaded() { return (bool)$this->object(); }
+	function is_loaded() { return (bool)$this->object(); }
 
 	function object()
 	{
@@ -80,7 +80,6 @@ class bors_admin_edit_smart extends bors_admin_page
 				if(preg_match('/^\w+$/', $property_name))
 				{
 					$data = bors_lib_orm::parse_property($this->object()->class_name(), $property_name);
-//					print_dd($data);
 					$type = defval($data, 'type');
 				}
 				else
@@ -123,6 +122,9 @@ class bors_admin_edit_smart extends bors_admin_page
 
 			if(empty($type))
 				$type = 'input';
+
+			if(is_null($data))
+				$data = array();
 
 			$fields[$field_title] = array_merge($data, array('title' => $field_title, 'name' => $property_name, 'origin' => $x, 'type' => $type, 'args' => $args));
 		}

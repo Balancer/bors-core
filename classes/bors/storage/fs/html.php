@@ -68,10 +68,10 @@ class bors_storage_fs_html extends base_null
 	{
 		$file = $this->__find($object);
 		if(!$file)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		if(!($html = @file_get_contents($file)))
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		if($object->internal_charset() != 'utf-8')
 			$html = ec($html);
@@ -136,7 +136,7 @@ class bors_storage_fs_html extends base_null
 		$object->set_source($this->ext('body', '-'), false);
 		debug_log_var('data_file', $file);
 
-		return $object->set_loaded(true);
+		return $object->set_is_loaded(true);
 	}
 
 	function save($object)

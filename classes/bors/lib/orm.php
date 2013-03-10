@@ -18,7 +18,7 @@ class bors_lib_orm
 		if(!is_array($field))
 		{
 			if(strpos($field, '|') !== false && preg_match('/^(\w+)\|(\w+)$/', $field, $m))
-			// Это запись вида 'property' => 'fiels|post_function'
+			// Это запись вида 'property' => 'field|post_function'
 				$field = array('name' => $m[1], 'post_function' => $m[2]);
 			elseif(preg_match('/^(\w+),(\w+)$/', $field, $m))
 			//	Запись вида 'id' => 'company_id,user_id' — составной первичный или уникальный ключ
@@ -65,6 +65,11 @@ class bors_lib_orm
 			{
 				$field['type'] = 'date';
 				$field['post_function'] = array('bors_time_date', 'load');
+			}
+			elseif(preg_match('/^\w+_ts$/', $field['name']))
+			{
+				$field['type'] = 'timestamp';
+				$field['sql_function'] = 'UNIX_TIMESTAMP';
 			}
 			elseif(preg_match('/text/', $property))
 				$field['type'] = 'text';

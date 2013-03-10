@@ -42,18 +42,21 @@ $data = array(
 
 */
 
-function array2xml_wp($data, $root = NULL)
+if(class_exists('XMLWriter'))
 {
-	if(is_null($root))
+	function array2xml_wp($data, $root = NULL)
 	{
-		$root = array_pop(array_keys($data));
-		$data = $data[$root];
+		if(is_null($root))
+		{
+			$root = @array_pop(array_keys($data));
+			$data = $data[$root];
+		}
+
+		$converter = new Array2XMLWP();
+		$converter->setRootName($root);
+
+		return $converter->convert($data);
 	}
-
-	$converter = new Array2XMLWP();
-	$converter->setRootName($root);
-
-	return $converter->convert($data);
 }
 
 class Array2XMLWP

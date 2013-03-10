@@ -9,7 +9,7 @@ class bors_forms_radio extends bors_forms_element
 
 		extract($params);
 
-		$obj = $form->object();
+		$obj = object_property($form, 'object');
 
 		if(!empty($property))
 			$name = $property;
@@ -68,7 +68,10 @@ class bors_forms_radio extends bors_forms_element
 			$current = @array_pop($current); // wtf?
 
 		if(!$current && !empty($list['default']))
+		{
 			$current = $list['default'];
+			unset($list['default']);
+		}
 
 		if(empty($delim))
 			$delim = "<br />";

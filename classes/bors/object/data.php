@@ -7,7 +7,7 @@ class bors_object_data extends bors_object
 	function can_be_empty() { return false; }
 	function storage() { return bors_load($this->storage_engine(), NULL); }
 
-	function init()
+	function data_load()
 	{
 		return $this->storage()->load($this);
 	}

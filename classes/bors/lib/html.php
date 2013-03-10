@@ -2,7 +2,7 @@
 
 class bors_lib_html
 {
-	function get_meta_data($content, $url = NULL) // via http://ru2.php.net/get_meta_tags
+	static function get_meta_data($content, $url = NULL) // via http://ru2.php.net/get_meta_tags
 	{
 		$content = preg_replace("'<style[^>]*>.*</style>'siU",'',$content);  // strip js
 		$content = preg_replace("'<script[^>]*>.*</script>'siU",'',$content); // strip css
@@ -23,6 +23,9 @@ class bors_lib_html
 		{
 			if(preg_match("!<meta[^>]+(name|property)=\"([\w:]+)\"[^>]+(content|value)=\"([^>]+)\"(.*?)>!is", trim($s), $m))
 				$meta[bors_lower($m[2])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'), $m[2]);
+
+			if(preg_match("!<meta[^>]+(content|value)=\"([^>]+)\"[^>]+(name|property)=\"([\w:]+)\"(.*?)>!is", trim($s), $m))
+				$meta[bors_lower($m[4])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[2], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'), $m[4]);
 
 			if(preg_match("!<meta[^>]+(http\-equiv|name|property)=['\"]([\w:]+)['\"][^>]+(content|value)='([^']*)'!is", trim($s), $m))
 				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');

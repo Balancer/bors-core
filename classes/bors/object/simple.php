@@ -226,7 +226,7 @@ class bors_object_simple extends bors_object_empty
 	}
 
 	function storage_engine() { return ''; }
-	function loaded() { return true; }
+	function is_loaded() { return true; }
 	function internal_uri() { return get_class($this).'://'.$this->id(); }
 	function cache_clean() { }
 
@@ -235,7 +235,28 @@ class bors_object_simple extends bors_object_empty
 
 	function attr($attr, $def = NULL) { return array_key_exists($attr, $this->attr) ? $this->attr[$attr] : $def; }
 	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
-	function append_attrs($attrs) { return $this->attr = array_merge($this->attr, $attrs); }
+
+	function set_attrs($attrs)
+	{
+		$this->attr = array_merge($this->attr, $attrs);
+		return $this;
+	}
+
+	function set_property($property, $value, $db_up = true)
+	{
+		$this->set($property, $value, $db_up);
+		return $this;
+	}
+
+	function set_properties($properties, $db_up = true)
+	{
+		foreach($properties as $property => $value)
+			$this->set($property, $value, $db_up);
+
+//		var_dump($db_up, $properties, $this->body_data());
+
+		return $this;
+	}
 
 //	private $__last_cache_key; // идентификатор последнего проверяемого по havec значения
 	var $__last_cache_stack = array(); // Для реентерабельности

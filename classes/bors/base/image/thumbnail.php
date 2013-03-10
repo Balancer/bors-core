@@ -7,14 +7,14 @@ class base_image_thumbnail extends base_image
 	function init()
 	{
 		@list($id, $this->geometry) = explode(',', $this->id());
-	
+
 		list($this->geo_width, $this->geo_height) = @explode('x', $this->geometry);
-		
+
 		$this->original = object_load('base_image', $id);
-		
+
 		if($this->width())
 		{
-			$this->set_loaded(true);
+			$this->set_is_loaded(true);
 			return false;
 		}
 
@@ -23,7 +23,7 @@ class base_image_thumbnail extends base_image
 
 //		$this->set_relative_path('cache/'.$this->original->relative_path().'/'.($this->id()%100).'/'.$this->geometry, true);
 		$this->set_relative_path('cache/'.$this->original->relative_path().'/'.$this->geometry, true);
-			
+
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
 			$this->set($key, $this->original->$key(), true);
 
@@ -48,7 +48,7 @@ class base_image_thumbnail extends base_image
 		$this->set_mime_type($img_data['mime'], true);
 
 //		echo "{$this}: {$this->wxh()}<br />\n";
-		$this->set_loaded(true);
+		$this->set_is_loaded(true);
 
 		return false;
 	}
@@ -57,7 +57,7 @@ class base_image_thumbnail extends base_image
 	{
 		if(file_exists($this->file_name_with_path()))
 			return;
-			
+
 		$this->thumb_file_create($geometry);
 	}
 

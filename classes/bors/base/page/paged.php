@@ -77,7 +77,7 @@ class base_page_paged extends bors_page
 		if(!is_null($this->_items))
 			return $this->_items;
 
-		try
+//		try
 		{
 			$this->_items = bors_find_all($this->main_class(), $this->_where(array(
 				'page' => $this->page(),
@@ -86,13 +86,14 @@ class base_page_paged extends bors_page
 			)));
 		}
 
+/*
 		catch(Exception $e)
 		{
 			$msg = bors_lib_exception::catch_trace($e);
 			debug_hidden_log('items_list_exception', $msg);
 			$this->_items = array();
 		}
-
+*/
 		if($this->is_reversed())
 			$this->_items = array_reverse($this->_items);
 

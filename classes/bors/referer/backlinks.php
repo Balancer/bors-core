@@ -20,7 +20,7 @@ class bors_referer_backlinks extends base_page
 		);
 	}
 
-	function loaded() { return !!$this->object(); }
+	function is_loaded() { return (bool) $this->object(); }
 
 	function pre_show()
 	{

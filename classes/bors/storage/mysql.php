@@ -48,8 +48,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 			if($field_name != $f['property'] || !empty($f['sql_function']))
 			{
-//				var_dump($where);
-//				echo "{$f['property']} -> {$f['name']}<br/>";
 				$x .= " AS `{$f['property']}`";
 				if(array_key_exists($f['property'], $where))
 				{
@@ -63,12 +61,11 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			if(!empty($f['post_function']))
 				$post_functions[$f['property']] = $f['post_function'];
 		}
-//		var_dump($select);
+
 		$dummy = array();
 		self::__join('inner', $object, $select, $where, $post_functions, $dummy);
 		self::__join('left',  $object, $select, $where, $post_functions, $dummy);
 
-//		$dbh = new driver_mysql($object->db_name());
 		return array($select, $where, $post_functions);
 	}
 
@@ -252,7 +249,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$data = $dbh->select($object->table_name(), join(',', $select), $where);
 
 		if(!$data)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		$object->data = $data;
 
@@ -262,7 +259,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		if(!empty($post_functions))
 			self::post_functions_do($object, $post_functions);
 
-		$object->set_loaded(true);
+		$object->set_is_loaded(true);
 		save_cached_object($object);
 
 		return true;
@@ -351,7 +348,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			if($must_be_configured)
 				$object->_configure();
 
-			$object->set_loaded(true);
+			$object->set_is_loaded(true);
 
 			if(!empty($post_functions))
 				self::post_functions_do($object, $post_functions);
@@ -413,7 +410,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$object->set_id(@$data['id']);
 			$object->data = $data;
 
-			$object->set_loaded(true);
+			$object->set_is_loaded(true);
 
 			if(!empty($post[$class_name]))
 				self::post_functions_do($object, $post[$class_name]);
@@ -583,7 +580,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$object = new $class_name($data['id']);
 //		$object->set_id($data['id']);
 		$object->data = $data;
-		$object->set_loaded(true);
+		$object->set_is_loaded(true);
 		return $this->object = $object;
 	}
 
@@ -673,7 +670,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$map = array(
 			'string'	=>	'VARCHAR(255)',
 			'text'		=>	'TEXT',
-			'timestamp'	=>	'TIMESTAMP',
+			'timestamp'	=>	'TIMESTAMP NULL',
 			'int'		=>	'INT',
 			'uint'		=>	'INT UNSIGNED',
 			'bool'		=>	'TINYINT(1) UNSIGNED',
@@ -693,14 +690,14 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$object = $this->__object;
 			$db_name = $this->__db_name;
 			$table_name = $this->__table_name;
-			$db =$this->__dbh;
+			$db = $this->db();
 		}
 
 		$db_fields = array();
 		$primary = false;
 
 		$fields = bors_lib_orm::main_fields($object);
-//		var_dump($fields);
+
 		foreach($fields as $field)
 		{
 			$db_field = '`'.$field['name'].'` '.$map[$field['type']];
@@ -725,7 +722,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$db->query($query);
 //		$db->close();
-
 	}
 
 	static function drop_table($class_name)

@@ -54,12 +54,14 @@ class bors_admin_meta_search extends bors_admin_meta_main
 
 		$q = "'%".addslashes(trim(urldecode($_GET['q'])))."%'";
 
+		$any = $_GET['w'] == 'a';
+
 		$qq = array();
 
 		$main_class = $this->main_class();
 		$foo = new $main_class(NULL);
 
-		$properties = $foo->admin_searchable_properties();
+		$properties = $foo->admin_searchable_properties($any);
 		if(!is_array($properties))
 			$properties = explode(' ', $properties);
 

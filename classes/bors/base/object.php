@@ -10,6 +10,11 @@ class base_object extends base_empty
 		'url_engine' => 'url_calling2',
 	); }
 
+//	При настройке проверить:
+//	— http://www.aviaport.ru/services/events/arrangement/
+// 	— http://admin.aviaport.ru/directory/aviafirms/31/
+//	function _title_def() { return $this->class_title().' '.$this->class_name(); }
+
 	function _access_engine_def() { return NULL; }
 
 	function properties_preset() { return array(
@@ -480,7 +485,7 @@ defined at {$this->class_file()}<br/>
 		if(($nav_name = $this->get('nav_name', NULL, true)))
 			return $nav_name;
 
-		return  $this->get('nav_name_lower', config('nav_name_lower')) ? bors_lower($this->title()) : $this->title();
+		return $this->get('nav_name_lower', config('nav_name_lower')) ? bors_lower($this->title()) : $this->title();
 	}
 
 	function _nav_name_true_def() { return $this->get('nav_name', NULL, true); }

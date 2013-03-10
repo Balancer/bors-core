@@ -63,6 +63,8 @@ class bors_admin_edit_synonyms extends bors_page
 			'is_exactly' => defval($data, 'is_exactly'),
 		));
 
+		$target->call('post_update');
+
 		return go_ref($this->url());
 	}
 

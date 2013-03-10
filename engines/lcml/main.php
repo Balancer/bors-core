@@ -145,6 +145,9 @@ function html2bb($text, $args = array())
 		$text = preg_replace("!<$h [^>]+>(.+?)</$h>!is", "[$b]$1[/$b]", $text);
 	}
 
+	// Затычка кривого кода с Blogspot
+	$text = preg_replace("!(<a [^>]+>) (<img )!is", "$1$2", $text);
+
 	$text = preg_replace("!<div [^>]*>\s*(.+?)\s*</div>!is", "\n$1\n", $text);
 	$text = preg_replace("!<div>\s*(.*?)\s*</div>!is", "\n$1\n", $text);
 	$text = preg_replace("!<p [^>]+>(.+?)</p>!is", "\n$1\n", $text);
@@ -154,7 +157,6 @@ function html2bb($text, $args = array())
 	$text = preg_replace("!<noindex>!i", "", $text);
 	$text = preg_replace("!</noindex>!i", "", $text);
 	$text = preg_replace("!<br\s*/?>!", "\n", $text);
-
 
 	$text = preg_replace("!(<a [^>]*href=\")(/.+?)(\"[^>]*?>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
 	$text = preg_replace("!(<a [^>]*href=)([^\"']\S+)( [^>]+>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);

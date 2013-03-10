@@ -21,8 +21,8 @@ class base_object extends base_empty
 	); }
 
 	var $___loaded = false;
-	function loaded() { return $this->___loaded; }
-	function set_loaded($value = true) { return $this->___loaded = $value; }
+	function is_loaded() { return $this->___loaded; }
+	function set_is_loaded($value) { return $this->___loaded = $value; }
 
 	private $__match;
 	function set_match($match) { return $this->__match = $match; }
@@ -159,11 +159,8 @@ class base_object extends base_empty
 		}
 	}
 
-	function init($data_load = true)
+	function data_load()
 	{
-		if(!$data_load)
-			return false;
-
 		if(@$this->__loaded)
 			return true;
 
@@ -171,7 +168,7 @@ class base_object extends base_empty
 		{
 			$storage_engine = object_load($storage_engine, NULL, array('no_load_cache' => true));
 			if(!$storage_engine)
-				debug_exit("Can't load storage engine '{$this->storage_engine()}' for class <b>{$this->class_name()}</b><br/>at {$this->class_file()}  in dirs:<br/>".join(",<br/>\n", bors_dirs()));
+				bors_throw("Can't load storage engine '{$this->storage_engine()}' for class <b>{$this->class_name()}</b><br/>at {$this->class_file()}  in dirs:<br/>".join(",<br/>\n", bors_dirs()));
 			elseif($storage_engine->load($this) !== false || $this->can_be_empty())
 				$this->__loaded = true;
 		}
@@ -645,6 +642,7 @@ defined at {$this->class_file()}<br/>
 	{
 		if($title === NULL)
 			$title = $this->title() ? $this->title() : '---';
+
 		return '<a rel="nofollow" href="'.$this->admin_url($this->page()).'">'.$title.'</a>';
 	}
 
@@ -660,7 +658,23 @@ defined at {$this->class_file()}<br/>
 	{
 		if($title === NULL)
 			$title = ec('Редактировать ').bors_lower($this->class_title_rp());
-		return "<a rel=\"nofollow\" href=\"{$this->admin_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
+
+		return "<a rel=\"nofollow\" href=\"{$this->edit_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/></a>";
+	}
+
+	function imaged_texted_edit_link($text) { return $this->imaged_edit_link_ex(array('text' => $text)); }
+
+	function imaged_edit_link_ex($params = array())
+	{
+		$title = popval($params, 'title');
+		if($title === NULL)
+			$title = ec('Редактировать ').bors_lower($this->class_title_rp());
+
+		$text = popval($params, 'text');
+		if($text)
+			$text = "&nbsp;{$text}";
+
+		return "<a rel=\"nofollow\" href=\"{$this->edit_url($this->page())}\"><img src=\"/_bors/i/edit-16.png\" width=\"16\" height=\"16\" alt=\"edit\" title=\"$title\"/>{$text}</a>";
 	}
 
 	function titled_new_link($title = NULL)

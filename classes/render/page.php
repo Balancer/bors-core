@@ -6,7 +6,7 @@ class render_page extends base_null
 	{
 //	    require_once('engines/smarty/bors.php');
 
-		if(!$object->loaded() && !$object->can_be_empty())
+		if(!$object->is_loaded() && !$object->can_be_empty())
 			return false;
 
 		$template_renderer = new bors_templates_smarty(NULL);

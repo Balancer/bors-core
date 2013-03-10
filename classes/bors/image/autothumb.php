@@ -4,7 +4,7 @@
 	Автоматическая генерация превьюшек для /cache/
 */
 
-class bors_image_autothumb extends base_object
+class bors_image_autothumb extends bors_object
 {
 	var $origin_path = NULL;
 	var $geo = NULL;
@@ -26,7 +26,7 @@ class bors_image_autothumb extends base_object
 		parent::__construct($this->origin_path = $origin_path);
 	}
 
-	function loaded()
+	function is_loaded()
 	{
 		return $this->origin_path
 			&& !preg_match('/\.(bmp|php)$/', $this->origin_path);
@@ -47,6 +47,7 @@ class bors_image_autothumb extends base_object
 			$img = bors_image::register_file($this->origin_path);
 
 		$thumb = $img->thumbnail($this->geo);
+
 		if($thumb->pre_show())
 			return true;
 

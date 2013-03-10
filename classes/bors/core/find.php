@@ -103,6 +103,10 @@ class bors_core_find
 		return $this;
 	}
 
+	function eq($property, $value) { $this->where_parse_set($property, $value); return $this; }
+
+	function in($property, $values) { $this->where_parse_set("$property IN", $values); return $this; }
+
 	function inner_join($join_class, $join_cond)
 	{
 		$this->class_stack_push($join_class);
@@ -244,6 +248,9 @@ class bors_core_find
 
 		if(preg_match('/^(.+) IN$/', $param, $m))
 		{
+			if(is_object($value))
+				$value = $value->to_array();
+
 			if(is_array($value))
 			{
 				if(count($value) > 1)

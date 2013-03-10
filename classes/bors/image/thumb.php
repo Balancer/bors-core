@@ -32,13 +32,13 @@ class bors_image_thumb extends bors_image
 
 	function replace_on_new_instance() { return true; }
 
-	function init()
+	function data_load()
 	{
 		if(is_numeric($this->id()) && $this->args('geometry'))
 			$this->set_id($this->id().','.$this->args('geometry'));
 
 		if(config('cache_database'))
-			parent::init();
+			parent::data_load();
 
 		if(preg_match('!^(\d+),((\d*)x(\d*))$!', $this->id(), $m))
 		{
@@ -56,17 +56,17 @@ class bors_image_thumb extends bors_image
 			$this->geo_opts   = $m[5];
 		}
 		else
-			return $this->set_loaded(false);
+			return $this->set_is_loaded(false);
 
 		//TODO: сделать вариант, совместимый с safe_mod!
 //		var_dump($this->width(), $this->file_name_with_path(), $this->data);
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
-			return $this->set_loaded(true);
+			return $this->set_is_loaded(true);
 
 		$this->original = object_load($this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
-			return $this->set_loaded(false);
+			return $this->set_is_loaded(false);
 
 //		$this->delete();
 
@@ -135,7 +135,7 @@ class bors_image_thumb extends bors_image
 //		debug_hidden_log('000', "$file_orig_r :".@filesize($file_orig_r));
 
 		if(!$this->thumb_create($abs))
-			return $this->set_loaded(false);
+			return $this->set_is_loaded(false);
 
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
@@ -162,7 +162,7 @@ class bors_image_thumb extends bors_image
 //		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
 
 //		echo "{$this}: {$this->wxh()}<br />\n";
-		$this->set_loaded(true);
+		$this->set_is_loaded(true);
 	}
 
 	private function thumb_create($abs = false)
@@ -182,7 +182,7 @@ class bors_image_thumb extends bors_image
 		return $err == NULL;
 	}
 
-	function fullsized_url() { $this->init(); return $this->original ? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : $this->html_code(); }
+	function fullsized_url() { $this->data_load(); return $this->original ? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : $this->html_code(); }
 
 	function alt() { return $this->original ? $this->original->alt() : ""; }
 }

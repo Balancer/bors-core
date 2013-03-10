@@ -3,7 +3,7 @@
 class bors_admin_auto_edit extends bors_admin_meta_edit
 {
 	function can_be_empty() { return false; }
-	function loaded() { return !!$this->main_admin_class(); }
+	function is_loaded() { return (bool) $this->main_admin_class(); }
 
 	private $_rel;
 

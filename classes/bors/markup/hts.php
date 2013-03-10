@@ -7,7 +7,7 @@ class bors_markup_hts extends base_object
 	static function factory($text = NULL, $args = array())
 	{
 		$object = new bors_markup_hts(NULL);
-		$object->append_attrs($args);
+		$object->set_attrs($args);
 
 		if($text)
 			$object->parse_source($text, false);

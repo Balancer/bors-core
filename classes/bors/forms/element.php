@@ -8,7 +8,7 @@ class bors_forms_element
 		$def  = defval($params, 'def');
 		$value = defval($params, $param_name);
 
-		$object = $form->object();
+		$object = object_property($form, 'object');
 
 		if(!array_key_exists($param_name, $params))
 		{

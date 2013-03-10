@@ -39,15 +39,11 @@ class bors_tools_search_result extends bors_tools_search
 //	function parents() { return $this->q() ? array('/tools/search.bas?q=') : array('/tools/'); }
 	function can_cached() { return false; }
 
-	function init()
-	{
-		$this->_set_arg('page' , max(1, @$_GET['p']));
-		return parent::init();
-	}
-
 	private $_data = false;
 	function pre_show()
 	{
+		$this->set('page' , max(1, @$_GET['p']), false);
+
 		if($this->_data !== false)
 			return false;
 
@@ -75,7 +71,7 @@ class bors_tools_search_result extends bors_tools_search
 				break;
 			case 't':
 				$index = "topic_titles";
-				$weights = array ('topic_titles');
+//				$weights = array ('topic_titles' => 100);
 				break;
 			default:
 				$index = "topic_titles,topic_descriptions,topic_keywords";

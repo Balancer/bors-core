@@ -1,11 +1,5 @@
 <?php
 
-//if(config('smarty3_enable'))
-//{
-//	debug_hidden_log('__obsolete', "Call obsolete smarty2");
-//	bors_throw(ec('[assign load] Попытка использования Smarty2 при активном Smarty3'));
-//}
-
 function template_assign_data($assign_template, $data=array(), $uri=NULL, $caller=NULL)
 {
 	bors_function_include('debug/hidden_log');

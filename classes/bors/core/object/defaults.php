@@ -3,7 +3,12 @@
 class bors_core_object_defaults
 {
 	// airbase_common_forum => airbase
-	static function project_name($object) { return array_shift(explode('_', $object->class_name())); }
+	static function project_name($object)
+	{
+		$arr = explode('_', $object->class_name());
+		// При прямом возвращении через array_shift сыплется NOTICE «Only variables should be passed by reference»
+		return @$arr[0];
+	}
 //	static function access_name($object) { return bors_plural(array_pop(explode('_', $object->class_name()))); }
 
 	static function _obsolete_project_name($object)

@@ -3,7 +3,7 @@
 class bors_admin_auto_main extends bors_admin_meta_main
 {
 	function can_be_empty() { return false; }
-	function loaded() { return !!$this->main_admin_class(); }
+	function is_loaded() { return (bool) $this->main_admin_class(); }
 
 	function main_admin_class()
 	{

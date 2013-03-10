@@ -15,7 +15,7 @@ class storage_fs_xml extends base_null
 		elseif(preg_match('!^(.*/[^/]+\.)\w{1,4}$!', $url, $m))
 			$file = $m[1] . 'xml';
 		else
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		return config('storage_xml_base_dir', secure_path(BORS_SITE.'/data/fs-xml/')).preg_replace('!^http://[^/]+!', '', $file);
 	}
@@ -31,7 +31,7 @@ class storage_fs_xml extends base_null
 		elseif(preg_match('!^(.*/[^/]+\.)\w{1,4}$!', $url, $m))
 			$file = $m[1] . 'xml';
 		else
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		return preg_replace('!^http://[^/]+!', '', $file);
 	}
@@ -48,11 +48,11 @@ class storage_fs_xml extends base_null
 					break;
 
 		if(!file_exists($file))
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		$content = file_get_contents($file);
 		if(!$content)
-			return $object->set_loaded(false);
+			return $object->set_is_loaded(false);
 
 		// По дефолту в xml разрешён HTML и все BB-тэги.
 		$object->set_html_disable(false, false);
@@ -107,7 +107,7 @@ class storage_fs_xml extends base_null
 
 		}
 
-		return $object->set_loaded($loaded);
+		return $object->set_is_loaded($loaded);
 	}
 
 	function save($object)

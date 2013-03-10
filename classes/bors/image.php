@@ -133,9 +133,9 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		));
 	}
 
-	function init()
+	function data_load()
 	{
-		parent::init();
+		parent::data_load();
 		if(!$this->width())
 			$this->recalculate(true);
 	}
@@ -302,7 +302,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		return parent::delete();
 	}
 
-	function class_title() { return ec('Изображение'); }
+	function _class_title_def() { return ec('Изображение'); }
 	function class_title_vp() { return ec('изображение'); }
 	function _class_title_rp_def() { return ec('изображения'); }
 

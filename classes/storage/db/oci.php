@@ -168,13 +168,13 @@ class storage_db_oci extends storage_db
 						$name	= $m[1];
 						$value = $this->do_func($m[2], $value);
 					}
-					
+
 					$object->{"set_$name"}($value, false);
 
 					$was_loaded = true;
 				}
 
-				$object->set_loaded($was_loaded);
+				$object->set_is_loaded($was_loaded);
 
 				if($common_where)
 				{

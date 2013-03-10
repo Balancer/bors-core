@@ -309,8 +309,11 @@ class bors_link extends bors_object_db
 
 	static function links_count($object, $where = array())
 	{
-//		if(!$object)
-//			return 0;
+		if(!$object)
+		{
+			debug_hidden_log('links-error', "Try links count for empty object");
+			return 0;
+		}
 
 		if(!is_array($where))
 			$where = array('target_class' => $where);

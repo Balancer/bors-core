@@ -372,6 +372,7 @@ class bors_form extends bors_object
 						{
 							$data['can_drop'] = true;
 							$data['is_integer'] = 8;
+							$data['is_fuzzy'] = true;
 						}
 						if($args = popval($data, 'args'))
 							$data = array_merge($data, $args);

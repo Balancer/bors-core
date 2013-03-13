@@ -10,7 +10,6 @@
 </ul>
 
 {form action=$this->url() class=$object->class_name() id=$object->id() fields=$auto_fields}
-
 {foreach from=$fields key="title" item="x"}
 {assign var="desc" value=$x.origin}
 {assign var="ptype" value=$x.type}

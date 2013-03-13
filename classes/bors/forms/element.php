@@ -20,7 +20,7 @@ class bors_forms_element
 				$value = NULL;
 		}
 
-		if(!isset($value) && !$form->attr('no_session_vars'))
+		if(!isset($value) && $form && !$form->attr('no_session_vars'))
 			$value = session_var("form_value_{$name}");
 
 		set_session_var("form_value_{$name}", NULL);

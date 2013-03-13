@@ -36,6 +36,9 @@ class bors_synonym extends bors_object_db
 	// На всякий случай принудительно укажем. Чтобы не терялись пометки о запрете.
 	function replace_on_new_instance() { return false; }
 
+	// Однако, надо как-то и с дублями бороться. Так что — игнором.
+	function ignore_on_new_instance() { return true; }
+
 	static function add_object($x1, $x2 = array(), $params = array())
 	{
 		if(is_object($x1))

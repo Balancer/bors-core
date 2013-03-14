@@ -89,7 +89,8 @@ class bors_forms_combobox extends bors_forms_element
 		if(is_null($is_int) && !$strict)
 			$is_int = true;
 
-		$value = NULL; // self::value($params, $form);
+//		$value = NULL; // self::value($params, $form);
+		$value = self::value($params, $form);
 
 /*
 		if(empty($get))
@@ -157,6 +158,13 @@ class bors_forms_combobox extends bors_forms_element
 		{
 //			var_dump($params);
 			$json = "/_bors/data/lists/{$main_class}.json";
+		}
+
+//		http://admin.aviaport.ru/directory/aviation/arp/5/
+		if($value && is_numeric($value))
+		{
+			$v = bors_load($main_class, $value);
+			$attrs['initialValue'] = $v->title();
 		}
 
 		jquery_flexbox::appear("'#{$name}'", $json, $attrs);

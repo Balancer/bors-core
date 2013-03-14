@@ -70,7 +70,8 @@
 				<!--
 				object to read = '{$obj->debug_title()}'
 				object to read file = '{$obj->get('class_file')}'
-				access engine (access object->can_read() == false) = '{$access_object->debug_title()}'
+				access engine  = '{$access_object->debug_title()}'
+				access object->can_read() == false
 				access engine target = '".object_property($access_object->id(), 'debug_title')."
 				class_file = ".(method_exists($access_object, 'class_file') ? $access_object->class_file() : 'none')."
 				object.config = ".object_property($obj->config(), 'debug_title')."

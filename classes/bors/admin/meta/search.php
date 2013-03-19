@@ -69,7 +69,7 @@ class bors_admin_meta_search extends bors_admin_meta_main
 
 		$q = "'%".addslashes(trim(urldecode($_GET['q'])))."%'";
 
-		$any = $_GET['w'] == 'a';
+		$any = @$_GET['w'] == 'a';
 
 		$qq = array();
 
@@ -80,6 +80,7 @@ class bors_admin_meta_search extends bors_admin_meta_main
 			$properties = $foo->admin_searchable_properties();
 		else
 			$properties = $foo->admin_searchable_title_properties();
+
 
 		if(!is_array($properties))
 			$properties = explode(' ', $properties);

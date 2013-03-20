@@ -34,6 +34,11 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 		return $this;
 	}
 
+	function filter_clone($callback = "")
+	{
+		return self::factory(array_filter($this->_value, $callback));
+	}
+
 	function pgrep($regexp)
 	{
 		$this->_value = array_filter($this->_value, function($x) use ($regexp) { return preg_match($regexp, $x); } );
@@ -189,5 +194,12 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 
 		$suite->assertEquals(20, $s0);
 		$suite->assertEquals(6,  $s1);
+
+		$x = self::factory(array(1,2,3,4,5,6,7,8,9,10));
+//		var_dump($x->filter_clone(create_function('$x', 'return $x%2;'))->to_array());
+//		ob_flush();
+		$suite->assertEquals('1,3,5,7,9', $x->filter_clone(create_function('$x', 'return $x%2;'))->join(',')->to_string());
+		$suite->assertEquals('1,2,3,4,5', $x->filter_clone(create_function('$x', 'return $x < 6;'))->join(',')->to_string());
+		$suite->assertEquals('1 2 3 4 5 6 7 8 9 10', $x->join(' ')->to_string());
 	}
 }

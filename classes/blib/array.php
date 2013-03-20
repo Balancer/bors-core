@@ -7,7 +7,7 @@
 	http://habrahabr.ru/post/165107/
 */
 
-class blib_array extends blib_object implements ArrayAccess
+class blib_array extends blib_object implements ArrayAccess, Iterator
 {
 	function __construct($init_value = NULL)
 	{
@@ -52,6 +52,11 @@ class blib_array extends blib_object implements ArrayAccess
 			$function($x);
 
 		return $this;
+	}
+
+	function load_by_ids($class_name)
+	{
+		return b2::find($class_name)->in('id', $this->_value)->all();
 	}
 
 	function nshift($n)
@@ -127,6 +132,16 @@ class blib_array extends blib_object implements ArrayAccess
 	public function offsetGet($key) { return array_key_exists($key, $this->_value) ? $this->_value[$key] : NULL; }
 	/* Конец реализации методов интерфейса ArrayAccess */
 
+	// Реализация методов итератора
+	private $_i_key;
+	private $_i_val;
+
+    public function key() { return $this->_i_key; }
+    public function current() { return $this->_i_val; }
+    public function next() { if($x = each($this->_value)) list($this->_i_key, $this->_i_val) = $x; else $this->_i_key = NULL; }
+    public function rewind() { reset($this->_value); $this->next(); }
+    public function valid() { return !is_null($this->_i_key); }
+
 	static function __unit_test($suite)
 	{
 		$x = blib_array::factory(array(1, 2, 3));
@@ -142,5 +157,37 @@ class blib_array extends blib_object implements ArrayAccess
 		$suite->assertNull(@$x[3]);
 		$suite->assertTrue($x->offsetExists(2));
 		$suite->assertFalse($x->offsetExists(3));
+
+		$s0 = 0;
+		$s1 = 0;
+		$pos = 0;
+		foreach($x as $k => $v)
+		{
+			$suite->assertEquals($pos++, print_r($k, true));
+//			var_dump($k, $v);
+//			ob_flush();
+			$s0 += $k;
+			$s1 += $v;
+		}
+
+		$suite->assertEquals(3,  $s0);
+		$suite->assertEquals(98, $s1);
+
+		$s1 = 0;
+		foreach($x as $v)
+			$s1 += $v;
+
+		$suite->assertEquals(98, $s1);
+
+		$s0 = 0;
+		$s1 = 0;
+		foreach(blib_array::factory(array('5' => 1, '7' => 2, 3)) as $k => $v)
+		{
+			$s0 += $k;
+			$s1 += $v;
+		}
+
+		$suite->assertEquals(20, $s0);
+		$suite->assertEquals(6,  $s1);
 	}
 }

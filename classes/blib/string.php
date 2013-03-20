@@ -17,6 +17,7 @@ class blib_string extends blib_object
 	static function factory($string) { return new blib_string($string); }
 
 	function __toString() { return $this->_value; }
+	function to_string() { return $this->_value; }
 
 	function write() { echo $this->_value; return $this; }
 	function writeln() { echo $this->_value, PHP_EOL; return $this; }

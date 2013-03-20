@@ -92,7 +92,11 @@ class bors_admin_meta_edit extends bors_admin_page
 	function body_data()
 	{
 		if($this->id())
+		{
 			$data = object_property($this->target(), 'data', array());
+			if(!is_array($data))
+				$data = array();
+		}
 		else
 		{
 			$data = array();

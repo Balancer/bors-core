@@ -15,9 +15,7 @@ class bors
 		if(!$url)
 			$url = $_SERVER['REQUEST_URI'];
 
-		echo "Try load $url<br/>\n";
 		$view = bors_load_uri($url);
-		echo $view;
 		return $view;
 	}
 }

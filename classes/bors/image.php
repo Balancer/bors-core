@@ -7,6 +7,8 @@ class bors_image extends bors_object_db
 	function db_name() { return config('bors_core_db'); }
 	function table_name() { return config('images_table', 'bors_images'); }
 
+	function ignore_on_new_instance() { return true; }
+
 	function table_fields()
 	{
 		return array(

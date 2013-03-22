@@ -3,6 +3,7 @@
 class bors_lib_bb
 {
 	static $bb_map_glob = array(
+		'body' => array('bb' => ''),
 		'a' => array('bb' => 'url', 'main_attr' => 'href', 'urls' => 'href'),
 		'img' => array('bb' => 'img', 'main_attr' => 'src', 'urls' => 'src', 'no_ending' => true, 'lcml0_style' => true),
 		'br' => array('bb' => '', 'after_cr' => true),
@@ -37,6 +38,23 @@ class bors_lib_bb
 		'wbr' => array('bb' => ''),
 	);
 
+	static function from_html($html)
+	{
+		$dom= new DOMDocument('1.0', 'UTF-8');
+		$dom->loadHTML('<?xml encoding="UTF-8">' . $html);
+		$dom->encoding="UTF-8";
+		$bb = self::from_dom($dom);
+		$bb = preg_replace("/\n{2,}/", "\n\n", $bb);
+		return trim($bb);
+	}
+
+	static function from_dom_tidy($element, $base_url = NULL)
+	{
+		$bb = self::from_dom($element, $base_url);
+		$bb = preg_replace("/\n{2,}/", "\n\n", $bb);
+		return trim($bb);
+	}
+
 	static function from_dom($element, $base_url = NULL, $bbmap = array())
 	{
 		if(!$element)
@@ -60,13 +78,13 @@ class bors_lib_bb
 
 		$element = $dom->documentElement;
 */
-		$tag_name = $element->tagName;
+		$tag_name = @$element->tagName;
 		$bb = array_merge(
 			defval(self::$bb_map_glob, $tag_name, array()),
 			defval($bbmap, $tag_name, array())
 		);
 
-		if(empty($bb))
+		if($tag_name && empty($bb))
 		{
 			debug_hidden_log('lcml-need-append-data', "from_dom: unknown tag ".$tag_name.' for '.bors_lib_dom::element_html($element));
 			echo "unknown tag ".$tag_name."\n";
@@ -133,6 +151,8 @@ class bors_lib_bb
 					$bb_code .= trim($child->nodeValue);
 			}
 		}
+
+		$bb_code = preg_replace('!^encoding="UTF-8"!', '', $bb_code);
 
 		if($bbtag && !defval($bb, 'no_ending'))
 			if($bbtag != 'url' || $element->getAttribute('href'))

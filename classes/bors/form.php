@@ -471,7 +471,9 @@ class bors_form extends bors_object
 							$list_filter = popval($data, 'list_filter', array());
 							if(is_string($list_filter))
 								eval("\$list_filter = $list_filter;");
-							$data['list'] = base_list::make($class, $list_filter, $data);
+
+							// $data['main_class'] — http://admin.aviaport.wrk.ru/job/cabinets/236/
+							$data['list'] = base_list::make(defval($data, 'main_class', $class), $list_filter, $data);
 						}
 
 						// Смешанная проверка для тестирования на http://ucrm.wrk.ru/admin/persons/9/

@@ -104,6 +104,7 @@ class bors_core_find
 	}
 
 	function eq($property, $value) { $this->where_parse_set($property, $value); return $this; }
+	function gt($property, $value) { $this->where_parse_set("$property>", $value); return $this; }
 
 	function in($property, $values) { $this->where_parse_set("$property IN", $values); return $this; }
 

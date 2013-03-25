@@ -7,7 +7,7 @@ require_once('strings.php');
 		if(is_null($more_text))
 			$more_text = ec('…');
 
-		$text = to_one_string($text);
+//		$text = to_one_string($text);
 
 		while(preg_match("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is",$text))
 			$text=preg_replace("#^(.*)<!\-\-QuoteBegin.*?\-\->.+?<!\-\-QuoteEEnd\-\->#is","$1",$text);

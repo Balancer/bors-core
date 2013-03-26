@@ -1318,7 +1318,7 @@ defined at {$this->class_file()}<br/>
 		}
 	}
 
-	function post_set() { }
+	function post_set($data) { }
 	function post_save() { }
 
 	function on_new_instance()

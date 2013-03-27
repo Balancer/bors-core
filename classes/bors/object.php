@@ -84,7 +84,10 @@ class bors_object extends base_object
 		{
 			$view_class = $this->get('view_class');
 			if($view_class && ($view = bors_load($view_class, $this)))
+			{
+				$view->set_model($this);
 				return $view->content();
+			}
 
 			bors_throw(ec('Отсутствует рендерер класса ').$this->class_name()." (renderer_class={$this->get('renderer_class')}, render_engine={$this->get('render_engine')})");
 		}

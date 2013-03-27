@@ -256,6 +256,9 @@ class bors_object_db extends base_object_db
 		return $p;
 	}
 
+	function _view_class_def() { return bors_plural($this->class_name()).'_view'; }
+	function _view_def() { return bors_load($this->view_class(), $this); }
+
 	function __toString() { return $this->get('title'); }
 
 	function _project_name_def() { return bors_core_object_defaults::project_name($this); }

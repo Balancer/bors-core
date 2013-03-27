@@ -11,6 +11,19 @@ class bors_view extends bors_page
 
 	function _class_title_rp_def() { return $this->model()->class_title_rp(); }
 
+	function data_load()
+	{
+		$loaded = parent::data_load();
+		if(is_object($x = $this->id()))
+			$this->set_model($x);
+		else
+			if(!$this->model())
+				return false;
+
+		$this->set_attr($this->target_name(), $model);
+		return $loaded;
+	}
+
 	// Класс отображаемого объекта
 	function main_class()
 	{

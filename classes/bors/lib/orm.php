@@ -143,6 +143,38 @@ class bors_lib_orm
 			}
 		}
 
+		foreach(array('inner', 'left') as $inner_type)
+		{
+			foreach($object->get("{$inner_type}_join_fields", array()) as $db => $tables)
+			{
+				foreach($tables as $table => $fields)
+				{
+					if(preg_match('/^(\w+)\(.+\)$/', $table, $m))
+						$table = $m[1];
+
+					foreach($fields as $property => $field)
+					{
+						if($field != '*no_defaults')
+						{
+							$field = array_merge(array(
+								'db' => $db,
+								'table' => $table,
+							), self::field($property, $field));
+
+//							if($field['name'] != 'id')
+							// UNIX_TIMESTAMP(`Date`) => UNIX_TIMESTAMP(`News`.`Date`)
+							if(empty($field['sql_function']))
+								$field['sql_tab_name'] = "`{$field['table']}`.`{$field['name']}`";
+							else
+								$field['sql_tab_name'] = preg_replace("/(`{$field['name']}`)/", "`{$field['table']}`.$1", $field['sql_name']);
+
+							$fields_array[] = $field;
+						}
+					}
+				}
+			}
+		}
+
 		return set_global_key($gk, $object->class_name(), $fields_array);
 	}
 

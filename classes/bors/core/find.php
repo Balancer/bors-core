@@ -204,6 +204,9 @@ class bors_core_find
 
 		$field_data = bors_lib_orm::parse_property($class_name, $m[1]);
 
+		if(!empty($field_data['table']))
+			$table = $field_data['table'];
+
 		$field_name = $field_data['name'];
 		if(!$field_name)
 			bors_throw("Not defined table field for property '{$m[1]}' in class '{$class_name}' as '*{$m[1]}'");
@@ -357,6 +360,20 @@ class bors_core_find
 		$property_name = $this->class_parse($property_name);
 
 		return $this->where("$property_name LIKE", $value);
+	}
+
+	function like_any($properties_array, $value)
+	{
+		$q = array();
+		foreach($properties_array as $property_name)
+		{
+			$property_name = $this->first_parse($property_name);
+			$property_name = $this->stack_parse($property_name);
+			$property_name = $this->class_parse($property_name);
+			$q[] = "$property_name LIKE '%".addslashes($value)."%'";
+		}
+
+		return $this->where('('.join(' OR ', $q).')');
 	}
 
 	function set($property, $fields)

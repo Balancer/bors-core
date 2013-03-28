@@ -2,11 +2,13 @@
 
 class bors_forms_dropdown extends bors_forms_element
 {
-	static function html($params, &$form)
+	static function html($params, &$form = NULL)
 	{
 		include_once('inc/bors/lists.php');
 
 		extract($params);
+
+		$id = defval($params, 'dom_id', $id);
 
 		if(!$form)
 			$form = bors_form::$_current_form;

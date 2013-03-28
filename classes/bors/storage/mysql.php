@@ -280,7 +280,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$select = popval($where, 'select');
 
 		$target_info = popval($where, '*join_object');
-//		print_dd($target_info);
+//		var_dump($object->class_name(), $where);
 
 		$set    = popval($where, '*set');
 

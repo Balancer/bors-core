@@ -20,7 +20,11 @@ class bors_forms_input extends bors_forms_element
 		if(in_array($name, explode(',', session_var('error_fields'))))
 			$class[] = "error";
 
-		$id = defval($params, 'dom_id', $id);
+		if($id = defval($params, 'dom_id', $id))
+		{
+			if($label = popval($params, 'label'))
+				echo "<label$label_css for=\"$id\">{$label}</label>\n";
+		}
 
 		// Если у нас используется валидация данных формы
 		if($form->attr('ajax_validate'))

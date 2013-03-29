@@ -47,6 +47,8 @@ class bors_forms_textarea extends bors_forms_element
 			{
 				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
 				$th = $x['title'];
+				if(empty($type))
+					$type = $x['type'];
 			}
 
 			$html .= "<tr><th>{$th}</th><td>";

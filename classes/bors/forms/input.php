@@ -69,7 +69,7 @@ class bors_forms_input extends bors_forms_element
 
 			$th = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $th);
 
-			$result .= "<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$th}</th><td>";
+			$result .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$th}</th><td>";
 			if(empty($style))
 				$style = "width: 99%";
 		}

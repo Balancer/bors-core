@@ -2,13 +2,14 @@
 
 class bors_forms_input extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
+		$params = $this->params();
+
 		if(!empty($params['property']))
 			$params['name'] = $params['property'];
 
-		if(!$form)
-			$form = bors_form::$_current_form;
+		$form = $this->form();
 
 		extract($params);
 		$maxlength = defval($params, 'maxlength', 255);
@@ -16,9 +17,10 @@ class bors_forms_input extends bors_forms_element
 		$object = $form->object();
 		$value = self::value($params, $form);
 
-		$class = explode(' ', defval($params, 'class'));
+		$class = array($this->css());
+
 		if(in_array($name, explode(',', session_var('error_fields'))))
-			$class[] = "error";
+			$class[] = $this->css_error();
 
 		if($id = defval($params, 'dom_id', $id))
 		{
@@ -67,7 +69,7 @@ class bors_forms_input extends bors_forms_element
 
 			$th = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $th);
 
-			$result .= "<tr><th>{$th}</th><td>";
+			$result .= "<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$th}</th><td>";
 			if(empty($style))
 				$style = "width: 99%";
 		}

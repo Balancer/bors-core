@@ -3,8 +3,9 @@
 	id=$this->id()
 	object=$target
 	fields=$form_fields
-	calling_object=$this}
-
+	calling_object=$this
+	form_template_class=$this->get('form_template_class')
+}
 {if $this->id()}
 {go value=$this->go_edit_url()}
 {submit th='Сохранить'}

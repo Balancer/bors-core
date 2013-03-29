@@ -2,5 +2,5 @@
 
 function smarty_function_input($params, &$smarty)
 {
-	echo bors_forms_input::html($params);
+	echo bors_form::instance()->element_html('input', $params);
 }

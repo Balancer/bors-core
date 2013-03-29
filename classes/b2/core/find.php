@@ -17,4 +17,17 @@ class b2_core_find extends bors_core_find
 
 		return blib_array::factory($array);
 	}
+
+	function first()
+	{
+		$res = $this->limit(1)->all();
+
+		if($res->is_value())
+		{
+			$val = $res->value();
+			return $res->pop();
+		}
+
+		return new blib_null;
+	}
 }

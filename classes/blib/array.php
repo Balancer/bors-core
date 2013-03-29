@@ -85,6 +85,11 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 		return b2::find($class_name)->in('id', $this->_value)->all();
 	}
 
+	function pop()
+	{
+		return array_pop($this->_value);
+	}
+
 	function nshift($n)
 	{
 		$x = array_slice($this->_value, 0, $n);

@@ -36,6 +36,8 @@ class bors_object extends base_object
 		));
 	}
 
+	function is_value() { return true; }
+
 	function show()
 	{
 //		if($go = $obj->attr('redirect_to'))

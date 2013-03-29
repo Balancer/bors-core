@@ -103,6 +103,8 @@ class bors_core_find
 		return $this;
 	}
 
+	function is_null($property) { $this->where_parse_set("$property IS NULL"); return $this; }
+	function is_not_null($property) { $this->where_parse_set("$property IS NOT NULL"); return $this; }
 	function eq($property, $value) { $this->where_parse_set($property, $value); return $this; }
 	function gt($property, $value) { $this->where_parse_set("$property>", $value); return $this; }
 

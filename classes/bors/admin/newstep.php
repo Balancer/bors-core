@@ -72,7 +72,8 @@ class bors_admin_newstep extends bors_admin_page
 					break;
 				case 'textarea':
 				case 'bbcode':
-					$html = bors_forms_textarea::html($data, $form);
+//					$html = bors_forms_textarea::html($data, $form);
+					$html = $form->element_html('textarea', $data);
 					break;
 				case 'string':
 				case 'keywords_string':

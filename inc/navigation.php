@@ -18,7 +18,7 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 	if(!empty($_GET['inframe']))
 		$uri = url_append_param($uri, 'inframe', 'yes');
 
-	if(config('debug_redirect_trace'))
+//	if(config('debug_redirect_trace'))
 	{
 		echo ec("Это режим отладки переходов. При его отключении Вы автоматически будете перемещены по ссылке <a href=\"{$uri}\">{$uri}</a>");
 //		echo '<pre>$_SESSION:</pre>'; var_dump(@$_SESSION);

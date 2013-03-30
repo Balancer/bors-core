@@ -130,17 +130,12 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 		$class = new $class(NULL);
 	}
 
-//	if(config('is_debug') && $class) var_dump(bors_lib_orm::all_fields($class));
-
-	if($field = bors_lib_orm::property_to_field($class, $property))
+	if($f = bors_lib_orm::parse_property($class->class_name(), $property))
 	{
-		if($was_joined && preg_match('/^\w+$/', $field)) // Если это JOIN и имя поля буквеннон, то допишем имя таблицы
-		{
-//			if(config('is_debug')) echo "tn={$class->table_name()}, mt={$class->main_table()} -> {$class->table_name()}.{$field}<br/>\n";
-			return $class->table_name().'.'.$field;
-		}
-		else // Иначе имя таблицы уже дописано.
-			return $field;
+		if($was_joined) // Если это JOIN, то возвращаем полное имя поля, с таблицей
+			return $f['sql_tab_name'];
+		else // Иначе возвращаем просто имя поля.
+			return $f['sql_name'];
 	}
 
 	if(!$property)
@@ -151,15 +146,6 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 
 function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 {
-/*	if(config('is_debug'))
-	{
-		echo "mysql_bors_join_parse($join, $class_name, $was_joined) <br/>\n";
-		if(preg_match('/posts.posts/', $was_joined))
-			echo debug_trace();
-	}
-*/
-//	if(config('is_developer')) echo "--- $join <br/>\n";
-
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
 	$join = preg_replace('!^(\w+)\.(\w+)$!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
 	$join = preg_replace('!(\w+)\.(\w+)\s*(=|>|<)!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
@@ -170,8 +156,6 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 	$join = preg_replace('!^(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
 //	if(config('is_debug')) echo "    ??? result1: $join <br/>\n";
 	$join = preg_replace('!([ \(])(\w+)\s*(=|>|<)!e', '"$1".bors_class_field_to_db("$class_name", "$2")."$3"', $join);
-
-//	if(config('is_developer')) echo "    --- result2: $join <br/>\n";
 
 	if($class_name)
 	{
@@ -286,7 +270,6 @@ function mysql_args_compile($args, $class=NULL)
 			$raw_group = "GROUP BY {$group}";
 		}
 	}
-
 
 	$having = '';
 	if(!empty($args['having']))

@@ -194,7 +194,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static function post_functions_do(&$object, $post_functions)
 	{
-//		var_dump($post_functions);
 		foreach($post_functions as $property => $function)
 			$object->set_attr($property, call_user_func($function, $object->$property()));
 	}

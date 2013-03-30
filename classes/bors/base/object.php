@@ -1321,7 +1321,7 @@ defined at {$this->class_file()}<br/>
 	function post_set($data) { }
 	function post_save() { }
 
-	function on_new_instance()
+	function on_new_instance($data)
 	{
 		$this->__update_relations();
 	}

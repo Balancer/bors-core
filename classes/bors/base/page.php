@@ -8,6 +8,8 @@ class base_page extends bors_object
 	function storage_engine() { return NULL; }
 	function can_be_empty() { return true; }
 
+	function self_class_bors_object_type() { return 'view'; }
+
 	function _class_title_def()		{ return ec('Страница'); }
 
 	function _page_title_def() { return $this->title(); }

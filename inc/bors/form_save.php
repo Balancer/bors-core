@@ -341,6 +341,12 @@ function bors_form_errors($data, $conditions = array())
 
 	foreach($conditions as $error_condition => $fail_message)
 	{
+		if(is_numeric($error_condition))
+		{
+			$error_condition = $fail_message;
+			$fail_message = NULL;
+		}
+
 		$error_cond = trim($error_condition);
 
 		if(is_array($fail_message))
@@ -353,6 +359,13 @@ function bors_form_errors($data, $conditions = array())
 		{
 			$fields     = array($m[1]);
 			$error_cond = empty($data[$m[1]]);
+			if(!$fail_message && !empty($data['class_name']))
+			{
+//				var_dump($data);
+				$f = bors_lib_orm::parse_property($data['class_name'], $m[1]);
+//				var_dump($f); exit();
+				$fail_message = ec('Не заполнено поле «').defval($f, 'title', $m[1]).ec('»');
+			}
 		}
 		elseif(preg_match('/^(\w+)\s*!=\s*(\w+)$/', $error_cond, $m))
 		{

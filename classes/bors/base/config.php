@@ -2,6 +2,8 @@
 
 class base_config extends bors_object_simple
 {
+	function self_class_bors_object_type() { return 'config'; }
+
 	function target_configure()
 	{
 		$object = $this->id();

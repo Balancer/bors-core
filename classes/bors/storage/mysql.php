@@ -100,7 +100,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			elseif(preg_match('/^(\w+)\(([\w`]+)\)$/', $field_name, $m))
 			{
 				$field_name = $m[2];
-				$sql = $_back_functions[$m[1]];
+				$sql = @$_back_functions[$m[1]];
 			}
 			elseif(preg_match('/^\w+\(.+\)$/', $field_name)) // id => CONCAT(keyword,":",keyword_id)
 			{

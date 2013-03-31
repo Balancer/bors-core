@@ -58,11 +58,11 @@ class bors_view_container extends bors_view
 			return $this->_items;
 
 		try {
-		$this->_items = bors_find_all($this->nested_class(), $this->_where(array(
-			'page' => $this->page(),
-			'per_page' => $this->items_per_page(),
-			'order' => $this->order(),
-		)));
+			$this->_items = bors_find_all($this->nested_class(), $this->_where(array(
+				'page' => $this->page(),
+				'per_page' => $this->items_per_page(),
+				'order' => $this->order(),
+			)));
 		}
 		catch(Exception $e)
 		{

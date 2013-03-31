@@ -13,6 +13,7 @@ class bors_image_autothumb extends bors_object
 	{
 		if(preg_match('/%D0/', $thumb_path))
 			$thumb_path = urldecode($thumb_path);
+
 		if(!preg_match('!^(/.*/)(\d*x\d*)/([^/]+)$!', $thumb_path, $m))
 			if(!preg_match('!^(/.*/)(\d*x\d*\([^)]+\))/([^/]+)$!', $thumb_path, $m))
 				return;

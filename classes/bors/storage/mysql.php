@@ -513,18 +513,35 @@ class bors_storage_mysql extends bors_storage implements Iterator
 //		var_dump($where);
 		list($update, $where) = self::__update_data_prepare($object, $where);
 //		print_dd($update);
+
+		/* Пока такая странная затычка для обновления left-join-связей */
+		$main_table = $object->table_name();
+
 		$update_plain = array();
+
+		$updated_tables = array();
+
 		foreach($update as $db_name => $tables)
+		{
 			foreach($tables as $table_name => $fields)
 			{
+				if($table_name != $main_table)
+					$updated_tables[$table_name] = $fields['*id_field'];
+
 				unset($fields['*id_field']);
 				$update_plain = array_merge($update_plain, $fields);
 			}
+		}
 
 		if(!$update_plain)
 			return;
 
 		$dbh = new driver_mysql($object->db_name());
+
+		if(config('is_developer'))
+			foreach($updated_tables as $table => $id_field)
+				$dbh->insert_ignore($table, array($id_field => $object->id()));
+
 		$dbh->update($object->table_name(), $where, $update_plain);
 	}
 

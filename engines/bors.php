@@ -112,8 +112,6 @@ function bors_object_new_instance_db(&$object)
 	if(!$tab)
 		debug_exit("Try to get new db instance with empty main table");
 
-//	debug_trace();
-
 	if(!$object->create_time(true))
 		$object->set_create_time(time());
 

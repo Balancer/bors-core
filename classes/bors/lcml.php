@@ -2,12 +2,60 @@
 
 define('MAX_EXECUTE_S', 0.5);
 
-class bors_lcml
+class bors_lcml extends bors_object
 {
 	private $_params = array();
-	private static $data;
+	private static $lcml_global_data;
 	private $output_type	= 'html';
 	private $input_type		= 'bb_code';
+
+	function _enabled_tags_string_def() { return ''; }
+	function _disabled_tags_string_def() { return ''; }
+	function _enabled_tags_def()
+	{
+		if($enabled = @$this->_params['enabled_tags'])
+			return $enabled;
+
+		if($enabled_tags = $this->enabled_tags_string())
+			return explode(' ', $enabled_tags);
+
+		return config('lcml_tags_enabled',  array());
+	}
+
+	function _disabled_tags_def()
+	{
+		if($disabled = @$this->_params['disabled_tags'])
+			return $disabled;
+
+		if($disabled_tags = $this->disabled_tags_string())
+			return explode(' ', $disabled_tags);
+
+		return config('lcml_tags_disabled',  array());
+	}
+
+	function _enabled_functions_string_def() { return ''; }
+	function _disabled_functions_string_def() { return ''; }
+	function _enabled_functions_def()
+	{
+		if($enabled = @$this->_params['enabled_functions'])
+			return $enabled;
+
+		if($enabled_functions = $this->enabled_functions_string())
+			return explode(' ', $enabled_functions);
+
+		return config('lcml_functions_enabled',  array());
+	}
+
+	function _disabled_functions_def()
+	{
+		if($disabled = @$this->_params['disabled_functions'])
+			return $disabled;
+
+		if($disabled_functions = $this->disabled_functions_string())
+			return explode(' ', $disabled_functions);
+
+		return config('lcml_functions_disabled',  array());
+	}
 
 	function __construct($params = array())
 	{
@@ -29,17 +77,17 @@ class bors_lcml
 
 	static function init()
 	{
-		if(!empty(bors_lcml::$data))
+		if(!empty(bors_lcml::$lcml_global_data))
 			return;
 
-		bors_lcml::$data['pre_functions'] = array();
-		bors_lcml::actions_load('pre', bors_lcml::$data['pre_functions']);
+		bors_lcml::$lcml_global_data['pre_functions'] = array();
+		bors_lcml::actions_load('pre', bors_lcml::$lcml_global_data['pre_functions']);
 
-		bors_lcml::$data['post_functions'] = array();
-		bors_lcml::actions_load('post', bors_lcml::$data['post_functions']);
+		bors_lcml::$lcml_global_data['post_functions'] = array();
+		bors_lcml::actions_load('post', bors_lcml::$lcml_global_data['post_functions']);
 
-		bors_lcml::$data['post_whole_functions'] = array();
-		bors_lcml::actions_load('post-whole', bors_lcml::$data['post_whole_functions']);
+		bors_lcml::$lcml_global_data['post_whole_functions'] = array();
+		bors_lcml::actions_load('post-whole', bors_lcml::$lcml_global_data['post_whole_functions']);
 
 		bors_lcml::actions_load('tags');
 
@@ -91,15 +139,17 @@ class bors_lcml
 		$t0 = $text;
 		$ts = microtime(true);
 
-		$fns_list_enabled  = config('lcml_functions_enabled',  array());
-		$fns_list_disabled = config('lcml_functions_disabled', array());
+		$fns_list_enabled  = $this->enabled_functions();
+		$fns_list_disabled = $this->disabled_functions();
 
 		foreach($functions as $fn)
 		{
+			$pfn = str_replace('lcml_', '', $fn);
+
 			$original = $text;
 
-			if((!$fns_list_enabled || in_array($fn, $fns_list_enabled))
-				&& !in_array($fn, $fns_list_disabled)
+			if((!$fns_list_enabled || in_array($pfn, $fns_list_enabled))
+				&& !in_array($pfn, $fns_list_disabled)
 			)
 				$text = $fn($text, $this);
 
@@ -123,25 +173,30 @@ class bors_lcml
 		if(config('lcml.tag.'.$tag_name.'.enable'))
 			return true;
 
-		$disabled_tags = config('lcml_tags_disabled',  array());
-		$enabled_tags  = config('lcml_tags_enabled',  array());
+		// Если указаны разрешённые тэги, значит по умолчанию — запрещены.
+		// И всё тупо зависит от наличия в разрешённых
+		if($enabled = $this->tags_enabled())
+			return in_array($tag_name, $enabled);
 
-		// Если тэг разрешён явно, то всё ок.
-		if(in_array($tag_name, $enabled_tags))
-			return true;
+		// Если указаны запрещённые тэги, то смотрим, не запрещён ли тэг явно
+		if(($disabled = $this->tags_disabled()) && in_array($tag_name, $disabled))
+			return false;
 
-		// Если тэг отсутствует в запрещённых, то…
-		if(!in_array($tag_name, $disabled_tags))
-		{
-			// Если при этом есть список разрешённых тэгов, то по умолчанию всё запрещено
-			if($enabled_tags)
-				return false;
+		// Если ничего про тэг не сказано и нигде не описано, то пока —
+		// разрешено. В будущем же нужно будет сделать описание поведения по умолчанию в самом классе тэга.
+		return $default_enabled;
+	}
 
-			// В противном случае используем параметр указания, как реагировать на неявное:
-			return $default_enabled;
-		}
+	function is_function_enabled($tag_name)
+	{
+		// Всё аналогично is_tag_enabled
+		if($enabled = $this->functions_enabled())
+			return in_array($tag_name, $enabled);
 
-		return false;
+		if(($disabled = $this->functions_disabled()) && in_array($tag_name, $disabled))
+			return false;
+
+		return true;
 	}
 
 	function parse($text, $params = array())
@@ -164,7 +219,6 @@ class bors_lcml
 			&& empty($params['nocache'])
 		)
 		{
-
 			$cache = new Cache();
 			if($cache->get('lcml-cache-v'.config('lcml.cache_tag'), $text))
 				return $cache->last();
@@ -180,9 +234,8 @@ class bors_lcml
 		if($this->_params['level'] == 1 || $need_prepare)
 		{
 			$text = bors_lcml::parsers_do('pre', $text);
-			$text = $this->functions_do(bors_lcml::$data['pre_functions'], $text, 'pre');
+			$text = $this->functions_do(bors_lcml::$lcml_global_data['pre_functions'], $text, 'pre');
 		}
-
 
 		if($this->_params['level'] == 1)
 			$this->output_type = popval($params, 'output_type', 'html');
@@ -217,7 +270,7 @@ class bors_lcml
 					if($start != $i)
 					{
 						$code = bors_substr($text, $start, $i-$start);
-						$result .= bors_lcml::parsers_do('post', bors_lcml::functions_do(bors_lcml::$data['post_functions'], $code, 'post'));
+						$result .= bors_lcml::parsers_do('post', bors_lcml::functions_do(bors_lcml::$lcml_global_data['post_functions'], $code, 'post'));
 					}
 
 					$start = $i;
@@ -247,7 +300,7 @@ class bors_lcml
 			if($can_modif/* && $this->_params['level'] == 1*/)
 			{
 				$code = bors_substr($text, $start, bors_strlen($text) - $start);
-				$result .= bors_lcml::parsers_do('post', $this->functions_do(bors_lcml::$data['post_functions'], $code, 'post'));
+				$result .= bors_lcml::parsers_do('post', $this->functions_do(bors_lcml::$lcml_global_data['post_functions'], $code, 'post'));
 			}
 			else
 				$result .= bors_substr($text, $start, bors_strlen($text) - $start);
@@ -262,7 +315,7 @@ class bors_lcml
 			if(preg_match("/\n$/", $text))
 				$text = substr($text, 0, strlen($text)-1);
 
-			$text = $this->functions_do(bors_lcml::$data['post_whole_functions'], $text, 'post_whole');
+			$text = $this->functions_do(bors_lcml::$lcml_global_data['post_whole_functions'], $text, 'post_whole');
 		}
 
 		return $cache ? $cache->set($text, 86400) : $text;

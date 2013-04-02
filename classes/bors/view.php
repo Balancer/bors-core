@@ -20,7 +20,7 @@ class bors_view extends bors_page
 			if(!$this->model())
 				return false;
 
-		$this->set_attr($this->target_name(), $model);
+		$this->set_attr($this->target_name(), $this->model());
 		return $loaded;
 	}
 

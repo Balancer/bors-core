@@ -73,23 +73,26 @@ class bors_admin_meta_search extends bors_admin_meta_main
 
 		$qq = array();
 
-		$main_class = $this->main_class();
-		$foo = new $main_class(NULL);
+		$main_admin_class = $this->main_admin_class();
+		$foo = new $main_admin_class(NULL);
 
-		if($any)
-			$properties = $foo->admin_searchable_properties();
-		else
-			$properties = $foo->admin_searchable_title_properties();
-
+		$properties = $foo->admin_searchable_title_properties();
+		$all_properties   = $foo->admin_searchable_properties();
 
 		if(!is_array($properties))
 			$properties = explode(' ', $properties);
+
+		if(!is_array($all_properties))
+			$all_properties = explode(' ', $all_properties);
+
+		if($any)
+			$properties += $all_properties;
 
 		foreach($properties as $p)
 		{
 			if(strpos($p, '`') === false)
 			{
-				$x = bors_lib_orm::parse_property($this->main_class(), $p);
+				$x = bors_lib_orm::parse_property($this->main_admin_class(), $p);
 				$field = "`{$x['name']}`";
 			}
 			else

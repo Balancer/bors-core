@@ -341,7 +341,7 @@ function bors_form_errors($data, $conditions = array())
 
 	foreach($conditions as $error_condition => $fail_message)
 	{
-		if(is_numeric($error_condition))
+		if(is_numeric($error_condition) && preg_match('/^\w+$/', $fail_message))
 		{
 			$error_condition = $fail_message;
 			$fail_message = NULL;

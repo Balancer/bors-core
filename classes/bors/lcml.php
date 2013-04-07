@@ -166,6 +166,7 @@ class bors_lcml extends bors_object
 
 	private $params;
 	function set_params($params) { $this->params = $params; }
+	function params($key, $def = NULL) { return defval($this->params, $key, $def); }
 
 	static function is_tag_enabled($tag_name, $default_enabled = true)
 	{

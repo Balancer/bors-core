@@ -216,7 +216,7 @@ function lt_img($params)
 					$href = $uri;
 
 				// Дёргаем превьюшку, чтобы могла сгенерироваться.
-				blib_http::get($img_ico_uri, true);
+				blib_http::get($img_ico_uri, true, 100000); // До 100кб
 
 				list($width, $height, $type, $attr) = @getimagesize($img_ico_uri);
 				@list($img_w, $img_h) = getimagesize($uri);

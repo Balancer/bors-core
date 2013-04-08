@@ -21,6 +21,7 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 
 	function is_array() { return true; }
 	function to_array() { return $this->_value; }
+	function keys() { return array_keys($this->_value); }
 
 	function append($x) { $this->_value[] = $x; return $this; }
 

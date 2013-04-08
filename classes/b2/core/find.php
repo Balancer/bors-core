@@ -30,4 +30,20 @@ class b2_core_find extends bors_core_find
 
 		return new blib_null;
 	}
+
+	function ne($property, $value) { $this->where_parse_set("{$property}<>", $value); return $this; }
+
+	function not_in($property, $values) { $this->where_parse_set("{$property} NOT IN", $values); return $this; }
+
+	// Проверка на истину свойства is_{$sub_name}
+	function is($sub_name)
+	{
+		return $this->eq('is_'.$sub_name, true);
+	}
+
+	// Случайная сортировка
+	function rand()
+	{
+		return $this->order('RAND()');
+	}
 }

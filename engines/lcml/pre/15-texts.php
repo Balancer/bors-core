@@ -23,7 +23,7 @@ function lcml_texts($text)
 	}
 
 	// Сноски
-	$text = preg_replace("!^//\s+(.+?)$!me", "lcml('[reference]$1[/reference]');", $text);
+	$text = preg_replace("!^//\s+(.+?)$!me", "lcml(stripslashes('[reference]$1[/reference]'));", $text);
 
 	return $text;
 }

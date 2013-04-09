@@ -94,6 +94,8 @@ class blib_http
 	{
 		$original_url = $url;
 
+//		if(config('is_developer')) { var_dump($url, $curl_options); exit(); }
+
 		$ch = curl_init($url);
 		curl_setopt_array($ch, array(
 			CURLOPT_TIMEOUT => defval($curl_options, 'timeout', 15),

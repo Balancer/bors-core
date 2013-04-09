@@ -4,4 +4,3 @@
     {
         return str_replace('[%sig%]','',$txt);
     }
-?>

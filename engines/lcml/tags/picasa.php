@@ -53,7 +53,9 @@ function lp_picasa($id, $params)
 		else
 			$a_title = "";
 
-		return "<div class=\"rs_box".($title?'':'_nd')."\" style=\"width:{$width}px\"><a href=\"$big_thumb_url\" class=\"cloud-zoom thumbnailed-image-link\" rel=\"position:'inside'\"{$a_title}><img src=\"$thumb_url\" />" . ($title ? "<br/><small class=\"inbox\">$title @ PicasaWeb</small>" : "")."</a></div>";
+		return "<div class=\"rs_box".($title?'':'_nd')."\" style=\"width:{$width}px\">"
+			."<a href=\"$big_thumb_url\" class=\"cloud-zoom thumbnailed-image-link\" rel=\"position:'inside'\"{$a_title}><img src=\"$thumb_url\" />"
+			. ($title ? "<br/><small class=\"inbox\">$title @ PicasaWeb</small>" : "")."</a></div>";
 	}
 
 	return "$id";

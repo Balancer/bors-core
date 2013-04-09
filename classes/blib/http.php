@@ -205,7 +205,7 @@ class blib_http
 		}
 
 		if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt)$/i", $pure_url) && empty($params['blobs_enabled']))
-			return "";
+			return array('content' => NULL, 'content_type' => NULL, 'error' => true);
 
 		$charset = popval($params, 'charset');
 
@@ -247,8 +247,9 @@ class blib_http
 		{
 			//TODO: оформить хорошо. Например, отправить отложенную задачу по пересчёту
 			//И выше есть такой же блок.
-			echo '[214] Curl error: ' . curl_error($ch);
-			return '';
+			$err_str = curl_error($ch);
+			debug_hidden_log('curl-error', "Curl error: ".$err_str);
+			return array('content' => NULL, 'content_type' => NULL, 'error' => $err_str);
 		}
 
 
@@ -283,7 +284,7 @@ class blib_http
 				$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
 		}
 
-	    return array('content' => $data, 'content_type' => $content_type);
+	    return array('content' => $data, 'content_type' => $content_type, 'error' => false);
 	}
 }
 

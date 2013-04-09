@@ -35,7 +35,7 @@ function objects_array($class, $args = array())
 
 	if(!class_exists($class))
 	{
-		debug_hidden_log('class-name-error', "Not found classname $class");
+		debug_hidden_log('class-name-error', "Not found classname '$class'. May be admin-class in link?");
 		return array();
 	}
 

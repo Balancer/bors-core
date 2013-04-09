@@ -239,6 +239,11 @@ function lt_img($params)
 				$ajax = defval($params, 'ajax');
 				$styles = array();
 
+				if($description)
+					$title = " title=\"".htmlspecialchars(strip_tags($description))."\"";
+				else
+					$title = "";
+
 				if(empty($params['nohref']) || $ajax)
 				{
 //					if(config('is_developer')) { var_dump($img_w, $width, $ajax, $href, $uri, $description); exit("one"); }
@@ -250,7 +255,7 @@ function lt_img($params)
 							$styles[] = 'hoverZoom';
 						}
 
-						$a_href_b = "<a href=\"{$href}\">";
+						$a_href_b = "<a href=\"{$href}\" class=\"thumbnailed-image-link\"{$title}>";
 						$a_href_e = "</a>";
 					}
 					elseif(!preg_match('/\.htm$/', $href))
@@ -262,12 +267,12 @@ function lt_img($params)
 
 //						$lightbox_code = save_format(jquery_lightbox::html("'a.cloud-zoom'"));
 						$lightbox_code = "";
-						$a_href_b = "$lightbox_code<a href=\"{$href}\" class=\"cloud-zoom\" id=\"zoom-".rand()."\" rel=\"{$rel}\">";
+						$a_href_b = "$lightbox_code<a href=\"{$href}\" class=\"cloud-zoom thumbnailed-image-link\" id=\"zoom-".rand()."\" rel=\"{$rel}\"{$title}>";
 						$a_href_e = "</a>";
 					}
 					else
 					{
-						$a_href_b = "<a href=\"{$href}\">";
+						$a_href_b = "<a href=\"{$href}\"{$title}>";
 						$a_href_e = "</a>";
 					}
 

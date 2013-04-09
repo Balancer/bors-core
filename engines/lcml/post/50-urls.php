@@ -85,7 +85,7 @@
 			return lcml($data['bbshort']);
 
 		$blacklist = $external;
-		if(preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $url_data['host']))
+		if(preg_match('!'.config('seo_domains_whitelist_regexp', @$_SERVER['HTTP_HOST']).'!', $url_data['host']))
 			$blacklist = false;
 
 		if(preg_match("!/[^/]+\.[^/]+$!", $pure_url) 

@@ -92,12 +92,11 @@ class bors_admin_meta_search extends bors_admin_meta_main
 		{
 			if(strpos($p, '`') === false)
 			{
-				$x = bors_lib_orm::parse_property($this->main_admin_class(), $p);
+				$x = bors_lib_orm::parse_property($main_admin_class, $p);
 				$field = "`{$x['name']}`";
 			}
 			else
 				$field = $p;
-//			var_dump($this->main_class(), $p, $field);
 			$qq[] = "$field LIKE {$q}";
 		}
 

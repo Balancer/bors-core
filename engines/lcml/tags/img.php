@@ -226,7 +226,6 @@ function lt_img($params)
 
 				if(empty($params['description']))
 					$params['description'] = "";
-
 				if(empty($params['no_lcml_description']))
 					$description = stripslashes(!empty($params['description']) ? lcml($params['description']) : '');
 				else
@@ -240,7 +239,7 @@ function lt_img($params)
 				$styles = array();
 
 				if($description)
-					$title = " title=\"".htmlspecialchars(strip_tags($description))."\"";
+					$title = " title=\"".htmlspecialchars(str_replace('www.', '&#119;ww.', strip_tags($description)))."\"";
 				else
 					$title = "";
 

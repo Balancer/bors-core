@@ -33,6 +33,12 @@ function objects_array($class, $args = array())
 		return array();
 	}
 
+	if(!class_exists($class))
+	{
+		debug_hidden_log('class-name-error', "Not found classname $class");
+		return array();
+	}
+
 	$init = new $class(NULL);
 	$class_file = bors_class_loader::load($class);
 	$init->set_class_file($class_file);

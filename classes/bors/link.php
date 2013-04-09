@@ -256,7 +256,7 @@ class bors_link extends bors_object_db
 			$objs[$link->target_class_id()][$link->target_object_id()] = true;
 
 		foreach($objs as $class_id => $ids)
-			objects_array($class_id, array('id IN' => array_keys($ids)));
+			bors_find_all($class_id, array('id IN' => array_keys($ids)));
 
 		foreach($links as $link)
 		{

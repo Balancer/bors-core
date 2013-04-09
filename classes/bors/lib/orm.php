@@ -294,9 +294,9 @@ class bors_lib_orm
 
 	static function parse_property($class_name, $property)
 	{
-		$object = new $class_name(NULL);
-		$class_file = bors_class_loader::load($class_name);
-		$object->set_class_file($class_file);
+		$object = bors_foo($class_name);
+//		$class_file = bors_class_loader::load($class_name);
+//		$object->set_class_file($class_file);
 
 		foreach(self::all_fields($object) as $f)
 			if($f['property'] == $property)

@@ -36,6 +36,7 @@ class bors_admin_edit_crosslinks extends bors_admin_edit
 
 		return array_merge(parent::body_data(), array(
 			'object' => $this->object(),
+			'request_url' => bors()->request()->url(),
 			'object_uri' => $this->object()->internal_uri_ascii(),
 			'cross' => bors_link::objects($this->object(), array(
 				'order' => '-target_create_time',
@@ -82,11 +83,13 @@ class bors_admin_edit_crosslinks extends bors_admin_edit
 
 	function on_action_theme($data)
 	{
-//		echo $this->real_object();
-		bors_link::drop_target($this->real_object(), array('target_class' => 'aviaport_common_theme'));
+//		echo $this->real_object()->debug_title();
+//		var_dump($data); exit();
+//		bors_link::drop_target($this->real_object(), array('target_class' => 'aviaport_common_theme'));
+		aviaport_common_theme::unlink_all($this->real_object());
 		if($data['common_themes'])
 			foreach($data['common_themes'] as $theme_id)
-				bors_link::link($this->real_object()->class_name(), $this->real_object()->id(), 'aviaport_common_theme', $theme_id);
+				bors_load('aviaport_common_theme', $theme_id)->link($this->real_object());
 
 		return go($data['go']);
 	}

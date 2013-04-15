@@ -604,6 +604,12 @@ class bors_form extends bors_object
 		return $html;
 	}
 
+
+	static function factory()
+	{
+		return self::instance(true);
+	}
+
 	static function instance($new_form = false)
 	{
 		static $instance = NULL;
@@ -623,6 +629,29 @@ class bors_form extends bors_object
 		$element->set_params($params);
 		$element->set_form($this);
 		return $element->html();
+	}
+
+	function element_html_smart($params = array())
+	{
+		switch($params['type'])
+		{
+			case 'text':
+				$element_name = 'textarea';
+				break;
+			case 'string':
+				$element_name = 'input';
+				break;
+			default:
+				bors_throw("Unknown element type '{$params['type']}'");
+		}
+
+		extract($params);
+
+		if(preg_match)
+
+		set_def($params, 'th', @$title);
+
+		return $this->element_html($element_name, $params);
 	}
 
 	function templater()

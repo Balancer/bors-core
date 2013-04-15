@@ -2,10 +2,11 @@
 
 class bors_forms_submit extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
-		if(!$form)
-			$form = bors_form::$_current_form;
+		$params = $this->params();
+
+		$form = $this->form();
 
 		extract($params);
 
@@ -14,6 +15,9 @@ class bors_forms_submit extends bors_forms_element
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
 		if($th = defval($params, 'th'))
 			$value = $th;
+
+		if(empty($value))
+			$value = @$title;
 
 		if($image_src = defval($params, 'image'))
 			$html .= "<input type=\"image\" src=\"".htmlspecialchars($image_src)."\" value=\"".htmlspecialchars($value)."\"";

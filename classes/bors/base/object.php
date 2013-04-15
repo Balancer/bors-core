@@ -740,8 +740,16 @@ defined at {$this->class_file()}<br/>
 		else
 		{
 			foreach($this->check_value_conditions() as $key => $assert)
+			{
+				if(is_numeric($key) && preg_match('/^\w+$/', $assert))
+				{
+					$key = $assert;
+					$assert = "!=''|Параметр должен быт указан";
+				}
+
 				if(!$this->check_value($key, defval($data, $key, $this->get($key)), $assert))
 					return true;
+			}
 		}
 
 		foreach(bors_lib_orm::all_fields($this) as $f)
@@ -1321,7 +1329,7 @@ defined at {$this->class_file()}<br/>
 	function post_set($data) { }
 	function post_save() { }
 
-	function on_new_instance()
+	function on_new_instance($data)
 	{
 		$this->__update_relations();
 	}

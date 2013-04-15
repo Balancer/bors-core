@@ -100,7 +100,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			elseif(preg_match('/^(\w+)\(([\w`]+)\)$/', $field_name, $m))
 			{
 				$field_name = $m[2];
-				$sql = $_back_functions[$m[1]];
+				$sql = @$_back_functions[$m[1]];
 			}
 			elseif(preg_match('/^\w+\(.+\)$/', $field_name)) // id => CONCAT(keyword,":",keyword_id)
 			{
@@ -144,6 +144,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$main_id_field = $object->id_field();
 
 		$join = $object->get("{$type}_join_fields");
+
 		if($join)
 		{
 			foreach($join as $db_name => $tables)
@@ -194,7 +195,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static function post_functions_do(&$object, $post_functions)
 	{
-//		var_dump($post_functions);
 		foreach($post_functions as $property => $function)
 			$object->set_attr($property, call_user_func($function, $object->$property()));
 	}
@@ -280,7 +280,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$select = popval($where, 'select');
 
 		$target_info = popval($where, '*join_object');
-//		print_dd($target_info);
+//		var_dump($object->class_name(), $where);
 
 		$set    = popval($where, '*set');
 
@@ -514,18 +514,35 @@ class bors_storage_mysql extends bors_storage implements Iterator
 //		var_dump($where);
 		list($update, $where) = self::__update_data_prepare($object, $where);
 //		print_dd($update);
+
+		/* Пока такая странная затычка для обновления left-join-связей */
+		$main_table = $object->table_name();
+
 		$update_plain = array();
+
+		$updated_tables = array();
+
 		foreach($update as $db_name => $tables)
+		{
 			foreach($tables as $table_name => $fields)
 			{
+				if($table_name != $main_table)
+					$updated_tables[$table_name] = $fields['*id_field'];
+
 				unset($fields['*id_field']);
 				$update_plain = array_merge($update_plain, $fields);
 			}
+		}
 
 		if(!$update_plain)
 			return;
 
 		$dbh = new driver_mysql($object->db_name());
+
+		if(config('is_developer'))
+			foreach($updated_tables as $table => $id_field)
+				$dbh->insert_ignore($table, array($id_field => $object->id()));
+
 		$dbh->update($object->table_name(), $where, $update_plain);
 	}
 
@@ -623,7 +640,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					$dbh->insert($table_name, $fields);
 				}
 
-				if($main_table && !$object->get('insert_delayed_on_new_instance') && !$object->ignore_on_new_instance())
+				// Закомментировано, так как не позволяет аплоадить изображения с ignore.
+				if($main_table && !$object->get('insert_delayed_on_new_instance')/* && !$object->ignore_on_new_instance()*/)
 				{
 					$main_table = false;
 					$new_id = $dbh->last_id();

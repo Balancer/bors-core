@@ -2,11 +2,13 @@
 
 class bors_forms_dropdown extends bors_forms_element
 {
-	static function html($params, &$form)
+	static function html($params, &$form = NULL)
 	{
 		include_once('inc/bors/lists.php');
 
 		extract($params);
+
+		$id = defval($params, 'dom_id', $id);
 
 		if(!$form)
 			$form = bors_form::$_current_form;
@@ -25,6 +27,12 @@ class bors_forms_dropdown extends bors_forms_element
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
 		if($th = defval($params, 'th'))
 		{
+			if($th == 'def')
+			{
+				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
+				$th = $x['title'];
+			}
+
 			$html .= "<tr><th>{$th}</th><td>";
 			if(empty($style))
 				$style = "width: 99%";
@@ -89,10 +97,9 @@ class bors_forms_dropdown extends bors_forms_element
 			$current = $object->$get();
 
 		if(!$current && !empty($list['default']))
-		{
 			$current = $list['default'];
-			unset($list['default']);
-		}
+
+		unset($list['default']);
 
 		if(empty($current))
 			$current = session_var("form_value_{$name}");

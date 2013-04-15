@@ -83,7 +83,7 @@ class bors_form extends bors_object
 			if(empty($object_id)) // obsolete
 				$object_id = @$id;
 
-			if(!$class_name || $class_name == 'this')
+			if((!$class_name || $class_name == 'this') && $calling_object)
 			{
 				$class_name = $calling_object->class_name();
 				$object_id	= $calling_object->id();
@@ -107,10 +107,13 @@ class bors_form extends bors_object
 			$object_id	= $object->id();
 		}
 
-		if(empty($form_class_name))
-			$form_class_name = $calling_object->class_name();
+		if($calling_object)
+		{
+			if(empty($form_class_name))
+				$form_class_name = $calling_object->class_name();
 
-		$form_object_id	= $calling_object->id();
+			$form_object_id	= $calling_object->id();
+		}
 
 		$this->set_attr('class_name', $class_name);
 		$this->set_attr('object', $object);
@@ -124,7 +127,7 @@ class bors_form extends bors_object
 			else
 				$uri = NULL;
 
-			if(!$uri)
+			if(!$uri && $object)
 				$uri = $object->id();
 		}
 
@@ -206,7 +209,7 @@ class bors_form extends bors_object
 		else
 			$th = false;
 
-		$table_css_class = defval($params, 'table_css_class', 'btab w100p');
+		$table_css_class = defval($params, 'table_css_class', $this->templater()->form_table_css());
 
 		if($fields == 'auto')
 			$fields = array_keys(array_filter($object_fields, create_function('$x', 'return defval($x, "is_admin_editable", false) || defval($x, "is_editable", true);')));
@@ -220,7 +223,8 @@ class bors_form extends bors_object
 		if($th && $th!='-')
 			$html .= "<caption>{$th}</caption>\n";
 
-		$edit_properties_append = $calling_object->get('edit_properties', array());
+		if($calling_object)
+			$edit_properties_append = $calling_object->get('edit_properties', array());
 
 		if(!empty($fields))
 		{
@@ -333,7 +337,7 @@ class bors_form extends bors_object
 					$title = $property_name;
 
 				if($type != 'bool')
-					$html .= "\t<tr><th class=\"w33p\">{$title}</th><td>\n\t\t";
+					$html .= "\t<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$title}</th><td>\n\t\t";
 
 				if(!empty($data['arg']))
 					$data['value'] = object_property_args($object, $property_name, array($data['arg']));
@@ -363,7 +367,7 @@ class bors_form extends bors_object
 					case 'int':
 					case 'uint':
 					case 'float':
-						$html .= bors_forms_input::html($data, $this);
+						$html .= $this->element_html('input', $data);
 						break;
 					case 'input_date':
 					case 'date':
@@ -395,7 +399,8 @@ class bors_form extends bors_object
 					case 'text':
 					case 'textarea':
 						$data['rows'] = defval($data, 'rows', $type_arg);
-						$html .= bors_forms_textarea::html($data, $this);
+//						$html .= bors_forms_textarea::html($data, $this);
+						$html .= $this->element_html('textarea', $data);
 						break;
 					case '3state':
 						$data['list'] = ec('array("NULL"=>"", 1=>"Да", 0=>"Нет");');
@@ -425,7 +430,7 @@ class bors_form extends bors_object
 								$data['maxlength'] = $data['size'] = $chars;
 							$this->append_attr('override_fields', $data['name']);
 							$html .= "ID:";
-							$html .= bors_forms_input::html($data, $this);
+							$html .= $this->element_html('input', $data);
 							template_jquery();
 							template_js("\$(function() {
 	\$('select[name={$data['name']}]').change(function(){
@@ -442,7 +447,7 @@ class bors_form extends bors_object
 							$data['class'] = 'w50p';
 							$data['input_name'] = '_'.$data['name'];
 							$this->append_attr('override_fields', $data['name']);
-							$html_append = bors_forms_input::html($data, $this);
+							$html_append = $this->element_html('input', $data);
 							template_jquery();
 							template_js("\$(function() {
 	\$('select[name={$data['name']}]').change(function(){
@@ -601,5 +606,68 @@ class bors_form extends bors_object
 		set_session_var('error_fields', NULL);
 
 		return $html;
+	}
+
+
+	static function factory()
+	{
+		return self::instance(true);
+	}
+
+	static function instance($new_form = false)
+	{
+		static $instance = NULL;
+		if($new_form || !$instance)
+		{
+			$instance = new self(NULL);
+			self::$_current_form = $instance;
+		}
+
+		return $instance;
+	}
+
+	function element_html($element_name, $params = array())
+	{
+		$element_name = 'bors_forms_'.$element_name;
+		$element = new $element_name;
+		$element->set_params($params);
+		$element->set_form($this);
+		return $element->html();
+	}
+
+	function element_html_smart($params = array())
+	{
+		switch($params['type'])
+		{
+			case 'text':
+				$element_name = 'textarea';
+				break;
+			case 'string':
+				$element_name = 'input';
+				break;
+			default:
+				bors_throw("Unknown element type '{$params['type']}'");
+		}
+
+		extract($params);
+
+		if(preg_match)
+
+		set_def($params, 'th', @$title);
+
+		return $this->element_html($element_name, $params);
+	}
+
+	function templater()
+	{
+		if($t = $this->attr('form_template'))
+			return $t;
+
+		$tpl_name = defval($this->_params, 'form_template_class', 'bors_forms_templates_default');
+		$form_template = bors_load($tpl_name, NULL);
+		if($form_template)
+			return $this->set_attr('form_template', $form_template);
+
+		bors_throw("Undefined form template {$tpl_name}");
 	}
 }

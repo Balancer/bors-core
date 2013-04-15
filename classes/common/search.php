@@ -6,7 +6,7 @@ class_include('base_page');
 class common_search extends base_page
 {
 	function _class_file() { return __FILE__; }
-	
+
 	function title() { return ec("Поиск"); }
 
 	function pre_parse()
@@ -24,34 +24,34 @@ class common_search extends base_page
 			'bodies' => ec("В сообщениях"),
 		);
 	}
-	
+
 	function do_query($params)
 	{
 		$q = $this->query();
 		return $this->where() == 'bodies' ? bors_search_in_bodies($q, $params) : bors_search_in_titles($q, $params);
 	}
-	
+
 	function __construct($id, $page)
 	{
 		parent::__construct($id);
 
 		$this->add_template_data_array('meta[robots]', 'noindex');
-	
+
 		if(!$this->query())
 			return;
-	
+
 		require_once('engines/search.php');
-	
+
 		$this->add_template_data('result',	$this->do_query(array('page' => $this->page())));
 		$this->add_template_data('start',	($this->page()-1)*25+1);
 	}
-	
+
 	function total_pages() { return intval(($this->total_results() - 1) / 25) + 1; }
 
 	function total_results()
 	{
 		$GLOBALS['cms']['cache_disabled'] = false;
-	
+
 		$ch = new Cache();
 		if($ch->get('seacrh-total-results', $this->query().':'.$this->where()))
 			return $ch->last();
@@ -68,7 +68,7 @@ class common_search extends base_page
 		include_once('funcs/design/page_split.php');
 		return join(" ", pages_show($this, $this->total_pages(), 20));
 	}
-	
+
 	function page() { return max(1, intval(@$_GET['page'])); }
 
 	function url($page = 1)

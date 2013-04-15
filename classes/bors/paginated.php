@@ -10,7 +10,7 @@ class bors_paginated extends base_page_paged
 		$foo = new $class_name(NULL);
 
 		if($this->args('is_admin_list') || $this->get('is_admin_list'))
-			$data = $foo->get('item_list_admin_fields');
+			$data = bors_foo($this->main_admin_class())->get('item_list_admin_fields');
 
 		if(empty($data))
 			$data = $foo->get('item_list_fields');

@@ -3,6 +3,8 @@ function smarty_function_hidden($params, &$smarty)
 {
 	extract($params);
 
+	$id = defval($params, 'dom_id', $id);
+
 	if(!isset($value))
 	{
 		$obj = bors_templates_smarty::get_var($smarty, 'form');
@@ -17,7 +19,7 @@ function smarty_function_hidden($params, &$smarty)
 
 	echo "<input type=\"hidden\" name=\"$name\" value=\"".htmlspecialchars($value)."\"";
 
-	foreach(explode(' ', 'class style maxlength size') as $p)
+	foreach(explode(' ', 'id class style maxlength size') as $p)
 		if(!empty($$p))
 			echo " $p=\"{$$p}\"";
 

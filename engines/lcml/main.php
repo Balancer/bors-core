@@ -7,9 +7,13 @@ require_once('engines/lcml/funcs.php');
 
 function lcml($text, $params = array())
 {
-	static $lc = false;
-	if($lc === false)
-		$lc = new bors_lcml($params);
+	$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
+
+	static $lcs = array();
+	if(empty($lcs[$class_name]))
+		$lcs[$class_name] = new $class_name($params);
+
+	$lc = $lcs[$class_name];
 
 	$lc->set_p('level', $lc->p('level')+1);
 	$lc->set_p('prepare', popval($params, 'prepare'));
@@ -74,21 +78,24 @@ function lcml_bb($string)
 	));
 }
 
-function lcml_bbh($string)
+function lcml_bbh($string, $params = array())
 {
 	$se = config('lcml_tags_enabled');
 	$sd = config('lcml_tags_disabled');
 	config_set('lcml_tags_enabled', NULL);
 	config_set('lcml_tags_disabled', NULL);
-	$result = lcml($string, array(
+
+	$result = lcml($string, array_merge(array(
 			'cr_type' => 'save_cr',
 			'forum_type' => 'punbb',
 			'sharp_not_comment' => true,
 			'html_disable' => false,
 			'nocache' => true,
-	));
+	), $params));
+
 	config_set('lcml_tags_enabled', $se);
 	config_set('lcml_tags_disabled', $sd);
+
 	return $result;
 }
 

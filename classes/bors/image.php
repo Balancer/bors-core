@@ -180,7 +180,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		if(!file_exists($file = $data['tmp_name']))
 		{
 			debug_hidden_log('image-error', 'Upload not existens file '.$file);
-			debug_exit("Can't load image {$data['name']}: File not exists<br/>");
+			debug_exit("Can't load image {$data['name']}: Uploaded tmp file not exists<br/>");
 		}
 
 		if(!($x = @getimagesize($file)))

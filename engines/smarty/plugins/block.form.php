@@ -12,8 +12,8 @@ function smarty_block_form($params, $content, &$smarty)
 
 	if($content == NULL) // Открытие формы
 	{
-		$form = new bors_form(NULL);
-		bors_form::$_current_form = $form;
+		$form = bors_form::instance(true);
+		$form->_current_form = $form;
 		echo $form->html_open($params);
 		if($form->attr('has_autofields'))
 			$smarty->assign('has_autofields', true);

@@ -2,6 +2,12 @@
 
 class bors_forms_element
 {
+	private $params, $form;
+	function set_params($params) { return $this->params = $params; }
+	function set_form($form) { return $this->form = $form; }
+	function params() { return $this->params; }
+	function form() { return $this->form; }
+
 	static function value(&$params, &$form, $param_name = 'value')
 	{
 		$name = defval($params, 'name');
@@ -32,5 +38,29 @@ class bors_forms_element
 			$value = '';
 
 		return $value;
+	}
+
+	function element_name() { return str_replace('bors_forms_', '', get_class($this)); }
+
+	function css()
+	{
+		if($css = defval($this->params, 'css'))
+			return $css;
+		if($css = defval($this->params, 'css_class'))
+			return $css;
+		// Для совместимости. Устарело. В новых проектах не использовать.
+		if($css = defval($this->params, 'class'))
+			return $css;
+
+		$element_name = $this->element_name();
+		$method = $element_name . '_css';
+		return $this->form()->templater()->call($method);
+	}
+
+	function css_error()
+	{
+		$element_name = $this->element_name();
+		$method = $element_name . '_css_error';
+		return $this->form()->templater()->call($method);
 	}
 }

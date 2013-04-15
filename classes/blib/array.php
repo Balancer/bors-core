@@ -21,6 +21,15 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 
 	function is_array() { return true; }
 	function to_array() { return $this->_value; }
+	function keys() { return array_keys($this->_value); }
+
+	function append($x) { $this->_value[] = $x; return $this; }
+
+	function append_array(blib_array $array)
+	{
+		$this->_value += $array->value();
+		return $this;
+	}
 
 	function map($function)
 	{
@@ -39,6 +48,12 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 		return self::factory(array_filter($this->_value, $callback));
 	}
 
+	function clone_class($new_class_name)
+	{
+//		echo "Clone to $new_class_name<br/>\n";
+		return new $new_class_name($this->to_array());
+	}
+
 	function pgrep($regexp)
 	{
 		$this->_value = array_filter($this->_value, function($x) use ($regexp) { return preg_match($regexp, $x); } );
@@ -48,6 +63,13 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 	function unique()
 	{
 		$this->_value = array_unique($this->_value);
+		return $this;
+	}
+
+	function print_d()
+	{
+		echo "Class ".get_class($this)."<br/>\n";
+		print_dd($this->_value);
 		return $this;
 	}
 
@@ -62,6 +84,11 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 	function load_by_ids($class_name)
 	{
 		return b2::find($class_name)->in('id', $this->_value)->all();
+	}
+
+	function pop()
+	{
+		return array_pop($this->_value);
 	}
 
 	function nshift($n)

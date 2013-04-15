@@ -4,6 +4,9 @@ include_once('inc/bors/lists.php');
 
 function smarty_function_dropdown($params, &$smarty)
 {
+	echo bors_forms_dropdown::html($params);
+	return;
+
 	extract($params);
 
 	if(method_exists($smarty, 'getTemplateVars'))

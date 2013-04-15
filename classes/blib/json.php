@@ -15,7 +15,7 @@ class blib_json
 			}
 			else
 			{
-				if(substr($value,0,10)=='function()')
+				if(preg_match('/^\s*function\s*\(/', $value))
 				{
 					$func_key="#".uniqid()."#";
 					$funcs[$func_key]=$value;

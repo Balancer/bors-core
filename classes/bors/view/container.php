@@ -15,16 +15,22 @@ class bors_view_container extends bors_view
 	// Имя поля вложенного объекта, в котором хранится ID контейнера
 	function container_id_property() { return $this->container_name().'_id'; }
 
-	function where() { return array($this->container_id_property() => $this->id()); }
+	function where() { return array(
+		$this->container_id_property() => $this->id(),
+		'by_id' => true,
+	); }
 	function order() { return '-create_time'; }
 	function group() { return false; }
 
 	function auto_targets()
 	{
 		return array_merge(parent::auto_targets(), array(
+			'container' => 'main_class(id)',
 			$this->container_name() => 'main_class(id)',
 		));
 	}
+
+	function on_items_load(&$items) { }
 
 	function nested_name()
 	{
@@ -36,8 +42,7 @@ class bors_view_container extends bors_view
 		return preg_replace('/^.+_(.+?)$/', '$1', $this->container_class());
 	}
 
-	function total_pages() { return intval($this->topic()->num_replies() / $this->items_per_page()) + 1; }
-
+	function total_pages() { return intval($this->topic()->total_pages()); }
 
 	private function _where($where = array())
 	{
@@ -58,11 +63,11 @@ class bors_view_container extends bors_view
 			return $this->_items;
 
 		try {
-		$this->_items = bors_find_all($this->nested_class(), $this->_where(array(
-			'page' => $this->page(),
-			'per_page' => $this->items_per_page(),
-			'order' => $this->order(),
-		)));
+			$this->_items = bors_find_all($this->nested_class(), $this->_where(array(
+				'page' => $this->page(),
+				'per_page' => $this->items_per_page(),
+				'order' => $this->order(),
+			)));
 		}
 		catch(Exception $e)
 		{
@@ -73,6 +78,7 @@ class bors_view_container extends bors_view
 			$this->_items = array_reverse($this->_items);
 
 		$this->on_nested_load($this->_items);
+		$this->on_items_load($this->_items);
 
 		return $this->_items;
 	}
@@ -108,4 +114,5 @@ class bors_view_container extends bors_view
 	function url_engine() { return 'url_calling2'; }
 
 	function default_page() { return $this->is_reversed() ? $this->total_pages() : 1; }
+	function visits_inc($inc = 1) { return $this->container()->visits_inc($inc); }
 }

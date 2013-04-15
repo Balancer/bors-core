@@ -11,6 +11,19 @@ class bors_view extends bors_page
 
 	function _class_title_rp_def() { return $this->model()->class_title_rp(); }
 
+	function data_load()
+	{
+		$loaded = parent::data_load();
+		if(is_object($x = $this->id()))
+			$this->set_model($x);
+		else
+			if(!$this->model())
+				return false;
+
+		$this->set_attr($this->target_name(), $this->model());
+		return $loaded;
+	}
+
 	// Класс отображаемого объекта
 	function main_class()
 	{
@@ -40,7 +53,7 @@ class bors_view extends bors_page
 		if(class_include($main_class_up))
 			return $main_class_up;
 
-		bors_throw(ec('Не определён главный класс для представления ').$this->class_name());
+		bors_throw(ec('Не определён главный класс (model_class()) для представления ').$this->class_name());
 	}
 
 	function item_name()
@@ -67,10 +80,12 @@ class bors_view extends bors_page
 		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
 	}
 
+	function _model_class_def() { return $this->main_class(); }
+
 	function auto_targets()
 	{
 		$data = array(
-			'model' => 'main_class(id)',
+			'model' => 'model_class(id)',
 			$this->target_name() => 'main_class(id)',
 		);
 
@@ -94,6 +109,8 @@ class bors_view extends bors_page
 	function url($page = NULL) { return $this->model()->url($page); }
 	function admin_url() { return $this->model()->get('admin_url'); }
 	function object_type() { return $this->model()->object_type(); }
+
+	function self_class_bors_object_type() { return 'view'; }
 
 	function _owner_id_def() { return object_property($this->model(), 'owner_id'); }
 

@@ -14,7 +14,13 @@
 				return $url;
 		}
 
-        return "<a href=\"$url\" class=\"external\">".url_truncate($url, 80)."</a>";
+		$data = url_parse($url);
+		$external = @$data['local'] ? '' : ' class="external"';
+		$blacklist = $external;
+		if(preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $data['host']))
+			$blacklist = false;
+
+        return "<a href=\"$url\"{$external} ".($blacklist ? 'rel="nofollow" ' : '').">".url_truncate($url, 80)."</a>";
     }
 
     function lcml_pure_urls($txt)

@@ -83,7 +83,7 @@ class bors_form extends bors_object
 			if(empty($object_id)) // obsolete
 				$object_id = @$id;
 
-			if(!$class_name || $class_name == 'this')
+			if((!$class_name || $class_name == 'this') && $calling_object)
 			{
 				$class_name = $calling_object->class_name();
 				$object_id	= $calling_object->id();
@@ -107,10 +107,13 @@ class bors_form extends bors_object
 			$object_id	= $object->id();
 		}
 
-		if(empty($form_class_name))
-			$form_class_name = $calling_object->class_name();
+		if($calling_object)
+		{
+			if(empty($form_class_name))
+				$form_class_name = $calling_object->class_name();
 
-		$form_object_id	= $calling_object->id();
+			$form_object_id	= $calling_object->id();
+		}
 
 		$this->set_attr('class_name', $class_name);
 		$this->set_attr('object', $object);
@@ -124,7 +127,7 @@ class bors_form extends bors_object
 			else
 				$uri = NULL;
 
-			if(!$uri)
+			if(!$uri && $object)
 				$uri = $object->id();
 		}
 
@@ -220,7 +223,8 @@ class bors_form extends bors_object
 		if($th && $th!='-')
 			$html .= "<caption>{$th}</caption>\n";
 
-		$edit_properties_append = $calling_object->get('edit_properties', array());
+		if($calling_object)
+			$edit_properties_append = $calling_object->get('edit_properties', array());
 
 		if(!empty($fields))
 		{

@@ -66,4 +66,9 @@ class bors_markup_markdown extends base_object
 		require_once(config('markdown_include'));
 		return Markdown($text);
 	}
+
+	static function __unit_test($suite)
+	{
+		$suite->assertEquals("<p><em>test</em></p>", trim(self::parse('*test*')));
+	}
 }

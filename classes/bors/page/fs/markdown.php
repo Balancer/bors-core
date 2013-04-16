@@ -27,6 +27,13 @@ class bors_page_fs_markdown extends bors_page
 	function body()
 	{
 		require_once(config('markdown_include'));
-		return Markdown($this->source());
+		return \Michelf\Markdown::defaultTransform($this->source());
+	}
+
+	static function __unit_test($suite)
+	{
+		$foo = bors_foo(__CLASS__);
+		$foo->set_source('*test*', false);
+		$suite->assertEquals("<p><em>test</em></p>", trim($foo->body()));
 	}
 }

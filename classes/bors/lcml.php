@@ -168,7 +168,7 @@ class bors_lcml extends bors_object
 	function set_params($params) { $this->params = $params; }
 	function params($key, $def = NULL) { return defval($this->params, $key, $def); }
 
-	static function is_tag_enabled($tag_name, $default_enabled = true)
+	function is_tag_enabled($tag_name, $default_enabled = true)
 	{
 		// Если тэг разрешён явно, то всё ок.
 		if(config('lcml.tag.'.$tag_name.'.enable'))
@@ -176,11 +176,11 @@ class bors_lcml extends bors_object
 
 		// Если указаны разрешённые тэги, значит по умолчанию — запрещены.
 		// И всё тупо зависит от наличия в разрешённых
-		if($enabled = $this->tags_enabled())
+		if($enabled = $this->enabled_tags())
 			return in_array($tag_name, $enabled);
 
 		// Если указаны запрещённые тэги, то смотрим, не запрещён ли тэг явно
-		if(($disabled = $this->tags_disabled()) && in_array($tag_name, $disabled))
+		if(($disabled = $this->disabled_tags()) && in_array($tag_name, $disabled))
 			return false;
 
 		// Если ничего про тэг не сказано и нигде не описано, то пока —

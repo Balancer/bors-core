@@ -32,7 +32,7 @@ class bors_admin_meta_search extends bors_admin_meta_main
 		if(empty($_GET['q']))
 			return $data;
 
-		$data['items'] = bors_find_all($this->main_class(), array(
+		$data['items'] = bors_find_all($this->main_admin_class(), array(
 			'where' => $this->where(),
 			'page' => $this->page(),
 			'per_page' => $this->items_per_page(),

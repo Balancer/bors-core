@@ -4,6 +4,9 @@ class bors_forms_submit extends bors_forms_element
 {
 	function html()
 	{
+		if(empty($this))
+			echo 0/0;
+
 		$params = $this->params();
 
 		$form = $this->form();

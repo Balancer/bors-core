@@ -53,7 +53,7 @@ class bors_ext_mail extends bors_empty
 			$headers = $mail->get('headers');
 		}
 
-		if(!$template_data)
+		if(empty($template_data))
 			$template_data = array();
 
 		require_once("engines/smarty/assign.php");

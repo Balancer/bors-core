@@ -32,6 +32,12 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 		return $this;
 	}
 
+	function append_assoc(blib_array $array)
+	{
+		$this->_value = array_merge($this->_value, $array->value());
+		return $this;
+	}
+
 	function map($function)
 	{
 		$this->_value = array_map($function, $this->_value);

@@ -192,7 +192,6 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 		return false;
 
 	// Примеры также в http://www.homefilm.info/php42/error-handling.html
-
 	if(!($out_dir = config('debug_hidden_log_dir')))
 		return false;
 

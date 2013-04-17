@@ -13,7 +13,7 @@ class bors_forms_dropdown extends bors_forms_element
 		if(!$form)
 			$form = bors_form::$_current_form;
 
-		$object = $form->object();
+		$object = object_property($form, 'object');
 		$html = "";
 
 		if(in_array($name, explode(',', session_var('error_fields'))))

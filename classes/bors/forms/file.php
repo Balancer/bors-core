@@ -2,10 +2,14 @@
 
 class bors_forms_file extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
-		if(!$form)
-			$form = bors_form::$_current_form;
+		$params = $this->params();
+
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
+		$form = $this->form();
 
 		extract($params);
 

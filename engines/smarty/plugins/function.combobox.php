@@ -2,5 +2,5 @@
 
 function smarty_function_combobox($params, &$smarty)
 {
-	echo bors_forms_combobox::html($params);
+	echo bors_form::instance()->element_html('combobox', $params);
 }

@@ -15,7 +15,7 @@ class bors_forms_input extends bors_forms_element
 		$maxlength = defval($params, 'maxlength', 255);
 
 		$object = $form->object();
-		$value = self::value($params, $form);
+		$value = $this->value();
 
 		$class = array($this->css());
 

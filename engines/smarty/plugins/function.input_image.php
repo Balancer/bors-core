@@ -2,5 +2,5 @@
 
 function smarty_function_input_image($params, &$smarty)
 {
-	echo bors_forms_image::html($params);
+	echo bors_form::instance()->element_html('image', $params);
 }

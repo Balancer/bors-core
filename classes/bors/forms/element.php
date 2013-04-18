@@ -8,8 +8,11 @@ class bors_forms_element
 	function params() { return $this->params; }
 	function form() { return $this->form; }
 
-	static function value(&$params, &$form, $param_name = 'value')
+	function value($param_name = 'value')
 	{
+		$form = $this->form;
+		$params = $this->params;
+
 		$name = defval($params, 'name');
 		$def  = defval($params, 'def');
 		$value = defval($params, $param_name);
@@ -62,5 +65,19 @@ class bors_forms_element
 		$element_name = $this->element_name();
 		$method = $element_name . '_css_error';
 		return $this->form()->templater()->call($method);
+	}
+
+	function list_class()
+	{
+		if($lc = $this->params['list_class'])
+			return $lc;
+
+		if($lc = $this->params['main_class'])
+			return $lc;
+
+		if($lc = $this->params['class'])
+			return $lc;
+
+		return NULL;
 	}
 }

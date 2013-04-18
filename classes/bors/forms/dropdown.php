@@ -2,16 +2,20 @@
 
 class bors_forms_dropdown extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
 		include_once('inc/bors/lists.php');
+
+		$params = $this->params();
+
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
+		$form = $this->form();
 
 		extract($params);
 
 		$id = defval($params, 'dom_id', $id);
-
-		if(!$form)
-			$form = bors_form::$_current_form;
 
 		$object = object_property($form, 'object');
 		$html = "";
@@ -84,7 +88,7 @@ class bors_forms_dropdown extends bors_forms_element
 		if(is_null($is_int) && !$strict)
 			$is_int = true;
 
-		$value = self::value($params, $form);
+		$value = $this->value();
 
 		if(empty($get))
 		{

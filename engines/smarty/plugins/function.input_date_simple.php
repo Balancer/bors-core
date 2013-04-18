@@ -2,5 +2,5 @@
 
 function smarty_function_input_date_simple($params, &$smarty)
 {
-	echo bors_forms_date_simple::html($params);
+	echo bors_form::instance()->element_html('date_simple', $params);
 }

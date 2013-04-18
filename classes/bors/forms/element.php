@@ -57,7 +57,7 @@ class bors_forms_element
 
 		$element_name = $this->element_name();
 		$method = $element_name . '_css';
-		return $this->form()->templater()->call($method);
+		return $this->form()->templater()->get($method);
 	}
 
 	function css_error()

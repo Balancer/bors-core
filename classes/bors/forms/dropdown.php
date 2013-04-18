@@ -20,13 +20,11 @@ class bors_forms_dropdown extends bors_forms_element
 		$object = object_property($form, 'object');
 		$html = "";
 
+		$class = explode(' ', $this->css());
 		if(in_array($name, explode(',', session_var('error_fields'))))
-		{
-			if(empty($class))
-				$class = "error";
-			else
-				$class .= " error";
-		}
+			$class[] = $this->css_error();
+
+		$class = join(' ', $class);
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
 		if($th = defval($params, 'th'))

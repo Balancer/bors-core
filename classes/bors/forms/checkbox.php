@@ -13,7 +13,7 @@ class bors_forms_checkbox extends bors_forms_element
 
 		extract($params);
 
-		$checked = $this->value($params, $form, 'checked');
+		$checked = $this->value('checked');
 
 		if($checked)
 			$checked = "checked";

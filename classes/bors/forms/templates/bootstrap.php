@@ -13,4 +13,5 @@ class bors_forms_templates_bootstrap extends bors_forms_templates_default
 	function _input_css_error_def() { return 'alert'; }
 	function _textarea_css_def() { return 'span8'; }
 
+	function _dropdown_css_def() { return 'span8'; }
 }

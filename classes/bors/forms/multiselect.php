@@ -2,12 +2,16 @@
 
 class bors_forms_multiselect extends bors_forms_element
 {
-	static function html($params, &$form)
+	function html()
 	{
-		extract($params);
+		$params = $this->params();
 
-		if(!$form)
-			$form = bors_form::$_current_form;
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
+		$form = $this->form();
+
+		extract($params);
 
 		$object = $form->object();
 

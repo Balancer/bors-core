@@ -380,7 +380,7 @@ class bors_form extends bors_object
 						}
 						if($args = popval($data, 'args'))
 							$data = array_merge($data, $args);
-						$html .= bors_forms_date::html($data, $this);
+						$html .= $this->element_html('date', $data);
 						break;
 					case 'utime': // UNIX_TIMESTAMP в UTC
 						$data['name'] = popval($data, 'property');
@@ -389,11 +389,9 @@ class bors_form extends bors_object
 						if(!empty($data['args']))
 							$data = array_merge($data, $data['args']);
 						if(popval($data, 'subtype') == 'simple')
-							$html .= bors_forms_date_simple::html($data, $this);
+							$html .= $this->element_html('date_simple', $data);
 						else
-						{
-							$html .= bors_forms_date::html($data, $this);
-						}
+							$html .= $this->element_html('date', $data);
 						break;
 					case 'bbcode':
 					case 'text':
@@ -411,11 +409,11 @@ class bors_form extends bors_object
 
 					case 'radio':
 						$data['list'] = base_list::make($class, array(), $data + array('non_empty' => true));
-						$html .= bors_forms_radio::html($data, $this);
+						$html .= $this->element_html('radio', $data);
 						break;
 
 					case 'combobox':
-						$html .= bors_forms_combobox::html($data, $this);
+						$html .= $this->element_html('combobox', $data);
 						break;
 
 					case 'dropdown':
@@ -486,7 +484,7 @@ class bors_form extends bors_object
 							foreach($data['list'] as $k => $v)
 								$data['is_int'] &= !$k || is_numeric($k);
 
-						$html .= bors_forms_dropdown::html($data, $this);
+						$html .= $this->element_html('dropdown', $data);
 						break;
 
 					case 'timestamp_date_droppable':
@@ -495,9 +493,9 @@ class bors_form extends bors_object
 						if(!empty($data['args']))
 							$data = array_merge($data, $data['args']);
 						if(popval($data, 'subtype') == 'simple')
-							$html .= bors_forms_date_simple::html($data, $this);
+							$html .= $this->element_html('date_simple', $data);
 						else
-							$html .= bors_forms_date::html($data, $this);
+							$html .= $this->element_html('date', $data);
 						break;
 
 					case 'image':
@@ -535,8 +533,7 @@ class bors_form extends bors_object
 				$html .= "<tr><th>Метки</th><td>";
 //				require_once('function.checkbox.php');
 				foreach($labels as $name => $data)
-					$html .= bors_forms_checkbox::html($data, $this);
-//					smarty_function_checkbox($data, $smarty);
+					$html .= $this->element_html('checkbox', $data);
 				$html .= "</td></tr>\n";
 			}
 
@@ -548,10 +545,7 @@ class bors_form extends bors_object
 				foreach($xrefs as $xref)
 				{
 					$html .= "<tr><th>".call_user_func(array($xref, 'class_title'))."</th><td>";
-					$html .= bors_forms_checkbox_list::html(array(
-						'xref' => $xref,
-//						'delim' => ' ',
-					), $this);
+					$html .= $this->element_html('checkbox_list', array('xref' => $xref));
 					$html .= "</td></tr>";
 				}
 			}
@@ -669,5 +663,20 @@ class bors_form extends bors_object
 			return $this->set_attr('form_template', $form_template);
 
 		bors_throw("Undefined form template {$tpl_name}");
+	}
+
+	function model_class()
+	{
+		// Такая этажерка — для совместимости
+		if($mc = @$this->_params['model_class'])
+			return $mc;
+
+		if($mc = @$this->_params['main_class'])
+			return $mc;
+
+		if($mc = @$this->_params['class'])
+			return $mc;
+
+		return NULL;
 	}
 }

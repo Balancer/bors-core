@@ -2,10 +2,16 @@
 
 class bors_forms_checkbox_list extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	// http://admin2.aviaport.wrk.ru/events/1245/
+
+	function html()
 	{
-		if(!$form)
-			$form = bors_form::$_current_form;
+		$params = $this->params();
+
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
+		$form = $this->form();
 
 		extract($params);
 

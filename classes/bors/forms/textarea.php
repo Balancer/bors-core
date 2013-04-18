@@ -14,7 +14,7 @@ class bors_forms_textarea extends bors_forms_element
 		extract($params);
 
 		$object = $form->object();
-		$value = self::value($params, $form);
+		$value = $this->value();
 
 		if(empty($rows))
 			$rows = 7;

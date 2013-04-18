@@ -8,17 +8,18 @@
 
 class bors_forms_combobox extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
+		include_once('inc/bors/lists.php');
+
+		$params = $this->params();
+
 		if(!empty($params['property']))
 			$params['name'] = $params['property'];
 
-		include_once('inc/bors/lists.php');
+		$form = $this->form();
 
 		extract($params);
-
-		if(!$form)
-			$form = bors_form::$_current_form;
 
 		$object = $form->object();
 		$html = "";
@@ -89,8 +90,8 @@ class bors_forms_combobox extends bors_forms_element
 		if(is_null($is_int) && !$strict)
 			$is_int = true;
 
-//		$value = NULL; // self::value($params, $form);
-		$value = self::value($params, $form);
+//		$value = NULL; // $this->value();
+		$value = $this->value();
 
 /*
 		if(empty($get))
@@ -160,10 +161,12 @@ class bors_forms_combobox extends bors_forms_element
 			$json = "/_bors/data/lists/{$main_class}.json";
 		}
 
-//		http://admin.aviaport.ru/directory/aviation/arp/5/
+//		http://admin2.aviaport.wrk.ru/directory/aviation/arp/5/
+//		http://admin2.aviaport.wrk.ru/digest/new/
 		if($value && is_numeric($value))
 		{
-			$v = bors_load($main_class, $value);
+			$v = bors_load($this->list_class(), $value);
+//			var_dump($this->list_class(), $value, $v);
 			$attrs['initialValue'] = $v->title();
 		}
 

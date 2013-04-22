@@ -510,7 +510,11 @@ class bors_storage_mysql extends bors_storage implements Iterator
 	{
 //		var_dump($object->data);
 //		var_dump($object->id_field());
-		$where = array($object->id_field() => $object->id());
+		$idf = $object->id_field();
+		if(preg_match('/\)$/', $idf))
+			$where = array($idf.'=' => $object->id());
+		else
+			$where = array($idf => $object->id());
 //		var_dump($where);
 		list($update, $where) = self::__update_data_prepare($object, $where);
 //		print_dd($update);

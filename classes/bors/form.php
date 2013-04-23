@@ -504,7 +504,7 @@ class bors_form extends bors_object
 //						if(!$image)
 //							$image = $object;
 //						$html .= $image->thumbnail($data['geometry'])->html_code();
-						$html .= bors_forms_image::html($data, $this);
+						$html .= $this->element_html('image', $data);
 						break;
 
 					case 'bool':

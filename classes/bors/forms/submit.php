@@ -22,22 +22,33 @@ class bors_forms_submit extends bors_forms_element
 		if(empty($value))
 			$value = @$title;
 
-		if(defval($params, 'type') == 'button')
-		{
-			// http://www.balancer.ru/admin/forum/post/3033292/move-tree
-			$html .= "<button type=\"submit\" class=\"".defval($params, 'css_class')."\">".htmlspecialchars($value)."</button>";
-		}
-		else
-		{
-			if($image_src = defval($params, 'image'))
-				$html .= "<input type=\"image\" src=\"".htmlspecialchars($image_src)."\" value=\"".htmlspecialchars($value)."\"";
-			else
-				$html .= "<input type=\"submit\" value=\"".htmlspecialchars($value)."\"";
+		$css = array($this->css());
 
-			foreach(explode(' ', 'class style onClick onclick name') as $p)
-				if(!empty($$p))
-					$html .= " $p=\"{$$p}\"";
-			$html .= " />";
+		switch(defval($params, 'type'))
+		{
+/*
+			case 'a':
+				$html .= "<a type=\"submit\" class=\"".defval($params, 'css_class')."\">".htmlspecialchars($value)."</button>";
+				break;
+*/
+			case 'button':
+				// http://forums.balancer.ru/topics/6932/post/
+				// http://www.balancer.ru/admin/forum/post/3033292/move-tree
+				$html .= "<button type=\"submit\" class=\"".join(' ', $css)."\">".htmlspecialchars($value)."</button>";
+				break;
+
+			default:
+				if($image_src = defval($params, 'image'))
+					$html .= "<input type=\"image\" src=\"".htmlspecialchars($image_src)."\" value=\"".htmlspecialchars($value)."\"";
+				else
+					$html .= "<input type=\"submit\" value=\"".htmlspecialchars($value)."\"";
+
+				foreach(explode(' ', 'class style onClick onclick name') as $p)
+					if(!empty($$p))
+						$html .= " $p=\"{$$p}\"";
+
+				$html .= " />";
+				break;
 		}
 
 		if($th || $form->attr('has_form_table'))

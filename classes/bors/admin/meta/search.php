@@ -93,12 +93,18 @@ class bors_admin_meta_search extends bors_admin_meta_main
 			if(strpos($p, '`') === false)
 			{
 				$x = bors_lib_orm::parse_property($main_admin_class, $p);
-				$field = "`{$x['name']}`";
+				if(!empty($x['name']))
+					$field = "`{$x['name']}`";
 			}
 			else
 				$field = $p;
-			$qq[] = "$field LIKE {$q}";
+
+			if(!empty($field))
+				$qq[] = "$field LIKE {$q}";
 		}
+
+		if(empty($qq))
+			bors_throw(ec('Не заданы поля для поиска (admin_searchable_title_properties/admin_searchable_properties) класса ').$main_admin_class);
 
 		$where = array('('.join(' OR ', $qq).')');
 //		var_dump($where);

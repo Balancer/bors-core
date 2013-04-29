@@ -280,7 +280,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$select = popval($where, 'select');
 
 		$target_info = popval($where, '*join_object');
-//		var_dump($object->class_name(), $where);
+
+//		if(config('is_developer')) var_dump($object->class_name(), $where);
 
 		$set    = popval($where, '*set');
 
@@ -309,7 +310,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')
 		if($set)
-			foreach(preg_split('/,\s*/', $set) as $s)
+			foreach(preg_split('/\s*,\s*/', $set) as $s)
 				$select[] = $s;
 
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);

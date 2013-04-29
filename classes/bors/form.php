@@ -631,7 +631,9 @@ class bors_form extends bors_object
 
 	function element_html_smart($params = array())
 	{
-		switch($params['type'])
+		$field_type = defval($params, 'type');
+		$form_type = defval_ne($params, 'form_type', $field_type);
+		switch($form_type)
 		{
 			case 'text':
 				$element_name = 'textarea';
@@ -639,8 +641,11 @@ class bors_form extends bors_object
 			case 'string':
 				$element_name = 'input';
 				break;
+			case 'radio':
+				$element_name = 'radio';
+				break;
 			default:
-				bors_throw("Unknown element type '{$params['type']}'");
+				bors_throw("Unknown element type '$form_type' (type={$params['type']})");
 		}
 
 		extract($params);

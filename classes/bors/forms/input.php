@@ -96,7 +96,11 @@ class bors_forms_input extends bors_forms_element
 
 		$result .=  " />\n";
 
-		if($has_versioning)
+		// mbfi/admin/settings
+		if(@$previous_value)
+			$previous = $previous_value;
+
+		if($has_versioning || $previous)
 			$result .=  "<br/><small>".ec("Предыдущее значение: ").$previous."</small>\n";
 
 		if($th)

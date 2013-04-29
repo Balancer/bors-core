@@ -71,10 +71,10 @@ class bors_forms_radio extends bors_forms_element
 		if($is_array)
 			$current = @array_pop($current); // wtf?
 
-		if(!$current && !empty($list['default']))
-			$current = $list['default'];
+		if(!$current && !empty($list['*default']))
+			$current = $list['*default'];
 
-		unset($list['default']);
+		unset($list['*default']);
 
 		if(empty($delim))
 			$delim = "<br />";

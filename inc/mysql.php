@@ -118,7 +118,7 @@ function array_smart_expand(&$array)
 
 function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 {
-//	echo "<i>bors_class_field_to_db</i>($class, $property, $was_joined) <br/>\n";
+//	if(config('is_debug') && $property=='topic_id') echo "<i>bors_class_field_to_db</i>($class, $property, $was_joined) <br/>\n";
 	if(!$class)
 		return $property;
 
@@ -133,10 +133,13 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 	if($f = bors_lib_orm::parse_property($class->class_name(), $property))
 	{
 		if($was_joined) // Если это JOIN, то возвращаем полное имя поля, с таблицей
+		{
 			return $f['sql_tab_name'];
+		}
 		else // Иначе возвращаем просто имя поля.
 			return $f['sql_name'];
 	}
+//	if(config('is_debug') && $property=='topic_id') var_dump($f);
 
 	if(!$property)
 		return $class->table_name();
@@ -153,8 +156,8 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 	$join = preg_replace('!(\w+)\.(\w+)(\s+BETWEEN\s+\S+\s+AND\s+\S+)!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
 //	$join = preg_replace('!(ON )(\w+)\.(\w+)(\s+)!e', '"$1".bors_class_field_to_db("$2", "$3")."$4"', $join);
 	$join = preg_replace('!(=\s*|>|<)(\w+)\.(\w+)!e', '"$1".bors_class_field_to_db("$2", "$3")', $join);
-	$join = preg_replace('!^(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
 //	if(config('is_debug')) echo "    ??? result1: $join <br/>\n";
+	$join = preg_replace('!^(\w+)((\s+NOT)?\s+IN)!e', 'bors_class_field_to_db("$class_name","$1")."$2"', $join);
 	$join = preg_replace('!([ \(])(\w+)\s*(=|>|<)!e', '"$1".bors_class_field_to_db("$class_name", "$2")."$3"', $join);
 
 	if($class_name)

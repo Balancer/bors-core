@@ -444,7 +444,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$class_name = $object->class_name();
 			list($select, $where) = self::__query_data_prepare($object, $where);
 		}
-//		var_dump($where); exit();
+
 		$dbh = new driver_mysql($db_name);
 		if(empty($where['group']))
 			$count = $dbh->select($table_name, 'COUNT(*)', $where, $class_name);

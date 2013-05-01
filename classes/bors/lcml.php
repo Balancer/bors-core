@@ -371,7 +371,7 @@ class bors_lcml extends bors_object
 				"/<!--\[\[use\s+(\w+)\s*=\s*([^\]]+?)\s*\]\]-->/",
 			), 'bors_lcml::_output_parse_use', $html_bb);
 
-		return airbase_fun::replace_2013($html_bb);
+		return $html_bb;
 	}
 
 	// Генерация html-кода для предыдущей функции

@@ -58,10 +58,10 @@ class bors_view extends bors_page
 
 	function item_name()
 	{
-		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
+		return preg_replace('/^.+_(.+?)$/', '$1', $this->model_class());
 	}
 
-	function referent_class() { return $this->main_class(); }
+	function referent_class() { return $this->model_class(); }
 
 	function object() { return $this->model(); } // Для совместимости
 	function target() { return $this->model(); } // Для совместимости
@@ -77,7 +77,7 @@ class bors_view extends bors_page
 
 	function target_name()
 	{
-		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
+		return preg_replace('/^.+_(.+?)$/', '$1', $this->model_class());
 	}
 
 	function _model_class_def() { return $this->main_class(); }
@@ -86,7 +86,7 @@ class bors_view extends bors_page
 	{
 		$data = array(
 			'model' => 'model_class(id)',
-			$this->target_name() => 'main_class(id)',
+			$this->target_name() => 'model_class(id)',
 		);
 
 		return array_merge(parent::auto_targets(), $data);

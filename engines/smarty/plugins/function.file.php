@@ -2,5 +2,5 @@
 
 function smarty_function_file($params, &$smarty)
 {
-	echo bors_forms_file::html($params);
+	echo bors_form::instance()->element_html('file', $params);
 }

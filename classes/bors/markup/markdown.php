@@ -5,7 +5,7 @@ class bors_markup_markdown extends base_object
 	static function factory($text = NULL, $args = array())
 	{
 		$md = new bors_markup_markdown(NULL);
-		$md->append_attrs($args);
+		$md->set_attrs($args);
 
 		if($text)
 			$md->set_source($text, false);
@@ -64,6 +64,11 @@ class bors_markup_markdown extends base_object
 	static function parse($text)
 	{
 		require_once(config('markdown_include'));
-		return Markdown($text);
+		return \Michelf\Markdown::defaultTransform($text);
+	}
+
+	static function __unit_test($suite)
+	{
+		$suite->assertEquals("<p><em>test</em></p>", trim(self::parse('*test*')));
 	}
 }

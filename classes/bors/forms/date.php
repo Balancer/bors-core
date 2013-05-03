@@ -2,17 +2,21 @@
 
 class bors_forms_date extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
-		if(!$form)
-			$form = bors_form::$_current_form;
-
 		include_once('inc/datetime.php');
+
+		$params = $this->params();
+
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
+		$form = $this->form();
 
 		extract($params);
 
 		$object = $form->object();
-		$value = self::value($params, $form);
+		$value = $this->value();
 
 		if(is_object($value))
 			$value = $value->timestamp();
@@ -156,7 +160,7 @@ class bors_forms_date extends bors_forms_element
 			$html .= ec("&nbsp;<label><input name=\"{$name}_is_null\" type=\"checkbox\"".($can_drop && empty($value) ? " checked=\"checked\"" : "")." />&nbsp;не задано</label>");
 			template_js("$(function () {
 $('input[name=\"{$name}_is_null\"]').change(function() {
-	var f=$(this).attr('checked')
+	var f=$(this).is(':checked')
 	$('select[name^=\"$name\"]').each(function(){
 		el=$(this)
 		if(f) el.attr('disabled', 'disabled'); else el.removeAttr('disabled')

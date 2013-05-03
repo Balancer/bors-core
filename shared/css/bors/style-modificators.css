@@ -1,0 +1,10 @@
+big, .big { font-size: 120% !important; }
+big.extra, .big-extra { font-size: 200% !important; }
+.big20 { font-size: 20pt !important; }
+
+.acenter > * { margin: 0 auto; }
+.margin-top-50 { margin-top: 50px; }
+
+
+
+

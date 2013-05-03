@@ -11,7 +11,7 @@ function bors_message($text, $params=array())
 	@header('Content-Type: text/html; charset='.$ocs);
 	@header('Content-Language: '.config('page_lang', 'ru'));
 
-	$redir = defval($params, 'redirect', false);
+	$redir = defval($params, 'go', defval($params, 'redirect', false));
 	$title = defval($params, 'title', ec('Ошибка!'));
 	$nav_name = defval($params, 'nav_name', $title);
 	$timeout = defval($params, 'timeout', -1);
@@ -162,7 +162,7 @@ function bors_message($text, $params=array())
 	return true;
 }
 
-function bors_message_tpl($template, $obj, $params)
+function bors_message_tpl($message_template, $obj, $params)
 {
 	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
@@ -178,18 +178,20 @@ function bors_message_tpl($template, $obj, $params)
 	$redir = defval($params, 'redirect', false);
 	$title = defval($params, 'title', ec('Ошибка!'));
 	$timeout = defval($params, 'timeout', -1);
-	$global_template = defval($params, 'template', config('default_template'));
+	$page_template = defval($params, 'template', config('default_template'));
 
-	$params['this'] = &$obj;
+	$params['this'] = $obj;
+
 	$params['template_dir'] = $obj->class_dir();
 
-	$body = template_assign_data($template, $params);
+	$body = template_assign_data($message_template, $params);
 
-	$params['title'] = $title;
-	$params['source'] = $body;
-	$params['body'] = $body;
-
-	echo $message = template_assign_data($global_template, $params);
+	$params['this'] = $foo = bors_foo('bors_page');
+	$foo->set_attr('title', $params['title'] = $title);
+	$foo->set_attr('source', $params['source'] = $body);
+	$foo->set_attr('body', $params['body'] = $body);
+	echo template_assign_data($page_template, $params);
+//	var_dump($message_template, $page_template, $body);
 
 //	echo iconv($ics, $ocs, $message);
 
@@ -205,7 +207,7 @@ function bors_message_tpl($template, $obj, $params)
 		clean_all_session_vars();
 
 	if($redir && $timeout >= 0)
-		go($redir, false, $timeout);
+		return go($redir, false, $timeout);
 
 	return true;
 }

@@ -22,7 +22,12 @@ class bors_templates_smarty3 extends bors_template
 
 	static function factory()
 	{
-		require_once(config('smarty3_include'));
+		if(config('smarty3_include'))
+			require_once(config('smarty3_include'));
+		else
+			if(!class_exists('Smarty'))
+				bors_throw("Can't find Smarty");
+
 		$smarty = new Smarty();
 		require('classes/bors/templates/smarty3-register.php');
 

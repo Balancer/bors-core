@@ -75,18 +75,24 @@
 
 		list($start, $stop) = pages_start_stop_calculate($current_page, $total_pages, $limit);
 
-		$pages[] = get_page_link($obj, 1, 1==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
+		$pages[] = get_page_link($obj, 1, 1==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items, 1==$current_page);
+
+		if(is_object($obj))
+		{
+			$b = $obj->get('___pagination_item_before_current');
+			$a = $obj->get('___pagination_item_after');
+		}
 
 		if($start > 2)
-			$pages[] = "<span class=\"skip\">&#133;</span>";
+			$pages[] = @$b."<span class=\"skip\">".ec('…')."</span>".@$a;
 
 		for($i = $start; $i <= $stop; $i++)
-			$pages[] = get_page_link($obj, $i, $i==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
+			$pages[] = get_page_link($obj, $i, $i==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items, $i==$current_page);
 
 		if($stop < $total_pages - 1)
-			$pages[] = "<span class=\"skip\">&#133;</span>";
+			$pages[] = @$b."<span class=\"skip\">".ec('…')."</span>".@$a;
 
-		$pages[] = get_page_link($obj, $total_pages, $total_pages==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items);
+		$pages[] = get_page_link($obj, $total_pages, $total_pages==$current_page ? $current_page_class : $other_page_class, $q, $use_items_count, $per_page, $total_items, $total_pages==$current_page);
 
 //		for($i = $total_pages - intval($limit/2) + 1; $i <= $total_pages; $i++)
 //			$pages[] = get_page_link($obj, $i, $i==$current_page ? $current_page_class : $other_page_class, $q);
@@ -96,7 +102,7 @@
 		return $pages;
 	}
 
-	function get_page_link($obj, $page_num, $class="", $q = "", $use_items_count = false, $per_page = 0, $total_items = 0)
+	function get_page_link($obj, $page_num, $class="", $q = "", $use_items_count = false, $per_page = 0, $total_items = 0, $is_current=false)
 	{
 		if(is_object($obj))
 		{
@@ -123,7 +129,18 @@
 		else
 			$title = $page_num;
 
-		return "<a href=\"$p$q\"".($class? " class=\"$class\"" : "" ).">$title</a>";
+		$link = "<a href=\"$p$q\"".($class? " class=\"$class\"" : "" ).">$title</a>";
+		if(is_object($obj))
+		{
+			if($is_current && ($b = $obj->get('___pagination_item_before_current')))
+				$link = $b.$link;
+			elseif($b = $obj->get('___pagination_item_before'))
+				$link = $b.$link;
+
+			if($a = $obj->get('___pagination_item_after'))
+				$link = $link.$a;
+		}
+		return $link;
 	}
 
 	function check_page($p, $current_page, $total_pages)

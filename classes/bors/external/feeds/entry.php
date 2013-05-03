@@ -43,6 +43,28 @@ class bors_external_feeds_entry extends base_object_db
 		));
 	}
 
+	function check_target()
+	{
+		$t = $this->target();
+		if($t)
+			return $t;
+
+		$b = bors_find_first('balancer_board_blog', array(
+			'blog_source_class' => 'bors_external_feeds_entry',
+			'blog_source_id' => $this->id(),
+			'order' => 'post_id',
+		));
+		if($b)
+		{
+			$t = $b->post();
+			$this->set_attr('target', $t);
+			$this->set_target_object_id($t->id(), true);
+			return $t;
+		}
+
+		bors_exit('Stop!');
+	}
+
 	function make_source()
 	{
 		$link = $this->entry_url();
@@ -114,7 +136,8 @@ class bors_external_feeds_entry extends base_object_db
 		// Если это не транслируемая запись
 		if($feed->skip_entry_content_regexp() && preg_match('!'.$feed->skip_entry_content_regexp().'!i', $this->text()))
 		{
-			$post = $this->target();
+			$post = $this->check_target();
+
 			if(!$feed->parser_class_name() || !$post || $post->is_deleted()) // Не транслировалась или уже скрыта
 				return;
 
@@ -159,7 +182,7 @@ class bors_external_feeds_entry extends base_object_db
 
 		if($this->get('target_object_id')) // Уже было запощено ранее.
 		{
-			$post = $this->target();
+			$post = $this->check_target();
 			if(!$post)
 				return;
 

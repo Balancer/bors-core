@@ -2,17 +2,21 @@
 
 class bors_forms_date_simple extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
-		if(!$form)
-			$form = bors_form::$_current_form;
-
 		include_once('inc/datetime.php');
+
+		$params = $this->params();
+
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
+		$form = $this->form();
 
 		extract($params);
 
 		$object = $form->object();
-		$value = self::value($params, $form);
+		$value = $this->value();
 
 		$html = '';
 

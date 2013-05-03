@@ -256,7 +256,7 @@ class bors_link extends bors_object_db
 			$objs[$link->target_class_id()][$link->target_object_id()] = true;
 
 		foreach($objs as $class_id => $ids)
-			objects_array($class_id, array('id IN' => array_keys($ids)));
+			bors_find_all($class_id, array('id IN' => array_keys($ids)));
 
 		foreach($links as $link)
 		{
@@ -309,8 +309,11 @@ class bors_link extends bors_object_db
 
 	static function links_count($object, $where = array())
 	{
-//		if(!$object)
-//			return 0;
+		if(!$object)
+		{
+			debug_hidden_log('links-error', "Try links count for empty object");
+			return 0;
+		}
 
 		if(!is_array($where))
 			$where = array('target_class' => $where);

@@ -2,13 +2,22 @@
 
 class bors_forms_element
 {
-	static function value(&$params, &$form, $param_name = 'value')
+	private $params, $form;
+	function set_params($params) { return $this->params = $params; }
+	function set_form($form) { return $this->form = $form; }
+	function params() { return $this->params; }
+	function form() { return $this->form; }
+
+	function value($param_name = 'value')
 	{
+		$form = $this->form;
+		$params = $this->params;
+
 		$name = defval($params, 'name');
 		$def  = defval($params, 'def');
 		$value = defval($params, $param_name);
 
-		$object = $form->object();
+		$object = object_property($form, 'object');
 
 		if(!array_key_exists($param_name, $params))
 		{
@@ -20,7 +29,7 @@ class bors_forms_element
 				$value = NULL;
 		}
 
-		if(!isset($value) && !$form->attr('no_session_vars'))
+		if(!isset($value) && $form && !$form->attr('no_session_vars'))
 			$value = session_var("form_value_{$name}");
 
 		set_session_var("form_value_{$name}", NULL);
@@ -32,5 +41,43 @@ class bors_forms_element
 			$value = '';
 
 		return $value;
+	}
+
+	function element_name() { return str_replace('bors_forms_', '', get_class($this)); }
+
+	function css()
+	{
+		if($css = defval($this->params, 'css'))
+			return $css;
+		if($css = defval($this->params, 'css_class'))
+			return $css;
+		// Для совместимости. Устарело. В новых проектах не использовать.
+		if($css = defval($this->params, 'class'))
+			return $css;
+
+		$element_name = $this->element_name();
+		$method = $element_name . '_css';
+		return $this->form()->templater()->get($method);
+	}
+
+	function css_error()
+	{
+		$element_name = $this->element_name();
+		$method = $element_name . '_css_error';
+		return $this->form()->templater()->call($method);
+	}
+
+	function list_class()
+	{
+		if($lc = $this->params['list_class'])
+			return $lc;
+
+		if($lc = $this->params['main_class'])
+			return $lc;
+
+		if($lc = $this->params['class'])
+			return $lc;
+
+		return NULL;
 	}
 }

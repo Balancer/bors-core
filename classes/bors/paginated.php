@@ -10,7 +10,7 @@ class bors_paginated extends base_page_paged
 		$foo = new $class_name(NULL);
 
 		if($this->args('is_admin_list') || $this->get('is_admin_list'))
-			$data = $foo->get('item_list_admin_fields');
+			$data = bors_foo($this->main_admin_class())->get('item_list_admin_fields');
 
 		if(empty($data))
 			$data = $foo->get('item_list_fields');
@@ -77,6 +77,13 @@ class bors_paginated extends base_page_paged
 
 	function make_sortable_th($property, $title)
 	{
+		if(is_numeric($property))
+		{
+			$property = $title;
+			$x = bors_lib_orm::parse_property($this->main_class(), $property);
+			$title = defval($x, 'title', $property);
+		}
+
 		$sorts = $this->get('sortable', array());
 		if($x = $this->get('_sortable_append', array()))
 			$sorts = array_merge($x, $sorts);

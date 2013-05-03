@@ -103,6 +103,15 @@ class bors_core_find
 		return $this;
 	}
 
+	function is_null($property) { $this->where_parse_set("$property IS NULL"); return $this; }
+	function is_not_null($property) { $this->where_parse_set("$property IS NOT NULL"); return $this; }
+	function eq($property, $value) { $this->where_parse_set($property, $value); return $this; }
+	function gt($property, $value) { $this->where_parse_set("$property>", $value); return $this; }
+	function ge($property, $value) { $this->where_parse_set("$property>=", $value); return $this; }
+	function lt($property, $value) { $this->where_parse_set("$property<", $value); return $this; }
+
+	function in($property, $values) { $this->where_parse_set("$property IN", $values); return $this; }
+
 	function inner_join($join_class, $join_cond)
 	{
 		$this->class_stack_push($join_class);
@@ -199,6 +208,9 @@ class bors_core_find
 
 		$field_data = bors_lib_orm::parse_property($class_name, $m[1]);
 
+		if(!empty($field_data['table']))
+			$table = $field_data['table'];
+
 		$field_name = $field_data['name'];
 		if(!$field_name)
 			bors_throw("Not defined table field for property '{$m[1]}' in class '{$class_name}' as '*{$m[1]}'");
@@ -244,6 +256,9 @@ class bors_core_find
 
 		if(preg_match('/^(.+) IN$/', $param, $m))
 		{
+			if(is_object($value))
+				$value = $value->to_array();
+
 			if(is_array($value))
 			{
 				if(count($value) > 1)
@@ -349,6 +364,20 @@ class bors_core_find
 		$property_name = $this->class_parse($property_name);
 
 		return $this->where("$property_name LIKE", $value);
+	}
+
+	function like_any($properties_array, $value)
+	{
+		$q = array();
+		foreach($properties_array as $property_name)
+		{
+			$property_name = $this->first_parse($property_name);
+			$property_name = $this->stack_parse($property_name);
+			$property_name = $this->class_parse($property_name);
+			$q[] = "$property_name LIKE '%".addslashes($value)."%'";
+		}
+
+		return $this->where('('.join(' OR ', $q).')');
 	}
 
 	function set($property, $fields)

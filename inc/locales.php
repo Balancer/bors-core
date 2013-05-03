@@ -2,11 +2,6 @@
 
 // @include_once("localization/russian-".config('internal_charset', 'utf-8').".php");
 
-function tr($txt)
-{
-	return empty($GLOBALS['cms']['lang'][$txt]) ? $txt : $GLOBALS['cms']['lang'][$txt];
-}
-
 bors_function_include('locale/ec');
 
 function dc($txt, $charset_to = NULL) // внутренняя кодировка в UTF-8 или в указанную.

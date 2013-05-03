@@ -174,7 +174,10 @@ function bors_icon($image, $params = array())
 
 	if(!preg_match('/\.(png|gif)$/', $image))
 	{
-		foreach(array(BORS_CORE.'/shared/i16' => '/_bors/i16', BORS_EXT.'/htdocs/_bors-ext/i16' => '/_bors-ext/i16') as $dir => $path)
+		foreach(array(
+				BORS_CORE.'/shared/i16' => '/_bors/i16',
+				BORS_EXT.'/htdocs/_bors-ext/i16' => '/_bors-ext/i16'
+			) as $dir => $path)
 		{
 			if(file_exists("$dir/$image.png"))
 			{

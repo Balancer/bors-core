@@ -1,6 +1,6 @@
 <?php
 
-class bors_class_name extends base_object_db
+class bors_class_name extends bors_object_db
 {
 	static function id_prepare($id)
 	{
@@ -10,8 +10,8 @@ class bors_class_name extends base_object_db
 		return parent::id_prepare($id);
 	}
 
-	function main_table() { return 'bors_class_names'; }
-	function main_table_fields() { return array('id', 'name'); }
+	function table_name() { return 'bors_class_names'; }
+	function table_fields() { return array('id', 'name'); }
 
 	function title()
 	{

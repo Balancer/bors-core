@@ -9,6 +9,9 @@ class bors_config extends base_config
 	// Данные для конфигурирования объекта-представления объекта
 	function view_data() { return array(); }
 
+	// Данные для конфигурирования модели
+	function model_data() { return array(); }
+
 	function __construct(&$object)
 	{
 		$this->set_id($object);

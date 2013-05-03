@@ -35,4 +35,12 @@ class bors_objects_helper
 		foreach($object->cache_parents() as $parent_object)
 			cache_group::register($parent_object->internal_uri_ascii(), $object);
 	}
+
+	static function get_mixed_hash($object, $property, $title)
+	{
+		if(is_numeric($property))
+			$property = $title;
+
+		return object_property($object, $property);
+	}
 }

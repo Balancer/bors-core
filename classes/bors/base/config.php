@@ -2,6 +2,8 @@
 
 class base_config extends bors_object_simple
 {
+	function self_class_bors_object_type() { return 'config'; }
+
 	function target_configure()
 	{
 		$object = $this->id();
@@ -14,6 +16,17 @@ class base_config extends bors_object_simple
 		foreach($this->config_defaults() as $key => $value)
 			if(!$object->is_set($key))
 				$object->set_attr($key, $value);
+
+		if($object->get('self_class_bors_object_type') == 'view')
+		{
+			foreach($this->view_data() as $key => $value)
+				$object->set_attr($key, $value);
+		}
+		elseif($object->get('self_class_bors_object_type') == 'model')
+		{
+			foreach($this->model_data() as $key => $value)
+				$object->set_attr($key, $value);
+		}
 	}
 
 	function template_init()

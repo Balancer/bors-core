@@ -7,16 +7,21 @@
 
 class bors_forms_keywords_tabbed extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
 //		template_jquery_js("\$('#keywords_tabbed').tabs()");
 		template_jquery_ui_tabs('#keywords_tabbed');
-		if(!$form)
-			$form = bors_form::$_current_form;
+
+		$params = $this->params();
+
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
+		$form = $this->form();
 
 		extract($params);
 
-		$keyword_values = self::value($params, $form);
+		$keyword_values = $this->value();
 		if(!is_array($value))
 			$keyword_values = preg_split('/\s*[,;]\s*/', $keyword_values);
 

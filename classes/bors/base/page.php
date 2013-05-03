@@ -8,6 +8,8 @@ class base_page extends bors_object
 	function storage_engine() { return NULL; }
 	function can_be_empty() { return true; }
 
+	function self_class_bors_object_type() { return 'view'; }
+
 	function _class_title_def()		{ return ec('Страница'); }
 
 	function _page_title_def() { return $this->title(); }
@@ -53,15 +55,24 @@ class base_page extends bors_object
 			$show_current = popval($css, 'show_current', true);
 			$current_page_class = popval($css, 'current_page_class', 'current_page');
 
+			extract($css);
 			$css = popval($css, 'div_css');
 		}
 
+		if(empty($skip_title))
+			$title = ec('<li>Страницы:</li>');
+
         include_once("inc/design/page_split.php");
-		$pages = '<li>'.join('</li><li>', pages_show(
+		$this->set_attr('___pagination_item_before', '<li>');
+		$this->set_attr('___pagination_item_before_current', '<li class="'.@$li_current_css.'">');
+		$this->set_attr('___pagination_item_after', '</li>');
+
+        $pages = join("\n", pages_show(
 			$this, $this->total_pages(), $this->items_around_page(),
 			$show_current, $current_page_class
-		)).'</li>';
-		return '<div class="'.$css.'">'.$before.ec('<ul><li>Страницы:</li>').$pages.'</ul>'.$after.'</div>';
+		));
+
+		return '<div class="'.$css.'">'.$before.'<ul>'.@$title.$pages.'</ul>'.$after.'</div>';
 	}
 
 	function pages_links($css='pages_select', $text = NULL, $delim = '', $show_current = true, $use_items_numeration = false, $around_page = NULL)
@@ -71,6 +82,13 @@ class base_page extends bors_object
 
 	function pages_links_nul($css='pages_select', $text = NULL, $delim = '', $show_current = true, $use_items_numeration = false, $around_page = NULL)
 	{
+		if(is_array($css))
+			extract($css);
+		else
+		{
+			$container_css = $css;
+		}
+
 		if($this->total_pages() < 2)
 			return '';
 
@@ -90,7 +108,7 @@ class base_page extends bors_object
 		if($this->is_reversed())
 			$pages = array_reverse($pages);
 
-		return '<div class="'.$css.'">'.$text.join($delim, $pages).'</div>';
+		return '<div class="'.$container_css.'">'.$text.join($delim, $pages).'</div>';
 	}
 
 	function getsort($t, $def = false)

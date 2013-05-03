@@ -2,14 +2,18 @@
 
 class bors_forms_radio extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
-		if(!$form)
-			$form = bors_form::$_current_form;
+		$params = $this->params();
+
+		if(!empty($params['property']))
+			$params['name'] = $params['property'];
+
+		$form = $this->form();
 
 		extract($params);
 
-		$obj = $form->object();
+		$obj = object_property($form, 'object');
 
 		if(!empty($property))
 			$name = $property;
@@ -55,7 +59,7 @@ class bors_forms_radio extends bors_forms_element
 		if(empty($object))
 		{
 //			$current = $obj ? $obj->$name() : @$def;
-			$current = self::value($params, $form);
+			$current = $this->value();
 			$object = "";
 		}
 		else
@@ -67,8 +71,10 @@ class bors_forms_radio extends bors_forms_element
 		if($is_array)
 			$current = @array_pop($current); // wtf?
 
-		if(!$current && !empty($list['default']))
-			$current = $list['default'];
+		if(!$current && !empty($list['*default']))
+			$current = $list['*default'];
+
+		unset($list['*default']);
 
 		if(empty($delim))
 			$delim = "<br />";

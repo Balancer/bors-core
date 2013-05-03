@@ -94,7 +94,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 //TODO: сделать перебор разных UA при ошибке
 //		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
-//		CURLOPT_RANGE => '0-4095',
+//		CURLOPT_RANGE => '0-4095',a
 
 	if(config('proxy.force_regexp') && preg_match(config('proxy.force_regexp'), $url))
 		curl_setopt($ch, CURLOPT_PROXY, config('proxy.forced'));
@@ -111,6 +111,9 @@ function http_get_content($url, $raw = false, $max_length = false)
 //		if(config('is_developer')) { var_dump($data); exit(); }
 		return NULL;
 	}
+
+	if($max_length && strlen($data) > $max_length)
+		$data = substr($data, 0, $max_length);
 
 	$adat = explode("\n", $data);
 
@@ -134,6 +137,13 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
+	curl_close($ch);
+	debug_timing_stop('http-get-total');
+	debug_timing_stop('http-get: '.$url);
+
+	if($raw)
+		return $data;
+
     if(preg_match("!charset\s*=\s*([\w\-]+)!i", $content_type, $m))
         $charset = $m[1];
     elseif(preg_match("!<\?xml\s+version=\S+\s+encoding\s*=\s*\"(.+?)\"!i", $data, $m))
@@ -145,13 +155,6 @@ function http_get_content($url, $raw = false, $max_length = false)
         $charset = $m[1];
 	else
         $charset = '';
-
-	curl_close($ch);
-
-	debug_timing_stop('http-get-total');
-	debug_timing_stop('http-get: '.$url);
-	if($raw)
-		return $data;
 
 	if(preg_match('/JFIF/', $data))
 		debug_hidden_log('jpeg-not-raw', $url);
@@ -219,8 +222,11 @@ function http_get_ex($url, $raw = true)
 	if(preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru|66\.ru|ria\.ru)/', $url))
 		$timeout = 40;
 
-	if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация
+	if(preg_match('/\.(jpe?g|png)/', $url))
 		$timeout = 60;
+
+	if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация
+		$timeout = 90;
 
 //	if(config('is_debug')) { echo "url='$url'\n\n"; echo debug_trace(); }
 
@@ -257,7 +263,8 @@ function http_get_ex($url, $raw = true)
 		//И выше есть такой же блок.
 		$err_str = curl_error($ch);
 //		if(config('is_developer')) { var_dump($url, $pure_url, $raw, $data, $err_str); exit(); }
-		echo '[2] Curl error: ' . $err_str;
+//		echo '[2] Curl error: ' . $err_str;
+		debug_hidden_log('curl-error', "Curl error: ".$err_str);
 		return '';
 	}
 

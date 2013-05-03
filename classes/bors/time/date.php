@@ -10,7 +10,7 @@ class bors_time_date extends bors_time
 		return $this->date('d.m.Y');
 	}
 
-	function load($timestamp)
+	static function load($timestamp)
 	{
 		return bors_load(__CLASS__, $timestamp);
 	}

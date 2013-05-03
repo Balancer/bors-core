@@ -3,7 +3,7 @@
 class bors_admin_meta_edit extends bors_admin_page
 {
 	function can_be_empty() { return false; }
-	function is_loaded() { return empty($this->id()) || (bool) $this->target(); }
+	function is_loaded() { return !$this->id() || (bool) $this->target(); }
 
 	function _config_class_def() { return config('admin_config_class'); }
 
@@ -92,7 +92,11 @@ class bors_admin_meta_edit extends bors_admin_page
 	function body_data()
 	{
 		if($this->id())
+		{
 			$data = object_property($this->target(), 'data', array());
+			if(!is_array($data))
+				$data = array();
+		}
 		else
 		{
 			$data = array();
@@ -112,6 +116,10 @@ class bors_admin_meta_edit extends bors_admin_page
 		$target = $this->id() ? $this->target() : NULL;
 		$admin_target = $this->id() ? $this->admin_target() : NULL;
 
+		$form_fields = ($f=$this->get('form')) ? $f : 'auto';
+		if($ff = $this->get('form_fields'))
+			$form_fields = $ff;
+
 		return array_merge(
 			$data,
 			parent::body_data(),
@@ -120,7 +128,7 @@ class bors_admin_meta_edit extends bors_admin_page
 				'admin_'.$this->item_name() => $admin_target,
 				'target' => $target,
 				'admin_target' => $admin_target,
-				'form_fields' => ($f=$this->get('form')) ? $f : 'auto',
+				'form_fields' => $form_fields,
 			)
 		);
 	}
@@ -139,4 +147,6 @@ class bors_admin_meta_edit extends bors_admin_page
 
 	// Нельзя так: возможна ситуация, когда объект читать можно, а вот редактировать — нет. Тогда он будет показан!
 //	function access() { return $this->admin_target() ? $this->admin_target()->access() : parent::access(); }
+
+	function _form_template_class_def() { return 'bors_forms_templates_default'; }
 }

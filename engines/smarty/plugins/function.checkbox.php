@@ -2,5 +2,5 @@
 
 function smarty_function_checkbox($params, &$smarty)
 {
-	echo bors_forms_checkbox::html($params);
+	echo bors_form::instance()->element_html('checkbox', $params);
 }

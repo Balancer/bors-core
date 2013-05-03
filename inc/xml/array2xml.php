@@ -1,65 +1,24 @@
 <?php
 
-require_once(dirname(__FILE__).'/../strings.php'); // нужно только для bors_unplural
-
-function array2xml($data, $root = NULL)
+if(class_exists('XMLWriter'))
 {
-	$converter = new Array2XML();
-	if($root)
-		$converter->setRootName($root);
-	return $converter->convert($data);
+	function array2xml($data, $root = NULL)
+	{
+		require_once('classes/inc/array2xml-unknown.php');
+		$converter = new Array2XML();
+		if($root)
+			$converter->setRootName($root);
+		return $converter->convert($data);
+	}
 }
 
-class Array2XML
+// Вариант на DOM
+elseif(class_exists('DOMDocument'))
 {
-    private $writer;
-    private $version = '1.0';
-    private $encoding = 'UTF-8';
-    private $rootName = 'root';
-
-    function __construct()
-    {
-		$this->writer = new XMLWriter();
-    }
-
-    public function convert($data)
-    {
-        $this->writer->openMemory();
-        $this->writer->startDocument($this->version, $this->encoding);
-        $this->writer->startElement($this->rootName);
-		$this->writer->setIndent(true);
-
-        if(is_array($data))
-            $this->getXML($data);
-
-        $this->writer->endElement();
-        return $this->writer->outputMemory();
-    }
-
-    public function setVersion($version)   { $this->version = $version; }
-    public function setEncoding($encoding) { $this->encoding = $encoding; }
-    public function setRootName($rootName) { $this->rootName = $rootName; }
-
-    private function getXML($data, $parent = NULL)
-    {
-        foreach($data as $key => $val)
-        {
-            if(is_numeric($key))
-            {
-            	if($parent)
-	                $key = bors_unplural($parent);
-            	else
-	                $key = 'key'.$key;
-            }
-
-            if(is_array($val))
-            {
-                $this->writer->startElement($key);
-                $this->getXML($val, $key);
-                $this->writer->endElement();
-            }
-            else
-                $this->writer->writeElement($key, $val);
-        }
+	function array2xml($data, $root = NULL)
+	{
+		require_once('classes/inc/array2xml-lalit-patel.php');
+		$xml = Array2XML::createXML($root, $data);
+		return $xml->saveXML();
 	}
 }

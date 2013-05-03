@@ -2,25 +2,26 @@
 
 class bors_forms_textarea extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
+		$params = $this->params();
+
 		if(!empty($params['property']))
 			$params['name'] = $params['property'];
 
-		if(!$form)
-			$form = bors_form::$_current_form;
+		$form = $this->form();
 
 		extract($params);
 
 		$object = $form->object();
-		$value = self::value($params, $form);
+		$value = $this->value();
 
 		if(empty($rows))
 			$rows = 7;
 
-		$class = empty($class) ? array() : explode(' ', $class);
+		$class = explode(' ', $this->css());
 		if(in_array($name, explode(',', session_var('error_fields'))))
-			$class[] = "error";
+			$class[] = $this->css_error();
 
 		if(empty($cols))
 			$cols = 60;
@@ -42,6 +43,14 @@ class bors_forms_textarea extends bors_forms_element
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
 		if($th = defval($params, 'th'))
 		{
+			if($th == 'def')
+			{
+				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
+				$th = $x['title'];
+				if(empty($type))
+					$type = $x['type'];
+			}
+
 			$html .= "<tr><th>{$th}</th><td>";
 			if(empty($style))
 				$style = "width: 99%";
@@ -52,7 +61,8 @@ class bors_forms_textarea extends bors_forms_element
 			static $tmp_id = 0;
 			if(!$id)
 				$id = 'tmp_id_'.($tmp_id++);
-			template_jquery_markitup('#'.$id);
+
+			jquery_markitup::appear('#'.$id);
 		}
 
 		$html .= "<textarea name=\"$name\"";

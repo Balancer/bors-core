@@ -36,6 +36,8 @@ class bors_object extends base_object
 		));
 	}
 
+	function is_value() { return true; }
+
 	function show()
 	{
 //		if($go = $obj->attr('redirect_to'))
@@ -76,13 +78,21 @@ class bors_object extends base_object
 
 	function direct_content()
 	{
-
 		$renderer = $this->renderer();
 		if(config('debug.execute_trace'))
 			debug_execute_trace("{$this->debug_title_short()} renderer = {$renderer}");
 
 		if(!$renderer)
+		{
+			$view_class = $this->get('view_class');
+			if($view_class && ($view = bors_load($view_class, $this)))
+			{
+				$view->set_model($this);
+				return $view->content();
+			}
+
 			bors_throw(ec('Отсутствует рендерер класса ').$this->class_name()." (renderer_class={$this->get('renderer_class')}, render_engine={$this->get('render_engine')})");
+		}
 
 		return $renderer->render($this);
 	}
@@ -132,14 +142,35 @@ class bors_object extends base_object
 		return bors_load('bors_time', $this->modify_time());
 	}
 
-	function _admin_searchable_properties_def()
+	function _admin_searchable_title_properties_def()
+	{
+		return $this->_admin_searchable_properties_def(false);
+	}
+
+	function _admin_searchable_properties_def($any = true)
 	{
 		$properties = array();
+		$title_properties = array();
 		foreach(bors_lib_orm::fields($this) as $x)
 			if(!empty($x['is_admin_searchable']))
-				$properties[] = $x['property'];
+				if(empty($x['is_title']))
+					$properties[] = $x['property'];
+				else
+					$title_properties[] = $x['property'];
 
-		return $properties ? join(' ', $properties) : 'title';
+		if($title_properties && !$any)
+			$properties = $title_properties;
+
+		if(!$properties)
+			$properties[] = 'title';
+
+		if($x = $this->get('searchable_title_properties'))
+			$properties += $x;
+
+		if($any && ($x = $this->get('searchable_more_properties')))
+			$properties += $x;
+
+		return join(' ', array_unique($properties));
 	}
 
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }

@@ -1,5 +1,11 @@
 <?php
 
+if(!config('obsolete.use_mysql_smart'))
+{
+	debug_hidden_log('obsolete_error', "Try to use storage_db_mysql_smart");
+	bors_throw('Error: Try to use storage_db_mysql_smart');
+}
+
 class storage_db_mysql_smart extends base_null
 {
 	private $_back_functions = array(

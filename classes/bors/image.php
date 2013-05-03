@@ -7,6 +7,8 @@ class bors_image extends bors_object_db
 	function db_name() { return config('bors_core_db'); }
 	function table_name() { return config('images_table', 'bors_images'); }
 
+	function ignore_on_new_instance() { return true; }
+
 	function table_fields()
 	{
 		return array(
@@ -178,7 +180,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		if(!file_exists($file = $data['tmp_name']))
 		{
 			debug_hidden_log('image-error', 'Upload not existens file '.$file);
-			debug_exit("Can't load image {$data['name']}: File not exists<br/>");
+			debug_exit("Can't load image {$data['name']}: Uploaded tmp file not exists<br/>");
 		}
 
 		if(!($x = @getimagesize($file)))
@@ -302,7 +304,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		return parent::delete();
 	}
 
-	function class_title() { return ec('Изображение'); }
+	function _class_title_def() { return ec('Изображение'); }
 	function class_title_vp() { return ec('изображение'); }
 	function _class_title_rp_def() { return ec('изображения'); }
 

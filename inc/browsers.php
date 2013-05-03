@@ -158,7 +158,12 @@ function get_browser_info($user_agent, $log_unknown = true)
 	// ************************************************************
 	$browser='';
 	$bv = '';
-	if(preg_match('!KHTML, like Gecko.*Chrome/(\S+)!', $user_agent, $m))
+	if(preg_match('!Chromium/(\d+)!', $user_agent, $m))
+	{
+		$browser='Chromium';
+		$bv = $m[1];
+	}
+	elseif(preg_match('!KHTML, like Gecko.*Chrome/(\S+)!', $user_agent, $m))
 	{
 		$browser='Google Chrome';
 		$bv = $m[1];

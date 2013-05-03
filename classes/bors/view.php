@@ -7,9 +7,22 @@
 class bors_view extends bors_page
 {
 	function can_be_empty() { return false; }
-	function is_loaded() { return (bool) $this->target(); }
+	function is_loaded() { return (bool) $this->model(); }
 
-	function _class_title_rp_def() { return $this->object()->class_title_rp(); }
+	function _class_title_rp_def() { return $this->model()->class_title_rp(); }
+
+	function data_load()
+	{
+		$loaded = parent::data_load();
+		if(is_object($x = $this->id()))
+			$this->set_model($x);
+		else
+			if(!$this->model())
+				return false;
+
+		$this->set_attr($this->target_name(), $this->model());
+		return $loaded;
+	}
 
 	// Класс отображаемого объекта
 	function main_class()
@@ -40,39 +53,40 @@ class bors_view extends bors_page
 		if(class_include($main_class_up))
 			return $main_class_up;
 
-		bors_throw(ec('Не определён главный класс для представления ').$this->class_name());
+		bors_throw(ec('Не определён главный класс (model_class()) для представления ').$this->class_name());
 	}
 
 	function item_name()
 	{
-		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
+		return preg_replace('/^.+_(.+?)$/', '$1', $this->model_class());
 	}
 
-	function referent_class() { return $this->main_class(); }
+	function referent_class() { return $this->model_class(); }
 
-	function object() { return $this->target(); } // Для совместимости
+	function object() { return $this->model(); } // Для совместимости
+	function target() { return $this->model(); } // Для совместимости
 
-	function model()  { return $this->target(); } // А это — будет основной вариант!
+	function _title_def() { return $this->model()->title(); }
+	function _nav_name_def() { return $this->model()->nav_name(); }
+	function _description_def() { return $this->model()->description(); }
 
-	function title() { return $this->object()->title(); }
-	function nav_name() { return $this->object()->nav_name(); }
-	function description() { return $this->object()->description(); }
-	function create_time() { return $this->object()->create_time(); }
-	function modify_time() { return $this->object()->modify_time(); }
+	function create_time() { return $this->model()->create_time(); }
+	function modify_time() { return $this->model()->modify_time(); }
 
-	function _image_def() { return $this->object()->get('image'); }
-
+	function _image_def() { return $this->model()->get('image'); }
 
 	function target_name()
 	{
-		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
+		return preg_replace('/^.+_(.+?)$/', '$1', $this->model_class());
 	}
+
+	function _model_class_def() { return $this->main_class(); }
 
 	function auto_targets()
 	{
 		$data = array(
-			'target' => 'main_class(id)',
-			$this->target_name() => 'main_class(id)',
+			'model' => 'model_class(id)',
+			$this->target_name() => 'model_class(id)',
 		);
 
 		return array_merge(parent::auto_targets(), $data);
@@ -80,32 +94,34 @@ class bors_view extends bors_page
 
 	function body_data()
 	{
-		$target = $this->object();
+		$model = $this->model();
 		$data = array(
-			$this->item_name() => $target,
-			'target' => $target,
-			'model' => $target,
+			$this->item_name() => $model,
+			'target' => $model,
+			'model' => $model,
 			'view' => $this,
 			'self' => $this,
 		);
 
-		return array_merge(parent::body_data(), $data, $this->target()->data);
+		return array_merge(parent::body_data(), $data, $this->model()->data);
 	}
 
-	function url($page = NULL) { return $this->target()->url($page); }
-	function admin_url() { return $this->target()->get('admin_url'); }
-	function object_type() { return $this->target()->object_type(); }
+	function url($page = NULL) { return $this->model()->url($page); }
+	function admin_url() { return $this->model()->get('admin_url'); }
+	function object_type() { return $this->model()->object_type(); }
 
-	function _owner_id_def() { return object_property($this->object(), 'owner_id'); }
+	function self_class_bors_object_type() { return 'view'; }
+
+	function _owner_id_def() { return object_property($this->model(), 'owner_id'); }
 
 	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
-	function _section_name_def() { return object_property($this->object(), 'section_name'); }
+	function _section_name_def() { return object_property($this->model(), 'section_name'); }
 	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
-	function _is_deleted_def() { return $this->object()->get('is_deleted'); }
+	function _is_deleted_def() { return $this->model()->get('is_deleted'); }
 
 	function html_auto()
 	{
-		$target = $this->target(); // Выводимый объект
+		$target = $this->model(); // Выводимый объект
 		$out = array();
 		foreach(bors_lib_orm::main_fields($target) as $idx => $args)
 		{
@@ -149,7 +165,7 @@ class bors_view extends bors_page
 
 	function access()
 	{
-		$access = $this->target()->access();
+		$access = $this->model()->access();
 		$access->set_attr('view', $this);
 		return $access;
 	}
@@ -162,5 +178,13 @@ class bors_view extends bors_page
 	function cache_parents()
 	{
 		return array_merge(parent::cache_parents(), array($this->model()));
+	}
+
+	function _html_def() { return $this->body(); }
+
+	function set_model($model)
+	{
+		$this->set('model', $model, false);
+		return $this;
 	}
 }

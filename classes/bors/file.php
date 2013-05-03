@@ -2,7 +2,7 @@
 
 class bors_file extends base_object_db
 {
-	function class_title() { return ec('Файл'); }
+	function _class_title_def() { return ec('Файл'); }
 	function _class_title_rp_def() { return ec('файла'); }
 	function class_title_vp() { return ec('файл'); }
 	function class_title_m() { return ec('файлы'); }

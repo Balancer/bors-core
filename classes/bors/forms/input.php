@@ -2,25 +2,31 @@
 
 class bors_forms_input extends bors_forms_element
 {
-	static function html($params, &$form = NULL)
+	function html()
 	{
+		$params = $this->params();
+
 		if(!empty($params['property']))
 			$params['name'] = $params['property'];
 
-		if(!$form)
-			$form = bors_form::$_current_form;
+		$form = $this->form();
 
 		extract($params);
 		$maxlength = defval($params, 'maxlength', 255);
 
 		$object = $form->object();
-		$value = self::value($params, $form);
+		$value = $this->value();
 
-		$class = explode(' ', defval($params, 'class'));
+		$class = array($this->css());
+
 		if(in_array($name, explode(',', session_var('error_fields'))))
-			$class[] = "error";
+			$class[] = $this->css_error();
 
-		$id = defval($params, 'dom_id', $id);
+		if($id = defval($params, 'dom_id', $id))
+		{
+			if($label = popval($params, 'label'))
+				echo "<label$label_css for=\"$id\">{$label}</label>\n";
+		}
 
 		// Если у нас используется валидация данных формы
 		if($form->attr('ajax_validate'))
@@ -63,7 +69,7 @@ class bors_forms_input extends bors_forms_element
 
 			$th = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $th);
 
-			$result .= "<tr><th>{$th}</th><td>";
+			$result .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$th}</th><td>";
 			if(empty($style))
 				$style = "width: 99%";
 		}
@@ -90,7 +96,11 @@ class bors_forms_input extends bors_forms_element
 
 		$result .=  " />\n";
 
-		if($has_versioning)
+		// mbfi/admin/settings
+		if(@$previous_value)
+			$previous = $previous_value;
+
+		if($has_versioning || $previous)
 			$result .=  "<br/><small>".ec("Предыдущее значение: ").$previous."</small>\n";
 
 		if($th)

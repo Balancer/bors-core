@@ -55,6 +55,18 @@ class bors_page extends base_page
 
 		$this->attr['__smart_body_template_checked'] = true;
 
+		if(!empty($this->attr['body_template']))
+		{
+			switch(pathinfo($this->attr['body_template'], PATHINFO_EXTENSION))
+			{
+				case 'tpl':
+				{
+					$this->attr['body_template_class'] = 'bors_templates_smarty';
+					return;
+				}
+			}
+		}
+
 		$current_class = get_class($this);
 		$class_files = $GLOBALS['bors_data']['classes_included'];
 		$ext = $this->body_template_ext();
@@ -62,48 +74,50 @@ class bors_page extends base_page
 
 		while($current_class)
 		{
-			$base = preg_replace("!(.+/\w+)\..+?$!", "$1.", $class_files[$current_class]);
-//			echo "Check $current_class for $base$ext<Br/>";
-			if($is_smart)
+			if($base = preg_replace("!(.+/\w+)\..+?$!", "$1.", @$class_files[$current_class]))
 			{
-				// Было перед .html Из-за этого на страницах с переназначаемым расширением, типа
-				// http://www.aviaport.ru/events/apczima2012/
-				// грузились базовые формы.
-				if(file_exists($bt = $base.$ext))
+//				echo "Check $current_class for $base$ext<Br/>";
+				if($is_smart)
 				{
-					$this->attr['body_template'] = $bt;
-					$this->attr['body_template_class'] = $this->body_template_class();
-					return;
+					// Было перед .html Из-за этого на страницах с переназначаемым расширением, типа
+					// http://www.aviaport.ru/events/apczima2012/
+					// грузились базовые формы.
+					if(file_exists($bt = $base.$ext))
+					{
+						$this->attr['body_template'] = $bt;
+						$this->attr['body_template_class'] = $this->body_template_class();
+						return;
+					}
+					if(file_exists($bt = $base.'tpl.php'))
+					{
+						$this->attr['body_template'] = $bt;
+						$this->attr['body_template_class'] = 'bors_templates_php';
+						return;
+					}
+					if(file_exists($bt = $base.'tpl'))
+					{
+						$this->attr['body_template'] = $bt;
+						$this->attr['body_template_class'] = 'bors_templates_smarty';
+						return;
+					}
+					if(file_exists($bt = $base.'haml') && class_exists('bors_templates_phaml'))
+					{
+						$this->attr['body_template'] = $bt;
+						$this->attr['body_template_class'] = 'bors_templates_phaml';
+						return;
+					}
+					if(file_exists($bt = $base.'html'))
+					{
+						$this->attr['body_template'] = $bt;
+						$this->attr['body_template_class'] = 'bors_templates_smarty';
+						return;
+					}
 				}
-				if(file_exists($bt = $base.'tpl.php'))
+				else
 				{
-					$this->attr['body_template'] = $bt;
-					$this->attr['body_template_class'] = 'bors_templates_php';
-					return;
+					if(file_exists($template_file = $base.$ext))
+						return "xfile:{$template_file}";
 				}
-				if(file_exists($bt = $base.'tpl'))
-				{
-					$this->attr['body_template'] = $bt;
-					$this->attr['body_template_class'] = 'bors_templates_smarty';
-					return;
-				}
-				if(file_exists($bt = $base.'haml') && class_exists('bors_templates_phaml'))
-				{
-					$this->attr['body_template'] = $bt;
-					$this->attr['body_template_class'] = 'bors_templates_phaml';
-					return;
-				}
-				if(file_exists($bt = $base.'html'))
-				{
-					$this->attr['body_template'] = $bt;
-					$this->attr['body_template_class'] = 'bors_templates_smarty';
-					return;
-				}
-			}
-			else
-			{
-				if(file_exists($template_file = $base.$ext))
-					return "xfile:{$template_file}";
 			}
 
 			$current_class = get_parent_class($current_class);

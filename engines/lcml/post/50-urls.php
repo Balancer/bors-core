@@ -58,13 +58,13 @@
 			$query = $m[2];
 		}
 
-		$data = url_parse($pure_url);
+		$url_data = url_parse($pure_url);
 		$external = @$url_data['local'] ? '' : ' class="external"';
 
 		if(config('lcml_balancer'))
 		{
 			//TODO: придумать хук вместо хардкода
-			if(in_array($data['host'], array('airbase.ru', 'balabot.balancer.ru', 'balancer.ru', 'bors.balancer.ru', 'forums.airbase.ru', 'forums.balancer.ru')))
+			if(in_array($url_data['host'], array('airbase.ru', 'balabot.balancer.ru', 'balancer.ru', 'bors.balancer.ru', 'forums.airbase.ru', 'forums.balancer.ru')))
 			{
 				$anchor = NULL;
 				$obj = bors_load_uri($pure_url);
@@ -84,7 +84,9 @@
 		if($snip && ($data = bors_external_common::content_extract($url)))
 			return lcml($data['bbshort']);
 
-		$blacklist = $external || preg_match('!'.config('seo_domains_whitelist_regexp', $_SERVER['HTTP_HOST']).'!', $url_data['host']);
+		$blacklist = $external;
+		if(preg_match('!'.config('seo_domains_whitelist_regexp', @$_SERVER['HTTP_HOST']).'!', $url_data['host']))
+			$blacklist = false;
 
 		if(preg_match("!/[^/]+\.[^/]+$!", $pure_url) 
 				&& !preg_match("!\.(html|htm|phtml|shtml|jsp|pl|php|php4|php5|cgi)$!i", $pure_url)

@@ -90,6 +90,16 @@ class bors_mail
 		return $this;
 	}
 
+	function body_template($template_name, $data = array())
+	{
+		// mbfi/callback
+		$html = bors_templates_smarty::fetch($template_name, $data);
+		if(@$data['cr_type'] == 'save_cr')
+			$html = str_replace("\n", "<br/>\n", $html);
+		$this->html($html);
+		return $this;
+	}
+
 	function send()
 	{
 		// Перекодируем всё из системной кодировки в целевую.

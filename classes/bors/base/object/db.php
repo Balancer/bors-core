@@ -85,7 +85,7 @@ class base_object_db extends bors_object
 
 	function on_delete_pre() { return false; }
 
-	function delete($remove_cross = true)
+	function delete()
 	{
 		if($this->on_delete_pre() === true)
 			return true;
@@ -99,11 +99,8 @@ class base_object_db extends bors_object
 		if(!$id_field)
 			debug_exit("Try to delete empty id field in class ".__FILE__.":".__LINE__);
 
-		if($remove_cross)
-		{
-			require_once('inc/bors/cross.php');
-			bors_remove_cross_to($this->class_name(), $this->id());
-		}
+		require_once('inc/bors/cross.php');
+		bors_remove_cross_to($this->class_name(), $this->id());
 
 		if($this->id())
 			$this->db()->delete($tab, array($id_field.'=' => $this->id()));

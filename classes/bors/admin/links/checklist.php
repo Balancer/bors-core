@@ -55,7 +55,7 @@ class bors_admin_links_checklist extends bors_admin_page
 	function total_items() { return objects_count('bors_link', $this->where(array())); }
 	function items_around_page() { return 100; }
 
-	function url() { return $this->called_url(); }
+	function url($page=NULL) { return $this->called_url(); }
 
 	function on_action_do($data)
 	{

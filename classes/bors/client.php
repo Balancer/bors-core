@@ -22,7 +22,7 @@ class bors_client extends bors_object_simple
 
 	function referer() { return @$_SERVER['HTTP_REFERER']; }
 	function agent() { return @$_SERVER['HTTP_USER_AGENT']; }
-	function url()
+	function url($page=NULL)
 	{
 		$url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI'];
 		if($_SERVER['QUERY_STRING'])

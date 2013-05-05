@@ -5,7 +5,7 @@ require_once 'inc/filesystem.php';
 require_once 'inc/processes.php';
 require_once 'inc/debug.php';
 
-function image_file_scale($file_in, &$file_out, $width, $height, $opts = NULL)
+function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 {
 	while(!bors_thread_lock('image_file_scale', 30, "{$file_in} => {$file_out} [{$width}x{$height}($opts)]"))
 		usleep(rand(1000, 5000));

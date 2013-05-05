@@ -1326,8 +1326,9 @@ defined at {$this->class_file()}<br/>
 		}
 	}
 
-	function post_set($data) { }
-	function post_save() { }
+	// Именно по ссылке, т.к. можно менять 'go' и т.п.
+	function post_set(&$data) { }
+	function post_save(&$data) { }
 
 	function on_new_instance($data)
 	{

@@ -68,7 +68,7 @@ function set_last_editor_id($v, $dbup = true) { return $this->set('last_editor_i
 		return $object->generator()->image();
 	}
 
-	function url() { return $this->image_url(); }
+	function url($page=NULL) { return $this->image_url(); }
 
 	function html() { return $this->html_code(); }
 	function html_code()

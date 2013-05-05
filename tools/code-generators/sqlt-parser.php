@@ -299,7 +299,7 @@ $ftitle
 	}
 {$auto_objects_code}
 {$ftargets}
-	function url() { return config('main_host_url').'/{$admin_path}/'.\$this->id().'/'; }
+	function url(\$page=NULL) { return config('main_host_url').'/{$admin_path}/'.\$this->id().'/'; }
 }
 ";
 

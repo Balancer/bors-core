@@ -29,7 +29,7 @@ class bors_image_generated_graphviz extends base_image
 	}
 
 	function base_name() { return $this->_hash.'.png'; }
-	function url() { return '/c/g/'.$this->base_name(); }
+	function url($page=NULL) { return '/c/g/'.$this->base_name(); }
 	function dir() { return $_SERVER['DOCUMENT_ROOT'].'/c/g'; }
 	function width() { return $this->_width; }
 	function height() { return $this->_height; }

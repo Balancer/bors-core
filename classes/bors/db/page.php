@@ -35,5 +35,5 @@ class bors_db_page extends bors_object_db
 		return NULL;
 	}
 
-	function url() { return $this->data['url']; }
+	function url($page=NULL) { return $this->data['url']; }
 }

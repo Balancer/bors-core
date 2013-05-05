@@ -50,7 +50,7 @@ class bors_keyword extends base_object_db
 		return $x;
 	}
 
-	function url() { return config('tags_root_url', 'http://forums.balancer.ru/tags').'/'.trim($this->title()).'/'; }
+	function url($page=NULL) { return config('tags_root_url', 'http://forums.balancer.ru/tags').'/'.trim($this->title()).'/'; }
 
 	static function keyword_search_reindex($kw)
 	{

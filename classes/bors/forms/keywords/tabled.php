@@ -55,12 +55,12 @@ class bors_forms_keywords_tabled extends bors_forms_element
 
 		$html .= "</tr></table>\n";
 
-		$html .= bors_forms_input::html(array(
+		$html .= $form->element_html('input', array(
 			'name' => $name,
 			'value' => join(', ', $keyword_values),
 			'dom_id' => 'keywords',
 			'size' => 60,
-		), $form);
+		));
 
 		$form->append_attr('override_fields', "bors_comma_join({$name}+keywords_tabbed)");
 

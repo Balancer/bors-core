@@ -31,7 +31,7 @@ class bors_file extends base_object_db
 		);
 	}
 
-	function url()
+	function url($page=NULL)
 	{
 		return '/'.$this->relative_path().'/'.basename($this->full_file_name());
 	}

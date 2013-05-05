@@ -98,7 +98,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		return secure_path(config('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$rel_path);
 	}
 
-	function url()
+	function url($page=NULL)
 	{
 		if($this->get('full_url'))
 			return $this->full_url();
@@ -290,7 +290,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		return $ch->set($img, rand(3600, 86400));
 	}
 
-	function cross_objects() { return bors_link::objects($this); }
+	function cross_objects($to_class = NULL) { return bors_link::objects($this); }
 
 	function delete()
 	{

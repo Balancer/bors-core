@@ -97,7 +97,7 @@ class base_page_db extends base_page
 		return NULL;
 	}
 
-	function delete($remove_cross = true)
+	function delete()
 	{
 		if(method_exists($this, 'on_delete_pre'))
 			if($this->on_delete_pre() === true)
@@ -112,8 +112,7 @@ class base_page_db extends base_page
 		if(!$id_field)
 			debug_exit("Try to delete empty id field in class ".__FILE__.":".__LINE__);
 
-		if($remove_cross)
-			bors_remove_cross_to($this->class_name(), $this->id());
+		bors_remove_cross_to($this->class_name(), $this->id());
 
 		$this->storage()->delete($this);
 

@@ -110,7 +110,7 @@ function main($argv)
 	echo "\t\t);\n";
 	echo "\t}\n";
 
-	echo "\n\tfunction url() { return config('main_site_url').'/$items_name/'.\$this->id().'/'; }\n";
+	echo "\n\tfunction url(\$page=NULL) { return config('main_site_url').'/$items_name/'.\$this->id().'/'; }\n";
 	echo "\n\tfunction admin_url() { return config('admin_site_url').'/$items_name/'.\$this->id().'/'; }\n";
 
 	echo "}\n";

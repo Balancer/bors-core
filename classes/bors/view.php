@@ -84,9 +84,17 @@ class bors_view extends bors_page
 
 	function auto_targets()
 	{
+		static $entered = false;
+		if($entered)
+			return parent::auto_targets();
+
+		$entered = true;
+		$target_name = $this->target_name();
+		$entered = false;
+
 		$data = array(
 			'model' => 'model_class(id)',
-			$this->target_name() => 'model_class(id)',
+			$target_name => 'model_class(id)',
 		);
 
 		return array_merge(parent::auto_targets(), $data);

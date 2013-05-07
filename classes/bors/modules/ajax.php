@@ -36,6 +36,9 @@ class bors_modules_ajax extends bors_module
 		$x = bors_load($class, NULL);
 		$x->set_attr('ajax', true);
 		$x->set_mode('ajax');
-		return $x->html();
+		$html = $x->html();
+		if(!$html)
+			$html = "\n";
+		return $html;
 	}
 }

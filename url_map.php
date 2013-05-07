@@ -3,6 +3,7 @@
 bors_url_map(array(
 	'(/_bors/admin)(/.*) => include(bors_admin)',
 	'(/_bors/tools)(/.*) => include(bors_tools)',
+	'/_bors/mod-ajax => bors_modules_ajax',
 ));
 
 // Устаревший формат. Требует переписывания на использование bors_url_map()

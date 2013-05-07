@@ -12,7 +12,7 @@ function main_handlers_engine($uri)
 
    		$_SERVER['REQUEST_URI'] = preg_replace("!^(.+?)\?.*?$!", "$1", $_SERVER['REQUEST_URI']);
 	}
-	
+
 	$GLOBALS['cms']['page_number'] = 1;
 
 	if(empty($GLOBALS['main_uri']))

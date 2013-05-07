@@ -68,11 +68,12 @@ $map = array(
 
 	'/admin/image/append => bors_admin_image_append',
 
+	'.* => auto_object_php(url)',
+
 	'.* => page_fs_xml(url)',
 	'.* => page_fs_separate(url)',
 //	'.* => page_db(url)',
 	'.* => base_page_hts(url)',
-	'.* => auto_object_php(url)',
 	'.* => bors_page_fs_bbh(url)',
 	'.* => bors_page_fs_markdown(url)',
 	'.* => bors_page_fs_htsu(url)', //TODO: снести нафиг после конвертации старых hts Авиабазы

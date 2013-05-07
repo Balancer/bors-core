@@ -217,4 +217,9 @@ class bors_page extends base_page
 	{
 		return bors_load('bors_project', NULL);
 	}
+
+	static function link_rel($rel, $href)
+	{
+		bors_page::add_template_data_array('head_append', "<link rel=\"$rel\" href=\"".htmlspecialchars($href).'"/>');
+	}
 }

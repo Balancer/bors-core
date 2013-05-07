@@ -121,7 +121,7 @@
 				bors()->set_main_object($obj);
 
 			if(empty($GLOBALS['main_uri']))
-				$GLOBALS['main_uri'] = $obj->url();
+				$GLOBALS['main_uri'] = preg_replace('!:\d+/!', '/', $obj->url());
 			else
 				debug_hidden_log('___222', "main uri already set to '{$GLOBALS['main_uri']}' while try set to '{$obj->url()}'");
 
@@ -189,7 +189,7 @@ function bors_object_create($obj)
 	{
 		bors()->set_main_object($obj, true);
 		unset($GLOBALS['cms']['templates']);
-		$GLOBALS['main_uri'] = $obj->url($obj->page());
+		$GLOBALS['main_uri'] = preg_replace('!:\d+/!', '', $obj->url($obj->page()));
 
 		$obj->set_attr('recreate_on_content', true);
 

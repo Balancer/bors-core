@@ -136,8 +136,16 @@ if(config('access_log')
 		&& !config('locked_db_time')
 	)
 {
-	$session_user_load_summary = false; // session_var('user.stat.load_summary', 0);
-//	debug_hidden_log('system_overload_test_session', 'summary load: '.print_r($session_user_load_summary, true), 0);
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$access_log_mem_name = 'access-load-summary-2-'.$ip;
+	$session_user_load_summary_pack = bors_var::fast_get($access_log_mem_name, array(0, 0));
+	$session_user_load_summary = $session_user_load_summary_pack[0]; // session_var('user.stat.load_summary', 0);
+
+	if($session_user_load_summary_pack[1] < time() - 600)
+		$session_user_load_summary = 0;
+
+//	if(config('is_debug'))
+//		debug_hidden_log('00-system_overload_test_session', 'summary load: '.print_r($session_user_load_summary, true), 0);
 
 	$common_overload = config('overload_time', 0);
 	$user_overload = config('user_overload_time', $common_overload);
@@ -155,7 +163,8 @@ if(config('access_log')
 			));
 		}
 
-//		debug_hidden_log('system_overload_test', $session_user_load_summary, 0);
+//		if(config('is_debug'))
+//			debug_hidden_log('00-system_overload_test', $session_user_load_summary, 0);
 
 		if(!$is_crowler && $user_overload && $session_user_load_summary > $user_overload)
 		{
@@ -281,6 +290,15 @@ catch(Exception $e)
 if(config('debug.execute_trace'))
 	debug_execute_trace("process done. Return type is ".gettype($res)."; Check post access log...");
 
+try
+{
+	bors()->changed_save();
+}
+catch(Exception $e)
+{
+	$error = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка сохранения</div>"));
+}
+
 /**********************************************************************************************************/
 
 // Записываем, если нужно, кто получал объект и сколько ушло времени на его получение.
@@ -317,15 +335,13 @@ if(config('access_log'))
 //	NOTIFY - переменная не найдена. Найти.
 //	if($session_user_load_summary)
 //		set_session_var('user.stat.load_summary', $session_user_load_summary + $operation_time);
-}
 
-try
-{
-	bors()->changed_save();
-}
-catch(Exception $e)
-{
-	$error = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка сохранения</div>"));
+	if(!empty($access_log_mem_name))
+	{
+		bors_var::fast_set($access_log_mem_name, array($session_user_load_summary + $operation_time, time()));
+//		if(config('is_debug'))
+//			debug_hidden_log('00-system_overload_set', $session_user_load_summary + $operation_time, 0);
+	}
 }
 
 if(config('debug.execute_trace'))

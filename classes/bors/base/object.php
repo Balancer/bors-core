@@ -850,6 +850,12 @@ defined at {$this->class_file()}<br/>
 
 		bors_objects_helper::update_cached($this);
 
+		//TODO: Фактически хардкод. Надо придумать метод сигнализации об изменении объекта. Типа, ->set_was_modified()
+		$was_modified = array_key_exists('modify_time', $this->changed_fields);
+
+//		if($was_modified)
+//			debug_hidden_log('00-modified', $this->debug_title().print_r($this->changed_fields, true));
+
 		$this->changed_fields = array();
 
 		if(config('debug_trace_changed_save'))
@@ -868,7 +874,9 @@ defined at {$this->class_file()}<br/>
 				bors_search_object_index($this, 'replace');
 		}
 
-		$this->cache_clean();
+		if($was_modified)
+			$this->cache_clean();
+
 		bors()->drop_changed_object($this->internal_uri());
 		$this->set_attr('__store_entered', false);
 	}
@@ -917,6 +925,9 @@ defined at {$this->class_file()}<br/>
 	function cache_children() { return array(); }
 	function cache_parents() { return array(); }
 
+	// Чистка не только нашего объекта, но и зависящих от него.
+	// Поэтому нужно поосторожнее с ограничениями функции.
+	// Мы меняем topic, но чистить нужно topics_view
 	function cache_clean()
 	{
 		if($this->attr('__cache_clean_entered'))
@@ -935,9 +946,12 @@ defined at {$this->class_file()}<br/>
 							$group->clean();
 
 			// Чистим все прямые привязки других объектов на событие изменения нашего.
-			foreach(bors_find_all('cache_group', array('cache_group' => $this->internal_uri_ascii())) as $group)
-				if($group)
-					$group->clean();
+			// По факту сейчас не используется. Если где-то всплывёт надобность, то
+			// надо будет ввести признак возможности внешней привязки к объекту, чтобы
+			// не дёргать этот find на каждой модификации мелких объектов, типа topic_visits
+//			foreach(bors_find_all('cache_group', array('cache_group' => $this->internal_uri_ascii())) as $group)
+//				if($group)
+//					$group->clean();
 		}
 
 //		echo "<b>cache_clean</b> {$this->debug_title()}: ".print_r($this->changed_fields, true)."<br/>\n";

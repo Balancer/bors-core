@@ -420,7 +420,7 @@ function class_load_by_vhosts_url($url)
 		else
 			$check_url = $url_noq;
 
-//		echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$ (q=$query)!<br />\n";
+//		if(config('is_developer')) echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$ (q=$query)!<br />\n";
 		if(preg_match('!^\s*http://!', $url_pattern))
 			$prefix = '';
 		else
@@ -428,6 +428,8 @@ function class_load_by_vhosts_url($url)
 
 		if(preg_match("!^{$prefix}{$url_pattern}$!i", $check_url, $match))
 		{
+//			if(config('is_developer')) echo "found $class_path as $pair / !^{$prefix}{$url_pattern}$! to $check_url in <pre>".print_r($host_data['bors_site'], true)."</pre><br />\n";
+
 			if(preg_match("!^redirect:(.+)$!", $class_path, $m))
 			{
 				$class_path = $m[1];

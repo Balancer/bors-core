@@ -39,6 +39,9 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 		else
 			$data = "";
 
+		if(!empty($_POST))
+			$data .= "_POST=".print_r($_POST, true)."\n";
+
 		$out .= "url: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
 			.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
 			. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"

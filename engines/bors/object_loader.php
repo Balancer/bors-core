@@ -207,7 +207,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 
 		$page = $args;
 	}
-	elseif(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $check_class, $m))
+	elseif(preg_match("!^(.+)\((\d+|NULL),(\d+|NULL)\)$!", $check_class, $m))
 	{
 		$check_class = $m[1];
 		$id = $m[2] == 'NULL' ? NULL : $match[$m[2]+$skip];
@@ -303,8 +303,8 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	else
 		$args['page'] = $page;
 
-//	echo "object_init($check_class, $id, $args)<br/>\n";
 	$obj = object_init($check_class, $id, $args);
+//	echo "object_init($check_class, $id, $args) = ".print_dd($obj)."<br/>\n";
 	if(!$obj)
 		return NULL;
 
@@ -369,7 +369,7 @@ function class_load_by_local_url($url, $args)
 		else
 			$test_url = $check_url;
 
-		if(config('debug_trace')) echo 'regexp="'.$host_helper.$url_pattern.'$!i" for '.$test_url.'<br/>'.$check_url."<Br/>$url_pattern, class_path=$class_path<br/><br/>";
+		if(config('debug_trace')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for '.$test_url.'<br/>'.$check_url."<Br/>$url_pattern, class_path=$class_path<br/>";
 		if(preg_match($host_helper.$url_pattern.'$!i', $test_url, $match))
 		{
 			if(($obj = try_object_load_by_map($url, $url_data, $test_url, $class_path, $match, $url_pattern, 1)))

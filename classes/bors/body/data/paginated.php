@@ -4,7 +4,13 @@ class bors_body_data_paginated extends bors_object
 {
 	function object() { return $this->id(); }
 
-	function order() { return $this->object()->get('paginated_order', '-create_time'); } // Всегда! Не менять в будущем. Унификация.
+	function _order_def()
+	{
+		if($o = bors()->request()->data_parse('signed_name', 'sort'))
+			return $o;
+
+		return $this->object()->get('paginated_order', '-create_time'); // Всегда -create_time! Не менять в будущем. Унификация.
+	}
 
 	private function _where($where = array())
 	{

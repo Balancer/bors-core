@@ -5,7 +5,7 @@ function lt_module($params)
 	if($lcml = defval($params, 'lcml'))
 	{
 		if(!$lcml->is_tag_enabled('module', false) && !config('lcml.tag.module.enable'))
-			return ec("Использование тэга [module] запрещено");
+			return ec("Использование тега [module] запрещено");
 	}
 
 		if($class_name = @$params['class'])

@@ -1,7 +1,7 @@
 <?php
     function lp_chess($text,$params)
     {
-    	return "Тэг временно отключён:<br/>\n$text";
+    	return "Тег временно отключён:<br/>\n$text";
 		$text = restore_format($text);
 
 		global $wgScriptPath;

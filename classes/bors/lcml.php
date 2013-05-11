@@ -170,21 +170,21 @@ class bors_lcml extends bors_object
 
 	function is_tag_enabled($tag_name, $default_enabled = true)
 	{
-		// Если тэг разрешён явно, то всё ок.
+		// Если тег разрешён явно, то всё ок.
 		if(config('lcml.tag.'.$tag_name.'.enable'))
 			return true;
 
-		// Если указаны разрешённые тэги, значит по умолчанию — запрещены.
+		// Если указаны разрешённые теги, значит по умолчанию — запрещены.
 		// И всё тупо зависит от наличия в разрешённых
 		if($enabled = $this->enabled_tags())
 			return in_array($tag_name, $enabled);
 
-		// Если указаны запрещённые тэги, то смотрим, не запрещён ли тэг явно
+		// Если указаны запрещённые теги, то смотрим, не запрещён ли тег явно
 		if(($disabled = $this->disabled_tags()) && in_array($tag_name, $disabled))
 			return false;
 
-		// Если ничего про тэг не сказано и нигде не описано, то пока —
-		// разрешено. В будущем же нужно будет сделать описание поведения по умолчанию в самом классе тэга.
+		// Если ничего про тег не сказано и нигде не описано, то пока —
+		// разрешено. В будущем же нужно будет сделать описание поведения по умолчанию в самом классе тега.
 		return $default_enabled;
 	}
 
@@ -243,7 +243,7 @@ class bors_lcml extends bors_object
 
 		$mask = str_repeat('.', bors_strlen($text));
 
-		// ******* Собственно, главная часть — обработка тэгов *******
+		// ******* Собственно, главная часть — обработка тегов *******
 		$ts = microtime(true);
 		$text = lcml_tags($t0 = $text, $mask, $this);
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
@@ -405,7 +405,7 @@ class bors_lcml extends bors_object
 
 		$code = '[http://balancer.ru Сайт расходящихся тропок]';
 		$suite->assertRegexp('#<a.+href="http://balancer.ru".*>Сайт расходящихся тропок</a>#', lcml($code));
-//		Упс. Не работает. Сделать не прямой парсинг, а подмену тэга вначале, в зависимости от типа ссылки, [url или [img
+//		Упс. Не работает. Сделать не прямой парсинг, а подмену тега вначале, в зависимости от типа ссылки, [url или [img
 //		$code = '[http://balancer.ru|[b]Сайт расходящихся тропок[/b]]';
 //		$suite->assertRegexp('#<a.+href="http://balancer.ru".+>Сайт расходящихся тропок</a>#', lcml($code));
 

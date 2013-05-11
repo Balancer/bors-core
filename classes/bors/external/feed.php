@@ -207,7 +207,7 @@ class bors_external_feed extends base_object_db
 					$tags[] = 'литература';
 				}
 
-				if($this->keywords_in_sqbr()) // Тэги в квадратных скобках
+				if($this->keywords_in_sqbr()) // Теги в квадратных скобках
 				{
 					if(preg_match_all('/\[(.+?)\]/', $title, $matches))
 					{

@@ -72,7 +72,7 @@ class bors_keyword extends base_object_db
 		if(!is_array($xs))
 			return 0;
 
-		$ucase = ($kw == bors_upper($kw)); // тэг в верхнем регистре. Сокращение/аббревиатура.
+		$ucase = ($kw == bors_upper($kw)); // тег в верхнем регистре. Сокращение/аббревиатура.
 
 		foreach($xs as $x)
 		{

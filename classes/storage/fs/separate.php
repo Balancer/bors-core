@@ -41,7 +41,7 @@ class storage_fs_separate extends base_null
 		bors_function_include('debug/log_var');
 		debug_log_var('fs.separate.dir', $dir);
 
-		// По дефолту в separate разрешён HTML и все BB-тэги.
+		// По дефолту в separate разрешён HTML и все BB-теги.
 		$object->set_html_disable(false, false);
 		$object->set_lcml_tags_enabled(NULL, false);
 

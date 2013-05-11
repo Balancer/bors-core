@@ -139,7 +139,7 @@ class bors_storage_htsu extends bors_storage
 		if(!$file)
 			return $object->set_is_loaded(false);
 
-		// По дефолту в index.hts разрешёны HTML и все BB-тэги.
+		// По дефолту в index.hts разрешёны HTML и все BB-теги.
 		$object->set_html_disable(false, false);
 		$object->set_lcml_tags_enabled(NULL, false);
 

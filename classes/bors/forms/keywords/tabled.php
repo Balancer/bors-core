@@ -2,7 +2,7 @@
 
 /*
 	$list на входе — массив вида:
-	array('категория1' => array('тэг1', 'тэг2', ...), 'категория2' => array(...))
+	array('категория1' => array('тег1', 'тег2', ...), 'категория2' => array(...))
 */
 
 class bors_forms_keywords_tabled extends bors_forms_element

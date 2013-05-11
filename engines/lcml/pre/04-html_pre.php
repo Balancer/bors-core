@@ -51,34 +51,34 @@ function lcml_html_pre($txt)
 			$txt = preg_replace("!<$tag\s+([^>]+)>\s*</$tag>!is","[$tag $1]", $txt);
 		}
 
-		// Строго парные тэги
+		// Строго парные теги
 		foreach(explode(' ','em embed nobr strike') as $tag)
 		{
 			$txt = preg_replace("!<$tag>(.*?)</$tag>!is","[$tag]$1[/$tag]", $txt);
 			$txt = preg_replace("!<$tag\s+([^>]+)>(.*?)</$tag>!is","[$tag $1]$2[/$tag]", $txt);
 		}
 
-		// Строго парные тэги. отображаемые в другие BB-тэги
+		// Строго парные теги. отображаемые в другие BB-теги
 		foreach(array('blockquote' => 'quote', 'table' => 'table_html') as $html_tag => $bb_tag)
 		{
 			$txt = preg_replace("!<$html_tag>(.*?)</$html_tag>!is","[$bb_tag]$1[/$bb_tag]", $txt);
 			$txt = preg_replace("!<$html_tag\s+([^>]+)>(.*?)</$html_tag>!is","[$bb_tag $1]$2[/$bb_tag]", $txt);
 		}
 
-		// Ошибочные парные тэги, повторённые один раз. Остаток после предыдущего выправления.
+		// Ошибочные парные теги, повторённые один раз. Остаток после предыдущего выправления.
 		foreach(explode(' ','embed') as $tag)
 		{
 			$txt = preg_replace("!<$tag\s+([^>]+)>!is","[$tag $1][/$tag]", $txt);
 		}
 
-		// Парные тэги, прямо транслирующиеся в BB-код:
+		// Парные теги, прямо транслирующиеся в BB-код:
 		foreach(explode(' ','form style tt sub sup code quote') as $tag)
 		{
 			$txt = preg_replace("!<$tag>(.+?)</$tag>!is","[$tag]$1[/$tag]", $txt);
 			$txt = preg_replace("!<$tag\s+([^>]+)>(.+?)</$tag>!is","[$tag $1]$2[/$tag]", $txt);
 		}
 
-		// Строго одиночные тэги
+		// Строго одиночные теги
 		foreach(explode(' ','input') as $tag)
 		{
 			$txt = preg_replace("!<$tag\s+([^>]+)>!is","[$tag $1]", $txt);

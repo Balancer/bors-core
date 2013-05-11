@@ -23,7 +23,7 @@ function lcml_sharp($txt, &$mask)
         {
             $s = @$array[$i];
 
-            if(preg_match("!^#(\w+)(\s*)(.*?)$!" , $s, $m)) // Открывающийся или одиночный тэг
+            if(preg_match("!^#(\w+)(\s*)(.*?)$!" , $s, $m)) // Открывающийся или одиночный тег
             {
                 if(function_exists("lsp_$m[1]"))
                 {
@@ -53,7 +53,7 @@ function lcml_sharp($txt, &$mask)
                 }
             }
 
-            if(preg_match("!^#/(\w+)(\s|$)!",$s,$m) && $tag==$m[1]) // Новый открывающийся тэг
+            if(preg_match("!^#/(\w+)(\s|$)!",$s,$m) && $tag==$m[1]) // Новый открывающийся тег
             {
                 $in_pair--;
                 if(!$in_pair)

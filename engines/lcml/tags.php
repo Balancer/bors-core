@@ -16,7 +16,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 
 //		echo "found: pos=$pos, end=$end, func=$func\n";
 
-		// Если нашли тэг и он не закрывающийся
+		// Если нашли тег и он не закрывающийся
 		if($pos !== false && $end && bors_substr($txt, $pos+1, 1) != '/')
 		{
 			$class_pair_name		= NULL;
@@ -56,13 +56,13 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 				&& ($taglist_disabled || !@in_array($func, $taglist_disabled))
 			)
 			{
-				$opened   = 0; // число открытых тэгов данного типа
+				$opened   = 0; // число открытых тегов данного типа
 				$next_end = $end;
 				$lp_parsed = false; // флаг того, что нам удалось обработать тег парной функцией.
 				list($pos_stored, $end_stored, $tag_stored, $func_stored, $params_stored) = array($pos, $end, $tag, $func, $params);
 				do
 				{
-					// Ищем следующий открывающийся тэг
+					// Ищем следующий открывающийся тег
 					list($next_pos, $next_end, $next_tag, $next_func) = find_next_open_tag($txt, $next_end);
 //					echo "$cfunc -> $next_tag:$next_func<br />\n";
 
@@ -84,7 +84,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 						{
 							$opened--;
 						}
-						// иначе - вычисляем тэг, заменяя его на новое содержимое
+						// иначе - вычисляем тег, заменяя его на новое содержимое
 						else
 						{
 							$part1 = bors_substr($txt, 0, $pos);
@@ -129,7 +129,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 							$txt = $part1.$part2.$part3;
 							$next_pos = false;
 							$pos = bors_strlen($part1.$part2); //с конца изменённого фрагмента
-							$lp_parsed = true; // Тэг успешно обработан парной функцией.
+							$lp_parsed = true; // Тег успешно обработан парной функцией.
 						}
 					}
 				} while($next_pos !== false);
@@ -178,7 +178,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 				continue;
 			}
 
-			// Неопределённый тэг - пропускаем
+			// Неопределённый тег - пропускаем
 			if($pos !== false)
 				$end = $pos+1;
 			else
@@ -198,8 +198,8 @@ function find_next_open_tag($txt, $pos)
 //	while($pos < $strlen && ($pos = next_open_brace($txt, $pos)) !== false)
 	while($pos < $strlen && ($pos = bors_strpos($txt, '[', $pos)) !== false && $pos < $strlen-2)
 	{
-		$pos_open  = bors_strpos($txt, '[', $pos+1); // Следующий открывающийся тэг
-//		$pos_open  = next_open_brace ($txt, $pos+1); // Следующий открывающийся тэг
+		$pos_open  = bors_strpos($txt, '[', $pos+1); // Следующий открывающийся тег
+//		$pos_open  = next_open_brace ($txt, $pos+1); // Следующий открывающийся тег
 		$pos_close = bors_strpos($txt, ']', $pos+1); // Ближайший закрывающий знак
 //		if(config('is_developer')) echo "$pos, $pos_open, $pos_close = ".bors_substr($txt, $pos, $pos_close - $pos + 1)."<Br/>";
 //		$pos_close = next_close_brace($txt, $pos+1); // Ближайший закрывающий знак
@@ -239,7 +239,7 @@ function find_next_open_tag($txt, $pos)
 				continue;
 			}
 
-			// Новый тэг открывается раньше, чем закрывается наш
+			// Новый тег открывается раньше, чем закрывается наш
 			// Начинаем учёт вложений
 			// xxx [url ...|[b]...[/b]] yyy
 			//	 ^ ------------------- pos
@@ -265,7 +265,7 @@ function find_next_open_tag($txt, $pos)
 		if(!$end)
 			$end = $strlen;
 
-		// Вырезаем целиком найденный тэг, без квадратных скобок
+		// Вырезаем целиком найденный тег, без квадратных скобок
 		$tag = bors_substr($txt, $pos+1, $end-$pos-1);
 //		if(config('is_developer')) echo "Tag '$tag'<br/>\n";
 

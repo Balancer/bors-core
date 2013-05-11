@@ -47,7 +47,7 @@
 {/if}
 {$t->title()}</a></b>{if $t->get('description') or $t->get('keywords_string')}<small>
 	{if $t->get('description')}<br/>{$t->get('description')}{/if}
-	{if $t->get('keywords_string')}<br/><i>тэги: {$t->get('keywords_string')}</i>{/if}
+	{if $t->get('keywords_string')}<br/><i>теги: {$t->get('keywords_string')}</i>{/if}
 </small>{/if}</td>
 	<td>{$t->author_name()}</td>
 	<td>{$t->forum()|get:titled_url}</td>

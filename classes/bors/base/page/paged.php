@@ -3,7 +3,16 @@
 class base_page_paged extends bors_page
 {
 	function _where_def() { return array(); }
-	function _order_def() { return '-create_time'; } // Всегда! Не менять в будущем. Унификация.
+
+	function _default_order_def() { return '-create_time'; } // Всегда -create_time! Не менять в будущем. Унификация.
+	function _order_def()
+	{
+		if($o = bors()->request()->data_parse('signed_name', 'sort'))
+			return $o;
+
+		return $this->default_order();
+	}
+
 	function _group_def() { return false; }
 
 	function _inner_join_def() { return false; }

@@ -54,7 +54,7 @@ class storage_fs_xml extends base_null
 		if(!$content)
 			return $object->set_is_loaded(false);
 
-		// По дефолту в xml разрешён HTML и все BB-тэги.
+		// По дефолту в xml разрешён HTML и все BB-теги.
 		$object->set_html_disable(false, false);
 		$object->set_lcml_tags_enabled(NULL, false);
 

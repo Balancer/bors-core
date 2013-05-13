@@ -137,7 +137,7 @@ if(config('access_log')
 	)
 {
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$access_log_mem_name = 'access-load-summary-2-'.$ip;
+	$access_log_mem_name = 'access-load-summary-3-'.$ip;
 	$session_user_load_summary_pack = bors_var::fast_get($access_log_mem_name, array(0, 0));
 	$session_user_load_summary = $session_user_load_summary_pack[0]; // session_var('user.stat.load_summary', 0);
 

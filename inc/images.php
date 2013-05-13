@@ -31,7 +31,9 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 	}
 
 	$data = getimagesize($file_in);
-//var_dump($file_in, $data); exit();
+
+//	if(config('is_developer')) { var_dump($file_in, $data, $width, $height, $opts); exit(); }
+
 	if(!$data || !$data[0])
 	{
 		config_set('bors-image-lasterror', ec('Не могу определить размеры изображения'));
@@ -70,6 +72,8 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 	}
 
 	$img->load($file_in);
+	mkpath(dirname($file_out), 0777);
+
 	if(!$opts)
 	{
 		if(!$width)
@@ -78,7 +82,28 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 		if(!$height)
 			$height = $width * 100 + 64;
 
+		// Хак:
+		if(config('image_transform_engine') == 'Imagick3')
+		{
+			$imagick = $img->imagick;
+			$format = $imagick->getImageFormat();
+			if($format == 'GIF')
+			{
+				$imagick = $imagick->coalesceImages();
+				do
+				{
+					$imagick->resizeImage($width, $height, Imagick::FILTER_BOX, 1);
+				} while ($imagick->nextImage());
+				$imagick = $imagick->deconstructImages();
+				$imagick->writeImages($file_out, true);
+				@chmod($file_out, 0666);
+				bors_thread_unlock('image_file_scale');
+				return $img->isError();
+			}
+		}
+
 		$img->fit($width, $height);
+//		if(config('is_developer')) { var_dump($img); exit(); }
 	}
 	else
 	{
@@ -146,7 +171,6 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 
 	}
 
-	mkpath(dirname($file_out), 0777);
 	$img->save($file_out, $img->getImageType());
 	@chmod($file_out, 0666);
 	bors_thread_unlock('image_file_scale');

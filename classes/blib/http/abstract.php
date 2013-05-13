@@ -57,6 +57,8 @@ class blib_http_abstract
 
 	static function get_header($url)
 	{
+		$curl_options = array(); // Затычка
+
 		$ch = curl_init($url);
 		curl_setopt_array($ch, array(
 			CURLOPT_RETURNTRANSFER => 1,

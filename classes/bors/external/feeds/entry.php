@@ -54,6 +54,7 @@ class bors_external_feeds_entry extends base_object_db
 			'blog_source_id' => $this->id(),
 			'order' => 'post_id',
 		));
+
 		if($b)
 		{
 			$t = $b->post();
@@ -62,7 +63,9 @@ class bors_external_feeds_entry extends base_object_db
 			return $t;
 		}
 
-		bors_exit('Stop!');
+		$this->set_target_class_name(NULL);
+		$this->set_target_object_id(NULL);
+		return NULL;
 	}
 
 	function make_source()

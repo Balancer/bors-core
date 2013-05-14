@@ -4,10 +4,33 @@ class bors_lib_html
 {
 	static function get_meta_data($content, $url = NULL) // via http://ru2.php.net/get_meta_tags
 	{
+		$meta = array();
+
+		$content = preg_replace('!<meta[^>]+Content-Type[^>]+>!i', '', $content);
+
+		$dom = new DOMDocument('1.0', 'UTF-8');
+		$doc->encoding = 'UTF-8';
+
+		$dom->loadHTML('<?xml encoding="UTF-8">' . $content);
+
+		foreach($dom->getElementsByTagName('meta') as $m)
+		{
+			$property = $m->getAttribute('property');
+			if(!$property)
+				$property = $m->getAttribute('name');
+
+	 		$val  = $m->getAttribute('content');
+			if(!$val)
+		 		$val  = $m->getAttribute('value');
+
+			if($property)
+		    	$meta[$property] = $val;
+	    }
+
+//		if(config('is_developer')) { var_dump($meta); exit('html-meta'); }
+
 		$content = preg_replace("'<style[^>]*>.*</style>'siU",'',$content);  // strip js
 		$content = preg_replace("'<script[^>]*>.*</script>'siU",'',$content); // strip css
-
-		$meta = array();
 
 		foreach(explode("\n", $content) as $s)
 			if(preg_match("!<link rel=\"([^\"]+)\" href=\"([^\"]+)\" />!i", trim($s), $m))
@@ -21,16 +44,7 @@ class bors_lib_html
 
 		foreach(explode("\n", $content) as $s)
 		{
-			if(preg_match("!<meta[^>]+(name|property)=\"([\w:]+)\"[^>]+(content|value)=\"([^>]+)\"(.*?)>!is", trim($s), $m))
-				$meta[bors_lower($m[2])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'), $m[2]);
-
-			if(preg_match("!<meta[^>]+(content|value)=\"([^>]+)\"[^>]+(name|property)=\"([\w:]+)\"(.*?)>!is", trim($s), $m))
-				$meta[bors_lower($m[4])] = self::norm($url_data, html_entity_decode(html_entity_decode($m[2], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'), $m[4]);
-
 			if(preg_match("!<meta[^>]+(http\-equiv|name|property)=['\"]([\w:]+)['\"][^>]+(content|value)='([^']*)'!is", trim($s), $m))
-				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
-
-			if(preg_match("!<meta[^>]+(name|property)=([\w:]+)[^>]+(content|value)=\"([^>]+)\"(.*?)>!is", trim($s), $m))
 				$meta[bors_lower($m[2])] = html_entity_decode(html_entity_decode($m[4], ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
 
 			// <link rel="image_src" href="http://infox.ru/photos/2011/17/112717/300x168_IRp6fXolYdFHbUso28YKRYQS8y3fn0Ca.jpg" >

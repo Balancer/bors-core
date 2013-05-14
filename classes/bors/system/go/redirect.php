@@ -9,7 +9,7 @@ class bors_system_go_redirect extends base_object
 		if($object = $this->object())
 			return go($object->url_in_container(), true);
 
-		return false;
+		return false; // bors_message("Can't find object {$this->id()}");
 	}
 
 	function object()

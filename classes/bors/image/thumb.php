@@ -60,9 +60,12 @@ class bors_image_thumb extends bors_image
 
 		//TODO: сделать вариант, совместимый с safe_mod!
 //		var_dump($this->width(), $this->file_name_with_path(), $this->data);
+
+//if(!config('is_developer'))
+{
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_is_loaded(true);
-
+}
 		$this->original = object_load($this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
@@ -83,7 +86,7 @@ class bors_image_thumb extends bors_image
 			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
 		else
 			$new_url = NULL;
-
+//if(config('is_developer')) { var_dump($new_url); exit(); }
 		$this->set_full_url($new_url, $caching);
 
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)

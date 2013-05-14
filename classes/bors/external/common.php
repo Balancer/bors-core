@@ -13,7 +13,7 @@ class bors_external_common extends bors_object
 		$html = bors_lib_http::get_cached($url, 7200 /*, false, true*/ ); // Для сборса кеша
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
-//		if(config('is_developer')) { echo "$url:<br/>"; var_dump($html); exit(); }
+//		if(config('is_developer')) { var_dump($meta); exit('meta'); }
 
 		if(preg_match('/503 - Forwarding failure/', $html))
 			$html = '';
@@ -118,16 +118,20 @@ if(config('is_developer')) { exit($img); }
 		if(!$description)
 		{
 			$dom = new DOMDocument('1.0', 'UTF-8');
+			$doc->encoding = 'UTF-8';
 			$html = preg_replace('!<meta [^>]+?>!is', '', $html);
 			$html = iconv('utf-8', 'utf-8//ignore', $html);
-//			if(config('is_developer')) { var_dump($html); exit(); }
 			$html = preg_replace('!<script[^>]*>.+?</script>!is', '', $html);
 			$html = str_replace("\r", "", $html);
 
 			if($html)
 			{
 				libxml_use_internal_errors(true);
-				$dom->loadHTML($html);
+
+//				<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><body>' . $html . '</body></html>
+				// http://www.balancer.ru/g/p3133962
+				$dom->loadHTML('<?xml encoding="UTF-8">'.$html);
+//				$dom->loadHTML($html);
 				$xpath = new DOMXPath($dom);
 
 				foreach(array(
@@ -143,15 +147,9 @@ if(config('is_developer')) { exit($img); }
 				{
 					$content = /*bors_lib_dom::element_html*/($divs->item(0));
 					$source = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
-					if(strpos($source, 'Ð') !== false)
-					{
-						// Грязный хак для непонятных «Ð�Ð»Ð°Ð²Ð° Ð°Ð´Ð¼Ð¸Ð½Ð¸Ñ�Ñ�Ñ�Ð°Ñ�Ð¸Ð¸ Ð¿Ñ�ÐµÐ·Ð¸Ð»
-						$source = iconv('utf8', 'latin1//ignore', $source);
-						// Хак для убирания порезанных в конце символов
-						$source = bors_substr($source, 0, bors_strlen($source) - 1);
-//						if(config('is_developer')) { var_dump($source); exit(); }
-					}
-//					var_dump($source); exit();
+
+//					if(config('is_developer')) { var_dump($source); exit('src'); }
+
 					$source = preg_replace("/\s*\n+\s*/", "\n", $source);
 					$source = array_filter(explode("\n", $source));
 					if(count($source) > 7)
@@ -163,7 +161,6 @@ if(config('is_developer')) { exit($img); }
 
 					$source = join("\n", $source);
 
-//					var_dump($source); exit();
 					require_once('inc/texts.php');
 					$description = clause_truncate_ceil($source, 512);
 					if($source != $description)
@@ -177,6 +174,7 @@ if(config('is_developer')) { exit($img); }
 		if($title && strlen($title) > 5)
 		{
 			require_once('inc/texts.php');
+
 			$description = clause_truncate_ceil($description, $limit);
 
 			// Из-за таких козлов:
@@ -189,6 +187,8 @@ if(config('is_developer')) { exit($img); }
 {$description}
 
 [span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($url)."[/reference][/span][/round_box]";
+
+//			if(config('is_developer')) { var_dump($bbshort). exit('bbcode'); }
 
 			$tags = array();
 

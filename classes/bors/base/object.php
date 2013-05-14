@@ -1376,25 +1376,18 @@ defined at {$this->class_file()}<br/>
 
 	function direct_content()
 	{
-		if(($render_engine = $this->render_engine()))
-		{
-			if(config('debug.execute_trace'))
-				debug_execute_trace("{$this->debug_title_short()} render engine = '$render_engine' (old direct_content)");
-
-			if($render_engine == 'self')
-				$re = $this;
-			elseif(!($re = object_load($render_engine)))
-				debug_exit("Can't load global render engine {$render_engine} for object '{$this}'");
-
-			return $re->render($this);
-		}
+		if(!($render_engine = $this->render_engine()))
+			return NULL;
 
 		if(config('debug.execute_trace'))
-			debug_execute_trace("{$this->debug_title_short()} old smarty render: template_assign_bors_object()  (old direct_content)");
+			debug_execute_trace("{$this->debug_title_short()} render engine = '$render_engine' (old direct_content)");
 
-	    require_once('engines/smarty/bors.php');
-		$this->template_data_fill();
-		return template_assign_bors_object($this, NULL, true);
+		if($render_engine == 'self')
+			$re = $this;
+		elseif(!($re = object_load($render_engine)))
+			debug_exit("Can't load global render engine {$render_engine} for object '{$this}'");
+
+		return $re->render($this);
 	}
 
 	function index_file() { return 'index.html'; }

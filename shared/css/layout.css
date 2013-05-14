@@ -1,1 +1,112 @@
-/var/www/balancer.ru/htdocs/cms/templates/forum/layout.css
+div.avatar_block {
+	width: 100px; 
+	float: right; 
+	margin: 0px 0px 8px 16px; 
+	display: inline; 
+	text-align: center;
+	overflow: hidden;
+}
+
+div.avatar_block h4 {
+	font-size: 9pt;
+	font-weight: 900;
+	padding: 0;
+	margin: 0;
+}
+
+div.avatar_block h5 {
+	font-size: 8pt;
+	padding: 0;
+	margin: 0;
+	font-weight: normal;
+}
+
+div.avatar_block div {
+	width: 100px;
+	height: 100px;
+	margin: 0;
+	text-align: center;
+	vertical-align: middle;
+	overflow: hidden;
+}
+
+dl.forumposting {
+	margin: 10px 0px 4px 0px; 
+	padding: 0px; 
+	clear: both;
+}
+
+dl.forumposting dt, dl.forumposting dt a {
+	margin: 0px; 
+	padding: 1px; 
+	font-weight: 900;
+	font-size: 1.0em;
+	text-align: left;
+}
+
+dl.forumposting dd {
+	text-align: justify; 
+	padding: 4px; 
+	margin: 0px;
+}
+
+img {
+	border: none;
+}
+
+div.img_468x468 {
+	width: 468px;
+	border: 1px solid;
+	padding: 10px;
+	margin: 10px 0 20px 0;
+	text-align: center;
+}
+
+div.img_200x200 {
+	width: 200px;
+	border: 1px solid;
+	padding: 5px;
+	margin: 5px;
+	text-align: center;
+	display: inline;
+	float: left;
+}
+
+div.post {
+	border: 1px solid;
+	margin: 10px 0px 0px 0px; 
+	padding: 0px; 
+	clear: both;
+}
+
+div.post div.head, div.post div.head a {
+	border-bottom: 1px;
+	margin: 0px; 
+	padding: 1px; 
+	font-weight: 900;
+	font-size: 1.0em;
+	text-align: left;
+}
+
+div.post div.head div.to-right div {
+	margin: 0 4px;
+}
+
+div.post div.head div.to-right img {
+	cursor: pointer;
+}
+
+div.post div.body {
+	text-align: justify; 
+	padding: 4px; 
+	margin: 0px;
+	border: none !important;
+}
+
+.to-right {
+	float: right;
+}
+
+.to-left {
+	float: left;
+}

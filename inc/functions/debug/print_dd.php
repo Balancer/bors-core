@@ -23,5 +23,5 @@ function __print_dd($data, $level=0)
 	else
 		$s .= $step.$data."\n";
 
-	return trim($s);
+	return trim($s)."\n";
 }

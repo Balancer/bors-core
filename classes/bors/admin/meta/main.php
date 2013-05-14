@@ -66,7 +66,27 @@ class bors_admin_meta_main extends bors_admin_paginated
 
 		$this->set_attr('_sortable_append', $sortable);
 
-		return array_merge(parent::body_data(), array(
+		$data = array();
+
+        if($this->get('use_bootstrap'))
+        {
+            $data['tcfg'] = bors_load('balancer_board_themes_bootstrap', NULL);
+            $data['pagination'] = $this->pages_links_list(array(
+                'div_css' => 'pagination pagination-centered pagination-small',
+                'li_current_css' => 'active',
+                'li_skip_css' => 'disabled',
+                'skip_title' => true,
+            ));
+			$data['bootstrap'] = true;
+        }
+        else
+        {
+            $data['tcfg'] = bors_load('balancer_board_themes_default', NULL);
+            $data['pagination'] = $this->pages_links_nul();
+			$data['bootstrap'] = false;
+        }
+
+		return array_merge(parent::body_data(), $data, array(
 			'new_link_title' => $new_link_title,
 			'item_fields' => $parsed_fields,
 			'admin_search_url' => $this->page() > 1 ? false : $this->get('admin_search_url'),

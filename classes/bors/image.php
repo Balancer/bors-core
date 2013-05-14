@@ -100,8 +100,8 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 	function url($page=NULL)
 	{
-		if($this->get('full_url'))
-			return $this->full_url();
+		if($u = $this->get('full_url'))
+			return $u;
 
 		$fn = $this->file_name();
 		if(preg_match('/\.$/', $fn))

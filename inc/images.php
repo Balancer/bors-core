@@ -92,7 +92,12 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 				$imagick = $imagick->coalesceImages();
 				do
 				{
-					$imagick->resizeImage($width, $height, Imagick::FILTER_BOX, 1);
+					// Так — нормально, вписывается в габариты
+					$imagick->resizeImage($width, $height, Imagick::FILTER_BOX, 1, true);
+					//	Полное изменение, теряются пропорции
+//					$imagick->resizeImage($width, $height, Imagick::FILTER_BOX, 1);
+					// Получается огромная хрень
+//					$imagick->resampleImage($width, $height, Imagick::FILTER_BOX, 1);
 				} while ($imagick->nextImage());
 				$imagick = $imagick->deconstructImages();
 				$imagick->writeImages($file_out, true);

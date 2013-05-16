@@ -6,6 +6,18 @@ class bors_time_meta extends bors_property
 
 	static function factory($timestamp) { return new bors_time($timestamp); }
 
+	function __toString()
+	{
+		if($this->is_null)
+			return '';
+
+		return $this->full();
+	}
+
+	function full() { return $this->date('d.m.Y H:i:s'); }
+
+	function full_nobr() { return str_replace(' ', ' ', $this->full()); }
+
 	function short($def = '')
 	{
 		if($this->is_null)

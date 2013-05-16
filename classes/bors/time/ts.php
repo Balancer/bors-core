@@ -40,14 +40,6 @@ class bors_time_ts extends bors_time_meta
 	function date($format) { return date($format, $this->_value); }
 	function strftime($format) { return strftime($format, $this->_value); }
 
-	function __toString()
-	{
-		if($this->is_null)
-			return '';
-
-		return $this->date('d.m.Y H:i:s');
-	}
-
 	function timestamp() { return $this->is_null ? NULL : $this->_value; }
 
 //TODO: реализовать:

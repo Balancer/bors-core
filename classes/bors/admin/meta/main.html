@@ -1,8 +1,11 @@
 {block name="body_header"}
+
 {if $new_link_title}
+	{if not $bootstrap}
 <ul>
 <li><a href="new/">Добавить {$new_link_title}</a></li>
 </ul>
+	{/if}
 {/if}
 
 {if $admin_search_url}
@@ -11,6 +14,12 @@
 {/block}
 
 {$pagination}
+
+{if $bootstrap}
+	{if $new_link_title}
+		<a href="{$this->new_object_url()}" class="btn btn-primary" style="margin-bottom: 8px">{$new_link_title}</a>
+	{/if}
+{/if}
 
 <table class="{if $bootstrap}table table-bordered table-hover{else}btab w100p{/if}">
 <thead>
@@ -30,5 +39,11 @@
 {/foreach}
 </tbody>
 </table>
+
+{if $new_link_title}
+	{if $bootstrap}
+		<a href="{$this->new_object_url()}" class="btn btn-primary">{$new_link_title}</a>
+	{/if}
+{/if}
 
 {$pagination}

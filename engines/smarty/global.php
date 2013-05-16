@@ -8,6 +8,7 @@ function template_nocache()
 {
 	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 	@header("Expires: Mon, 22 Oct 1973 06:45:00 GMT"); // Date in the past
+	@header("X-Accel-Expires: 0"); // Не кешировать в nginx
 	bors_page::add_template_data_array('meta[Pragma]', 'no-cache');
 	bors_page::add_template_data_array('meta[Cache-Control]', 'no-cache');
 	bors_page::add_template_data_array('meta[Expires]', 'Mon, 22 Oct 1973 06:45:00 GMT');

@@ -8,9 +8,14 @@ class bors_paginated extends base_page_paged
 	{
 		$class_name = $this->main_class();
 		$foo = new $class_name(NULL);
+		$foo->set_attr('container_view_object', $this);
 
 		if($this->args('is_admin_list') || $this->get('is_admin_list'))
-			$data = bors_foo($this->main_admin_class())->get('item_list_admin_fields');
+		{
+			$admin_foo = bors_foo($this->main_admin_class());
+			$admin_foo->set_attr('container_view_object', $this);
+			$data = $admin_foo->get('item_list_admin_fields');
+		}
 
 		if(empty($data))
 			$data = $foo->get('item_list_fields');

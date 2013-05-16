@@ -45,6 +45,7 @@ class bors_admin_meta_main extends bors_admin_paginated
 				$new_link_title = $foo->class_title_vp();
 
 		$fields = $this->get('item_fields');
+
 		if(!$fields)
 			$fields = $foo->item_list_admin_fields();
 
@@ -87,6 +88,7 @@ class bors_admin_meta_main extends bors_admin_paginated
         }
 
 		return array_merge(parent::body_data(), $data, array(
+			'query' => bors()->request()->data('q'),
 			'new_link_title' => $new_link_title,
 			'item_fields' => $parsed_fields,
 			'admin_search_url' => $this->page() > 1 ? false : $this->get('admin_search_url'),

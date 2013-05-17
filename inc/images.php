@@ -89,6 +89,14 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 			$format = $imagick->getImageFormat();
 			if($format == 'GIF')
 			{
+				$origin_h = $img->getImageHeight();
+				$origin_w = $img->getImageWidth();
+				if($origin_h < $height && $origin_w < $width)
+				{
+					$width  = $origin_w;
+					$height = $origin_h;
+				}
+
 				$imagick = $imagick->coalesceImages();
 				do
 				{

@@ -21,6 +21,7 @@ class bors_image_autothumb extends bors_object
 		$origin_path = $m[1].$m[3];
 		if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $origin_path))
 		{
+			// http://www.balancer.ru/sites/u/p/upload.wikimedia.org/wikipedia/commons/b/b0/_quote_Facing_the_Flag_quote__by_L%C3%A9on_Benett_34.jpg
 			if(!preg_match('/%/', $origin_path))
 				return;
 			$origin_path = urldecode($origin_path);

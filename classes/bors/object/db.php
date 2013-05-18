@@ -7,6 +7,8 @@ class bors_object_db extends base_object_db
 	private static $__auto_objects = array();
 	private static $__parsed_fields = array();
 
+	function _auto_objects_preload_def() { return true; }
+
 	function _project_name() { return array_shift(explode('_', $this->class_name())); }
 	function _access_name() { return bors_plural(array_pop(explode('_', $this->class_name()))); }
 

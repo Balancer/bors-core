@@ -145,18 +145,17 @@ if(config('is_developer')) { exit($img); }
 				// Тест на http://www.balancer.ru/g/p2982207
 				if($divs = $xpath->query('//p'))
 				{
-					$content = /*bors_lib_dom::element_html*/($divs->item(0));
-					$source = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
-
-//					if(config('is_developer')) { var_dump($source); exit('src'); }
-
-					$source = preg_replace("/\s*\n+\s*/", "\n", $source);
-					$source = array_filter(explode("\n", $source));
-					if(count($source) > 7)
+					$source = array();
+					for($i=0; $i<$divs->length; $i++)
 					{
-						$source = array_slice($source, 0, 6);
-						$source[] = ec('…');
-						$more = true;
+						$content = $divs->item($i);
+						$text = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
+						// Для http://www.balancer.ru/g/p1241837
+						// В тексте может попасться ссылка, которая вызовет зацикливание lcml
+						$text = preg_replace("!^\s*https?://\S+\s*$!im", '', $text);
+						$text = preg_replace("!\s*https?://\S+\s*!is", '', $text);
+						$text = preg_replace("/\n+/", ' ', $text);
+						$source[] = trim($text);
 					}
 
 					$source = join("\n", $source);
@@ -165,6 +164,8 @@ if(config('is_developer')) { exit($img); }
 					$description = clause_truncate_ceil($source, 512);
 					if($source != $description)
 						$more = true;
+
+//					if(config('is_developer')) { print_dd($description); exit('src'); }
 				}
 			}
 			else

@@ -11,7 +11,7 @@ class bors_lib_html
 		$dom = new DOMDocument('1.0', 'UTF-8');
 		$doc->encoding = 'UTF-8';
 
-		$dom->loadHTML('<?xml encoding="UTF-8">' . $content);
+		@$dom->loadHTML('<?xml encoding="UTF-8">' . $content);
 
 		foreach($dom->getElementsByTagName('meta') as $m)
 		{

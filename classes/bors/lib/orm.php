@@ -130,6 +130,9 @@ class bors_lib_orm
 							'table' => $table,
 						), self::field($property, $field));
 
+						if(@$field['sql_function'] == 'UNIX_TIMESTAMP')
+							$field['sql_order_field'] = $field['name'];
+
 //						if($field['name'] != 'id')
 						// UNIX_TIMESTAMP(`Date`) => UNIX_TIMESTAMP(`News`.`Date`)
 						if(empty($field['sql_function']))

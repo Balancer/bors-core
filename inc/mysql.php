@@ -64,15 +64,18 @@ function mysql_order_compile($order_list, $class_name = false)
 	if(empty($order_list))
 		return '';
 
-	$order_list = mysql_bors_join_parse($order_list, $class_name);
-
 	$order = array();
-	foreach(explode(',', $order_list) as $o)
+	foreach(explode(',', $order_list) as $field_name)
 	{
-		if(preg_match('!^\-(.+)$!', $o, $m))
-			$order[] = $m[1].' DESC';
-		else
-			$order[] = $o;
+		$dir = "";
+		if(preg_match('!^\-(.+)$!', $field_name, $m))
+		{
+			$field_name = $m[1];
+			$dir = ' DESC';
+		}
+
+		$field_name = mysql_bors_join_parse($field_name, $class_name, true, true);
+		$order[] = $field_name.$dir;
 	}
 
 	return 'ORDER BY '.join(',', $order);
@@ -116,9 +119,9 @@ function array_smart_expand(&$array)
 	return $result;
 }
 
-function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
+function bors_class_field_to_db($class, $property = NULL, $was_joined = true, $for_order = false)
 {
-//	if(config('is_debug') && $property=='topic_id') echo "<i>bors_class_field_to_db</i>($class, $property, $was_joined) <br/>\n";
+//	if(1 || (config('is_debug') && $property=='create_time')) echo "<i>bors_class_field_to_db</i>($class, $property, $was_joined) <br/>\n";
 	if(!$class)
 		return $property;
 
@@ -132,10 +135,12 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 
 	if($f = bors_lib_orm::parse_property($class->class_name(), $property))
 	{
+//		if($for_order) var_dump($f);
+		if($for_order && ($x = $f['sql_order_field']))
+			return $x;
+
 		if($was_joined) // Если это JOIN, то возвращаем полное имя поля, с таблицей
-		{
 			return $f['sql_tab_name'];
-		}
 		else // Иначе возвращаем просто имя поля.
 			return $f['sql_name'];
 	}
@@ -147,7 +152,7 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true)
 	return $property;
 }
 
-function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
+function mysql_bors_join_parse($join, $class_name='', $was_joined = true, $for_order = false)
 {
 	$join = preg_replace('!(\w+)\s+ON\s+!e', 'bors_class_field_to_db("$1")." ON "', $join);
 	$join = preg_replace('!^(\w+)\.(\w+)$!e', 'bors_class_field_to_db("$1", "$2")."$3"', $join);
@@ -163,7 +168,7 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true)
 	if($class_name)
 	{
 		$join = preg_replace('!^(\w+)(\s*(=|>|<))!e', 'bors_class_field_to_db("'.$class_name.'", "$1", '.($was_joined ? 1 : 0).')."$2"', $join);
-		$join = preg_replace('!^(\w+)$!e', 'bors_class_field_to_db("'.$class_name.'", "$1", '.($was_joined ? 1 : 0).')."$2"', $join);
+		$join = preg_replace('!^(\w+)$!e', 'bors_class_field_to_db("'.$class_name.'", "$1", '.($was_joined ? 1 : 0).', '.($for_order ? 1 : 0).')."$2"', $join);
 	}
 
 	return $join;

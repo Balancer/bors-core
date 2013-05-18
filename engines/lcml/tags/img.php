@@ -16,6 +16,9 @@ function lt_img($params)
 	while(preg_match('/%\w+/', $params['url']))
 		$params['url'] = urldecode($params['url']);
 
+	if(preg_match('/&amp;/', $params['url']))
+		$params['url'] = html_entity_decode($params['url']);
+
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
 		return lt_img_bors($params);
 
@@ -116,6 +119,7 @@ function lt_img($params)
 				{
 					require_once('inc/http.php');
 					$x = http_get_ex(str_replace(' ', '+', $params['url']));
+//					if(config('is_developer')) {var_dump($params['url']); var_dump($x); exit(); }
 					$content      = $x['content'];
 					$content_type = $x['content_type'];
 

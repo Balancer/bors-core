@@ -11,6 +11,7 @@ class bors_external_common extends bors_object
 
 //		$html = bors_lib_http::get($url);
 		$html = bors_lib_http::get_cached($url, 7200 /*, false, true*/ ); // Для сборса кеша
+
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
 //		if(config('is_developer')) { var_dump($meta); exit('meta'); }
@@ -72,6 +73,18 @@ class bors_external_common extends bors_object
 		// http://www.rg.ru/2013/01/17/voda.html
 		if(preg_match('!^/!', $img)) // от корня сайта
 			$img = 'http://'.$meta['host'].$img;
+
+		if($x = blib_http::get_bin($img, array('timeout' => 1)))
+		{
+			if(!preg_match('!^image/(png|jpeg|gif)!', $x['content_type']))
+			{
+				debug_hidden_log('dev-snip-no-image', "$img: ".print_r($x, true));
+//				if(config('is_developer')) { var_dump($x); exit(); }
+				$img = NULL;
+			}
+		}
+		else
+			$img = NULL;
 
 		if(!$img)
 		{
@@ -189,7 +202,7 @@ if(config('is_developer')) { exit($img); }
 
 [span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($url)."[/reference][/span][/round_box]";
 
-//			if(config('is_developer')) { var_dump($bbshort). exit('bbcode'); }
+//			if(config('is_developer')) { var_dump($bbshort); var_dump(lcml($bbshort)); exit('bbcode'); }
 
 			$tags = array();
 

@@ -7,6 +7,7 @@ class bors_lib_html
 		$meta = array();
 
 		$content = preg_replace('!<meta[^>]+Content-Type[^>]+>!i', '', $content);
+		$content = preg_replace('!<meta[^>]+charset[^>]+>!i', '', $content);
 
 		$dom = new DOMDocument('1.0', 'UTF-8');
 		$doc->encoding = 'UTF-8';
@@ -27,7 +28,7 @@ class bors_lib_html
 		    	$meta[$property] = $val;
 	    }
 
-//		if(config('is_developer')) { var_dump($meta); exit('html-meta'); }
+//		if(config('is_developer')) { var_dump($content, $meta); exit('html-meta'); }
 
 		$content = preg_replace("'<style[^>]*>.*</style>'siU",'',$content);  // strip js
 		$content = preg_replace("'<script[^>]*>.*</script>'siU",'',$content); // strip css

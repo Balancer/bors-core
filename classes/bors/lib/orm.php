@@ -130,15 +130,18 @@ class bors_lib_orm
 							'table' => $table,
 						), self::field($property, $field));
 
+						if(strpos($field['name'], '`' === false))
+							$field['name'] = "`{$field['name']}`";
+
 						if(@$field['sql_function'] == 'UNIX_TIMESTAMP')
 							$field['sql_order_field'] = $field['name'];
 
 //						if($field['name'] != 'id')
 						// UNIX_TIMESTAMP(`Date`) => UNIX_TIMESTAMP(`News`.`Date`)
 						if(empty($field['sql_function']))
-							$field['sql_tab_name'] = "`{$field['table']}`.`{$field['name']}`";
+							$field['sql_tab_name'] = "`{$field['table']}`.{$field['name']}";
 						else
-							$field['sql_tab_name'] = preg_replace("/(`{$field['name']}`)/", "`{$field['table']}`.$1", $field['sql_name']);
+							$field['sql_tab_name'] = preg_replace("/({$field['name']})/", "`{$field['table']}`.$1", $field['sql_name']);
 
 						$fields_array[] = $field;
 					}

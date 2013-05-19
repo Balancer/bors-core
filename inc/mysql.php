@@ -74,7 +74,9 @@ function mysql_order_compile($order_list, $class_name = false)
 			$dir = ' DESC';
 		}
 
-		$field_name = mysql_bors_join_parse($field_name, $class_name, true, true);
+		if(!preg_match('/`/', $field_name))
+			$field_name = mysql_bors_join_parse($field_name, $class_name, true, true);
+
 		$order[] = $field_name.$dir;
 	}
 
@@ -136,7 +138,7 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true, $f
 	if($f = bors_lib_orm::parse_property($class->class_name(), $property))
 	{
 //		if($for_order) var_dump($f);
-		if($for_order && ($x = $f['sql_order_field']))
+		if($for_order && ($x = @$f['sql_order_field']))
 			return $x;
 
 		if($was_joined) // Если это JOIN, то возвращаем полное имя поля, с таблицей

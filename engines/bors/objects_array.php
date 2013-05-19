@@ -21,9 +21,9 @@ function objects_array($class, $args = array())
 		$cargs['select'] = $args['select'];
 	unset($args['select']);
 
-	if(($preload = @$args['preload']))
+	if(($preload = @$args['*preload']))
 	{
-		unset($args['preload']);
+		unset($args['*preload']);
 		$preload = explode(',', $preload);
 	}
 
@@ -64,19 +64,6 @@ function objects_array($class, $args = array())
 			foreach($preload as $x)
 				if(preg_match('/^(\w+)\((\w+)\)$/', $x, $m))
 					bors_objects_preload($objects, $m[2], $m[1]);
-		}
-
-		if($init->get('auto_objects_preload'))
-		{
-			foreach($init->auto_objects() as $field_name => $x)
-				if(preg_match('/^(\w+)\((\w+)\)$/', $x, $m))
-					bors_objects_preload($objects, $m[2], $m[1], $field_name);
-
-//			Ошибка на http://admin2.aviaport.wrk.ru/newses/
-//			Пока не используем.
-//			foreach($init->auto_targets() as $field_name => $x)
-//				if(preg_match('/^(\w+)\((\w+)\)$/', $x, $m))
-//					bors_objects_targets_preload($objects, $m[1],  $m[2], $field_name);
 		}
 
 		return $objects;

@@ -7,7 +7,6 @@ function lcml_urls_pre_pre($txt)
 //        $txt = preg_replace("!\[(http://\S+)\s*\"([^\"]+)\"\s*\]!is", "[url=$1]$2[/url]", $txt);
 //        $txt = preg_replace("!\[(http://\S+)\s*(.*?)\s*\]!is", "[url=$1]$2[/url]", $txt);
 
-
 	// Большой жирный BB-code костыль для
 	// [url=/catalogue/category/24/ target=_blank]фаст-фуд[/url]
 	// Иначе следующие ссылки такое поменяют

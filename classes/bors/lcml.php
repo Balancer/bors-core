@@ -443,9 +443,13 @@ class bors_lcml extends bors_object
 		$code = '[test/|Ещё тест]';
 		$suite->assertRegexp('#<a.*href="test/".*>Ещё тест</a>#', lcml($code));
 
-	// Внутренние ошибочные теги не парсятся
+		// Внутренние ошибочные теги не парсятся
 		$code = '[b][i]italic[/b]bold[/i]';
 		$suite->assertEquals('<strong>[i]italic</strong>bold[/i]', lcml($code));
+
+		// Упрощённая разметка ссылок с вложенным BB-кодом:
+		$code = '[poland/|[b]Польша[/b]]';
+		$suite->assertEquals('<a rel="nofollow" href="poland/" class="external"><strong>Польша</strong></a>', lcml($code));
 
 		// Переводы строк.
 		$code = "Раз, два, три, четыре, пять\nВышел зайчик погулять";
@@ -460,5 +464,6 @@ class bors_lcml extends bors_object
 
 		self::output_parse('<!--[[use js="/_bors3rdp/js/foo.test.js"]]-->');
 		$suite->assertContains('/_bors3rdp/js/foo.test.js', base_object::template_data('js_include'));
+
 	}
 }

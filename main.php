@@ -141,7 +141,7 @@ if(config('access_log')
 	$session_user_load_summary_pack = bors_var::fast_get($access_log_mem_name, array(0, 0));
 	$session_user_load_summary = $session_user_load_summary_pack[0]; // session_var('user.stat.load_summary', 0);
 
-	if($session_user_load_summary_pack[1] < time() - 600)
+	if($session_user_load_summary_pack[1] < time() - 300)
 		$session_user_load_summary = 0;
 
 //	if(config('is_debug'))

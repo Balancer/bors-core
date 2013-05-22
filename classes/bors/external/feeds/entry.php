@@ -5,6 +5,8 @@ class bors_external_feeds_entry extends base_object_db
 	function storage_engine() { return 'bors_storage_mysql'; }
 	function ignore_on_new_instance() { return true; }
 
+	function class_title() { return 'Запись импорта RSS'; }
+
 	function table_name() { return 'external_feeds_entries'; }
 	function table_fields()
 	{
@@ -367,5 +369,48 @@ class bors_external_feeds_entry extends base_object_db
 		echo "\tnew topic {$topic->debug_title()}\n";
 
 		return $topic;
+	}
+
+	function blog_title_info()
+	{
+		if(!($b = $this->blog()))
+			return '';
+
+		return $b->post()->titled_url_in_container();
+	}
+
+	function blog_pretend()
+	{
+		if($this->blog())
+			return '+';
+
+		$blog = bors_find_first('balancer_board_blog', array(
+//			'blog_source_class' => 'bors_external_feeds_entry',
+			'blog_source_id' => $this->id(),
+			'order' => 'create_time',
+		));
+
+		if($blog)
+			return '='.$blog->post()->titled_url_in_container();
+
+		return '?';
+	}
+
+	function actions()
+	{
+		return join("<br/>\n", array(
+			"<a href=\"?act=recalculate&target={$this->internal_uri_ascii()}\">пересчитать</a>",
+		));
+	}
+
+	function item_list_admin_fields()
+	{
+		return array(
+			'id',
+			'text' => 'Сообщение',
+			'blog_title_info' => 'Пост блога',
+			'blog_pretend' => 'Кандидат',
+			'actions' => 'Действия',
+		);
 	}
 }

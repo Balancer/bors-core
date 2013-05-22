@@ -39,7 +39,7 @@ class bors_tools_search extends base_page
 	}
 	function t() { return ''; }
 	function s() { return 't'; }
-	function x() { return false; }
+	function x() { return ''; }
 	function u() { return ''; }
 	function w() { return 'q'; }
 

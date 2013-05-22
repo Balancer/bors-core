@@ -19,6 +19,10 @@ function lcml_external_code($text)
 	$text = preg_replace('!(^|\s)https?://picasaweb.google.(com|ru)/lh/photo/([\w\-]+)\?feat=directlink($|\s)!m', "\n[picasa]$3[/picasa]\n", $text);
 	$text = preg_replace('!(^|\s)https?://picasaweb.google.(com|ru)/lh/photo/([\w\-]+)(\s+|$)!m', "\n[picasa]$3[/picasa]\n", $text);
 
+	// <a href="https://picasaweb.google.com/lh/photo/0RBixxRnZx3VXsMypj5aKtMTjNZETYmyPJy0liipFm0?feat=embedwebsite"><img src="https://lh4.googleusercontent.com/-DG6xaJKJDLw/UVH3li7AJiI/AAAAAAAAGKo/8txakrWsyRY/s640/DSC09354.JPG" height="427" width="640" /></a>
+	// http://www.balancer.ru/g/p3145854
+	$text = preg_replace('!\s*<a href="https?://picasaweb.google.(com|ru)/lh/photo/([\w\-]+)\?feat=\w+"><img src="[^>]+></a>\s*!s', "\n[picasa]$2[/picasa]\n", $text);
+
 	// pics.livejournal.com
 	$text = preg_replace("!((^|\s|\n)http://pics\.livejournal\.com/(\w+)/pic/(\w+)(\s|\n|$))!m", "\n[img $1]\n", $text);
 	// http://pics.livejournal.com/uacrussia/pic/0000eae9/s640x480

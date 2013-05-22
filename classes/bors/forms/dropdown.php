@@ -84,7 +84,15 @@ class bors_forms_dropdown extends bors_forms_element
 		$is_int = defval($params, 'is_int');
 
 		if(is_null($is_int) && !$strict)
+		{
 			$is_int = true;
+			foreach($list as $k => $v)
+				if($k && !is_int($k))
+				{
+					$is_int = false;
+					break;
+				}
+		}
 
 		$value = $this->value();
 

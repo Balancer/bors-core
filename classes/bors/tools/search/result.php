@@ -3,7 +3,7 @@
 // Использование поисковой системы Sphinx
 // http://www.sphinxsearch.com/
 
-require_once('sphinx/sphinxapi.php');
+require_once(config('sphinx-search.include'));
 // config_set('do_not_exit', true);
 
 class bors_tools_search_result extends bors_tools_search
@@ -25,7 +25,7 @@ class bors_tools_search_result extends bors_tools_search
 
 	function t() { return @$_GET['t']; }
 	function u() { return urldecode(@$_GET['u']); }
-	function x() { return !empty($_GET['x']); }
+	function x() { return @$_GET['x']; }
 	function w() { return urldecode(@$_GET['w']); }
 	function f()
 	{
@@ -85,28 +85,41 @@ class bors_tools_search_result extends bors_tools_search
 		$distinct = "";
 #		$sortby = "timestamp";
 //echo $index;
-		$ranker = SPH_RANK_PROXIMITY_BM25;
+		$ranker = false; // SPH_RANK_PROXIMITY_BM25;
 
 		$cl = new SphinxClient ();
 		$cl->SetServer ( $host, $port );
 		$cl->SetConnectTimeout ( 1 );
-//		$cl->SetWeights ( array ( 100, 1 ) );
+
 		if($weights)
 			$cl->SetIndexWeights ( $weights );
-//		else
-//			$cl->SetIndexWeights ( array ( 'topics' => 1000 , 'posts' => 100) );
 
-		if($this->x())
-			$cl->SetMatchMode (SPH_MATCH_PHRASE);
-		else
-			$cl->SetMatchMode (SPH_MATCH_ALL);
+		switch($this->x())
+		{
+			case 'e':
+			case '1':
+				$cl->SetMatchMode(SPH_MATCH_PHRASE);
+				break;
+			case 'b':
+				$cl->SetMatchMode(SPH_MATCH_BOOLEAN);
+				break;
+			case 'x':
+				$cl->SetMatchMode(SPH_MATCH_EXTENDED);
+				break;
+			case 'a':
+				$cl->SetMatchMode(SPH_MATCH_ANY);
+				break;
+			default:
+				$cl->SetMatchMode(SPH_MATCH_ALL);
+				break;
+		}
 
-		if ( count($filtervals) )
+		if( count($filtervals) )
 			$cl->SetFilter ( $filter, $filtervals );
-		if ( @$groupby )
+		if( @$groupby )
 			$cl->SetGroupBy ( $groupby, SPH_GROUPBY_ATTR, @$groupsort );
 
-		if ( @$distinct )
+		if( @$distinct )
 			$cl->SetGroupDistinct ( $distinct );
 
 		$cl->SetLimits($this->items_offset(), $this->items_per_page());
@@ -154,7 +167,9 @@ class bors_tools_search_result extends bors_tools_search
 		if(!$user || !$user->is_coordinator())
 			$cl->SetFilter('is_public', array(0), true);
 
-		$cl->SetRankingMode ( $ranker );
+		if($ranker)
+			$cl->SetRankingMode ( $ranker );
+
 		$cl->SetArrayResult ( true );
 		$res = $cl->Query ( $this->q(), $index );
 //		print_d($res);
@@ -172,14 +187,14 @@ class bors_tools_search_result extends bors_tools_search
 //			print_d($res);
 
 			$opts = array (
-				'before_match'		=> '<b>',
+				'before_match'		=> '<b style="color: brown">',
 				'after_match'		=> '</b>',
 				'chunk_separator'	=> ' ... ',
-				'limit'				=> 300,
+				'limit'				=> 500,
 				'around'			=> 5,
 			);
 
-			$opts['exact_phrase'] = $this->x();
+			$opts['exact_phrase'] = $this->x() == 'e';
 
 			if(empty($res['matches']))
 				return false;

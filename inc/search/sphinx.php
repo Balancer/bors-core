@@ -1,6 +1,6 @@
 <?php
 
-require_once('sphinx/sphinxapi.php');
+require_once(config('sphinx-search.include'));
 
 function bors_search_sphinx($query, $params = array())
 {

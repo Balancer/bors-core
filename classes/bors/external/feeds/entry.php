@@ -83,7 +83,7 @@ class bors_external_feeds_entry extends base_object_db
 			// <a href="http://img200.imageshack.us/img200/2530/screenshotdl.png" rel="nofollow">img200.imageshack.us</a>
 			$text = preg_replace('!<a href="([^"]+?\.(jpe?g|png|gif))" rel="nofollow">[^\s\<]+</a>!i', "[img $1]", $text);
 //			exit("$text");
-			$text = preg_replace('!<a href="http://www.youtube.\w+/watch\?v=([^"]+)" rel="nofollow">youtube.com</a>!', '[youtube]$1[/youtube]', $text);
+			$text = preg_replace('!<a href="http://www.youtube.\w+/watch\?v=([^"%]+)" rel="nofollow">youtube.com</a>!', '[youtube]$1[/youtube]', $text);
 			$text = preg_replace('!<a href="http://smotri.com/video/view/\?id=([^"]+)" rel="nofollow">smotri.com</a>!', '[smotricom]$1[/smotricom]', $text);
 			$text = preg_replace('!<a href="http://vimeo.com/(\d+)" rel="nofollow">vimeo.com</a>!', '[vimeo]$1[/vimeo]', $text);
 			$text = preg_replace('!<a href="(http://[^/]*fotki.yandex.ru/get/\d+/[^/]+/\w+_(XL|orig))" rel="nofollow">[^<]+</a>!', '[img $1]', $text);

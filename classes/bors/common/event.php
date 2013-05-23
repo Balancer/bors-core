@@ -16,8 +16,8 @@ class bors_common_event extends base_object_db
 			'target_class_name',	'target_id', // Целевой объект действия (топик, постинг, пользователь, если это репутация)
 			'category_class_name',	'category_id',
 			'folder_class_name',	'folder_id',
-			'create_time' 	=> 'UNIX_TIMESTAMP(create_timestamp)',
-			'modify_time'	=> 'UNIX_TIMESTAMP(modify_timestamp)',
+			'create_time' 	=> 'UNIX_TIMESTAMP(`create_timestamp`)',
+			'modify_time'	=> 'UNIX_TIMESTAMP(`modify_timestamp`)',
 		);
 	}
 

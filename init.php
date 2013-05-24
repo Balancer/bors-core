@@ -178,8 +178,10 @@ function bors_dirs($skip_config = false, $host = NULL)
 		BORS_CORE,
 		BORS_3RD_PARTY,
 	) as $dir)
+	{
 		if(is_dir($dir))
 			$data[] = $dir;
+	}
 
 	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
 }

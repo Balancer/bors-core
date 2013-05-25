@@ -40,6 +40,14 @@
 
     function lcml_urls_title_nocache($url, $snip=false, $line = NULL)
     {
+		static $parsed = array();
+		if(!empty($parsed[$url][$snip][$line]))
+			return $url;
+
+		static $in_box_entered = false;
+
+		$parsed[$url][$snip][$line] = true;
+
 		$original_url = $url;
 		$anchor = "";
 
@@ -78,11 +86,13 @@
 			}
 		}
 
-//		if(config('is_developer'))
-//			var_dump($url, $line, $snip);
-
-		if($snip && ($data = bors_external_common::content_extract($url)))
-			return lcml($data['bbshort']);
+		if(!$in_box_entered && $snip && ($data = bors_external_common::content_extract($url)))
+		{
+			$in_box_entered = true;
+			$html = lcml($data['bbshort']);
+			$in_box_entered = false;
+			return $html;
+		}
 
 		$blacklist = $external;
 		if(preg_match('!'.config('seo_domains_whitelist_regexp', @$_SERVER['HTTP_HOST']).'!', $url_data['host']))

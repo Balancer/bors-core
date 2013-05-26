@@ -4,13 +4,23 @@ class bors_paginated extends base_page_paged
 {
 	function foo_object() { $class_name = $this->main_class(); return new $class_name(NULL); }
 
+	function __is_admin()
+	{
+		return $this->args('is_admin_list') || $this->get('is_admin_list');
+	}
+
+	function __output_class()
+	{
+		return $this->__is_admin() ? $this->main_admin_class() : $this->main_class();
+	}
+
 	function _item_fields_def()
 	{
 		$class_name = $this->main_class();
 		$foo = new $class_name(NULL);
 		$foo->set_attr('container_view_object', $this);
 
-		if($this->args('is_admin_list') || $this->get('is_admin_list'))
+		if($this->__is_admin())
 		{
 			$admin_foo = bors_foo($this->main_admin_class());
 			$admin_foo->set_attr('container_view_object', $this);

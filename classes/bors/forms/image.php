@@ -13,7 +13,8 @@ class bors_forms_image extends bors_forms_element
 
 		extract($params);
 
-		$image_name_field = defval($params, 'image', 'image');
+		// http://admin.aviaport.ru/digest/stories/253/edit/
+		$image_name_field = preg_replace('/_id$/', '', defval($params, 'name', 'image'));
 		$image_id_field   = defval($params, 'image_id_field', $image_name_field.'_id');
 		$image_class_name_field   = defval($params, 'image_class_name_field', $image_name_field.'_class_name');
 		$image_class_id_field   = defval($params, 'image_class_id_field', $image_name_field.'_class_id');

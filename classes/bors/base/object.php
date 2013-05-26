@@ -490,7 +490,7 @@ defined at {$this->class_file()}<br/>
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 
 	function _template_def() { return defval($this->data, 'template', defval($this->attr, 'template', config('default_template'))); }
-	function set_template($template, $db_update) { return $this->set('template', $template, $db_update); }
+	function set_template($template, $db_update = true) { return $this->set('template', $template, $db_update); }
 
 	function parents_string() { return join("\n", $this->parents());  }
 	function set_parents_string($string, $dbup)
@@ -1665,5 +1665,16 @@ defined at {$this->class_file()}<br/>
 	{
 		delete_cached_object($this);
 		return false;
+	}
+
+	function imaged_titled_desc_admin_link()
+	{
+		if($img = $this->get('image'))
+			$img = $img->thumbnail('72x48(up,crop)')->html_code('class="float-left pull-left" style="margin-right: 4px"');
+		else
+			$img = "";
+
+		return "{$img}<b>{$this->admin()->imaged_titled_link()}</b><br/>"
+			."<small class=\"muted\">".bors_truncate($this->description(), 200)."</small>";
 	}
 }

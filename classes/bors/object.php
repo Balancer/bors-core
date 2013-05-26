@@ -183,7 +183,7 @@ class bors_object extends base_object
 		return call_user_func_array(array($this, $method_name), $args);
 	}
 
-	function _item_list_admin_fields_def() { return $this->item_list_fields(); }
+	function _item_list_admin_fields_def() { return $this->get('item_list_fields'); }
 
 	function module($module_name) { return $this->module_ex($module_name, array()); }
 

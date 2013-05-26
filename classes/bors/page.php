@@ -163,6 +163,12 @@ class bors_page extends base_page
 				$this->add_template_data_array('javascript_post', ec(file_get_contents($f)));
 		}
 
+		if($this->get('use_bootstrap'))
+		{
+			twitter_bootstrap::load();
+			$this->set_attr('template', 'xfile:bootstrap/index.tpl');
+		}
+
 		return parent::pre_show();
 	}
 

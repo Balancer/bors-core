@@ -4,6 +4,8 @@ class bors_external_common extends bors_object
 {
 	static function content_extract($url, $limit=1500)
 	{
+		$original_url = $url;
+
 		if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt|ppt)$/i", $url))
 			return array('bbshort' => "[img url=\"$url\" 468x468]", 'tags' => array());
 
@@ -14,7 +16,7 @@ class bors_external_common extends bors_object
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
-//		if(config('is_developer')) { var_dump($meta); exit('meta'); }
+//		if(config('is_developer')) { var_dump($url, $meta); exit('meta'); }
 
 		if(preg_match('/503 - Forwarding failure/', $html))
 			$html = '';
@@ -137,6 +139,8 @@ if(config('is_developer')) { exit($img); }
 			$html = preg_replace('!<script[^>]*>.+?</script>!is', '', $html);
 			$html = str_replace("\r", "", $html);
 
+//			if(config('is_developer')) { print_dd($html); exit('!description'); }
+
 			if($html)
 			{
 				libxml_use_internal_errors(true);
@@ -171,6 +175,8 @@ if(config('is_developer')) { exit($img); }
 						$source[] = trim($text);
 					}
 
+//					if(config('is_developer')) { var_dump($source); exit('src[]'); }
+
 					$source = join("\n", $source);
 
 					require_once('inc/texts.php');
@@ -197,12 +203,12 @@ if(config('is_developer')) { exit($img); }
 			$title = htmlspecialchars(strip_tags($title));
 			$description = htmlspecialchars(strip_tags($description));
 
-			$bbshort = "[round_box]{$img}[h][a href=\"{$url}\"]{$title}[/a][/h]
+			$bbshort = "[round_box]{$img}[h][a href=\"{$original_url}\"]{$title}[/a][/h]
 {$description}
 
-[span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($url)."[/reference][/span][/round_box]";
+[span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($original_url)."[/reference][/span][/round_box]";
 
-//			if(config('is_developer')) { var_dump($bbshort); var_dump(lcml($bbshort)); exit('bbcode'); }
+//			if(config('is_developer')) { print_dd($bbshort); var_dump(lcml($bbshort)); exit('bbcode'); }
 
 			$tags = array();
 

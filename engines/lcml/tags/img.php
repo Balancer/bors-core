@@ -126,9 +126,14 @@ function lt_img($params)
 					if(strlen($content) <= 0)
 						return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[zero size or time out]</small>";
 
+//					if(config('is_developer')) { var_dump($params, $content_type); exit(); }
 					// Яндекс.Видео — такое Яндекс.Видео...
 					// http://balancer.ru/g/p2728087 для http://video.yandex.ru/users/cnewstv/view/3/
-					if($content_type && !preg_match("!image!", $content_type))
+					if($content_type
+							&& !preg_match("!image!", $content_type)
+							// http://www.balancer.ru/g/p3158050 — овнояндекс отдаёт картинку как text/html
+							&& !preg_match('!img-fotki\.yandex\.ru/get/\d+!', $params['url'])
+						)
 					{
 //						debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type."\n".$content); // Это не картинка
 						return lcml_urls_title($params['url']).'<small> [not image]</small>';

@@ -31,11 +31,12 @@ function lcml_external_code($text)
 	// http://r-img.fotki.yandex.ru/get/5300/alex-hedin.86/0_575e1_d75048a8_orig
 	// http://img-fotki.yandex.ru/get/4400/alex-hedin.86/0_575dc_805f7c4e_orig
 	// http://img-fotki.yandex.ru/get/5004/balancer73.f/0_4cc96_94922bd7_XL
+	// http://img-fotki.yandex.ru/get/6721/66407129.16/0_aeede_7b8a770_L
 //	$text = preg_replace("!((^|\s|\n)http://[^/]+fotki\.yandex\.ru/get/\d+/[^/]+/\w+_(orig|XL)(\s|\n|$))!m", "\n[img $1]\n", $text);
 
 	// http://img-fotki.yandex.ru/get/6308/138238612.af/0_77559_be8c8e97_orig
 	// http://balancer.ru/g/p2826100
-	$text = preg_replace("!^\s*(http://img-fotki\.yandex\.ru/get/\d+/[^/]+/\w+_(orig|XL))\s*$!m", "\n[img]$1.jpg[/img]\n", $text);
+	$text = preg_replace("!^\s*(http://img-fotki\.yandex\.ru/get/\d+/[^/]+/\w+_(orig|[A-Z]+))\s*$!m", "\n[img]$1.jpg[/img]\n", $text);
 
 
 	$text = preg_replace('!(<script type="text/javascript" src="http://googlepage.googlepages.com/player.js"></script>)!ise', 'save_format("\1")', $text);

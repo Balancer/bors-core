@@ -5,6 +5,14 @@ bors_function_include('cache/set_global_key');
 
 class bors_lib_orm
 {
+	static $default_field_names = array(
+		'title' => 'Название',
+		'description' => 'Описание',
+		'comment' => 'Комментарий',
+		'begin_date' => 'Дата начала',
+		'end_date' => 'Дата окончания',
+	);
+
 	static function field($property, &$field = NULL)
 	{
 		// Если это запись вида array('id', 'title', ...);
@@ -65,6 +73,7 @@ class bors_lib_orm
 			{
 				$field['type'] = 'date';
 				$field['post_function'] = array('bors_time_date', 'load');
+				$field['can_drop'] = true;
 			}
 			elseif(preg_match('/^\w+_ts$/', $field['name']))
 			{
@@ -80,6 +89,12 @@ class bors_lib_orm
 			else
 				bors_throw(ec('Неизвестное поле ').$property);
 		}
+
+		if(in_array($property, array('id', 'create_time', 'create_ts', 'modify_time', 'modify_ts', 'last_editor_id')))
+			set_def($field, 'is_editable', false);
+
+		if($field_title = @self::$default_field_names[$property])
+			set_def($field, 'title', ec($field_title));
 
 		return $field;
 	}

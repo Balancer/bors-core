@@ -246,7 +246,7 @@ class base_page extends bors_object
 
 		while($current_class)
 		{
-			$template_file = preg_replace("!(.+/\w+)\..+?$!", "$1.$ext", $class_files[$current_class]);
+			$template_file = preg_replace("!(.+/\w+)\..+?$!", "$1.$ext", bors_class_loader::file($current_class));
 			if(file_exists($template_file))
 				break;
 			$current_class = get_parent_class($current_class);

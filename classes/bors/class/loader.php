@@ -2,6 +2,21 @@
 
 class bors_class_loader
 {
+	static function file($class_name)
+	{
+		if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
+			return $real_class_file;
+
+		if($c = @$GLOBALS['bors.composer.class_loader'])
+		{
+			$map = $c->getClassMap();
+			if($real_class_file = @$map[$class_name])
+				return $real_class_file;
+		}
+
+		return NULL;
+	}
+
 	static function load($class_name, &$args = array())
 	{
 //		echo "Check class $class_name<br/>\n";

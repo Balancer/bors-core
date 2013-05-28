@@ -394,8 +394,7 @@ function bors_find_first($class_name, $where) { return objects_first($class_name
 
 function bors_each($class_name, $where)
 {
-	$class = new $class_name(NULL);
-	$storage = $class->storage();
+	$storage = bors_foo($class_name)->storage();
 	return $storage->each($class_name, $where);
 }
 

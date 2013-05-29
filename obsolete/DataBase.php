@@ -95,6 +95,10 @@ class DataBase
 			$this->dcsi = $this->dcs.'//IGNORE';
 		}
 
+		// Если меняли БД, то переустановим charset — это может быть совсем другой сервер.
+		if($this->db_name != $base)
+			$this->charset = NULL;
+
 		$this->db_name = $base;
 
 		if(!$base)

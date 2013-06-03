@@ -12,7 +12,8 @@ class bors_module extends bors_page
 		if($ttl = $this->get('body_cache_ttl'))
 		{
 			$ch = new bors_cache();
-			if($ch->get('body_cache_ttl', $this->internal_uri_ascii().'/'.serialize($this->args())))
+			$timestamp = max(filemtime($this->class_file()), filemtime($this->body_template_file()));
+			if($ch->get('bors_module_cache', $this->internal_uri_ascii().'/'.$timestamp.'/'.serialize($this->args())))
 				return $ch->last();
 		}
 

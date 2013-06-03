@@ -35,6 +35,8 @@ class bors_page extends base_page
 		return config('body_template_class', $this->page_template_class());
 	}
 
+	function _body_template_file_def() { return $this->body_template(); }
+
 	function _body_template_def()
 	{
 		if($this->is_smart())

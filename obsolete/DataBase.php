@@ -229,7 +229,10 @@ class DataBase
 			$err_msg_header = config('error_message_header');
 
 			bors_throw($err_msg_header.ec("<br/>Ошибка MySQL: ").mysql_error($this->dbh)
-				."<!-- DB={$this->db_name}\nquery={$query} -->"
+				.(config('site.is_dev') ?
+					"<pre style=\"color: blue\">DB={$this->db_name}\nquery={$query}</pre>" :
+					"<!-- DB={$this->db_name}\nquery={$query} -->"
+				)
 			);
 		}
 

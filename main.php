@@ -268,8 +268,8 @@ catch(Exception $e)
 	{
 		bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")
 			."<div class=\"red_box\">$message</div>\n"
-			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
-			."<!--\n\n$trace\n\n-->", array(
+			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~1")
+			.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
 //				'template' => 'xfile:default/popup.html',
 		));
 	}
@@ -278,8 +278,8 @@ catch(Exception $e)
 		bors()->set_main_object(NULL);
 		bors_message(ec("При попытке просмотра этой страницы возникли ошибки:\n")
 			."<div class=\"red_box\">$message</div>\n"
-			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
-			."<!--\n\n$trace\n\n-->", array(
+			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~2")
+			.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
 			'template' => 'xfile:default/popup.html',
 		));
 	}

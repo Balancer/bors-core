@@ -3,7 +3,6 @@
 bors_url_map(array(
 	'(/_bors/admin)(/.*) => include(bors_admin)',
 	'(/_bors/tools)(/.*) => include(bors_tools)',
-	'/_bors/mod-ajax => bors_modules_ajax',
 ));
 
 // Устаревший формат. Требует переписывания на использование bors_url_map()
@@ -68,15 +67,16 @@ $map = array(
 
 	'/admin/image/append => bors_admin_image_append',
 
-	'.* => auto_object_php(url)',
-
 	'.* => page_fs_xml(url)',
 	'.* => page_fs_separate(url)',
 //	'.* => page_db(url)',
-	'.* => base_page_hts(url)',
+	'.* => auto_object_php(url)',
 	'.* => bors_page_fs_bbh(url)',
 	'.* => bors_page_fs_markdown(url)',
 	'.* => bors_page_fs_htsu(url)', //TODO: снести нафиг после конвертации старых hts Авиабазы
 );
+
+if(config('obsolete.use_mysql_smart'))
+	$map[] = '.* => base_page_hts(url)';
 
 bors_objects_loaders_yaml::register();

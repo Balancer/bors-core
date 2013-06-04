@@ -1224,7 +1224,7 @@ defined at {$this->class_file()}<br/>
 	function was_cleaned() { return !empty($GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()]); }
 	function set_was_cleaned($value) { return $GLOBALS['bors_obect_self_cleaned'][$this->internal_uri()] = $value; }
 
-	function touch() { }
+	function touch($user_id, $timestamp = NULL) { }
 
 	function visits_counting() { return false; }
 	function visits_inc($inc = 1, $time = NULL)

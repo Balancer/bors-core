@@ -2,7 +2,7 @@
 
 class blib_list
 {
-	function cleaning_int($list)
+	static function cleaning_int($list)
 	{
 		if(is_numeric($list))
 			return intval($list);
@@ -15,7 +15,7 @@ class blib_list
 	}
 
 	// Разворачивает строку вида "1,5-7,9" в array(1,5,6,7,9);
-	function parse_condensed($condensed_string)
+	static function parse_condensed($condensed_string)
 	{
 		$numbers = array();
 

@@ -12,8 +12,8 @@ class bors_lib_exception extends bors_object
 		{
 			bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")
 				."<div class=\"red_box\">$message</div>\n"
-				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
-				."<!--\n\n$trace\n\n-->", array(
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~2")
+				.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
 //					'template' => 'xfile:default/popup.html',
 			));
 		}
@@ -22,8 +22,8 @@ class bors_lib_exception extends bors_object
 			bors()->set_main_object(NULL);
 			bors_message(ec("При попытке просмотра этой страницы возникли ошибки:\n")
 				."<div class=\"red_box\">$message</div>\n"
-				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
-				."<!--\n\n$trace\n\n-->", array(
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~4")
+				.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
 				'template' => 'xfile:default/popup.html',
 			));
 		}
@@ -46,7 +46,7 @@ class bors_lib_exception extends bors_object
 		{
 			return ec("При попытке просмотра этой страницы возникла ошибка:\n")
 				."<div class=\"red_box\">$message</div>\n"
-				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~5")
 				."<!--\n\n$trace\n\n-->";
 		}
 		catch(Exception $e2)
@@ -54,7 +54,7 @@ class bors_lib_exception extends bors_object
 			bors()->set_main_object(NULL);
 			return ec("При попытке просмотра этой страницы возникли ошибки:\n")
 				."<div class=\"red_box\">$message</div>\n"
-				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~6")
 				."<!--\n\n$trace\n\n-->";
 		}
 	}

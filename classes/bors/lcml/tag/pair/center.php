@@ -7,12 +7,12 @@
 
 class bors_lcml_tag_pair_center extends bors_lcml_tag_pair
 {
-	function html($text)
+	function html($text, &$params = array())
 	{
 		return "<div style=\"text-align: center !important\">".lcml($text)."</div>";
 	}
 
-	function text($text)
+	function text($text, &$params = array())
 	{
 		$width = 75;
 		$result = array();

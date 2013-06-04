@@ -45,7 +45,7 @@ class base_object_db extends bors_object
 	}
 
 	function __db_name_def() { return $this->main_db(); }
-	function main_db($default = NULL) { return $default ? $default : array_shift(array_keys($this->fields())); }
+	function main_db($default = NULL) { return $default ? $default : @array_shift(array_keys($this->fields())); }
 
 	function __table_name_def() { return $this->main_table(); }
 

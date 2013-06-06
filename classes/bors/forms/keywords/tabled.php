@@ -3,6 +3,7 @@
 /*
 	$list на входе — массив вида:
 	array('категория1' => array('тег1', 'тег2', ...), 'категория2' => array(...))
+	// Пример: http://dev.forexpf.wrk.ru/admin/newses/491557/
 */
 
 class bors_forms_keywords_tabled extends bors_forms_element
@@ -29,6 +30,9 @@ class bors_forms_keywords_tabled extends bors_forms_element
 
 		$html .= "</tr><tr>\n";
 
+		if(!array_key_exists('delim', $params))
+			$delim = "<br/>\n";
+
 		$idx = 1;
 		foreach($list as $category_name => $category_keywords)
 		{
@@ -48,7 +52,7 @@ class bors_forms_keywords_tabled extends bors_forms_element
 					$style = '';
 				}
 
-				$html .= "\t<label$style><input name=\"keywords_tabbed[]\" type=\"checkbox\"$checked value=\"{$kw}\" />&nbsp;{$kw}</label><br/>\n";
+				$html .= "\t<label$style><input name=\"keywords_tabbed[]\" type=\"checkbox\"$checked value=\"{$kw}\"{$placeholder} />&nbsp;{$kw}</label>{$delim}";
 			}
 			$html .= "\t</td>\n";
 		}
@@ -60,6 +64,7 @@ class bors_forms_keywords_tabled extends bors_forms_element
 			'value' => join(', ', $keyword_values),
 			'dom_id' => 'keywords',
 			'size' => 60,
+			'placeholder' => @$placeholder,
 		));
 
 		$form->append_attr('override_fields', "bors_comma_join({$name}+keywords_tabbed)");

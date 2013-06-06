@@ -34,7 +34,7 @@ class bors_forms_date_simple extends bors_forms_element
 		if(!$date)
 			$date = $can_drop ? 0 : $GLOBALS['now'];
 
-		$html .= "<input name=\"$name\" value=\"".date('d.m.Y', $date);
+		$html .= "<input type=\"text\" name=\"$name\" value=\"".date('d.m.Y', $date);
 
 		if(!empty($time))
 		{

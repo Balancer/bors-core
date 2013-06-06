@@ -81,6 +81,8 @@ class DataBase
 			debug_timing_start('mysql_set_names');
 			mysql_set_charset($c, $this->dbh);
 			$this->query("SET NAMES '$c'");
+			$this->charset = $c;
+//			echo debug_trace();
 			debug_timing_stop('mysql_set_names');
 		}
 	}

@@ -145,6 +145,12 @@ class bors_lib_orm
 							'table' => $table,
 						), self::field($property, $field));
 
+
+						// Если у нас явно указан класс поля, то это прямое указание
+						// для auto_objects()
+						if(($object_class = @$field['class']) && preg_match('/^(\w+)_id$/', $field['property'], $m))
+							$GLOBALS['bors-orm-cache']['auto_objects_append'][$m[1]] = "$object_class({$field['property']})";
+
 						if(strpos($field['name'], '`' === false))
 							$field['name'] = "`{$field['name']}`";
 

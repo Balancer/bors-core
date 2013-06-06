@@ -51,9 +51,10 @@ class base_page_paged extends bors_page
 		return $where;
 	}
 
+	function _preload_objects_def() { return array(); }
 	function on_items_load(&$items)
 	{
-		if($preload = $this->get('postload_objects'))
+		if($preload = $this->get('preload_objects'))
 		{
 			$parsed = array();
 

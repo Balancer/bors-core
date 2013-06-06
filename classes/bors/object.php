@@ -21,11 +21,18 @@ class bors_object extends base_object
 	// Предустановленные автообъекты
 	function auto_objects()
 	{
+		$map = array();
+		if($orm_map = @$GLOBALS['bors-orm-cache']['auto_objects_append'])
+			$map = $orm_map;
+
+		return $map;
+/*
 		return array(
 			'user'  => 'bors_user(user_id)',
 			'owner' => 'bors_user(owner_id)',
 			'last_editor' => 'bors_user(last_editor_id)',
 		);
+*/
 	}
 
 	// Предустановленные авто целевые объекты

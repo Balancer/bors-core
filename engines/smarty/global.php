@@ -6,8 +6,9 @@ function global_template_vars() { return is_array($x = @$GLOBALS['cms']['templat
 
 function template_nocache()
 {
-	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-	@header("Expires: Mon, 22 Oct 1973 06:45:00 GMT"); // Date in the past
+	@header("Cache-Control: no-cache, no-store, must-revalidate, max-age=0"); // HTTP/1.1
+//	@header("Expires: Mon, 22 Oct 1973 06:45:00 GMT"); // Date in the past
+	@header("Expires: 0"); // Date in the past
 	@header("X-Accel-Expires: 0"); // Не кешировать в nginx
 	bors_page::add_template_data_array('meta[Pragma]', 'no-cache, no-store');
 //	bors_page::add_template_data_array('meta[Cache-Control]', 'max-age=0');

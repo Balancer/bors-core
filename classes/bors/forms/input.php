@@ -55,6 +55,11 @@ class bors_forms_input extends bors_forms_element
 
 		$result = "";
 
+		if(@$td_colspan)
+			$td_colspan = " colspan=\"{$td_colspan}\"";
+		else
+			$td_colspan = "";
+
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
 		if($th = defval($params, 'th'))
 		{
@@ -69,8 +74,8 @@ class bors_forms_input extends bors_forms_element
 
 			$th = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $th);
 
-			$result .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$th}</th><td>";
-			if(empty($style))
+			$result .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$th}</th><td{$td_colspan}>";
+			if(empty($style) && empty($css))
 				$style = "width: 99%";
 		}
 

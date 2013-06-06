@@ -15,4 +15,9 @@ class bors_forms_templates_default extends bors_object
 
 	function _form_table_css_def() { return 'btab w100p'; }
 	function _form_table_left_th_css_def() { return 'w33p'; }
+
+	function _form_container_html_def() { return "<table class=\"btab w100p\">%s</table>\n"; }
+	function _form_row_html_def() { return "<tr>%s</tr>\n"; }
+	function _form_element_label_html_def() { return "<th>%s</th>"; }
+	function _form_element_html_def() { return "<td>%s</td>"; }
 }

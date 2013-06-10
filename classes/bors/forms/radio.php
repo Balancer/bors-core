@@ -79,18 +79,15 @@ class bors_forms_radio extends bors_forms_element
 		if(empty($delim))
 			$delim = "<br />";
 
-		if(in_array($name, explode(',', session_var('error_fields'))))
-		{
-			if(empty($label_css_class))
-				$label_css_class = "error";
-			else
-				$label_css_class .= " error";
-		}
+		$label_css = explode(' ', defval($params, 'label_css', ''));
 
-		if(!empty($label_css_class))
-			$label_css_class = " class=\"$label_css_class\"";
+		if(in_array($name, explode(',', session_var('error_fields'))))
+			$label_css[] = "error";
+
+		if(!empty($label_css))
+			$label_css = " class=\"".join(" ", $label_css)."\"";
 		else
-			$label_css_class = "";
+			$label_css = "";
 
 		$colorize = @explode(',', @$pos_colorize);
 
@@ -105,6 +102,7 @@ class bors_forms_radio extends bors_forms_element
 		}
 
 		$colorpos = 0;
+		$labels_html = array();
 		foreach($list as $id => $iname)
 		{
 			$style = array();
@@ -119,8 +117,17 @@ class bors_forms_radio extends bors_forms_element
 			else
 				$style = "";
 
-			$html .= "<label{$label_css_class}{$style}><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$tag_params />&nbsp;$iname</label>$delim\n";
+			$labels_html[] = "<label{$label_css}{$style}><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$tag_params />&nbsp;$iname</label>$delim";
+
+
 		}
+
+		$labels_html = join("\n", $labels_html);
+
+		if($container = defval($params, 'label_container'))
+			$labels_html = sprintf($container, $labels_html);
+
+		$html .= $labels_html;
 
 		if($th)
 			$html .= "</td></tr>\n";

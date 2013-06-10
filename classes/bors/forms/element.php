@@ -7,6 +7,7 @@ class bors_forms_element
 	function set_form($form) { return $this->form = $form; }
 	function params() { return $this->params; }
 	function form() { return $this->form; }
+	function is_form_element() { return true; }
 
 	function value($param_name = 'value')
 	{

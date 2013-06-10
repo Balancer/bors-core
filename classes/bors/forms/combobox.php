@@ -131,8 +131,14 @@ class bors_forms_combobox extends bors_forms_element
 		if(!empty($fixed))
 		{
 			$html .= "\n<div class=\"clear\">&nbsp;</div>\n";
-			foreach($fixed as $title => $value)
-				$html .= "<label><input type=\"radio\" name=\"_{$name}\" value=\"{$value}\" />&nbsp;$title</label>\n";
+			foreach($fixed as $t => $v)
+			{
+				if($v == $value)
+					$checked = " checked=\"checked\"";
+				else
+					$checked = "";
+				$html .= "<label><input type=\"radio\" name=\"_{$name}\" value=\"{$v}\"{$checked} />&nbsp;{$t}</label>\n";
+			}
 
 			$form->append_attr('override_fields', "!_{$name}");
 
@@ -141,7 +147,6 @@ class bors_forms_combobox extends bors_forms_element
 			// Костыль для Firefox
 			// http://fairwaytech.com/flexbox
 			$attrs['onSelect'] = "function() { \$('input:radio[name=\"_{$name}\"]').first().attr('checked', 'checked'); }";
-
 		}
 		else
 			$html .= "\n";

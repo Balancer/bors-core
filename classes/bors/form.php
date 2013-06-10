@@ -237,13 +237,31 @@ class bors_form extends bors_object
 			$last_section = NULL;
 			$have_sections = false;
 
-			foreach($fields as $property_name => $data)
-			{
-				if(is_array($data))
-					$property_name = $data['name'];
-				else
-					$data = $object_fields[$data];
+			/*
+				Возможные варианты
+				'title',
+				'type_id' => array('named_list' => 'alternative_list'),
+				'xxx' => array('name' => 'property', ...)
+			*/
 
+			foreach($fields as $property_name => $append_data)
+			{
+				if(is_array($append_data))
+				{
+					if(is_numeric($property_name))
+						$property_name = $data['name'];
+
+					$data = array_merge($object_fields[$property_name], $append_data);
+				}
+				else
+				{
+					if(is_numeric($property_name))
+						$property_name = $append_data;
+
+					$data = $object_fields[$append_data];
+				}
+
+//				var_dump($property_name, $data);
 
 				if($current_section = defval($data, 'form_section'))
 					$have_sections = true;
@@ -408,7 +426,11 @@ class bors_form extends bors_object
 						break;
 
 					case 'radio':
-						$data['list'] = base_list::make($class, array(), $data + array('non_empty' => true));
+						// http://admin2.aviaport.wrk.ru/newses/254690/
+						if($list_class = defval($data, 'named_list'))
+							$data['list'] = bors_foo($list_class)->named_list();
+						else
+							$data['list'] = base_list::make($list_class, array(), $data + array('non_empty' => true));
 						$html .= $this->element_html('radio', $data);
 						break;
 
@@ -518,10 +540,14 @@ class bors_form extends bors_object
 						break;
 
 					default:
-						$html .= ec("Неизвестный тип '{$edit_type}' поля '{$property_name}'");
-//						print_dd($data);
-//						echo defval($data, 'value');
-//						echo defval($data, 'value');
+						if(class_include($edit_type) && ($element = new $edit_type) && ($element->is_form_element()))
+						{
+							$element->set_params($data);
+							$element->set_form($this);
+							$html .= $element->html();
+						}
+						else
+							$html .= ec("Неизвестный тип '{$edit_type}' поля '{$property_name}'");
 				}
 
 				$html .= $html_append;

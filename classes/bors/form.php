@@ -520,6 +520,16 @@ class bors_form extends bors_object
 							$html .= $this->element_html('date', $data);
 						break;
 
+					case 'time_simple':
+						$data['name'] = popval($data, 'property');
+						set_def($data, 'can_drop', true);
+						if(!empty($data['args']))
+							$data = array_merge($data, $data['args']);
+						$data['time'] = true;
+						$data['seconds'] = true;
+						$html .= $this->element_html('date_simple', $data);
+						break;
+
 					case 'image':
 //						$image = bors_load('bors_image', $data['value']);
 //WTF?

@@ -4,7 +4,7 @@ config_set('graphviz_dot_command', '/usr/bin/dot');
 
 function lp_graphviz($text, $params)
 {
-	if(!preg_match('/^\w+\s+\w+\s+\{/s.+\}', trim($text)))
+	if(!preg_match('/^\w+\s+\w+\s+\{\s.+\}/', trim($text)))
 		$text = "digraph G { {$text} }";
 
 	$image = bors_load('bors_image_generated', serialize(array(

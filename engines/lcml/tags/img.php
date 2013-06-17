@@ -113,17 +113,36 @@ function lt_img($params)
 						$path .= '/='.str_replace('&','/', $data['query']);
 				}
 
-				$image_size = @getimagesize($path);
+				if(!file_exists($path) || filesize($path)==0 || !($image_size = @getimagesize($path)))
+					$path = config('sites_store_path').'/'.web_import_image::storage_place_rel($params['url']);
 
+				$image_size = @getimagesize($path);
 				if(!file_exists($path) || filesize($path)==0 || !$image_size)
 				{
-					require_once('inc/http.php');
-					$x = http_get_ex(str_replace(' ', '+', $params['url']));
-//					if(config('is_developer')) {var_dump($params['url']); var_dump($x); exit(); }
-					$content      = $x['content'];
+					$path = config('sites_store_path').'/'.web_import_image::storage_place_rel($params['url']);
+
+					require_once('inc/filesystem.php');
+					mkpath(dirname($path), 0777);
+
+					if(!is_writable(dirname($path)))
+					{
+						bors_use('debug_hidden_log');
+						debug_hidden_log('access_error', "Can't write to ".dirname($path));
+						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$path']</small>";
+					}
+
+					$x = blib_http::get_ex(str_replace(' ', '%20', $params['url']), array(
+						'file' => $path,
+						'is_raw' => true,
+					));
+
+					@chmod($path, 0666);
+
+//					if(config('is_developer')) {var_dump($params['url'], $path, $x); exit(); }
+
 					$content_type = $x['content_type'];
 
-					if(strlen($content) <= 0)
+					if(filesize($path) <= 0)
 						return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[zero size or time out]</small>";
 
 //					if(config('is_developer')) { var_dump($params, $content_type); exit(); }
@@ -146,21 +165,6 @@ function lt_img($params)
 					// errstr=fopen(/var/www/balancer.ru/htdocs/sites/g/a/gallery.greedykidz.net/get/992865/3274i.jpg/=g2_serialNumber=1)
 					if(preg_match('#^(.+\.(jpe?g|png|gif))/=#', $path, $m) && file_exists($m[1]))
 						unlink($m[1]);
-
-					require_once('inc/filesystem.php');
-					mkpath(dirname($path), 0777);
-					if(!is_writable(dirname($path)))
-					{
-						bors_use('debug_hidden_log');
-						debug_hidden_log('access_error', "Can't write to ".dirname($path));
-						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$path']</small>";
-					}
-
-
-					$fh = fopen($path,'wb');
-					fwrite($fh, $content);
-					fclose($fh);
-					@chmod($path, 0666);
 				}
 
 				// test: http://www.aviaport.ru/conferences/40911/rss/

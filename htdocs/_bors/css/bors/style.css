@@ -68,7 +68,7 @@ img {
 	border: 1px solid #8f8;
 }
 
-.red_box {
+.red_box, .alert-error {
 	margin: 4px 0;
 	padding: 4px 8px;
 	background-color: #fdd;

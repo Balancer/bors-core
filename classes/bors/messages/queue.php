@@ -3,7 +3,7 @@
 class bors_messages_queue extends base_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
-	function db_name() { return 'BORS'; }
+	function db_name() { return 'AB_BORS'; }
 	function table_name() { return 'bors_actions_queue'; }
 	function table_fields()
 	{

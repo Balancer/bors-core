@@ -3,7 +3,6 @@
 class bors_objects_version extends base_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
-//	function db_name() { return 'BORS'; }
 	function table_name() { return 'bors_versioning'; }
 	function table_fields()
 	{

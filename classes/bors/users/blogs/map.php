@@ -3,7 +3,7 @@
 class bors_users_blogs_map extends base_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
-	function db_name() { return 'BORS'; }
+	function db_name() { return 'AB_BORS'; }
 	function table_name() { return 'external_blogs_maps'; }
 	function table_fields()
 	{

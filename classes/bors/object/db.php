@@ -212,6 +212,10 @@ class bors_object_db extends base_object_db
 
 	function url($page = NULL)
 	{
+		// http://la2.balancer.ru/forum/index.php?showtopic=524&view=findpost&p=4163
+		if($this->url_engine())
+			return parent::url($page);
+
 		$site_url = config('main_site_url');
 		$class_name = $this->class_name();
 		if(preg_match('/_admin_/', $class_name))

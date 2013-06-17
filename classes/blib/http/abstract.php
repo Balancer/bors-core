@@ -224,8 +224,7 @@ class blib_http_abstract
 		if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация
 			$timeout *= 2;
 
-		$ch = curl_init($url);
-		curl_setopt_array($ch, array(
+		$curl_options = array(
 			CURLOPT_TIMEOUT => $timeout,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_MAXREDIRS => 5,
@@ -239,32 +238,73 @@ class blib_http_abstract
 			CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_SSL_VERIFYPEER => false,
-		));
+		);
+
+		if($save_file = defval($params, 'file'))
+		{
+			$fh = fopen($save_file, 'wb');
+			$curl_options[CURLOPT_FILE] = $fh;
+//			$curl_options[CURLOPT_HEADER] = true;	// Добавить заголовок ответа в файл
+//			$curl_options[CURLOPT_RETURNTRANSFER] = false;
+		}
+
+		$ch = curl_init($url);
+		curl_setopt_array($ch, $curl_options);
 
 		if(config('proxy.force_regexp') && preg_match(config('proxy.force_regexp'), $url))
 			curl_setopt($ch, CURLOPT_PROXY, config('proxy.forced'));
 
 		$data = curl_exec($ch);
+		$info = curl_getinfo($ch);
+/*
+array (size=22)
+  'url' => string 'http://www.palal.net/blogposts/20130601-favelas/dona%20marta/IMG_9624.JPG' (length=73)
+  'content_type' => string 'image/jpeg' (length=10)
+  'http_code' => int 200
+  'header_size' => int 219
+  'request_size' => int 376
+  'filetime' => int -1
+  'ssl_verify_result' => int 0
+  'redirect_count' => int 0
+  'total_time' => float 2.306583
+  'namelookup_time' => float 0.010812
+  'connect_time' => float 0.21499
+  'pretransfer_time' => float 0.215042
+  'size_upload' => float 0
+  'size_download' => float 764927
+  'speed_download' => float 331627
+  'speed_upload' => float 0
+  'download_content_length' => float 764927
+  'upload_content_length' => float 0
+  'starttransfer_time' => float 0.421616
+  'redirect_time' => float 0
+  'certinfo' => 
+    array (size=0)
+      empty
+  'redirect_url' => string '' (length=0)
+*/
+
+
+		if(!empty($curl_options[CURLOPT_FILE]))
+			fclose($curl_options[CURLOPT_FILE]);
+
 		if($data === false)
 		{
 			//TODO: оформить хорошо. Например, отправить отложенную задачу по пересчёту
 			//И выше есть такой же блок.
 			$err_str = curl_error($ch);
+			curl_close($ch);
 			debug_hidden_log('curl-error', "Curl error: ".$err_str);
 			return array('content' => NULL, 'content_type' => NULL, 'error' => $err_str);
 		}
 
-
 		if(!$raw)
 			$data = trim($data);
 
-		$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-//		echo "<xmp>"; print_r($data); echo "</xmp>";
+		$content_type = $info['content_type'];
 
 		if(!$charset && !$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
     	    $charset = $m[1];
-
-		curl_close($ch);
 
 		if(!$raw)
 		{
@@ -285,6 +325,8 @@ class blib_http_abstract
 			if($charset)
 				$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
 		}
+
+		curl_close($ch);
 
 	    return array('content' => $data, 'content_type' => $content_type, 'error' => false);
 	}

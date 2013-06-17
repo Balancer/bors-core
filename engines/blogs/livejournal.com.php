@@ -20,7 +20,7 @@ function bors_blog_message(&$title_obj, &$url_obj, &$body_obj)
 
 function bors_blog_livejournal_com_post($user_id, $title_obj, $url_obj, $body_obj, $keyword_obj)
 {
-	$db = new driver_mysql('BORS');
+	$db = new driver_mysql('AB_BORS');
 
 	$x = $db->select('external_blogs', '*', array('bors_user_id='=>$user_id, 'blog='=>'livejournal.com', 'active='=>1));
 	if(empty($x))
@@ -87,7 +87,7 @@ function bors_blog_livejournal_com_post($user_id, $title_obj, $url_obj, $body_ob
 
 function bors_blog_livejournal_com_edit($user_id, $title_obj, $url_obj, $body_obj, $keyword_obj)
 {
-	$db = new driver_mysql('BORS');
+	$db = new driver_mysql('AB_BORS');
 
 	$x = $db->select('external_blogs', '*', array('bors_user_id='=>$user_id, 'blog='=>'livejournal.com', 'active='=>1));
 	if(empty($x))
@@ -153,7 +153,7 @@ function bors_blog_livejournal_com_edit($user_id, $title_obj, $url_obj, $body_ob
 
 function bors_blog_livejournal_com_delete($user_id, $body_obj)
 {
-	$db = new driver_mysql('BORS');
+	$db = new driver_mysql('AB_BORS');
 
 	$x = $db->select('external_blogs', '*', array('bors_user_id='=>$user_id, 'blog='=>'livejournal.com', 'active='=>1));
 	if(empty($x))

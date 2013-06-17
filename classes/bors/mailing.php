@@ -4,7 +4,7 @@ class bors_mailing extends bors_object_db
 {
 	function replace_on_new_instance() { return true; }
 
-	function db_name() { return 'BORS'; }
+	function db_name() { return 'AB_BORS'; }
 	function table_name() { return 'bors_mailing'; }
 	function table_fields()
 	{

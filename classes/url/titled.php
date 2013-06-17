@@ -31,21 +31,21 @@ class url_titled extends url_base
 				$uri_name .= '-';
 
 			$infix = $uri_name.$obj->id();
-			
+
 			$prefix .= $infix;
 			$prefix_lp .= $infix;
 
 			if(!($suffix = substr(translite_uri_simple($obj->title()), 0, 60)))
 				$suffix = '~';
-				
+
 			$suffix = '--'.$suffix;
-			
+
 			$bors_url_titled_cache[$obj->internal_uri()] = array($prefix, $prefix_lp, $suffix);
 		}
 
 		$lp = $obj->total_pages() == $page;
 		$uri = $lp ? $prefix_lp : $prefix;
-		
+
 		if($page && $page != 1 && $page != -1)
 			$uri .= ",$page";
 

@@ -25,7 +25,7 @@ class blib_cli
 	static function out($message)
 	{
 		self::parse($message);
-		fwrite(STDOUT, $message.PHP_EOL);
+		fwrite(STDOUT, $message);
 	}
 
 	static function parse(&$text)

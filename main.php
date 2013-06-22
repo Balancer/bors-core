@@ -368,7 +368,7 @@ if(config('debug.timing') && is_string($res))
 	if($object)
 	{
 		foreach(explode(' ', 'class_name class_file template body_template') as $var)
-			if($val = $object->get($var))
+			if($val = @$object->get($var))
 				$deb .= "$var = $val\n";
 
 		if($cs = $object->cache_static())

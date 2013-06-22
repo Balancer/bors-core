@@ -5,8 +5,8 @@ function lp_csv_stat($txt, $params)
 	require_once('inc/csv.php');
 
 	$delim	= defval_ne($params, 'delim', ';');
-	$width	= defval_ne($params, 'width', 500);
-	$height	= defval_ne($params, 'height', 500);
+	$width	= defval_ne($params, 'width', 640);
+	$height	= defval_ne($params, 'height', 480);
 
    	$data = array();
    	$avg = array();

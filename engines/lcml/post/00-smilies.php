@@ -44,11 +44,11 @@ function lcml_smilies_by_files($dir, &$txt)
 
         foreach(lcml_smilies_list($dir) as $code)
 		{
-			$from[] = '/(?<!"):'.preg_quote($code).':/';
+			$from[] = '/(?<!"):'.preg_quote($code, '/').':/';
 			$to[]   = "<img src=\"".config('smilies_url')."/{$code}.gif\" alt=\":{$code}:\" title=\":{$code}:\" class=\"smile\" />";
 		}
 
-//		print_d($from); print_d($to);
+//		if(config('is_developer')) { print_dd($from); print_dd($to); }
 
         return preg_replace($from, $to, $txt);
 }
@@ -83,7 +83,7 @@ function lcml_smilies_list($dir)
 		return $list;
 }
 
-function lcml_smilies_load($dir)
+function lcml_smilies_load($dir, $prefix="")
 {
         $list = array();
 
@@ -94,9 +94,9 @@ function lcml_smilies_load($dir)
                 while(($file = readdir($dh)) !== false) 
                 {
                     if(substr($file,-4)=='.gif')
-                        $list[] = substr($file,0,-4);
+                        $list[] = $prefix.substr($file,0,-4);
                     elseif(filetype("$dir/$file")=='dir' && substr($file,0,1)!='.')
-                        $list = array_merge($list, lcml_smilies_load("$dir/$file"));
+                        $list = array_merge($list, lcml_smilies_load("$dir/$file", "$file/"));
                 }
                 closedir($dh);
             }

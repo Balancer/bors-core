@@ -11,9 +11,9 @@ class bors_lib_exception extends bors_object
 		try
 		{
 			bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")
-				."<div class=\"red_box\">$message</div>\n"
-				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~2")
-				.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
+				.(config('show_errors', false) !== false ? ":\n<div class=\"red_box alert alert-error\">$message</div>\n" : ".\n")
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
+				.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!-- ~~~2 \n\n$trace\n\n-->"), array(
 //					'template' => 'xfile:default/popup.html',
 			));
 		}
@@ -21,9 +21,9 @@ class bors_lib_exception extends bors_object
 		{
 			bors()->set_main_object(NULL);
 			bors_message(ec("При попытке просмотра этой страницы возникли ошибки:\n")
-				."<div class=\"red_box\">$message</div>\n"
-				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~4")
-				.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
+				.(config('show_errors', false) !== false ? ":\n<div class=\"red_box alert alert-error\">$message</div>\n" : ".\n")
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
+				.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!-- ~~~4 \n\n$trace\n\n-->"), array(
 				'template' => 'xfile:default/popup.html',
 			));
 		}
@@ -44,18 +44,18 @@ class bors_lib_exception extends bors_object
 
 		try
 		{
-			return ec("При попытке просмотра этой страницы возникла ошибка:\n")
-				."<div class=\"red_box\">$message</div>\n"
-				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~5")
-				."<!--\n\n$trace\n\n-->";
+			return ec("При попытке просмотра этой страницы возникла ошибка")
+				.(config('show_errors', false) !== false ? ":\n<div class=\"red_box alert alert-error\">$message</div>\n" : ".\n")
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
+				."<!-- ~~~5 \n\n$trace\n\n-->";
 		}
 		catch(Exception $e2)
 		{
 			bors()->set_main_object(NULL);
 			return ec("При попытке просмотра этой страницы возникли ошибки:\n")
-				."<div class=\"red_box\">$message</div>\n"
-				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~6")
-				."<!--\n\n$trace\n\n-->";
+				.(config('show_errors', false) !== false ? ":\n<div class=\"red_box alert alert-error\">$message</div>\n" : ".\n")
+				.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n")
+				."<!-- ~~~6 \n\n$trace\n\n-->";
 		}
 	}
 }

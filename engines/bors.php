@@ -287,6 +287,13 @@ function bors_stop_bots()
 
 function bors_throw($message)
 {
+	if(config('exceptions.kill_on_throw'))
+	{
+		debug_hidden_log('exception-kill', $message);
+		@header('HTTP/1.1 500 Internal Server Error');
+		exit('Error. See in logs');
+	}
+
 //	echo $message;
 //	echo debug_trace();
 	bors_function_include('debug/hidden_log');

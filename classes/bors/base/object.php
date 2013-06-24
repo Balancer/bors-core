@@ -1405,11 +1405,8 @@ defined at {$this->class_file()}<br/>
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
 
-		if(preg_match('/viewforum.php/', $file))	//TODO: убрать хардкод
-		{
-			debug_hidden_log('stat-cache', 'try to cache viewforum.php!');
-			return NULL;
-		}
+		if($r = config('cache_static.root'))
+			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $_SERVER['DOCUMENT_ROOT'].'/'.$r, $file);
 
 		return $file;
 	}
@@ -1467,7 +1464,7 @@ defined at {$this->class_file()}<br/>
 
 	function content()
 	{
-		$recreate = $this->get('recreate_on_content');
+		$recreate = $this->get('recreate_on_content') || $this->get('cache_static_recreate');
 
 		$use_static = config('cache_static')
 			&& ($recreate || $this->cache_static() > 0);
@@ -1510,7 +1507,7 @@ defined at {$this->class_file()}<br/>
 			cache_static::drop($this);
 			return '';
 		}
-
+//		echo "cs=$use_static, recreate=$recreate";
 		if($use_static || $recreate)
 			cache_static::save($this, $content);
 

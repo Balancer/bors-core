@@ -251,7 +251,7 @@ class bors_form extends bors_object
 					if(is_numeric($property_name))
 						$property_name = $data['name'];
 
-					$data = array_merge($object_fields[$property_name], $append_data);
+					$data = array_merge(($f = $object_fields[$property_name]) ? $f : array(), $append_data);
 				}
 				else
 				{
@@ -346,16 +346,13 @@ class bors_form extends bors_object
 					$class = $data['named_list'];
 				}
 
-				$property_name = defval($data, 'property', $data['name']);
+				$property_name = defval($data, 'property', defval($data, 'name', $property_name));
 
 				if($append = @$edit_properties_append[$property_name])
 					$data = array_merge($data, $append);
 
 				if(!$title)
 					$title = $property_name;
-
-				if($type != 'bool')
-					$html .= "\t<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$title}</th><td>\n\t\t";
 
 				if(!empty($data['arg']))
 					$data['value'] = object_property_args($object, $property_name, array($data['arg']));
@@ -378,6 +375,9 @@ class bors_form extends bors_object
 
 				$edit_type = defval($data, 'edit_type', $type);
 
+				if($type != 'bool' && $edit_type != 'hidden')
+					$html .= "\t<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$title}</th><td>\n\t\t";
+
 				switch($edit_type)
 				{
 					case 'string':
@@ -386,6 +386,9 @@ class bors_form extends bors_object
 					case 'uint':
 					case 'float':
 						$html .= $this->element_html('input', $data);
+						break;
+					case 'hidden':
+						$html .= $this->element_html('hidden', $data);
 						break;
 					case 'input_date':
 					case 'date':
@@ -547,6 +550,12 @@ class bors_form extends bors_object
 					case 'file_name':
 						$data['file'] = $this->object();
 						$html .= bors_forms_file::html($data, $this);
+						break;
+
+					case 'module':
+						set_def($data, 'object', $object);
+						set_def($data, 'skip_title', true);
+						$html .= bors_module::mod_html($data['module_class'], $data);
 						break;
 
 					default:

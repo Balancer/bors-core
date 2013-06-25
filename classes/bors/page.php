@@ -36,6 +36,7 @@ class bors_page extends base_page
 	}
 
 	function _body_template_file_def() { return $this->body_template(); }
+	function _body_template_suffix_def() { return NULL; }
 
 	function _body_template_def()
 	{
@@ -71,7 +72,8 @@ class bors_page extends base_page
 
 		$current_class = get_class($this);
 		$class_files = $GLOBALS['bors_data']['classes_included'];
-		$ext = $this->body_template_ext();
+		$ext	= $this->body_template_ext();
+		$suffix	= $this->body_template_suffix();
 		$is_smart = $this->is_smart();
 
 		while($current_class)
@@ -81,6 +83,13 @@ class bors_page extends base_page
 //				echo "Check $current_class for $base$ext<Br/>";
 				if($is_smart)
 				{
+					if($suffix && file_exists($bt = $base.$suffix.'.tpl'))
+					{
+						$this->attr['body_template'] = $bt;
+						$this->attr['body_template_class'] = 'bors_templates_smarty';
+						return;
+					}
+
 					// Было перед .html Из-за этого на страницах с переназначаемым расширением, типа
 					// http://www.aviaport.ru/events/apczima2012/
 					// грузились базовые формы.

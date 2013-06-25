@@ -6,12 +6,18 @@ class bors_admin_meta_edit_parts extends bors_admin_meta_edit
 
 	function nav_name()
 	{
-		return preg_match('!/edit/?$!', $this->url()) ? ec('редактирование') : $this->target()->nav_name();
+		if($this->target())
+			return preg_match('!/edit/?$!', $this->url()) ? ec('редактирование') : $this->target()->nav_name();
+
+		return ec('добавление');
 	}
 
 	function title()
 	{
-		return ec('Редактирование ').bors_lib_object::get_foo($this->main_class(), 'class_title_rp') . ' ' . $this->target();
+		if($this->target())
+			return ec('Редактирование ').bors_lib_object::get_foo($this->main_class(), 'class_title_rp') . ' ' . $this->target();
+
+		return ec('Добавление ').bors_lib_object::get_foo($this->main_class(), 'class_title_rp');
 	}
 
 	function body_data()

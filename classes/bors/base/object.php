@@ -1339,7 +1339,7 @@ defined at {$this->class_file()}<br/>
 				}
 				// Прямое присваивание.
 				else
-					$data[$name] = $data['_'.$name];
+					$data[$name] = @$data['_'.$name];
 			}
 		}
 	}

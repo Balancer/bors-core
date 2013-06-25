@@ -6,13 +6,15 @@
 	calling_object=$this
 	form_template_class=$this->get('form_template_class')
 }
+
 {if $this->id()}
-{go value=$this->go_edit_url()}
-{submit th='Сохранить'}
+	{go value=$this->go_edit_url()}
+	{submit th='Сохранить'}
 {else}
-{go value=$this->go_new_url()}
-{submit th='Добавить'}
+	{go value=$this->go_new_url()}
+	{submit th='Добавить'}
 {/if}
+
 {/form}
 
 {if $this->id() && $target->access()->get('can_delete') && !$this->get('__skip_delete')}

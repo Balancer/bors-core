@@ -30,6 +30,9 @@ function class_name_to_id($object)
 	else
 		$class_name = $object;
 
+	if(strpos($class_name, ',') !== false)
+		return class_names_to_ids(explode(',', $class_name));
+
 	if(strlen($class_name) > 64)
 	{
 		debug_hidden_log('class-loader-errors', "Too long class name: '$class_name'");

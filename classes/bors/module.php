@@ -64,6 +64,8 @@ class bors_module extends bors_page
 			$args = array('target' => $args);
 
 		$mod = bors_load_ex($class_name, NULL, $args);
+		if(!$mod)
+			return "Can't load module '$class_name'";
 		return $mod->$func();
 	}
 

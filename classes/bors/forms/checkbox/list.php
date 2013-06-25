@@ -103,12 +103,28 @@ class bors_forms_checkbox_list extends bors_forms_element
 				$style = "width: 99%";
 		}
 
+		if($columns)
+		{
+			$span = "<div class=\"span".(12/$columns)."\">";
+			$html .= "<div class=\"container\"><div class=\"row\">$span";
+		}
+
+		$pos = 0;
 		foreach($list as $id => $iname)
 		{
 			$ids[] = $id;
 			$checked = in_array($id, $current);
 			$html .= "<label><input type=\"checkbox\" name=\"".addslashes($name)."[]\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$el_params$class />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."</label>$delim\n";
+			$pos++;
+			if($columns && $pos >= count($list) / $columns)
+			{
+				$pos = 0;
+				$html .= "</div>$span";
+			}
 		}
+
+		if($columns)
+			$html .= "</div></div>";
 
 		$form->append_attr('checkboxes_list', $name);
 

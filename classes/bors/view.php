@@ -195,4 +195,10 @@ class bors_view extends bors_page
 		$this->set('model', $model, false);
 		return $this;
 	}
+
+	function suffix($suffix)
+	{
+		$this->set_attr('body_template_suffix', $suffix);
+		return $this;
+	}
 }

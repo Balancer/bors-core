@@ -124,8 +124,13 @@ class bors_forms_dropdown extends bors_forms_element
 				$current[$i] = ($have_null && is_null($current[$i])) ?  NULL : intval($current[$i]);
 
 		foreach($list as $id => $iname)
+		{
+			if(!$id && $have_null)
+				$id = 'NULL';
+
 			if($id !== 'default')
 				$html .= "\t\t\t<option value=\"$id\"".(in_array($id, $current, $strict) ? " selected=\"selected\"" : "").">$iname</option>\n";
+		}
 
 		$html .= "\t\t</select>\n";
 

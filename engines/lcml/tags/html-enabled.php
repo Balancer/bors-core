@@ -3,7 +3,7 @@
 foreach(array('b' => 'strong') as $tag => $html)
 	eval("function lp_$tag(\$txt){return '<$html>'.lcml(\$txt).'</$html>';}");
 
-foreach(explode(" ",'big em i s strike strong sub sup small u') as $tag)
+foreach(explode(" ",'big em i s strike strong sub sup small tbody u') as $tag)
 	eval("function lp_$tag(\$txt){return '<$tag>'.lcml(\$txt).'</$tag>';}");
 
 foreach(explode(" ","br hr") as $tag)

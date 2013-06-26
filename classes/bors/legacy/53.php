@@ -24,8 +24,10 @@ class bors_legacy_53
 		// qshort(): '$this->short() ? " (".$this->short().")" : ""'
 
 		foreach(bors_find_all($class_name, array_merge(array('order' => $order), $where)) as $x)
+		{
 			if($x->id() && ($t = preg_replace_callback('/(%(\w+)%)/', function($m) use ($x) { return $x->get($m[2]); }, $format)))
 				$list[$x->id()] = $t;
+		}
 
 		return $list;
 	}

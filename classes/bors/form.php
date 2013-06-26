@@ -251,7 +251,7 @@ class bors_form extends bors_object
 					if(is_numeric($property_name))
 						$property_name = $data['name'];
 
-					$data = array_merge(($f = $object_fields[$property_name]) ? $f : array(), $append_data);
+					$data = array_merge(is_array($f = $object_fields[$property_name]) ? $f : array(), $append_data);
 				}
 				else
 				{

@@ -84,7 +84,7 @@ function lcml_html_pre($txt)
 			$txt = preg_replace("!<$tag\s+([^>]+)>!is","[$tag $1]", $txt);
 		}
 
-		foreach(explode(' ','b big br center code div font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr td th html_img html_a') as $tag)
+		foreach(explode(' ','b big br center code div font h1 h2 h3 h4 hr i li object p param pre s small span strong u ul xmp tabtr tbody td th thead html_img html_a') as $tag)
 		{
 			$txt = preg_replace("!<$tag>!i","[$tag]", $txt);
 			$txt = preg_replace("!<$tag\s*/>!i","[$tag]", $txt);

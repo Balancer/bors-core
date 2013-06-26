@@ -81,4 +81,18 @@ class bors_lib_html
 		$text = preg_replace('!^(\S+@\S+)$!', "<a href=\"mailto:$1\">$1</a>", $text);
 		return $text;
 	}
+
+	static function set_og_meta($view)
+	{
+		template_meta_prop('og:title',	$view->title());
+		template_meta_prop('og:url',	$view->url($view->page()));
+		if($type = $view->get('meta_og_type'))
+			template_meta_prop('og:type', $type);
+		if($image = $view->get('image'))
+			template_meta_prop('og:image', $image->thumbnail("200x200")->url());
+		if($description = $view->get('description'))
+			template_meta_prop('og:description', $description);
+		if($project = $view->get('project'))
+			template_meta_prop('og:site_name', $project->title());
+	}
 }

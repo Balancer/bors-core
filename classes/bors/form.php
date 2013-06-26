@@ -199,7 +199,7 @@ class bors_form extends bors_object
 		else
 		{
 			if($class_name)
-				$object_fields = bors_lib_orm::fields(new $class_name(NULL));
+				$object_fields = bors_lib_orm::fields(bors_foo($class_name));
 			else
 				$object_fields = array();
 		}

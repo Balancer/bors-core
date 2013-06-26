@@ -11,7 +11,7 @@
 class bors_external_link extends base_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
-	function db_name() { return 'BORS'; }
+	function db_name() { return config('bors_core_db'); }
 	function table_name() { return 'external_links'; }
 
 	function table_fields()

@@ -288,12 +288,19 @@ array (size=22)
 		if(!empty($curl_options[CURLOPT_FILE]))
 			fclose($curl_options[CURLOPT_FILE]);
 
+//		if(config('is_developer'))
+//			var_dump($info);
+
 		if($data === false)
 		{
 			//TODO: оформить хорошо. Например, отправить отложенную задачу по пересчёту
 			//И выше есть такой же блок.
 			$err_str = curl_error($ch);
 			curl_close($ch);
+
+			if($save_file)
+				@unlink($save_file);
+
 			debug_hidden_log('curl-error', "Curl error: ".$err_str);
 			return array('content' => NULL, 'content_type' => NULL, 'error' => $err_str);
 		}

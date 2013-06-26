@@ -32,6 +32,10 @@ class bors_forms_checkbox_list extends bors_forms_element
 			$name = $xref_obj->name($obj, $xref_obj->class_name());
 		}
 
+		// http://admin2.aviaport.wrk.ru/newses/256783/form2/
+		if(!empty($named_list))
+			$list = bors_foo($named_list)->named_list();
+
 		if(!is_array($list))
 		{
 			if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))

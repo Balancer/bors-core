@@ -1,3 +1,5 @@
+{block name="admin_meta_edit_body_begin"}{/block}
+
 {form
 	class=$this->main_admin_class()
 	id=$this->id()
@@ -9,11 +11,13 @@
 
 {if $this->id()}
 	{go value=$this->go_edit_url()}
-	{submit th='Сохранить'}
 {else}
 	{go value=$this->go_new_url()}
-	{submit th='Добавить'}
 {/if}
+
+{block name="admin_meta_edit_form_buttons"}
+{submit th=$this->submit_button_title()}
+{/block}
 
 {/form}
 

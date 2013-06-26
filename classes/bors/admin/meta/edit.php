@@ -140,6 +140,8 @@ class bors_admin_meta_edit extends bors_admin_page
 	// По умолчанию — на страницу-родителя
 	function go_edit_url() { return 'admin_parent'; }
 
+	function submit_button_title() { return $this->id() ? ec('Сохранить') : ec('Добавить'); }
+
 	function owner_id() { return object_property($this->target(), 'owner_id'); }
 
 //	function parents() { return $this->admin_target() ? $this->admin_target()->parents() : parent::parents(); }

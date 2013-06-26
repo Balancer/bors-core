@@ -1339,7 +1339,10 @@ defined at {$this->class_file()}<br/>
 				}
 				// Прямое присваивание.
 				else
-					$data[$name] = @$data['_'.$name];
+				{
+					if(array_key_exists($key = '_'.$name, $data))
+						$data[$name] = $data[$key];
+				}
 			}
 		}
 	}

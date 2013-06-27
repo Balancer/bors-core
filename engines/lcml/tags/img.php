@@ -89,6 +89,8 @@ function lt_img($params)
 			if(preg_match('/\w{5,}$/', $data['path']))
 				$data['path'] .= '.jpg';
 
+//			if(config('is_developer')) { var_dump($data); exit(); }
+
 			if(!$data['local'])
 			{
 				$path = config('sites_store_path')."/{$data['host']}{$data['path']}";
@@ -117,6 +119,21 @@ function lt_img($params)
 					$path = config('sites_store_path').'/'.web_import_image::storage_place_rel($params['url']);
 
 				$image_size = @getimagesize($path);
+
+//				if(config('is_developer')) { var_dump($path, file_exists($path), $image_size); exit(); }
+				if(file_exists($path) && !$image_size)
+				{
+					// Придумать, что сделать с этим хардкодом.
+					$thumbnails = bors_find_all('bors_image_thumb', array(
+						"full_file_name LIKE '%/".addslashes(basename($path))."'",
+					));
+					if($thumbnails)
+						foreach($thumbnails as $t)
+							$t->delete();
+
+					unlink($path);
+				}
+
 				if(!file_exists($path) || filesize($path)==0 || !$image_size)
 				{
 					$path = config('sites_store_path').'/'.web_import_image::storage_place_rel($params['url']);

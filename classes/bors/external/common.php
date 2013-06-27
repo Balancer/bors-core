@@ -136,7 +136,6 @@ if(config('is_developer')) { exit($img); }
 			$doc->encoding = 'UTF-8';
 			$html = preg_replace('!<meta [^>]+?>!is', '', $html);
 			$html = iconv('utf-8', 'utf-8//ignore', $html);
-			$html = preg_replace('!<script[^>]*>.+?</script>!is', '', $html);
 			$html = str_replace("\r", "", $html);
 
 //			if(config('is_developer')) { print_dd($html); exit('!description'); }
@@ -153,19 +152,47 @@ if(config('is_developer')) { exit($img); }
 
 				foreach(array(
 					'//script',
+					'//noscript',
 					'//style',
+					'//h1',
+					'//h2',
+					'//h3',
+					'//h4',
+					'//h5',
+					'//h6',
+					'//*[contains(@class, "nav")]',
+					'//*[contains(@class, "keyword")]',
+					'//*[contains(@class, "tag")]',
+					'//*[contains(@class, "adv")]',
+					'//*[contains(@class, "head")]',
+
+					// Хардкод для форумной разметки
+					'//*[@class="rep"]',
+					'//*[@class="top-ad"]',
+					'//*[@class="postsignature"]',
+					'//*[contains(@class, "pages_select")]',
+					'//*[contains(@class, "warning")]',
+					'//*[contains(@class, "avatar_")]',
 				) as $query)
 					foreach($xpath->query($query) as $node)
 						$node->parentNode->removeChild($node);
 
 //				if($divs = $xpath->query('//div[@id="content"]'))
 				// Тест на http://www.balancer.ru/g/p2982207
-				if($divs = $xpath->query('//p'))
+
+				$divs = $xpath->query('//p');
+				if(!$divs->length)
+					$divs = $xpath->query('//div');
+
+//				if(config('is_developer')) { var_dump($divs, $divs->length); }
+
+				if($divs)
 				{
 					$source = array();
 					for($i=0; $i<$divs->length; $i++)
 					{
 						$content = $divs->item($i);
+//						if(config('is_developer')) { print_dd($dom->saveHTML($content)); var_dump($content->nodeValue); }
 						$text = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
 						// Для http://www.balancer.ru/g/p1241837
 						// В тексте может попасться ссылка, которая вызовет зацикливание lcml

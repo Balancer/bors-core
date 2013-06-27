@@ -188,4 +188,18 @@ class bors_image_thumb extends bors_image
 	function fullsized_url() { $this->data_load(); return $this->original ? "<a href=\"{$this->original->url()}\">{$this->html_code()}</a>" : $this->html_code(); }
 
 	function alt() { return $this->original ? $this->original->alt() : ""; }
+
+	function delete()
+	{
+		@unlink($file = $this->full_file_name());
+
+		$dir = dirname($file);
+
+		do
+		{
+			@rmdir($dir);
+		} while(!is_dir($dir) && ($dir = dirname($dir)) && $dir != '/');
+
+		parent::delete();
+	}
 }

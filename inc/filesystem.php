@@ -32,7 +32,7 @@ function rec_rmdir($dir, $delete_self = true, $mask = '.*')
 	if(!$dh = opendir($dir))
 		return;
 
-    while(($obj = readdir($dh))) 
+    while(($obj = readdir($dh)))
 	{
         if($obj=='.' || $obj=='..')
 			continue;

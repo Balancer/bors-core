@@ -395,4 +395,15 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		$this->set_parent_class_id($object->class_id());
 		$this->set_parent_object_id($object->id());
 	}
+
+	function clear_thumbnails()
+	{
+		//TODO: придумать избавление от такого издевательства.
+		$thumbnails = bors_find_all('bors_image_thumb', array(
+			"full_file_name LIKE '%/".addslashes(basename($this->full_file_name()))."'",
+		));
+		if($thumbnails)
+			foreach($thumbnails as $t)
+				$t->delete();
+	}
 }

@@ -120,9 +120,9 @@ function lt_img($params)
 
 				$image_size = @getimagesize($path);
 
-//				if(config('is_developer')) { var_dump($path, file_exists($path), $image_size); exit(); }
 				if(file_exists($path) && !$image_size)
 				{
+	//				if(config('is_developer')) { var_dump($path, file_exists($path), $image_size); exit(); }
 					// Придумать, что сделать с этим хардкодом.
 					$thumbnails = bors_find_all('bors_image_thumb', array(
 						"full_file_name LIKE '%/".addslashes(basename($path))."'",

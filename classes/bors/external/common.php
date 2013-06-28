@@ -12,11 +12,12 @@ class bors_external_common extends bors_object
 		$more = false;
 
 //		$html = bors_lib_http::get($url);
-		$html = bors_lib_http::get_cached($url, 7200 /*, false, true*/ ); // Для сборса кеша
+		$html = blib_http::get_cached($url, 7200);
+//		$html = blib_http::get_cached($url, 7200, false, true); // Для сборса кеша
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
-//		if(config('is_developer')) { var_dump($url, $meta); exit('meta'); }
+//		if(config('is_developer')) { var_dump($url, $meta, $html); print_dd($html); exit('meta'); }
 
 		if(preg_match('/503 - Forwarding failure/', $html))
 			$html = '';

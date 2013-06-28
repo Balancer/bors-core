@@ -24,7 +24,8 @@ class blib_http_abstract
 			return $res;
 		}
 
-		$content = self::get($url, $raw);
+		$x = self::get_ex($url, array('is_raw' => $raw));
+		$content = $x['content'];
 
 		// Запоминаем не более одного мегабайта, а то по max_allowed_packet можно влететь.
 		if(strlen($content) > $max_length)
@@ -323,6 +324,8 @@ array (size=22)
 			        $charset = $m[1];
 				// <meta http-equiv="Content-Type" content="text/html;UTF-8">
 				elseif(preg_match("!<meta [^>]+Content-Type[^>]+content=\"text/html;([^>]+)\">!i", $data, $m))
+			        $charset = $m[1];
+				elseif(preg_match("!<meta charset=\"(.+?)\" />\">!i", $data, $m))
 			        $charset = $m[1];
 			}
 

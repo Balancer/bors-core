@@ -40,7 +40,15 @@ class bors_forms_dropdown extends bors_forms_element
 				$style = "width: 99%";
 		}
 
-		$html .= "<select";
+		if(!empty($json) && empty($id))
+		{
+			$id = $name;
+			$tag = "<input type=\"hidden\"";
+		}
+		else
+			$tag = "<select";
+
+		$html .= $tag;
 
 		foreach(explode(' ', 'id size style multiple class onchange') as $p)
 			if(!empty($$p))
@@ -50,6 +58,9 @@ class bors_forms_dropdown extends bors_forms_element
 			$html .= " name=\"{$name}\"";
 		else
 			$html .= " name=\"{$name}[]\"";
+
+		if(!empty($json))
+			$html .= " value=\"".htmlspecialchars($value)."\"";
 
 		$html .= ">\n";
 
@@ -136,6 +147,17 @@ class bors_forms_dropdown extends bors_forms_element
 
 		if($th)
 			$html .= "</td></tr>\n";
+
+		if(!empty($json))
+		{
+			jquery_select2::appear_ajax("'#{$name}'", $json, array(
+				'order' => 'title',
+				'title_field' => 'title',
+//				'placeholder' => 'Введите часть названия источника',
+			));
+
+			jquery::on_ready("$('#{$name}').select2(\"data\", { id: '{$value}', text: \"test\" })");
+		}
 
 		return $html;
 	}

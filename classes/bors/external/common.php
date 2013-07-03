@@ -12,8 +12,12 @@ class bors_external_common extends bors_object
 		$more = false;
 
 //		$html = bors_lib_http::get($url);
-		$html = blib_http::get_cached($url, 7200);
-//		$html = blib_http::get_cached($url, 7200, false, true); // Для сборса кеша
+		if(config('lcml_cache_disable_full'))
+			$html = blib_http::get_cached($url, 7200, false, true); // Для сборса кеша
+		else
+			$html = blib_http::get_cached($url, 7200);
+
+		$html = @iconv('utf-8', 'utf-8//ignore', $html);
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
@@ -136,7 +140,6 @@ if(config('is_developer')) { exit($img); }
 			$dom = new DOMDocument('1.0', 'UTF-8');
 			$doc->encoding = 'UTF-8';
 			$html = preg_replace('!<meta [^>]+?>!is', '', $html);
-			$html = iconv('utf-8', 'utf-8//ignore', $html);
 			$html = str_replace("\r", "", $html);
 
 //			if(config('is_developer')) { print_dd($html); exit('!description'); }

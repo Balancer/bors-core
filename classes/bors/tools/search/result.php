@@ -24,6 +24,7 @@ class bors_tools_search_result extends bors_tools_search
 	}
 
 	function t() { return @$_GET['t']; }
+	function y() { return @$_GET['y']; }
 	function u() { return urldecode(@$_GET['u']); }
 	function x() { return @$_GET['x']; }
 	function w() { return urldecode(@$_GET['w']); }
@@ -144,6 +145,13 @@ class bors_tools_search_result extends bors_tools_search
 		if($this->t())
 			$cl->SetFilter('topic_id', array(intval($this->t())));
 
+		if($y = $this->y())
+		{
+			$time_begin = strtotime("$y-01-01 00:00:00");
+			$time_end   = strtotime("$y-12-31 23:59:59");
+			$cl->SetFilterRange('create_time', $time_begin, $time_end);
+		}
+
 		switch($this->s())
 		{
 			case 'c':
@@ -172,7 +180,7 @@ class bors_tools_search_result extends bors_tools_search
 
 		$cl->SetArrayResult ( true );
 		$res = $cl->Query ( $this->q(), $index );
-//		print_d($res);
+//		print_dd($res);
 
 		if($res === false)
 			$data['error'] = $cl->GetLastError();
@@ -184,7 +192,7 @@ class bors_tools_search_result extends bors_tools_search
 			$data['q'] = $this->q();
 			$data['res'] = &$res;
 
-//			print_d($res);
+//			print_dd($res);
 
 			$opts = array (
 				'before_match'		=> '<b style="color: brown">',
@@ -294,6 +302,7 @@ class bors_tools_search_result extends bors_tools_search
 			'u' => $this->u(),
 			'x' => $this->x(),
 			'w' => $this->w(),
+			'y' => $this->y(),
 			'p' => $page > 1 ? $page : NULL,
 		)) : '');
 	}

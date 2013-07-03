@@ -21,6 +21,7 @@ function lp_rutube($id, &$params)
 	{
 		bors_new('balancer_board_posts_object', array(
 			'post_id' => $self->id(),
+			'user_id' => $self->owner_id(),
 			'target_class_id' => class_name_to_id('bors_external_rutube'),
 			'target_class_name' => 'bors_external_rutube',
 			'target_object_id' => $id,

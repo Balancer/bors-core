@@ -24,7 +24,7 @@
 {if $this->get('search_link')}<li class="imaged type-search"><a href="{$this->get('search_link')}">Поиск</a></li>{/if}
 {if $this->get('right_menu_links')}
 	{foreach $this->get('right_menu_links') as $title => $list}
-		<h2>{$title}</h2>
+		<h2>{$title|htmlspecialchars}</h2>
 		{foreach $list as $link}
 		<li{if $link.type} class="imaged type-{$link.type}"{/if}><a href="{$link.url}">{$link.title}</a></li>
 		{/foreach}

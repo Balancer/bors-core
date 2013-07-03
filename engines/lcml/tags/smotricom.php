@@ -15,6 +15,7 @@ function lp_smotricom($id, &$params)
 		)))
 			object_new_instance('balancer_board_posts_object', array(
 				'post_id' => $self->id(),
+				'user_id' => $self->owner_id(),
 				'target_class_id' => class_name_to_id('bors_external_smotricom'),
 				'target_class_name' => 'bors_external_smotricom',
 				'target_object_id' => $id,

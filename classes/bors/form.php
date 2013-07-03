@@ -380,6 +380,10 @@ class bors_form extends bors_object
 
 				switch($edit_type)
 				{
+					case 'checkbox_list':
+						$html .= $this->element_html('checkbox_list', $data);
+						break;
+
 					case 'string':
 					case 'input':
 					case 'int':

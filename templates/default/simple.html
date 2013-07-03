@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title>{$browser_title}</title>
+	<title>{$browser_title|htmlspecialchars}</title>
 	<meta http-equiv="content-type" content="text/html; charset={$this->output_charset()}" />
 	<link rel="SHORTCUT ICON" href="/favicon.ico" />
 	<script type="text/javascript" src="/_bors/js/cfuncs.js"></script>
@@ -57,7 +57,7 @@
 <div style="font-style:italic; margin-right: 0; display: block; float: right; width: 40%; text-align: justify">{$description|lcml_bbh}</div>
 <div class="clear">&nbsp;</div>
 <div class="top-nav">{module class="nav_top" id=$this}</div>
-{if not $skip_page_title}<h1>{$title}</h1>{/if}
+{if not $skip_page_title}<h1>{$title|htmlspecialchars}</h1>{/if}
 
 {if $error_message  }<div class="red_box">{$error_message    }</div>{/if}
 {if $success_message}<div class="green_box">{$success_message}</div>{/if}

@@ -1,5 +1,5 @@
 <div class="box shadow">
-<h3>Привязка {$target->class_title_rp()} к другим объектам</h3>
+<h3>Привязка {$target->class_title_rp()|htmlspecialchars} к другим объектам</h3>
 <ul>
 {foreach from=$linked item="x"}
 {if $x->target()}

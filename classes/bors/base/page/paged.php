@@ -48,6 +48,8 @@ class base_page_paged extends bors_page
 		if($limit = $this->limit())
 			$where['limit'] = $limit;
 
+		$where['by_id'] = true;
+
 		return $where;
 	}
 

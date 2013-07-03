@@ -150,13 +150,13 @@ class bors_forms_dropdown extends bors_forms_element
 
 		if(!empty($json))
 		{
-			jquery_select2::appear_ajax("'#{$name}'", $json, array(
+			jquery_select2::appear_ajax("'#{$name}'", $json, array_merge($params, array(
 				'order' => 'title',
-				'title_field' => 'title',
 //				'placeholder' => 'Введите часть названия источника',
-			));
+			)));
 
-			jquery::on_ready("$('#{$name}').select2(\"data\", { id: '{$value}', text: \"test\" })");
+			$value_title = object_property(bors_load($json, $value), 'title');
+			jquery::on_ready("$('#{$name}').select2(\"data\", { id: '{$value}', text: \"$value_title\" })");
 		}
 
 		return $html;

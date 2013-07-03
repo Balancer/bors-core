@@ -54,8 +54,11 @@ class bors_forms_checkbox_list extends bors_forms_element
 			}
 			elseif(preg_match("!^\w+$!", $list))
 			{
-				$list = new $list(@$args);
-				$list = $list->named_list();
+				$list_class = $list;
+				$list = new $list_class(@$args);
+				$list = $list->get('named_list');
+				if(!$list)
+					$list = base_list::make($list_class, array(), $params + array('non_empty' => true));
 			}
 			else
 			{
@@ -97,6 +100,20 @@ class bors_forms_checkbox_list extends bors_forms_element
 		else
 			$class = '';
 
+		$label_css = explode(' ', defval($params, 'label_css', ''));
+
+		if(in_array($name, explode(',', session_var('error_fields'))))
+			$label_css[] = "error";
+
+		if(!empty($label_css))
+			$label_css = " class=\"".join(" ", $label_css)."\"";
+		else
+			$label_css = "";
+
+		if($input_data_toggle = defval($params, 'input_data_toggle', ''))
+			$input_data_toggle = " data-toggle=\"$input_data_toggle\"";
+
+
 		$html = '';
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
@@ -107,10 +124,12 @@ class bors_forms_checkbox_list extends bors_forms_element
 				$style = "width: 99%";
 		}
 
+		$labels_html = array();
+
 		if($columns)
 		{
 			$span = "<div class=\"span".(12/$columns)."\">";
-			$html .= "<div class=\"container\"><div class=\"row\">$span";
+			$labels_html[] = "<div class=\"container\"><div class=\"row\">$span";
 		}
 
 		$pos = 0;
@@ -118,17 +137,24 @@ class bors_forms_checkbox_list extends bors_forms_element
 		{
 			$ids[] = $id;
 			$checked = in_array($id, $current);
-			$html .= "<label><input type=\"checkbox\" name=\"".addslashes($name)."[]\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$el_params$class />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."</label>$delim\n";
+			$labels_html[] = "<label{$label_css}><input type=\"checkbox\" name=\"".addslashes($name)."[]\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$el_params$class$input_data_toggle />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."</label>$delim\n";
 			$pos++;
 			if($columns && $pos >= count($list) / $columns)
 			{
 				$pos = 0;
-				$html .= "</div>$span";
+				$labels_html[] = "</div>$span";
 			}
 		}
 
 		if($columns)
-			$html .= "</div></div>";
+			$labels_html[] = "</div></div>";
+
+		$labels_html = join("", $labels_html);
+
+		if($container = defval($params, 'label_container'))
+			$labels_html = sprintf($container, $labels_html);
+
+		$html .= $labels_html;
 
 		$form->append_attr('checkboxes_list', $name);
 

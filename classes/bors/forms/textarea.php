@@ -75,6 +75,9 @@ class bors_forms_textarea extends bors_forms_element
 		if($has_versioning)
 			$html .= "<br/><small>".ec("Исходное значение: ").$previous."</small>\n";
 
+		if($append)
+			$html .= "<br/>".$append;
+
 		if($th)
 			$html .= "</td></tr>\n";
 

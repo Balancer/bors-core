@@ -8,7 +8,7 @@ function lcml_html_pre($txt)
 
 //	$txt = "html_disable = {$GLOBALS['lcml']['params']['html_disable']} - $txt";
 
-		$txt = preg_replace('/<!\-\-.*?\-\->/', '', $txt);
+		$txt = preg_replace('/<!\-\-[^#].*?\-\->/', '', $txt);
 
 //		print_d($GLOBALS['lcml']['params']['html_disable']);
 		if(empty($GLOBALS['lcml']['params']['html_disable']))
@@ -100,5 +100,7 @@ function lcml_html_pre($txt)
 			$txt = preg_replace("!<a [^>]*href=$q([$mask]+){$q}[^>]*>(.*?)</a>!is", "[url=$1]$2[/url]", $txt);
 		}
 
-		return str_replace(array('>'), array('&gt;'), $txt); // Придумать, как обойти порчу ссылок. Видимо, ставить в post? config('lcml_html_special_chars_enable') ? $txt : htmlspecialchars($txt, ENT_NOQUOTES);
+		// Придумать, как обойти порчу ссылок.
+		// Видимо, ставить в post? config('lcml_html_special_chars_enable') ? $txt : htmlspecialchars($txt, ENT_NOQUOTES);
+		return preg_replace('/([^\-])>/', '$1&gt;', $txt);
     }

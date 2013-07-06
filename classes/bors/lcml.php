@@ -366,9 +366,9 @@ class bors_lcml extends bors_object
 	{
 		// Обработка <!--[[use ...]]-->
 		$html_bb = preg_replace_callback(array(
-				'/<!--\[\[use\s+(\w+)\s*=\s*"([^"]+?)\s*"\s*\]\]-->/',
-				"/<!--\[\[use\s+(\w+)\s*=\s*'([^']+?)\s*'\s*\]\]-->/",
-				"/<!--\[\[use\s+(\w+)\s*=\s*([^\]]+?)\s*\]\]-->/",
+				'/<!--###use\s+(\w+)\s*=\s*"([^"]+?)\s*"\s*###-->/s',
+				"/<!--###use\s+(\w+)\s*=\s*'([^']+?)\s*'\s*###-->/s",
+				"/<!--###use\s+(\w+)\s*=\s*([^\]]+?)\s*###-->/s",
 			), 'bors_lcml::_output_parse_use', $html_bb);
 
 		return $html_bb;
@@ -377,7 +377,7 @@ class bors_lcml extends bors_object
 	// Генерация html-кода для предыдущей функции
 	static function make_use($type, $arg)
 	{
-		return "<!--[[use $type=\"$arg\"]]-->";
+		return "<!--###use $type=\"$arg\"###-->";
 	}
 
 	static function _output_parse_use($matches)
@@ -388,8 +388,17 @@ class bors_lcml extends bors_object
 			case 'js':
 				template_js_include($arg);
 				break;
+			case 'jqp':
+				jquery::plugin($arg);
+				break;
 			case 'css':
 				template_css($arg);
+				break;
+			case 'ready':
+				static $already = array();
+				if(empty($already[$type][$arg]))
+					jquery::on_ready(base64_decode($arg));
+				$already[$type][$arg] = true;
 				break;
 		}
 
@@ -462,7 +471,7 @@ class bors_lcml extends bors_object
 			$suite->assertEquals("===", lcml($code));
 		}
 
-		self::output_parse('<!--[[use js="/_bors3rdp/js/foo.test.js"]]-->');
+		self::output_parse('<!--###use js="/_bors3rdp/js/foo.test.js"###-->');
 		$suite->assertContains('/_bors3rdp/js/foo.test.js', base_object::template_data('js_include'));
 
 	}

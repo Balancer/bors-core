@@ -24,6 +24,7 @@ function lcml($text, $params = array())
 	{
 		$lc->set_params($params);
 	}
+
 	$res = $lc->parse($text);
 	$lc->set_p('only_tags', $save_tags);
 	$lc->set_p('level', $lc->p('level')-1);

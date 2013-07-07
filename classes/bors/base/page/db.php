@@ -63,8 +63,8 @@ class base_page_db extends base_page
 		if($this->storage_engine() != 'storage_db_mysql_smart')
 		{
 			return array(
-				$this->db_name(config('main_bors_db')) => array(
-					$this->table_name(bors_plural($this->class_name())) => $this->table_fields()
+				$this->db_name() => array(
+					$this->table_name() => $this->table_fields()
 				)
 			);
 		}
@@ -72,17 +72,14 @@ class base_page_db extends base_page
 		bors_use('natural/bors_plural');
 
 		return array(
-			$this->main_db(config('main_bors_db')) => array(
-				$this->main_table(bors_plural($this->class_name())) => $this->main_table_fields()
+			$this->db_name() => array(
+				$this->table_name() => $this->table_fields()
 			)
 		);
 	}
 
-	function db_name($default = NULL) { return $this->main_db($default); }
-	function main_db($default = NULL) { return $default ? $default : array_shift(array_keys($this->fields())); }
-
-	function table_name($default = NULL) { return $this->main_table($default); }
-	function main_table($default = NULL) { return $default ? $default : array_shift(array_keys(array_shift($this->fields()))); }
+	function _db_name_def() { return config('main_bors_db'); }
+	function _table_name_def() { return bors_plural($this->class_name()); }
 
 	function main_id_field()
 	{

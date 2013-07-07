@@ -27,35 +27,25 @@ class base_object_db extends bors_object
 
 	function fields()
 	{
-//		if($this->storage_engine() != 'storage_db_mysql_smart')
+		if($this->storage_engine() != 'storage_db_mysql_smart')
 		{
-//			echo "{$this} ({$this->storage_engine()}) => ".$this->table_name(bors_plural($this->class_name()))."\n";
 			return array(
-				$this->db_name(config('main_bors_db')) => array(
-					$this->table_name(bors_plural($this->class_name())) => $this->table_fields()
+				$this->db_name() => array(
+					$this->table_name() => $this->table_fields()
 				)
 			);
 		}
 
+		bors_use('natural/bors_plural');
+
 		return array(
-			$this->main_db(config('main_bors_db')) => array(
-				$this->main_table(bors_plural($this->class_name())) => $this->main_table_fields()
+			$this->db_name() => array(
+				$this->table_name() => $this->table_fields()
 			)
 		);
 	}
 
-	function __db_name_def() { return $this->main_db(); }
-	function main_db($default = NULL) { return $default ? $default : @array_shift(array_keys($this->fields())); }
-
-	function __table_name_def() { return $this->main_table(); }
-
-	function main_table()
-	{
-		if($tab = $this->get('table_name', NULL, true))
-			return $tab;
-
-		return array_shift(array_keys(array_shift($this->fields())));
-	}
+	function _table_name_def() { return bors_plural($this->class_name()); }
 
 	function new_instance() { bors_object_new_instance_db($this); }
 

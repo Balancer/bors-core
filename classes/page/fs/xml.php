@@ -23,9 +23,9 @@ class page_fs_xml extends base_page
 		return preg_replace('!/index\.html$!', '/', preg_replace('!\.xml$!', '.html', $this->id()));
 	}
 
-	function url($page = NULL)
+	function url_ex($page)
 	{
-		$parent = parent::url($page);
+		$parent = parent::url_ex($page);
 		if($parent)
 			return $parent;
 

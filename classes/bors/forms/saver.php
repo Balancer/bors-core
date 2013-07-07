@@ -141,9 +141,9 @@ class bors_forms_saver extends base_empty
 			switch($go)
 			{
 				case 'newpage':
-					return go($form_object->url(1));
+					return go($form_object->url());
 				case 'newpage_admin':
-					return go($object->admin_url(1));
+					return go($object->admin_url());
 				case 'newpage_edit_parent':
 				case 'admin_parent':
 					if($p = $form_object->get('admin_parent_url'))
@@ -157,7 +157,7 @@ class bors_forms_saver extends base_empty
 					{
 						return go($ps[0]);
 					}
-					return go($form_object->url(1));
+					return go($form_object->url());
 			}
 
 			if($object)

@@ -24,7 +24,7 @@
 				$last = $i;
 
 				if(is_object($page))
-					$p = $page->url($i);
+					$p = $page->url_ex($i);
 				else
 				{
 					$p = $page;
@@ -106,7 +106,7 @@
 	{
 		if(is_object($obj))
 		{
-			$p = $obj->url($page_num, true);
+			$p = $obj->url_ex($page_num);
 			if(preg_match("!\?!", $p))
 				$q = "";
 		}

@@ -131,7 +131,7 @@ class base_rss extends base_page
 
 		include_once("inc/texts.php");
 		$html = strip_text($html, $strip);
-		$html .= "<br /><br /><a href=\"".$object->url(1).ec("\">Дальше »»»");
+		$html .= "<br /><br /><a href=\"".$object->url().ec("\">Дальше »»»");
 
 		return $html;
 	}

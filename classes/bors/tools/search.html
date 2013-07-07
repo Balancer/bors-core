@@ -46,9 +46,9 @@
 {foreach from=$topics item="t"}
 <tr><td><b>
 {if $me && $me_id}
-<a href="{$t->url('new')}">
+<a href="{$t->url_ex('new')}">
 {else}
-<a href="{$t->url(1)}">
+<a href="{$t->url()}">
 {/if}
 {$t->title()}</a></b>{if $t->get('description') or $t->get('keywords_string')}<small>
 	{if $t->get('description')}<br/>{$t->get('description')}{/if}

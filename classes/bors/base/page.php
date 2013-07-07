@@ -373,14 +373,11 @@ class base_page extends bors_object
 
 	function keywords_linked() { return ''; }
 
-	function search_source($include_headers = true)
+	function search_source()
 	{
 		$result = array();
-		if($include_headers)
-		{
-			$result[] = $this->title();
-			$result[] = $this->description();
-		}
+		$result[] = $this->title();
+		$result[] = $this->description();
 
 		return join("\n\n", array_merge($result, array(
 			$this->source(),

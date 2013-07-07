@@ -11,25 +11,25 @@ class bors_tools_tasks extends bors_object_db
 
 	function target() { return object_load($this->target_class_id(), $this->target_object_id()); }
 	function work()   { return object_load($this->working_class_id(), $this->target()); }
-	
+
 	static function execute_task()
 	{
 		$task = objects_first('bors_tools_tasks', array('target_class_id<>0 AND working_class_id<>0', 'order'=>'-priority, execute_time'));
 
 		if(!$task)
 			return false;
-		
+
 		$task->work()->execute();
-		
+
 		$task->delete();
-		
+
 		return true;
 	}
 
 	static function add_task($target_object, $worker_class_name, $execute_time = 0, $priority = 0)
 	{
-		$db = new driver_mysql(bors_tools_tasks::main_db());
-		$db->insert_ignore(bors_tools_tasks::main_table(), array(
+		$db = new driver_mysql(bors_tools_tasks::db_name());
+		$db->insert_ignore(bors_tools_tasks::table_name(), array(
 			'target_class_id' => $target_object->class_id(),
 			'target_object_id' => $target_object->id(),
 			'target_object_page' => $target_object->page(),

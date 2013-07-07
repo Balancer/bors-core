@@ -23,8 +23,8 @@ class bors_ext_admin_core_edit extends base_page
 			'title' => $this->get_func_ret('title'),
 			'class_title' => $this->get_func_ret('class_title'),
 			'class_title_rp' => $this->get_func_ret('class_title_rp'),
-			'main_db' => $this->get_func_ret('main_db'),
-			'main_table' => $this->get_func_ret('main_table'),
+			'main_db' => $this->get_func_ret('db_name'),
+			'main_table' => $this->get_func_ret('table_name'),
 		);
 	}
 

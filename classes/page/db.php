@@ -6,7 +6,7 @@ class page_db extends base_page_db
 	function body_engine()	{ return 'body_source'; }
 	function admin_engine()	{ return 'bors_admin_engine_page'; }
 
-	function main_table_fields()
+	function table_fields()
 	{
 		return array(
 			'id',
@@ -32,7 +32,7 @@ class page_db extends base_page_db
 	{
 		if(!is_numeric(rtrim($id, '/')))
 		{
-			$db = new driver_mysql(call_user_func(array($class_name, 'main_db')));
+			$db = new driver_mysql(call_user_func(array($class_name, 'db_name')));
 			$object = objects_first($class_name, array('main_url' => $id));
 			$db->close();
 			return $object;
@@ -56,7 +56,7 @@ class page_db extends base_page_db
 	{
 		$this->set_parents_string_db(join("\n", str_replace("\r", "", $parents)), $db_up);
 		return; // TODO: проблема в сохранении в parents-db страниц с нечисловыми ID (xml/flat/etc)
-		$db = new driver_mysql(self::main_db());
+		$db = new driver_mysql(self::db_name());
 
 		objects_delete('bors_parent', array(
 			'child_class_id' => $this->class_id(),
@@ -77,5 +77,5 @@ class page_db extends base_page_db
 		}
 	}
 
-	function url($page=NULL) { return $this->main_url(); }
+	function url() { return $this->main_url(); }
 }

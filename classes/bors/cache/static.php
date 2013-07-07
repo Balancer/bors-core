@@ -116,7 +116,7 @@ class cache_static extends bors_object_db
 		if(!($cache = $object->attr('static_recreate_object')))
 			$cache = bors_load_ex(__CLASS__, $file, array('no_load_cache' => true));
 
-		$object_uri = $object->url($object->page());
+		$object_uri = $object->url_ex($object->page());
 		$original_uri = $object->called_url();
 
 		if($cache)

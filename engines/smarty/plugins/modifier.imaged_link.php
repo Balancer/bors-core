@@ -5,7 +5,7 @@ function smarty_modifier_imaged_link($object, $title, $link, $icon = NULL)
 	if(preg_match('/^\->(\w+)$/', $link, $m))
 	{
 		$link = $m[1];
-		$url = $object->url($link);
+		$url = $object->url_ex($link);
 	}
 	elseif(preg_match('/^\w+$/', $link))
 	{

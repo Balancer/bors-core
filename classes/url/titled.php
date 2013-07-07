@@ -5,7 +5,7 @@ $bors_url_titled_cache = array();
 
 class url_titled extends url_base
 {
-	function url($page=NULL)
+	function url_ex($page)
 	{
 		global $bors_url_titled_cache;
 		$obj = $this->id();

@@ -48,7 +48,7 @@ class blib_design
 			}
 
 			$html[] = "<li".($x['is_current'] ? $li_current_class : '')
-				."><a href=\"".$object->url($x['page'])."\">{$x['page']}</a></li>";
+				."><a href=\"".$object->url_ex($x['page'])."\">{$x['page']}</a></li>";
 		}
 
 		if(!$html)

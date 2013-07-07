@@ -30,10 +30,10 @@ class bors_system_sitemap_map extends bors_page
 					$freq = 'monthly';
 			for($p=1, $total = max(1, intval($x->get('total_pages'))); $p<=$total; $p++)
 			{
-				if($url=$x->url($p))
+				if($url=$x->url_ex($p))
 				{
 					echo "	<url>
-		<loc>".$x->url($p)."</loc>
+		<loc>".$x->url_ex($p)."</loc>
 		<lastmod>".date('c', $time)."</lastmod>
 		<changefreq>{$freq}</changefreq>
 	</url>

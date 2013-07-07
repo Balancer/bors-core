@@ -114,7 +114,8 @@ class bors_view extends bors_page
 		return array_merge(parent::body_data(), $data, $this->model()->data);
 	}
 
-	function url($page = NULL) { return $this->model()->url($page); }
+	function url() { return $this->model()->url(); }
+	function url_ex($page) { return $this->model()->url_ex($page); }
 	function admin_url() { return $this->model()->get('admin_url'); }
 	function object_type() { return $this->model()->object_type(); }
 

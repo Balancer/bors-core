@@ -31,7 +31,7 @@ class common_author extends bors_page_db
 
 	function find_by_name($last_name, $first_name, $middle_name)
 	{
-		$db = new DataBase(common_author::main_db());
+		$db = new DataBase(common_author::db_name());
 		return intval(
 			$db->get("SELECT id FROM bors_authors WHERE first_name='".addslashes(trim($first_name)).
 				"' AND last_name='".addslashes(trim($last_name)).
@@ -44,7 +44,7 @@ class common_author extends bors_page_db
 		if($author_id)
 			return $author_id;
 
-		$db = new DataBase(common_author::main_db());
+		$db = new DataBase(common_author::db_name());
 		$db->insert('bors_authors', array(
 			'first_name' => trim($first_name),
 			'last_name' => trim($last_name),

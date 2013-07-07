@@ -555,13 +555,13 @@ defined at {$this->class_file()}<br/>
 
 		if($append == 'new')
 		{
-			$url = $this->url('new');
+			$url = $this->url_ex('new');
 		}
 		else
 		{
 			if($append)
 				$append = ' '.$append;
-			$url = $this->url($this->page());
+			$url = $this->url_ex($this->page());
 		}
 		$title = $this->title();
 		if(!$title)
@@ -588,7 +588,7 @@ defined at {$this->class_file()}<br/>
 		if($title===NULL)
 			$title = $this->title();
 
-		return '<a href="'.$this->url($this->page()).$url_append.'"'.($append?' '.$append:'').">{$title}</a>"; 
+		return '<a href="'.$this->url_ex($this->page()).$url_append.'"'.($append?' '.$append:'').">{$title}</a>"; 
 	}
 
 	function titled_link_ex($params = array())
@@ -627,8 +627,8 @@ defined at {$this->class_file()}<br/>
 	}
 	function titled_link_target($target) { return $this->titled_link_ex(array('target' => $target)); }
 
-	function nav_named_url() { return '<a href="'.$this->url($this->page())."\">{$this->nav_name()}</a>"; }
-	function nav_named_link($append = NULL) { return '<a href="'.$this->url($this->page())."\"".($append?' '.$append:'').">{$this->nav_name()}</a>"; }
+	function nav_named_url() { return '<a href="'.$this->url_ex($this->page())."\">{$this->nav_name()}</a>"; }
+	function nav_named_link($append = NULL) { return '<a href="'.$this->url_ex($this->page())."\"".($append?' '.$append:'').">{$this->nav_name()}</a>"; }
 	function titled_admin_url($title = NULL)
 	{
 		if($title === NULL)
@@ -1072,24 +1072,24 @@ defined at {$this->class_file()}<br/>
 	 * @param  $page - опциональный параметр номера страницы при многостраничной разбивке объекта при выводе
 	 * @return Строка со ссылкой
 	 */
-	function url($page = NULL)
-	{
-		if(empty($this->attr['_url_engine_object'])/* || !$this->_url_engine->id() ?? */)
-			if(!($this->attr['_url_engine_object'] = object_load($this->get('url_engine'), $this)))
-				bors_throw("Can't load url engine '{$this->get('url_engine')}' for class {$this}");
+	function url() { return $this->url_ex($this->page()); }
 
-		return $this->attr['_url_engine_object']->url($page);
-	}
-
-	function url_ex($args)
+	function url_ex($args = NULL)
 	{
-		if(method_exists($this, 'url'))
-			return $this->url(defval($args, 'page'));
+		if(!is_object($args))
+			$args = array('page' => $args);
 
 		if(!($url_engine = defval($args, 'url_engine')))
 			$url_engine = $this->get('url_engine');
 
-		return bors_load($url_engine, $this)->url(defval($args, 'page'));
+		$key = '_url_engine_object_'.$url_engine;
+		$page = defval($args, 'page');
+
+		if(empty($this->attr[$key])/* || !$this->_url_engine->id() ?? */)
+			if(!($this->attr[$key] = bors_load($url_engine, $this)))
+				bors_throw("Can't load url engine '{$url_engine}' for class {$this->class_name()}");
+
+		return $this->attr[$key]->url_ex($page);
 	}
 
 	function internal_uri_ascii($limit = false, $ignore_oversize = false)
@@ -1142,9 +1142,9 @@ defined at {$this->class_file()}<br/>
 	}
 
 	/** Вернуть карту полей объекта для главной таблицы (если их несколько) */
-	function fields_map() { return $this->main_table_fields(); }
+	function fields_map() { return $this->table_fields(); }
 
-	function main_table_fields() { return array('id'); }
+	function table_fields() { return array('id'); }
 
 	function id_field()
 	{
@@ -1164,7 +1164,7 @@ defined at {$this->class_file()}<br/>
 		$ff = $this->fields_map();
 
 		if(count($ff) == 1) //FIXME: костыль для поддержки древних field() методов.
-							//В списке полей одна запись, если по дефолту прочиталось function main_table_fields() { return array('id'); }
+							//В списке полей одна запись, если по дефолту прочиталось function table_fields() { return array('id'); }
 			$ff = array_shift(array_shift($this->fields()));
 
 		if($id_field = @$ff['id'])
@@ -1401,7 +1401,7 @@ defined at {$this->class_file()}<br/>
 
 	function static_file()
 	{
-		$path = $this->url($this->args('page'));
+		$path = $this->url_ex($this->args('page'));
 		$data = url_parse($path);
 
 		$file = @$data['local_path'];
@@ -1490,7 +1490,7 @@ defined at {$this->class_file()}<br/>
 				'$title',
 				'$charset',
 			), array(
-				$this->url($this->page()),
+				$this->url_ex($this->page()),
 				$this->title(),
 				$this->output_charset(),
 			), $this->cs_u2i(config('temporary_file_contents')))), 120);

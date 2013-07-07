@@ -6,7 +6,7 @@ class bors_keyword extends base_object_db
 {
 	function table_name() { return bors_throw(ec('Вы не можете использовать bors_keyword непосредственно! Расширяйте класс.')); }
 
-    function main_table_fields()
+    function table_fields()
 	{
 		return array(
 			'id',
@@ -50,7 +50,7 @@ class bors_keyword extends base_object_db
 		return $x;
 	}
 
-	function url($page=NULL) { return config('tags_root_url', 'http://forums.balancer.ru/tags').'/'.trim($this->title()).'/'; }
+	function url() { return config('tags_root_url', 'http://forums.balancer.ru/tags').'/'.trim($this->title()).'/'; }
 
 	static function keyword_search_reindex($kw)
 	{

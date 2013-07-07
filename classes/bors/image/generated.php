@@ -2,10 +2,10 @@
 
 class bors_image_generated extends base_page_db
 {
-	function main_table() { return 'bors_image_generated'; }
+	function table_name() { return 'bors_image_generated'; }
 	function can_be_empty() { return true; }
 
-	function main_table_fields()
+	function table_fields()
 	{
 		return array(
 			'id',
@@ -68,7 +68,7 @@ function set_last_editor_id($v, $dbup = true) { return $this->set('last_editor_i
 		return $object->generator()->image();
 	}
 
-	function url($page=NULL) { return $this->image_url(); }
+	function url() { return $this->image_url(); }
 
 	function html() { return $this->html_code(); }
 	function html_code()

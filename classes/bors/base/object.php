@@ -1074,16 +1074,20 @@ defined at {$this->class_file()}<br/>
 	 */
 	function url() { return $this->url_ex($this->page()); }
 
-	function url_ex($args = NULL)
+	function url_ex($args)
 	{
-		if(!is_object($args))
-			$args = array('page' => $args);
+		if(is_object($args))
+			$page = popval($args, 'page');
+		else
+		{
+			$page = $args;
+			$args = array();
+		}
 
 		if(!($url_engine = defval($args, 'url_engine')))
 			$url_engine = $this->get('url_engine');
 
 		$key = '_url_engine_object_'.$url_engine;
-		$page = defval($args, 'page');
 
 		if(empty($this->attr[$key])/* || !$this->_url_engine->id() ?? */)
 			if(!($this->attr[$key] = bors_load($url_engine, $this)))

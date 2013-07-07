@@ -12,7 +12,7 @@ class bors_admin_engine extends bors_object
 		return $obj;
 	}
 
-	function url($page = NULL)
+	function url_ex($page)
 	{
 		$url = $this->admin_url();
 		if($page && $page != 1)

@@ -2,7 +2,7 @@
 
 class url_getp extends url_base
 {
-	function url($page = NULL)
+	function url_ex($page)
 	{
 		$obj = $this->id();
 		$url = $obj->called_url_no_get();

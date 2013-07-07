@@ -210,11 +210,11 @@ class bors_object_db extends base_object_db
 		return $fields;
 	}
 
-	function url($page = NULL)
+	function url_ex($page)
 	{
 		// http://la2.balancer.ru/forum/index.php?showtopic=524&view=findpost&p=4163
 		if($this->url_engine())
-			return parent::url($page);
+			return parent::url_ex($page);
 
 		$site_url = config('main_site_url');
 		$class_name = $this->class_name();

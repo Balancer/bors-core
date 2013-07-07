@@ -20,7 +20,7 @@ class page_fs_separate extends base_page
 //	function parents() { return $this->_parents ? $this->_parents : parent::parents(); }
 //	function set_parents($array) { return $this->_parents = $array; }
 
-	function url($page=NULL) { return ($u=parent::url($page)) ? $u : $this->id(); }
+	function url_ex($page) { return ($u=parent::url_ex($page)) ? $u : $this->id(); }
 
 //	function dont_check_fields() { return array_merge(parent::dont_check_fields, array('cr_type')); }
 

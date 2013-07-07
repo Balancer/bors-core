@@ -71,8 +71,11 @@ class common_search extends base_page
 
 	function page() { return max(1, intval(@$_GET['page'])); }
 
-	function url($page = 1)
+	function url_ex($page)
 	{
+		if($page < 2)
+			$page = 1;
+
 		return "/search/?query=".urlencode($this->query())."&where={$this->where()}&page={$page}";
 	}
 }

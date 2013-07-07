@@ -317,18 +317,18 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 			// баг в том, что редиректит при простой инициализации объектов
 			// Пробуем в роли времянки возвращать URL:
 			if(config('__main_object_load', false))
-				return $obj->url($page);
+				return $obj->url_ex($page);
 /*
 			if(!config('do_not_exit'))
 			{
 				echo "Redirect by $url_pattern";
-				go($obj->url($page), true);
+				go($obj->url_ex($page), true);
 				bors_exit("Redirect");
 			}
 			else
 */
 			// Иначе — загружаем объект редиректа
-			return object_load($obj->url($page));
+			return object_load($obj->url_ex($page));
 		}
 		return $obj;
 	}
@@ -504,12 +504,12 @@ function class_load_by_vhosts_url($url)
 //					if(!config('do_not_exit'))
 //					{
 //						echo "Redirect by $url_pattern";
-//						go($obj->url($page), true);
+//						go($obj->url_ex($page), true);
 //						exit("Redirect");
 //					}
 //					else
-//						return go($obj->url($page), true);
-					$obj->set_attr('redirect_to', $obj->url($page));
+//						return go($obj->url_ex($page), true);
+					$obj->set_attr('redirect_to', $obj->url_ex($page));
 				}
 
 				return $obj;

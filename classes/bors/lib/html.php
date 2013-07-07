@@ -85,7 +85,7 @@ class bors_lib_html
 	static function set_og_meta($view)
 	{
 		template_meta_prop('og:title',	$view->title());
-		template_meta_prop('og:url',	$view->url($view->page()));
+		template_meta_prop('og:url',	$view->url_ex($view->page()));
 		if($type = $view->get('meta_og_type'))
 			template_meta_prop('og:type', $type);
 		if($image = $view->get('image'))

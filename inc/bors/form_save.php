@@ -180,21 +180,21 @@ function bors_form_save(&$obj)
 		if(!empty($_GET['go']))
 		{
 			if($_GET['go'] == "newpage")
-				return go($form->url(1));
+				return go($form->url());
 
 			if($_GET['go'] == "newpage_admin")
-				return go($form->admin_url(1));
+				return go($form->admin_url());
 
 			if($_GET['go'] == "newpage_edit_parent" || $_GET['go'] == "admin_parent")
 			{
-				$p = object_load($form->admin_url(1));
+				$p = object_load($form->admin_url());
 				if($p)
 				{
 					$p = $p->parents();
 					return go($p[0]);
 				}
 
-				return go($form->url(1));
+				return go($form->url());
 			}
 
 			if($form)
@@ -387,7 +387,7 @@ function bors_form_errors($data, $conditions = array())
 
 function bors_form_parse_vars($text, $object)
 {
-	$text = str_replace('{$target_admin_url}', $object->admin()->url(1), $text);
-	$text = str_replace('$target_admin_url', $object->admin()->url(1), $text);
+	$text = str_replace('{$target_admin_url}', $object->admin()->url(), $text);
+	$text = str_replace('$target_admin_url', $object->admin()->url(), $text);
 	return $text;
 }

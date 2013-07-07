@@ -2,7 +2,7 @@
 
 class url_calling extends url_base
 {
-	function url($page = NULL)
+	function url_ex($page)
 	{
 		$url = NULL;
 		$obj = $this->id();

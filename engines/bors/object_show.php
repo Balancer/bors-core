@@ -106,14 +106,14 @@
 		}
 
 		$called_url = preg_replace('/\?.*$/', '', $obj->called_url());
-		$target_url = preg_replace('/\?.*$/', '', $obj->url($page));
+		$target_url = preg_replace('/\?.*$/', '', $obj->url_ex($page));
 //		if(config('is_developer')) echo "{$obj->debug_title()}:<br/>.called={$obj->called_url()},<br/>target={$target_url} && called={$called_url} && {$obj->_auto_redirect()}<br/>";
 		if($obj->called_url()
 				&& !preg_match('!'.preg_quote($target_url).'$!', $called_url)
 				&& $obj->_auto_redirect()
 				&& $target_url != 'called'
 		)
-			return go($obj->url($page), true);
+			return go($obj->url_ex($page), true);
 
 		if($processed === false)
 		{
@@ -182,14 +182,14 @@ function bors_object_create($obj)
 	if($processed === true)
 		return NULL;
 
-	if($obj->called_url() && !preg_match('!'.preg_quote($obj->url($page)).'$!', $obj->called_url()))
+	if($obj->called_url() && !preg_match('!'.preg_quote($obj->url_ex($page)).'$!', $obj->called_url()))
 		return NULL;
 
 	if($processed === false)
 	{
 		bors()->set_main_object($obj, true);
 		unset($GLOBALS['cms']['templates']);
-		$GLOBALS['main_uri'] = preg_replace('!:\d+/!', '', $obj->url($obj->page()));
+		$GLOBALS['main_uri'] = preg_replace('!:\d+/!', '', $obj->url_ex($obj->page()));
 
 		$obj->set_attr('recreate_on_content', true);
 

@@ -290,8 +290,8 @@ $php = "<?php\n\nclass $class_name extends base_object_db
 {
 $ftitle
 	function nav_name() { return ec('".mb_strtolower($class_title)."'); }
-	function main_table() { return '$table_name'; }
-	function main_table_fields()
+	function table_name() { return '$table_name'; }
+	function table_fields()
 	{
 		return array(
 			".join("\n\t\t\t", $class_field_names)."

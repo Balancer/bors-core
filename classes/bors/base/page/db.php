@@ -15,6 +15,8 @@ class base_page_db extends base_page
 
 	function uri2id($id) { return $id; }
 
+	function _url_engine_def() { return 'url_auto'; }
+
 	function __construct($id)
 	{
 		$id = $this->uri2id($id);

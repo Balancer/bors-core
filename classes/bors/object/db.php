@@ -13,6 +13,8 @@ class bors_object_db extends base_object_db
 	function _item_name() { return array_pop(explode('_', $this->class_name())); }
 	function _item_name_m() { return bors_plural($this->_item_name()); }
 
+	function _url_engine_def() { return 'url_auto'; }
+
 	function self_class_bors_object_type() { return 'model'; }
 
 	function fields()

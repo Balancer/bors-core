@@ -5,6 +5,12 @@
 </dd>
 </dl>
 
+<dl class="box">
+<dd>
+<a href="http://forums.balancer.ru/users/votes/">Все оценённые сообщения (всего оценок: <?= $total?>) »»»</a>
+</dd>
+</dl>
+
 <table class="null"><tr><td>
 <dl class="box">
 <dt>Лучшие <?=count($best)?> сообщений форума за месяц</dt>

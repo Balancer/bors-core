@@ -289,12 +289,12 @@ class bors_tools_search_result extends bors_tools_search
 				unset($_GET[$key]);
 	}
 
-	function url($page = NULL, $get = true)
+	function url_ex($page = NULL)
 	{
 		if(!$page)
 			$page = $this->args('page');
 
-		return $_SERVER['REQUEST_URI'].($get ? $this->gets(array(
+		return $_SERVER['REQUEST_URI'].$this->gets(array(
 			'q' => $this->q(),
 			'f' => $this->f(),
 			's' => $this->s(),
@@ -304,7 +304,7 @@ class bors_tools_search_result extends bors_tools_search
 			'w' => $this->w(),
 			'y' => $this->y(),
 			'p' => $page > 1 ? $page : NULL,
-		)) : '');
+		));
 	}
 
 	function set_x($value) { $_GET['x'] = $value; }

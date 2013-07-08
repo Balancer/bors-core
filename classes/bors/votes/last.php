@@ -1,12 +1,13 @@
 <?php
 
-class bors_votes_last extends base_page
+class bors_votes_last extends balancer_board_page
 {
 	function title() { return ec('Оценки сообщений'); }
 	function config_class() { return 'airbase_board_config'; }
 	function body_engine() { return 'body_php'; }
+	function template() { return 'forum/_header.html'; }
 
-	function local_data()
+	function body_data()
 	{
 /*
 		$last = objects_array('bors_votes_thumb', array(

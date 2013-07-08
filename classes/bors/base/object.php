@@ -7,8 +7,9 @@ class base_object extends base_empty
 	function attr_preset() { return array(
 		'title' => $this->class_title().' '.$this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
 		'config_class' => config('config_class'),
-		'url_engine' => 'url_calling2',
 	); }
+
+	function _url_engine_def() { return 'url_calling2'; }
 
 //	При настройке проверить:
 //	— http://www.aviaport.ru/services/events/arrangement/

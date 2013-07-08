@@ -42,6 +42,7 @@ class auto_object_php extends bors_object
 		$is_auto = false;
 		$object_id = false;
 
+		//	/users/84018/
 		if(preg_match('!^(.+)_(\d+|new)$!', $class_path, $m))
 		{
 			$object_id = $m[2];
@@ -78,7 +79,14 @@ class auto_object_php extends bors_object
 		}
 		elseif(preg_match('!^(\w+)_(\d+)(_\w+)$!', $class_path, $m))
 		{
-			if(class_include($class_base.($cp = $m[1].$m[3])))
+			// /users/84018/votes/ -> project_users_votes_view(84018)
+			if(class_include($class_base.($cp = $m[1].$m[3].'_view')))
+			{
+				$class_path = $cp;
+				$object_id = $m[2];
+				$is_auto = true;
+			}
+			elseif(class_include($class_base.($cp = $m[1].$m[3])))
 			{
 				$class_path = $cp;
 				$object_id = $m[2];
@@ -93,7 +101,7 @@ class auto_object_php extends bors_object
 //				var_dump($class_path, $object_id);
 			}
 		}
-		// http://admin.aviaport.ru/digest/origins/list.xls
+		// http://admin.aviaport.ru/digest/origins/list.xls -> project_digest_origins_list
 		elseif(preg_match('!^(\w+_[a-z0-9]+)\.(\w{1,4})$!', $class_path, $m))
 		{
 			if(class_include($class_base.($cp = $m[1])))

@@ -500,6 +500,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			if($grouped)
 				return $dbh->select_array($table_name, join(',',$select), $where, $class_name);
 
+			$where['*fake_select'] = true;
 			$dbh->select_array($table_name, join(',',$select), $where, $class_name);
 			$count = intval($dbh->get('SELECT FOUND_ROWS()'));
 		}

@@ -125,7 +125,11 @@ class base_page_paged extends bors_page
 		// Если уберём try, проверить на http://admin.aviaport.ru/commerce/pressrelease/export.xls
 		try
 		{
-			$count = $this->_total = bors_count($this->main_class(), $this->where());
+			$where = $this->where();
+			if($group = $this->group())
+				$where['group'] = $group;
+
+			$count = $this->_total = bors_count($this->main_class(), $where);
 		}
 		catch(Exception $e)
 		{

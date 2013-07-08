@@ -56,7 +56,12 @@ class driver_mysql extends DataBase implements Iterator
 
 		$index_field = popval($where_map, '*select_index_field*');
 
+		$fake = popval($where_map, '*fake_select');
+
 		$query = "SELECT $field FROM $table ".mysql_args_compile($where_map, $class);
+		if($fake)
+			return $this->query($query);
+
 		return $this->get_array($query, false, false, $index_field);
 	}
 

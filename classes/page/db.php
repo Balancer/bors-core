@@ -78,4 +78,5 @@ class page_db extends base_page_db
 	}
 
 	function url() { return $this->main_url(); }
+	function url_ex($page) { return $this->main_url(); }
 }

@@ -12,6 +12,8 @@ class bors_admin_engine extends bors_object
 		return $obj;
 	}
 
+	function url() { return $this->url_ex($this->page()); }
+
 	function url_ex($page)
 	{
 		$url = $this->admin_url();

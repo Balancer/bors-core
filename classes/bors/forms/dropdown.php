@@ -42,7 +42,7 @@ class bors_forms_dropdown extends bors_forms_element
 
 		if(!empty($json) && empty($id))
 		{
-			$id = $name;
+			$id = md5(rand());
 			$tag = "<input type=\"hidden\"";
 		}
 		else
@@ -143,15 +143,17 @@ class bors_forms_dropdown extends bors_forms_element
 				$html .= "\t\t\t<option value=\"$id\"".(in_array($id, $current, $strict) ? " selected=\"selected\"" : "").">$iname</option>\n";
 		}
 
-		$html .= "\t\t</select>\n";
+		if(empty($json))
+			$html .= "\t\t</select>\n";
 
 		if($th)
 			$html .= "</td></tr>\n";
 
 		if(!empty($json))
 		{
-			jquery_select2::appear_ajax("'#{$name}'", $json, array_merge($params, array(
-				'order' => 'title',
+			jquery_select2::appear_ajax("'#{$id}'", $json, array_merge($params, array(
+				'order' => defval($params, 'order', 'title'),
+				'title_field' => defval($params, 'title_field', 'title'),
 //				'placeholder' => 'Введите часть названия источника',
 			)));
 

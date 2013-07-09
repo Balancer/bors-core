@@ -157,11 +157,11 @@ function bors_dirs($skip_config = false, $host = NULL)
 {
 	static $dirs = NULL;
 
-	if(isset($dirs[$skip_config][$host]))
-		return $dirs[$skip_config][$host];
-
 	if(!$host)
 		$host = @$_SERVER['HTTP_HOST'];
+
+	if(isset($dirs[$skip_config][$host]))
+		return $dirs[$skip_config][$host];
 
 	$vhost = '/vhosts/'.$host;
 
@@ -182,6 +182,10 @@ function bors_dirs($skip_config = false, $host = NULL)
 		if(is_dir($dir))
 			$data[] = $dir;
 	}
+
+	if($prjs = @$GLOBALS['bors_data']['projects'])
+		foreach($prjs as $project_name => $x)
+			$data[] = $x['project_path'];
 
 	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
 }
@@ -266,6 +270,48 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 		'bors_site' => $bors_site,
 		'document_root' => $documents_root,
 	);
+}
+
+function register_project($project_name, $project_path)
+{
+	$GLOBALS['bors_data']['projects'][$project_name] = array(
+		'project_path' => $project_path,
+	);
+}
+
+function register_router($base_url, $base_class)
+{
+	if(preg_match('/^(\w+?)_(\w+)$/', $base_class, $m))
+		list($project, $sub) = array($m[1], $m[2]);
+
+	$path = $GLOBALS['bors_data']['projects'][$project]['project_path'];
+
+	if(file_exists($r = "$path/classes/".str_replace('_', '/', $base_class)."/routes.php"))
+	{
+		$GLOBALS['bors_context']['base_url'] = $base_url;
+		$GLOBALS['bors_context']['base_class'] = $base_class;
+		require $r;
+		unset($GLOBALS['bors_context']['base_url']);
+		unset($GLOBALS['bors_context']['base_class']);
+	}
+
+	$GLOBALS['bors_data']['routers'][$base_url] = array(
+		'base_class' => $base_class,
+	);
+}
+
+// http://admin.aviaport.wrk.ru/projects/maks2013/
+function bors_route($map)
+{
+	$base_url = $GLOBALS['bors_context']['base_url'];
+	$base_class = $GLOBALS['bors_context']['base_class'];
+
+	foreach($map as $x)
+	{
+		if(preg_match('!^(\S+)\s*=>\s*(_\S+)$!', trim($x), $m))
+			$GLOBALS['bors_map'][] = $base_url.$m[1].' => '.$base_class.$m[2];
+//		var_dump($GLOBALS['bors_map']);
+	}
 }
 
 function bors_url_map($map_array)

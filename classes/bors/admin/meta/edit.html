@@ -21,6 +21,8 @@
 
 {/form}
 
+{block name="admin_meta_edit_body_end"}{/block}
+
 {if $this->id() && $target->access()->get('can_delete') && !$this->get('__skip_delete')}
 {* module class="bors_admin_module_link" object=$target types='-ipotekbank_file' linkable='ipotekbank_linkable' *}
 {* include file="xfile:bors/admin/files.html" object=$target upload_files_count="1" file_class='ipotekbank_file' *}

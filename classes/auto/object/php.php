@@ -35,9 +35,29 @@ class auto_object_php extends bors_object
 			$page = $m[2];
 		}
 
+		$class_base = NULL;
+		if($routers = @$GLOBALS['bors_data']['routers'])
+		{
+//			var_dump($routers);
+			foreach($routers as $base_url => $x)
+			{
+				$base_class = $x['base_class'];
+				if(strpos($path, $base_url) === 0)
+				{
+					$class_base = $base_class.'_';
+					$path = str_replace($base_url, '', $path);
+//					var_dump($base_class, $base_url, $path);
+				}
+			}
+		}
+
 		$class_path = str_replace('/', '_', trim($path, '/'));
-		if($class_base = config('classes_auto_base', config('project.name', 'auto_php')))
-			$class_base .= '_';
+
+		if(!$class_base)
+		{
+			if($class_base = config('classes_auto_base', config('project.name', 'auto_php')))
+				$class_base .= '_';
+		}
 
 		$is_auto = false;
 		$object_id = false;
@@ -46,6 +66,7 @@ class auto_object_php extends bors_object
 		if(preg_match('!^(.+)_(\d+|new)$!', $class_path, $m))
 		{
 			$object_id = $m[2];
+//			var_dump($class_base.($cp = $m[1].'_edit'));
 
 			if(is_numeric($object_id) && class_include($class_base.($cp = $m[1].'_view')))
 			{
@@ -119,6 +140,8 @@ class auto_object_php extends bors_object
 
 		if($object_id == $this->called_url())
 			$object_id = NULL;
+
+//		var_dump($class_base.$class_path, $object_id);
 
 		if(!($object = bors_load($class_base.$class_path, $object_id)))
 		{

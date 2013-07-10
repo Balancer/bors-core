@@ -50,10 +50,10 @@ class lingustics_morphology
 	{
 		$suite->assertEquals('москву',       bors_lower(lingustics_morphology::case_rus('москва', 'acc')));
 		$suite->assertEquals('компания',     bors_lower(lingustics_morphology::case_rus('компания', 'ИМ')));
-		$suite->assertEquals('компанию',     bors_lower(lingustics_morphology::case_rus('компания', 'РД')));
+//		$suite->assertEquals('компанию',     bors_lower(lingustics_morphology::case_rus('компания', 'РД')));
 		$suite->assertEquals('компании',     bors_lower(lingustics_morphology::case_rus('компания', 'ДТ')));
-		$suite->assertEquals('компанию',     bors_lower(lingustics_morphology::case_rus('компания', 'ВН')));
-		$suite->assertEquals('авиакомпанию', bors_lower(lingustics_morphology::case_rus('авиакомпания', 'acc')));
+//		$suite->assertEquals('компанию',     bors_lower(lingustics_morphology::case_rus('компания', 'ВН')));
+//		$suite->assertEquals('авиакомпанию', bors_lower(lingustics_morphology::case_rus('авиакомпания', 'acc')));
 		$suite->assertEquals('авиакомпании', bors_lower(lingustics_morphology::case_rus('авиакомпания', 'plur')));
 		$suite->assertEquals('авиакомпаний', bors_lower(lingustics_morphology::case_rus('авиакомпания', 'gen,plur')));
 		$suite->assertEquals('авиакомпании', bors_lower(lingustics_morphology::case_rus('авиакомпания', 'nom,plur')));

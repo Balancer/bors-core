@@ -72,7 +72,7 @@ array
 		return (strpos($this->args('class'), '_admin_') ? config('admin_site_url') : config('main_site_url')) . $path;
 	}
 
-	function url()
+	function url_ex($page)
 	{
 		$url = $this->action_url();
 

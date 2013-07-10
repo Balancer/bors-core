@@ -2,7 +2,7 @@
 
 class bors_class_loader
 {
-	static function file($class_name)
+	static function file($class_name, $dirs = array())
 	{
 		if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
 			return $real_class_file;
@@ -12,6 +12,28 @@ class bors_class_loader
 			$map = $c->getClassMap();
 			if($real_class_file = @$map[$class_name])
 				return $real_class_file;
+		}
+
+		$class_path = "";
+		$class_file = $class_name;
+
+		if(preg_match("!^(.+/)([^/]+)$!", str_replace("_", "/", $class_name), $m))
+		{
+			$class_path = $m[1];
+			$class_file = $m[2];
+		}
+
+		foreach($dirs as $dir)
+		{
+			if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.php"))
+				return $GLOBALS['bors_data']['classes_included'][$class_name] = self::load_and_cache($class_name, $file_name);
+
+			if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.yaml"))
+			{
+				bors_class_loader_yaml::load($class_name, $file_name);
+				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
+				return $GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
+			}
 		}
 
 		return NULL;

@@ -458,7 +458,7 @@ class bors_lcml extends bors_object
 
 		// Упрощённая разметка ссылок с вложенным BB-кодом:
 		$code = '[poland/|[b]Польша[/b]]';
-		$suite->assertEquals('<a rel="nofollow" href="poland/" class="external"><strong>Польша</strong></a>', lcml($code));
+		$suite->assertEquals('<a rel="nofollow" href="poland/"><strong>Польша</strong></a>', lcml($code));
 
 		// Переводы строк.
 		$code = "Раз, два, три, четыре, пять\nВышел зайчик погулять";

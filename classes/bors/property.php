@@ -22,7 +22,7 @@ class bors_property extends bors_object_simple
 
 	static function __unit_test($suite)
 	{
-		$property = new bors_property();
+		$property = new bors_property(NULL);
 		$suite->assertNull($property->val());
 
 		$suite->assertEquals('abc', $property->set('abc')->val());

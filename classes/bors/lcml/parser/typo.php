@@ -15,7 +15,7 @@ class bors_lcml_parser_typo extends bors_lcml_parser
 		$text = str_replace('<<', '&laquo;', $text);
 		$text = str_replace('>>', '&raquo;', $text);
 		$text = str_replace(' -- ', ' &mdash; ', $text);
-		$text = preg_replace("!(\s|^|\()\+/?-([^\-])!is", "$1&plusmn;$1", $text);
+		$text = preg_replace("!(\s|^|\()\+/?-([^\-])!is", "$1&plusmn;$2", $text);
 
 		return $text;
 	}

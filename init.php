@@ -284,7 +284,7 @@ function register_router($base_url, $base_class)
 	if(preg_match('/^(\w+?)_(\w+)$/', $base_class, $m))
 		list($project, $sub) = array($m[1], $m[2]);
 
-	$path = $GLOBALS['bors_data']['projects'][$project]['project_path'];
+	$path = @$GLOBALS['bors_data']['projects'][$project]['project_path'];
 
 	if(file_exists($r = "$path/classes/".str_replace('_', '/', $base_class)."/routes.php"))
 	{

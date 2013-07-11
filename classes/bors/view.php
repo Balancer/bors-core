@@ -67,7 +67,14 @@ class bors_view extends bors_page
 	function target() { return $this->model(); } // Для совместимости
 
 	function _title_def() { return $this->model()->title(); }
-	function _nav_name_def() { return $this->model()->nav_name(); }
+	function _nav_name_def()
+	{
+		if($nav = $this->model()->nav_name())
+			return $nav;
+
+		return $this->model()->title();
+	}
+
 	function _description_def() { return $this->model()->description(); }
 
 	function create_time() { return $this->model()->create_time(); }

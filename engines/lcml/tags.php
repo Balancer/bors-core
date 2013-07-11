@@ -372,6 +372,13 @@ function next_open_brace($txt, $pos)
 			$params['description']=$m[2];
 		}
 
+		if(preg_match('!^\w+="[^"]+"\s+(.+)$!', $in, $m))
+			$params['tail']=$m[1];
+		elseif(preg_match("!^\w+='[^']+'\s+(.+)$!", $in, $m))
+			$params['tail']=$m[1];
+		elseif(preg_match("!^\w+=\S+\s+(.+)$!", $in, $m))
+			$params['tail']=$m[1];
+
 		$params['orig']	= trim($in);
 		$params['width']   = '';//"100%";
 		$params['height']   = '';

@@ -255,9 +255,9 @@ class base_page extends bors_object
 		return "xfile:{$template_file}";
 	}
 
-	function nav_name()
+	function _nav_name_def()
 	{
-		if(($nav = parent::nav_name()))
+		if(($nav = parent::_nav_name_def()))
 			return $nav;
 
 		return $this->id() ? $this->class_title() : '';

@@ -11,6 +11,13 @@ class lcml_tag_pair_warning extends bors_lcml_tag_pair
 {
 	function html($text)
 	{
-		return "<div class=\"yellow_box\">".lcml($text)."</div>";
+		return "<div class=\"alert yellow_box\">".lcml($text)."</div>";
+	}
+
+	static function __dev()
+	{
+		require_once 'engines/lcml.php';
+		echo lcml('[warning]test[/warning]'), PHP_EOL;
+		echo lcml('[warning=test]'), PHP_EOL;
 	}
 }

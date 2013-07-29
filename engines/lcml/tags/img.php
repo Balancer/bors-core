@@ -159,7 +159,7 @@ function lt_img($params)
 
 					$content_type = $x['content_type'];
 
-					if(filesize($path) <= 0)
+					if(@filesize($path) <= 0)
 						return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[zero size or time out]</small>";
 
 //					if(config('is_developer')) { var_dump($params, $content_type); exit(); }

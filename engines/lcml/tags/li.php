@@ -22,7 +22,7 @@ function lp_ul($text, &$param)
 	// Если что, обратить внимание на http://ipotek-bank.wrk.ru/services/10/kredit-zalogovyj/
 	// Непонятно, зачем очистка переводов строк вокруг была убрана раньше.
 	$param['skip_around_cr'] = 'one';
-	return save_format("\n<ul$type>".lcml(trim($text))."</ul>\n");
+	return "\n".save_format("\n<ul$type>".lcml(trim($text))."</ul>\n")."\n";
 }
 
 function lp_ol($text, $param)

@@ -23,7 +23,7 @@ class bors_synonym extends bors_object_db
 		);
 	}
 
-	function post_set($data)
+	function post_set(&$data)
 	{
 		$this->set_norm_title(bors_text_clear($data['title'], true));
 	}

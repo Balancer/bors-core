@@ -2,7 +2,7 @@
 
 class bors_lib_dir
 {
-	function clean_path($dir)
+	static function clean_path($dir)
 	{
 		do
 		{

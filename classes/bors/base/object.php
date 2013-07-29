@@ -1413,8 +1413,14 @@ defined at {$this->class_file()}<br/>
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
 
-		if($r = config('cache_static.root'))
-			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $_SERVER['DOCUMENT_ROOT'].'/'.$r, $file);
+		$rel_file = @$data['path'];
+		if(preg_match('!/$!', $rel_file))
+			$rel_file .= $this->index_file();
+
+		if($r = $this->get('cache_static_root'))
+			$file = $r.$rel_file;
+		elseif($r = config('cache_static.root'))
+			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $r, $file);
 
 		return $file;
 	}
@@ -1482,10 +1488,10 @@ defined at {$this->class_file()}<br/>
 		$fs = $fe && filesize($file) > 2000;
 
 		if($use_static && $file && $fe && !$recreate)
-			return file_get_contents($this->static_file());
+			return file_get_contents($file);
 
 		if($use_static
-			&& !$fs 
+			&& !$fs
 			&& $this->use_temporary_static_file()
 			&& config('temporary_file_contents')
 			&& !file_exists($this->static_file())
@@ -1515,6 +1521,7 @@ defined at {$this->class_file()}<br/>
 			cache_static::drop($this);
 			return '';
 		}
+
 //		echo "cs=$use_static, recreate=$recreate";
 		if($use_static || $recreate)
 			cache_static::save($this, $content);

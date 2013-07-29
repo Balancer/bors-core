@@ -2,6 +2,9 @@
 
 function lcml_sharp($txt, &$mask)
 {
+//		if(config('is_developer'))
+//			var_dump($txt, restore_format($txt));
+
         $array = explode("\n", $txt);
 
 		$pos = 0;
@@ -25,8 +28,10 @@ function lcml_sharp($txt, &$mask)
 
             if(preg_match("!^#(\w+)(\s*)(.*?)$!" , $s, $m)) // Открывающийся или одиночный тег
             {
+//            	var_dump("lsp_$m[1]");
                 if(function_exists("lsp_$m[1]"))
                 {
+//	            	var_dump("found");
                     if(!$in_pair) // новый
                     {
                         $in_pair++;

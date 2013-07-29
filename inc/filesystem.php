@@ -106,9 +106,17 @@ function find_files_loop($path, $pattern = '.*', $callback, $level=0)
 	$matches = array();
 	$entries = array();
 	$dir = dir($path);
+	if(!$dir)
+	{
+		echo "Can't do $path\n";
+		return;
+	}
+
 	while (false !== ($entry = $dir->read()))
 		$entries[] = $entry;
+
 	$dir->close();
+
 	foreach ($entries as $entry)
 	{
 		$fullname = $path . $entry;

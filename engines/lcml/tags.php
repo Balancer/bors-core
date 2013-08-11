@@ -406,6 +406,7 @@ function next_open_brace($txt, $pos)
 			if(preg_match("!^border$!",$param))   { $params['border']=1; continue;}
 			if(preg_match("!^noborder$!",$param)) { $params['border']=0; continue;}
 			if(preg_match("!^nohref$!",$param)) { $params['nohref']=true; continue;}
+			if(preg_match("!^resize$!",$param)) { $params['resize']=true; continue;}
 			if(preg_match("!^noresize$!",$param)) { $params['noresize']=true; continue;}
 			if(preg_match("!^notitle$!", $param)) { $params['notitle'] = true; continue;}
 			if(preg_match("!^direct$!", $param)) { $params['is_direct'] = true; continue;}

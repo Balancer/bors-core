@@ -117,7 +117,7 @@ class bors_external_common extends bors_object
 		}
 
 		if($img)
-			$img = "[img={$img} 200x200 left flow nohref]";
+			$img = "[img={$img} 200x200 left flow nohref resize]";
 
 /*
 		if(!$img && config('is_developer'))

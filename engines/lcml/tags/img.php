@@ -28,7 +28,7 @@ function lt_img($params)
 
 	if(preg_match('/\.gif$/i', $params['url']))
 	{
-		$params['noresize'] = true;
+		$params['noresize'] = !@$params['resize'];
 		$params['nohref'] = true;
 	}
 

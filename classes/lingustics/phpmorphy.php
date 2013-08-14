@@ -14,8 +14,8 @@ class lingustics_phpmorphy
 
 	static function factory()
 	{
-		if(ini_get('default_charset') != 'utf-8')
-			bors_throw('phpMorphy работает только в UTF-8');
+		if(strtolower(ini_get('default_charset')) != 'utf-8')
+			bors_throw('phpMorphy работает только в UTF-8. А у Вас default_charset='.ini_get('default_charset'));
 
 		$instance = new lingustics_phpmorphy(NULL);
 

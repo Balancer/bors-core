@@ -1,5 +1,7 @@
 <?php
 
+// 	Основной класс.
+
 require_once('inc/images.php');
 
 class bors_image_thumb extends bors_image
@@ -97,7 +99,7 @@ class bors_image_thumb extends bors_image
 		$file_orig  = $this->original->file_name_with_path();
 		$file_thumb = $this->file_name_with_path();
 		$abs = false;
-		if(!file_exists($file_orig))
+		if(!file_exists($file_orig) && !preg_match('!^/var/www/!', $file_orig)) // Заменить хардкод
 		{
 			$file_orig  = $_SERVER['DOCUMENT_ROOT'] . $file_orig;
 			$file_thumb = $_SERVER['DOCUMENT_ROOT'] . $file_thumb;

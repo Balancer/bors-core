@@ -19,6 +19,9 @@ class bors_cache_redis extends bors_cache_base
 //			)
 		);
 
+		if($cfg_srv = config('redis.servers'))
+			$options['servers'] = $cfg_srv;
+
 		$_rediska = new Rediska($options);
 	}
 

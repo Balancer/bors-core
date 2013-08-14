@@ -138,7 +138,7 @@ if(config('is_developer')) { exit($img); }
 		if(!$description)
 		{
 			$dom = new DOMDocument('1.0', 'UTF-8');
-			$doc->encoding = 'UTF-8';
+			$dom->encoding = 'UTF-8';
 			$html = preg_replace('!<meta [^>]+?>!is', '', $html);
 			$html = str_replace("\r", "", $html);
 

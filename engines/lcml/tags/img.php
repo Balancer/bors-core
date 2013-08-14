@@ -184,6 +184,15 @@ function lt_img($params)
 						unlink($m[1]);
 				}
 
+				$image_size = @getimagesize($path);
+				if(file_exists($path) && filesize($path)>0 && $image_size)
+				{
+					$data['local_path'] = str_replace($_SERVER['DOCUMENT_ROOT'], '',
+						str_replace(str_replace('www.', '', $_SERVER['DOCUMENT_ROOT']), '', $path));
+
+					$data['local'] = true;
+				}
+
 				// test: http://www.aviaport.ru/conferences/40911/rss/
 				if(file_exists($path) && filesize($path)>0 && config('lcml.airbase.register.images'))
 				{
@@ -218,7 +227,8 @@ function lt_img($params)
 				if(!empty($params['noresize']))
 					$img_ico_uri  = $uri;
 				else
-					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", $uri);
+					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3",
+						"http://{$_SERVER['HTTP_HOST']}{$data['local_path']}");
 
 				if(preg_match('!\.[^/+]$!', $uri))
 					$img_page_uri = preg_replace("!^(http://.+?)(\.[^\.]+)$!", "$1.htm", $uri);
@@ -246,13 +256,24 @@ function lt_img($params)
 					$href = $uri;
 
 				// Дёргаем превьюшку, чтобы могла сгенерироваться.
+				// Кстати, ошибка может быть и от перегрузки. Надо будет сделать прямой вызов
 				blib_http::get($img_ico_uri, true, 100000); // До 100кб
 
-				list($width, $height, $type, $attr) = @getimagesize($img_ico_uri);
-				@list($img_w, $img_h) = getimagesize($uri);
+				list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
+
+				if(!intval($width) || !intval($height))
+				{
+					// Если с одного раза не сработало, пробуем ещё раз
+					sleep(5);
+					blib_http::get($img_ico_uri, true, 1000000); // До 1Мб
+
+					list($width, $height, $type, $attr) = @getimagesize($img_ico_uri);
+				}
 
 				if(!intval($width) || !intval($height))
 					return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get <a href=\"{$img_ico_uri}\">icon's</a> size]";
+
+				@list($img_w, $img_h) = getimagesize($uri);
 
 				if(empty($params['description']))
 					$params['description'] = "";

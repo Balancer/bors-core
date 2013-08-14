@@ -7,7 +7,7 @@
 
 class bors_lcml_tag_pair_round_box extends bors_lcml_tag_pair
 {
-	function html($text, $params)
+	function html($text, &$params)
 	{
 //		var_dump($text);
 		return save_format("<div class=\"round_box shadow8 mtop8\">\n".lcml($text)."\n<div class=\"clear\">&nbsp;</div></div>\n");

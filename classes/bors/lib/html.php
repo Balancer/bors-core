@@ -10,7 +10,7 @@ class bors_lib_html
 		$content = preg_replace('!<meta[^>]+charset[^>]+>!i', '', $content);
 
 		$dom = new DOMDocument('1.0', 'UTF-8');
-		$doc->encoding = 'UTF-8';
+		$dom->encoding = 'UTF-8';
 
 		@$dom->loadHTML('<?xml encoding="UTF-8">' . $content);
 

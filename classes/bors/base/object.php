@@ -735,7 +735,7 @@ defined at {$this->class_file()}<br/>
 	function form_errors() { return array(); }
 
 	// true if break
-	function check_data($data)
+	function check_data(&$data)
 	{
 		if(($conditions = $this->form_errors($data)))
 		{
@@ -1356,7 +1356,7 @@ defined at {$this->class_file()}<br/>
 	function post_set(&$data) { }
 	function post_save(&$data) { }
 
-	function on_new_instance($data)
+	function on_new_instance(&$data)
 	{
 		$this->__update_relations();
 	}

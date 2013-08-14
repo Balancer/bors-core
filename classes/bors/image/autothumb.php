@@ -69,14 +69,15 @@ class bors_image_autothumb extends bors_object
 
 		@list($width, $height) = explode('x', $this->geo);
 		require_once('inc/bors/bors_images.php');
-		bors_image_message(ec("Ошибка изображения:\n").config('bors-image-lasterror'), array(
+		$msg = ec("Ошибка изображения:\n").config('bors-image-lasterror');
+		debug_hidden_log('image-thumb-error', "geo={$this->geo}, img={$img}; $msg");
+		bors_image_message($msg, array(
 			'print' => true,
 			'width' => $width ? $width : 100,
 			'height' => $height ? $height: 100,
 		));
 		config_set('bors-image-lasterror', NULL);
 
-		debug_hidden_log('image-thumb-error', "geo={$this->geo}, img={$img}");
 		return true;
 	}
 

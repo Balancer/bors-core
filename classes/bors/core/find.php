@@ -213,7 +213,7 @@ class bors_core_find
 
 		$field_name = $field_data['name'];
 		if(!$field_name)
-			bors_throw("Not defined table field for property '{$m[1]}' in class '{$class_name}' as '*{$m[1]}'");
+			bors_throw("Not defined table field for property '{$m[1]}' in class '{$class_name}' as '{$m[1]}'");
 
 		if($sql = @$field_data['sql_function'])
 			return "$sql(`$table`.`{$field_name}`)";

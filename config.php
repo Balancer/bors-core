@@ -43,7 +43,7 @@ config_set('upload_dir', 'uploads');
 
 // Кодировки
 if(!config('internal_charset'))
-	config_set('internal_charset', ini_get('default_charset'));		// Внутренняя кодировка фреймворка, обычно равна системной
+	config_set('internal_charset', strtolower(ini_get('default_charset')));		// Внутренняя кодировка фреймворка, обычно равна системной
 if(!config('internal_charset'))
 	config_set('internal_charset', 'utf-8');		//	Если системная не указана, то считаем utf-8. Исправить на учёт наличия mb_* функций
 if(!config('output_charset'))

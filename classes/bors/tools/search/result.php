@@ -167,7 +167,7 @@ class bors_tools_search_result extends bors_tools_search
 				$cl->SetSortMode(SPH_SORT_RELEVANCE);
 			case 't':
 			default:
-				$cl->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'create_time');
+				$cl->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'timestamp');
 				break;
 		}
 

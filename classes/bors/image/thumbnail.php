@@ -1,5 +1,8 @@
 <?php
 
+// Возможно, устаревший, по сравнению с bors_image_thumb класс
+// Используется только в bors_image_file?
+
 require_once('inc/images.php');
 
 class bors_image_thumbnail extends bors_image

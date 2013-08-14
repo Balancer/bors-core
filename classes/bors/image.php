@@ -338,7 +338,10 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 			$file = $_SERVER['DOCUMENT_ROOT'] . $file;
 
 		if(!file_exists($file))
+		{
+			config_set('bors-image-lasterror', "Image '$file' not exists");
 			return false;
+		}
 
 		@header('Content-type: ' . $this->mime_type());
 		@header('Content-Length: ' . filesize($file));

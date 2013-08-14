@@ -15,6 +15,7 @@ if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 if(preg_match('!^(.+):\d+$!', $_SERVER['HTTP_HOST'], $m))
 	$_SERVER['HTTP_HOST'] = $m[1];
 
+
 // Если в имени хоста есть www, то убираем
 // $_SERVER['HTTP_HOST'] = preg_replace('!^www\.!', '', $_SERVER['HTTP_HOST']);
 
@@ -88,7 +89,7 @@ if($is_crowler && config('bot_lavg_limit'))
 		debug_hidden_log('system_overload_crowlers', $load_avg, false);
 //		@file_put_contents($file = config('debug_hidden_log_dir')."/blocked-bots.log", $_SERVER['REQUEST_URI']."/".@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."; LA={$load_avg}\n", FILE_APPEND);
 //		@chmod($file, 0666);
-		exit("Service Temporarily Unavailable");
+		exit("Service Temporarily Unavailable; load_avg={$load_avg}");
 	}
 }
 
@@ -113,7 +114,7 @@ if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect
 			."; LA={$load_avg}\n", FILE_APPEND);
 	@chmod($file, 0666);
 
-	exit("Service Temporarily Unavailable");
+	exit("Service Temporarily Unavailable; IP={$_SERVER['REMOTE_ADDR']}; LA={$load_avg}");
 }
 
 // Если есть строка запроса, но пустой $_GET, то PHP чего-то не распарсил. Бывает на некоторых
@@ -132,7 +133,7 @@ $_GET = array_merge($_GET, $_POST); // но, вообще, нужно с эти�
 // Если делает много тяжёлых запросов - просим подождать.
 
 if(config('access_log')
-		&& !in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '89.108.118.15'))
+		&& !in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '89.108.118.15', '95.31.43.16', '192.168.1.1'))
 		&& !config('locked_db_time')
 	)
 {
@@ -172,7 +173,7 @@ if(config('access_log')
 
 			header('Status: 503 Service Temporarily Unavailable');
 			header('Retry-After: 600');
-			exit("Service Temporarily Unavailable");
+			exit("Service Temporarily Unavailable; IP={$_SERVER['REMOTE_ADDR']}; time={$session_user_load_summary}s");
 		}
 
 		if($is_crowler && $bot_overload && $session_user_load_summary > $bot_overload)

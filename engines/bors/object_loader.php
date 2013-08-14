@@ -567,6 +567,7 @@ function object_init($class_name, $object_id, $args = array())
 	{
 		$found = 0;
 		$obj = new $class_name($object_id);
+
 		if(!method_exists($obj, 'set_class_file'))
 			return NULL;
 

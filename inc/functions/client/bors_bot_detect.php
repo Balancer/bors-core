@@ -10,6 +10,10 @@ function bors_bot_detect($user_agent, &$data = array())
 													// Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
 			'Begun Robot Crawler' => 'Begun Robot Crawler',
 			'bingbot' => 'Bing',				// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
+			'Digg Feed Fetcher' => array(		// Digg Feed Fetcher 1.0 (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_1) AppleWebKit/534.48.3 (KHTML, like Gecko) Version/5.1 Safari/534.48.3)
+				'bot' => 'Digg Feed Fetcher',
+				'crowler' => false,
+			),
 			'discobot' => 'Discovery Engine',	// Mozilla/5.0 (compatible; discobot/1.1; +http://discoveryengine.com/discobot.html)
 			'DotBot' => 'DotBot',		// Mozilla/5.0 (compatible; DotBot/1.1; http://www.dotnetdotcom.org/, crawler@dotnetdotcom.org)
 			'Exabot' => 'Exabot',		// Mozilla/5.0 (compatible; Exabot-Images/3.0; +http://www.exabot.com/go/robot)
@@ -48,6 +52,10 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Spinn3r' => 'Spinn3r',	// Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.19; aggregator:Spinn3r (Spinn3r 3.1); http://spinn3r.com/robot) Gecko/2010040121 Firefox/3.0.19
 			'SurveyBot' => 'SurveyBot',	// 64.246.165.190, Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.13) Gecko/2009073022 Firefox/3.5.2 (.NET CLR 3.5.30729) SurveyBot/2.3 (DomainTools)
 			'Tagoobot' => 'Tagoobot',	// Mozilla/5.0 (compatible; Tagoobot/3.0; +http://www.tagoo.ru)
+			'theoldreader' => array( 	// Mozilla/5.0 (compatible; theoldreader.com; 1 subscribers; feed-id=0719795c4d27c784217b0bc0)
+				'bot' => 'The Old Reader (RSS)',
+				'crowler' => false,
+			),
 			'TurnitinBot' => 'TurnitinBot', // TurnitinBot/2.1 (http://www.turnitin.com/robot/crawlerinfo.html)
 			'Twiceler' => 'Twiceler',	// Mozilla/5.0 (Twiceler-0.9 http://www.cuil.com/twiceler/robot.html)
 			'Yeti' => 'Yeti',			// Yeti/1.0 (NHN Corp.; http://help.naver.com/robots/)
@@ -80,16 +88,16 @@ function bors_bot_detect($user_agent, &$data = array())
 
 	if(preg_match("/(\w*)(bot|crowler|spider)/i", $user_agent, $m))
 	{
-//		bors_function_include('debug/hidden_log');
-//		debug_hidden_log('_need_append_data', 'unknown bot detectd');
+		bors_function_include('debug/hidden_log');
+		debug_hidden_log('_need_append_data', 'unknown '.$m[2].' detectd');
 		$data = array('bot' => '$user_agent', 'crowler' => $user_agent);
 		return 'Unknown bot'.(empty($m[1]) ? '' : ': '.$m[1]);
 	}
 
-	if(preg_match("/monitor|feed|rss/i", $user_agent))
+	if(preg_match("/(monitor|feed|rss)/i", $user_agent, $m))
 	{
 		bors_function_include('debug/hidden_log');
-		debug_hidden_log('_need_append_data', 'unknown bot detectd');
+		debug_hidden_log('_need_append_data', 'unknown '.$m[1].' bot detectd');
 		$data = array('bot' => '$user_agent', 'crowler' => false);
 		return 'Unknown bot';
 	}

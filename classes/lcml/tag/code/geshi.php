@@ -1,9 +1,9 @@
 <?php
 
-if(!config('geshi_include'))
+if(!config('geshi.include'))
 	return;
 
-include_once(config('geshi_include'));
+include_once(config('geshi.include'));
 
 class lcml_tag_code_geshi extends base_empty
 {

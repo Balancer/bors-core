@@ -175,7 +175,7 @@ class DataBase
 		$qtime = microtime(true) - $qstart;
 
 		if($qtime > config('debug_mysql_slow', 5))
-			debug_hidden_log('mysql-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
+			debug_hidden_log('mysql-queries-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
 
 		if($type = config('debug.trace_queries'))
 		{

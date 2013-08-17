@@ -22,8 +22,8 @@ class bors_templates_smarty3 extends bors_template
 
 	static function factory()
 	{
-		if(config('smarty3_include'))
-			require_once(config('smarty3_include'));
+		if(config('smarty.include'))
+			require_once(config('smarty.include'));
 		else
 			if(!class_exists('Smarty'))
 				bors_throw("Can't find Smarty");
@@ -53,7 +53,7 @@ class bors_templates_smarty3 extends bors_template
 		if(!file_exists($smarty->cache_dir))
 			mkpath($smarty->cache_dir, 0777);
 
-		$plugins_dir = array(BORS_3RD_PARTY.'/'.dirname(config('smarty3_include')).'/plugins');
+		$plugins_dir = array(BORS_3RD_PARTY.'/'.dirname(config('smarty.include')).'/plugins');
 		foreach(bors_dirs(true) as $dir)
 			$plugins_dir[] = $dir.'/engines/smarty/plugins';
 //echo '.';

@@ -11,6 +11,7 @@ function bors_bot_detect($user_agent, &$data = array())
 												// Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
 			'Begun Robot Crawler' => 'Begun Robot Crawler',
 			'bingbot' => 'Bing',				// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
+			'BLEXBot' => 'BLEXBot',				// Mozilla/5.0 (compatible; BLEXBot/1.0; +http://webmeup.com/crawler.html)
 			'Digg Feed Fetcher' => array(		// Digg Feed Fetcher 1.0 (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_1) AppleWebKit/534.48.3 (KHTML, like Gecko) Version/5.1 Safari/534.48.3)
 				'bot' => 'Digg Feed Fetcher',
 				'crowler' => false,
@@ -21,6 +22,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Ezooms' => 'Ezooms',				// Mozilla/5.0 (compatible; Ezooms/1.0; ezooms.bot@gmail.com)
 			'Falconsbot' => 'Falconsbot',		// 219.219.127.4, Mozilla/5.0 (compatible; Falconsbot; +http://ws.nju.edu.cn/falcons/)
 			'Feedreader' => 'Feedreader',		// Feedreader 3.14 (Powered by Newsbrain)
+			'GeliyooBot',						// Mozilla/5.0 (compatible; GeliyooBot/1.0beta; +http://www.geliyoo.com/)
 			'Gigabot' => 'Gigabot',				// Gigabot/3.0 (http://www.gigablast.com/spider.html)
 			'Mediapartners-Google' => array(	//	Mediapartners-Google
 				'bot' => 'Google Mediapartners',
@@ -30,6 +32,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'igorbot' => 'igorbot',		// Mozilla/5.0 (Windows; U; Windows NT 6.0; ru; rv:1.9.2.18) Gecko/20110614 Firefox/3.6.17 igorbot
 			'LexxeBot' => 'LexxeBot',	// LexxeBot/1.0 (lexxebot@lexxe.com)
 			'Liferea' => 'Liferea',		// Liferea/1.6.2 (Linux; ru_RU.UTF-8; http://liferea.sf.net/)
+			'linkdexbot' => 'Linkdex Bot',  // Mozilla/5.0 (compatible; linkdexbot/2.0; +http://www.linkdex.com/about/bots/)
 			'lwp' => 'LWP',				// lwp-trivial/1.41
 			'Mail.Ru' => 'Mail.Ru',		// Mail.Ru/1.0
 			'MJ12bot' => 'Majestic12Bot',	// Mozilla/5.0 (compatible; MJ12bot/v1.2.5; http://www.majestic12.co.uk/bot.php?+)
@@ -40,6 +43,10 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Nutch'	=> 'Nutch',			// gh-index-bot/Nutch-1.0 (GH Web Search.; lucene.apache.org; gh_email at someplace dot com)
 			'OOZBOT' => 'OOZBOT', 		// OOZBOT/0.20 ( http://www.setooz.com/oozbot.html ; agentname at setooz dot_com )
 			'ovalebot' => 'ovalebot',	// ovalebot3.ovale.ru facepage
+			'Page2RSS' => array(		// Mozilla/5.0 (compatible;  Page2RSS/0.7; +http://page2rss.com/)
+				'bot' => 'Page2RSS',
+				'crowler' => false,
+			),
 			'psbot'	=> 'Picsearch bot',	// psbot/0.1 (+http://www.picsearch.com/bot.html)
 			'princeton crawler' => 'princeton crawler',	// nu_tch-princeton/Nu_tch-1.0-dev (princeton crawler for cass project; http://www.cs.princeton.edu/cass/; zhewang a_t cs ddot princeton dot edu)
 			'proximic' => array(		// Mozilla/5.0 (compatible; proximic; +http://www.proximic.com/info/spider.php)
@@ -61,6 +68,10 @@ function bors_bot_detect($user_agent, &$data = array())
 				'bot' => 'The Old Reader (RSS)',
 				'crowler' => false,
 			),
+			'Tiny Tiny RSS' => (, // Tiny Tiny RSS/1.7.4 (http://tt-rss.org/)
+				'bot' => 'Tiny Tiny RSS',
+				'crowler' => false,
+			),
 			'TurnitinBot' => 'TurnitinBot', // TurnitinBot/2.1 (http://www.turnitin.com/robot/crawlerinfo.html)
 			'Twiceler' => 'Twiceler',	// Mozilla/5.0 (Twiceler-0.9 http://www.cuil.com/twiceler/robot.html)
 			'Yeti' => 'Yeti',			// Yeti/1.0 (NHN Corp.; http://help.naver.com/robots/)
@@ -75,8 +86,12 @@ function bors_bot_detect($user_agent, &$data = array())
 			'yandex' => 'Yandex',
 			'Yanga' => 'Yanga',
 			'YoudaoBot' => 'YoudaoBot',	// Mozilla/5.0 (compatible; YoudaoBot/1.0; http://www.youdao.com/help/webmaster/spider/; )
+			'ZumBot',					// Mozilla/5.0 (compatible; ZumBot/1.0; http://help.zum.com/inquiry)
 		) as $pattern => $bot)
 	{
+		if(is_numeric($pattern))
+			$pattern = $bot;
+
 		if(preg_match("!".$pattern."!i", $user_agent))
 		{
 			if(is_array($bot))

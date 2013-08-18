@@ -26,6 +26,12 @@ function get_browser_info($user_agent, $log_unknown = true)
 	{
 		$device = 'Nokia N70';
 	}
+	elseif(preg_match('!NokiaC6-00!i', $user_agent))
+	{
+		$device = 'Nokia';
+		$os = 'Symbian';
+		$ov = 'Series 60';
+	}
 	elseif(preg_match('!Nokia!i', $user_agent))
 	{
 		$device = 'Nokia';
@@ -212,6 +218,8 @@ function get_browser_info($user_agent, $log_unknown = true)
 	}
 	elseif(preg_match('!MIDP!', $user_agent))
 		$browser = 'MIDP';
+	elseif(preg_match('!UC Browser!', $user_agent))
+		$browser = 'UC Browser';
 
 	if(preg_match('!Akregator!', $user_agent))
 	{

@@ -5,9 +5,10 @@ function bors_bot_detect($user_agent, &$data = array())
 	// Описания некоторых ботов: http://www.tengy.ru/bot.html
 
 	foreach(array(
+			'AhrefsBot' => 'AhrefsBot',			 // Mozilla/5.0 (compatible; AhrefsBot/5.0; +http://ahrefs.com/robot/)
 			'archive.org_bot' => 'archive.org bot',	// Mozilla/5.0 (compatible; archive.org_bot +http://www.archive.org/details/archive.org_bot)
-			'Baiduspider' => 'Baidu Spider',		// Baiduspider+(+http://www.baidu.com/search/spider.htm)
-													// Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
+			'Baiduspider' => 'Baidu Spider',	// Baiduspider+(+http://www.baidu.com/search/spider.htm)
+												// Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
 			'Begun Robot Crawler' => 'Begun Robot Crawler',
 			'bingbot' => 'Bing',				// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
 			'Digg Feed Fetcher' => array(		// Digg Feed Fetcher 1.0 (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_1) AppleWebKit/534.48.3 (KHTML, like Gecko) Version/5.1 Safari/534.48.3)
@@ -15,17 +16,17 @@ function bors_bot_detect($user_agent, &$data = array())
 				'crowler' => false,
 			),
 			'discobot' => 'Discovery Engine',	// Mozilla/5.0 (compatible; discobot/1.1; +http://discoveryengine.com/discobot.html)
-			'DotBot' => 'DotBot',		// Mozilla/5.0 (compatible; DotBot/1.1; http://www.dotnetdotcom.org/, crawler@dotnetdotcom.org)
-			'Exabot' => 'Exabot',		// Mozilla/5.0 (compatible; Exabot-Images/3.0; +http://www.exabot.com/go/robot)
-			'Ezooms' => 'Ezooms',		// Mozilla/5.0 (compatible; Ezooms/1.0; ezooms.bot@gmail.com)
-			'Falconsbot' => 'Falconsbot',	// 219.219.127.4, Mozilla/5.0 (compatible; Falconsbot; +http://ws.nju.edu.cn/falcons/)
-			'Feedreader' => 'Feedreader',	// Feedreader 3.14 (Powered by Newsbrain)
-			'Gigabot' => 'Gigabot',		// Gigabot/3.0 (http://www.gigablast.com/spider.html)
+			'DotBot' => 'DotBot',				// Mozilla/5.0 (compatible; DotBot/1.1; http://www.dotnetdotcom.org/, crawler@dotnetdotcom.org)
+			'Exabot' => 'Exabot',				// Mozilla/5.0 (compatible; Exabot-Images/3.0; +http://www.exabot.com/go/robot)
+			'Ezooms' => 'Ezooms',				// Mozilla/5.0 (compatible; Ezooms/1.0; ezooms.bot@gmail.com)
+			'Falconsbot' => 'Falconsbot',		// 219.219.127.4, Mozilla/5.0 (compatible; Falconsbot; +http://ws.nju.edu.cn/falcons/)
+			'Feedreader' => 'Feedreader',		// Feedreader 3.14 (Powered by Newsbrain)
+			'Gigabot' => 'Gigabot',				// Gigabot/3.0 (http://www.gigablast.com/spider.html)
 			'Mediapartners-Google' => array(	//	Mediapartners-Google
 				'bot' => 'Google Mediapartners',
 				'crowler' => false,
 			),
-			'google' => 'Google',	// Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+			'google' => 'Google',		// Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
 			'igorbot' => 'igorbot',		// Mozilla/5.0 (Windows; U; Windows NT 6.0; ru; rv:1.9.2.18) Gecko/20110614 Firefox/3.6.17 igorbot
 			'LexxeBot' => 'LexxeBot',	// LexxeBot/1.0 (lexxebot@lexxe.com)
 			'Liferea' => 'Liferea',		// Liferea/1.6.2 (Linux; ru_RU.UTF-8; http://liferea.sf.net/)
@@ -41,6 +42,10 @@ function bors_bot_detect($user_agent, &$data = array())
 			'ovalebot' => 'ovalebot',	// ovalebot3.ovale.ru facepage
 			'psbot'	=> 'Picsearch bot',	// psbot/0.1 (+http://www.picsearch.com/bot.html)
 			'princeton crawler' => 'princeton crawler',	// nu_tch-princeton/Nu_tch-1.0-dev (princeton crawler for cass project; http://www.cs.princeton.edu/cass/; zhewang a_t cs ddot princeton dot edu)
+			'proximic' => array(		// Mozilla/5.0 (compatible; proximic; +http://www.proximic.com/info/spider.php)
+				'bot' => 'Proximic Spider',
+				'crowler' => false,
+			),
 			'rambler' => 'Rambler',
 			'robotgenius' => 'robotgenius',			// robotgenius (http://robotgenius.net)
 			'ROCKMELT-BOT' => 'RockMelt'	,		// ROCKMELT-BOT

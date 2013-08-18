@@ -68,7 +68,7 @@ function bors_bot_detect($user_agent, &$data = array())
 				'bot' => 'The Old Reader (RSS)',
 				'crowler' => false,
 			),
-			'Tiny Tiny RSS' => (, // Tiny Tiny RSS/1.7.4 (http://tt-rss.org/)
+			'Tiny Tiny RSS' => array(	// Tiny Tiny RSS/1.7.4 (http://tt-rss.org/)
 				'bot' => 'Tiny Tiny RSS',
 				'crowler' => false,
 			),

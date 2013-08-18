@@ -70,16 +70,14 @@ class bors_cache_redis extends bors_cache_base
 			return NULL;
 
 		debug_count_inc('redis_debug. Get for '.$this->hmd);
-		$key = new Rediska_Key($this->hmd);
 
 		try
 		{
+			$key = new Rediska_Key($this->hmd);
 			$this->last = $key->getValue();
-//			if(config('is_developer')) var_dump($this->last);
 		}
-		catch(Rediska_Serializer_Adapter_Exception $e)
+		catch(Exception $e)
 		{
-//			var_dump($e->getMessage());
 			debug_count_inc('redis_unserialize_exception');
 			debug_hidden_log('redis_exception', $e->getMessage());
 			$this->last = NULL;
@@ -101,9 +99,17 @@ class bors_cache_redis extends bors_cache_base
 			return $this->last = $value;
 
 		debug_count_inc('redis_debug. Set for '.$this->hmd);
-		$key = new Rediska_Key($this->hmd);
-		$key->setValue($value);
-		$key->expire($ttl);
+
+		try
+		{
+			$key = new Rediska_Key($this->hmd);
+			$key->setValue($value);
+			$key->expire($ttl);
+		}
+		catch(Exception $e)
+		{
+		}
+
 		debug_count_inc('redis_cache_store');
 
 		return $this->last = $value;

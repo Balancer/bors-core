@@ -321,6 +321,8 @@ class bors_external_feed extends base_object_db
 				$entry->update_target(true, $find_topic);
 			}
 
+			bors()->changed_save();
+
 //			echo "update_target($forum_id, {$this->target_topic_id()});\n";
 //			if(!$is_skipped)
 //				return;

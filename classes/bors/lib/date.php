@@ -40,9 +40,9 @@ class bors_lib_date
 		return part_date($date, $int, $on_empty_text);
 	}
 
-	static function text($timestamp)
+	static function text($timestamp, $show_year = true)
 	{
 		bors_function_include('date/text_date');
-		return text_date($timestamp);
+		return text_date($timestamp, $show_year);
 	}
 }

@@ -73,4 +73,9 @@ class bors_module extends bors_page
 	{
 		return array_merge(parent::body_data(), $this->args());
 	}
+
+	function __toString()
+	{
+		return $this->html();
+	}
 }

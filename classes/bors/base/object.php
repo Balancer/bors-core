@@ -547,40 +547,25 @@ defined at {$this->class_file()}<br/>
 			$this->add_template_data($key, $value);
 	}
 
-	function titled_url($append = '')
+	function titled_link()
 	{
-		if(($target = $this->get('frame_target')))
-			$target = " target=\"{$target}\"";
-		else
-			$target = '';
-
-		if($append == 'new')
-		{
-			$url = $this->url_ex('new');
-		}
-		else
-		{
-			if($append)
-				$append = ' '.$append;
-			$url = $this->url_ex($this->page());
-		}
+		$url = $this->url_ex($this->page());
 		$title = $this->title();
+
 		if(!$title)
 			$title = '???';
 
-		return "<a href=\"{$url}\"{$target}{$append}>{$title}</a>";
+		return "<a href=\"{$url}\">{$title}</a>";
 	}
 
 	function url_in_container() { return $this->url(); }
 	function url_for_igo() { return $this->url_in_container(); }
 	function title_in_container() { return $this->title(); }
 
-	function titled_url_in_container()
+	function titled_link_in_container()
 	{
 		return '<a href="'.$this->url_in_container()."\">{$this->title_in_container()}</a>";
 	}
-
-	function titled_link($append = '') { return $this->titled_url($append); }
 
 	function titled_target_link() { return $this->target()->titled_link(); }
 
@@ -594,6 +579,10 @@ defined at {$this->class_file()}<br/>
 
 	function titled_link_ex($params = array())
 	{
+		// Если параметр не массив, то это номер страницы.
+		if(!is_array($params))
+			$params = array('page' => $params);
+
 		$title = defval($params, 'title');
 		if($title === NULL)
 			$title = $this->title();

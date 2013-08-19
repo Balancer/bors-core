@@ -55,7 +55,7 @@
 	{if $t->get('keywords_string')}<br/><i>теги: {$t->get('keywords_string')}</i>{/if}
 </small>{/if}</td>
 	<td>{$t->author_name()}</td>
-	<td>{$t->forum()|get:titled_url}</td>
+	<td>{$t->forum()|get:titled_link}</td>
 	<td>{$t->create_time()|airbase_time}</td>
 	<td>{$t->modify_time()|airbase_time}</td>
 	<td>{$t->num_replies()}</td>
@@ -68,7 +68,7 @@
 {foreach from=$posts item="p"}
 {assign var="topic" value=$p->topic()}
 {assign var="forum" value=$topic->forum()}
-{assign var="show_title" value=$p->titled_url_in_container()}
+{assign var="show_title" value=$p->titled_link_in_container()}
 {assign var="skip_author_name" value=1}
 {assign var="skip_date" value=1}
 {include file="xfile:forum/post.html"}

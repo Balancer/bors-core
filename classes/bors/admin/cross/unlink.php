@@ -20,18 +20,18 @@ class bors_admin_cross_unlink extends bors_admin_page
 	function to() { return object_load(@$_GET['to']); }
 	function to_internal_uri() { return $this->to() ? $this->to()->internal_uri() : @$_GET['to']; }
 
-	function from_titled_url()
+	function from_titled_link()
 	{
 		if($this->from())
-			return "{$this->from()->class_title()} &laquo;{$this->from()->titled_url()}&raquo;";
+			return "{$this->from()->class_title()} &laquo;{$this->from()->titled_link()}&raquo;";
 		else
 			return @$_GET['from'];
 	}
 
-	function to_titled_url()
+	function to_titled_link()
 	{
 		if($this->to())
-			return "{$this->to()->class_title()} &laquo;{$this->to()->titled_url()}&raquo;";
+			return "{$this->to()->class_title()} &laquo;{$this->to()->titled_link()}&raquo;";
 		else
 			return @$_GET['to'];
 	}

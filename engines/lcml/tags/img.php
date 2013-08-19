@@ -89,11 +89,28 @@ function lt_img($params)
 			if(preg_match('/\w{5,}$/', $data['path']))
 				$data['path'] .= '.jpg';
 
-//			if(config('is_developer')) { var_dump($data); exit(); }
+//			if(config('is_developer') && preg_match('/_cg/', $uri)) { var_dump($data); exit(); }
+
+			$store_path = config('sites_store_path');
+			$store_url  = config('sites_store_url');
+
+			if(preg_match('!/_cg/!', $uri))
+			{
+				$path = $data['path'];
+				$file = $data['local_path'];;
+				$store_url  = 'http://www.balancer.ru';
+				$store_path = str_replace($path, '', $data['local_path']);
+//				var_dump($path, $file, $data, $store_path); exit();
+			}
+			else
+			{
+				$path = $data['path'];
+				$file = "$store_path$path";
+			}
 
 			if(!$data['local'])
 			{
-				$path = config('sites_store_path')."/{$data['host']}{$data['path']}";
+				$path = "{$data['host']}{$data['path']}";
 
 				if(preg_match("!/$!",$path))
 					$path .= "index";
@@ -101,65 +118,72 @@ function lt_img($params)
 				if(!empty($data['query']))
 					$path .= '/='.str_replace('&','/', $data['query']);
 
-				if(!file_exists($path) || filesize($path)==0)
+				$file = "$store_path/$path";
+				if(!file_exists($file) || filesize($file)==0)
 				{
 					$c1 = bors_substr($data['host'],0,1);
 					$c2 = bors_substr($data['host'],1,1);
 					require_once('inc/urls.php');
-					$path = config('sites_store_path')."/$c1/$c2/{$data['host']}".translite_path($data['path']);
+					$path = "$c1/$c2/{$data['host']}".translite_path($data['path']);
 
 					if(preg_match("!/$!",$path))
 						$path .= "index";
 
 					if(!empty($data['query']))
 						$path .= '/='.str_replace('&','/', $data['query']);
+
+					$file = "$store_path/$path";
 				}
 
-				if(!file_exists($path) || filesize($path)==0 || !($image_size = @getimagesize($path)))
+				if(!file_exists($file) || filesize($file)==0 || !($image_size = @getimagesize($file)))
+				{
 					$path = config('sites_store_path').'/'.web_import_image::storage_place_rel($params['url']);
+					$file = "$store_path/$path";
+				}
 
-				$image_size = @getimagesize($path);
+				$image_size = @getimagesize($file);
 
-				if(file_exists($path) && !$image_size)
+				if(file_exists($file) && !$image_size)
 				{
 	//				if(config('is_developer')) { var_dump($path, file_exists($path), $image_size); exit(); }
 					// Придумать, что сделать с этим хардкодом.
 					$thumbnails = bors_find_all('bors_image_thumb', array(
-						"full_file_name LIKE '%/".addslashes(basename($path))."'",
+						"full_file_name LIKE '%/".addslashes(basename($file))."'",
 					));
 					if($thumbnails)
 						foreach($thumbnails as $t)
 							$t->delete();
 
-					unlink($path);
+					unlink($file);
 				}
 
-				if(!file_exists($path) || filesize($path)==0 || !$image_size)
+				if(!file_exists($file) || filesize($file)==0 || !$image_size)
 				{
-					$path = config('sites_store_path').'/'.web_import_image::storage_place_rel($params['url']);
+					$path = web_import_image::storage_place_rel($params['url']);
+					$file = "$store_path/$path";
 
 					require_once('inc/filesystem.php');
-					mkpath(dirname($path), 0777);
+					mkpath(dirname($file), 0777);
 
-					if(!is_writable(dirname($path)))
+					if(!is_writable(dirname($file)))
 					{
 						bors_use('debug_hidden_log');
-						debug_hidden_log('access_error', "Can't write to ".dirname($path));
-						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$path']</small>";
+						debug_hidden_log('access_error', "Can't write to ".dirname($file));
+						return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$file']</small>";
 					}
 
 					$x = blib_http::get_ex(str_replace(' ', '%20', $params['url']), array(
-						'file' => $path,
+						'file' => $file,
 						'is_raw' => true,
 					));
 
-					@chmod($path, 0666);
+					@chmod($file, 0666);
 
 //					if(config('is_developer')) {var_dump($params['url'], $path, $x); exit(); }
 
 					$content_type = $x['content_type'];
 
-					if(@filesize($path) <= 0)
+					if(@filesize($file) <= 0)
 						return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[zero size or time out]</small>";
 
 //					if(config('is_developer')) { var_dump($params, $content_type); exit(); }
@@ -180,24 +204,22 @@ function lt_img($params)
 
 					// Автоматический фикс старого некорректного утягивания.
 					// errstr=fopen(/var/www/balancer.ru/htdocs/sites/g/a/gallery.greedykidz.net/get/992865/3274i.jpg/=g2_serialNumber=1)
-					if(preg_match('#^(.+\.(jpe?g|png|gif))/=#', $path, $m) && file_exists($m[1]))
+					if(preg_match('#^(.+\.(jpe?g|png|gif))/=#', $file, $m) && file_exists($m[1]))
 						unlink($m[1]);
 				}
 
-				$image_size = @getimagesize($path);
-				if(file_exists($path) && filesize($path)>0 && $image_size)
+				$image_size = @getimagesize($file);
+				if(file_exists($file) && filesize($file)>0 && $image_size)
 				{
-					$data['local_path'] = str_replace($_SERVER['DOCUMENT_ROOT'], '',
-						str_replace(str_replace('www.', '', $_SERVER['DOCUMENT_ROOT']), '', $path));
-
+					$data['local_path'] = $_SERVER['DOCUMENT_ROOT'] . "/$path";
 					$data['local'] = true;
 				}
 
 				// test: http://www.aviaport.ru/conferences/40911/rss/
-				if(file_exists($path) && filesize($path)>0 && config('lcml.airbase.register.images'))
+				if(file_exists($file) && filesize($file)>0 && config('lcml.airbase.register.images'))
 				{
 					$remote = $uri;
-					$uri = str_replace(config('sites_store_path'), config('sites_store_url'), $path);
+					$uri = "$store_url/$path";
 					$data['local'] = true;
 
 					$db = new driver_mysql(config('main_bors_db'));
@@ -209,26 +231,29 @@ function lt_img($params)
 						$id = $db->last_id();
 					}
 
-					$db->update('images', array('id' => $id), array('local_path' => $path));
+					$db->update('images', array('id' => $id), array('local_path' => $data['local_path']));
 
-					$img = airbase_image::register_file($path, true, true, 'airbase_image');
+					$img = airbase_image::register_file($file, true, true, 'airbase_image');
 					balancer_board_posts_object::register($img, $params);
 				}
 			}
 
 			if($data['local'])
 			{
-				if(!file_exists($path))
+				if(!file_exists($file))
 				{
+	//				if(config('is_developer')) { var_dump($file, $data); exit(); }
 					debug_hidden_log('error_lcml_tag_img', "Incorrect image {$params['url']}");
 					return lcml_urls_title($params['url']).'<small> [image link error]</small>';
 				}
 
+
 				if(!empty($params['noresize']))
 					$img_ico_uri  = $uri;
 				else
-					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3",
-						"http://{$_SERVER['HTTP_HOST']}{$data['local_path']}");
+					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", "$store_url/$path");
+
+//				if(config('is_developer')) { var_dump($img_ico_uri); exit(); }
 
 				if(preg_match('!\.[^/+]$!', $uri))
 					$img_page_uri = preg_replace("!^(http://.+?)(\.[^\.]+)$!", "$1.htm", $uri);

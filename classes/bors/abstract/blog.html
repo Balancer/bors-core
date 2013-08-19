@@ -3,7 +3,7 @@
 <div class="blogs_list">
 {foreach from=$items item="x"}
 <div class="blog_record">
-<h3>{$x->titled_url()}</h3>
+<h3>{$x->titled_link()}</h3>
 <div class="blog_record_body">{$x->body(512)}</div>
 </div>
 {/foreach}

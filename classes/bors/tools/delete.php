@@ -34,13 +34,13 @@ class bors_tools_delete extends base_page
 			$act = $obj->access();
 
 		if(!$act)
-			return bors_message(ec('Не определён доступ на удаление ').$obj->class_title_rp().' '.$obj->titled_url()."
+			return bors_message(ec('Не определён доступ на удаление ').$obj->class_title_rp().' '.$obj->titled_link()."
 				<!-- class_name = ".get_class($obj)."
 				access = {$obj->access()}
 				-->");
 
 		if(!$act->can_delete())
-			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_url()."
+			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_link()."
 				<!-- class_name = ".get_class($obj)."
 				access = {$obj->access()}
 				-->");
@@ -65,13 +65,13 @@ class bors_tools_delete extends base_page
 			$act = $obj->access();
 
 		if(!$act)
-			return bors_message(ec('Не определён доступ на удаление ').$obj->class_title_rp().' '.$obj->titled_url()."
+			return bors_message(ec('Не определён доступ на удаление ').$obj->class_title_rp().' '.$obj->titled_link()."
 				<!-- class_name = ".get_class($obj)."
 				access = {$obj->access()}
 				-->");
 
 		if(!$act->can_delete())
-			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_url());
+			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_link());
 
 		$obj->delete(!config('skip_remove_cross'));
 		if($r = urldecode($_GET['ref']))

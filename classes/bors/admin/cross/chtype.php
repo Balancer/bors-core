@@ -34,18 +34,18 @@ class bors_admin_cross_chtype extends bors_admin_page
 		);
 	}
 
-	function from_titled_url()
+	function from_titled_link()
 	{
 		if($this->from())
-			return "{$this->from()->class_title()} &laquo;{$this->from()->titled_url()}&raquo;";
+			return "{$this->from()->class_title()} &laquo;{$this->from()->titled_link()}&raquo;";
 		else
 			return @$_GET['from'];
 	}
 
-	function to_titled_url()
+	function to_titled_link()
 	{
 		if($this->to())
-			return "{$this->to()->class_title()} &laquo;{$this->to()->titled_url()}&raquo;";
+			return "{$this->to()->class_title()} &laquo;{$this->to()->titled_link()}&raquo;";
 		else
 			return @$_GET['to'];
 	}

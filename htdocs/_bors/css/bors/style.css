@@ -16,11 +16,11 @@ small, .small { font-size: 0.8em !important; }
 .f10pt { font-size: 10pt !important; }
 
 .gray	{ color: gray	!important; }
-.red	{ color: red	!important; }
+.red, .red a	{ color: red	!important; }
 .orange	{ color: orange	!important; }
 .yellow	{ color: yellow	!important; }
 .green	{ color: green	!important; }
-.blue	{ color: blue	!important; }
+.blue, .blue a	{ color: blue	!important; }
 .navy	{ color: navy	!important; }
 
 .bg_pink { background-color: pink; }

@@ -14,7 +14,7 @@ class blib_string extends blib_object
 		$this->_value = (string) $init_value;
 	}
 
-	static function factory($string) { return new blib_string($string); }
+	static function factory($string) { $cls = get_called_class(); return new $cls($string); }
 
 	function __toString() { return $this->_value; }
 	function to_string() { return $this->_value; }

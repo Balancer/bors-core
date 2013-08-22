@@ -545,9 +545,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$dbh = new driver_mysql($object->db_name());
 
-		if(config('is_developer'))
-			foreach($updated_tables as $table => $id_field)
-				$dbh->insert_ignore($table, array($id_field => $object->id()));
+		foreach($updated_tables as $table => $id_field)
+			$dbh->insert_ignore($table, array($id_field => $object->id()));
 
 		$dbh->update($object->table_name(), $where, $update_plain);
 	}

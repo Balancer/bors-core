@@ -46,7 +46,7 @@ class bors_lib_time
 
 		foreach(explode(',', $array['time_vars']) as $var)
 		{
-
+			$array[$var] = trim(@$array[$var]);
 			$is_fuzzy = @$array["{$var}_is_fuzzy"];
 			$is_utc   = @$array["{$var}_is_utc"];
 
@@ -68,8 +68,11 @@ class bors_lib_time
 		unset($array['time_vars']);
 	}
 
-	private function _join($var, $data)
+	private function _join($var, &$data)
 	{
+		$can_drop = popval($data, "{$var}_can_drop");
+		if(empty($data[$var]) && $can_drop)
+			return NULL;
 
 		$yyyy	= sprintf('%04d', @$data["{$var}_year"]);
 		$mm	= sprintf('%02d', @$data["{$var}_month"]);

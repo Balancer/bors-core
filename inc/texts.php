@@ -164,5 +164,5 @@ function clause_truncate_ceil($text, $limit, $max_limit = NULL)
 		if(bors_strlen($m[1]) <= $max_limit)
 			return $m[1];
 
-	return truncate($text, $limit, ec('…'));
+	return truncate($text, $max_limit, ec('…'));
 }

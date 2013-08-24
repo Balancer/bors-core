@@ -88,8 +88,12 @@ class bors_lib_html
 		template_meta_prop('og:url',	$view->url_ex($view->page()));
 		if($type = $view->get('meta_og_type'))
 			template_meta_prop('og:type', $type);
-		if($image = $view->get('image'))
-			template_meta_prop('og:image', $image->thumbnail("200x200")->url());
+
+		if($image = $view->get('image_url'))
+			template_meta_prop('og:image', $image);
+		elseif($image = $view->get('image'))
+			template_meta_prop('og:image', $image->thumbnail("250x250")->url());
+
 		if($description = $view->get('description'))
 			template_meta_prop('og:description', $description);
 		if($project = $view->get('project'))

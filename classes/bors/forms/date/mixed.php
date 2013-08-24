@@ -139,12 +139,15 @@ class bors_forms_date_mixed extends bors_forms_element
 		{
 			$html .="&nbsp;";
 
+			$html_tmp = array();
 			foreach(array('hour' => 'hh', 'minute' => 'mm') as $t => $v)
-				$html .="<input type=\"text\"
+				$html_tmp[] ="<input type=\"text\"
 					name=\"{$name}_{$t}\" $type
 					value=\"{$$v}\"
 					size=\"2\" maxlength=\"2\"
-					style=\"width: 3ex\"/>\n";
+					style=\"width: 3ex\"/>";
+
+			$html .= join(':', $html_tmp)."\n";
 		}
 
 		if($can_drop)

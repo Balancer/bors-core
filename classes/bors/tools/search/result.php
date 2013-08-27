@@ -64,10 +64,10 @@ class bors_tools_search_result extends bors_tools_search
 		{
 			case 'a':
 			case '1':
-				$index = "*";
+				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta,posts,posts_delta";
 				break;
 			case 'b':
-				$index = "blog_titles,blog_keywords,blog_sources";
+				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta";
 				$weights = array ('blog_titles' => 100 , 'blog_keywords' => 1000, 'blog_sources' => 10);
 				break;
 			case 't':

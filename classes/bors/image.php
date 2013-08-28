@@ -83,7 +83,10 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		)));
 	}
 
-	function file_name_with_path() { return $this->image_dir().$this->file_name(); }
+	function file_name_with_path()
+	{
+		return $this->image_dir().$this->file_name();
+	}
 
 	// Редкое исключение: возвращаем путь с '/' на конце. (зачем?)
 	function image_dir()
@@ -260,11 +263,13 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		if($l = $ch->get('bors_image_register', $file))
 			return $l;
 
-//		echo debug_trace();
-//		bors_exit(debug_trace());
-
 		if(!$class_name)
-			$class_name = 'bors_image';
+		{
+			if(function_exists('get_called_class'))
+				$class_name = get_called_class();
+			else
+				$class_name = 'bors_image';
+		}
 
 		$img = bors_new($class_name, NULL);
 
@@ -274,7 +279,9 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 			return $ch->set($img2, rand(3600, 86400));
 
 		$img->set_original_filename(basename($file), $new_instance);
-		$img->set_relative_path(str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($file)), $new_instance);
+//		$img->set_relative_path(str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($file)), $new_instance);
+		// Потом после рефакторинга этот хардкод уйдёт.
+		$img->set_relative_path(preg_replace('!/var/www/[^/]+/htdocs/!', '', dirname($file)), $new_instance);
 		$img->set_full_file_name($data['local_path'], $new_instance);
 		$img->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $img->original_filename()), $new_instance);
 		$img->set_file_name($img->original_filename(), $new_instance);

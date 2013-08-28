@@ -84,11 +84,13 @@ class bors_image_thumb extends bors_image
 
 		$this->set_relative_path($new_path, $caching);
 
-		if($original_url = $this->original->full_url())
+		if($original_url = $this->original->url())
 			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
 		else
 			$new_url = NULL;
-//if(config('is_developer')) { var_dump($new_url); exit(); }
+
+//		if(config('is_developer')) { $o=$this->original; var_dump($original_url, $new_url, $o->class_name(), $o->id(), $o->db_name(), $o->table_name()); exit(); }
+
 		$this->set_full_url($new_url, $caching);
 
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
@@ -144,7 +146,7 @@ class bors_image_thumb extends bors_image
 
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
-			debug_hidden_log('image-error', 'Cannot get image width');
+			debug_hidden_log('image-error', 'Cannot get image width for '.$file_thumb_r);
 
 		$this->set_width($img_data[0], $caching);
 		$this->set_height($img_data[1], $caching);

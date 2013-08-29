@@ -1,5 +1,12 @@
 <?php
 
+/*
+	Изучить:
+		predis/predis
+		Flexible and feature-complete PHP client library for Redis
+		http://mikehaertl.github.io/phpwkhtmltopdf/
+*/
+
 require_once(config('rediska.include'));
 
 class bors_cache_redis extends bors_cache_base

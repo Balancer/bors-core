@@ -5,8 +5,13 @@ $bors_url_titled_cache = array();
 
 class url_titled extends url_base
 {
-	function url_ex($page)
+	function url_ex($args)
 	{
+		if(is_array($args))
+			$page = defval($args, 'page');
+		else
+			$page = $args;
+
 		global $bors_url_titled_cache;
 		$obj = $this->id();
 

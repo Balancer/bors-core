@@ -67,7 +67,10 @@ class DataBase
 		set_global_key("DataBaseStartTime:{$server}", $db_name, $this->start_time = time());
 
 		if(!mysql_select_db($real_db, $this->dbh))
-			bors_throw("Could not select database ".($real_db ? "'{$db_name}' as '{$real_db}'" : "'{$db_name}'. <br/>\nError ").mysql_errno($this->dbh).": ".mysql_error($this->dbh)." <br />\n", 1);
+		{
+			debug_hidden_log('mysql_error', $msg = "Could not select database ".($real_db ? "'{$db_name}' as '{$real_db}'" : "'{$db_name}'. <br/>\nError ").mysql_errno($this->dbh).": ".mysql_error($this->dbh)." <br />\n");
+			bors_throw($msg, 1);
+		}
 
 		if($c = config('mysql_set_character_set'))
 		{
@@ -96,6 +99,8 @@ class DataBase
 			$this->icsi = $this->ics.'//IGNORE';
 			$this->dcsi = $this->dcs.'//IGNORE';
 		}
+
+		$real_db = config_mysql('db_real', $base);
 
 		// Если меняли БД, то переустановим charset — это может быть совсем другой сервер.
 		if($this->db_name != $base)
@@ -130,10 +135,9 @@ class DataBase
 				bors_exit();
 			}
 
-			if(!mysql_select_db($base, $this->dbh))
+			if(!mysql_select_db($real_db, $this->dbh))
 			{
-				echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
-				bors_exit();
+				bors_throw(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 			}
 		}
 		else

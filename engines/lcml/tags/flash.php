@@ -104,8 +104,8 @@ function lt_flash($params)
 	function lp_html_a($inner, $params)
 	{
 //		print_d($params);
-	
-		$params['href'] = preg_replace("!javascript!", "жабаскрипт", $params['href']);
+
+		$params['href'] = preg_replace("!javascript!", "жабаскрипт", @$params['href']);
 		if(preg_match('!&amp;!', $params['href']))
 			$params['href'] = html_entity_decode($params['href']);
 

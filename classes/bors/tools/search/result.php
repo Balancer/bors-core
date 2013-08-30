@@ -64,19 +64,24 @@ class bors_tools_search_result extends bors_tools_search
 		{
 			case 'a':
 			case '1':
-				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta,posts,posts_delta";
+				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta,posts,posts_delta,livestreet_topics";
 				break;
 			case 'b':
-				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta";
+				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta,livestreet_topics";
 				$weights = array ('blog_titles' => 100 , 'blog_keywords' => 1000, 'blog_sources' => 10);
 				break;
 			case 't':
-				$index = "topic_titles";
+				$index = "topic_titles,livestreet_topic_titles";
 //				$weights = array ('topic_titles' => 100);
 				break;
 			default:
-				$index = "topic_titles,topic_descriptions,topic_keywords";
-				$weights = array ('topic_titles' => 1000 , 'topic_descriptions' => 100, 'topic_keywords' => 10);
+				$index = "topic_titles,topic_descriptions,topic_keywords,livestreet_topic_titles";
+				$weights = array (
+					'livestreet_topic_titles' => 5000,
+					'topic_titles' => 1000 ,
+					'topic_descriptions' => 100,
+					'topic_keywords' => 10,
+				);
 				break;
 		}
 //		$groupby = "topic_id";
@@ -204,37 +209,55 @@ class bors_tools_search_result extends bors_tools_search
 
 			$opts['exact_phrase'] = $this->x() == 'e';
 
+//var_dump($res);
+
 			if(empty($res['matches']))
 				return false;
 
 			$post_ids = array();
 			$topic_ids = array();
 
+			$titles		= array();
+			$contents	= array();
+
 			for($i=0; $i<count($res['matches']); $i++)
 			{
 				$x = &$res['matches'][$i];
-				if(@$x['attrs']['class_id'] == 2) // 'balancer_board_topic'
-					$topic_ids[] = floor($x['id'] / 1000);
-				if(@$x['attrs']['class_id'] == 1) // 'balancer_board_post'
-					$post_ids[] = floor($x['id'] / 1000);
-				if(@$x['attrs']['class_id'] == 15) // 'balancer_board_blog'
-					$post_ids[] = floor($x['id'] / 1000);
+				$cid = @$x['attrs']['class_id'];
+				if($cid == 1)
+					$cid = 87;
+				if($cid == 2)
+					$cid = 89;
+				if($cid == 15)
+					$cid = 179;
+				$id = floor($x['id'] / 1000);
+				if(@$x['attrs']['is_content'])
+					$contents[$cid][] = $id;
+				else
+					$titles[$cid][] = $id;
 			}
-//print_d($post_ids);
+
+//print_dd($res);
+//var_dump($titles, $contents);
+
 			$this->_data['posts'] = array();
-			if($post_ids)
-				$x = bors_find_all('balancer_board_post', array('id IN' => array_unique($post_ids), 'by_id' => true));
-//print_d($x);
-			foreach($post_ids as $id)
-				$this->_data['posts'][$id] = $x[$id];
+			foreach($contents as $class_id => $ids)
+			{
+				$objects = bors_find_all($class_id, array('id IN' => array_unique($ids), 'by_id' => true));
+
+				foreach($ids as $id)
+					$this->_data['posts'][$id] = $objects[$id];
+			}
 
 			$this->_data['topics'] = array();
-			if($topic_ids)
+			foreach($titles as $class_id => $ids)
 			{
-				$x = objects_array('balancer_board_topic', array('id IN' => array_unique($topic_ids), 'by_id' => true));
-				foreach($topic_ids as $id)
-					if(!empty($x[$id]))
-						$this->_data['topics'][$id] = $x[$id];
+				$objects = bors_find_all($class_id, array('id IN' => array_unique($ids), 'by_id' => true));
+
+				foreach($ids as $id)
+					if(!empty($objects[$id]))
+						$this->_data['topics'][$id] = $objects[$id];
+
 			}
 
 			$posts = &$this->_data['posts'];
@@ -245,11 +268,11 @@ class bors_tools_search_result extends bors_tools_search
 			foreach($posts as $pid => $p)
 				$docs[$loop++] = strip_tags($p->body());
 
-			if($post_ids)
+			if($contents)
 			{
 				$exc = $cl->BuildExcerpts($docs, 'posts', $this->q(), $opts);
 
-				if (!$exc)
+				if(!$exc)
 					echo $data['error'] = $cl->GetLastError();
 				else
 				{

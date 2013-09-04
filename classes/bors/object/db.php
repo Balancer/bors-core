@@ -10,7 +10,7 @@ class bors_object_db extends base_object_db
 	function _project_name() { return array_shift(explode('_', $this->class_name())); }
 	function _access_name() { return bors_plural(array_pop(explode('_', $this->class_name()))); }
 
-	function _item_name() { return array_pop(explode('_', $this->class_name())); }
+	function _item_name() { return @array_pop(explode('_', $this->class_name())); }
 	function _item_name_m() { return bors_plural($this->_item_name()); }
 
 	function _url_engine_def() { return 'url_auto'; }

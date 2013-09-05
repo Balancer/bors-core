@@ -104,11 +104,16 @@ function lt_img($params)
 			}
 			else
 			{
+//				if(config('is_developer')) { var_dump($data); exit(); }
 				$path = $data['path'];
-				$file = "$store_path$path";
+				//TODO: Придумать, что сделать с этим хардкодом.
+				if(file_exists($data['local_path']) || preg_match('!/var/www!', $data['local_path']))
+					$file = $data['local_path'];
+				else
+					$file = "$store_path$path";
 			}
 
-			if(!$data['local'])
+			if(!$data['local'] || !file_exists($file))
 			{
 				$path = "{$data['host']}{$data['path']}";
 
@@ -146,7 +151,7 @@ function lt_img($params)
 				if(file_exists($file) && !$image_size)
 				{
 	//				if(config('is_developer')) { var_dump($path, file_exists($path), $image_size); exit(); }
-					// Придумать, что сделать с этим хардкодом.
+					//TODO: Придумать, что сделать с этим хардкодом.
 					$thumbnails = bors_find_all('bors_image_thumb', array(
 						"full_file_name LIKE '%/".addslashes(basename($file))."'",
 					));
@@ -242,18 +247,22 @@ function lt_img($params)
 			{
 				if(!file_exists($file))
 				{
-	//				if(config('is_developer')) { var_dump($file, $data); exit(); }
+//					if(config('is_developer')) { var_dump($file, $data); exit(); }
 					debug_hidden_log('error_lcml_tag_img', "Incorrect image {$params['url']}");
 					return lcml_urls_title($params['url']).'<small> [image link error]</small>';
 				}
 
 
-				if(!empty($params['noresize']))
+				if(preg_match('/airbase|balancer/', $data['uri']) && preg_match('!^(http://[^/]+/cache/.+/)\d*x\d*(/[^/]+)$!', $data['uri'], $m))
+					$img_ico_uri  = $m[1].$params['size'].$m[2];
+				elseif(!empty($params['noresize']))
 					$img_ico_uri  = $uri;
+				elseif(preg_match('/airbase|balancer/', $data['uri']))
+					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", $data['uri']);
 				else
 					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", "$store_url/$path");
 
-//				if(config('is_developer')) { var_dump($img_ico_uri); exit(); }
+//				if(config('is_developer')) { var_dump($uri, $img_ico_uri, $data); exit(); }
 
 				if(preg_match('!\.[^/+]$!', $uri))
 					$img_page_uri = preg_replace("!^(http://.+?)(\.[^\.]+)$!", "$1.htm", $uri);

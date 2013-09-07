@@ -2,8 +2,13 @@
 
 class bors_external_common extends bors_object
 {
-	static function content_extract($url, $limit=1500)
+	static function content_extract($url, $params = array())
 	{
+		if(!is_array($params))
+			$limit = $params; // Раньше второй параметр был длиной
+		else
+			$limit = defval($params, 'limit', 1500); // Теперь — из массива аргументов
+
 		$original_url = $url;
 
 		if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt|ppt)$/i", $url))
@@ -92,6 +97,16 @@ class bors_external_common extends bors_object
 		}
 		else
 			$img = NULL;
+
+		// Если превью не нашли, смотрим, нет ли в параметрах превью по умолчанию
+		if(!$img && ($regexp = defval($params, 'default_image_regexp')))
+		{
+			if(preg_match($regexp, $html, $m))
+				$img = $m[defval($params, 'default_image_regexp_id', 1)];
+		}
+
+		if(!$img)
+			$img = defval($params, 'default_image');
 
 		if(!$img)
 		{

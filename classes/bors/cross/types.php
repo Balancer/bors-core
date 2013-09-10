@@ -22,4 +22,19 @@ class bors_cross_types extends base_list
 			self::INDIRECT	=> ec('Косвенно'), // При автоматической привязке через другие объекты
 		);
 	}
+
+	function name()
+	{
+		static $names = array(
+			self::NONE		=> 'none',
+			self::AUTO		=> 'auto',
+			self::MENTION	=> 'mention',
+			self::ABOUT		=> 'about',
+			self::DELETED	=> 'deleted',
+			self::LINK		=> 'link',
+			self::INDIRECT	=> 'indirect',
+		);
+
+		return @$names[$this->id()];
+	}
 }

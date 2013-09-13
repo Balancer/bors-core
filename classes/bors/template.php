@@ -24,6 +24,9 @@ class bors_template
 			if(is_file($file = $dir.'/templates/'.$template_name))
 				return 'xfile:'.$file;
 
+			if(is_file($file = $dir.'/templates/'.$template_name.'/index.tpl'))
+				return 'xfile:'.$file;
+
 			if(is_file($file = $dir.'/templates/'.$template_name.'/index.html'))
 				return 'xfile:'.$file;
 		}

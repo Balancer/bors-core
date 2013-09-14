@@ -221,6 +221,13 @@ class bors_page extends base_page
 		if(preg_match('/\.js$/', $asset))
 			return $this->uses_css($asset, $args);
 
+		if($asset == 'bootstrap-responsive')
+		{
+			$this->html_meta('viewport', 'width=device-width, initial-scale=1.0');
+			twitter_bootstrap::load(true);
+			return;
+		}
+
 		return parent::uses($asset, $args);
 	}
 
@@ -247,6 +254,8 @@ class bors_page extends base_page
 			$this->_uses_js[$priority][] = $js;
 		}
 	}
+
+	function html_meta($name, $content) { template_meta_prop($name, $content); }
 
 	function _parser_type_def() { return 'lcml'; }
 	function _html_def()

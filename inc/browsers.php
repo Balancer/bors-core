@@ -94,6 +94,10 @@ function get_browser_info($user_agent, $log_unknown = true)
 			$os = 'Linux';
 			$ov = 'Gentoo';
 		}
+		elseif(preg_match('!OpenBSD!', $user_agent))
+		{
+			$os = 'OpenBSD';
+		}
 		elseif(preg_match('!Linux!', $user_agent))
 			$os = 'Linux';
 		elseif(preg_match('!Windows CE; PPC!', $user_agent))

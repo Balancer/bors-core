@@ -303,11 +303,11 @@ function bors_browser_images($ua, $ip = NULL)
 	$info = array();
 
 	if(($bfile = bors_find_shared_file("$browser-$bver", 'images/browsers', false)))
-		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$bver\"/>";
 	elseif(($bfile = bors_find_shared_file($browser, 'images/browsers', false)))
-		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$bver\"/>";
 	elseif($is_bot && ($bfile = bors_find_shared_file('spider-unknown', 'images/browsers', false)))
-		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$bver\"/>";
 
 	if(!$is_bot)
 	{

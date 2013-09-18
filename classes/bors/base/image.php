@@ -18,7 +18,7 @@ class base_image extends base_object
 	function html() { return $this->html_code(); }
 	function html_code($append = "") { return "<img src=\"{$this->url()}\" {$this->wxh()} $append />"; }
 
-	function thumbnail($geometry) { return object_load('base_image_thumbnail', $this->id().','.$geometry); }
+	function thumbnail($geometry) { return object_load('base_image_thumb', $this->id().','.$geometry); }
 
 	function recalculate($db_update)
 	{

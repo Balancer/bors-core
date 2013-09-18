@@ -2,6 +2,7 @@
 
 // Возможно, устаревший, по сравнению с bors_image_thumb класс
 // Используется только в bors_image_file?
+// На пробу убран из bors_image_file 18.09.2013
 
 require_once('inc/images.php');
 

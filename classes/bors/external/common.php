@@ -230,7 +230,6 @@ if(config('is_developer')) { exit($img); }
 					if($source != $description)
 						$more = true;
 
-//					if(config('is_developer')) { print_dd($description); exit('src'); }
 				}
 			}
 			else
@@ -242,6 +241,9 @@ if(config('is_developer')) { exit($img); }
 			require_once('inc/texts.php');
 
 			$description = clause_truncate_ceil($description, $limit);
+
+			// Чистим в $description bb-code:
+			$description = preg_replace('!\[/?\w+.*?\]!', '', $description);
 
 			// Из-за таких козлов:
 			// http://www.balancer.ru/g/p2977129
@@ -260,8 +262,10 @@ if(config('is_developer')) { exit($img); }
 
 			$bbshort = trim(bors_close_tags(bors_close_bbtags($bbshort)));
 
+//			if(config('is_developer')) { print_dd($bbshort); exit($title); }
 			return compact('tags', 'title', 'bbshort');
 		}
+
 
 		if(preg_match('!^(http://)pda\.(.+)$!', $url, $m))
 			return self::content_extract($m[1].$m[2]);

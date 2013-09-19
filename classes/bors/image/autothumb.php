@@ -39,7 +39,7 @@ class bors_image_autothumb extends bors_object
 	function is_loaded()
 	{
 		return $this->origin_path
-			&& !preg_match('/\.(bmp|php)$/', $this->origin_path);
+			&& !preg_match('/\.(bmp|php)/', $this->origin_path);
 	}
 
 	function can_be_empty() { return false; }
@@ -57,7 +57,16 @@ class bors_image_autothumb extends bors_object
 			header('X-original-image: '.$img->internal_uri());
 
 		if(!$img || !file_exists($img->file_name_with_path()))
+		{
 			$img = bors_image::register_file($this->origin_path);
+		}
+
+		if(preg_match('!^/!', $u = $img->url()))
+		{
+			$ud = parse_url(bors()->request()->url());
+//			var_dump("http://{$ud['host']}$u"); exit();
+			$img->set_full_url("http://{$ud['host']}$u");
+		}
 
 		$thumb = $img->thumbnail($this->geo);
 

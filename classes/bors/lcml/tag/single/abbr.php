@@ -7,7 +7,7 @@
 
 class bors_lcml_tag_single_abbr extends bors_lcml_tag_single
 {
-	function html($params)
+	function html($text, &$params)
 	{
 		if(empty($params['abbr']))
 			return "<abbr title=\"{$params['description']}\">{$params['orig']}</abbr>";

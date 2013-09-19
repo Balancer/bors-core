@@ -7,19 +7,19 @@ class bors_lcml_tag_single extends bors_lcml_tag
 		switch($this->lcml->output_type())
 		{
 			case 'text':
-				return $this->text($params);
+				return $this->text(NULL, $params);
 			case 'html_compact':
-				return $this->html_compact($params);
+				return $this->html_compact(NULL, $params);
 			case 'html_simple':
-				return $this->html_simple($params);
+				return $this->html_simple(NULL, $params);
 			case 'html':
 			default:
-				return $this->html($params);
+				return $this->html(NULL, $params);
 		}
 	}
 
-	function html($params) { return ''; }
-	function html_compact($params) { return $this->html(); }
-	function html_simple($params) { return $this->html(); }
-	function text($params) { return strip_tags($this->html()); }
+	function html($text, &$params) { return ''; }
+	function html_compact($text, &$params) { return $this->html(); }
+	function html_simple($text, &$params) { return $this->html(); }
+	function text($text, &$params) { return strip_tags($this->html()); }
 }

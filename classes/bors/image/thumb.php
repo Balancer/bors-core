@@ -80,15 +80,22 @@ class bors_image_thumb extends bors_image
 		else
 			$new_path = NULL;
 
+//		if(config('is_developer')) { var_dump($original_path, $new_path); exit(); }
+
 		$caching = config('cache_database') ? true : false;
 
 		$this->set_relative_path($new_path, $caching);
 
-		if($original_url = $this->original->url())
-			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
+		$original_url = $this->original->url();
+		if($original_url[0] == '/')
+			$new_url = '/cache'.preg_replace('!^(/.+?)([^/]+)$!', '${1}'.$this->geometry.'/$2', $original_url);
 		else
-			$new_url = NULL;
+			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
 
+		if(!preg_match('!/cache.*/\d*x\d*!', $new_url))
+			bors_throw('Incorrect new url '.$new_url.' for '.$this->id().'; original url='.$original_url);
+
+//		if(config('is_developer')) { var_dump($original_url, $new_url); exit(); }
 //		if(config('is_developer')) { $o=$this->original; var_dump($original_url, $new_url, $o->class_name(), $o->id(), $o->db_name(), $o->table_name()); exit(); }
 //		if(config('is_developer')) { var_dump($original_path, $new_path); exit(); }
 
@@ -111,8 +118,13 @@ class bors_image_thumb extends bors_image
 			$oud = url_parse($new_url);
 			if(!$oud['local'] || !$oud['local_path'])
 				bors_throw('Unknown local for thumb: '.print_r($oud, true));
+
 //			if(config('is_developer')) { var_dump($oud, $file_thumb); exit(); }
 			$file_thumb = $oud['local_path'];
+
+			if(!preg_match('!/cache.*/\d*x\d*!', $file_thumb))
+				bors_throw('Incorrect thumb file '.$file_thumb.' for '.print_r($oud, true));
+
 		}
 
 		$abs = false;

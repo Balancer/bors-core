@@ -100,17 +100,18 @@ class bors_image_thumb extends bors_image
 		$this->set_file_name($this->original->file_name(), $caching);
 
 		$file_orig  = $this->original->file_name_with_path();
-//		if(($d = $this->image_dir()) && $d != '/')
-//		{
-//			$file_thumb = $this->file_name_with_path();
+		if(config('pics_base_safemodded'))
+		{
+			$file_thumb = $this->file_name_with_path();
 //			if(config('is_developer')) { var_dump($d, $file_thumb); exit(); }
-//		}
-//		else
+		}
+		else
 		{
 //			$file_thumb = $this->file_name_with_path();
 			$oud = url_parse($new_url);
 			if(!$oud['local'] || !$oud['local_path'])
-				bors_throw('Unknown local for thumb: '.print_r($oud, true));
+				bors_throw('Unknown local for thumb: '.print_r($oud, true)
+					.'; file_name_with_path='.$this->file_name_with_path());
 //			if(config('is_developer')) { var_dump($oud, $file_thumb); exit(); }
 			$file_thumb = $oud['local_path'];
 		}

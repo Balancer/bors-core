@@ -6,6 +6,8 @@
 {/form}
 
 {if $items}
+{$this->pages_links_nul()}
+
 <table class="btab w100p">
 <thead>
 <tr>
@@ -24,4 +26,6 @@
 {/foreach}
 </tbody>
 </table>
+
+{$this->pages_links_nul()}
 {/if}

@@ -97,6 +97,7 @@ class base_page_paged extends bors_page
 				'page' => $this->page(),
 				'per_page' => $this->items_per_page(),
 				'order' => $this->order(),
+				'by_id' => true,
 			)));
 		}
 
@@ -109,7 +110,7 @@ class base_page_paged extends bors_page
 		}
 */
 		if($this->is_reversed())
-			$this->_items = array_reverse($this->_items);
+			$this->_items = array_reverse($this->_items, true);
 
 		$this->on_items_load($this->_items);
 

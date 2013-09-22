@@ -4,7 +4,7 @@
 	"description": "PHP Framework",
     "keywords": ["framework", "php"],
 	"homepage": "http://bors.balancer.ru/",
-    "license": "LGPL-3.0",
+    "license": "GPL-3.0",
 	"authors": [
 		{
 			"name": "Roman =Balancer= Karshiev",

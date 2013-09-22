@@ -16,9 +16,12 @@
 	},
 
 	"require": {
-		"php": ">=5.1",
-		"smarty/smarty": "3.*"
+		"php": ">=5.3"
 	},
+
+    "suggest": {
+        "smarty/smarty": "Needed if you plan to use Smarty based templates"
+    }
 
     "autoload": {
 		"classmap": ["classes/"]

@@ -24,7 +24,7 @@
 
     "suggest": {
         "smarty/smarty": "Needed if you plan to use Smarty based templates"
-    }
+    },
 
     "autoload": {
 		"classmap": ["classes/"]

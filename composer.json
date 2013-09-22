@@ -1,7 +1,10 @@
 {
 	"name": "balancer/bors-core",
+    "type": "framework",
 	"description": "PHP Framework",
+    "keywords": ["framework", "php"],
 	"homepage": "http://bors.balancer.ru/",
+    "license": "LGPL-3.0",
 	"authors": [
 		{
 			"name": "Roman =Balancer= Karshiev",
@@ -10,9 +13,9 @@
 	],
 
 	"support": {
-		"issues": "http://trac.balancer.ru/bors-core/",
-		"forum": "http://balancer.ru/support/viewforum.php?id=60",
-		"source": "http://hg.balancer.ru/bors-core/"
+		"issues": "https://bitbucket.org/Balancer/bors-core/issues",
+		"forum": "http://www.balancer.ru/support/viewforum.php?id=60",
+		"source": "https://bitbucket.org/Balancer/bors-core"
 	},
 
 	"require": {

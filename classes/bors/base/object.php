@@ -596,6 +596,9 @@ defined at {$this->class_file()}<br/>
 		if($class = defval($params, 'class'))
 			$class = " class=\"".htmlspecialchars($class)."\"";
 
+		if($class = defval($params, 'css'))
+			$class = " class=\"".htmlspecialchars($class)."\"";
+
 		if($style = defval($params, 'style'))
 			$style = " style=\"".htmlspecialchars($style)."\"";
 
@@ -619,6 +622,7 @@ defined at {$this->class_file()}<br/>
 
 	function nav_named_url() { return '<a href="'.$this->url_ex($this->page())."\">{$this->nav_name()}</a>"; }
 	function nav_named_link($append = NULL) { return '<a href="'.$this->url_ex($this->page())."\"".($append?' '.$append:'').">{$this->nav_name()}</a>"; }
+	function nav_named_link_ex($params = array()) { set_def($params, 'title', $this->get('nav_name')); return $this->titled_link_ex($params); }
 	function titled_admin_url($title = NULL)
 	{
 		if($title === NULL)

@@ -62,9 +62,14 @@ class auto_object_php extends bors_object
 		$is_auto = false;
 		$object_id = false;
 
+		//	http://forums.balancer.ru/ajax/pagemod/10000.js
+		if(preg_match('!^(.+_\d+)\.\w+$!', $class_path, $m))
+			$class_path = $m[1];
+
 		//	/users/84018/
 		if(preg_match('!^(.+)_(\d+|new)$!', $class_path, $m))
 		{
+//			var_dump($m);
 			$object_id = $m[2];
 //			var_dump($class_base.($cp = $m[1].'_edit'));
 
@@ -88,6 +93,11 @@ class auto_object_php extends bors_object
 				$object_id = NULL;
 			}
 			elseif(class_include($class_base.($cp = $m[1].'_'.$m[2])))
+			{
+				$class_path = $cp;
+				$object_id = NULL;
+			}
+			elseif(class_include($class_base.($cp = $m[1])))
 			{
 				$class_path = $cp;
 				$object_id = NULL;
@@ -153,6 +163,7 @@ class auto_object_php extends bors_object
 				|| config('classes_auto_full_enabled')
 				|| object_property($object, 'is_auto_url_mapped_class')
 				|| object_property($object, 'auto_map')
+				|| object_property($object, 'auto_route')
 		))
 			$object = NULL;
 

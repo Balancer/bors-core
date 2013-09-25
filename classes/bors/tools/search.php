@@ -13,6 +13,13 @@ class bors_tools_search extends base_page
 			return array(object_load('forum_topic', $_GET['t']));
 	}
 
+	function body_data()
+	{
+		return array_merge(parent::body_data(), array(
+			'me' => bors()->user(),
+		));
+	}
+
 	function pre_parse()
 	{
 //		$url = $this->url();

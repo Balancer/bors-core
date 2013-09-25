@@ -60,21 +60,21 @@ class bors_forms_input extends bors_forms_element
 		else
 			$td_colspan = "";
 
-		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($th = defval($params, 'th'))
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$label}</th><td>...code...</td></tr>
+		if($label = defval($params, 'label', defval($params, 'th')))
 		{
-			if($th == 'def')
+			if($label == 'def')
 			{
 //				var_dump($form);
 //				var_dump($form->attr('class_name'));
 				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
 //				var_dump($x);
-				$th = $x['title'];
+				$label = $x['title'];
 			}
 
-			$th = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $th);
+			$label = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $label);
 
-			$result .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$th}</th><td{$td_colspan}>";
+			$result .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$label}</th><td{$td_colspan}>";
 			if(empty($style) && empty($css))
 				$style = "width: 99%";
 		}
@@ -108,7 +108,7 @@ class bors_forms_input extends bors_forms_element
 		if($has_versioning || $previous)
 			$result .=  "<br/><small>".ec("Предыдущее значение: ").$previous."</small>\n";
 
-		if($th)
+		if($label)
 			$result .=  "</td></tr>\n";
 
 		return $result;

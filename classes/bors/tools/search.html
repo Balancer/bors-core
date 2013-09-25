@@ -45,7 +45,7 @@
 </tr>
 {foreach from=$topics item="t"}
 <tr><td><b>
-{if $me && $me_id}
+{if $me}
 <a href="{$t->url_ex('new')}">
 {else}
 <a href="{$t->url()}">

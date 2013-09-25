@@ -26,16 +26,16 @@ class bors_forms_dropdown extends bors_forms_element
 
 		$class = join(' ', $class);
 
-		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($th = defval($params, 'th'))
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$label}</th><td>...code...</td></tr>
+		if($label = defval($params, 'label', defval($params, 'th')))
 		{
-			if($th == 'def')
+			if($label == 'def')
 			{
 				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
-				$th = $x['title'];
+				$label = $x['title'];
 			}
 
-			$html .= "<tr><th>{$th}</th><td>";
+			$html .= "<tr><th>{$label}</th><td>";
 			if(empty($style))
 				$style = "width: 99%";
 		}
@@ -146,7 +146,7 @@ class bors_forms_dropdown extends bors_forms_element
 		if(empty($json))
 			$html .= "\t\t</select>\n";
 
-		if($th)
+		if($label)
 			$html .= "</td></tr>\n";
 
 		if(!empty($json))

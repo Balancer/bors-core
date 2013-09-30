@@ -46,6 +46,8 @@ function stripq($text) { return str_replace('\\"', '"', $text); }
 
 function bors_hypher($string)
 {
+	require_once('inc/global-data.php');
+
 	if(is_global_key('hypher-cache', $string))
 		return global_key('hypher-cache', $string);
 

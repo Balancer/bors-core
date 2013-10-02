@@ -19,7 +19,7 @@ class lcml_tag_code_geshi extends base_empty
 
 		$geshi = new GeSHi($code, NULL);
 		$lang2 = $geshi->get_language_name_from_extension($lang1);
-		$geshi->set_language($lang = ($lang2 ? $lang2 : $lang1));
+		$geshi->set_language($lang = ($lang2 && $lang2!='text' ? $lang2 : $lang1));
 		$geshi->set_encoding('UTF-8');
 		$geshi->enable_classes();
 		$geshi->set_header_type(GESHI_HEADER_NONE);

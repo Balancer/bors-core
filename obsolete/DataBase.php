@@ -39,21 +39,28 @@ class DataBase
 			$password = config_mysql('password', $db_name);
 		}
 
-		$loop = 0;
-		do
-		{
-			if(config('mysql_persistent'))
-				$this->dbh = mysql_pconnect($server, $login, $password, config('mysql_renew_links', true));
-			else
-				$this->dbh = mysql_connect($server, $login, $password, config('mysql_renew_links', true));
-
-			if(!$this->dbh && config('mysql_try_reconnect'))
+		try {
+			$loop = 0;
+			do
 			{
-				debug_hidden_log('mysql_try_reconnect', NULL, false);
-				sleep(5);
-			}
+				if(config('mysql_persistent'))
+					$this->dbh = @mysql_pconnect($server, $login, $password, config('mysql_renew_links', true));
+				else
+					$this->dbh = @mysql_connect($server, $login, $password, config('mysql_renew_links', true));
 
-		} while(!$this->dbh && config('mysql_try_reconnect') && $loop++ < config('mysql_try_reconnect'));
+				if(!$this->dbh && config('mysql_try_reconnect'))
+				{
+					debug_hidden_log('mysql_try_reconnect', NULL, false);
+					sleep(5);
+				}
+
+			} while(!$this->dbh && config('mysql_try_reconnect') && $loop++ < config('mysql_try_reconnect'));
+		}
+		catch(Exception $e)
+		{
+			bors_throw("Can't connect to mysql: ".blib_exception::factory($e));
+			return;
+		}
 
 		if(!$this->dbh)
 		{

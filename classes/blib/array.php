@@ -99,6 +99,11 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 		return array_pop($this->_value);
 	}
 
+	function shift()
+	{
+		return array_shift($this->_value);
+	}
+
 	function nshift($n)
 	{
 		$x = array_slice($this->_value, 0, $n);
@@ -236,5 +241,12 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 		$suite->assertEquals('1,3,5,7,9', $x->filter_clone(create_function('$x', 'return $x%2;'))->join(',')->to_string());
 		$suite->assertEquals('1,2,3,4,5', $x->filter_clone(create_function('$x', 'return $x < 6;'))->join(',')->to_string());
 		$suite->assertEquals('1 2 3 4 5 6 7 8 9 10', $x->join(' ')->to_string());
+	}
+
+	// Убрать полученные ключи из заданного массива
+	function unset_keys_in(&$keys)
+	{
+		$keys = array_diff($keys, array_keys($this->_value));
+		return $this;
 	}
 }

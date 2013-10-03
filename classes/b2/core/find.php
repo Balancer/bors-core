@@ -1,5 +1,6 @@
 <?php
 
+
 class b2_core_find extends bors_core_find
 {
 	// Найти все объекты, соответствующие заданным критериям
@@ -23,10 +24,7 @@ class b2_core_find extends bors_core_find
 		$res = $this->limit(1)->all();
 
 		if($res->is_value())
-		{
-			$val = $res->value();
 			return $res->pop();
-		}
 
 		return new blib_null;
 	}

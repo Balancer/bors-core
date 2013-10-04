@@ -100,8 +100,8 @@ class bors_file extends base_object_db
 		$data['extension'] = preg_replace('!^.+\.([^\.]+)$!', '$1', $file);
 		$data['size'] = filesize($file);
 
-		@chmod($file, 0777);
-		@chmod(dirname($file), 0666);
+		@chmod($file, 0666);
+		@chmod(dirname($file), 0777);
 
 		return bors_new($class_name, $data);
 	}

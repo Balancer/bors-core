@@ -20,7 +20,7 @@ function smarty_function_http_load($params, &$smarty)
 		if($html)
 			bors_set_server_var($var, $html);
 		else
-			$html = bors_server_var($var).'saved';
+			$html = bors_server_var($var);
 	}
 
 	return $html;

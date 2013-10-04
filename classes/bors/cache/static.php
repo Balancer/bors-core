@@ -168,14 +168,17 @@ class cache_static extends bors_object_db
 
 		mkpath($dir = dirname($file), 0777);
 
-		if(is_writable($dir)) //TODO: проверить скорость. Быстрее проверка или маскировка собакой
+		if(is_writable($dir))
 		{
 			file_put_contents($file, $content);
-			@chmod($file, 0666);
+			if(is_file($file))
+				chmod($file, 0666);
 		}
 
-		if(!file_exists($file))
-			debug_hidden_log('filesystem', "Can't create static file for {$object}: {$file}");
+		if(!file_exists($file) || !is_file($file))
+			debug_hidden_log('filesystem', "Can't create static file.\n\tobject: {$object}\n\tfile: {$file} (fe="
+				.file_exists($file).';isf='.is_file($file).';isw='.is_writable($dir)
+			.")");
 	}
 
 	function replace_on_new_instance() { return true; }

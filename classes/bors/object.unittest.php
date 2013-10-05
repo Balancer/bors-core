@@ -35,5 +35,7 @@ class bors_object_unittest extends PHPUnit_Framework_TestCase
 		$this->assertNull($object->get('set5'));
 		$this->assertNull($object->get_data('set5'));
 
+		$this->assertEquals('??', print_r(bors_lib_orm::all_fields($object), true));
+
 	}
 }

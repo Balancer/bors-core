@@ -160,8 +160,8 @@ class DataBase
 	var $last_query_time;
 	function query($query, $ignore_error=false, $reenter = false)
 	{
-//		if(preg_match('/insert.*access_log/i', $query))
-//			debug_hidden_log('__00query_update_log', $query);
+		if(preg_match('/SELECT\s+COUNT\(\*\)\s+from\s*`?posts/is', $query))
+			debug_hidden_log('000-queries', $query);
 
 		if(config('mysql_trace_show'))
 			print_dd($query);
@@ -232,13 +232,6 @@ class DataBase
 
 		if(!$ignore_error)
 		{
-			if(!$reenter && config('mysql_autorepair', true) && preg_match('/REPLACE (\w+) /i', $query, $m))
-			{
-				debug_hidden_log('__crazy_mysql_repair', 'Try to repair: '.$query);
-//				$this->query('REPAIR TABLE '.$m[1], true, true);
-//				return $this->query($query, $ignore_error, true);
-			}
-
 			$err_msg_header = config('error_message_header');
 
 			bors_throw($err_msg_header.ec("<br/>Ошибка MySQL: ").mysql_error($this->dbh)

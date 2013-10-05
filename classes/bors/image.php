@@ -408,6 +408,8 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 	function clear_thumbnails()
 	{
+		bors_debug::syslog('000-heavy-code', "Call heavy thumbnail clear for ".$this);
+
 		//TODO: придумать избавление от такого издевательства.
 		$thumbnails = bors_find_all('bors_image_thumb', array(
 			"full_file_name LIKE '%/".addslashes(basename($this->full_file_name()))."'",

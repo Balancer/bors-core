@@ -236,7 +236,7 @@ class bors_object extends base_object
 			if(file_exists($f = $this->__class_cache_base().'.data.json'))
 				$data = json_decode(file_get_contents($f), true);
 
-			if(@$data['class_mtime'] == filemtime($this->class_file()))
+			if(!empty($data['class_mtime']) && $data['class_mtime'] == filemtime($this->class_file()))
 				$this->__cache_data = $data;
 		}
 

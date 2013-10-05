@@ -389,6 +389,7 @@ defined at {$this->class_file()}<br/>
 	function set($prop, $value, $db_update=true)
 	{
 		// Строго проверяем, наш ли это метод. Или присоединённого объекта. Или — ошибка
+/*
 		if(!array_key_exists($prop, $this->data))
 		{
 			// Нужно придумать контроль отсутствия ключа.
@@ -398,7 +399,7 @@ defined at {$this->class_file()}<br/>
 			// У атрибутов выше приоритет. Так что их тоже надо менять. Ну а данные — они на запись.
 			return $this->attr[$prop] = $value;
 		}
-
+*/
 		if($db_update
 				&& !is_array($value)
 				&& !is_object($value)

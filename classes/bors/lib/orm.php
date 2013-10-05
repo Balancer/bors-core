@@ -130,8 +130,8 @@ class bors_lib_orm
 		//TODO: добавить touch в storage, чтобы при добавлении поля в автоматические классы и кеш перечитывался. Также с брос кеша класса добавить.
 		$cache_name = 'class_'.($only_editable ? 'editable' : 'all').'_fields';
 		$cached_data = $object->__class_cache_data();
-		if(!empty($cached_data[$cache_name]))
-			return $cached_data[$cache_name];
+//		if(!empty($cached_data[$cache_name]))
+//			return $cached_data[$cache_name];
 
 		// Кеширование может быть сброшено из storage. При возможной замене менять сброс и там!
 		// При добавлении новго поля класса, например.

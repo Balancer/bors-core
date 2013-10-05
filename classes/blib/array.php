@@ -27,6 +27,8 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 
 	function append($x) { $this->_value[] = $x; return $this; }
 
+	function set($key, $value) { $this->_value[$key] = $value; return $this; }
+
 	function append_array(blib_array $array)
 	{
 		$this->_value += $array->value();
@@ -248,5 +250,20 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 	{
 		$keys = array_diff($keys, array_keys($this->_value));
 		return $this;
+	}
+
+	/*
+		Загрузить свойства, взятые из эквивалентных объектов
+		другого класса. Вместо MySQL INNER JOIN.
+	*/
+	function prop_join($class_name, $conditions = array())
+	{
+		$conditions['id IN'] = $this->keys();
+		// Ищем все присоединяемые объекты с такими же ID, как у нас
+		foreach(b2::find($class_name, $conditions)->all() as $x)
+		{
+			if($obj = $this->get($x->id()))
+				$obj->_set_prop_joined($x);
+		}
 	}
 }

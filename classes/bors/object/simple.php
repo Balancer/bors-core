@@ -11,6 +11,7 @@ class bors_object_simple extends bors_object_empty
 	var $___id;
 
 	var $attr = array();
+	var $_prop_joins = array();
 	var $defaults = array();
 
 	function id() { return $this->___id; }
@@ -69,6 +70,11 @@ class bors_object_simple extends bors_object_empty
 
 		if($name == 'this')
 			return $this;
+
+		// Проверяем параметры присоединённых объектов
+		foreach($this->_prop_joins() as $x)
+			if(array_key_exists($name, $x->data))
+				return $this->attr[$name] = $x->data[$name];
 
 		// Проверяем автоматические объекты.
 		if(method_exists($this, 'auto_objects'))

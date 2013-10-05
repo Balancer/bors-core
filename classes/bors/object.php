@@ -216,4 +216,10 @@ class bors_object extends base_object
 		bors_throw("Unknown uses $asset");
 //		return parent::uses($asset, $args);
 	}
+
+	// Добавить свойства другого объекта к свойствам нашего
+	function _set_prop_join($join_object)
+	{
+		$this->_prop_joins[] = $join_object;
+	}
 }

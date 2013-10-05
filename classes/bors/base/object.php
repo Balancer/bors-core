@@ -389,7 +389,7 @@ defined at {$this->class_file()}<br/>
 	function set($prop, $value, $db_update=true)
 	{
 		// Строго проверяем, наш ли это метод. Или присоединённого объекта. Или — ошибка
-		if(!array_key_exists($prop))
+		if(!array_key_exists($prop, $this->data))
 		{
 			// Нужно придумать контроль отсутствия ключа.
 			foreach($this->_prop_joins as $x)

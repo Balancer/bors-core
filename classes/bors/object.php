@@ -259,7 +259,10 @@ class bors_object extends base_object
 		bors_function_include('fs/file_put_contents_lock');
 		$f = $this->__class_cache_base().'.data.json';
 		mkpath(dirname($f), 0775);
-		file_put_contents_lock($f, json_encode($this->__cache_data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+		$flags = 0;
+		if(version_compare(PHP_VERSION, '5.4') >= 0)
+			$flags = JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE;
+		file_put_contents_lock($f, json_encode($this->__cache_data, $flags));
 
 		return $value;
 	}

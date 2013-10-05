@@ -386,12 +386,23 @@ defined at {$this->class_file()}<br/>
 		}
 	}
 
-	function set($field, $value, $db_update=true)
+	function set($prop, $value, $db_update=true)
 	{
+		// Строго проверяем, наш ли это метод. Или присоединённого объекта. Или — ошибка
+		if(!array_key_exists($prop))
+		{
+			// Нужно придумать контроль отсутствия ключа.
+			foreach($this->_prop_joins as $x)
+				$x->set($prop, $value, $db_update);
+
+			// У атрибутов выше приоритет. Так что их тоже надо менять. Ну а данные — они на запись.
+			return $this->attr[$prop] = $value;
+		}
+
 		if($db_update
 				&& !is_array($value)
 				&& !is_object($value)
-				&& strcmp(@$this->data[$field], $value)
+				&& strcmp(@$this->data[$prop], $value)
 			) // TODO: если без контроля типов, то !=, иначе - !==
 		{
 			if(config('mutex_lock_enable'))
@@ -401,18 +412,18 @@ defined at {$this->class_file()}<br/>
 
 			//TODO: продумать систему контроля типов.
 			//FIXME: чёрт, тут нельзя вызывать всяких user, пока в них лезут ошибки типов. Исправить и проверить все основные проекты.
-//			if(@$this->data[$field] == $value && @$this->data[$field] !== NULL && $value !== NULL)
-//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$field]).'; new type: '.gettype($value));
+//			if(@$this->data[$prop] == $value && @$this->data[$prop] !== NULL && $value !== NULL)
+//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$prop]).'; new type: '.gettype($value));
 
 			// Запоминаем первоначальное значение переменной.
-			if(!@array_key_exists($field, $this->changed_fields))
-				$this->changed_fields[$field] = @$this->data[$field];
+			if(!@array_key_exists($prop, $this->changed_fields))
+				$this->changed_fields[$prop] = @$this->data[$prop];
 
 			bors()->add_changed_object($this);
 		}
 
-		$this->attr[$field] = $value; // У атрибутов выше приоритет. Так что их тоже надо менять. Ну а данные — они на запись.
-		return $this->data[$field] = $value;
+		$this->attr[$prop] = $value; // У атрибутов выше приоритет. Так что их тоже надо менять. Ну а данные — они на запись.
+		return $this->data[$prop] = $value;
 	}
 
 	function set_def($property, $default, $db_update=true)

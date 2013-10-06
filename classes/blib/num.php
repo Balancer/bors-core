@@ -42,6 +42,6 @@ class blib_num
 
 	static function __unit_test($suite)
 	{
-		$suite->assertEquals('', blib_num::smart_bin(2097152));
+		$suite->assertEquals('2 Мбайт', blib_num::smart_bin(2097152));
 	}
 }

@@ -124,13 +124,59 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$select = array(); // dummy
 		if(!$skip_joins)
 		{
-			self::__join('inner', $object, $select, $where, $post_functions, $update);
-			self::__join('left',  $object, $select, $where, $post_functions, $update);
-			if(($idf = $object->id_field()) && empty($update[$db_name][$table_name][$idf]))
-				$update[$db_name][$table_name][$idf] = $object->id();
+//			self::__join('inner', $object, $select, $where, $post_functions, $update);
+//			self::__join('left',  $object, $select, $where, $post_functions, $update);
+//			if(($idf = $object->id_field()) && empty($update[$db_name][$table_name][$idf]))
+//				$update[$db_name][$table_name][$idf] = $object->id();
+			if($lefts = $object->get('left_join_fields'))
+			{
+				foreach($lefts as $db_name => $tables)
+				{
+					foreach($tables as $tab => $fields)
+					{
+						if(!preg_match('/^(\w+)\((\w+)\)$/', $tab, $m))
+							bors_throw("Unknown left join field with tab ".$tab);
+
+						$table_name = $m[1];
+						$id_field = $m[2];
+
+						$update[$db_name][$table_name][$id_field] = $object->id();
+						$update[$db_name][$table_name]['*id_field'] = $id_field;
+
+						foreach($fields as $key => $desc)
+						{
+							$f = bors_lib_orm::field($key, $desc);
+							$field_name = $f['name'];
+
+							if(!empty($f['sql_function']))
+								$sql = $_back_functions[$f['sql_function']];
+							elseif(preg_match('/^(\w+)\(([\w`]+)\)$/', $field_name, $m))
+							{
+								$field_name = $m[2];
+								$sql = @$_back_functions[$m[1]];
+							}
+							else
+								$sql = false;
+
+							if(!empty($object->changed_fields) && array_key_exists($f['property'], $object->changed_fields))
+							{
+								if($sql)
+									$update[$db_name][$table_name]["raw $field_name"] = $sql.'("'.addslashes($object->get($f['property'])).'")';
+								elseif(@$f['type'] == 'float')
+									$update[$db_name][$table_name]["float $field_name"] = $object->get($f['property']);
+								else
+									$update[$db_name][$table_name][$field_name] = $object->get($f['property']);
+							}
+
+						}
+					}
+				}
+			}
 		}
 
-
+//		echo "====== UPDATE ========\n";
+//		print_r($object->changed_fields);
+//		print_r($update);
 //		$dbh = new driver_mysql($object->db_name());
 		return array($update, $where);
 	}
@@ -521,34 +567,25 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		list($update, $where) = self::__update_data_prepare($object, $where);
 //		print_dd($update);
 
-		/* Пока такая странная затычка для обновления left-join-связей */
 		$main_table = $object->table_name();
-
-		$update_plain = array();
-
-		$updated_tables = array();
 
 		foreach($update as $db_name => $tables)
 		{
+			$dbh = new driver_mysql($db_name);
 			foreach($tables as $table_name => $fields)
 			{
-				if($table_name != $main_table)
-					$updated_tables[$table_name] = $fields['*id_field'];
-
-				unset($fields['*id_field']);
-				$update_plain = array_merge($update_plain, $fields);
+				if($table_name == $main_table)
+					$dbh->update($table_name, $where, $fields);
+				else
+				{
+					$id_field = $fields['*id_field'];
+					unset($fields['*id_field']);
+					$where = array($id_field => $object->id());
+					$dbh->insert_ignore($table_name, $where);
+					$dbh->update($table_name, $where, $fields);
+				}
 			}
 		}
-
-		if(!$update_plain)
-			return;
-
-		$dbh = new driver_mysql($object->db_name());
-
-		foreach($updated_tables as $table => $id_field)
-			$dbh->insert_ignore($table, array($id_field => $object->id()));
-
-		$dbh->update($object->table_name(), $where, $update_plain);
 	}
 
 	private $data;
@@ -744,6 +781,42 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$query = "CREATE TABLE IF NOT EXISTS `$table_name` (".join(', ', array_values($db_fields)).");";
 
 		$db->query($query);
+
+		if($lefts = $object->get('left_join_fields'))
+		{
+			foreach($lefts as $db_name => $tables)
+			{
+				foreach($tables as $tab => $fields)
+				{
+					if(!preg_match('/^(\w+)\((\w+)\)$/', $tab, $m))
+						bors_throw("Unknown left join field with tab ".$tab);
+
+					$db_fields = array();
+					$table_name = $m[1];
+					$id_field = $m[2];
+
+					array_unshift($fields, $id_field);
+
+					foreach($fields as $prop => $desc)
+					{
+						$f = bors_lib_orm::field($prop, $desc);
+						$db_field = '`'.$f['name'].'` '.$map[$f['type']];
+
+						if(@$f['index'])
+							$db_fields[] = "KEY (`{$f['name']}`)";
+
+						$db_fields[$db_field] = $db_field;
+					}
+
+					$db_fields[] = "PRIMARY KEY (`$id_field`)";
+
+					$query = "CREATE TABLE IF NOT EXISTS `$table_name` (".join(', ', array_values($db_fields)).");";
+					$db = new driver_mysql($db_name);
+					$db->query($query);
+				}
+
+			}
+		}
 //		$db->close();
 	}
 
@@ -752,7 +825,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		if(!config('can-drop-tables'))
 			return bors_throw(ec('Удаление таблиц запрещено'));
 
-		$class = new $class_name(NULL);
+		$class = bors_foo($class_name);
 		foreach($class->fields() as $db_name => $tables)
 		{
 			$db = new driver_mysql($db_name);
@@ -764,6 +837,22 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 				$db->query("DROP TABLE IF EXISTS $table_name");
 //				$db->close();
+			}
+		}
+
+		if($lefts = $class->get('left_join_fields'))
+		{
+			foreach($lefts as $db_name => $tables)
+			{
+				$db_fields = array();
+
+				foreach($tables as $table_name => $fields)
+				{
+					if(preg_match('/^(\w+)\((\w+)\)$/', $table_name, $m))
+						$table_name = $m[1];
+
+					$db->query("DROP TABLE IF EXISTS $table_name");
+				}
 			}
 		}
 	}

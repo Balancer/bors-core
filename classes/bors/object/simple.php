@@ -72,9 +72,10 @@ class bors_object_simple extends bors_object_empty
 			return $this;
 
 		// Проверяем параметры присоединённых объектов
-		foreach($this->_prop_joins() as $x)
-			if(array_key_exists($name, $x->data))
-				return $this->attr[$name] = $x->data[$name];
+		if($prop_joins = @$this->_prop_joins)
+			foreach($prop_joins as $x)
+				if(array_key_exists($name, $x->data))
+					return $this->attr[$name] = $x->data[$name];
 
 		// Проверяем автоматические объекты.
 		if(method_exists($this, 'auto_objects'))

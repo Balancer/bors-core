@@ -152,8 +152,17 @@ class bors_tools_search_result extends bors_tools_search
 
 		if($y = $this->y())
 		{
-			$time_begin = strtotime("$y-01-01 00:00:00");
-			$time_end   = strtotime("$y-12-31 23:59:59");
+			if(preg_match('/^(\d+)\-(\d+)$/', trim($y), $m))
+			{
+				$time_begin = strtotime("{$m[1]}-01-01 00:00:00");
+				$time_end   = strtotime("{$m[2]}-12-31 23:59:59");
+			}
+			else
+			{
+				$y = intval($y);
+				$time_begin = strtotime("$y-01-01 00:00:00");
+				$time_end   = strtotime("$y-12-31 23:59:59");
+			}
 			$cl->SetFilterRange('create_time', $time_begin, $time_end);
 		}
 

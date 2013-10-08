@@ -5,7 +5,7 @@
 </tr></table>
 {/form}
 
-{if $items}
+{if $this->query() && $items}
 {$this->pages_links_nul()}
 
 <table class="btab w100p">

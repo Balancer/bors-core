@@ -39,6 +39,10 @@ class bors_auto_search extends bors_paginated
 
 	function body_data()
 	{
+//		var_dump($this->query());
+		if(!$this->query())
+			return array();
+
 //		var_dump($this->args());
 /*
 array

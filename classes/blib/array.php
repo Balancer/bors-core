@@ -252,6 +252,13 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 		return $this;
 	}
 
+	// Добавить ключи в заданный массив
+	function add_keys_to(&$keys)
+	{
+		$keys = array_merge($keys, array_keys($this->_value));
+		return $this;
+	}
+
 	/*
 		Загрузить свойства, взятые из эквивалентных объектов
 		другого класса. Вместо MySQL INNER JOIN.

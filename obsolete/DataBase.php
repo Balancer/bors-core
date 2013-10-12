@@ -160,8 +160,8 @@ class DataBase
 	var $last_query_time;
 	function query($query, $ignore_error=false, $reenter = false)
 	{
-		if(preg_match('/SELECT\s+COUNT\(\*\)\s+from\s*`?posts/is', $query))
-			debug_hidden_log('000-queries', $query);
+		if(($watch = config('mysql.queries_watch_regexp')) && preg_match($watch, $query))
+			debug_hidden_log('mysql-queries-log', $query);
 
 		if(config('mysql_trace_show'))
 			print_dd($query);

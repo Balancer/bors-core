@@ -9,7 +9,7 @@ class bors_external_common extends bors_object
 		else
 			$limit = defval($params, 'limit', 1500); // Теперь — из массива аргументов
 
-		$original_url = $url;
+		$original_url = defval($params, 'original_url', $url);
 
 		if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt|ppt)$/i", $url))
 			return array('bbshort' => "[img url=\"$url\" 468x468]", 'tags' => array());
@@ -26,7 +26,7 @@ class bors_external_common extends bors_object
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
-//		if(config('is_developer')) { var_dump($url, $meta, $html); print_dd($html); exit('meta'); }
+//		if(config('is_developer')) { var_dump($original_url, $url, $meta, $html); print_dd($html); echo debug_trace(); exit('meta'); }
 
 		if(preg_match('/503 - Forwarding failure/', $html))
 			$html = '';

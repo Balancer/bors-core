@@ -7,6 +7,7 @@ class bors_mail
 {
 	var $to = NULL;
 	var $from = NULL;
+	var $reply_to = NULL;
 	var $text = NULL;
 	var $subject = NULL;
 	var $html = NULL;
@@ -42,6 +43,18 @@ class bors_mail
 		return $this;
 	}
 
+	function reply_to($to)
+	{
+		$this->reply_to = $to;
+		return $this;
+	}
+
+	function reply_to2($email, $title)
+	{
+		$this->reply_to = self::make_recipient(array($email, $title));
+		return $this;
+	}
+
 	static function make_recipient($user)
 	{
 		if(!$user)
@@ -57,7 +70,7 @@ class bors_mail
 			$email = $user->email();
 		}
 
-		if(preg_match('/^[\w\s]+$/'))
+		if(preg_match('/^[\w\s]+$/', $name))
 			return "$name <$email>";
 
 		return "=?UTF-8?B?".base64_encode($name)."?= <$email>";
@@ -97,6 +110,12 @@ class bors_mail
 		if(@$data['cr_type'] == 'save_cr')
 			$html = str_replace("\n", "<br/>\n", $html);
 		$this->html($html);
+		return $this;
+	}
+
+	function mailer($mailer)
+	{
+		$this->headers['X-Mailer'] = $mailer;
 		return $this;
 	}
 
@@ -157,7 +176,10 @@ class bors_mail
 			'To'		=> $this->to,
 		)));
 
-//		print_dd($body); print_dd($headers); exit();
+		if($this->reply_to)
+			set_def($headers, 'Reply-To', $this->reply_to);
+
+//		print_r($body); print_r($headers); exit();
 
 		$mail = &Mail::factory(config('mail_transport', 'mail'), config('mail_transport_parameters', NULL));
 		$mail->send($this->to, $headers, $body);

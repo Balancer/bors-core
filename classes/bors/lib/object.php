@@ -53,7 +53,7 @@ class bors_lib_object
 		return $default;
 	}
 
-	function get_foo($class_name, $name, $default = NULL)
+	static function get_foo($class_name, $name, $default = NULL)
 	{
 		static $objects = array();
 		$foo = @$objects[$class_name];

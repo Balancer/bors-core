@@ -2,7 +2,7 @@
 
 class bors_image_file extends bors_object
 {
-	function thumbnail_class() { return 'bors_image_thumbnail'; }
+	function thumbnail_class() { return 'bors_image_thumb'; }
 
 	function thumbnail($geometry)
 	{

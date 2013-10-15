@@ -1,6 +1,6 @@
 <?php
 
-if(!config('geshi_include'))
+if(!config('geshi.include'))
 	return;
 
 /**
@@ -10,7 +10,7 @@ if(!config('geshi_include'))
 	http://balancer.ru/support/2010/12/t75934--voprosy-klassifikatsii-obektov.6737.html
 */
 
-include_once(config('geshi_include'));
+include_once(config('geshi.include'));
 
 function lp_php($text, $params)
 {

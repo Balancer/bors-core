@@ -167,22 +167,21 @@ function debug($message,$comment='',$level=3)
 
 function debug_page_stat()
 {
-	?>
-<noindex>
-Новых mysql-соединений: <?php echo $GLOBALS['global_db_new_connections'];?><br />
-Продолженных mysql-соединений: <?php echo $GLOBALS['global_db_resume_connections'];?><br />
-Всего запросов <?php echo debug_count('mysql_queries');?><br />
-Попадений в кеш данных: <?php echo $GLOBALS['global_key_count_hit'];?><br />
-Промахов в кеш данных: <?php echo $GLOBALS['global_key_count_miss'];?><br />
-Время генерации страницы: <?php echo microtime(true) - $GLOBALS['stat']['start_microtime'];?>сек.<br />
-<?php
-if($GLOBALS['cms']['cache_copy'])
-	echo "Кешированная версия от ".strftime("%Y-%d-%m %H:%I", $GLOBALS['cms']['cache_copy']);
-else
-	echo "Перекомпилированная версия";
-?><br />
-</noindex>
-<?php
+	echo "<noindex>
+Новых mysql-соединений: {$GLOBALS['global_db_new_connections']}<br />
+Продолженных mysql-соединений: {$GLOBALS['global_db_resume_connections']}<br />
+Всего запросов ".debug_count('mysql_queries')."<br />
+Попадений в кеш данных: {$GLOBALS['global_key_count_hit']}<br />
+Промахов в кеш данных: {$GLOBALS['global_key_count_miss']}<br />
+Время генерации страницы: ".(microtime(true) - $GLOBALS['stat']['start_microtime'])." сек.<br />
+";
+
+	if($GLOBALS['cms']['cache_copy'])
+		echo "Кешированная версия от ".strftime("%Y-%d-%m %H:%I", $GLOBALS['cms']['cache_copy']);
+	else
+		echo "Перекомпилированная версия";
+
+	echo "<br />\n</noindex>\n";
 }
 
 function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcontext)
@@ -213,5 +212,3 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 //error_reporting(0);
 set_error_handler('bors_system_error_handler', E_ALL & ~E_STRICT & ~E_NOTICE);
 //set_error_handler('bors_system_error_handler', E_ERROR | E_WARNING | E_PARSE);
-//$x = 5/0;
-

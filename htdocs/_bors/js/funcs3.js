@@ -1,1 +1,1 @@
-/usr/local/share/bors/sites/bors-airbase/templates/forum/js/funcs3.js
+../../../../bors-airbase/templates/forum/js/funcs3.js

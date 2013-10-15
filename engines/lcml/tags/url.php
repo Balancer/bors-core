@@ -34,8 +34,8 @@ function lt_url($params)
 			$params['url']="http://$url";
 
 	$hts = NULL;
-	if(class_exists('DataBaseHTS') && config('obsolete_use_handlers_system'))
-		$hts = new DataBaseHTS();
+//	if(class_exists('DataBaseHTS') && config('obsolete_use_handlers_system'))
+//		$hts = new DataBaseHTS();
 
 	if(!preg_match("!^\w+://!",$url) && !preg_match("!^/!",$url))
 		$url = @$GLOBALS['main_uri'].$url;

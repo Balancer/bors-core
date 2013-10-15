@@ -34,6 +34,21 @@ class blib_json
 		return $input_json;
 	}
 
+	// Генератор utf-8 json на php с поддержкой unicode 6
+	// via http://habrahabr.ru/post/195806/
+	static function encode53($data)
+	{
+		return preg_replace_callback('/\\\\ud([89ab][0-9a-f]{2})\\\\ud([c-f][0-9a-f]{2})|\\\\u([0-9a-f]{4})/i', function($val)
+		{
+			return html_entity_decode(
+				empty($val[3]) ?
+					sprintf('&#x%x;', ((hexdec($val[1])&0x3FF)<<10)+(hexdec($val[2])&0x3FF)+0x10000)
+				:
+					'&#x'.$val[3].';', ENT_NOQUOTES, 'utf-8'
+			);
+		}, json_encode($data));
+	}
+
 	static function __unit_test($suite)
 	{
 		$array = array(

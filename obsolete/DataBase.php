@@ -39,21 +39,28 @@ class DataBase
 			$password = config_mysql('password', $db_name);
 		}
 
-		$loop = 0;
-		do
-		{
-			if(config('mysql_persistent'))
-				$this->dbh = mysql_pconnect($server, $login, $password, config('mysql_renew_links', true));
-			else
-				$this->dbh = mysql_connect($server, $login, $password, config('mysql_renew_links', true));
-
-			if(!$this->dbh && config('mysql_try_reconnect'))
+		try {
+			$loop = 0;
+			do
 			{
-				debug_hidden_log('mysql_try_reconnect', NULL, false);
-				sleep(5);
-			}
+				if(config('mysql_persistent'))
+					$this->dbh = @mysql_pconnect($server, $login, $password, config('mysql_renew_links', true));
+				else
+					$this->dbh = @mysql_connect($server, $login, $password, config('mysql_renew_links', true));
 
-		} while(!$this->dbh && config('mysql_try_reconnect') && $loop++ < config('mysql_try_reconnect'));
+				if(!$this->dbh && config('mysql_try_reconnect'))
+				{
+					debug_hidden_log('mysql_try_reconnect', NULL, false);
+					sleep(5);
+				}
+
+			} while(!$this->dbh && config('mysql_try_reconnect') && $loop++ < config('mysql_try_reconnect'));
+		}
+		catch(Exception $e)
+		{
+			bors_throw("Can't connect to mysql: ".blib_exception::factory($e));
+			return;
+		}
 
 		if(!$this->dbh)
 		{
@@ -67,7 +74,10 @@ class DataBase
 		set_global_key("DataBaseStartTime:{$server}", $db_name, $this->start_time = time());
 
 		if(!mysql_select_db($real_db, $this->dbh))
-			bors_throw("Could not select database ".($real_db ? "'{$db_name}' as '{$real_db}'" : "'{$db_name}'. <br/>\nError ").mysql_errno($this->dbh).": ".mysql_error($this->dbh)." <br />\n", 1);
+		{
+			debug_hidden_log('mysql_error', $msg = "Could not select database ".($real_db ? "'{$db_name}' as '{$real_db}'" : "'{$db_name}'. <br/>\nError ").mysql_errno($this->dbh).": ".mysql_error($this->dbh)." <br />\n");
+			bors_throw($msg, 1);
+		}
 
 		if($c = config('mysql_set_character_set'))
 		{
@@ -96,6 +106,8 @@ class DataBase
 			$this->icsi = $this->ics.'//IGNORE';
 			$this->dcsi = $this->dcs.'//IGNORE';
 		}
+
+		$real_db = config_mysql('db_real', $base);
 
 		// Если меняли БД, то переустановим charset — это может быть совсем другой сервер.
 		if($this->db_name != $base)
@@ -130,10 +142,9 @@ class DataBase
 				bors_exit();
 			}
 
-			if(!mysql_select_db($base, $this->dbh))
+			if(!mysql_select_db($real_db, $this->dbh))
 			{
-				echolog(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
-				bors_exit();
+				bors_throw(__FILE__.':'.__LINE__." Could not select database '$base' (".mysql_errno($this->dbh)."): ".mysql_error($this->dbh)."<BR />", 1);
 			}
 		}
 		else
@@ -149,8 +160,8 @@ class DataBase
 	var $last_query_time;
 	function query($query, $ignore_error=false, $reenter = false)
 	{
-//		if(preg_match('/insert.*access_log/i', $query))
-//			debug_hidden_log('__00query_update_log', $query);
+		if(($watch = config('mysql.queries_watch_regexp')) && preg_match($watch, $query))
+			debug_hidden_log('mysql-queries-log', $query);
 
 		if(config('mysql_trace_show'))
 			print_dd($query);
@@ -175,7 +186,7 @@ class DataBase
 		$qtime = microtime(true) - $qstart;
 
 		if($qtime > config('debug_mysql_slow', 5))
-			debug_hidden_log('mysql-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
+			debug_hidden_log('mysql-queries-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
 
 		if($type = config('debug.trace_queries'))
 		{
@@ -221,13 +232,6 @@ class DataBase
 
 		if(!$ignore_error)
 		{
-			if(!$reenter && config('mysql_autorepair', true) && preg_match('/REPLACE (\w+) /i', $query, $m))
-			{
-				debug_hidden_log('__crazy_mysql_repair', 'Try to repair: '.$query);
-//				$this->query('REPAIR TABLE '.$m[1], true, true);
-//				return $this->query($query, $ignore_error, true);
-			}
-
 			$err_msg_header = config('error_message_header');
 
 			bors_throw($err_msg_header.ec("<br/>Ошибка MySQL: ").mysql_error($this->dbh)

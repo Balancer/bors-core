@@ -16,12 +16,17 @@ function geoip_place($ip)
 	return $res;
 }
 
-function geoip_flag($ip, $fun = false)
+function geoip_flag($ip, $fun = false, $must_be=false)
 {
 	list($country_code, $country_name, $city) = geoip_info($ip);
 
 	if(!$country_code)
-		return '';
+	{
+		if(!$must_be)
+			return '';
+
+		return '<img src="http://s.wrk.ru/f/xx.gif" class="flag" title="??" alt="??"/>';
+	}
 
 	$alt = "$country_name";
 	if($city)
@@ -87,8 +92,8 @@ function geoip_info($ip)
 	if(!$country_code && @file_exists(($gf = "/usr/share/GeoIP/GeoIP.dat")) && function_exists('geoip_open'))
 	{
 		$gi = geoip_open($gf, GEOIP_STANDARD);
-		$country_code = geoip_country_code_by_addr($gi, $ip);
-		$country_name = geoip_country_name_by_addr($gi, $ip);
+		$country_code = @geoip_country_code_by_addr($gi, $ip);
+		$country_name = @geoip_country_name_by_addr($gi, $ip);
 		$city_name = "";
 		geoip_close($gi);
 	}

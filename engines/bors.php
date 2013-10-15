@@ -86,6 +86,8 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 
 	$id = call_user_func(array($class, 'id_prepare'), $id, $class);
 	$object = &object_new($class, $id);
+	$object->data = $data;
+	$object->changed_fields = $data;
 
 	$object->set_owner_id(defval($data, 'owner_id', bors()->user_id()), true);
 	$object->set_last_editor_id(bors()->user_id());
@@ -100,6 +102,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	}
 
 	$object->set_attr('__replace_on_new_instance', $replace);
+
 	$object->new_instance();
 	$object->_configure();
 	$object->set_is_loaded(true);

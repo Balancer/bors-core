@@ -2,7 +2,7 @@
 
 require_once('strings.php');
 
-	function strip_text($text, $len=192, $more_text = NULL, $microstyle = false)
+	function strip_text($text, $len=192, $more_text = NULL, $microstyle = false, $wrap = 0)
 	{
 		if(is_null($more_text))
 			$more_text = ec('…');
@@ -44,6 +44,9 @@ require_once('strings.php');
 				$text .= $more_text;
 			}
 
+//			if($wrap)
+//				$text = str_replace('———', '&shy;', htmlspecialchars(blib_string::wordwrap($text, $wrap, '———',true)));
+
 			return $text;
 		}
 
@@ -68,7 +71,9 @@ require_once('strings.php');
 		if(config('is_test'))
 			echo $text, PHP_EOL, PHP_EOL;
 
-		return bors_close_tags($text);
+		$text = bors_close_tags($text);
+
+		return $text;
 	}
 
 function bors_close_tags($html) { return blib_html::close_tags($html); }
@@ -164,5 +169,5 @@ function clause_truncate_ceil($text, $limit, $max_limit = NULL)
 		if(bors_strlen($m[1]) <= $max_limit)
 			return $m[1];
 
-	return truncate($text, $limit, ec('…'));
+	return truncate($text, $max_limit, ec('…'));
 }

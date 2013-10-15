@@ -8,7 +8,7 @@ require_once(BORS_CORE.'/init.php');
 require_once('obsolete/DataBase.php');
 require_once('inc/processes.php');
 
-file_put_contents('/tmp/clean-trace-'.$_SERVER['USER'], 'Go! '.print_r($_SERVER, true), FILE_APPEND);
+// file_put_contents('/tmp/clean-trace-'.@$_SERVER['USER'], 'Go! '.print_r($_SERVER, true), FILE_APPEND);
 
 if(!bors_thread_lock('statfile-cache-clean', 600))
 	exit("Locked\n");

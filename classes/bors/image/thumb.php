@@ -1,5 +1,7 @@
 <?php
 
+// 	Основной класс.
+
 require_once('inc/images.php');
 
 class bors_image_thumb extends bors_image
@@ -78,15 +80,25 @@ class bors_image_thumb extends bors_image
 		else
 			$new_path = NULL;
 
+//		if(config('is_developer')) { var_dump($original_path, $new_path); exit(); }
+
 		$caching = config('cache_database') ? true : false;
 
 		$this->set_relative_path($new_path, $caching);
 
-		if($original_url = $this->original->full_url())
-			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
+		$original_url = $this->original->url();
+		if($original_url[0] == '/')
+			$new_url = '/cache'.preg_replace('!^(/.+?)([^/]+)$!', '${1}'.$this->geometry.'/$2', $original_url);
 		else
-			$new_url = NULL;
-//if(config('is_developer')) { var_dump($new_url); exit(); }
+			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
+
+		if(!preg_match('!/cache.*/\d*x\d*!', $new_url))
+			bors_throw('Incorrect new url '.$new_url.' for '.$this->id().'; original url='.$original_url);
+
+//		if(config('is_developer')) { var_dump($original_url, $new_url); exit(); }
+//		if(config('is_developer')) { $o=$this->original; var_dump($original_url, $new_url, $o->class_name(), $o->id(), $o->db_name(), $o->table_name()); exit(); }
+//		if(config('is_developer')) { var_dump($original_path, $new_path); exit(); }
+
 		$this->set_full_url($new_url, $caching);
 
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
@@ -95,9 +107,29 @@ class bors_image_thumb extends bors_image
 		$this->set_file_name($this->original->file_name(), $caching);
 
 		$file_orig  = $this->original->file_name_with_path();
-		$file_thumb = $this->file_name_with_path();
+		if(config('pics_base_safemodded'))
+		{
+			$file_thumb = $this->file_name_with_path();
+//			if(config('is_developer')) { var_dump($d, $file_thumb); exit(); }
+		}
+		else
+		{
+//			$file_thumb = $this->file_name_with_path();
+			$oud = url_parse($new_url);
+			if(!$oud['local'] || !$oud['local_path'])
+				bors_throw('Unknown local for thumb: '.print_r($oud, true)
+					.'; file_name_with_path='.$this->file_name_with_path());
+//			if(config('is_developer')) { var_dump($oud, $file_thumb); exit(); }
+			$file_thumb = $oud['local_path'];
+
+			if(!preg_match('!/cache.*/\d*x\d*!', $file_thumb))
+				bors_throw('Incorrect thumb file '.$file_thumb.' for '.print_r($oud, true));
+
+		}
+
 		$abs = false;
-		if(!file_exists($file_orig))
+//		if(config('is_developer')) var_dump($this->full_file_name(), $this->file_name_with_path(), $file_thumb);
+		if(!file_exists($file_orig) && !preg_match('!^/var/www/!', $file_orig)) // Заменить хардкод
 		{
 			$file_orig  = $_SERVER['DOCUMENT_ROOT'] . $file_orig;
 			$file_thumb = $_SERVER['DOCUMENT_ROOT'] . $file_thumb;
@@ -142,7 +174,9 @@ class bors_image_thumb extends bors_image
 
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
-			debug_hidden_log('image-error', 'Cannot get image width');
+			debug_hidden_log('image-error', 'Cannot get image width for '.$file_thumb_r
+				.'; image_dir='.$this->image_dir()
+			);
 
 		$this->set_width($img_data[0], $caching);
 		$this->set_height($img_data[1], $caching);

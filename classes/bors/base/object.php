@@ -386,12 +386,24 @@ defined at {$this->class_file()}<br/>
 		}
 	}
 
-	function set($field, $value, $db_update=true)
+	function set($prop, $value, $db_update=true)
 	{
+		// Строго проверяем, наш ли это метод. Или присоединённого объекта. Или — ошибка
+/*
+		if(!array_key_exists($prop, $this->data))
+		{
+			// Нужно придумать контроль отсутствия ключа.
+			foreach($this->_prop_joins as $x)
+				$x->set($prop, $value, $db_update);
+
+			// У атрибутов выше приоритет. Так что их тоже надо менять. Ну а данные — они на запись.
+			return $this->attr[$prop] = $value;
+		}
+*/
 		if($db_update
 				&& !is_array($value)
 				&& !is_object($value)
-				&& strcmp(@$this->data[$field], $value)
+				&& strcmp(@$this->data[$prop], $value)
 			) // TODO: если без контроля типов, то !=, иначе - !==
 		{
 			if(config('mutex_lock_enable'))
@@ -401,18 +413,18 @@ defined at {$this->class_file()}<br/>
 
 			//TODO: продумать систему контроля типов.
 			//FIXME: чёрт, тут нельзя вызывать всяких user, пока в них лезут ошибки типов. Исправить и проверить все основные проекты.
-//			if(@$this->data[$field] == $value && @$this->data[$field] !== NULL && $value !== NULL)
-//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$field]).'; new type: '.gettype($value));
+//			if(@$this->data[$prop] == $value && @$this->data[$prop] !== NULL && $value !== NULL)
+//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$prop]).'; new type: '.gettype($value));
 
 			// Запоминаем первоначальное значение переменной.
-			if(!@array_key_exists($field, $this->changed_fields))
-				$this->changed_fields[$field] = @$this->data[$field];
+			if(!@array_key_exists($prop, $this->changed_fields))
+				$this->changed_fields[$prop] = @$this->data[$prop];
 
 			bors()->add_changed_object($this);
 		}
 
-		$this->attr[$field] = $value; // У атрибутов выше приоритет. Так что их тоже надо менять. Ну а данные — они на запись.
-		return $this->data[$field] = $value;
+		$this->attr[$prop] = $value; // У атрибутов выше приоритет. Так что их тоже надо менять. Ну а данные — они на запись.
+		return $this->data[$prop] = $value;
 	}
 
 	function set_def($property, $default, $db_update=true)
@@ -547,40 +559,25 @@ defined at {$this->class_file()}<br/>
 			$this->add_template_data($key, $value);
 	}
 
-	function titled_url($append = '')
+	function titled_link()
 	{
-		if(($target = $this->get('frame_target')))
-			$target = " target=\"{$target}\"";
-		else
-			$target = '';
-
-		if($append == 'new')
-		{
-			$url = $this->url_ex('new');
-		}
-		else
-		{
-			if($append)
-				$append = ' '.$append;
-			$url = $this->url_ex($this->page());
-		}
+		$url = $this->url_ex($this->page());
 		$title = $this->title();
+
 		if(!$title)
 			$title = '???';
 
-		return "<a href=\"{$url}\"{$target}{$append}>{$title}</a>";
+		return "<a href=\"{$url}\">{$title}</a>";
 	}
 
 	function url_in_container() { return $this->url(); }
 	function url_for_igo() { return $this->url_in_container(); }
 	function title_in_container() { return $this->title(); }
 
-	function titled_url_in_container()
+	function titled_link_in_container()
 	{
 		return '<a href="'.$this->url_in_container()."\">{$this->title_in_container()}</a>";
 	}
-
-	function titled_link($append = '') { return $this->titled_url($append); }
 
 	function titled_target_link() { return $this->target()->titled_link(); }
 
@@ -594,6 +591,10 @@ defined at {$this->class_file()}<br/>
 
 	function titled_link_ex($params = array())
 	{
+		// Если параметр не массив, то это номер страницы.
+		if(!is_array($params))
+			$params = array('page' => $params);
+
 		$title = defval($params, 'title');
 		if($title === NULL)
 			$title = $this->title();
@@ -605,6 +606,9 @@ defined at {$this->class_file()}<br/>
 			$popup = " title=\"".htmlspecialchars($popup)."\"";
 
 		if($class = defval($params, 'class'))
+			$class = " class=\"".htmlspecialchars($class)."\"";
+
+		if($class = defval($params, 'css'))
 			$class = " class=\"".htmlspecialchars($class)."\"";
 
 		if($style = defval($params, 'style'))
@@ -630,6 +634,7 @@ defined at {$this->class_file()}<br/>
 
 	function nav_named_url() { return '<a href="'.$this->url_ex($this->page())."\">{$this->nav_name()}</a>"; }
 	function nav_named_link($append = NULL) { return '<a href="'.$this->url_ex($this->page())."\"".($append?' '.$append:'').">{$this->nav_name()}</a>"; }
+	function nav_named_link_ex($params = array()) { set_def($params, 'title', $this->get('nav_name')); return $this->titled_link_ex($params); }
 	function titled_admin_url($title = NULL)
 	{
 		if($title === NULL)
@@ -735,7 +740,7 @@ defined at {$this->class_file()}<br/>
 	function form_errors() { return array(); }
 
 	// true if break
-	function check_data($data)
+	function check_data(&$data)
 	{
 		if(($conditions = $this->form_errors($data)))
 		{
@@ -1356,7 +1361,7 @@ defined at {$this->class_file()}<br/>
 	function post_set(&$data) { }
 	function post_save(&$data) { }
 
-	function on_new_instance($data)
+	function on_new_instance(&$data)
 	{
 		$this->__update_relations();
 	}

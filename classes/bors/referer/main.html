@@ -10,7 +10,7 @@
 <tr>
 	<td>{$s->query()}</td>
 	<td>{if $s->object()}
-			{$s->object()->titled_url()}
+			{$s->object()->titled_link()}
 		{else}
 			<a href="{$s->target_url()}">{$s->target_class_name()}://{$s->target_object_id()}</a>
 		{/if}
@@ -32,7 +32,7 @@
 <tr>
 	<td>{$l->referer_original_url()}</td>
 	<td>{if $l->object()}
-			{$l->object()->titled_url()}
+			{$l->object()->titled_link()}
 		{else}
 			<a href="{$l->target_url()}">{$l->target_class_name()}://{$l->target_object_id()}</a>
 		{/if}

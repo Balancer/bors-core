@@ -29,18 +29,17 @@ class bors_forms_date_simple extends bors_forms_element
 
 		$date = $value;
 
-		$can_drop = @$can_drop;
-
 		if(!$date)
-			$date = $can_drop ? 0 : $GLOBALS['now'];
+			$date = @$can_drop ? 0 : $GLOBALS['now'];
 
-		$html .= "<input type=\"text\" name=\"$name\" value=\"".date('d.m.Y', $date);
+		$date_string = $date || !$can_drop ? date('d.m.Y', $date) : '';
+		$html .= "<input type=\"text\" name=\"$name\" value=\"".$date_string;
 
 		if(!empty($time))
 		{
-			$html .= " ".date('H:i', $date);
+			$html .= " ".($date || !$can_drop ? date('H:i', $date) : '');
 			if(!empty($seconds))
-				$html .= date(':s', $date);
+				$html .= $date || !$can_drop ? date(':s', $date) : '';
 		}
 
 		$html .= '" ';
@@ -52,6 +51,9 @@ class bors_forms_date_simple extends bors_forms_element
 
 		if(@$params['is_integer'])
 			$html .= "<input type=\"hidden\" name=\"{$name}_is_integer\" value=\"{$params['is_integer']}\" />";
+
+		if($can_drop)
+			$html .= "<input type=\"hidden\" name=\"{$name}_can_drop\" value=\"1\" />";
 
 		if(@$params['time_on_post'])
 		{

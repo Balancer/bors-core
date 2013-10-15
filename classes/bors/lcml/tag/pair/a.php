@@ -7,7 +7,7 @@
 
 class bors_lcml_tag_pair_a extends bors_lcml_tag_pair
 {
-	function html($text, $params)
+	function html($text, &$params)
 	{
 		if(empty($params['href']))
 			debug_hidden_log('errors_lcml_parameters', "Tag [a] without href param for '{$text}'");

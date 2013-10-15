@@ -86,7 +86,10 @@
 			}
 		}
 
-		if(!$in_box_entered && $snip && ($data = bors_external_common::content_extract($url)))
+		if(!$in_box_entered && $snip && ($data = bors_external_common::content_extract($url, array(
+				'anchor' => $anchor,
+				'original_url' => $original_url
+		))))
 		{
 			$in_box_entered = true;
 			$html = lcml($data['bbshort']);

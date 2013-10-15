@@ -651,7 +651,8 @@ function bors_objects_preload(&$objects, $field, $preload_class, $store_field = 
 
 	$ids = array();
 	foreach($objects as $x)
-		$ids[$x->$field()] = 1;
+		if($x)
+			$ids[$x->$field()] = 1;
 
 	if(!array_keys($ids))
 		return array();
@@ -660,8 +661,9 @@ function bors_objects_preload(&$objects, $field, $preload_class, $store_field = 
 
 	if($store_field)
 		foreach($objects as $x)
-			if(!$strict || array_key_exists($x->$field(), $targets))
-				$x->set_attr($store_field, @$targets[$x->$field()]);
+			if($x)
+				if(!$strict || array_key_exists($x->$field(), $targets))
+					$x->set_attr($store_field, @$targets[$x->$field()]);
 
 	return $targets;
 }

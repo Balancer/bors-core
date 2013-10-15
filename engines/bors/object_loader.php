@@ -567,6 +567,7 @@ function object_init($class_name, $object_id, $args = array())
 	{
 		$found = 0;
 		$obj = new $class_name($object_id);
+
 		if(!method_exists($obj, 'set_class_file'))
 			return NULL;
 
@@ -643,7 +644,7 @@ function object_init($class_name, $object_id, $args = array())
 	return $obj;
 }
 
-function bors_objects_preload(&$objects, $field, $preload_class, $store_field = NULL)
+function bors_objects_preload(&$objects, $field, $preload_class, $store_field = NULL, $strict = false)
 {
 	if(!$objects)
 		return array();
@@ -655,11 +656,12 @@ function bors_objects_preload(&$objects, $field, $preload_class, $store_field = 
 	if(!array_keys($ids))
 		return array();
 
-	$targets = bors_find_all($preload_class, array('id IN' => array_keys($ids), 'by_id' => !!$store_field));
+	$targets = bors_find_all($preload_class, array('id IN' => array_keys($ids), 'by_id' => (bool)$store_field));
 
 	if($store_field)
 		foreach($objects as $x)
-			$x->set_attr($store_field, @$targets[$x->$field()]);
+			if(!$strict || array_key_exists($x->$field(), $targets))
+				$x->set_attr($store_field, @$targets[$x->$field()]);
 
 	return $targets;
 }

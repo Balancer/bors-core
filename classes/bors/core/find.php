@@ -103,6 +103,7 @@ class bors_core_find
 		return $this;
 	}
 
+	function raw($condition) { $this->where_parse_set($condition); return $this; }
 	function is_null($property) { $this->where_parse_set("$property IS NULL"); return $this; }
 	function is_not_null($property) { $this->where_parse_set("$property IS NOT NULL"); return $this; }
 	function eq($property, $value) { $this->where_parse_set($property, $value); return $this; }
@@ -213,7 +214,7 @@ class bors_core_find
 
 		$field_name = $field_data['name'];
 		if(!$field_name)
-			bors_throw("Not defined table field for property '{$m[1]}' in class '{$class_name}' as '*{$m[1]}'");
+			bors_throw("Not defined table field for property '{$m[1]}' in class '{$class_name}' as '{$m[1]}'");
 
 		if($sql = @$field_data['sql_function'])
 			return "$sql(`$table`.`{$field_name}`)";

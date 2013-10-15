@@ -108,8 +108,12 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 //					$imagick->resampleImage($width, $height, Imagick::FILTER_BOX, 1);
 				} while ($imagick->nextImage());
 				$imagick = $imagick->deconstructImages();
-				$imagick->writeImages($file_out, true);
-				@chmod($file_out, 0666);
+				mkpath($d = dirname($file_out), 0777);
+				if(is_dir($d) && is_writable($d))
+				{
+					$imagick->writeImages($file_out, true);
+					chmod($file_out, 0666);
+				}
 				bors_thread_unlock('image_file_scale');
 				return $img->isError();
 			}
@@ -184,7 +188,9 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 
 	}
 
-	$img->save($file_out, $img->getImageType());
+	//TODO: выкинуть нафиг Image_Transform, а то приходится маскировать E_STRICT
+	@$img->save($file_out, $img->getImageType());
+
 	@chmod($file_out, 0666);
 	bors_thread_unlock('image_file_scale');
 	return $img->isError();

@@ -207,4 +207,63 @@ class bors_object extends base_object
 
 		return $mod;
 	}
+
+	function uses($asset, $args = NULL)
+	{
+		if($asset == 'composer')
+			return require_once('composer/vendor/autoload.php');
+
+		bors_throw("Unknown uses $asset");
+//		return parent::uses($asset, $args);
+	}
+
+	// Добавить свойства другого объекта к свойствам нашего
+	function _set_prop_join($join_object)
+	{
+		$this->_prop_joins[] = $join_object;
+	}
+
+	function __class_cache_base()
+	{
+		return config('cache_dir').'/classes/'.str_replace('_', '/', get_class($this));
+	}
+
+	var $__cache_data = array();
+	function __class_cache_data($name = NULL, $setter = NULL)
+	{
+		if(empty($this->__cache_data))
+		{
+			if(file_exists($f = $this->__class_cache_base().'.data.json'))
+				$data = json_decode(file_get_contents($f), true);
+
+			if(!empty($data['class_mtime']) && $data['class_mtime'] == filemtime($this->class_file()))
+				$this->__cache_data = $data;
+		}
+
+		if(!$name)
+			return $this->__cache_data;
+
+		if(array_key_exists($name, $this->__cache_data))
+			return $this->__cache_data[$name];
+
+		if($setter)
+			return $this->__class_cache_data_set($name, call_user_func($setter));
+
+		return NULL;
+	}
+
+	function __class_cache_data_set($name, $value)
+	{
+		$this->__cache_data[$name] = $value;
+		$this->__cache_data['class_mtime'] = filemtime($this->class_file());
+		bors_function_include('fs/file_put_contents_lock');
+		$f = $this->__class_cache_base().'.data.json';
+		mkpath(dirname($f), 0775);
+		$flags = 0;
+		if(version_compare(PHP_VERSION, '5.4') >= 0)
+			$flags = JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE;
+		file_put_contents_lock($f, json_encode($this->__cache_data, $flags));
+
+		return $value;
+	}
 }

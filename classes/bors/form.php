@@ -533,8 +533,17 @@ class bors_form extends bors_object
 						if(!empty($data['args']))
 							$data = array_merge($data, $data['args']);
 						$data['time'] = true;
-						$data['seconds'] = true;
+						set_def($data, 'seconds', true);
 						$html .= $this->element_html('date_simple', $data);
+						break;
+					case 'time_mixed':
+						$data['name'] = popval($data, 'property');
+						set_def($data, 'can_drop', true);
+						if(!empty($data['args']))
+							$data = array_merge($data, $data['args']);
+						$data['time'] = true;
+						set_def($data, 'seconds', true);
+						$html .= $this->element_html('date_mixed', $data);
 						break;
 
 					case 'image':

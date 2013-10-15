@@ -9,7 +9,7 @@ function bors_image_message($message, $params = array())
 
 	$img = imagecreatetruecolor($ww, $hh);
 
-	$font = '/usr/share/fonts/corefonts/verdana.ttf';
+	$font = BORS_3RD_PARTY.'/fonts/verdana.ttf';
 	$red   = imagecolorallocate($img, 255,   0,   0);
 	$black = imagecolorallocate($img,   0,   0,   0);
 	$white = imagecolorallocate($img, 255, 255, 255);

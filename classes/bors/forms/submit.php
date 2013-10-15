@@ -16,8 +16,8 @@ class bors_forms_submit extends bors_forms_element
 		$html = "";
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($th = defval($params, 'th'))
-			$value = $th;
+		if($label = defval($params, 'label', defval($params, 'th')))
+			$value = $label;
 
 		if(empty($value))
 			$value = @$title;
@@ -51,8 +51,8 @@ class bors_forms_submit extends bors_forms_element
 				break;
 		}
 
-		if($th || $form->attr('has_form_table'))
-			$html = "<tr><th colspan=\"2\">{$html}</th></tr>\n";
+		if($label || $form->attr('has_form_table'))
+			$html = "<tr><th>&nbsp;</th><th style=\"text-align: left\">{$html}</th></tr>\n";
 
 		return $html;
 	}

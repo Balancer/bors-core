@@ -27,6 +27,8 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 
 	function append($x) { $this->_value[] = $x; return $this; }
 
+	function set($key, $value) { $this->_value[$key] = $value; return $this; }
+
 	function append_array(blib_array $array)
 	{
 		$this->_value += $array->value();
@@ -97,6 +99,11 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 	function pop()
 	{
 		return array_pop($this->_value);
+	}
+
+	function shift()
+	{
+		return array_shift($this->_value);
 	}
 
 	function nshift($n)
@@ -236,5 +243,34 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 		$suite->assertEquals('1,3,5,7,9', $x->filter_clone(create_function('$x', 'return $x%2;'))->join(',')->to_string());
 		$suite->assertEquals('1,2,3,4,5', $x->filter_clone(create_function('$x', 'return $x < 6;'))->join(',')->to_string());
 		$suite->assertEquals('1 2 3 4 5 6 7 8 9 10', $x->join(' ')->to_string());
+	}
+
+	// Убрать полученные ключи из заданного массива
+	function unset_keys_in(&$keys)
+	{
+		$keys = array_diff($keys, array_keys($this->_value));
+		return $this;
+	}
+
+	// Добавить ключи в заданный массив
+	function add_keys_to(&$keys)
+	{
+		$keys = array_merge($keys, array_keys($this->_value));
+		return $this;
+	}
+
+	/*
+		Загрузить свойства, взятые из эквивалентных объектов
+		другого класса. Вместо MySQL INNER JOIN.
+	*/
+	function prop_join($class_name, $conditions = array())
+	{
+		$conditions['id IN'] = $this->keys();
+		// Ищем все присоединяемые объекты с такими же ID, как у нас
+		foreach(b2::find($class_name, $conditions)->all() as $x)
+		{
+			if($obj = $this->get($x->id()))
+				$obj->_set_prop_joined($x);
+		}
 	}
 }

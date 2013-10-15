@@ -1,6 +1,6 @@
 <?php
 
-class bors_js extends base_page
+class bors_js extends bors_page
 {
 	function body_template_ext() { return 'js'; }
 	function use_temporary_static_file() { return false; }

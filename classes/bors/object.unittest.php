@@ -4,7 +4,7 @@ class bors_object_unittest extends PHPUnit_Framework_TestCase
 {
 	public function test_bors_object()
 	{
-		$object = object_load('bors_object');
+		$object = bors_load('bors_object', NULL);
 		$this->assertNotNull($object);
 
 		// Проверка предустановленных атрибутов
@@ -34,5 +34,7 @@ class bors_object_unittest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('uio', $object->get_data('set5', 'uio'));
 		$this->assertNull($object->get('set5'));
 		$this->assertNull($object->get_data('set5'));
+
+//		$this->assertEquals('??', print_r(bors_lib_orm::all_fields($object), true));
 	}
 }

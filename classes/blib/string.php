@@ -14,7 +14,7 @@ class blib_string extends blib_object
 		$this->_value = (string) $init_value;
 	}
 
-	static function factory($string) { return new blib_string($string); }
+	static function factory($string) { $cls = get_called_class(); return new $cls($string); }
 
 	function __toString() { return $this->_value; }
 	function to_string() { return $this->_value; }
@@ -153,5 +153,41 @@ class blib_string extends blib_object
 	function split($delimiter)
 	{
 		return blib_array::factory(explode($delimiter, $this->_value));
+	}
+
+	function hyphenate()
+	{
+		require_once('inc/strings.php');
+		$this->_value = bors_hypher($this->_value);
+		return $this;
+
+/*
+		if(is_global_key('hypher-cache', $this->_value))
+		{
+			$this->_value = global_key('hypher-cache', $this->_value);
+			return $this;
+		}
+*/
+		global $bors_3rd_glob_chypher;
+		if(empty($bors_3rd_glob_chypher))
+		{
+			$path = config('phphypher.path');
+			require_once $path.'/hypher.php';
+			$bors_3rd_glob_chypher = new phpHypher($path.'/hyph_ru_RU.conf');
+		}
+
+//		ini_set('mbstring.internal_encoding', 'windows-1251');
+//		ini_set('default_charset', 'windows-1251');
+//		$this->_value = $bors_3rd_glob_hypher->hyphenate(dc($this->_value, 'cp1251'), 'CP1251');
+		$this->_value = $bors_3rd_glob_chypher->hyphenate($this->_value);
+		return $this;
+	}
+
+	function __dev()
+	{
+		require_once('inc/strings.php');
+		var_dump(bors_hypher('Привет, мир!'));
+		$s = self::factory('Привет, мир!');
+		var_dump($s->hyphenate()->value());
 	}
 }

@@ -82,7 +82,7 @@
 
 				if($obj)
 //					return "<a href=\"$original_url\">{$obj->title()}</a>";
-					return $obj->titled_url_in_container();
+					return $obj->titled_link_in_container();
 			}
 		}
 

@@ -127,7 +127,14 @@ class bors_lib_orm
 
 	static function all_fields($object, $only_editable = true)
 	{
+		//TODO: добавить touch в storage, чтобы при добавлении поля в автоматические классы и кеш перечитывался. Также с брос кеша класса добавить.
+		$cache_name = 'class_'.($only_editable ? 'editable' : 'all').'_fields';
+		$cached_data = $object->__class_cache_data();
+//		if(!empty($cached_data[$cache_name]))
+//			return $cached_data[$cache_name];
+
 		// Кеширование может быть сброшено из storage. При возможной замене менять сброс и там!
+		// При добавлении новго поля класса, например.
 		if($fields = global_key($gk = 'bors_lib_orm_class_fields-'.intval($only_editable), $object->class_name()))
 			return $fields;
 
@@ -202,7 +209,9 @@ class bors_lib_orm
 			}
 		}
 
-		return set_global_key($gk, $object->class_name(), $fields_array);
+		set_global_key($gk, $object->class_name(), $fields_array);
+		$object->__class_cache_data_set($cache_name, $fields_array);
+		return $fields_array;
 	}
 
 	static function all_field_names($object)

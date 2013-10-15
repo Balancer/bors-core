@@ -376,7 +376,7 @@ class bors_external_feeds_entry extends base_object_db
 		if(!($b = $this->blog()))
 			return '';
 
-		return $b->post()->titled_url_in_container();
+		return $b->post()->titled_link_in_container();
 	}
 
 	function blog_pretend()
@@ -391,7 +391,7 @@ class bors_external_feeds_entry extends base_object_db
 		));
 
 		if($blog)
-			return '='.$blog->post()->titled_url_in_container();
+			return '='.$blog->post()->titled_link_in_container();
 
 		return '?';
 	}

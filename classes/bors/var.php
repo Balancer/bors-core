@@ -57,13 +57,13 @@ class bors_var
 			onclick=\"popupWin = window.open('$url&is_popup=1', 'edit', 'width=600,height=400,top=0'); popupWin.focus(); return false;\">$title<img src=\"/_bors/i16/edit.png\" style=\"vertical-align: middle\" /></a>";
 	}
 
-	function fast_get($var_name, $default = NULL)
+	static function fast_get($var_name, $default = NULL)
 	{
 		$ch = new bors_cache_fast();
 		return $ch->get('bors-var', $var_name, $default);
 	}
 
-	function fast_set($var_name, $value, $ttl = 86400)
+	static function fast_set($var_name, $value, $ttl = 86400)
 	{
 		$ch = new bors_cache_fast();
 		$ch->get('bors-var', $var_name);

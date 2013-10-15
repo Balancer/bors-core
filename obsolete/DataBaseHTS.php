@@ -93,14 +93,14 @@ class DataBaseHTS
 			$path = $m[2];
 			$file = $m[3];
 
-			if ($to_host = $this->dbh->get_value('hts_host_redirect', 'from', $host, 'to'))
-				$host = preg_replace("!^$host$!i", "$to_host", $host);
+//			if ($to_host = $this->dbh->get_value('hts_host_redirect', 'from', $host, 'to'))
+//				$host = preg_replace("!^$host$!i", "$to_host", $host);
 
 			$uri = "http://$host$path$file";
 		}
 
-		if($alias = $this->dbh->get_value('hts_aliases', 'alias', $uri, 'uri'))
-			$uri = $alias;
+//		if($alias = $this->dbh->get_value('hts_aliases', 'alias', $uri, 'uri'))
+//			$uri = $alias;
 
 		$GLOBALS['log_level'] = $save_log_level;
 

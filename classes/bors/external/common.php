@@ -2,8 +2,13 @@
 
 class bors_external_common extends bors_object
 {
-	static function content_extract($url, $limit=1500)
+	static function content_extract($url, $params = array())
 	{
+		if(!is_array($params))
+			$limit = $params; // Раньше второй параметр был длиной
+		else
+			$limit = defval($params, 'limit', 1500); // Теперь — из массива аргументов
+
 		$original_url = $url;
 
 		if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt|ppt)$/i", $url))
@@ -93,6 +98,16 @@ class bors_external_common extends bors_object
 		else
 			$img = NULL;
 
+		// Если превью не нашли, смотрим, нет ли в параметрах превью по умолчанию
+		if(!$img && ($regexp = defval($params, 'default_image_regexp')))
+		{
+			if(preg_match($regexp, $html, $m))
+				$img = $m[defval($params, 'default_image_regexp_id', 1)];
+		}
+
+		if(!$img)
+			$img = defval($params, 'default_image');
+
 		if(!$img)
 		{
 			// Ставим герерацию превьюшки
@@ -117,7 +132,7 @@ class bors_external_common extends bors_object
 		}
 
 		if($img)
-			$img = "[img={$img} 200x200 left flow nohref]";
+			$img = "[img={$img} 200x200 left flow nohref resize]";
 
 /*
 		if(!$img && config('is_developer'))
@@ -138,7 +153,7 @@ if(config('is_developer')) { exit($img); }
 		if(!$description)
 		{
 			$dom = new DOMDocument('1.0', 'UTF-8');
-			$doc->encoding = 'UTF-8';
+			$dom->encoding = 'UTF-8';
 			$html = preg_replace('!<meta [^>]+?>!is', '', $html);
 			$html = str_replace("\r", "", $html);
 
@@ -215,7 +230,6 @@ if(config('is_developer')) { exit($img); }
 					if($source != $description)
 						$more = true;
 
-//					if(config('is_developer')) { print_dd($description); exit('src'); }
 				}
 			}
 			else
@@ -227,6 +241,9 @@ if(config('is_developer')) { exit($img); }
 			require_once('inc/texts.php');
 
 			$description = clause_truncate_ceil($description, $limit);
+
+			// Чистим в $description bb-code:
+			$description = preg_replace('!\[/?\w+.*?\]!', '', $description);
 
 			// Из-за таких козлов:
 			// http://www.balancer.ru/g/p2977129
@@ -245,8 +262,10 @@ if(config('is_developer')) { exit($img); }
 
 			$bbshort = trim(bors_close_tags(bors_close_bbtags($bbshort)));
 
+//			if(config('is_developer')) { print_dd($bbshort); exit($title); }
 			return compact('tags', 'title', 'bbshort');
 		}
+
 
 		if(preg_match('!^(http://)pda\.(.+)$!', $url, $m))
 			return self::content_extract($m[1].$m[2]);

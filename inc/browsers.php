@@ -26,6 +26,12 @@ function get_browser_info($user_agent, $log_unknown = true)
 	{
 		$device = 'Nokia N70';
 	}
+	elseif(preg_match('!NokiaC6-00!i', $user_agent))
+	{
+		$device = 'Nokia';
+		$os = 'Symbian';
+		$ov = 'Series 60';
+	}
 	elseif(preg_match('!Nokia!i', $user_agent))
 	{
 		$device = 'Nokia';
@@ -87,6 +93,10 @@ function get_browser_info($user_agent, $log_unknown = true)
 		{
 			$os = 'Linux';
 			$ov = 'Gentoo';
+		}
+		elseif(preg_match('!OpenBSD!', $user_agent))
+		{
+			$os = 'OpenBSD';
 		}
 		elseif(preg_match('!Linux!', $user_agent))
 			$os = 'Linux';
@@ -212,6 +222,8 @@ function get_browser_info($user_agent, $log_unknown = true)
 	}
 	elseif(preg_match('!MIDP!', $user_agent))
 		$browser = 'MIDP';
+	elseif(preg_match('!UC Browser!', $user_agent))
+		$browser = 'UC Browser';
 
 	if(preg_match('!Akregator!', $user_agent))
 	{
@@ -295,11 +307,11 @@ function bors_browser_images($ua, $ip = NULL)
 	$info = array();
 
 	if(($bfile = bors_find_shared_file("$browser-$bver", 'images/browsers', false)))
-		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$bver\"/>";
 	elseif(($bfile = bors_find_shared_file($browser, 'images/browsers', false)))
-		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$bver\"/>";
 	elseif($is_bot && ($bfile = bors_find_shared_file('spider-unknown', 'images/browsers', false)))
-		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$over\"/>";
+		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$bver\"/>";
 
 	if(!$is_bot)
 	{

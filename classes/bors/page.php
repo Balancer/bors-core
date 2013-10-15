@@ -10,6 +10,11 @@
 
 class bors_page extends base_page
 {
+	var $_uses_css		= array();
+	var $_uses_js		= array();
+	var $_uses_script	= array();
+	var $_uses_style	= array();
+
 	function page_template_class()
 	{
 		if($class_name = config('templates_page_engine'))
@@ -208,14 +213,49 @@ class bors_page extends base_page
 		return $default;
 	}
 
-	function use_css($css_urls)
+	function uses($asset, $args = NULL)
+	{
+		if(preg_match('/\.css$/', $asset))
+			return $this->uses_css($asset, $args);
+
+		if(preg_match('/\.js$/', $asset))
+			return $this->uses_css($asset, $args);
+
+		if($asset == 'bootstrap-responsive')
+		{
+			$this->html_meta('viewport', 'width=device-width, initial-scale=1.0');
+			twitter_bootstrap::load(true);
+			return;
+		}
+
+		return parent::uses($asset, $args);
+	}
+
+	function uses_css($css_urls, $priority = 0)
 	{
 		if(!is_array($css_urls))
 			$css_urls = array($css_urls);
 
 		foreach($css_urls as $css)
+		{
 			template_css($css);
+			$this->_uses_css[$priority][] = $css;
+		}
 	}
+
+	function uses_js($js_urls, $priority = 0)
+	{
+		if(!is_array($js_urls))
+			$js_urls = array($js_urls);
+
+		foreach($js_urls as $js)
+		{
+			template_js($js);
+			$this->_uses_js[$priority][] = $js;
+		}
+	}
+
+	function html_meta($name, $content) { template_meta_prop($name, $content); }
 
 	function _parser_type_def() { return 'lcml'; }
 	function _html_def()

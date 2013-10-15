@@ -32,7 +32,7 @@ class bors_global extends base_empty
 			if(config('debug.execute_trace'))
 				debug_execute_trace("bors()->user(): load $uc(-1)");
 
-			$this->__user = object_load($uc, -1);
+			$this->__user = bors_load($uc, -1);
 
 			if($this->__user && $this->__user->get('last_visit_time') < time()-300) // не стоит обновляться чаще раза в 5 минут
 				$this->__user->set_last_visit_time(time()); // global $now тут не прокатит, т.к. может вызываться до инициализации конфигов.
@@ -149,6 +149,12 @@ class bors_global extends base_empty
 
 	function do_task($task_class, $data = array())
 	{
+		if(!class_exists('GearmanClient'))
+		{
+			debug_hidden_log('setup-error', "Can't use hardcoded GearmanClient");
+			return;
+		}
+
 		$client= new GearmanClient();
 		$client->addServer();
 

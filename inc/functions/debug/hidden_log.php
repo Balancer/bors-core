@@ -42,15 +42,15 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 		if(!empty($_POST))
 			$data .= "_POST=".print_r($_POST, true)."\n";
 
-		$out .= "url: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
+		$out .= "\turl: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
 			.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
-			. (!empty($_SERVER['HTTP_REFERER']) ? "referer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
-			. (!empty($_SERVER['REMOTE_ADDR']) ? "addr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
-			. (!empty($_SERVER['HTTP_USER_AGENT']) ? "user agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"
-			. (@$user ? 'user = '.dc($user->title()) . ' [' .bors()->user_id()."]\n": '')
+			. (!empty($_SERVER['HTTP_REFERER']) ? "\treferer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
+			. (!empty($_SERVER['REMOTE_ADDR']) ? "\taddr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
+			. (!empty($_SERVER['HTTP_USER_AGENT']) ? "\tuser agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"
+			. (@$user ? "\tuser: ".dc($user->title()) . ' [' .bors()->user_id()."]\n": '')
 			. $data
 			. $trace_out
-			. "\n---------------------------\n\n";
+			. "\n-------------------------------------------------------------------\n\n";
 	}
 
 	if(!empty($args['append']))

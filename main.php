@@ -26,6 +26,7 @@ if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 // Инициализация фреймворка
 require_once(dirname(__FILE__).'/init.php');
 
+// Смотрим, нет ли доступных принудительных редиректов
 if(
 	file_exists($f = BORS_SITE.'/webroot/redirect.list')
 	|| file_exists($f = BORS_SITE.'/data/webroot/redirect.list')
@@ -40,9 +41,11 @@ if(
 		if(!preg_match('!^(\S+)\s+(~|=)>\s+(\S+)$!', trim($s), $m))
 			continue;
 
+		// url1 => url2 — прямой редирект
 		if($m[2] == '=' && $m[1] == $_SERVER['REQUEST_URI'])
 			return go($m[3]);
 
+		// url1 ~> url2 - редирект с регекспом
 		if($m[2] == '~' && preg_match("!{$m[1]}!", $_SERVER['REQUEST_URI']))
 			return go(preg_replace("!{$m[1]}!", $m[3], $_SERVER['REQUEST_URI']));
 	}
@@ -56,9 +59,10 @@ if(config('bors_version_show'))
 // разбираться, что это за фигня. Соответственно - в лог.
 if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 {
-	@file_put_contents($file = config('debug_hidden_log_dir')."/main-php-referers.log", @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
+	@file_put_contents($file = config('debug_hidden_log_dir')."/main-php-referers.log",
+		@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']
+		."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
-//	$_SERVER['REQUEST_URI'] = '/';
 	exit("Do not use direct bors-call!\n");
 }
 

@@ -93,6 +93,9 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 							$tag_params = params($params, $lcml);
 							$tag_params['skip_around_cr'] = false;
 
+							// Если тэг один на строке, то ставим ему соответствующий флаг.
+							$tag_params['is_alone'] = (preg_match("!(^|\n)\s*$!", $part1) && preg_match("!\s*($|\n)*$!", $part3));
+
 //							if(config('is_developer')) echo "<xmp>tag=$func,p1='$part1'\np2='$part2'\np3='$part3'\n,end=$end,nextpos=$next_pos,params=".print_r($params, true).", tag_params=".print_r($tag_params, true)."</xmp>";
 
 							if($class_pair_name)
@@ -172,6 +175,10 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 					$part2 = $function_single_name($tag_params);
 
 				$part3 = bors_substr($txt, $end);
+
+				// Если тэг один на строке, то ставим ему соответствующий флаг.
+				$tag_params['is_alone'] = (preg_match("!(^|\n)\s*$!", $part1) && preg_match("!\s*($|\n)*$!", $part3));
+
 				$txt  = $part1.$part2.$part3;
 				$mask = substr($mask, 0, $pos).str_repeat('X',bors_strlen($part2)).substr($mask, $end);
 				$end  = bors_strlen($part1.$part2); // В другой раз проверяем с конца изменённого фрагмента

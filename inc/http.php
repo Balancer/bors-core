@@ -48,7 +48,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 		$query = $m[2];
 	}
 
-	if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt|ppt)$/i", $pure_url))
+	if(preg_match(config('urls.skip_load_ext_regexp'), $pure_url))
 		return "";
 
 	$header = array();
@@ -210,7 +210,7 @@ function http_get_ex($url, $raw = true)
 		$query = $m[2];
 	}
 
-	if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt)$/i", $pure_url))
+	if(preg_match(config('urls.skip_load_ext_regexp'), $pure_url))
 		return "";
 
 	$header = array();

@@ -20,8 +20,12 @@ function save_format($txt)
 
 function restore_format($txt)
 {
-	while(strpos($txt, 'lllbase64_save_formatlll') !== false)
-		$txt = preg_replace('/lllbase64_save_formatlll(.+?)rrrbase64_save_formatrrr/e', "base64_decode(str_replace('# #', '', '$1'))", $txt);
+	$loop = 0;
+	while(strpos($txt, 'lllbase64_save_formatlll') !== false && strpos($txt, 'rrrbase64_save_formatrrr') !== false && ++$loop < 10)
+		$txt = preg_replace('/lllbase64_save_formatlll(.*?)rrrbase64_save_formatrrr/e', "base64_decode(str_replace('# #', '', '$1'))", $txt);
+
+	if($loop>=10)
+		bors_debug::syslog('lcml-warnings', "Too deep restore format. Rest=".$txt);
 
 	return $txt;
 }

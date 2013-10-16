@@ -207,7 +207,7 @@ class blib_http_abstract
 			$query = $m[2];
 		}
 
-		if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt)$/i", $pure_url) && empty($params['blobs_enabled']))
+		if(preg_match(config('urls.skip_load_ext_regexp'), $pure_url) && empty($params['blobs_enabled']))
 			return array('content' => NULL, 'content_type' => NULL, 'error' => true);
 
 		$charset = popval($params, 'charset');
@@ -255,8 +255,14 @@ class blib_http_abstract
 		if(config('proxy.force_regexp') && preg_match(config('proxy.force_regexp'), $url))
 			curl_setopt($ch, CURLOPT_PROXY, config('proxy.forced'));
 
+		$start_time = time();
 		$data = curl_exec($ch);
 		$info = curl_getinfo($ch);
+
+		$time = time() - $start_time;
+		if($time > 5 || @$info['size_download'] > 1000000)
+			bors_debug::syslog('curl-warnings', "Too long or too big download for $original_url; time=$time; info=".print_r($info, true));
+
 /*
 array (size=22)
   'url' => string 'http://www.palal.net/blogposts/20130601-favelas/dona%20marta/IMG_9624.JPG' (length=73)

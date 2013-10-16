@@ -150,11 +150,12 @@ function lt_img($params)
 
 				if(file_exists($file) && !$image_size)
 				{
-	//				if(config('is_developer')) { var_dump($path, file_exists($path), $image_size); exit(); }
+//					if(config('is_developer')) { var_dump($path, file_exists($path), $image_size); exit(); }
 					//TODO: Придумать, что сделать с этим хардкодом.
 					$thumbnails = bors_find_all('bors_image_thumb', array(
 						"full_file_name LIKE '%/".addslashes(basename($file))."'",
 					));
+
 					if($thumbnails)
 						foreach($thumbnails as $t)
 							$t->delete();

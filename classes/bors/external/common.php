@@ -7,20 +7,21 @@ class bors_external_common extends bors_object
 		if(!is_array($params))
 			$limit = $params; // Раньше второй параметр был длиной
 		else
-			$limit = defval($params, 'limit', 1500); // Теперь — из массива аргументов
+			$limit = defval($params, 'limit', 5000); // Теперь — из массива аргументов
 
 		$original_url = defval($params, 'original_url', $url);
 
-		if(preg_match("/\.(pdf|zip|rar|djvu|mp3|avi|mkv|mov|mvi|qt|ppt)$/i", $url))
+		if(preg_match(config('urls.skip_load_ext_regexp'), $url))
 			return array('bbshort' => "[img url=\"$url\" 468x468]", 'tags' => array());
 
 		$more = false;
 
-//		$html = bors_lib_http::get($url);
 		if(config('lcml_cache_disable_full'))
 			$html = blib_http::get_cached($url, 7200, false, true); // Для сборса кеша
 		else
 			$html = blib_http::get_cached($url, 7200);
+
+//		$html = bors_lib_http::get($url);
 
 		$html = @iconv('utf-8', 'utf-8//ignore', $html);
 
@@ -148,7 +149,7 @@ class bors_external_common extends bors_object
 if(config('is_developer')) { exit($img); }
 */
 
-//		if(config('is_developer')) { var_dump($description); exit(); }
+//		if(config('is_developer') && preg_match('/spb.ru/', $url)) { var_dump($description); print_dd($html); exit(); }
 
 		if(!$description)
 		{
@@ -157,7 +158,11 @@ if(config('is_developer')) { exit($img); }
 			$html = preg_replace('!<meta [^>]+?>!is', '', $html);
 			$html = str_replace("\r", "", $html);
 
-//			if(config('is_developer')) { print_dd($html); exit('!description'); }
+			// Режем нафиг весь JS-вывод, а то там бывает мусор тот ещё: http://www.balancer.ru/g/p3269156
+			$html = preg_replace("!\.write(ln)?\(.+?\)!is", "", $html);
+//			$html = preg_replace("!<script[^>]*>.*?</script>!si", " ", $html);
+
+//			if(config('is_developer') && preg_match('/spb.ru/', $url)) { print_dd($html); exit('!description'); }
 
 			if($html)
 			{
@@ -169,6 +174,7 @@ if(config('is_developer')) { exit($img); }
 //				$dom->loadHTML($html);
 				$xpath = new DOMXPath($dom);
 
+//				if(config('is_developer')) { var_dump($query); print_dd($html); print_dd($dom->saveHTML()); }
 				foreach(array(
 					'//script',
 					'//noscript',
@@ -193,11 +199,16 @@ if(config('is_developer')) { exit($img); }
 					'//*[contains(@class, "warning")]',
 					'//*[contains(@class, "avatar_")]',
 				) as $query)
+				{
 					foreach($xpath->query($query) as $node)
 						$node->parentNode->removeChild($node);
 
+				}
+
 //				if($divs = $xpath->query('//div[@id="content"]'))
 				// Тест на http://www.balancer.ru/g/p2982207
+
+//				if(config('is_developer')) { print_dd($dom->saveHTML()); }
 
 				$divs = $xpath->query('//p');
 				if(!$divs->length)

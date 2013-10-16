@@ -412,8 +412,10 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 		//TODO: придумать избавление от такого издевательства.
 		$thumbnails = bors_find_all('bors_image_thumb', array(
+			"id LIKE '".intval($this->id()).",%'",
 			"full_file_name LIKE '%/".addslashes(basename($this->full_file_name()))."'",
 		));
+
 		if($thumbnails)
 			foreach($thumbnails as $t)
 				$t->delete();

@@ -169,7 +169,10 @@ class bors_object extends base_object
 			$properties = $title_properties;
 
 		if(!$properties)
+		{
+			$properties[] = 'id';
 			$properties[] = 'title';
+		}
 
 		if($x = $this->get('searchable_title_properties'))
 			$properties += $x;

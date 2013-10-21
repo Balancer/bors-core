@@ -2,6 +2,7 @@
 
 //	http://admin.aviaport.ru/digest/origins/search/?q=%D0%B4%D0%BE%D0%BC%D0%BE
 //	http://admin.aviaport.wrk.ru/directory/aviation/search/
+//	http://admin2.aviaport.wrk.ru/newses/stories/search/?q=253
 
 class bors_admin_meta_search extends bors_admin_meta_main
 {
@@ -32,17 +33,17 @@ class bors_admin_meta_search extends bors_admin_meta_main
 		if(empty($_GET['q']))
 			return $data;
 
-		$data['items'] = bors_find_all($this->main_admin_class(), array(
-			'where' => $this->where(),
-			'page' => $this->page(),
-			'per_page' => $this->items_per_page(),
-			'order' => $this->order()));
+		$where = $this->where();
+		$where['page'] = $this->page();
+		$where['per_page'] = $this->items_per_page();
+		$where['order'] = $this->order();
+
+		$data['items'] = bors_find_all($this->main_admin_class(), $where);
 
 		$data['query'] = trim(urldecode(@$_GET['q']));
 
 		$main_class = $this->main_class();
 		$foo = new $main_class(NULL);
-
 
 		$fields = $this->get('item_fields');
 		if(!$fields)
@@ -59,13 +60,15 @@ class bors_admin_meta_search extends bors_admin_meta_main
 
 	function total_items()
 	{
-		return bors_count($this->main_class(), array('where' => $this->where()));
+		return bors_count($this->main_class(), $this->where());
 	}
 
 	function where()
 	{
+		$where = parent::where();
+
 		if(empty($_GET['q']))
-			return array();
+			return $where;
 
 		$q = "'%".addslashes(trim(urldecode($_GET['q'])))."%'";
 
@@ -106,8 +109,8 @@ class bors_admin_meta_search extends bors_admin_meta_main
 		if(empty($qq))
 			bors_throw(ec('Не заданы поля для поиска (admin_searchable_title_properties/admin_searchable_properties) класса ').$main_admin_class);
 
-		$where = array('('.join(' OR ', $qq).')');
-//		var_dump($where);
+		$where[] = '('.join(' OR ', $qq).')';
+
 		return $where;
 	}
 

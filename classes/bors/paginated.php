@@ -51,7 +51,6 @@ class bors_paginated extends base_page_paged
 			$join_class = $this->get('join_counter_class');
 			$join_type = 'left';
 		}
-
 		if($join_class)
 		{
 			if(preg_match('/^(\w+)\((\w+)\)$/', $join_class, $m))
@@ -77,8 +76,16 @@ class bors_paginated extends base_page_paged
 					$where['group'] = $inner_field;
 					$where['*set'] = 'COUNT(*) AS `group_count`';
 				}
-				else
-					$where['*set'] = "'$join_class' AS `b_counter_class`";
+				elseif($join_type == 'left')
+				{
+					// http://admin2.aviaport.wrk.ru/digest/stories/
+					$where[$join_type.'_join'] = "`$db_name`.`$table_name` ON ({$this->main_class()}.id = $inner_field)";
+					$where['group'] = $inner_field;
+					$where['*set'] = 'COUNT(*) AS `group_count`';
+
+//					Непонятно, где использовалось, так что пока отключено
+//					$where['*set'] = "'$join_class' AS `b_counter_class`";
+				}
 			}
 			else
 				$where[] = "{$this->main_class()}.id IN (SELECT $inner_field FROM `$db_name`.`$table_name`)";

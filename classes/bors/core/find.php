@@ -118,14 +118,14 @@ class bors_core_find
 		$this->class_stack_push($join_class);
 
 		if(preg_match('/^\w+$/', $join_class))
-			$table = bors_lib_orm::table_name($join_class);
+			$table = '`'.bors_lib_orm::table_name($join_class).'`';
 		else
 			$table = $join_class;
 
 		$join_cond = $this->first_parse($join_cond);
 		$join_cond = $this->stack_parse($join_cond);
 		$join_cond = $this->class_parse($join_cond);
-		$this->_add_where_array('*inner_joins', "`$table` ON ($join_cond)");
+		$this->_add_where_array('*inner_joins', "$table ON ($join_cond)");
 		return $this;
 	}
 

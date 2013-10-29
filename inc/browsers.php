@@ -136,7 +136,7 @@ function get_browser_info($user_agent, $log_unknown = true)
 		elseif(preg_match('!Windows NT 6\.1!', $user_agent))
 		{
 			$os = 'Windows';
-			$ov = 'Seven';
+			$ov = '7';
 		}
 		elseif(preg_match('!Windows NT 6.0!', $user_agent))
 		{
@@ -167,8 +167,17 @@ function get_browser_info($user_agent, $log_unknown = true)
 	// Обнаруживаем браузеры
 	// ************************************************************
 	$browser='';
+	$browser_name='';
 	$bv = '';
-	if(preg_match('!Chromium/(\d+)!', $user_agent, $m))
+	if(preg_match('!YaBrowser/(\d+)!', $user_agent, $m))
+	{
+		$browser='Яндекс.Браузер';
+		$browser_name='YaBrowser';
+		$bv = $m[1];
+	}
+	elseif(preg_match('!UC\s*Browser!', $user_agent))
+		$browser = 'UC Browser';
+	elseif(preg_match('!Chromium/(\d+)!', $user_agent, $m))
 	{
 		$browser='Chromium';
 		$bv = $m[1];
@@ -222,8 +231,6 @@ function get_browser_info($user_agent, $log_unknown = true)
 	}
 	elseif(preg_match('!MIDP!', $user_agent))
 		$browser = 'MIDP';
-	elseif(preg_match('!UC Browser!', $user_agent))
-		$browser = 'UC Browser';
 
 	if(preg_match('!Akregator!', $user_agent))
 	{
@@ -258,7 +265,10 @@ function get_browser_info($user_agent, $log_unknown = true)
 	if(!$is_bot && (!$browser or !$os) && $log_unknown)
 		debug_hidden_log('user_agents', "Unknown user agent '{$user_agent}'");
 
-	return array($os, $browser, $ov, $bv, $is_bot, $device, @$os_img, @$browser_img, @$device_img);
+	if(!$browser_name)
+		$browser_name = $browser;
+
+	return array($os, $browser, $ov, $bv, $is_bot, $device, @$os_img, @$browser_img, @$device_img, $browser_name);
 }
 
 function bors_find_shared_file($base_name, $path, $default = 'unknown.png')
@@ -290,7 +300,7 @@ function bors_browser_images($ua, $ip = NULL)
 		return '<span title="'.htmlspecialchars($client_name)."\"><img src=\"{$client_image}\" width=\"16\" height=\"16\"></span>";
 	}
 
-	list($os, $browser, $osver, $bver, $is_bot, $device, $os_img, $browser_img, $device_img) = get_browser_info($ua);
+	list($os, $browser, $osver, $bver, $is_bot, $device, $os_img, $browser_img, $device_img, $browser_name) = get_browser_info($ua);
 
 	$short = array();
 	if($browser || $bver)
@@ -306,9 +316,9 @@ function bors_browser_images($ua, $ip = NULL)
 
 	$info = array();
 
-	if(($bfile = bors_find_shared_file("$browser-$bver", 'images/browsers', false)))
+	if(($bfile = bors_find_shared_file("$browser_name-$bver", 'images/browsers', false)))
 		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$bver\"/>";
-	elseif(($bfile = bors_find_shared_file($browser, 'images/browsers', false)))
+	elseif(($bfile = bors_find_shared_file($browser_name, 'images/browsers', false)))
 		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$bver\"/>";
 	elseif($is_bot && ($bfile = bors_find_shared_file('spider-unknown', 'images/browsers', false)))
 		$info[] = "<img src=\"/_bors/$bfile\" class=\"i16\" alt=\"$bver\"/>";

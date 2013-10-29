@@ -71,6 +71,8 @@ bors_client_analyze();
 $is_bot = bors()->client()->is_bot();
 $is_crowler = bors()->client()->is_crowler();
 
+// var_dump($is_bot, $is_crowler, config('bot_lavg_limit'));
+
 // Если это бот и включён лимит максимальной загрузки сервера
 // то проверяем. И если загрузка превышает допустимую - просим подождать
 //if($bot && config('bot_lavg_limit') && !in_array($bot, config('bot_whitelist', array())))
@@ -150,7 +152,7 @@ if(config('access_log')
 		$session_user_load_summary = 0;
 
 //	if(config('is_debug'))
-//		debug_hidden_log('00-system_overload_test_session', 'summary load: '.print_r($session_user_load_summary, true), 0);
+//	debug_hidden_log('00-system_overload_test_session', 'summary load: '.print_r($session_user_load_summary, true), 0);
 
 	$common_overload = config('overload_time', 0);
 	$user_overload = config('user_overload_time', $common_overload);

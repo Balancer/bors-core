@@ -263,6 +263,9 @@ class blib_http_abstract
 		if($time > 5 || @$info['size_download'] > 1000000)
 			bors_debug::syslog('curl-warnings', "Too long or too big download for $original_url; time=$time; info=".print_r($info, true));
 
+		if(preg_match('/balancer.ru|airbase.ru/', $original_url))
+			bors_debug::syslog('curl-warnings', "Try to load $original_url");
+
 /*
 array (size=22)
   'url' => string 'http://www.palal.net/blogposts/20130601-favelas/dona%20marta/IMG_9624.JPG' (length=73)
@@ -308,7 +311,7 @@ array (size=22)
 			if($save_file)
 				@unlink($save_file);
 
-			debug_hidden_log('curl-error', "Curl error: ".$err_str);
+			debug_hidden_log('curl-error', "Curl ($url) error: ".$err_str);
 			return array('content' => NULL, 'content_type' => NULL, 'error' => $err_str);
 		}
 

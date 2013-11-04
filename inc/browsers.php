@@ -128,6 +128,11 @@ function get_browser_info($user_agent, $log_unknown = true)
 			$os = 'Windows';
 			$ov = 'XP Tablet PC Edition 2005';
 		}
+		elseif(preg_match('!Windows NT 6\.3!', $user_agent))
+		{
+			$os = 'Windows';
+			$ov = '8.1';
+		}
 		elseif(preg_match('!Windows NT 6\.2!', $user_agent))
 		{
 			$os = 'Windows';
@@ -214,8 +219,12 @@ function get_browser_info($user_agent, $log_unknown = true)
 		$browser = 'Firefox';
 	elseif(preg_match('!Safari!', $user_agent))
 		$browser = 'Safari';
-	elseif(preg_match('!Gecko!', $user_agent))
-		$browser = 'Gecko';
+	// Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko
+	elseif(preg_match('!Trident/[\d\.]+; rv:([\d\.]+)!', $user_agent, $m))
+	{
+		$browser = 'IE'.intval($m[1]);
+		$bv = $m[1];
+	}
 	elseif(preg_match('!MSIE!', $user_agent))
 	{
 		if(preg_match('!MSIE ([\d\.]+);!', $user_agent, $m))
@@ -231,6 +240,8 @@ function get_browser_info($user_agent, $log_unknown = true)
 	}
 	elseif(preg_match('!MIDP!', $user_agent))
 		$browser = 'MIDP';
+	elseif(preg_match('!Gecko!', $user_agent))
+		$browser = 'Gecko';
 
 	if(preg_match('!Akregator!', $user_agent))
 	{

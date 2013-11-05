@@ -34,6 +34,10 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Liferea' => 'Liferea',		// Liferea/1.6.2 (Linux; ru_RU.UTF-8; http://liferea.sf.net/)
 			'linkdexbot' => 'Linkdex Bot',  // Mozilla/5.0 (compatible; linkdexbot/2.0; +http://www.linkdex.com/about/bots/)
 			'lwp' => 'LWP',				// lwp-trivial/1.41
+			'MagpieRSS' => array(		//MagpieRSS/0.72 (+http://magpierss.sf.net; No cache)
+				'bot' => 'MagpieRSS',
+				'crowler' => false,
+			),
 			'Mail.Ru' => 'Mail.Ru',		// Mail.Ru/1.0
 			'MJ12bot' => 'Majestic12Bot',	// Mozilla/5.0 (compatible; MJ12bot/v1.2.5; http://www.majestic12.co.uk/bot.php?+)
 			'MLBot'	=> 'MLBot',			// MLBot (www.metadatalabs.com/mlbot)

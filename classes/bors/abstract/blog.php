@@ -7,4 +7,5 @@ class bors_abstract_blog extends base_page_paged
 
 	function where() { return array('is_public' => 1); }
 	function is_reversed() { return true; }
+	function is_public_access() { return true; }
 }

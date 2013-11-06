@@ -160,7 +160,7 @@ class DataBase
 	var $last_query_time;
 	function query($query, $ignore_error=false, $reenter = false)
 	{
-		if(($watch = config('mysql.queries_watch_regexp')) && preg_match($watch, $query))
+		if(($watch = config('debug.mysql_queries_watch_regexp')) && preg_match($watch, $query))
 			debug_hidden_log('mysql-queries-log', $query);
 
 		if(config('mysql_trace_show'))
@@ -185,7 +185,7 @@ class DataBase
 
 		$qtime = microtime(true) - $qstart;
 
-		if($qtime > config('debug_mysql_slow', 5))
+		if($qtime > config('debug.mysql_slow', 5))
 			debug_hidden_log('mysql-queries-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
 
 		if($type = config('debug.trace_queries'))

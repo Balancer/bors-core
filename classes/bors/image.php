@@ -113,7 +113,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		return secure_path(config('pics_base_url').'/'.$this->relative_path().'/'.$fn);
 	}
 
-	function wxh()
+	function wxh($use_alt_title = true)
 	{
 		if($this->width() == 0 || $this->height() == 0)
 			$this->recalculate(config('cache_database') ? true : false);
@@ -121,13 +121,18 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		$w = $this->width() ? "width=\"{$this->width()}\"" : "";
 		$h = $this->height() ? "height=\"{$this->height()}\"" : "";
 
-		return  "{$h} {$w} alt=\"[image]\" title=\"".htmlspecialchars($this->alt_or_description())."\"";
+		if($use_alt_title)
+			$alt = "alt=\"[image]\" title=\"".htmlspecialchars($this->alt_or_description())."\"";
+		else
+			$alt = "alt=\"\"";
+
+		return  "{$h} {$w} $alt";
 	}
 
 	function html($args = array()) { return $this->html_code(@$args['append']); }
-	function html_code($append = "")
+	function html_code($append = "", $use_alt_title=true)
 	{
-		return "<img src=\"{$this->url()}\" {$this->wxh()} $append />";
+		return "<img src=\"{$this->url()}\" ".$this->wxh($use_alt_title)." $append />";
 	}
 
 	function thumbnail_class() { return 'bors_image_thumb'; }

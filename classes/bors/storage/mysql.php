@@ -327,8 +327,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$target_info = popval($where, '*join_object');
 
-//		if(config('is_developer')) var_dump($object->class_name(), $where);
-
 		$set    = popval($where, '*set');
 
 		$must_be_configured = $object->get('must_be_configured');
@@ -358,9 +356,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		if($set)
 			foreach(preg_split('/\s*,\s*/', $set) as $s)
 				$select[] = $s;
-
-//		if(array_key_exists())
-//			var_dump($where);
 
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
 		$objects = array();
@@ -613,6 +608,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$iterator = new bors_storage_mysql();
 		$iterator->object = $object;
 		$iterator->__class_name = $class_name;
+
 		$iterator->dbi = driver_mysql::factory($db_name)->each($table_name, join(',', $select), $where);
 		return $iterator;
 	}

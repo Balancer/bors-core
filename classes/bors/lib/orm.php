@@ -158,13 +158,12 @@ class bors_lib_orm
 						if(($object_class = @$field['class']) && preg_match('/^(\w+)_id$/', $field['property'], $m))
 							$GLOBALS['bors-orm-cache']['auto_objects_append'][$m[1]] = "$object_class({$field['property']})";
 
-						if(strpos($field['name'], '`' === false))
+						if(strpos($field['name'], '`') === false)
 							$field['name'] = "`{$field['name']}`";
 
 						if(@$field['sql_function'] == 'UNIX_TIMESTAMP')
 							$field['sql_order_field'] = $field['name'];
 
-//						if($field['name'] != 'id')
 						// UNIX_TIMESTAMP(`Date`) => UNIX_TIMESTAMP(`News`.`Date`)
 						if(empty($field['sql_function']))
 							$field['sql_tab_name'] = "`{$field['table']}`.{$field['name']}";

@@ -17,6 +17,7 @@ class bors_xref_c2a extends bors_object_db
 		$args['target_class_name'] = $target->extends_class_name();
 		$args['target_class_id'] = $target->extends_class_id();
 		$args['target_object_id'] = $target->id();
+		$args['target_create_time'] = $target->create_time();
 		bors_new($xref_class_name, $args);
 	}
 

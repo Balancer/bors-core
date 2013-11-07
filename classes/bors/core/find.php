@@ -219,7 +219,7 @@ class bors_core_find
 		if($sql = @$field_data['sql_function'])
 			return "$sql(`$table`.`{$field_name}`)";
 
-		return "`$table`.`{$field_name}`";
+		return $field_data['sql_tab_name'];
 	}
 
 	function class_parse($s)

@@ -137,7 +137,6 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true, $f
 
 	if($f = bors_lib_orm::parse_property($class->class_name(), $property))
 	{
-//		if($for_order) var_dump($f);
 		if($for_order && ($x = @$f['sql_order_field']))
 			return $x;
 
@@ -146,7 +145,6 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true, $f
 		else // Иначе возвращаем просто имя поля.
 			return $f['sql_name'];
 	}
-//	if(config('is_debug') && $property=='topic_id') var_dump($f);
 
 	if(!$property)
 		return $class->table_name();

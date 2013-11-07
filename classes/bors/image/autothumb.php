@@ -53,7 +53,7 @@ class bors_image_autothumb extends bors_object
 
 		$img = bors_find_first('bors_image', array('relative_path' => $rel, 'file_name' => $file));
 
-		if(config('bors_version_show') && $img)
+		if(config('bors.version_show') && $img)
 			header('X-original-image: '.$img->internal_uri());
 
 		if(!$img || !file_exists($img->file_name_with_path()))
@@ -70,7 +70,7 @@ class bors_image_autothumb extends bors_object
 
 		$thumb = $img->thumbnail($this->geo);
 
-		if(config('bors_version_show'))
+		if(config('bors.version_show'))
 			header('X-thumb-image: '.$thumb->internal_uri());
 
 		if($thumb->pre_show())

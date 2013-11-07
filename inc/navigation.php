@@ -28,7 +28,7 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 	if(config('do_not_exit'))
 		return true;
 
-	if(config('bors_version_show'))
+	if(config('bors.version_show'))
 		@header("X-bors-go: {$uri}");
 
     if(!headers_sent($filename, $linenum) && $time==0 && !config('redirect_by_html'))

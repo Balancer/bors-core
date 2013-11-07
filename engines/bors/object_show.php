@@ -17,7 +17,7 @@
 		$page = $obj->set_page($obj->arg('page'));
 
 		@header("Status: 200 OK");
-		if(config('bors_version_show'))
+		if(config('bors.version_show'))
 		{
 			@header("X-Bors-object-class: {$obj->class_name()}");
 			@header("X-Bors-object-id: {$obj->id()}");

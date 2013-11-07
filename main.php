@@ -52,8 +52,8 @@ if(
 }
 
 // Скажем, кто мы такие. Какой версии.
-if(config('bors_version_show'))
-	header('X-Bors: v' .config('bors_version_show'));
+if(config('bors.version_show'))
+	header('X-Bors-version: ' .config('bors.version_show'));
 
 // А такого не должно быть. Если лоадер вызывается непосредственно, нужно
 // разбираться, что это за фигня. Соответственно - в лог.
@@ -206,7 +206,7 @@ require_once('engines/bors/vhosts_loader.php');
 
 $uri = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 
-if(config('bors_version_show'))
+if(config('bors.version_show'))
 	header("X-request-url: $uri");
 
 if($_SERVER['QUERY_STRING'] == 'del')
@@ -236,13 +236,13 @@ try
 		// Если это редирект
 		if(!is_object($object))
 		{
-			if(config('bors_version_show'))
+			if(config('bors.version_show'))
 				header('X-bors-object: redirect to '.$object);
 
 			return go($object);
 		}
 
-		if(config('bors_version_show'))
+		if(config('bors.version_show'))
 			header('X-bors-object: '.$object->internal_uri());
 
 		// Новый метод вывода, полностью на самом объекте

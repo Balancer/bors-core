@@ -4,6 +4,7 @@
 // http://www.sphinxsearch.com/
 
 require_once(config('sphinx-search.include'));
+// echo config('sphinx-search.include');
 // config_set('do_not_exit', true);
 
 class bors_tools_search_result extends bors_tools_search
@@ -71,6 +72,9 @@ class bors_tools_search_result extends bors_tools_search
 				$weights = array ('blog_titles' => 100 , 'blog_keywords' => 1000, 'blog_sources' => 10);
 				break;
 			case 't':
+if(config('is_developer'))
+				$index = "topic_titles,livestreet_topic_titles,hbr_titles";
+else
 				$index = "topic_titles,livestreet_topic_titles";
 //				$weights = array ('topic_titles' => 100);
 				break;
@@ -194,7 +198,7 @@ class bors_tools_search_result extends bors_tools_search
 
 		$cl->SetArrayResult ( true );
 		$res = $cl->Query ( $this->q(), $index );
-//		print_dd($res);
+//if(config('is_developer'))		print_dd($res);
 
 		if($res === false)
 			$data['error'] = $cl->GetLastError();
@@ -218,7 +222,7 @@ class bors_tools_search_result extends bors_tools_search
 
 			$opts['exact_phrase'] = $this->x() == 'e';
 
-//var_dump($res);
+//if(config('is_developer')) print_dd($res);
 
 			if(empty($res['matches']))
 				return false;
@@ -232,14 +236,22 @@ class bors_tools_search_result extends bors_tools_search
 			for($i=0; $i<count($res['matches']); $i++)
 			{
 				$x = &$res['matches'][$i];
-				$cid = @$x['attrs']['class_id'];
-				if($cid == 1)
-					$cid = 87;
-				if($cid == 2)
-					$cid = 89;
-				if($cid == 15)
-					$cid = 179;
 				$id = floor($x['id'] / 1000);
+
+				if($cn = @$x['attrs']['class_name'])
+				{
+					$cid = $cn;
+				}
+				else
+				{
+					$cid = @$x['attrs']['class_id'];
+					if($cid == 1)
+						$cid = 87;
+					if($cid == 2)
+						$cid = 89;
+					if($cid == 15)
+						$cid = 179;
+				}
 				if(@$x['attrs']['is_content'])
 					$contents[$cid][] = $id;
 				else
@@ -247,6 +259,7 @@ class bors_tools_search_result extends bors_tools_search
 			}
 
 //print_dd($res);
+//print_dd($titles);
 //var_dump($titles, $contents);
 
 			$this->_data['posts'] = array();
@@ -261,8 +274,13 @@ class bors_tools_search_result extends bors_tools_search
 			$this->_data['topics'] = array();
 			foreach($titles as $class_id => $ids)
 			{
-				$objects = bors_find_all($class_id, array('id IN' => array_unique($ids), 'by_id' => true));
+				if(!$class_id)
+				{
+					continue;
+				}
 
+				$objects = bors_find_all($class_id, array('id IN' => array_unique($ids), 'by_id' => true));
+//if(config('is_developer')) { echo $class_id; print_r($ids); print_dd($objects); }
 				foreach($ids as $id)
 					if(!empty($objects[$id]))
 						$this->_data['topics'][$id] = $objects[$id];

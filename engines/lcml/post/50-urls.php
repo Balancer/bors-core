@@ -72,7 +72,10 @@
 		if(config('lcml_balancer'))
 		{
 			//TODO: придумать хук вместо хардкода
-			if(in_array($url_data['host'], array('airbase.ru', 'balabot.balancer.ru', 'balancer.ru', 'bors.balancer.ru', 'forums.airbase.ru', 'forums.balancer.ru')))
+			if(in_array($url_data['host'], array(
+				'airbase.ru', 'balabot.balancer.ru', 'balancer.ru', 'www.balancer.ru', 'la2.balancer.ru',
+				'bors.balancer.ru', 'forums.airbase.ru', 'forums.balancer.ru',
+				'wrk.ru', 'www.wrk.ru', 'la2.wrk.ru')))
 			{
 				$anchor = NULL;
 				$obj = bors_load_uri($pure_url);
@@ -86,13 +89,11 @@
 			}
 		}
 
-		if(!$in_box_entered && $snip && ($data = bors_external_common::content_extract($url, array(
-				'anchor' => $anchor,
-				'original_url' => $original_url
-		))))
+		if(!$in_box_entered && $snip)
 		{
+			$link = airbase_external_link::find_or_register($original_url);
 			$in_box_entered = true;
-			$html = lcml($data['bbshort']);
+			$html = lcml($link->bbshort());
 			$in_box_entered = false;
 			return $html;
 		}

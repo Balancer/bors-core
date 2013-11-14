@@ -10,7 +10,7 @@ function lcml_tables($txt)
 	fwrite($fh, $txt);
 	fclose($fh);
 
-	$res = `/home/airbase/cgi-bin/tools/table.cgi $file`;
+	$res = `/var/www/bors/bors-airbase/tools/cgi-bin/table.cgi $file`;
 	if(trim($res))
 	{
 		$txt = $res;

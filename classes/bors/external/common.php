@@ -16,14 +16,19 @@ class bors_external_common extends bors_object
 
 		$more = false;
 
-		if(config('lcml_cache_disable_full'))
-			$html = blib_http::get_cached($url, 7200, false, true); // Для сборса кеша
-		else
-			$html = blib_http::get_cached($url, 7200);
+		$html = defval($params, 'html');
+		if(!$html)
+		{
+			if(config('lcml_cache_disable_full'))
+				$html = blib_http::get_cached($url, 7200, false, true); // Для сборса кеша
+			else
+				$html = blib_http::get_cached($url, 7200);
 
+			$html = @iconv('utf-8', 'utf-8//ignore', $html);
+		}
+
+//		var_dump($html);
 //		$html = bors_lib_http::get($url);
-
-		$html = @iconv('utf-8', 'utf-8//ignore', $html);
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
@@ -91,7 +96,7 @@ class bors_external_common extends bors_object
 		{
 			if(!preg_match('!^image/(png|jpeg|gif)!', $x['content_type']))
 			{
-				debug_hidden_log('dev-snip-no-image', "$img: ".print_r($x, true));
+				bors_debug::syslog('dev-snip-no-image', "$img: ".print_r($x, true));
 //				if(config('is_developer')) { var_dump($x); exit(); }
 				$img = NULL;
 			}
@@ -112,8 +117,8 @@ class bors_external_common extends bors_object
 		if(!$img)
 		{
 			// Ставим герерацию превьюшки
-			if(preg_match('/%\w\w%/i', $url))
-				$url = urldecode($url);
+			// Сперва дектодируем URL (urldecode + кодировка)
+			$url = blib_urls::decode($url);
 
 			$url_data = parse_url($url);
 			$host = preg_replace('/^www\./', '', $url_data['host']);
@@ -123,9 +128,9 @@ class bors_external_common extends bors_object
 
 			$img = "http://www.balancer.ru/_cg/_st/{$host_parts[0]}/{$host_parts[1][0]}/{$host_parts[1]}/{$id}-400x300.png";
 			// Дёрнем, чтобы сгенерировалось
-			$x = blib_http::get_bin($img, array('timeout' => 15));
+			$x = blib_http::get_bin($img, array('timeout' => 10));
 
-			if(config('is_debug') && !$x)
+			if(config('is_developer') && !$x)
 			{
 				var_dump($url, $id, $host_parts, "http://www.balancer.ru/_cg/_st/{$host_parts[0]}/{$host_parts[1][0]}/{$host_parts[1]}/{$id}-400x300.png", $x);
 				exit();

@@ -6,6 +6,11 @@ class bors_html
 	{
 		extract($params);
 
+		if(empty($size))
+			$size = '16x16';
+
+		list($width, $height) = explode('x', $size);
+
 		if(empty($css_class))
 			$class = '';
 		else
@@ -13,8 +18,32 @@ class bors_html
 
 		if(!preg_match('/\.(png|gif)$/', $image))
 		{
-			foreach(array(BORS_CORE.'/shared/i16' => '/_bors/i16', BORS_EXT.'/htdocs/_bors-ext/i16' => '/_bors-ext/i16') as $dir => $path)
+
+			if($size != '16x16')
+				$img_dirs = array(
+					BORS_EXT.'/htdocs/_bors-ext/iv' => '/_bors-ext/iv',
+				);
+			else
+				$img_dirs = array();
+
+			$img_dirs = array_merge($img_dirs, array(
+				BORS_CORE.'/shared/i16' => '/_bors/i16',
+				BORS_EXT.'/htdocs/_bors-ext/i16' => '/_bors-ext/i16',
+			));
+
+			if($size == '16x16')
+				$img_dirs = array_merge($img_dirs, array(
+					BORS_EXT.'/htdocs/_bors-ext/iv' => '/_bors-ext/iv',
+				));
+
+			foreach($img_dirs as $dir => $path)
 			{
+				if(file_exists("$dir/$image.svg"))
+				{
+					$image = "$path/$image.svg";
+					break;
+				}
+
 				if(file_exists("$dir/$image.png"))
 				{
 					$image = "$path/$image.png";
@@ -29,8 +58,7 @@ class bors_html
 			}
 		}
 
-		$img = "<img src=\"$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$action\" style=\"vertical-align: middle\"$class />";
-
+		$img = "<img src=\"$image\" width=\"{$width}\" height=\"{$height}\" title=\"$title\" alt=\"$action\" style=\"vertical-align: middle\"$class />";
 
 		if(!empty($action) && empty($link))
 		{

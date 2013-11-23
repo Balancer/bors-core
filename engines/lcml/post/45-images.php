@@ -12,7 +12,6 @@ function lcml_images($txt, $lcml)
 	$n=50;
 	while(preg_match("!^[\s￼ ]*(https?://\S+\.(jpg|png|gif|jpeg|sjpg))\s*$!im", $txt, $m) && $n-->0)
 	{
-		if(config('is_developer')) print_dd($m);
 		$image_url = $m[1];
 		$ud = parse_url($image_url);
 		$txt = str_replace($m[0], lt_img(array(

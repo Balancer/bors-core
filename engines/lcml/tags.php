@@ -448,6 +448,12 @@ function next_open_brace($txt, $pos)
 				$params[strtolower($m[1])] = $m[2];
 		}
 
+		if(preg_match_all("!(?<=^|\s)(\w+)=(\w+)(?=\s|$|/)!ms", $in, $match, PREG_SET_ORDER))
+		{
+			foreach($match as $m)
+				$params[strtolower($m[1])] = $m[2];
+		}
+
 		// Апострофы и кавычки убираем для http://balancer.ru/g/p2728134
 		// [url=http://yandex.ru/yandsearch?text="оранжевые+зомби"]оранжевых зомби[/url]
 		if(preg_match_all("!(?<=^|\s)(\w+)=([^'\"]\S+)(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))

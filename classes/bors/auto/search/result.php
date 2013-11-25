@@ -31,12 +31,12 @@ class bors_auto_search_result extends bors_auto_search
 			if(preg_match('/^(\w+)=$/', $p, $m))
 			{
 				$x = bors_lib_orm::parse_property($class_name, $m[1]);
-				$qq[] = "`{$x['name']}` = {$q0}";
+				$qq[] = "{$x['name']} = {$q0}";
 			}
 			else
 			{
 				$x = bors_lib_orm::parse_property($class_name, $p);
-				$qq[] = "`{$x['name']}` LIKE {$q}";
+				$qq[] = "{$x['name']} LIKE {$q}";
 			}
 		}
 

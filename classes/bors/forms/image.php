@@ -29,7 +29,7 @@ class bors_forms_image extends bors_forms_element
 		if($th = defval($params, 'th'))
 			$html .=  "<tr><th>{$th}</th><td>";
 
-		if($obj && ($image = $obj->$image_name_field()))
+		if($obj && ($image = $obj->get($image_name_field)))
 		{
 			$html .=  "<a href=\"{$image->admin()->url()}\">".$image->thumbnail(defval_ne($params, 'geo', '200x'))->html_code()."</a><br/>\n";
 			$html .=  "<input type=\"checkbox\" name=\"file_{$image_name_field}_delete_do\" />&nbsp;".ec('Удалить изображение')."<br/>\n";

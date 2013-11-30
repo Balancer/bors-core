@@ -27,17 +27,21 @@
 	<th>Действия</th>
 </tr>
 {foreach from=$list item="x"}
-<tr>
+<tr{if $x->is_disabled()} style="color: #ccc"{else}{if $x->is_exactly()} class="b"{/if}{/if}>
 	<td>{$x->id()}</td>
-	<td>{if $x->is_disabled()}<s>{$x->title()}</s>{else}{$x->title()}{/if}</td>
+	<td>{$x->title()}</td>
 	<td>
-		{if $x->is_auto()}Автоматический. {/if}
-		{if $x->is_exactly()}Точное соответствие. {/if}
+		{if $x->is_disabled()}
+			Исключён из поиска
+		{else}
+			{if $x->is_auto()}Автоматический.{/if}
+			{if $x->is_exactly()}Точное соответствие.{else}Морфологический поиск{/if}
+		{/if}
 	</td>
 	<td>
 {if $x->is_exactly()}{$x|imaged_link:'Разрешить неточный поиск':'unlocked'}{else}{$x|imaged_link:'Установить строгий поиск':'locked'}{/if}
 {if $x->is_disabled()}{$x|imaged_link:'Разрешить':'enable'}{else}{$x|imaged_link:'Запретить':'disable'}{/if}
-{$x->admin()->imaged_delete_link('')}
+{$x->admin()->imaged_delete_link(false)}
 {if $x->is_auto()}{$x|imaged_link:'Подтвердить':'check'}{/if}
 	</td>
 </tr>

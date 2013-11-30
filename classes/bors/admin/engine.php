@@ -295,12 +295,19 @@ class bors_admin_engine extends bors_object
 	function imaged_delete_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
 	{
 		$obj = $this->real_object();
+		if(!$obj->access()->can_delete())
+			return '';
 
+		// http://admin.aviaport.ru/digest/origins/3516/ — внизу страницы
 		$delete_text = ec('Удаление ')
 			.bors_lower($obj->class_title_rp())
 			.ec(' «').$obj->get('title').ec('»');
 
-		if($title === true)
+		// Справа в http://admin.aviaport.ru/_bors/admin/edit/synonyms/?real_object=aviaport_directory_aviafirms_firm__1519&object=aviaport_admin_directory_aviafirms_firm__1519&edit_class=http://admin.aviaport.ru/directory/aviafirms/1519/
+		if($title===false)
+			$title = '';
+		// Внизу http://admin.aviaport.ru/digest/origins/3516/
+		elseif(is_null($title))
 			$title = $delete_text;
 
 		$x = $title ? '&nbsp;' : '';

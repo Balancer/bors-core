@@ -190,7 +190,10 @@ class bors_object extends base_object
 		$args = func_get_args();
 		array_shift($args);
 //		var_dump($method_name, $args);
-		return call_user_func_array(array($this, $method_name), $args);
+		if(method_exists($this, $method_name))
+			return call_user_func_array(array($this, $method_name), $args);
+
+		return NULL;
 	}
 
 	function _item_list_admin_fields_def() { return $this->get('item_list_fields'); }

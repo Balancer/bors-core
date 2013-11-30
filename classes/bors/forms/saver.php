@@ -133,8 +133,6 @@ class bors_forms_saver extends base_empty
 
 		if($go)
 		{
-//			var_dump($object->get('admin_parent_url'), $go); exit();
-
 			require_once('inc/navigation.php');
 
 			switch($go)

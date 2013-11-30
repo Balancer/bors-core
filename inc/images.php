@@ -32,7 +32,11 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 
 	$data = getimagesize($file_in);
 
+	if(preg_match('/257423/', $file_in))
+		config_set('is_developer', true);
+
 //	if(config('is_developer')) { var_dump($file_in, $data, $width, $height, $opts); exit(); }
+//	var_dump($file_in, $data, $width, $height, $opts); exit();
 
 	if(!$data || !$data[0])
 	{
@@ -125,6 +129,7 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 	else
 	{
 		$opts = explode(',', $opts);
+//		if(config('is_developer')) { var_dump($opts); exit(); }
 
 		$img_h = $img->getImageHeight();
 		$img_w = $img->getImageWidth();
@@ -141,6 +146,7 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 
 		$scale_down = ($height && $img_h >= $height) || ($width && $img_w >= $width);
 
+//		if(config('is_developer')) { var_dump('scale', $scale_up, $scale_down); exit(); }
 		if($scale_up || $scale_down) // ресайз обязателен
 		{
 			// Если заполняем картинку, то до полного размера
@@ -153,13 +159,22 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 			{
 				$upw = $img_w*$height/$img_h;
 				if($upw > $width)
-					$uph = $height;
-				else
 				{
 					$upw = $width;
 					$uph = $img_h*$width/$img_w;
 				}
+				else
+				{
+					$uph = $img_h*$width/$img_w;
+					if($uph > $height)
+					{
+						$uph = $height;
+						$upw = $img_w*$height/$img_h;
+					}
+				}
 			}
+
+//		if(config('is_developer')) { var_dump('size', $width, $height, $upw, $uph); exit('stop'); }
 
 			if($fillpad)
 				$img->fit(round(0.95*$upw), round(0.95*$uph));

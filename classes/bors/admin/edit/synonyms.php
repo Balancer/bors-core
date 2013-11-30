@@ -1,5 +1,7 @@
 <?php
 
+config_set('cache.disabled', true);
+
 class bors_admin_edit_synonyms extends bors_page
 {
 	function title() { return ($this->object() ? $this->object()->title() : '---').ec(': синонимы'); }
@@ -28,7 +30,13 @@ class bors_admin_edit_synonyms extends bors_page
 		return $this->__setc($obj);
 	}
 
-	function parents() { return array(empty($_GET['edit_class']) ? $this->object()->admin_url() : $_GET['edit_class']); }
+	function parents()
+	{
+		if(empty($_GET['edit_class']))
+			return array($this->object()->admin_url());
+
+		return array($_GET['edit_class']);
+	}
 
 	function admin_object() { return $this->object(); }
 

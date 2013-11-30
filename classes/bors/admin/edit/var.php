@@ -12,6 +12,10 @@ class bors_admin_edit_var extends bors_admin_page
 	{
 		$name = $this->id();
 		$var = bors_var::get_var($name);
+
+		if(!$var)
+			$var = bors_var::set_var($name, NULL);
+
 		return $var;
 	}
 

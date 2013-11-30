@@ -1,10 +1,11 @@
 {form action=$this->url() act="save"}
+
 {if $var->type() == 'html'}
-{textarea name="value" value=$var->value() class="tinymce"}
+	{textarea name="value" value=$var->value() class="tinymce"}
+{else}
+	{input name="value" value=$var->value()}
 {/if}
-{if $var->type() == 'string'}
-{input name="value" value=$var->value()}
-{/if}
+
 {submit value="Сохранить"}
 {hidden name="name" value=$var->name()}
 {hidden name="is_popup"}

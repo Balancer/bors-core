@@ -20,9 +20,9 @@ $db->query('DELETE FROM bors_access_log WHERE access_time < UNIX_TIMESTAMP() - 3
 
 foreach(objects_array('bors_access_log', array('was_counted' => 0)) as $x)
 {
-	if(!$x->is_bot() && $target = $x->target())
+	if(!$x->is_bot() && ($target = $x->target()))
 	{
-#		bors_external_referer::register($x->server_uri(), $x->referer(), $target);
+		bors_external_referer::register($x->server_uri(), $x->referer(), $target);
 #		$target->visits_inc();
 		$x->set_was_counted(1, true);
 		echo "+";

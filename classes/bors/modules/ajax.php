@@ -17,14 +17,17 @@ class bors_modules_ajax extends bors_module
 
 		jquery::load();
 
+		$url = "/_bors/tools/ajax/module/$class";
+
+		// http://aviaport.wrk.ru/news/2013/07/05/258752.html
 		if($f = $x->get('ajax_effect'))
 		{
-			jquery::on_ready("\$('#$dom_id').hide(); \$.get('/_bors/mod-ajax?".http_build_query($params)."',"
+			jquery::on_ready("\$('#$dom_id').hide(); \$.get('$url',"
 				."function(html) { \$('#$dom_id').html(html); $('#$dom_id')$f})");
 		}
 		else
 		{
-			jquery::on_ready("\$.get('/_bors/mod-ajax?".http_build_query($params)."',"
+			jquery::on_ready("\$.get('$url',"
 				."function(html) { \$('#$dom_id').html(html)})");
 		}
 	}

@@ -182,6 +182,9 @@ class bors_page extends base_page
 		if($this->get('use_bootstrap'))
 		{
 			twitter_bootstrap::load();
+
+			if(!$this->attr('template'))
+				$this->set_attr('template', 'xfile:bootstrap/index.tpl');
 //			$this->set_attr('template', 'xfile:bootstrap/index.tpl');
 		}
 

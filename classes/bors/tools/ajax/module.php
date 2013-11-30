@@ -16,6 +16,12 @@ class bors_tools_ajax_module extends bors_object
 			bors_throw("Can't load module class '$class'");
 
 		$object->set_args($params);
-		return $object->html();
+
+		$html = $object->html();
+
+		if(!$html)
+			$html = ' ';
+
+		return $html;
 	}
 }

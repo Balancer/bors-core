@@ -696,9 +696,9 @@ defined at {$this->class_file()}<br/>
 
 	function imaged_delete_link($text = NULL, $title = NULL) { return $this->imaged_delete_url($title, $text); }
 
-	function imaged_delete_url($title = NULL, $text = '')
+	function imaged_delete_url($title = NULL, $text = NULL)
 	{
-		if($title == 'del')
+		if($title == 'del' || !$title)
 			$title = ec('Удалить ').bors_lower($this->class_title_vp());
 
 		if($text === NULL)
@@ -1528,7 +1528,8 @@ defined at {$this->class_file()}<br/>
 		}
 
 //		echo "cs=$use_static, recreate=$recreate";
-		if($use_static || $recreate)
+//		if($use_static || $recreate)
+		if($use_static)
 			cache_static::save($this, $content);
 
 		if(config('use_memcached_objects') || $recreate)

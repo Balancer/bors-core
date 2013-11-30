@@ -44,6 +44,15 @@ class bors_var
 		return $value;
 	}
 
+	static function set_var($name, $value, $time_to_live = NULL)
+	{
+		return bors_new('bors_var_db', array(
+			'name' => $name,
+			'value' => $value,
+			'expire_time' => $time_to_live > 0 ? time() + $time_to_live : $time_to_live,
+		));
+	}
+
 	static function edit_html_code($name, $title = NULL)
 	{
 		$url = "/_bors/admin/edit-var?var={$name}";

@@ -89,7 +89,7 @@
 			}
 		}
 
-		if(!$in_box_entered && $snip)
+		if(!$in_box_entered && $snip && class_exists('airbase_external_link'))
 		{
 			$link = airbase_external_link::find_or_register($original_url);
 			$in_box_entered = true;

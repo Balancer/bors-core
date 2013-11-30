@@ -22,6 +22,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Ezooms' => 'Ezooms',				// Mozilla/5.0 (compatible; Ezooms/1.0; ezooms.bot@gmail.com)
 			'Falconsbot' => 'Falconsbot',		// 219.219.127.4, Mozilla/5.0 (compatible; Falconsbot; +http://ws.nju.edu.cn/falcons/)
 			'Feedreader' => 'Feedreader',		// Feedreader 3.14 (Powered by Newsbrain)
+			'Flamingo_SearchEngine' => 'Flamingo Search',	// Flamingo_SearchEngine (+http://www.flamingosearch.com/bot)
 			'GeliyooBot',						// Mozilla/5.0 (compatible; GeliyooBot/1.0beta; +http://www.geliyoo.com/)
 			'Gigabot' => 'Gigabot',				// Gigabot/3.0 (http://www.gigablast.com/spider.html)
 			'Mediapartners-Google' => array(	//	Mediapartners-Google
@@ -66,6 +67,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Snapbot' => 'Snapbot',		// Snapbot/1.0 (Snap Shots, +http://www.snap.com)
 			'Speedy Spider' => 'EntirewebBot',
 			'Spinn3r' => 'Spinn3r',	// Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.19; aggregator:Spinn3r (Spinn3r 3.1); http://spinn3r.com/robot) Gecko/2010040121 Firefox/3.0.19
+			'SputnikBot' => 'SputnikBot',	// Mozilla/5.0 (compatible; SputnikBot/2.2)
 			'SurveyBot' => 'SurveyBot',	// 64.246.165.190, Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.9.0.13) Gecko/2009073022 Firefox/3.5.2 (.NET CLR 3.5.30729) SurveyBot/2.3 (DomainTools)
 			'Tagoobot' => 'Tagoobot',	// Mozilla/5.0 (compatible; Tagoobot/3.0; +http://www.tagoo.ru)
 			'theoldreader' => array( 	// Mozilla/5.0 (compatible; theoldreader.com; 1 subscribers; feed-id=0719795c4d27c784217b0bc0)

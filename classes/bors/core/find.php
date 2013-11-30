@@ -183,9 +183,9 @@ class bors_core_find
 			bors_throw("Not defined table field for property '{$m[2]}' in class '{$class_name}' as '*{$m[1]}'");
 
 		if($sql = @$field_data['sql_function'])
-			return "$sql(`$table`.`{$field_name}`)";
+			return "$sql(`$table`.{$field_name})";
 
-		return "`$table`.`{$field_name}`";
+		return "`$table`.{$field_name}";
 	}
 
 	function first_parse($s)
@@ -217,7 +217,7 @@ class bors_core_find
 			bors_throw("Not defined table field for property '{$m[1]}' in class '{$class_name}' as '{$m[1]}'");
 
 		if($sql = @$field_data['sql_function'])
-			return "$sql(`$table`.`{$field_name}`)";
+			return "$sql(`$table`.{$field_name})";
 
 		return $field_data['sql_tab_name'];
 	}
@@ -244,9 +244,9 @@ class bors_core_find
 			bors_throw("Not defined table field for property '{$m[2]}' in class '{$class_name}' as '*{$m[1]}'");
 
 		if($sql = @$field_data['sql_function'])
-			return "$sql(`$table`.`{$field_name}`)";
+			return "$sql(`$table`.{$field_name})";
 
-		return "`$table`.`{$field_name}`";
+		return "`$table`.{$field_name}";
 	}
 
 	function where_parse_set($param, $value, $value2 = NULL)
@@ -338,7 +338,7 @@ class bors_core_find
 		if(preg_match('/^\w+$/', $property_name))
 		{
 			$field_data = bors_lib_orm::parse_property($this->_class_name, $property_name);
-			$field_name = '`'.addslashes($field_data['name']).'`';
+			$field_name = $field_data['name'];
 		}
 		elseif(strpos($property_name, '`') !== false)
 			$field_name = $property_name;

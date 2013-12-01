@@ -133,7 +133,7 @@ class base_page extends bors_object
 		return $this->__setc($total >= 0 ? intval(($total - 1)/$this->items_per_page()) + 1 : 1);
 	}
 
-	function items_per_page() { return 25; }
+	function _items_per_page_def() { return 25; }
 	private $__total_items = -1;
 	function total_items() { return $this->__total_items; }
 	function set_total_items($count) { return $this->__total_items = $count; }

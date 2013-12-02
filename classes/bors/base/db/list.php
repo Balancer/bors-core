@@ -101,14 +101,14 @@ class base_db_list extends base_object
 			$group = '';
 
 		if($this->name_as_id())
-			$id = "`".addslashes($this->_table)."`.`".addslashes($this->_title_field)."` AS `id`, ";
+			$id = "`".addslashes($this->_table)."`.".addslashes($this->_title_field)." AS `id`, ";
 		else
-			$id = "`".addslashes($this->_table)."`.`".addslashes($this->_id_field)."` AS `id`, ";
+			$id = "`".addslashes($this->_table)."`.".addslashes($this->_id_field)." AS `id`, ";
 
 		foreach($this->_dbh->get_array("
 				SELECT DISTINCT 
 					$id
-					`".addslashes($this->_table)."`.`".addslashes($this->_title_field)."` AS `title` 
+					`".addslashes($this->_table)."`.".addslashes($this->_title_field)." AS `title` 
 				FROM `".addslashes($this->_table)."`
 					$join
 				$where

@@ -562,7 +562,7 @@ defined at {$this->class_file()}<br/>
 	function titled_link()
 	{
 		$url = $this->url_ex($this->page());
-		$title = $this->title();
+		$title = $this->get('title');
 
 		if(!$title)
 			$title = '???';

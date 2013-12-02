@@ -21,6 +21,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Exabot' => 'Exabot',				// Mozilla/5.0 (compatible; Exabot-Images/3.0; +http://www.exabot.com/go/robot)
 			'Ezooms' => 'Ezooms',				// Mozilla/5.0 (compatible; Ezooms/1.0; ezooms.bot@gmail.com)
 			'Falconsbot' => 'Falconsbot',		// 219.219.127.4, Mozilla/5.0 (compatible; Falconsbot; +http://ws.nju.edu.cn/falcons/)
+			'Feedfetcher-FeedEx' => 'Feedfetcher-FeedEx',	// Feedfetcher-FeedEx.Net; (+http://feedex.net/; 1 subscriber; feed-id=39787)
 			'Feedreader' => 'Feedreader',		// Feedreader 3.14 (Powered by Newsbrain)
 			'Flamingo_SearchEngine' => 'Flamingo Search',	// Flamingo_SearchEngine (+http://www.flamingosearch.com/bot)
 			'GeliyooBot',						// Mozilla/5.0 (compatible; GeliyooBot/1.0beta; +http://www.geliyoo.com/)
@@ -42,6 +43,10 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Mail.Ru' => 'Mail.Ru',		// Mail.Ru/1.0
 			'MJ12bot' => 'Majestic12Bot',	// Mozilla/5.0 (compatible; MJ12bot/v1.2.5; http://www.majestic12.co.uk/bot.php?+)
 			'MLBot'	=> 'MLBot',			// MLBot (www.metadatalabs.com/mlbot)
+			'mon.itor.us' => array(		// Mozilla/5.0 (compatible; mon.itor.us - free monitoring service; http://mon.itor.us)
+				'bot' => 'mon.itor.us',
+				'crowler' => false,
+			),
 			'msnbot' => 'MSN', 			// msnbot/2.0b (+http://search.msn.com/msnbot.htm)
 			'NaverBot' => 'NaverBot',	// Mozilla/4.0 (compatible; NaverBot/1.0; http://help.naver.com/customer_webtxt_02.jsp)
 			'Nigma' => 'Nigma',

@@ -137,7 +137,7 @@ class blib_string extends blib_object
 	static function __benchmark()
 	{
 		$str = str_repeat("однажды в студёную зимнюю пору я из лесу вышел, был сильный мороз", 100);
-		blib_benchmark::run('blib_string::_mb_wordwrap1', array($str, 200, "\n", true));
+		return array(array('blib_string::_mb_wordwrap1', 'blib_string::_mb_wordwrap3', 'blib_string::_utf8_wordwrap2'), array($str, 200, "\n", true));
 	}
 
 	static function base64_encode2($str)

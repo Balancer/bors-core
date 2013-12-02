@@ -97,7 +97,7 @@ class bors_admin_meta_search extends bors_admin_meta_main
 			{
 				$x = bors_lib_orm::parse_property($main_admin_class, $p);
 				if(!empty($x['name']))
-					$field = "`{$x['name']}`";
+					$field = $x['name'];
 			}
 			else
 				$field = $p;

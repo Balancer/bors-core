@@ -63,7 +63,8 @@ class bors_markup_markdown extends base_object
 
 	static function parse($text)
 	{
-		require_once(config('markdown_include'));
+//		require_once(config('markdown_include'));
+		third_composer::load();
 		return \Michelf\Markdown::defaultTransform($text);
 	}
 

@@ -25,9 +25,15 @@
 {if $this->get('right_menu_links')}
 	{foreach $this->get('right_menu_links') as $title => $list}
 		<h2>{$title|htmlspecialchars}</h2>
+		<ul style="padding-bottom: 8px;">
 		{foreach $list as $link}
-		<li{if $link.type} class="imaged type-{$link.type}"{/if}><a href="{$link.url}">{$link.title}</a></li>
+			{if $link.url}
+			<li{if $link.type} class="imaged type-{$link.type}"{/if}><a href="{$link.url}">{$link.title}</a></li>
+			{else}
+			<li{if $link.type} class="imaged type-{$link.type}"{/if}>{$link.title}</li>
+			{/if}
 		{/foreach}
+		</ul>
 	{/foreach}
 {else}
 	{if $this->get('admin_group_url')}<li class="imaged type-unknown"><a href="{$this->admin_group_url()}">{bors_load_uri($this->admin_group_url())|get:nav_name|bors_ucfirst}</a></li>{/if}

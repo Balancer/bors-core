@@ -769,7 +769,7 @@ defined at {$this->class_file()}<br/>
 		return false;
 	}
 
-	function set_fields($array, $db_update_flag, $fields_list = NULL, $check_values = false)
+	function set_fields($array, $db_update_flag=true, $fields_list = NULL, $check_values = false)
 	{
 		if(!empty($array['time_vars']))
 			bors_lib_time::parse_form($array);

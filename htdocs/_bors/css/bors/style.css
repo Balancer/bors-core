@@ -191,6 +191,7 @@ li.type-archive{background-image: url(/_bors/i16/obj-types/archive.png)}
 li.type-categories{background-image: url(/_bors/i16/obj-types/categories.png)}
 li.type-clients{background-image: url(/_bors/i16/obj-types/clients.png)}
 li.type-closed{background-image: url(/_bors/i16/obj-types/closed.png)}
+li.type-opened{background-image: url(/_bors/i16/obj-types/opened.png)}
 li.type-commercial{background-image: url(/_bors/i16/obj-types/commercial.png)}
 li.type-company{background-image: url(/_bors/i16/obj-types/company.png)}
 li.type-delete{background-image: url(/_bors/i16/delete.png)}
@@ -209,6 +210,7 @@ li.type-unknown{background-image: url(/_bors/i16/obj-types/unknown.png)}
 li.type-unplaced{background-image: url(/_bors/i16/obj-types/unplaced.png)}
 li.type-unpublished{background-image: url(/_bors/i16/obj-types/unpublished.png)}
 li.type-video{background-image: url(/_bors/i16/obj-types/video.png)}
+li.type-view{background-image: url(/_bors/i16/view.png)}
 
 div.right-menu h2, div.right-menu p, div.right-menu ul {
 	margin-top: 0;

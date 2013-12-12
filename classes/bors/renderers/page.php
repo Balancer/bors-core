@@ -62,7 +62,7 @@ class bors_renderers_page extends base_null
 			foreach(explode(' ', $object->template_vars()) as $var)
 			{
 				debug_execute_trace("\t->{$var}()...");
-				$data[$var] = $object->$var();
+				$data[$var] = $object->get($var);
 			}
 
 			foreach(explode(' ', $object->template_local_vars()) as $var)

@@ -63,14 +63,15 @@ class bors_image_thumb extends bors_image
 		//TODO: сделать вариант, совместимый с safe_mod!
 //		var_dump($this->width(), $this->file_name_with_path(), $this->data);
 
-//if(!config('is_developer'))
-{
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_is_loaded(true);
-}
+
 		$this->original = object_load($this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
+			return $this->set_is_loaded(false);
+
+		if(!preg_match('/\.(jpe?g|gif|png)$/i', $this->original->original_filename()))
 			return $this->set_is_loaded(false);
 
 //		$this->delete();
@@ -80,7 +81,7 @@ class bors_image_thumb extends bors_image
 		else
 			$new_path = NULL;
 
-//		if(config('is_developer')) { var_dump($original_path, $new_path); exit(); }
+//		if(config('is_developer')) { var_dump($original_path, $new_path, $this->original->url(), $this->original->data); exit(); }
 
 		$caching = config('cache_database') ? true : false;
 

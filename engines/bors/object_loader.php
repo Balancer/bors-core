@@ -304,7 +304,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 		$args['page'] = $page;
 
 	$obj = object_init($check_class, $id, $args);
-//	echo "object_init($check_class, $id, $args) = ".print_dd($obj)."<br/>\n";
+//	if(config('is_developer')) echo "object_init($check_class, $id, $args) = ".print_dd($obj)."<br/>\n";
 	if(!$obj)
 		return NULL;
 
@@ -523,7 +523,7 @@ function class_load_by_vhosts_url($url)
 function object_init($class_name, $object_id, $args = array())
 {
 //	echo "object_init($class_name, $object_id, ".print_dl($args).")<br/>\n";
-//	if(config('is_debug')) debug_hidden_log('debug', "Try to load $class_name($object_id)");
+//	if(config('is_developer')) debug_hidden_log('debug', "Try to load $class_name($object_id)");
 	// В этом методе нельзя использовать debug_test()!!!
 
 	$obj = NULL;

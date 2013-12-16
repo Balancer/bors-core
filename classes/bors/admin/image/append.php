@@ -2,7 +2,7 @@
 
 require_once('inc/bors/cross.php');
 
-class bors_admin_image_append extends base_object
+class bors_admin_image_append extends bors_object
 {
 	var $_last_image;
 

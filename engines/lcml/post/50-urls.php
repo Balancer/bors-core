@@ -108,6 +108,7 @@
 		)
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
+
 		if(!$query && class_exists('DataBaseHTS') && config('hts_db'))
         {
             $hts = new DataBaseHTS($url);

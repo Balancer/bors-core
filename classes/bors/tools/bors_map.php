@@ -9,4 +9,5 @@ bors_url_submap(array(
 	'/ajax/module/(.+) => _ajax_module(1)',
 
 	'/act/pub/(.+) => _action_public(1)',
+	'/actions/edit(/.+)$ => _actions_edit(1)',
 ));

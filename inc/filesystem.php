@@ -14,14 +14,19 @@ function abs_path_from_relative($uri, $page)
 function smart_size($size)
 {
 	if($size<1024)
-		return $size.ec("байт");
+		return $size.ec(" байт");
 
 	$size = $size/1024;
 
 	if($size<1024)
-		return round($size,2).ec("кбайт");
+		return round($size,2).ec(" кбайт");
 
-	return round($size/1024,2).ec("Мбайт");
+	$size = $size/1024;
+
+	if($size<1024)
+		return round($size,2).ec(" Мбайт");
+
+	return round($size/1024,2).ec(" Гбайт");
 }
 
 if(!function_exists("scandir"))

@@ -135,11 +135,10 @@ class bors_form extends bors_object
 		{
 			$dom_form_id = 'form_'.md5(rand());
 
-			template_jquery();
-			template_jquery_plugin_css('formvalidator/css/validationEngine.jquery.css');
-			template_jquery_plugin('formvalidator/js/jquery.validationEngine-ru.js');
-			template_jquery_plugin('formvalidator/js/jquery.validationEngine.js');
-			template_js("jQuery(document).ready(function() { jQuery('#{$dom_form_id}').validationEngine()})");
+			jquery::css('/htdocs/_bors-3rd/bower_components/validationEngine/css/validationEngine.jquery.css');
+			jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/languages/jquery.validationEngine-ru.js');
+			jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/jquery.validationEngine.js');
+			jquery::on_ready("jQuery('#{$dom_form_id}').validationEngine()");
 
 			$this->set_attr('ajax_validate', $ajax_validate);
 		}

@@ -24,6 +24,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Feedfetcher-FeedEx' => 'Feedfetcher-FeedEx',	// Feedfetcher-FeedEx.Net; (+http://feedex.net/; 1 subscriber; feed-id=39787)
 			'Feedreader' => 'Feedreader',		// Feedreader 3.14 (Powered by Newsbrain)
 			'Flamingo_SearchEngine' => 'Flamingo Search',	// Flamingo_SearchEngine (+http://www.flamingosearch.com/bot)
+			'FTRF: Friendly robot',				// FTRF: Friendly robot/1.4
 			'GeliyooBot',						// Mozilla/5.0 (compatible; GeliyooBot/1.0beta; +http://www.geliyoo.com/)
 			'Gigabot' => 'Gigabot',				// Gigabot/3.0 (http://www.gigablast.com/spider.html)
 			'Mediapartners-Google' => array(	//	Mediapartners-Google
@@ -54,6 +55,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			),
 			'msnbot' => 'MSN', 			// msnbot/2.0b (+http://search.msn.com/msnbot.htm)
 			'NaverBot' => 'NaverBot',	// Mozilla/4.0 (compatible; NaverBot/1.0; http://help.naver.com/customer_webtxt_02.jsp)
+			'Netvibes',					// Netvibes (http://www.netvibes.com/; 2 subscribers; feedID: 29108491)
 			'Nigma' => 'Nigma',
 			'Nutch'	=> 'Nutch',			// gh-index-bot/Nutch-1.0 (GH Web Search.; lucene.apache.org; gh_email at someplace dot com)
 			'OOZBOT' => 'OOZBOT', 		// OOZBOT/0.20 ( http://www.setooz.com/oozbot.html ; agentname at setooz dot_com )
@@ -100,6 +102,10 @@ function bors_bot_detect($user_agent, &$data = array())
 				'bot' => 'Tiny Tiny RSS',
 				'crowler' => false,
 			),
+			'TppRFbot' => array(		// TppRFbot/1.1 (compatible; http://www.ruschamber.net, http://www.geocci.com)
+				'bot' => 'TppRFbot',
+				'url' => 'http://www.ruschamber.net/',
+			),
 			'TurnitinBot' => 'TurnitinBot', // TurnitinBot/2.1 (http://www.turnitin.com/robot/crawlerinfo.html)
 			'TweetedTimes' => array(	// Mozilla/5.0 (compatible; TweetedTimes Bot/1.0; +http://tweetedtimes.com)
 				'bot' => 'TweetedTimes',
@@ -107,6 +113,7 @@ function bors_bot_detect($user_agent, &$data = array())
 				'crowler' => false,
 			),
 			'Twiceler' => 'Twiceler',	// Mozilla/5.0 (Twiceler-0.9 http://www.cuil.com/twiceler/robot.html)
+			'Twitterbot',				// Twitterbot/1.0
 			'Yeti' => 'Yeti',			// Yeti/1.0 (NHN Corp.; http://help.naver.com/robots/)
 			'VoilaBot' => 'VoilaBot',	// Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.8.1) VoilaBot BETA 1.2 (support.voilabot@orange-ftgroup.com)
 			'WebAlta' => 'WebAlta',

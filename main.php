@@ -220,6 +220,9 @@ if($_SERVER['QUERY_STRING'])
 
 $GLOBALS['bors_full_request_url'] = $uri;
 
+if($uri == 'http:///')
+	exit("Incorrect url '$uri'");
+
 /**********************************************************************************************************/
 // Собственно, самое главное. Грузим объект и показываем его.
 $res = false;
@@ -295,7 +298,7 @@ catch(Exception $e)
 }
 
 if(config('debug.execute_trace'))
-	debug_execute_trace("process done. Return type is ".gettype($res)."; Check post access log...");
+	debug_execute_trace("process done. Return type is ".gettype($res)."; Next — changed save");
 
 try
 {
@@ -306,11 +309,17 @@ catch(Exception $e)
 	$error = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка сохранения</div>"));
 }
 
+if(config('debug.execute_trace'))
+	debug_execute_trace("Changes saved");
+
 /**********************************************************************************************************/
 
 // Записываем, если нужно, кто получал объект и сколько ушло времени на его получение.
 if(config('access_log'))
 {
+	if(config('debug.execute_trace'))
+		debug_execute_trace("Access log begin");
+
 	$operation_time = microtime(true) - $GLOBALS['stat']['start_microtime'];
 
 	$data = array(

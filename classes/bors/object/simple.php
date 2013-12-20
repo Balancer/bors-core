@@ -24,6 +24,9 @@ class bors_object_simple extends bors_object_empty
 
 	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
+		if(!$name)
+			return NULL;
+
 		if(!preg_match('/^\w+$/', $name))
 		{
 			// Если оформлено как функциональный вызов

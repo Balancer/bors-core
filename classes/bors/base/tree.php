@@ -97,5 +97,5 @@ class base_tree extends base_page_db
 	
 	function is_root() { return !$this->parent_id(); }
 	function have_children() { return count($this->children_ids()) > 0; }
-	function have_parent() { return $this->parent_id(); }
+	function have_parent() { return $this->get('parent_id'); }
 }

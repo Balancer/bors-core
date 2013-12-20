@@ -84,7 +84,7 @@ class bors_object_simple extends bors_object_empty
 			if(($f = @$auto_objs[$name]))
 				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
 				{
-					try { $value = bors_load($m[1], $this->$m[2]()); }
+					try { $value = bors_load($m[1], $this->get($m[2])); }
 					catch(Exception $e) { $value = NULL; }
 					return $this->attr[$name] = $value;
 				}

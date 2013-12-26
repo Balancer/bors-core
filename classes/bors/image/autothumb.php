@@ -31,7 +31,7 @@ class bors_image_autothumb extends bors_object
 		}
 
 		$this->geo = $m[2];
-// echo $_SERVER['DOCUMENT_ROOT'] . $origin_path, PHP_EOL;
+//		echo $_SERVER['DOCUMENT_ROOT'] . $origin_path, print_r($m, true), PHP_EOL; exit();
 
 		parent::__construct($this->origin_path = $origin_path);
 	}

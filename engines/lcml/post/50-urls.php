@@ -69,33 +69,36 @@
 		$url_data = url_parse($pure_url);
 		$external = @$url_data['local'] ? '' : ' class="external"';
 
-		if(config('lcml_balancer'))
+		if(bors_exec_time() < 10)
 		{
-			//TODO: придумать хук вместо хардкода
-			if(in_array($url_data['host'], array(
-				'airbase.ru', 'balabot.balancer.ru', 'balancer.ru', 'www.balancer.ru', 'la2.balancer.ru',
-				'bors.balancer.ru', 'forums.airbase.ru', 'forums.balancer.ru',
-				'wrk.ru', 'www.wrk.ru', 'la2.wrk.ru')))
+			if(config('lcml_balancer'))
 			{
-				$anchor = NULL;
-				$obj = bors_load_uri($pure_url);
+				//TODO: придумать хук вместо хардкода
+				if(in_array($url_data['host'], array(
+					'airbase.ru', 'balabot.balancer.ru', 'balancer.ru', 'www.balancer.ru', 'la2.balancer.ru',
+					'bors.balancer.ru', 'forums.airbase.ru', 'forums.balancer.ru',
+					'wrk.ru', 'www.wrk.ru', 'la2.wrk.ru')))
+				{
+					$anchor = NULL;
+					$obj = bors_load_uri($pure_url);
 
-				if(!$obj)
-					$obj = bors_load_uri($url);
+					if(!$obj)
+						$obj = bors_load_uri($url);
 
-				if($obj)
-//					return "<a href=\"$original_url\">{$obj->title()}</a>";
-					return $obj->titled_link_in_container();
+					if($obj)
+//						return "<a href=\"$original_url\">{$obj->title()}</a>";
+						return $obj->titled_link_in_container();
+				}
 			}
-		}
 
-		if(!$in_box_entered && $snip && class_exists('airbase_external_link'))
-		{
-			$link = airbase_external_link::find_or_register($original_url);
-			$in_box_entered = true;
-			$html = lcml($link->bbshort());
-			$in_box_entered = false;
-			return $html;
+			if(!$in_box_entered && $snip && class_exists('airbase_external_link'))
+			{
+				$link = airbase_external_link::find_or_register($original_url);
+				$in_box_entered = true;
+				$html = lcml($link->bbshort());
+				$in_box_entered = false;
+				return $html;
+			}
 		}
 
 		$blacklist = $external;
@@ -109,14 +112,7 @@
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
 
-		if(!$query && class_exists('DataBaseHTS') && config('hts_db'))
-        {
-            $hts = new DataBaseHTS($url);
-            if($title = $hts->get('title'))
-                return "<a href=\"{$original_url}\">$title</a>";
-        }
-
-		if(!function_exists('curl_init'))
+		if(!function_exists('curl_init') || bors_exec_time() > 10)
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
 		$data = bors_lib_http::get($url);

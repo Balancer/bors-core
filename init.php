@@ -655,3 +655,8 @@ function bors_use_debug()
 {
 	require_once('inc/debug.php');
 }
+
+function bors_exec_time()
+{
+	return microtime(true) - $GLOBALS['stat']['start_microtime'];
+}

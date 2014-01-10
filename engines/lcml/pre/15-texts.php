@@ -19,11 +19,11 @@ function lcml_texts($text)
 	{
 		$pad = str_repeat('=', $i);
 		$ih = $i + 1;
-		eval("\$text = preg_replace(\"/^ *{$pad} (.+) {$pad} *\$/me\", \"'[h{$ih}]'.lcml(stripq('\$1')).'[/h{$ih}]'\", \$text);");
+		$text = preg_replace_callback("/^ *{$pad} (.+) {$pad} *\$/m", function($m) use ($ih) { return "[h{$ih}]".lcml(stripq($m[1]))."[/h{$ih}]";}, $text);
 	}
 
 	// Сноски
-	$text = preg_replace("!^//\s+(.+?)$!me", "lcml(stripslashes('[reference]$1[/reference]'));", $text);
+	$text = preg_replace_callback("!^//\s+(.+?)$!m", function($m) { return lcml(stripslashes('[reference]'.$m[1].'[/reference]'));}, $text);
 
 	return $text;
 }

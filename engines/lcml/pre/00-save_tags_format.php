@@ -8,9 +8,9 @@ function lcml_save_tags_format($txt)
 
 	foreach(explode(' ', 'code delayed graph graphviz html javascript math music php') as $tag)
 	{
-		$txt = preg_replace("!(\[$tag\])(.+?)(\[/$tag\])!ise", "'$1'.save_format(stripq('$2')).'$3'", $txt);
-		$txt = preg_replace("!(\[$tag [^]]+\])(.+?)(\[/$tag\])!ise", "'$1'.save_format(stripq('$2')).'$3'", $txt);
-		$txt = preg_replace("!(\[$tag\|[^]]+\])(.+?)(\[/$tag\])!ise", "'$1'.save_format(stripq('$2')).'$3'", $txt);
+		$txt = preg_replace_callback("!(\[$tag\])(.+?)(\[/$tag\])!is", function($m) { return $m[1] . save_format(stripq($m[2])).$m[3];}, $txt);
+		$txt = preg_replace_callback("!(\[$tag [^]]+\])(.+?)(\[/$tag\])!is", function($m) { return $m[1].save_format(stripq($m[2])).$m[3];}, $txt);
+		$txt = preg_replace_callback("!(\[$tag\|[^]]+\])(.+?)(\[/$tag\])!is", function($m) { return $m[1].save_format(stripq($m[2])).$m[3];}, $txt);
 	}
 
 	return $txt;

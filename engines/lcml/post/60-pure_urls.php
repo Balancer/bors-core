@@ -29,18 +29,18 @@
 		if(!empty($GLOBALS['lcml']['params']['noautouri']))
 			return $txt;
 
-        $txt=preg_replace("!\[(https?://[^\s\|\]]+?)\]!ie","lcml_pure_urls_title('$1')",$txt);
-        $txt=preg_replace("!\[(www\.[^\s\|\]]+?)\]!ie","lcml_pure_urls_title('http://$1')",$txt);
+        $txt=preg_replace_callback("!\[(https?://[^\s\|\]]+?)\]!i", function($m) { return lcml_pure_urls_title($m[1]);}, $txt);
+        $txt=preg_replace_callback("!\[(www\.[^\s\|\]]+?)\]!i", function($m) { return lcml_pure_urls_title('http://'.$m[1]);}, $txt);
         $txt=preg_replace("!\[(ftp://[^\s\|\]]+?)\]!i","<a href=\"$1\" class=\"external\">$1</a>",$txt);
         $txt=preg_replace("!\[(ftp\.[^\s\|\]]+?)\]!i","<a href=\"ftp://$1\" class=\"external\">$1</a>",$txt);
 
 		// (http://....)
-        $txt=preg_replace("!(?<=\()(https?://[^\s<>\|\<\>\)]+)!ie", "lcml_pure_urls_title('$1')",$txt);
+        $txt=preg_replace_callback("!(?<=\()(https?://[^\s<>\|\<\>\)]+)!i", function($m) { return lcml_pure_urls_title($m[1]);}, $txt);
 
-        $txt=preg_replace("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!ie","lcml_pure_urls_title('$1').'$2'",$txt);
-        $txt=preg_replace("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(?=\s|$)!ie","lcml_pure_urls_title('$1')",$txt);
-        $txt=preg_replace("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!ie","lcml_pure_urls_title('http://$1').'$2'",$txt);
-        $txt=preg_replace("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(?=\s|$)!ie","lcml_pure_urls_title('http://$1')",$txt);
+        $txt=preg_replace_callback("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!i", function($m) { return lcml_pure_urls_title($m[1]).$m[2];}, $txt);
+        $txt=preg_replace_callback("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(?=\s|$)!i", function($e) { return lcml_pure_urls_title($m[1]);}, $txt);
+        $txt=preg_replace_callback("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!i",function($m) { return lcml_pure_urls_title('http://'.$m[1]).$m[2];}, $txt);
+        $txt=preg_replace_callback("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(?=\s|$)!i", function($m) { return lcml_pure_urls_title('http://'.$m[1]);}, $txt);
 
         $txt=preg_replace("!(?<=\s|^|\()(ftp://[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-)(?=\s|$)!i","<a href=\"$1\" class=\"external\">$1</a>$2",$txt);
         $txt=preg_replace("!(?<=\s|^|\()(ftp://[^\s<>\|\[\]\<\>]+)(?=\s|$)!i","<a href=\"$1\" class=\"external\">$1</a>",$txt);

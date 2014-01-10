@@ -5,7 +5,8 @@
 		if(config('lcml_email_nomask'))
 	        return preg_replace("!(^|[\s\]])([$mail_chars]+@[$mail_chars]+)([\s\[;\.:]|$)!im", "$1<a href=\"mailto:$2\">$2</a>$3", $txt);
 		else
-	        return preg_replace("!(^|[\s\]])([$mail_chars]+@[$mail_chars]+)([\s\[;\.:]|$)!ime", "'$1'.mask_email('$2', ".(config('lcml_email_nomask') ? 'false' : 'true').").'$3'", $txt);
+	        return preg_replace_callback("!(^|[\s\]])([$mail_chars]+@[$mail_chars]+)([\s\[;\.:]|$)!im",
+	        	function($m) { return $m[1].mask_email($m[2], !config('lcml_email_nomask')).$m[3];}, $txt);
     }
 
 	function mask_email($email, $img_mask = true, $text = NULL)

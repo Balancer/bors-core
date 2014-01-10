@@ -39,7 +39,8 @@ function lcml_external_code($text)
 	$text = preg_replace("!^\s*(http://img-fotki\.yandex\.ru/get/\d+/[^/]+/\w+_(orig|[A-Z]+))\s*$!m", "\n[img]$1.gif[/img]\n", $text);
 
 
-	$text = preg_replace('!(<script type="text/javascript" src="http://googlepage.googlepages.com/player.js"></script>)!ise', 'save_format("\1")', $text);
+	$text = preg_replace_callback('!(<script type="text/javascript" src="http://googlepage.googlepages.com/player.js"></script>)!is',
+		function($m) { return save_format($m[1]);}, $text);
 
 	return $text;
 }

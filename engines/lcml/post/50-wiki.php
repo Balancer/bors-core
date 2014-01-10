@@ -1,8 +1,8 @@
 <?php
     function lcml_wiki($txt)
     {
-        $txt = preg_replace("!\[\[([^\[]+?)\|([^\[]+)\]\]!e", "lcml_wiki_do('$1','$2')", $txt);
-        $txt = preg_replace("!\[\[([^\[]+)\]\]!e", "lcml_wiki_do('$1')", $txt);
+        $txt = preg_replace_callback("!\[\[([^\[]+?)\|([^\[]+)\]\]!", function($m) { return lcml_wiki_do($m[1], $m[2]);}, $txt);
+        $txt = preg_replace_callback("!\[\[([^\[]+)\]\]!", function($m) { return lcml_wiki_do($m[1]);}, $txt);
 
         return $txt;
     }
@@ -21,10 +21,10 @@
 			$exists = $hts->get($uri, 'source') ? "" : "_non_exists";
 	        return "<a href=\"$uri\" class=\"wiki_int$exists\">$text</a>";
 		}
-		
+
 		include_once("inc/urls.php");
 		$new_uri = $GLOBALS['main_uri'].strtolower(translite_uri_simple($title)).'/';
-		
+
 		$hts->set_data($new_uri, 'title', $title);
         return "<a href=\"$new_uri\" class=\"wiki_int_non_exists\">$text</a>";
     }

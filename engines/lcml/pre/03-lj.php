@@ -1,6 +1,6 @@
 <?php
     function lcml_lj($txt)
     {
-		$txt = preg_replace("!(</?lj\-cut[^>]*>)!ise", 'save_format("\1")', $txt);
+		$txt = preg_replace_callback("!(</?lj\-cut[^>]*>)!is", function($m) { return save_format($m[1]);}, $txt);
 		return $txt;
 	}

@@ -8,6 +8,7 @@ class bors_lcml extends bors_object
 	private static $lcml_global_data;
 	private $output_type	= 'html';
 	private $input_type		= 'bb_code';
+	private $start_time;
 
 	function _enabled_tags_string_def() { return ''; }
 	function _disabled_tags_string_def() { return ''; }
@@ -210,7 +211,10 @@ class bors_lcml extends bors_object
 			return '';
 
 		if($this->_params['level'] == 1)
+		{
 			$text = "\n{$text}\n";
+			$this->start_time = microtime(true);
+		}
 
 		$need_prepare = popval($this->_params, 'prepare');
 
@@ -474,5 +478,10 @@ class bors_lcml extends bors_object
 		self::output_parse('<!--###use js="/_bors3rdp/js/foo.test.js"###-->');
 		$suite->assertContains('/_bors3rdp/js/foo.test.js', base_object::template_data('js_include'));
 
+	}
+
+	function is_timeout($time)
+	{
+		return microtime(true) - $this->start_time > $time;
 	}
 }

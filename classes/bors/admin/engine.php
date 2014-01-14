@@ -295,7 +295,7 @@ class bors_admin_engine extends bors_object
 	function imaged_delete_link($title = NULL, $popup = NULL, $unlink_in_admin = true)
 	{
 		$obj = $this->real_object();
-		if(!$obj->access()->can_delete())
+		if(!$obj->access()->get('can_delete'))
 			return '';
 
 		// http://admin.aviaport.ru/digest/origins/3516/ — внизу страницы

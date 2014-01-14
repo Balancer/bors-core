@@ -5,17 +5,15 @@ function lcml_images($txt, $lcml)
 	if(lcml_tag_disabled('img'))
 		return $txt;
 
-	if(bors_exec_time() > 10)
+	if($lcml->is_timeout(10))
 		return $txt;
 
 	$n=50;
 	while(preg_match("!\[([https?://\w\.\-\+%_/:&\?=#]+\.(jpg|jpeg|gif|png|sjpg))([^\]]*)\]!i", $txt, $m) && $n-->0)
 		$txt = str_replace($m[0], lcml("[img \"{$m[1]}\" noflow {$m[3]}]"), $txt);
 
-	$n=50;
 	while(preg_match("!^[\s￼ ]*(https?://\S+\.(jpg|png|gif|jpeg|sjpg))\s*$!im", $txt, $m)
-			&& $n-- > 0
-			&& bors_exec_time() < 10
+			&& !$lcml->is_timeout(10)
 	)
 	{
 		$image_url = $m[1];

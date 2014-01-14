@@ -38,7 +38,7 @@
         $txt=preg_replace_callback("!(?<=\()(https?://[^\s<>\|\<\>\)]+)!i", function($m) { return lcml_pure_urls_title($m[1]);}, $txt);
 
         $txt=preg_replace_callback("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!i", function($m) { return lcml_pure_urls_title($m[1]).$m[2];}, $txt);
-        $txt=preg_replace_callback("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(?=\s|$)!i", function($e) { return lcml_pure_urls_title($m[1]);}, $txt);
+        $txt=preg_replace_callback("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(?=\s|$)!i", function($m) { return lcml_pure_urls_title($m[1]);}, $txt);
         $txt=preg_replace_callback("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!i",function($m) { return lcml_pure_urls_title('http://'.$m[1]).$m[2];}, $txt);
         $txt=preg_replace_callback("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(?=\s|$)!i", function($m) { return lcml_pure_urls_title('http://'.$m[1]);}, $txt);
 

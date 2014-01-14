@@ -125,9 +125,9 @@ class bors_lcml extends bors_object
 
         foreach($files as $file) 
         {
-            if(preg_match("!(.+)\.php$!", $file, $m))
+            if(preg_match("!(.+)\.php$!", $file, $m) && file_exists($f = "$dir/$file"))
             {
-                include_once("$dir/$file");
+                include_once($f);
 
                 $fn = "lcml_".($ffn=substr($file, 3, -4));
 				$functions[] = $fn;

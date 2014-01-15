@@ -69,9 +69,8 @@ class auto_object_php extends bors_object
 		//	/users/84018/
 		if(preg_match('!^(.+)_(\d+|new)$!', $class_path, $m))
 		{
-//			var_dump($m);
 			$object_id = $m[2];
-//			var_dump($class_base.($cp = $m[1].'_edit'));
+//			var_dump($class_base, $m);
 
 			if(is_numeric($object_id) && class_include($class_base.($cp = $m[1].'_view')))
 			{

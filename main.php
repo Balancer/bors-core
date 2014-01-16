@@ -462,6 +462,24 @@ if(config('404_logging'))
 
 @header("HTTP/1.0 404 Not Found");
 
+if($cn = config('404.class_name'))
+{
+	if($object404 = bors_load($cn, $uri))
+	{
+		if(method_exists($object404, 'show'))
+			$res = $object404->show();
+
+		if(!$res)
+			$res = bors_object_show($object404);
+	}
+
+	if($res)
+	{
+		echo $res;
+		return;
+	}
+}
+
 if(config('404_page_url'))
 	return go(config('404_page_url'), true);
 

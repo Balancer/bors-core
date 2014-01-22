@@ -26,7 +26,7 @@ class url_calling2 extends url_base
 		// TODO: придумать, как бороться с URL вида http://www.aviaport.ru/404.html
 
 		// Ссылка вида http://domain.tld/path/page.html. Вид со страницей будет http://domain.tld/path/2.html
-		if(preg_match('!^(.+/)\w+\.html$!', $url, $m))
+		if(preg_match('!^(.+/)(\w+)\.html$!', $url, $m))
 			$url = (!$page || $page == $obj->default_page()) ? $m[1] : $m[1].$page.'.html';
 		// Ссылка вида /path/page/ Вид со страницей будет http://domain.tld/page/2.html
 		elseif(preg_match('!^.+/[\w\-]+/$!', $url))

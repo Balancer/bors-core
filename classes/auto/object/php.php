@@ -70,7 +70,7 @@ class auto_object_php extends bors_object
 		if(preg_match('!^(.+)_(\d+|new)$!', $class_path, $m))
 		{
 			$object_id = $m[2];
-//			var_dump($class_base, $m);
+//			var_dump($class_base, $m, $object_id);
 
 			if(is_numeric($object_id) && class_include($class_base.($cp = $m[1].'_view')))
 			{
@@ -99,7 +99,7 @@ class auto_object_php extends bors_object
 			elseif(class_include($class_base.($cp = $m[1])))
 			{
 				$class_path = $cp;
-				$object_id = NULL;
+				$object_id = is_numeric($object_id) ? $object_id : NULL;
 			}
 			else
 			{

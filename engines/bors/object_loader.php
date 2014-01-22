@@ -485,7 +485,6 @@ function class_load_by_vhosts_url($url)
 					'match' => empty($match[2]) ? NULL : $match,
 					'called_url' => $url,
 			);
-
 			if(is_array($page))
 				$args = array_merge($args, $page);
 			else

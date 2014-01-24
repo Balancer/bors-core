@@ -20,9 +20,28 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 
 	if(config('debug_redirect_trace'))
 	{
-		echo ec("Это режим отладки переходов. При его отключении Вы автоматически будете перемещены по ссылке <a href=\"{$uri}\">{$uri}</a>");
-		echo '<pre>$_SESSION:</pre>'; var_dump(@$_SESSION);
-		return debug_exit("Go to <a href=\"{$uri}\">{$uri}</a>");
+		$body = ec("<p>Это режим отладки переходов. При его
+			отключении Вы автоматически будете перемещены по ссылке
+			<a href=\"{$uri}\" class=\"btn\">{$uri}</a></p>\n");
+
+		if(!empty($SESSION))
+			$body .= '<pre>$_SESSION:</pre>'.print_r($_SESSION, true)."<br/>\n";
+
+		$body .= bors_debug::trace();
+
+		if($x = @bors()->tmp_go_obj)
+			$body .= '<pre>'.bors_objects_helper::object_info($x).'</pre>';
+
+		$body .= "Go to <a href=\"{$uri}\" class=\"btn\">{$uri}</a>";
+
+		echo twitter_bootstrap::raw_message(array(
+			'this' => bors_load('bors_pages_fake', array(
+				'title' => ec('Перхвачанный редирект'),
+				'body' => $body,
+			)),
+		));
+
+		return true;
 	}
 
 	if(config('do_not_exit'))

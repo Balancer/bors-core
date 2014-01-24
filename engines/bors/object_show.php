@@ -113,7 +113,10 @@
 				&& $obj->_auto_redirect()
 				&& $target_url != 'called'
 		)
+		{
+			bors()->tmp_go_obj = $obj;
 			return go($obj->url_ex($page), true);
+		}
 
 		if($processed === false)
 		{

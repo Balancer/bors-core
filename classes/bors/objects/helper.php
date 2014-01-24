@@ -43,4 +43,13 @@ class bors_objects_helper
 
 		return object_property($object, $property);
 	}
+
+	static function object_info($obj)
+	{
+		$html = "object = '{$obj->debug_title()}'<br/>"
+			."object file = '{$obj->get('class_file')}'<br/>"
+			."object.config = ".object_property($obj->config(), 'debug_title');
+
+		return $html;
+	}
 }

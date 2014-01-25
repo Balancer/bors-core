@@ -207,7 +207,7 @@ class bors_lcml extends bors_object
 
 		$text = str_replace("\r", '', $text);
 
-		if(!trim($text))
+		if(strlen(trim($text)) == 0)
 			return '';
 
 		if($this->_params['level'] == 1)
@@ -411,6 +411,8 @@ class bors_lcml extends bors_object
 
 	static function __unit_test($suite)
 	{
+		require_once('engines/lcml/main.php');
+
 		// Одиночные теги тестируются в соответствующих классах. Так что нам тут их проверять не надо
 		// нужно проверять сочетания.
 		$code = '[b][i]italic-bold[/i][/b]';
@@ -459,6 +461,10 @@ class bors_lcml extends bors_object
 		// Внутренние ошибочные теги не парсятся
 		$code = '[b][i]italic[/b]bold[/i]';
 		$suite->assertEquals('<strong>[i]italic</strong>bold[/i]', lcml($code));
+
+		// На «пустые» значения.
+		$code = '[sub]0[/sub]';
+		$suite->assertEquals('<sub>0</sub>', lcml($code));
 
 		// Упрощённая разметка ссылок с вложенным BB-кодом:
 		$code = '[poland/|[b]Польша[/b]]';

@@ -150,6 +150,18 @@ class blib_urls
 		return $url;
 	}
 
+	static function norm($url)
+	{
+		$url = self::decode($url);
+		$ud = parse_url($url);
+		$ud['host'] = preg_replace('/^www\./', '', $ud['host']);
+		unset($ud['port']);
+		$ud['scheme'] = 'http';
+
+		$url = http_build_url('', $ud);
+		return $url;
+	}
+
 	static function __unit_test($suite)
 	{
 		$url1 = "http://balancer.ru/blog/";

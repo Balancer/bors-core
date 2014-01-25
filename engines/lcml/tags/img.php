@@ -19,6 +19,11 @@ function lt_img($params)
 	if(preg_match('/&amp;/', $params['url']))
 		$params['url'] = html_entity_decode($params['url']);
 
+	// Если расширение не указано, дописываем .jpg
+	if(!preg_match('/\.(jpe?g|png|gif)$/i', $params['url']))
+		if(preg_match('!^(https?://lh\d+\.googleusercontent\.com/\S+)$!i', $params['url']))
+				$params['url'] .= '.jpg';
+
 	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
 		return lt_img_bors($params);
 

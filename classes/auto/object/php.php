@@ -156,6 +156,7 @@ class auto_object_php extends bors_object
 		{
 			$class_path = $class_path ? $class_path . '_main' : 'main';
 			$object = bors_load($class_base.$class_path, $object_id);
+			$is_auto = true;
 		}
 
 		if(!($is_auto

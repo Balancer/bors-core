@@ -128,6 +128,21 @@ class bors_page extends base_page
 						$this->attr['body_template_class'] = 'bors_templates_smarty';
 						return;
 					}
+
+					foreach(glob($base.'*') as $test_file)
+					{
+						$test_ext = str_replace($base, '', $test_file);
+						switch($test_ext)
+						{
+							case 'bbh.tpl':
+								$this->attr['body_template'] = $base.$test_ext;
+								$this->attr['body_template_class'] = 'bors_templates_bbhtpl';
+								continue;
+						}
+					}
+
+					if(!empty($this->attr['body_template_class']))
+						return;
 				}
 				else
 				{

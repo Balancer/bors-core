@@ -4,7 +4,7 @@ function lp_url($text, $params)
 {
 	extract($params);
 	$url_data = url_parse($url);
-	$external = @$url_data['local'] ? '' : ' class="external"';
+	$external = !empty($url_data['local']) || empty($url_data['host']) ? '' : ' class="external"';
 
    	if(!empty($url_data['host']) && ($skip_domains = config('lcml.urls.skip_domains')))
    	{

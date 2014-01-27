@@ -8,8 +8,7 @@
 </thead>
 <tbody>
 {foreach from=$items item="x"}
-<tr>
-	{foreach $item_list_fields as $p => $t}
+<tr{if $x->get('items_list_table_row_class')} class="{join(' ', $x->get('items_list_table_row_class'))}"{/if}>	{foreach $item_list_fields as $p => $t}
 	<td>
 		{if ($p == 'imaged_titled_link' || $p == 'title') && $x->get('have_image')}
 			{$x->image()->thumbnail('64x64')->html_code('class="float-right" style="margin-left: 10px"')}

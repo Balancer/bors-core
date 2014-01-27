@@ -140,6 +140,15 @@ class auto_object_php extends bors_object
 				$object_id = NULL;
 			}
 		}
+		// http://forums.balancer.ru/users/warnings/2.html
+		elseif(preg_match('!^(\w+s)$!', $class_path, $m))
+		{
+			if(class_include($class_base.($cp = $m[1])))
+			{
+				$class_path = $cp;
+				$object_id = NULL;
+			}
+		}
 
 		if($object_id === false)
 			$object_id = $this->id();
@@ -149,8 +158,6 @@ class auto_object_php extends bors_object
 
 		if($object_id == $this->called_url())
 			$object_id = NULL;
-
-//		var_dump($class_base.$class_path, $object_id);
 
 		if(!($object = bors_load($class_base.$class_path, $object_id)))
 		{

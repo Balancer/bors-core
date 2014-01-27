@@ -305,7 +305,7 @@ else
 				{
 					$loop = 0;
 					foreach($posts as $pid => $p)
-						$posts[$pid]->set_body($exc[$loop++], false);
+						$posts[$pid]->set_attr('body', $exc[$loop++]);
 				}
 			}
 		}

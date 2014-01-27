@@ -25,4 +25,12 @@ class bors_lcml_tag
 	function html_compact($text, &$params) { return $this->html(); }
 	function html_simple($text, &$params) { return $this->html(); }
 	function text($text, &$params) { return strip_tags($this->html()); }
+
+	// Включает в результат парсинга мета-разметку, указывающую необходимость
+	// подгрузки внешнего JS при показе. Соответственно, выводящийся HTML
+	// требует пропускания через фильтр bors_lcml::output_parse($html)
+	function use_js($js_link)
+	{
+		return bors_lcml::make_use('js', $js_link);
+	}
 }

@@ -36,7 +36,7 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 
 		echo twitter_bootstrap::raw_message(array(
 			'this' => bors_load('bors_pages_fake', array(
-				'title' => ec('Перхвачанный редирект'),
+				'title' => ec('Перехвачанный редирект'),
 				'body' => $body,
 			)),
 		));

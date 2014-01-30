@@ -145,13 +145,14 @@
 
         $txt = preg_replace_callback("!\[(http://[^\s\|\]]+?)\]!i", function($m) { return lcml_urls_title($m[1]);}, $txt);
         $txt = preg_replace_callback("!\[(www\.[^\s\|\]]+?)\]!i", function($m) { return lcml_urls_title('http://'.$m[1]);}, $txt);
+
         $txt = preg_replace("!\[(ftp://[^\s\|\]]+?)\]!i","<a href=\"$1\" class=\"external\">$1</a>",$txt);
         $txt = preg_replace("!\[(ftp\.[^\s\|\]]+?)\]!i","<a href=\"ftp://$1\" class=\"external\">$1</a>",$txt);
 		$txt = preg_replace_callback('!(?<=\s|^)(http://\S+(\S*\(\S*\))+)(?=\s|$)!sm', function($m) { return lcml_urls_title($m[1]);}, $txt);
         $txt = preg_replace_callback("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!i", function($m) { return lcml_urls_title($m[1]).$m[2];}, $txt);
         $txt = preg_replace_callback("!(?<=\s|^|\()(https?://[^\s<>\|\[\]\<\>]+)(?=\s|$)!i", function($m) { return lcml_urls_title($m[1], false, 139);}, $txt);
         $txt = preg_replace_callback("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-|:)(?=\s|$)!i", function($m) { return lcml_urls_title('http://'.$m[1]).$m[2];}, $txt);
-        $txt = preg_replace_callback("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(?=\s|$)!i", function($m) { return lcml_urls_title('http://', $m[1]);}, $txt);
+        $txt = preg_replace_callback("!(?<=\s|^| \()(www\.[^\s<>\|\[\]\<\>]+)(?=\s|$)!i", function($m) { return lcml_urls_title('http://' . $m[1]);}, $txt);
 
         $txt = preg_replace("!(?<=\s|^|\()(ftp://[^\s<>\|\[\]\<\>]+)(\)|\.|,|\!|\-)(?=\s|$)!i","<a href=\"$1\" class=\"external\">$1</a>$2",$txt);
         $txt = preg_replace("!(?<=\s|^|\()(ftp://[^\s<>\|\[\]\<\>]+)(?=\s|$)!i","<a href=\"$1\" class=\"external\">$1</a>",$txt);

@@ -10,9 +10,11 @@ class bors_admin_reports_load extends bors_admin_page
 	{
 		$dbh = new driver_mysql(config('bors_core_db'));
 
+		$period = time() - $dbh->select('bors_access_log', 'MIN(access_time)', array());
+
 		return array(
 			'total_time' => $dbh->select('bors_access_log', 'SUM(operation_time)', array()),
-			'period' => time() - $dbh->select('bors_access_log', 'MIN(access_time)', array()),
+			'period' => $period,
 
 			'max_cpu_by_user' => $dbh->select_array('bors_access_log',
 				'user_ip, user_id, count(user_ip) as cnt, sum(operation_time) as su, is_bot, user_agent',

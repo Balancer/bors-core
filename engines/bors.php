@@ -183,6 +183,7 @@ function bors_exit($message = '')
 	}
 	catch(Exception $e)
 	{
+		@header('HTTP/1.1 500 Internal Server Error');
 		$error = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка сохранения</div>"));
 	}
 
@@ -193,6 +194,7 @@ function bors_exit($message = '')
 
     if ($error['type'] == 1)
     {
+		@header('HTTP/1.1 500 Internal Server Error');
 		if($out_dir = config('debug_hidden_log_dir'))
 		{
 			@mkdir(config('debug_hidden_log_dir').'/errors');

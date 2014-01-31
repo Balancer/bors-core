@@ -180,7 +180,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		}
 		debug_timing_stop('image_recalculate');
 		if(($dura = (microtime(true) - $start)) > 0.5)
-			debug_hidden_log("recalculate", "time = $dura, url = {$this->url()}, this={$this}, data=".print_r($this->data, true));
+			debug_hidden_log("recalculate", "time = $dura, url = {$this->url()}, this={$this->debug_title()}, data=".print_r($this->data, true));
 	}
 
 	function upload($data, $dir = NULL)

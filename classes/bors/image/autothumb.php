@@ -18,6 +18,10 @@ class bors_image_autothumb extends bors_object
 			if(!preg_match('!^(/.*/)(\d*x\d*\([^)]+\))/([^/]+)$!', $thumb_path, $m))
 				return;
 
+		// Если убиваем кеш, то стереть файл
+		if(array_key_exists('nc', $_GET) && file_exists($f = $_SERVER['DOCUMENT_ROOT'].'/cache'.$thumb_path))
+			unlink($f);
+
 		$origin_path = $m[1].$m[3];
 		if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $origin_path))
 		{

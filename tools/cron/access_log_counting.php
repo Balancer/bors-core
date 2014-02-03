@@ -16,7 +16,7 @@ catch(Exception $e)
 	exit();
 }
 
-$db->query('DELETE FROM bors_access_log WHERE access_time < UNIX_TIMESTAMP() - 3600');
+$db->query('DELETE FROM bors_access_log WHERE access_time < UNIX_TIMESTAMP() - 600');
 
 foreach(objects_array('bors_access_log', array('was_counted' => 0)) as $x)
 {

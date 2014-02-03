@@ -72,13 +72,15 @@ class bors_forms_date extends bors_forms_element
 
 		if(empty($year_min))
 			$year_min = strftime('%Y') - 100;
-		elseif($year_min == 'now')
-			$year_min = strftime('%Y');
 
-		$year_min = max(1902, $year_min);// Минимальная корректная UNIXTIME дата - декабрь 1901-го.
+		if(!is_numeric($year_min))
+			$year_min = date("Y", strtotime($year_min));
 
 		if(empty($year_max))
 			$year_max = date('Y') + 1;
+
+		if(!is_numeric($year_max))
+			$year_max = date("Y", strtotime($year_max));
 
 		if(empty($params['show_only']))
 			$shown = array('y','m','d','h','i','s');
@@ -122,7 +124,7 @@ class bors_forms_date extends bors_forms_element
 		if($is_fuzzy || !$yea)
 			$html .="<option value=\"0\">----</option>\n";
 
-		if($year_max > date('Y')+1)
+		if($year_max - $year_min < 10)
 		{
 			for($i = $year_min; $i<=$year_max ; $i++)
 				$html .="<option".($i==$yea?' selected="true"':'').">$i</option>"; // value=\"$i\"

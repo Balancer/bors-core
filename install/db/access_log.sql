@@ -21,4 +21,4 @@ CREATE TABLE `bors_access_log` (
   KEY `access_time` (`access_time`),
   KEY `was_counted` (`was_counted`),
   KEY `user_ip___access_time` (`user_ip`,`access_time`)
-) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+) ENGINE=MEMORY ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8;

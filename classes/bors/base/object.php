@@ -279,9 +279,16 @@ class base_object extends base_empty
 				return $x['value'];
 		}
 
-		// Проверяем автоматические объекты.
 //		echo $this->debug_title();
-		$auto_objs = $this->auto_objects();
+		// Проверяем автоматические объекты.
+		// Избегаем зацикливания. Если уже внутри проверки, то ещё раз не проверяем.
+		if(empty($this->attr['___in_auto_object_routine']))
+		{
+			$this->attr['___in_auto_object_routine'] = true;
+			$auto_objs = $this->auto_objects();
+			unset($this->attr['___in_auto_object_routine']);
+		}
+
 		if(($f = @$auto_objs[$method]))
 		{
 			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))

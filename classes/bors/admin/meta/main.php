@@ -10,6 +10,8 @@ class bors_admin_meta_main extends bors_admin_paginated
 
 	function _is_admin_list_def() { return true; }
 
+	function _new_object_url_def() { return $this->url().'new/'; }
+
 	function _model_class_def()
 	{
 		return NULL;
@@ -42,7 +44,7 @@ class bors_admin_meta_main extends bors_admin_paginated
 		$new_link_title = false;
 		if(!$this->get('skip_auto_admin_new'))
 			if(!$foo->get('skip_auto_admin_new'))
-				$new_link_title = $foo->class_title_vp();
+				$new_link_title = ec('Добавить ').$foo->class_title_vp();
 
 		$fields = $this->get('item_fields');
 

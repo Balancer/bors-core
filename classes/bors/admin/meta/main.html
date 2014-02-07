@@ -18,7 +18,7 @@
 {$pagination}
 
 {if $bootstrap}
-	{if $new_link_title}
+	{if $new_link_title && count($items) > 15}
 		<a href="{$this->new_object_url()}" class="btn btn-primary" style="margin-bottom: 8px">{$new_link_title}</a>
 	{/if}
 {/if}

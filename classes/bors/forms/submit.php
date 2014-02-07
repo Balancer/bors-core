@@ -23,18 +23,18 @@ class bors_forms_submit extends bors_forms_element
 			$value = @$title;
 
 		$css = array($this->css());
+		$css_class_html = $css ? ' class="'.join(' ', $css).'"' : '';
 
 		switch(defval($params, 'type'))
 		{
-/*
 			case 'a':
-				$html .= "<a type=\"submit\" class=\"".defval($params, 'css_class')."\">".htmlspecialchars($value)."</button>";
+//				$html .= "<a type=\"submit\"{$css_class_html}>".htmlspecialchars($value)."</a>";
 				break;
-*/
+
 			case 'button':
 				// http://forums.balancer.ru/topics/6932/post/
 				// http://www.balancer.ru/admin/forum/post/3033292/move-tree
-				$html .= "<button type=\"submit\" class=\"".join(' ', $css)."\">".htmlspecialchars($value)."</button>";
+				$html .= "<button type=\"submit\"{$css_class_html}>".htmlspecialchars($value)."</button>";
 				break;
 
 			default:
@@ -43,11 +43,11 @@ class bors_forms_submit extends bors_forms_element
 				else
 					$html .= "<input type=\"submit\" value=\"".htmlspecialchars($value)."\"";
 
-				foreach(explode(' ', 'class style onClick onclick name') as $p)
+				foreach(explode(' ', 'style onClick onclick name') as $p)
 					if(!empty($$p))
 						$html .= " $p=\"{$$p}\"";
 
-				$html .= " />";
+				$html .= "{$css_class_html} />";
 				break;
 		}
 

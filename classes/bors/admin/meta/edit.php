@@ -2,12 +2,9 @@
 
 class bors_admin_meta_edit extends bors_admin_page
 {
-	function can_be_empty() { return false; }
-	function is_loaded() { return !$this->id() || (bool) $this->target(); }
-
 	function _config_class_def() { return config('admin_config_class'); }
 
-	function nav_name()
+	function _nav_name_def()
 	{
 		if($this->id()) // редактирование
 			return preg_match('!/edit/?$!', $this->url()) ? ec('редактирование') : $this->target()->nav_name();
@@ -15,7 +12,7 @@ class bors_admin_meta_edit extends bors_admin_page
 		return ec('добавление');
 	}
 
-	function title()
+	function _title_def()
 	{
 		return $this->id() ?
 			ec('Редактирование ').bors_lib_object::get_foo($this->main_class(), 'class_title_rp')
@@ -23,15 +20,24 @@ class bors_admin_meta_edit extends bors_admin_page
 		;
 	}
 
+	function pre_show()
+	{
+		if($this->id() && !$this->target())
+			return bors_throw("Can't load editor");
+
+		return parent::pre_show();
+	}
+
 	function target()
 	{
 		if(!class_include($this->main_class()))
-			bors_throw("Can't find main class '{$this->main_class()}'");
+			return NULL;
+//			bors_throw("Can't find main class '{$this->main_class()}'");
 
 		return $this->id() ? bors_load($this->main_class(), $this->id()) : NULL;
 	}
 
-	function main_class()
+	function _main_class_def()
 	{
 		bors_function_include('natural/bors_chunks_unplural');
 		$class_name = str_replace('_admin_', '_', $this->class_name());
@@ -39,7 +45,7 @@ class bors_admin_meta_edit extends bors_admin_page
 		return bors_chunks_unplural($class_name);
 	}
 
-	function main_admin_class()
+	function _main_admin_class_def()
 	{
 		bors_function_include('natural/bors_chunks_unplural');
 		$class_name = str_replace('_edit', '', $this->class_name());
@@ -77,7 +83,7 @@ class bors_admin_meta_edit extends bors_admin_page
 		return $this->__setc(bors_load($this->main_admin_class(), $this->id()));
 	}
 
-	function item_name()
+	function _item_name_def()
 	{
 		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
 	}

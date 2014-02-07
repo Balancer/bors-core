@@ -208,7 +208,7 @@ class bors_file extends base_object_db
 		$this->set_mime_type($file_data['type']);
 	}
 
-	function skip_auto_admin_new() { return true; }
+	function _skip_auto_admin_new_def() { return true; }
 
 	function pre_show()
 	{

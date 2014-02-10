@@ -70,9 +70,6 @@ class bors_forms_date extends bors_forms_element
 				list($yea, $mon, $day) = explode('-', $date);
 		}
 
-		if(!is_numeric($year_max))
-			$year_max = date("Y", strtotime($year_max));
-
 		if(empty($year_min))
 			$year_min = strftime('%Y') - 100;
 
@@ -81,6 +78,9 @@ class bors_forms_date extends bors_forms_element
 
 		if(empty($year_max))
 			$year_max = date('Y') + 1;
+
+		if(!is_numeric($year_max))
+			$year_max = date("Y", strtotime($year_max));
 
 		if(empty($params['show_only']))
 			$shown = array('y','m','d','h','i','s');

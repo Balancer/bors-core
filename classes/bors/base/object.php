@@ -838,6 +838,7 @@ defined at {$this->class_file()}<br/>
 
 	function check_value_conditions() { return array(); }
 
+	function save() { return $this->store(); }
 	function store()
 	{
 		if($this->attr('__store_entered'))

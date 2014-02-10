@@ -23,10 +23,37 @@ function bors_form_save(&$obj)
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($obj)."; access_engine=".$obj->access_engine());
 
 		if(!$obj->access()->can_action($_GET['act'], $_GET))
-			return bors_message(ec("[1] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($obj).", access=".get_class($obj->access()).", method=can_action)
-<!--
-".debug_trace(0, false)."
--->"));
+		{
+//			jquery::load();
+			$message = ec("<div class=\"alert alert-error\">Извините, у Вас недостаточный уровень доступа для операций с этим ресурсом ({$obj->titled_link()})</div>
+<div class=\"accordion\" id=\"sysinfoacc\">
+	<div class=\"accordion-group\">
+		<div class=\"accordion-heading\">
+			<a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#sysinfoacc\" href=\"#sysinfodata\">
+				Служебная информация
+			</a>
+		</div>
+		<div id=\"sysinfodata\" class=\"accordion-body collapse\">
+			<div class=\"accordion-inner\">
+				object class = ".get_class($obj).",<br/>
+				access class = ".get_class($obj->access()).",<br/>
+				access method = can_action(".$_GET['act'].");<br/>
+".bors_debug::trace(0, false)."
+			</div>
+		</div>
+	</div>
+</div>
+");
+
+			echo twitter_bootstrap::raw_message(array(
+				'this' => bors_load('bors_pages_fake', array(
+					'title' => ec('Ошибка прав доступа'),
+					'body' => $message,
+				)),
+			));
+
+			return true;
+		}
 
 		if(method_exists($obj, $method = "on_action_{$_GET['act']}"))
 		{

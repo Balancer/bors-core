@@ -56,7 +56,12 @@ class bors_forms_saver extends base_empty
 			return bors_message(ec("Не заданы режимы доступа класса ").get_class($object)."; access_engine=".$object->access_engine());
 
 		if(!$object->access()->can_action(@$data['act'], $data))
-			return bors_message(ec("[FS] Извините, Вы не можете производить операции с этим ресурсом (class=".get_class($object).", access=".($object->access_engine())."/".get_class($object->access()).", method=can_action)"));
+			return bors_message::error(ec("Извините, у Вас недостаточно прав доступа для проведения операций с этим ресурсом"),
+				array(
+					'sysinfo' => "class = ".get_class($object).",<br/>\naccess class = ".($object->access_engine())
+						."/".get_class($object->access()).", method = can_action(".@$data['act'].")",
+				)
+			);
 
 		if(empty($data['subaction']))
 			$method = '';

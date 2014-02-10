@@ -38,4 +38,9 @@ class bors_debug
 		bors_function_include('debug/trace');
 		return debug_trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL);
 	}
+
+	static function warning($message)
+	{
+		
+	}
 }

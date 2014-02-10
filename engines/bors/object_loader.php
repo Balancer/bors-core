@@ -68,7 +68,11 @@ function delete_cached_object_by_id($class_name, $object_id)
 
 function save_cached_object($object, $delete = false, $use_memcache = true)
 {
-	if(!method_exists($object, 'id') || is_object($object->id()))
+	if(!method_exists($object, 'id'))
+		return;
+
+	$id = $object->id();
+	if(is_object($id) || is_array($id))
 		return;
 
 	if($use_memcache && config('use_memcached_objects') && ($memcache = config('memcached_instance')) && $object->can_cached())
@@ -93,9 +97,9 @@ function save_cached_object($object, $delete = false, $use_memcache = true)
 	}
 
 	if($delete)
-		unset($GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()]);
+		unset($GLOBALS['bors_data']['cached_objects4'][get_class($object)][$id]);
 	else
-		$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$object->id()] = $object;
+		$GLOBALS['bors_data']['cached_objects4'][get_class($object)][$id] = $object;
 }
 
 function class_internal_uri_load($uri)

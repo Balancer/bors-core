@@ -483,7 +483,9 @@ if($cn = config('404.class_name'))
 }
 
 if(config('404_page_url'))
+{
 	return go(config('404_page_url'), true);
+}
 
 if(config('404_show', true))
 	echo ec("Page '$uri' not found\n<!--\nBORS_SITE=".BORS_SITE."\nBORS_CORE=".BORS_CORE."\n-->");

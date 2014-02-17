@@ -156,7 +156,7 @@ function bors_bot_detect($user_agent, &$data = array())
 		bors_function_include('debug/hidden_log');
 		debug_hidden_log('_need_append_data', 'unknown '.$m[2].' detectd');
 		$data = array(
-			'bot' => '$user_agent',
+			'bot' => $user_agent,
 			'crowler' => true,
 		);
 
@@ -168,7 +168,7 @@ function bors_bot_detect($user_agent, &$data = array())
 		bors_function_include('debug/hidden_log');
 		debug_hidden_log('_need_append_data', 'unknown '.$m[1].' bot detectd');
 		$data = array(
-			'bot' => '$user_agent',
+			'bot' => $user_agent,
 			'crowler' => false,
 		);
 

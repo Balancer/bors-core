@@ -8,7 +8,7 @@ if(!config('bors_core_db'))
 	exit();
 
 try{
-	$db = new driver_mysql(config('bors_core_db'));
+	$db = new driver_mysql(config('bors_local_db'));
 }
 catch(Exception $e)
 {

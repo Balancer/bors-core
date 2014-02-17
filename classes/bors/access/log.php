@@ -3,6 +3,7 @@
 class bors_access_log extends base_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
+	function db_name() { return config('bors_local_db'); }
 	function table_name() { return 'bors_access_log'; }
 	function table_fields()
 	{

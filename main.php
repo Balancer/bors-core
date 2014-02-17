@@ -165,7 +165,7 @@ if(config('access_log')
 	{
 		if(!$session_user_load_summary)
 		{
-			$dbh = new driver_mysql(config('main_bors_db'));
+			$dbh = new driver_mysql(config('bors_local_db'));
 			$session_user_load_summary = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
 				'user_ip' => $_SERVER['REMOTE_ADDR'],
 				'access_time>' => time() - 600,

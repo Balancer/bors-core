@@ -440,7 +440,10 @@ function bors_find($class_name)
 
 function bors_foo($class_name)
 {
+	if($cached_foo = global_key('___foos', $class_name))
+		return $cached_foo;
+
 	$object = new $class_name(NULL);
 	$object->_configure();
-	return $object;
+	return set_global_key('___foos', $class_name, $object);
 }

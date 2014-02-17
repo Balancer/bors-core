@@ -3,8 +3,10 @@
 bors_function_include('debug/timing_start');
 bors_function_include('debug/timing_stop');
 
-class driver_oci
+class driver_oci implements Iterator
 {
+	static function factory($db) { return new driver_oci($db); }
+
 	private $connection = NULL;
 	private $database = NULL;
 	private $statement = NULL;
@@ -26,7 +28,8 @@ class driver_oci
 		$this->connection = oci_connect(
 			configh('oci_access', $this->database, 'user'),
 			configh('oci_access', $this->database, 'password'),
-			configh('oci_access', $this->database, 'db')
+			configh('oci_access', $this->database, 'db'),
+			configh('oci_access', $this->database, 'oci_charset')
 		);
 		debug_timing_stop('oci_connect');
 
@@ -84,7 +87,7 @@ class driver_oci
 		$dcs = configh('oci_access', $this->database, 'charset');
 //		echo "ics=$ics, dcs=$dcs\n";
 
-		if($row && $ics != $dcs)
+		if($row && $dcs && ($ics != $dcs))
 		{
 			$ics .= '//IGNORE';
 			foreach($row as $k => $v)
@@ -114,10 +117,9 @@ class driver_oci
 //		echo $query."\n";
 		$this->query($query);
 		$data = array();
+
 		while($row = $this->fetch())
-		{
 			$data[] = $row;
-		}
 
 		return $data;
 	}
@@ -149,4 +151,58 @@ class driver_oci
 
 		return $data;
 	}
+
+	private $current_row = NULL;
+
+	public function each($table, $fields, $where)
+    {
+		$query = 'SELECT '.$fields.' FROM '.$table.' '.mysql_args_compile($where);
+		$query = str_replace('`', '"', $query);
+		$query = preg_replace('/"(\d+)"/', '$1', $query);
+		$query = preg_replace("/'(\d+)'/", '$1', $query);
+		$this->query($query);
+		return $this;
+    }
+
+	// void Iterator::rewind ( void )
+	// Rewinds back to the first element of the Iterator.
+	// Any returned value is ignored.
+	// Вызывается первый раз.
+    public function rewind()
+    {
+    	$this->current_row = $this->fetch();
+    }
+
+	// void Iterator::next ( void )
+	// Moves the current position to the next element.
+	// Any returned value is ignored.
+	// Вызывается после выдачи первого элемента, перед выдачей следующих
+    public function next()
+    {
+    	$this->current_row = $this->fetch();
+    }
+
+	// boolean Iterator::valid ( void )
+	// This method is called after Iterator::rewind() and Iterator::next() to check if the current position is valid.
+	// The return value will be casted to boolean and then evaluated. Returns TRUE on success or FALSE on failure.
+    public function valid()
+    {
+    	return (bool) $this->current_row;
+    }
+
+	// mixed Iterator::current ( void )
+	// Returns the current element.
+	// Can return any type.
+    public function current()
+    {
+    	return $this->current_row;
+    }
+
+	// scalar Iterator::key ( void )
+	// Returns the key of the current element.
+	// Returns scalar on success, or NULL on failure.
+    public function key() // Not implemented yet
+    {
+		return NULL;
+    }
 }

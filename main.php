@@ -333,6 +333,7 @@ if(config('access_log'))
 		'operation_time' =>  str_replace(',', '.', $operation_time),
 		'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
 		'is_bot' => $is_bot,
+		'is_crowler' => $is_crowler,
 	);
 
 	if(empty($object) || !is_object($object))

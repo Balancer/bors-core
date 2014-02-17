@@ -17,7 +17,7 @@ class bors_admin_reports_load extends bors_admin_page
 			'period' => $period,
 
 			'max_cpu_by_user' => $dbh->select_array('bors_access_log',
-				'user_ip, user_id, count(user_ip) as cnt, sum(operation_time) as su, is_bot, user_agent',
+				'user_ip, user_id, count(user_ip) as cnt, sum(operation_time) as su, is_bot, is_crowler, user_agent',
 				array('group'=>'user_ip',
 					'order' => '-su',
 					'limit' => 20,

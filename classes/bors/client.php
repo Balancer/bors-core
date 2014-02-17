@@ -3,7 +3,7 @@
 class bors_client extends bors_object_simple
 {
 	function can_cached() { return false; }
-	function is_bot() { return empty($GLOBALS['client']['is_bot']) ? 0 : $GLOBALS['client']['is_bot']; }
+	function is_bot() { return empty($GLOBALS['client']['is_bot']) ? false : $GLOBALS['client']['is_bot']; }
 	function is_crowler() { return @$GLOBALS['client']['is_crowler']; }
 
 	static function factory($ip) { return bors_load(__CLASS__, $ip); }

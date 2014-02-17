@@ -42,7 +42,10 @@ class bors_class_loader
 	static function load($class_name, &$args = array())
 	{
 //		echo "Check class $class_name<br/>\n";
-		if(in_array($class_name, config('classes_skip', array())))
+		static $skips = NULL; if(is_null($skips)) $skips = config('classes_skip', array());
+		static $monos = NULL; if(is_null($monos)) $monos = config('cache_code_monolith');
+		static $cachd = NULL; if(is_null($cachd)) $cachd = config('cache_dir').'/classes/';
+		if(in_array($class_name, $skips))
 			return false;
 
 		// Если у нас уже загружался соответствующий класс, то возвращаем
@@ -50,7 +53,7 @@ class bors_class_loader
 		if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
 			return $real_class_file;
 
-		if(config('cache_code_monolith')
+		if($monos
 			&& empty($GLOBALS['bors_data']['classes_cache_content'])
 			&& file_exists($classes_cache_file = config('cache_dir') . '/classes.php')
 		)
@@ -64,10 +67,10 @@ class bors_class_loader
 
 		$class_base = str_replace('_', '/', $class_name);
 		$class_path = $class_base.'.php';
-		$cached_class_file = config('cache_dir').'/classes/'.$class_path;
+		$cached_class_file = $cachd.$class_path;
 
 		$class_info_path = $class_base.'.ini';
-		$cached_class_info_file = config('cache_dir').'/classes/'.$class_info_path;
+		$cached_class_info_file = $cachd.$class_info_path;
 
 		if(file_exists($cached_class_file) && file_exists($cached_class_info_file))
 		{

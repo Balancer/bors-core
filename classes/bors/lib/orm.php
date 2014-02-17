@@ -134,7 +134,7 @@ class bors_lib_orm
 //			return $cached_data[$cache_name];
 
 		// Кеширование может быть сброшено из storage. При возможной замене менять сброс и там!
-		// При добавлении новго поля класса, например.
+		// При добавлении нового поля класса, например.
 		if($fields = global_key($gk = 'bors_lib_orm_class_fields-'.intval($only_editable), $object->class_name()))
 			return $fields;
 
@@ -253,6 +253,10 @@ class bors_lib_orm
 		if($fields = global_key('___main_fields', $class_name))
 			return $fields;
 
+		$ch = new bors_cache_fast();
+		if($ch->get('___main_fields', $class_name))
+			return set_global_key('___main_fields', $class_name, $ch->last());
+
 		$fields_array = array();
 
 		$defaults = true;
@@ -290,6 +294,7 @@ class bors_lib_orm
 			}
 		}
 
+		$ch->set($fields_array, 86400);
 		return set_global_key('___main_fields', $class_name, $fields_array);
 	}
 

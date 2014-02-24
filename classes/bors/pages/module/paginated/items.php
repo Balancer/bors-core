@@ -20,7 +20,10 @@ class bors_pages_module_paginated_items extends bors_module
 			if($class_name = $this->args('class'))
 				$foo = new $class_name(NULL);
 			else
-				$foo = @$items[0];
+			{
+				$ks = array_keys($items);
+				$foo = $items[$ks[0]];
+			}
 
 			if($foo)
 			{

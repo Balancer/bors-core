@@ -14,7 +14,7 @@ bors_exit();
 
 function main()
 {
-	$dbh = new driver_mysql(config('bors_core_db'));
+	$dbh = new driver_mysql(config('bors_local_db'));
 	$dbh->delete('bors_access_log', array(
 		'access_time<' => time()-600,
 //		'limit' => 100000,

@@ -49,122 +49,39 @@ class bors_external_feed extends base_object_db
 		));
 	}
 
-	static function _atom_extract($data)
-	{
-		$feed = array();
-		$feed_data = $data['feed'][0];
-		$feed['title'] = $feed_data['title'][0]['cdata'];
-		$author_name = $feed_data['author'][0]['name'][0]['cdata'];
-		foreach($feed_data['entry'] as $x)
-		{
-//			print_r($x);
-			$feed['entries'][] = array(
-				'title' => $x['title'][0]['cdata'],
-				'link'  => $x['link'][0]['href'],
-				'pub_date'  => strtotime($x['updated'][0]['cdata']),
-				'id'	=> $x['id'][0]['cdata'],
-				'description'	=> $x['summary'][0]['cdata'],
-				'author_name' => $author_name,
-			);
-		}
-//		print_d($feed)."\n";
-//		print_d($feed_data)."\n";
-		return $feed;
-	}
-
 	function update($is_test = false, $rss_reread = false)
 	{
-		$xml = bors_lib_http::get_ex($this->feed_url(), array('charset' => $this->charset()));
+		require_once('/var/www/bors/composer/vendor/autoload.php');
 
-		$xml = $xml['content'];
-/*
-		if($is_test)
+		$feed = new SimplePie();
+		$feed->set_feed_url($this->feed_url());
+//		@mkdir('/tmp/rss-cache');
+		$feed->enable_cache(false);
+//		$feed->set_cache_location('/tmp/rss-cache');
+//		$feed->set_cache_duration(10);
+		$feed->init();
+
+		foreach($feed->get_items() as $item)
 		{
-			echo "xml = ";
-			var_dump($xml)."\n";
-			file_put_contents('test.xml', $xml);
-			exit();
-		}
-*/
-		$data = bors_lib_xml::xml2array($xml);
-/*
-		if($is_test)
-		{
-			echo "data = ";
-			var_dump($data)."\n";
-			file_put_contents('test.dat', print_r($data, true));
-			exit();
-		}
-*/
-
-		if(!empty($data['feed'])) // Это ATOM
-		{
-			$feed = self::_atom_extract($data);
-
-			if(!$this->title_true() && $feed['title'])
-				$this->set_title($feed['title']);
-
-			foreach($feed['entries'] as $entry)
-				self::_check_entry($entry, $is_test);
-//	var_dump($dntries);
-			return;
-		}
-
-		$rss = @$data['rss'][0];
-		if(!$rss)
-		{
-			echo "RSS {$this->feed_url()} not found\n";
-
-			if($xml)
-			{
-//				print_d($xml)."\n";
-//				print_d($data)."\n";
-			}
-
-			if(!$is_test)
-				debug_hidden_log('rss_error', "Can't get rss {$this->feed_url()}");
-
-			return;
-		}
-
-		$channel = $rss['channel'][0];
-
-		$items = array_reverse($channel['item']);
-//		if($is_test) { print_dd($items); exit(); }
-
-		foreach($items as $item)
-		{
-			$title = @$item['title'][0]['cdata']; // html_entity_decode($item['title'][0]['cdata'], ENT_QUOTES, 'UTF-8');
-//			echo "Check $title\n";
-			$description = $item['description'][0]['cdata']; // html_entity_decode($item['description'][0]['cdata'], ENT_QUOTES, 'UTF-8');
-//			if($is_test) echo "--- $description\n";
-			$link = $item['link'][0]['cdata'];
-			$guid = @$item['guid'][0]['cdata'];
-			$pub_date = $item['pubDate'][0]['cdata'];
-			if(preg_match('/ UT$/', $pub_date)) // глючный формат 'Tue, 20 Jul 2010 18:26:41 UT'
-				$pub_date .= 'C';
-
-			$pub_date = strtotime($pub_date);
-//			echo "if($pub_date && {$this->show_only_after_time()} && $pub_date < {$this->show_only_after_time()})\n";
+			$title = $item->get_title();
+			$description = html_entity_decode($item->get_description());
+			$link = $item->get_permalink();
+			$pub_date = $item->get_date('U');
 			if($pub_date && $this->show_only_after_time() && $pub_date < $this->show_only_after_time())
 				continue;
 
-			$author_name = @$item['author'][0]['cdata'];
+			$author_name = ($a = $item->get_author()) ? $a->get_name() : NULL;
+
 			if(!$author_name)
-				$author_name = @$item['lj:poster'][0]['cdata'];
+				$author_name = ($a = $feed->get_author()) ? $a->get_name() : NULL;
+
+			if(!$author_name)
+				$author_name = $this->owner_name();
 
 			if(preg_match('/^\S+@\S+ \((.+)\)$/', $author_name, $m))
 				$author_name = $m[1];
 
-			if(empty($guid))
-				$guid = $link;
-
-			if(preg_match('!http://www.aviaport.ru/news/\d{4}/\d{2}/\d{2}/(\d+).html!', $link, $m))
-				$feed_entry_id = $m[1];
-			else
-				$feed_entry_id = $guid;
-
-			$guid = bors_substr($guid, 0, 255);
+			$guid = bors_substr($link, 0, 255);
 
 			$entry = bors_find_first('bors_external_feeds_entry', array(
 				'entry_url' => $guid,
@@ -175,18 +92,20 @@ class bors_external_feed extends base_object_db
 					'entry_url' => $link,
 				));
 
+			$raw_data = serialize($item->data);
+
 			$is_skipped = $this->skip_entry_content_regexp()
 				&& preg_match('!'.$this->skip_entry_content_regexp().'!i', $description);
 
 			$tags = array();
 
-			if($kws = @$item['media:group'][0]['media:keywords'][0]['cdata'])
-				$tags = array_map('trim', explode(',', $kws));
-			elseif(!empty($item['category']))
+//			if($kws = @$item['media:group'][0]['media:keywords'][0]['cdata'])
+//				$tags = array_map('trim', explode(',', $kws));
+			if($cats = $item->get_categories())
 			{
-				foreach($item['category'] as $cat)
+				foreach($cats as $cat)
 				{
-					$tag = trim(str_replace('_', ' ', $cat['cdata']));
+					$tag = trim(str_replace('_', ' ', $cat->get_label()));
 					if(preg_match('!http://\S+!', $tag))
 						continue;
 
@@ -194,7 +113,8 @@ class bors_external_feed extends base_object_db
 						$tags[] = trim($t);
 				}
 			}
-			else
+
+			if(0)
 			{
 				//TODO: пока жёсткий харкод. Нужно будет придумать общие настройки
 				if(stripos($title, 'Имхонет') !== false && strpos($description, 'Фильм:') !== false)
@@ -227,6 +147,7 @@ class bors_external_feed extends base_object_db
 			$keywords_string = join(', ', $tags);
 
 			if($entry
+					&& !$rss_reread
 					&& $pub_date <= $entry->pub_date()
 					&& $author_name == $entry->author_name()
 					&& bors_substr($title, 0, 255) == bors_substr($entry->title(), 0, 255)
@@ -275,6 +196,8 @@ class bors_external_feed extends base_object_db
 			{
 				$entry->set_pub_date(max($entry->pub_date(), $pub_date), true);
 				$entry->set_title($title, true);
+				if($raw_data)
+					$entry->set_simplepie_item_raw($raw_data, true);
 				$entry->set_author_name($author_name, true);
 				$entry->set_keywords_string($keywords_string, true);
 				$entry->set_text($description, true);
@@ -289,6 +212,7 @@ class bors_external_feed extends base_object_db
 				$entry = bors_new('bors_external_feeds_entry', array(
 					'entry_url' => $link,
 					'pub_date' => time(), // $pub_date,
+					'simplepie_item_raw' => $raw_data,
 					'title' => $title,
 					'keywords_string' => $keywords_string,
 					'text' => $description,
@@ -310,7 +234,6 @@ class bors_external_feed extends base_object_db
 
 			if(!$is_skipped && !$is_test)
 			{
-
 				if($entry)
 					debug_hidden_log('__rss-update2', "why not skipped? entry={$entry->debug_title()}; was=$was; entry=".((bool)$entry)
 						." && pubdate <= :".($pub_date <= $entry->pub_date())

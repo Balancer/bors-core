@@ -14,7 +14,7 @@ class bors_external_diigo extends bors_object
 
 //		var_dump($tags); exit();
 
-		$bbcode = "Новая ссылка на [http://www.diigo.com/user/balancer73 diigo.com]: [b][i][url=$link]$title[/url][/i][/b]\n$link";
+		$bbcode = "Новая ссылка на [http://www.diigo.com/user/balancer73 diigo.com]: [b][i][url={$link}]{$title}[/url][/i][/b]\n{$link}";
 
 		if(preg_match('!^<p>(.*?)</p>!', trim($text), $m))
 			$bbcode = "$bbcode\n\n{$m[1]}";

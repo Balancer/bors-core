@@ -59,6 +59,9 @@ class bors_external_common extends bors_object
 		if(strpos($description, "\\'") !== false)
 			$description = stripslashes($description);
 
+		// Уже не работает. Пример:
+		// http://en.wikipedia.org/wiki/Merlin_(rocket_engine_family)
+		// http://www.balancer.ru/g/p3367358
 		if(!$img && preg_match('!<div class="thumbinner".+?<img .+src="(//upload.wikimedia.org/[^"]+\.jpg)"!', $html, $m))
 			$img = 'http:'.$m[1];
 
@@ -77,6 +80,7 @@ class bors_external_common extends bors_object
 		// Андроид Маркет
 		// <div class="doc-banner-icon"><img src="https://g1.gstatic.com/android/market/com.eolwral.osmonitor/hi-256-1-cb0eccad4104c6cf15182a6da90c40002d76bad8" /></div>
 		// <div class="doc-banner-icon"><img src="https://lh5.ggpht.com/HelkQpBcO9SPqOgu0AdXqU_N6M3zMIBR6lR-rvBUPMsZl_7H2aGwfqq9tEHV89vJ_yo=w124"/></div>
+		// http://www.balancer.ru/g/p2369967
 		if(!$img && preg_match('!<div class="doc-banner-icon">\s*<img src="([^"]+)"\s*/>\s*</div>!s', $html, $m))
 			$img = $m[1];
 

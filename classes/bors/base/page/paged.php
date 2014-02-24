@@ -91,24 +91,13 @@ class base_page_paged extends bors_page
 
 		$class_name = $this->get('is_admin_list') ? $this->main_admin_class() : $this->main_class();
 
-//		try
-		{
-			$this->_items = bors_find_all($class_name, $this->_where(array(
-				'page' => $this->page(),
-				'per_page' => $this->items_per_page(),
-				'order' => $this->order(),
-				'by_id' => true,
-			)));
-		}
+		$this->_items = bors_find_all($class_name, $this->_where(array(
+			'page' => $this->page(),
+			'per_page' => $this->items_per_page(),
+			'order' => $this->order(),
+			'by_id' => true,
+		)));
 
-/*
-		catch(Exception $e)
-		{
-			$msg = bors_lib_exception::catch_trace($e);
-			debug_hidden_log('items_list_exception', $msg);
-			$this->_items = array();
-		}
-*/
 		if($this->is_reversed())
 			$this->_items = array_reverse($this->_items, true);
 

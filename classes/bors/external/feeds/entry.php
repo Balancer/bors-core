@@ -14,6 +14,7 @@ class bors_external_feeds_entry extends base_object_db
 			'id',
 			'entry_url',
 			'pub_date' => array('type' => 'timestamp'),
+			'simplepie_item_raw',
 			'title',
 			'keywords_string',
 			'text',
@@ -161,6 +162,8 @@ class bors_external_feeds_entry extends base_object_db
 				'title' => $this->title(),
 				'text' => $this->text(),
 				'link' => $this->entry_url(),
+				'raw_data' => $this->simplepie_item_raw(),
+				'feed' => $feed,
 			));
 
 			$source	= @$data['bb_code'];
@@ -278,7 +281,13 @@ class bors_external_feeds_entry extends base_object_db
 			'is_public' => $topic->is_public(),
 		));
 
-		$topic->recalculate();
+		$post->cache_clean();
+		$post->store();
+		$post->body();
+
+		$topic->cache_clean();
+		$topic->set_modify_time(time(), true);
+		$topic->store();
 
 		echo "\tnew post {$post->debug_title()}\n";
 

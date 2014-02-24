@@ -631,7 +631,7 @@ defined at {$this->class_file()}<br/>
 //			$title = $this->page();
 
 		if(!($url = defval($params, 'url')))
-			$url = $this->url_ex(array('page' => $page));
+			$url = $this->url_ex($page);
 
 		$url = str_replace('%OBJECT_ID%', $this->id(), $url);
 

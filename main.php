@@ -146,19 +146,18 @@ if(config('access_log')
 	)
 {
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$access_log_mem_name = 'access-load-summary-3-'.$ip;
+	$sid = $is_bot ? $is_bot : $ip;
+	$access_log_mem_name = 'access-load-summary-3-'.$sid;
 	$session_user_load_summary_pack = bors_var::fast_get($access_log_mem_name, array(0, 0));
 	$session_user_load_summary = $session_user_load_summary_pack[0]; // session_var('user.stat.load_summary', 0);
 
-	if($session_user_load_summary_pack[1] < time() - 300)
+	if($session_user_load_summary_pack[1] < time() - 60)
 		$session_user_load_summary = 0;
-
-//	if(config('is_debug'))
-//	debug_hidden_log('00-system_overload_test_session', 'summary load: '.print_r($session_user_load_summary, true), 0);
 
 	$common_overload = config('overload_time', 0);
 	$user_overload = config('user_overload_time', $common_overload);
 	$bot_overload = config('bot_overload_time', $common_overload);
+
 //	$admin_overload = config('admin_overload_time', $common_overload);
 
 	if($user_overload || $bot_overload)
@@ -166,14 +165,19 @@ if(config('access_log')
 		if(!$session_user_load_summary)
 		{
 			$dbh = new driver_mysql(config('bors_local_db'));
-			$session_user_load_summary = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
-				'user_ip' => $_SERVER['REMOTE_ADDR'],
-				'access_time>' => time() - 600,
-			));
+			if($is_bot)
+				$session_user_load_summary = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
+					'is_bot' => $is_bot,
+					'access_time>' => time() - 600,
+				));
+			else
+			{
+				$session_user_load_summary = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
+					'user_ip' => $_SERVER['REMOTE_ADDR'],
+					'access_time>' => time() - 600,
+				));
+			}
 		}
-
-//		if(config('is_debug'))
-//			debug_hidden_log('00-system_overload_test', $session_user_load_summary, 0);
 
 		if(!$is_crowler && $user_overload && $session_user_load_summary > $user_overload)
 		{
@@ -186,7 +190,7 @@ if(config('access_log')
 
 		if($is_crowler && $bot_overload && $session_user_load_summary > $bot_overload)
 		{
-			debug_hidden_log('system_overload_crowlers', $session_user_load_summary.' of '.$bot_overload, 0);
+			debug_hidden_log('system_overload_crowlers', $session_user_load_summary.' of '.$bot_overload."\nbot=$is_bot", 0);
 
 			header('Status: 503 Service Temporarily Unavailable');
 			header('Retry-After: 600');
@@ -332,7 +336,7 @@ if(config('access_log'))
 		'access_time' => round($GLOBALS['stat']['start_microtime']),
 		'operation_time' =>  str_replace(',', '.', $operation_time),
 		'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
-		'is_bot' => $is_bot,
+		'is_bot' => $is_bot ? $is_bot : NULL,
 		'is_crowler' => $is_crowler,
 	);
 

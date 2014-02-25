@@ -49,16 +49,13 @@ class bors_external_feed extends base_object_db
 		));
 	}
 
-	function update($is_test = false, $rss_reread = false)
+	function update($is_test = false, $rss_reread = false, $force_update = false)
 	{
 		require_once('/var/www/bors/composer/vendor/autoload.php');
 
 		$feed = new SimplePie();
 		$feed->set_feed_url($this->feed_url());
-//		@mkdir('/tmp/rss-cache');
 		$feed->enable_cache(false);
-//		$feed->set_cache_location('/tmp/rss-cache');
-//		$feed->set_cache_duration(10);
 		$feed->init();
 
 		foreach($feed->get_items() as $item)
@@ -147,7 +144,7 @@ class bors_external_feed extends base_object_db
 			$keywords_string = join(', ', $tags);
 
 			if($entry
-					&& !$rss_reread
+					&& !$force_update
 					&& $pub_date <= $entry->pub_date()
 					&& $author_name == $entry->author_name()
 					&& bors_substr($title, 0, 255) == bors_substr($entry->title(), 0, 255)
@@ -155,14 +152,14 @@ class bors_external_feed extends base_object_db
 					&& $keywords_string == $entry->keywords_string()
 			)
 				continue;
-
+/*
 			if($entry)
 				debug_hidden_log('__rss_update', "check 1: why not skipped? entry={$entry->id()}; entry=".((bool)$entry)
 					." && pubdate <= :".($pub_date <= $entry->pub_date())
 					." && title==:".($title == $entry->title())
 					." && desc==:".($description == $entry->text())
 					." && kws==:".($keywords_string == $entry->keywords_string()));
-
+*/
 			echo "=== $title ===\n";
 
 //			echo "=== $title ===\ntags: ".join(', ', $tags)."\n// $link\n".$forum->debug_title()."\n\n";
@@ -218,7 +215,7 @@ class bors_external_feed extends base_object_db
 					'text' => $description,
 					'author_name' => $author_name,
 					'feed_id' => $this->id(),
-					'entry_id' => $feed_entry_id,
+					'entry_id' => $guid,
 //					'target_class_name',
 //					'target_object_id',
 					'is_suspended' => $is_skipped,
@@ -234,13 +231,14 @@ class bors_external_feed extends base_object_db
 
 			if(!$is_skipped && !$is_test)
 			{
+/*
 				if($entry)
 					debug_hidden_log('__rss-update2', "why not skipped? entry={$entry->debug_title()}; was=$was; entry=".((bool)$entry)
 						." && pubdate <= :".($pub_date <= $entry->pub_date())
 						." && title==:".($title == $entry->title())
 						." && desc==:".($description == $entry->text())
 						." && kws==:".($keywords_string == $entry->keywords_string()));
-
+*/
 				$entry->update_target(true, $find_topic);
 			}
 

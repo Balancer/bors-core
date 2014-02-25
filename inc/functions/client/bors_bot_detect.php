@@ -68,7 +68,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'princeton crawler' => 'princeton crawler',	// nu_tch-princeton/Nu_tch-1.0-dev (princeton crawler for cass project; http://www.cs.princeton.edu/cass/; zhewang a_t cs ddot princeton dot edu)
 			'proximic' => array(		// Mozilla/5.0 (compatible; proximic; +http://www.proximic.com/info/spider.php)
 				'bot' => 'Proximic Spider',
-				'crowler' => false,
+				'crowler' => true,		// Что-то очень агрессивно себя ведёт.
 			),
 			'rambler' => 'Rambler',
 			'robotgenius' => 'robotgenius',			// robotgenius (http://robotgenius.net)
@@ -85,10 +85,11 @@ function bors_bot_detect($user_agent, &$data = array())
 			'^SearchBot$' => array(					// SearchBot
 				'bot' => 'SearchBot',
 			),
-			'Socialradarbot' => 'Infegy Social',	// Mozilla/5.0 (compatible; Linux; Socialradarbot/2.0; en-US; bot@infegy.com)
-			'Sogou' => 'Sogou web spider',			// Sogou web spider/4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)
+			'SemrushBot',				// Mozilla/5.0 (compatible; SemrushBot/0.97; +http://www.semrush.com/bot.html)
 			'SimplePie' => 'SimplePie',	// SimplePie/1.1.1 (Feed Parser; http://simplepie.org; Allow like Gecko) Build/2.00803152059E+13
 			'Snapbot' => 'Snapbot',		// Snapbot/1.0 (Snap Shots, +http://www.snap.com)
+			'Socialradarbot' => 'Infegy Social',	// Mozilla/5.0 (compatible; Linux; Socialradarbot/2.0; en-US; bot@infegy.com)
+			'Sogou' => 'Sogou web spider',			// Sogou web spider/4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)
 			'Speedy Spider' => 'EntirewebBot',
 			'Spinn3r' => 'Spinn3r',	// Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.19; aggregator:Spinn3r (Spinn3r 3.1); http://spinn3r.com/robot) Gecko/2010040121 Firefox/3.0.19
 			'SputnikBot' => 'SputnikBot',	// Mozilla/5.0 (compatible; SputnikBot/2.2)

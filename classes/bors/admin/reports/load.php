@@ -17,7 +17,7 @@ class bors_admin_reports_load extends bors_admin_page
 			'period' => $period,
 
 			'max_cpu_by_user' => $dbh->select_array('bors_access_log',
-				'GROUP_CONCAT(DISTINCT user_ip ORDER BY user_ip ASC SEPARATOR "<br/>\n") AS user_ip, user_id, count(user_ip) as cnt, sum(operation_time) as su, is_bot, is_crowler, user_agent',
+				'GROUP_CONCAT(DISTINCT user_ip ORDER BY user_ip ASC SEPARATOR "<br/>\n") AS user_ip, user_id, count(user_ip) as cnt, sum(operation_time) as su, is_bot, is_crowler AS is_crawler, user_agent',
 				array(
 					'group' => 'COALESCE(`is_bot`,`user_ip`)',
 					'order' => '-su',

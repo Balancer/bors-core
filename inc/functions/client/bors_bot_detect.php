@@ -14,7 +14,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'BLEXBot' => 'BLEXBot',				// Mozilla/5.0 (compatible; BLEXBot/1.0; +http://webmeup.com/crawler.html)
 			'Digg Feed Fetcher' => array(		// Digg Feed Fetcher 1.0 (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_1) AppleWebKit/534.48.3 (KHTML, like Gecko) Version/5.1 Safari/534.48.3)
 				'bot' => 'Digg Feed Fetcher',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'discobot' => 'Discovery Engine',	// Mozilla/5.0 (compatible; discobot/1.1; +http://discoveryengine.com/discobot.html)
 			'DotBot' => 'DotBot',				// Mozilla/5.0 (compatible; DotBot/1.1; http://www.dotnetdotcom.org/, crawler@dotnetdotcom.org)
@@ -29,7 +29,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Gigabot' => 'Gigabot',				// Gigabot/3.0 (http://www.gigablast.com/spider.html)
 			'Mediapartners-Google' => array(	//	Mediapartners-Google
 				'bot' => 'Google Mediapartners',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'google' => 'Google',		// Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
 			'igorbot' => 'igorbot',		// Mozilla/5.0 (Windows; U; Windows NT 6.0; ru; rv:1.9.2.18) Gecko/20110614 Firefox/3.6.17 igorbot
@@ -39,19 +39,19 @@ function bors_bot_detect($user_agent, &$data = array())
 			'lwp' => 'LWP',				// lwp-trivial/1.41
 			'MagpieRSS' => array(		//MagpieRSS/0.72 (+http://magpierss.sf.net; No cache)
 				'bot' => 'MagpieRSS',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'Mail.Ru' => 'Mail.Ru',		// Mail.Ru/1.0
 			'MJ12bot' => 'Majestic12Bot',	// Mozilla/5.0 (compatible; MJ12bot/v1.2.5; http://www.majestic12.co.uk/bot.php?+)
 			'MLBot'	=> 'MLBot',			// MLBot (www.metadatalabs.com/mlbot)
 			'mon.itor.us' => array(		// Mozilla/5.0 (compatible; mon.itor.us - free monitoring service; http://mon.itor.us)
 				'bot' => 'mon.itor.us',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'montastic-monitor' => array(	// montastic-monitor http://www.montastic.com
 				'bot' => 'Montastic',
 				'url' => 'http://www.montastic.com/',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'msnbot' => 'MSN', 			// msnbot/2.0b (+http://search.msn.com/msnbot.htm)
 			'NaverBot' => 'NaverBot',	// Mozilla/4.0 (compatible; NaverBot/1.0; http://help.naver.com/customer_webtxt_02.jsp)
@@ -62,13 +62,13 @@ function bors_bot_detect($user_agent, &$data = array())
 			'ovalebot' => 'ovalebot',	// ovalebot3.ovale.ru facepage
 			'Page2RSS' => array(		// Mozilla/5.0 (compatible;  Page2RSS/0.7; +http://page2rss.com/)
 				'bot' => 'Page2RSS',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'psbot'	=> 'Picsearch bot',	// psbot/0.1 (+http://www.picsearch.com/bot.html)
 			'princeton crawler' => 'princeton crawler',	// nu_tch-princeton/Nu_tch-1.0-dev (princeton crawler for cass project; http://www.cs.princeton.edu/cass/; zhewang a_t cs ddot princeton dot edu)
 			'proximic' => array(		// Mozilla/5.0 (compatible; proximic; +http://www.proximic.com/info/spider.php)
 				'bot' => 'Proximic Spider',
-				'crowler' => true,		// Что-то очень агрессивно себя ведёт.
+				'crawler' => true,		// Что-то очень агрессивно себя ведёт.
 			),
 			'rambler' => 'Rambler',
 			'robotgenius' => 'robotgenius',			// robotgenius (http://robotgenius.net)
@@ -80,7 +80,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'RSSGraffiti' => array(					// RSSGraffiti
 				'bot' => 'RSSGraffiti',
 				'url' => 'http://www.rssgraffiti.com/',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'^SearchBot$' => array(					// SearchBot
 				'bot' => 'SearchBot',
@@ -97,11 +97,11 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Tagoobot' => 'Tagoobot',	// Mozilla/5.0 (compatible; Tagoobot/3.0; +http://www.tagoo.ru)
 			'theoldreader' => array( 	// Mozilla/5.0 (compatible; theoldreader.com; 1 subscribers; feed-id=0719795c4d27c784217b0bc0)
 				'bot' => 'The Old Reader (RSS)',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'Tiny Tiny RSS' => array(	// Tiny Tiny RSS/1.7.4 (http://tt-rss.org/)
 				'bot' => 'Tiny Tiny RSS',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'TppRFbot' => array(		// TppRFbot/1.1 (compatible; http://www.ruschamber.net, http://www.geocci.com)
 				'bot' => 'TppRFbot',
@@ -111,7 +111,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'TweetedTimes' => array(	// Mozilla/5.0 (compatible; TweetedTimes Bot/1.0; +http://tweetedtimes.com)
 				'bot' => 'TweetedTimes',
 				'url' => 'http://tweetedtimes.com/',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'Twiceler' => 'Twiceler',	// Mozilla/5.0 (Twiceler-0.9 http://www.cuil.com/twiceler/robot.html)
 			'Twitterbot',				// Twitterbot/1.0
@@ -122,7 +122,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			'yahoo' => 'Yahoo',
 			'YandexMetrika' => array(
 				'bot' => 'YandexMetrica',
-				'crowler' => false,
+				'crawler' => false,
 			),
 			'yandex' => 'Yandex',
 			'Yanga' => 'Yanga',
@@ -144,7 +144,7 @@ function bors_bot_detect($user_agent, &$data = array())
 			{
 				$data = array(
 					'bot' => $bot,
-					'crowler' => true,
+					'crawler' => true,
 				);
 			}
 
@@ -152,13 +152,13 @@ function bors_bot_detect($user_agent, &$data = array())
 		}
 	}
 
-	if(preg_match("/(\w*)(bot|crowler|spider)/i", $user_agent, $m))
+	if(preg_match("/(\w*)(bot|crawler|spider)/i", $user_agent, $m))
 	{
 		bors_function_include('debug/hidden_log');
 		debug_hidden_log('_need_append_data', 'unknown '.$m[2].' detectd');
 		$data = array(
 			'bot' => $user_agent,
-			'crowler' => true,
+			'crawler' => true,
 		);
 
 		return 'Unknown '.$m[1].' '.(empty($m[1]) ? '' : ': '.$m[1]);
@@ -170,7 +170,7 @@ function bors_bot_detect($user_agent, &$data = array())
 		debug_hidden_log('_need_append_data', 'unknown '.$m[1].' bot detectd');
 		$data = array(
 			'bot' => $user_agent,
-			'crowler' => false,
+			'crawler' => false,
 		);
 
 		return 'Unknown bot';

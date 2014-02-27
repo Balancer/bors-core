@@ -8,5 +8,5 @@ function bors_client_analyze()
 	$data = array();
 	bors_bot_detect(@$_SERVER['HTTP_USER_AGENT'], $data);
 	$client['is_bot'] = @$data['bot'];
-	$client['is_crowler'] = @$data['crowler'];
+	$client['is_crawler'] = @$data['crawler'];
 }

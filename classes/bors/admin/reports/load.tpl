@@ -15,7 +15,7 @@
 </tr></thead>
 <tbody>
 {foreach from=$max_cpu_by_user item="x"}
-<tr{if $x.user_id} class="green"{elseif $x.is_crowler} class ="red b"{elseif $x.is_bot} class="orange"{/if}>
+<tr{if $x.user_id} class="green"{elseif $x.is_crawler} class ="red b"{elseif $x.is_bot} class="orange"{/if}>
 	<td class="nobr">{$x.user_ip|geoip_flag}{if $can_see_ip}<a href="/_bors/admin/reports/ip?ip={$x.user_ip}">{$x.user_ip}</a>{else}xxx.xxx.xxx.xxx{/if}</td>
 	<td>{$x.user_id}</td>
 	<td>{$x.cnt}</td>

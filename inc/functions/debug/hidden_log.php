@@ -2,6 +2,9 @@
 
 function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 {
+	if(!($out_dir = config('debug_hidden_log_dir')))
+		return;
+
 	if(!$message)
 	{
 		$message = $type;
@@ -9,8 +12,8 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 	}
 
 //	bors_debug::log($type, $message, 'hidden');
-	if(!($out_dir = config('debug_hidden_log_dir')))
-		return;
+
+	bors_debug::timing_start('hidden_log');
 
 	if($trace && empty($args['dont_show_user']) && class_exists('bors_class_loader', false))
 		$user = object_property(bors(), 'user');
@@ -64,4 +67,5 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 
 	@file_put_contents($file = "{$out_dir}/{$type}.log", $out, FILE_APPEND);
 	@chmod($file, 0666);
+	bors_debug::timing_stop('hidden_log');
 }

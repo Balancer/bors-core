@@ -33,6 +33,18 @@ class bors_debug
 		$enter = false;
 	}
 
+	static function timing_start($section)
+	{
+		bors_function_include('debug/timing_start');
+		debug_timing_start($section);
+	}
+
+	static function timing_stop($section)
+	{
+		bors_function_include('debug/timing_stop');
+		debug_timing_stop($section);
+	}
+
 	static function trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
 	{
 		bors_function_include('debug/trace');

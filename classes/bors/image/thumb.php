@@ -173,7 +173,7 @@ class bors_image_thumb extends bors_image
 		if(!$this->thumb_create($abs))
 			return $this->set_is_loaded(false);
 
-		$img_data = @getimagesize($file_thumb_r);
+		$img_data = getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
 			debug_hidden_log('image-error', 'Cannot get image width for '.$file_thumb_r
 				.'; image_dir='.$this->image_dir()

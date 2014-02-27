@@ -69,14 +69,14 @@ if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 bors_function_include('debug/hidden_log');
 bors_client_analyze();
 $is_bot = bors()->client()->is_bot();
-$is_crowler = bors()->client()->is_crowler();
+$is_crawler = bors()->client()->is_crawler();
 
-// var_dump($is_bot, $is_crowler, config('bot_lavg_limit'));
+// var_dump($is_bot, $is_crawler, config('bot_lavg_limit'));
 
 // Если это бот и включён лимит максимальной загрузки сервера
 // то проверяем. И если загрузка превышает допустимую - просим подождать
 //if($bot && config('bot_lavg_limit') && !in_array($bot, config('bot_whitelist', array())))
-if($is_crowler && config('bot_lavg_limit'))
+if($is_crawler && config('bot_lavg_limit'))
 {
 	$cache = new BorsMemCache();
 	if(!($load_avg = $cache->get('system-load-average')))
@@ -92,7 +92,7 @@ if($is_crowler && config('bot_lavg_limit'))
 		header('Status: 503 Service Temporarily Unavailable');
 		header('Retry-After: 600');
 
-		debug_hidden_log('system_overload_crowlers', $load_avg, false);
+		debug_hidden_log('system_overload_crawlers', $load_avg, false);
 //		@file_put_contents($file = config('debug_hidden_log_dir')."/blocked-bots.log", $_SERVER['REQUEST_URI']."/".@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."; LA={$load_avg}\n", FILE_APPEND);
 //		@chmod($file, 0666);
 		exit("Service Temporarily Unavailable; load_avg={$load_avg}");
@@ -158,6 +158,9 @@ if(config('access_log')
 	$user_overload = config('user_overload_time', $common_overload);
 	$bot_overload = config('bot_overload_time', $common_overload);
 
+	if($is_bot && ($bl = config('limit.bot.'.$is_bot)))
+		$bot_overload = $bl;
+
 //	$admin_overload = config('admin_overload_time', $common_overload);
 
 	if($user_overload || $bot_overload)
@@ -179,7 +182,7 @@ if(config('access_log')
 			}
 		}
 
-		if(!$is_crowler && $user_overload && $session_user_load_summary > $user_overload)
+		if(!$is_crawler && $user_overload && $session_user_load_summary > $user_overload)
 		{
 			debug_hidden_log('system_overload_users', $session_user_load_summary.' of '.$user_overload, 0);
 
@@ -188,9 +191,9 @@ if(config('access_log')
 			exit("Service Temporarily Unavailable; IP={$_SERVER['REMOTE_ADDR']}; time={$session_user_load_summary}s");
 		}
 
-		if($is_crowler && $bot_overload && $session_user_load_summary > $bot_overload)
+		if($is_crawler && $bot_overload && $session_user_load_summary > $bot_overload)
 		{
-			debug_hidden_log('system_overload_crowlers', $session_user_load_summary.' of '.$bot_overload."\nbot=$is_bot", 0);
+			debug_hidden_log('system_overload_crawlers', $session_user_load_summary.' of '.$bot_overload."\nbot=$is_bot", 0);
 
 			header('Status: 503 Service Temporarily Unavailable');
 			header('Retry-After: 600');
@@ -199,8 +202,8 @@ if(config('access_log')
 	}
 }
 
-//if($is_bot || $is_crowler)
-//	debug_hidden_log('system_overload_test', "$is_bot/$is_crowler, lavg=$load_avg, total=$session_user_load_summary, bot_overload=$bot_overload");
+//if($is_bot || $is_crawler)
+//	debug_hidden_log('system_overload_test', "$is_bot/$is_crawler, lavg=$load_avg, total=$session_user_load_summary, bot_overload=$bot_overload");
 
 // Если кодировка вывода в браузер не та же, что внутренняя - то перекодируем
 // все входные данные во внутреннюю кодировку
@@ -337,7 +340,7 @@ if(config('access_log'))
 		'operation_time' =>  str_replace(',', '.', $operation_time),
 		'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
 		'is_bot' => $is_bot ? $is_bot : NULL,
-		'is_crowler' => $is_crowler,
+		'is_crawler' => $is_crawler,
 	);
 
 	if(empty($object) || !is_object($object))

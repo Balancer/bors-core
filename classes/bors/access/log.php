@@ -24,7 +24,7 @@ class bors_access_log extends base_object_db
 			'has_bors_url',
 			'user_agent',
 			'is_bot',
-			'is_crowler',
+			'is_crawler' => 'is_crowler',
 			'was_counted',
 		);
 	}

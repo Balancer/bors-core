@@ -214,6 +214,7 @@ class bors_lcml extends bors_object
 		{
 			$text = "\n{$text}\n";
 			$this->start_time = microtime(true);
+			bors_debug::timing_start('lcml_parse');
 		}
 
 		$need_prepare = popval($this->_params, 'prepare');
@@ -226,7 +227,10 @@ class bors_lcml extends bors_object
 		{
 			$cache = new Cache();
 			if($cache->get('lcml-cache-v'.config('lcml.cache_tag'), $text))
+			{
+				bors_debug::timing_stop('lcml_parse');
 				return $cache->last();
+			}
 		}
 		else
 			$cache = NULL;
@@ -254,7 +258,10 @@ class bors_lcml extends bors_object
 			debug_hidden_log('warning_lcml', "Too long ({$long}s) tags execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		if($this->p('only_tags'))
+		{
+			bors_debug::timing_stop('lcml_parse');
 			return $cache ? $cache->set($text, 86400) : $text;
+		}
 
 		if(config('lcml_sharp_markup'))
 		{
@@ -323,6 +330,7 @@ class bors_lcml extends bors_object
 			$text = $this->functions_do(bors_lcml::$lcml_global_data['post_whole_functions'], $text, 'post_whole');
 		}
 
+		bors_debug::timing_stop('lcml_parse');
 		return $cache ? $cache->set($text, 86400) : $text;
 	}
 

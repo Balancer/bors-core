@@ -121,8 +121,9 @@ function bors_object_new_instance_db(&$object)
 	if(!$object->modify_time(true))
 		$object->set_modify_time(time());
 
-//	$object->set_owner_id(bors()->user_id());
-	$object->set_last_editor_id(bors()->user_id());
+	$object->set('owner_id', bors()->user_id());
+	$object->set('owner_ip', bors()->client()->ip());
+	$object->set('last_editor_id', bors()->user_id());
 
 	$object->storage()->create($object);
 	$object->changed_fields = array();

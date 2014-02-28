@@ -88,7 +88,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
-//			echo "{$f['property']} => {$f['name']}: ".$object->get($f['property'])."<br/>\n";
 			$field_name = $f['name'];
 
 //			Сюда сунуть обратное преобразование
@@ -554,8 +553,6 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function save($object)
 	{
-//		var_dump($object->data);
-//		var_dump($object->id_field());
 		$idf = $object->id_field();
 		if(preg_match('/\)$/', $idf))
 			$where = array($idf.'=' => $object->id());

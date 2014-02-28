@@ -4,14 +4,26 @@ class cache_group extends bors_object_db
 {
 	function db_name() { return config('cache_database'); }
 	function table_name() { return 'cache_groups'; }
-	function table_fields() { return array('id', 'cache_group', '_target_class_id', '_target_object_id', 'create_time'); }
+	function table_fields()
+	{
+		return array(
+			'id',
+			'cache_group',
+			'target_class_name',
+			'_target_class_id',
+			'_target_object_id',
+			'target_page',
+			'create_time'
+		);
+	}
 
 	static function register($group, $obj)
 	{
 		$db = new driver_mysql(config('cache_database'));
 		$db->replace('cache_groups', array(
 			'cache_group' => $group,
-			'_target_class_id' => $obj->class_name(),
+			'target_class_name' => $obj->class_name(),
+			'_target_class_id' => $obj->class_id(),
 			'_target_object_id' => $obj->id() ? $obj->id() : '',
 			'create_time' => time(),
 		));
@@ -23,6 +35,9 @@ class cache_group extends bors_object_db
 		$this->db()->query("DELETE FROM cache_groups WHERE cache_group = '".addslashes($this->cache_group())."'");
 		foreach($list as $x)
 			if($obj = bors_load($x['_target_class_id'], $x['_target_object_id']))
+			{
+//				$obj->set_page($x[]);
 				$obj->cache_clean_register();
+			}
 	}
 }

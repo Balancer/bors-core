@@ -2,6 +2,9 @@
 
 class bors_class_loader
 {
+	static $class_files = array();
+	static $class_file_mtimes = array();
+
 	static function file($class_name, $dirs = array())
 	{
 		if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
@@ -82,7 +85,7 @@ class bors_class_loader
 						|| !file_exists($php_inc)
 						|| (@$info['real_class_php_inc_filemtime'] >= filemtime($php_inc)))
 				{
-//					echo "Load cached class $class_name<br/>\n";
+//					if(config('is_debug')) echo "Load cached class $class_name<br/>\n";
 					require_once($cached_class_file);
 					return $GLOBALS['bors_data']['classes_included'][$class_name] = $real_class_file;
 				}
@@ -92,7 +95,8 @@ class bors_class_loader
 			@unlink($cached_class_info_file);
 		}
 
-		return self::find_and_include($class_name, $args);
+		$class_file = self::find_and_include($class_name, $args);
+		return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
 	}
 
 	private static function find_and_include($class_name, &$args = array())

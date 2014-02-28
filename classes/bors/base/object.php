@@ -1302,16 +1302,17 @@ defined at {$this->class_file()}<br/>
 		return $data['host'];
 	}
 
-	private $class_file;
-	private $class_filemtime;
 	function set_class_file($file_name)
 	{
-		$this->class_filemtime = filemtime($file_name);
-		return $this->class_file = $file_name;
+		bors_class_loader::$class_files[$this->class_name()] = $file_name;
+		bors_class_loader::$class_file_mtimes[$this->class_name()] = filemtime($file_name);
+		return $file_name;
 	}
-	function class_filemtime() { return $this->class_filemtime; }
-	function class_file() { return $this->class_file; }
-	function real_class_file() { return $this->class_file; }
+
+	function class_file() { return @bors_class_loader::$class_files[$this->class_name()]; }
+	function class_filemtime() { return @bors_class_loader::$class_file_mtimes[$this->class_name()]; }
+
+	function real_class_file() { return @bors_class_loader::$class_files[$this->class_name()]; }
 	function class_dir() { return dirname($this->class_file()); }
 
 	function pre_set(&$data)

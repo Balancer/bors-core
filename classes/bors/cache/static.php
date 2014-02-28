@@ -16,6 +16,7 @@ class cache_static extends bors_object_db
 			'target_class_name' => 'class_name',
 			'target_class_id' => 'class_id',
 			'target_id' => 'object_id',
+			'target_page',
 			'recreate',
 			'bors_site',
 		);
@@ -101,11 +102,9 @@ class cache_static extends bors_object_db
 	//TODO: можно делать static, если static будет у родителя. Или переименовать.
 	function save($object, $content, $expire_time = false)
 	{
-//		if(config('is_developer')) 	echo "Save $object as {$object->static_file()}<br/>";
 		$object_id = $object->id();
 
 		$file = $object->static_file();
-//		echo "Save $file\n";
 		if(!$file) // TODO: отловить
 			return;
 
@@ -114,17 +113,21 @@ class cache_static extends bors_object_db
 
 		// Если это просто обновление кеша, то у нас тут будет найденная запись из ::drop
 		if(!($cache = $object->attr('static_recreate_object')))
-			$cache = bors_load_ex(__CLASS__, $file, array('no_load_cache' => true));
+			$cache = bors_load_ex('cache_static', $file, array('no_load_cache' => true));
 
 		$object_uri = $object->url_ex($object->page());
 		$original_uri = $object->called_url();
 
+		if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
+			bors_debug::syslog('__cache_file_register', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache=".($cache?'yes':'no'));
+
 		if($cache)
 		{
 //			echo "Update $file<br/>\n";
-			$cache->set_target_class_name($object->extends_class_name(), true);
-			$cache->set_target_class_id($object->extends_class_id(), true);
+			$cache->set_target_class_name($object->class_name(), true);
+			$cache->set_target_class_id($object->class_id(), true);
 			$cache->set_target_id($object->id(), true);
+			$cache->set_target_page($object->page(), true);
 			$cache->set_last_compile(time(), true);
 			$cache->set_expire_time(time() + ($expire_time === false ? $object->cache_static() : $expire_time), true);
 			$cache->set_recreate($object->cache_static_recreate(), true);
@@ -140,18 +143,27 @@ class cache_static extends bors_object_db
 		else
 		{
 //			echo "New $file<br/>\n";
+			if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
+				config_set('debug_mysql_queries_log', true);
+
 			$cache = bors_new('cache_static', array(
 				'id' => $file,
 				'object_uri' => $object_uri,
 				'original_uri' => $original_uri,
-				'target_class_name' => $object->extends_class_name(),
-				'target_class_id' => $object->extends_class_id(),
+				'target_class_name' => $object->class_name(),
+				'target_class_id' => $object->class_id(),
 				'target_id' => $object->id(),
+				'target_page' => $object->page(),
 				'last_compile' => time(),
 				'expire_time' => time() + ($expire_time === false ? $object->cache_static() : $expire_time),
 				'recreate' => $object->cache_static_recreate(),
 				'bors_site' => BORS_SITE,
 			));
+
+			config_set('debug_mysql_queries_log', false);
+
+			if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
+				bors_debug::syslog('__cache_file_register2', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache_id=".$cache->id()."\ncache_page=".$cache->target_page());
 		}
 
 		foreach(explode(' ', $object->cache_depends_on()) as $group_name)

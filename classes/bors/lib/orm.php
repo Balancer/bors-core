@@ -254,8 +254,9 @@ class bors_lib_orm
 			return $fields;
 
 		$ch = new bors_cache_fast();
-		if($ch->get('___main_fields', $class_name))
-			return set_global_key('___main_fields', $class_name, $ch->last());
+		$ch_key = $class_name.':'.$object->class_filemtime();
+		if($ch->get('___main_fields', $ch_key))
+			return set_global_key('___main_fields', $ch_key, $ch->last());
 
 		$fields_array = array();
 
@@ -295,7 +296,7 @@ class bors_lib_orm
 		}
 
 		$ch->set($fields_array, 86400);
-		return set_global_key('___main_fields', $class_name, $fields_array);
+		return set_global_key('___main_fields', $ch_key, $fields_array);
 	}
 
 	static function fields($object)

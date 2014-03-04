@@ -134,6 +134,12 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 		$img_h = $img->getImageHeight();
 		$img_w = $img->getImageWidth();
 
+		if(!$img_h || !$img_w)
+		{
+			bors_debug::syslog('image-error', "Zero size {$img_w}x{$img_h} of {$file_in} => {$file_out} {$width}x{$height}");
+			return false;
+		}
+
 		if(!$width)
 			$width = $height * $img_w / $img_h;
 

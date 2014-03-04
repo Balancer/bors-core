@@ -294,7 +294,6 @@ array (size=22)
   'redirect_url' => string '' (length=0)
 */
 
-
 		if(!empty($curl_options[CURLOPT_FILE]))
 			fclose($curl_options[CURLOPT_FILE]);
 

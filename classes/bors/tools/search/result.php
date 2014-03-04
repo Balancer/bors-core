@@ -25,6 +25,12 @@ class bors_tools_search_result extends bors_tools_search
 	}
 
 	function t() { return @$_GET['t']; }
+	function d1() { return @$_GET['d1']; }
+	function m1() { return @$_GET['m1']; }
+	function y1() { return @$_GET['y1']; }
+	function d2() { return @$_GET['d2']; }
+	function m2() { return @$_GET['m2']; }
+	function y2() { return @$_GET['y2']; }
 	function y() { return @$_GET['y']; }
 	function u() { return urldecode(@$_GET['u']); }
 	function x() { return @$_GET['x']; }
@@ -154,9 +160,18 @@ else
 		if($this->t())
 			$cl->SetFilter('topic_id', array(intval($this->t())));
 
-		if($y = $this->y())
+		$date1 = strtotime($this->y1().'-'.$this->m1().'-'.$this->d1().' 00:00:00');
+		$date2 = strtotime($this->y2().'-'.$this->m2().'-'.$this->d2().' 23:59:59');
+
+		if($date1 || $date2)
 		{
-			if(preg_match('/^(\d+)\-(\d+)$/', trim($y), $m))
+			if($date1 && !$date2)
+				$date2 = time();
+
+			if($date2 && !$date1)
+				$date1 = 0;
+
+/*			if(preg_match('/^(\d+)\-(\d+)$/', trim($y), $m))
 			{
 				$time_begin = strtotime("{$m[1]}-01-01 00:00:00");
 				$time_end   = strtotime("{$m[2]}-12-31 23:59:59");
@@ -166,8 +181,8 @@ else
 				$y = intval($y);
 				$time_begin = strtotime("$y-01-01 00:00:00");
 				$time_end   = strtotime("$y-12-31 23:59:59");
-			}
-			$cl->SetFilterRange('create_time', $time_begin, $time_end);
+			}*/
+			$cl->SetFilterRange('create_time', $date1, $date2);
 		}
 
 		switch($this->s())
@@ -353,6 +368,12 @@ else
 			'x' => $this->x(),
 			'w' => $this->w(),
 			'y' => $this->y(),
+			'd1' => $this->d1(),
+			'm1' => $this->m1(),
+			'y1' => $this->y1(),
+			'd2' => $this->d2(),
+			'm2' => $this->m2(),
+			'y2' => $this->y2(),
 			'p' => $page > 1 ? $page : NULL,
 		));
 	}

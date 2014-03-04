@@ -170,12 +170,12 @@
 	Создание объекта, если нужно, в виде статической копии
 */
 
-function bors_object_create($obj)
+function bors_object_create($obj, $page = NULL)
 {
 	if(!$obj)
 		return NULL;
 
-	$page = $obj->set_page($obj->args('page'));
+	$page = $obj->set_page($page ?: $obj->args('page'));
 
 	$processed = $obj->pre_parse($_GET);
 	if($processed === true)

@@ -22,13 +22,6 @@ class cache_static extends bors_object_db
 		);
 	}
 
-	function auto_targets()
-	{
-		return array_merge(parent::auto_targets(), array(
-			'_target' => 'target_class_id(target_id)',
-		));
-	}
-
 	function target()
 	{
 		if($this->__havefc())
@@ -44,30 +37,56 @@ class cache_static extends bors_object_db
 		if(!$x)
 		{
 			echo "Can't load {$this->original_uri()} nor {$this->object_uri()}\n";
-			$x = bors_load($this->target_class_name(), $this->target_id());
+			if($x = bors_load($this->target_class_name(), $this->target_id()))
+				$x->set_page($this->target_page());
 		}
 
 		return $x;
 	}
 
-	static function drop($object)
+	// Если page is null, то чистятся все файлы объекта, со всеми страницами
+	// Если стоит признак recreate и объект одностраничный, то самый последний
+	// файл не удаляется, а пересоздаётся поверх.
+	// Поведение связки recreate + page is null для многостраничных объектов
+	// не определено
+	static function drop($object, $page = NULL)
 	{
 		if(!$object || !config('cache_database'))
 			return;
 
-		$caches = bors_find_all('cache_static', array(
-			'target_class_id' => $object->class_id(),
-			'target_id' => $object->id(),
-			'by_id' => true,
-		));
+		if(!preg_match('/(post.php|edit.php)/', $_SERVER['REQUEST_URI']))
+			bors_debug::syslog('000-drop', $object->debug_title());
+
+		if($page)
+		{
+			$object->set_page($page);
+			$caches = bors_find_all('cache_static', array(
+				'target_class_id' => $object->class_id(),
+				'target_id' => $object->id(),
+				'target_page' => $page,
+				'order' => '-last_compile',
+				'by_id' => true,
+			));
+		}
+		else
+			$caches = bors_find_all('cache_static', array(
+				'target_class_id' => $object->class_id(),
+				'target_id' => $object->id(),
+				'order' => '-last_compile',
+				'by_id' => true,
+			));
 
 		$first = true; // Мы сохраняем первый загруженный объект, чтобы потом не перезагружать его снова.
 		$cache = NULL;
+		$need_recreate = ($cache && $cache->recreate()) || $object->cache_static_recreate();
+
 		foreach($caches as $cache)
 		{
-//			echo "unlink {$cache->id()}<br/>";
-//			debug_hidden_log('static-clean-unlink-5', "{$cache->id()}");
-			@unlink($cache->id());
+			// Если не требуется пересоздавать, то удаляем все файлы. Иначе — все, кроме самого свежего (первого в списке)
+			if(!$need_recreate || !$first)
+				@unlink($cache->id());
+
+			// Удаляем все пустые каталоги вверх по дереву.
 			$d = dirname($cache->id());
 			while($d && $d != '/')
 			{
@@ -76,6 +95,7 @@ class cache_static extends bors_object_db
 			}
 
 			// Удаляем все кеш-записи (хотя, по идее, она будет только одна), кроме первой
+			// Удаляем только если файл был стёрт.
 			if(!file_exists($cache->id()) && !$first)
 			{
 //TODO: WTF? Сообщение сверху на http://balancer.ru/society/2011/08/t82829--vybory-2011-2012.html
@@ -83,19 +103,20 @@ class cache_static extends bors_object_db
 //				echo "<b>delete</b>($cache), class_name={$object->class_name()}<br/>";
 				$cache->delete(false);
 			}
-			else
-				$first = false;
+
+			$first = false;
 		}
 
 		// Найденную запись, если была, сохраняем для дальнейшей работы
+		$object->set_attr('static_recreate_object', $cache);
 		$object->set_attr('static_recreate_object', $cache);
 
 		if($object->cache_static_recreate())
 		{
 			if(config('bors_tasks'))
-				bors_tools_tasks::add_task($object, 'bors_task_statCacheRecreate', 0, 127);
+				bors_tools_tasks::add_task($object, 'bors_task_statCacheRecreate', 0, 127); // 0 == немедленно, 127 == приоритет низкий
 			else
-				bors_object_create($object);
+				bors_object_create($object, $page);
 		}
 	}
 
@@ -107,6 +128,9 @@ class cache_static extends bors_object_db
 		$file = $object->static_file();
 		if(!$file) // TODO: отловить
 			return;
+
+		if(preg_match('/,new/', $file))
+			bors_debug::syslog('000-error-page-is-new', $object->debug_title());
 
 		//TODO: отловить кеш-запись постов при добавлении нового сообщения. (class_id = 1)
 		bors()->changed_save();

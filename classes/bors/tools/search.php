@@ -50,6 +50,12 @@ class bors_tools_search extends base_page
 	function u() { return ''; }
 	function w() { return 'q'; }
 	function y() { return ''; }
+	function d1() { return ''; }
+	function m1() { return ''; }
+	function y1() { return ''; }
+	function d2() { return ''; }
+	function m2() { return ''; }
+	function y2() { return ''; }
 
 	function access() { return $this; }
 	function can_action() { return true; }

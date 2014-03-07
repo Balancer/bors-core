@@ -163,6 +163,16 @@ class DataBase
 		if(($watch = config('debug.mysql_queries_watch_regexp')) && preg_match($watch, $query))
 			debug_hidden_log('mysql-queries-log', $query);
 
+		if($logs = config('debug.mysql_queries_logs'))
+		{
+			foreach($logs as $pattern => $x)
+			{
+				if(empty($x['skip_pattern']) || !preg_match($x['skip_pattern'], $query))
+					if(preg_match($pattern, $query))
+						bors_debug::syslog('mysql-queries-log-'.$x['log'], $query);
+			}
+		}
+
 		if(config('mysql_trace_show'))
 			print_dd($query);
 

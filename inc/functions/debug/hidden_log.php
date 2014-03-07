@@ -15,8 +15,10 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 
 	bors_debug::timing_start('hidden_log');
 
-	if($trace && empty($args['dont_show_user']) && class_exists('bors_class_loader', false))
-		$user = object_property(bors(), 'user');
+	if($trace && empty($args['dont_show_user']) && class_exists('bors_class_loader', false) && function_exists('bors'))
+		$user = bors()->user();
+	else
+		$user = NULL;
 
 	if(popval($args, 'notime'))
 		$out = '';

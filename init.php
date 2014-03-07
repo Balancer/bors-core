@@ -134,7 +134,10 @@ function bors_init()
 	if(config('memcached'))
 	{
 		$memcache = new Memcache;
-		$memcache->connect(config('memcached')) or debug_exit("Could not connect memcache");
+
+		if(!@$memcache->connect(config('memcached')))
+			bors_debug::syslog("memcache-error", "Can't connect");
+
 		config_set('memcached_instance', $memcache);
 	}
 

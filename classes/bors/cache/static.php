@@ -121,7 +121,7 @@ class cache_static extends bors_object_db
 	}
 
 	//TODO: можно делать static, если static будет у родителя. Или переименовать.
-	function save($object, $content, $expire_time = false)
+	static function save_object($object, $content, $expire_time = false)
 	{
 		$object_id = $object->id();
 

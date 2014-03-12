@@ -1510,7 +1510,7 @@ defined at {$this->class_file()}<br/>
 			&& config('temporary_file_contents')
 			&& !file_exists($this->static_file())
 		)
-			cache_static::save($this, /*$this->cs_i2o*/(str_replace(array(
+			cache_static::save_object($this, /*$this->cs_i2o*/(str_replace(array(
 				'$url',
 				'$title',
 				'$charset',
@@ -1539,7 +1539,7 @@ defined at {$this->class_file()}<br/>
 //		echo "cs=$use_static, recreate=$recreate";
 //		if($use_static || $recreate)
 		if($use_static)
-			cache_static::save($this, $content);
+			cache_static::save_object($this, $content);
 
 		if(config('use_memcached_objects') || $recreate)
 			bors_objects_helper::cache_registers($this);

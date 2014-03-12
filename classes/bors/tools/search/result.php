@@ -50,6 +50,9 @@ class bors_tools_search_result extends bors_tools_search
 	private $_data = false;
 	function pre_show()
 	{
+		jquery::plugin('cookie');
+		jquery::on_ready('/var/www/bors/bors-airbase/classes/balancer/board/posts/view.container-ready.js');
+
 		$this->set('page' , max(1, @$_GET['p']), false);
 
 		if($this->_data !== false)
@@ -71,6 +74,7 @@ class bors_tools_search_result extends bors_tools_search
 		{
 			case 'a':
 			case '1':
+			case 'na':
 				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta,posts,posts_delta,livestreet_topics";
 				break;
 			case 'b':

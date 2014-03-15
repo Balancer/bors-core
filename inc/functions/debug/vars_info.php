@@ -22,6 +22,8 @@ function debug_vars_info()
 	}
 
 	$result .= 'user='.@$_SERVER['USER']."\n";
+	if(function_exists('gethostname'))
+		$result .= 'host='.gethostname()."\n";
 
 	return $result;
 }

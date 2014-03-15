@@ -86,6 +86,7 @@ function __session_init()
 
 function session_var($name, $def = NULL, $set = false)
 {
+	debug_hidden_log('__session', "Get $name");
 	if(config('system.session.skip'))
 		return $def;
 
@@ -106,8 +107,15 @@ function pop_session_var($name, $def = NULL)
 
 function set_session_var($name, $value)
 {
-	__session_init();
-	return $_SESSION[$name] = $value;
+	if($value)
+		__session_init();
+
+	if($value)
+		$_SESSION[$name] = $value;
+	else
+		unset($_SESSION[$name]);
+
+	return $value;
 }
 
 function session_array_append($name, $value)

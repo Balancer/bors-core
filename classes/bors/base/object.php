@@ -1164,10 +1164,12 @@ defined at {$this->class_file()}<br/>
 
 	function table_fields() { return array('id'); }
 
+	static $id_fields_cache = array();
 	function id_field()
 	{
-		if(@array_key_exists($this->attr, '__id_field_name'))
-			return $this->attr['__id_field_name'];
+		$class_name = $this->class_name();
+		if($idf = @self::$id_fields_cache[$class_name])
+			return $idf;
 
 		if(method_exists($this, 'table_fields') && $this->storage_engine() != 'storage_db_mysql_smart')
 		{
@@ -1175,7 +1177,10 @@ defined at {$this->class_file()}<br/>
 			foreach(bors_lib_orm::main_fields($this) as $f)
 			{
 				if($f['property'] == 'id')
+				{
+					self::$id_fields_cache[$class_name] = $f['name'];
 					return $f['name'];
+				}
 			}
 		}
 
@@ -1190,14 +1195,20 @@ defined at {$this->class_file()}<br/>
 			if(is_array($id_field))
 			{
 				bors_lib_orm::field('id', $id_field);
+				self::$id_fields_cache[$class_name] = $id_field['name'];
 				return $id_field['name'];
 			}
 			else
+			{
+				self::$id_fields_cache[$class_name] = $id_field;
 				return $id_field;
+			}
 		}
 
 		//FIXME: исправить на возможность id в ненулевой позиции
-		return @$ff[0] == 'id' ? 'id' : NULL;
+		$id_field = @$ff[0] == 'id' ? 'id' : NULL;
+		self::$id_fields_cache[$class_name] = $id_field;
+		return $id_field;
 	}
 
 	function title_field()

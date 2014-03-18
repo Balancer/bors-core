@@ -184,8 +184,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 	{
 		$where['*class_name'] = $object->class_name();
 
-		$main_db = $object->get('db_name');
-		$main_table = $object->get('table_name');
+		$main_db = $object->db_name();
+		$main_table = $object->table_name();
 		$main_id_field = $object->id_field();
 
 		$join = $object->get("{$type}_join_fields");

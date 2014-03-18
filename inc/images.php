@@ -68,7 +68,16 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 
 	$img = Image_Transform::factory(config('image_transform_engine'));
 
-	if(PEAR::isError($img))
+	// Маскируем E_STRICT на старых PEAR_Image_Transform
+	$old_de = ini_set('display_errors', '0');
+	$old_er = error_reporting(E_ALL & ~E_STRICT);
+
+	$pear_err = PEAR::isError($img);
+
+	ini_set('display_errors', $old_de);
+	error_reporting($old_er);
+
+	if($pear_err)
 	{
 		config_set('bors-image-lasterror', ec("Ошибка PEAR:\n").$img->getMessage());
 		bors_thread_unlock('image_file_scale');

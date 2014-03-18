@@ -67,8 +67,11 @@ if(defined('BORS_APPEND'))
 if(defined('INCLUDES_APPEND'))
 	$includes = array_merge($includes, explode(' ', INCLUDES_APPEND));
 
-if(defined('INCLUDES_APPEND'))
-	$includes = array_merge($includes, explode(' ', INCLUDES_APPEND));
+if(file_exists(dirname(BORS_CORE).'/composer'))
+	$includes[] = dirname(BORS_CORE);
+
+if(file_exists(dirname(BORS_SITE).'/composer'))
+	$includes[] = dirname(BORS_SITE);
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEPARATOR, array_unique($includes)));
 

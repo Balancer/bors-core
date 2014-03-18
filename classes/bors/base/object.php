@@ -1511,8 +1511,11 @@ defined at {$this->class_file()}<br/>
 		$file = $this->static_file();
 		$fe = file_exists($file);
 		$fs = $fe && filesize($file) > 2000;
+		$file_fresh = $fe && $this->modify_time()
+			&& filemtime($file) >= $this->modify_time()
+			&& filemtime($file) >= $this->class_filemtime();
 
-		if($use_static && $file && $fe && !$recreate)
+		if($use_static && $file && $fe && !$recreate && $file_fresh)
 			return file_get_contents($file);
 
 		if($use_static

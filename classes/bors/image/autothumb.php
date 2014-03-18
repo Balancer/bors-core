@@ -75,7 +75,11 @@ class bors_image_autothumb extends bors_object
 		$thumb = $img->thumbnail($this->geo);
 
 		if(config('bors.version_show'))
+		{
 			header('X-thumb-image: '.$thumb->internal_uri());
+			header('X-thumb-class: '.$thumb->class_name());
+			header('X-thumb-file: '.$thumb->static_file());
+		}
 
 		if($thumb->pre_show())
 			return true;

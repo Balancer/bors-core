@@ -7,42 +7,48 @@ require_once 'inc/debug.php';
 
 function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 {
-	while(!bors_thread_lock('image_file_scale', 30, "{$file_in} => {$file_out} [{$width}x{$height}($opts)]"))
-		usleep(rand(1000, 5000));
-
 	if(file_exists($file_out))
+		return false;
+
+	if(!file_exists($file_in))
 	{
-		bors_thread_unlock('image_file_scale');
+		config_set('bors-image-lasterror', ec('Файл не существует'));
 		return false;
 	}
 
-	if(config('pics_base_safemodded'))
+	require_once 'composer/vendor/autoload.php';
+	// http://intervention.olivervogel.net/image
+
+	$img = Intervention\Image\Image::make($file_in);
+	if($width && !$height)
 	{
-		$file_in = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_in);
+		if($width < $img->width)
+			$img->widen($width);
 	}
+	elseif(!$width && $height)
+	{
+		if($height < $img->height)
+			$img->heighten($height);
+	}
+	elseif(!$opts)
+		$img->resize($width, $height, true, false);
+	elseif($opts == 'up,crop')
+		$img->grab($width, $height); // Пропорции + обрезка + увеличение, если надо
 	else
 	{
-		if(!file_exists($file_in))
-		{
-			config_set('bors-image-lasterror', ec('Файл не существует'));
-			bors_thread_unlock('image_file_scale');
-			return false;
-		}
+		bors_debug::syslog('00-image-options-code-append', "Unknown options in image_file_scale($file_in, $file_out, $width, $height, $opts)");
+		$img->grab($width, $height); // Пропорции + обрезка + увеличение, если надо
 	}
 
+	$img->save($file_out, 85);
+	return false;
+
 	$data = getimagesize($file_in);
-
-//	if(preg_match('/267247/', $file_in))
-//		config_set('is_developer', true);
-
-//	if(config('is_developer')) { var_dump($file_in, $data, $width, $height, $opts); exit(); }
-//	var_dump($file_in, $data, $width, $height, $opts); exit();
 
 	if(!$data || !$data[0])
 	{
 		config_set('bors-image-lasterror', ec('Не могу определить размеры изображения'));
 		debug_hidden_log('image-error', "Can't get width for image {$file_in} (tr resize to {$file_out}($width, $height, $opts); WxH = ".@$data[0].'x'.@$data[1]);
-		bors_thread_unlock('image_file_scale');
 		return false;
 	}
 
@@ -62,7 +68,6 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 );
 		bors_image_resize_error_return(config('bors-image-lasterror'), $file_out, $width, $height);
 
-		bors_thread_unlock('image_file_scale');
 		return false;
 	}
 
@@ -80,7 +85,6 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 	if($pear_err)
 	{
 		config_set('bors-image-lasterror', ec("Ошибка PEAR:\n").$img->getMessage());
-		bors_thread_unlock('image_file_scale');
 		return false;
 	}
 
@@ -127,7 +131,6 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 					$imagick->writeImages($file_out, true);
 					chmod($file_out, 0666);
 				}
-				bors_thread_unlock('image_file_scale');
 				return $img->isError();
 			}
 		}
@@ -237,7 +240,6 @@ Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."
 	@$img->save($file_out, $img->getImageType());
 
 	@chmod($file_out, 0666);
-	bors_thread_unlock('image_file_scale');
 	return $img->isError();
 }
 
@@ -251,7 +253,6 @@ function bors_image_resize_error_return($message, $file_out, $width, $height)
 	mkpath(dirname($file_out), 0777);
 	file_put_contents($file_out, $image);
 	@chmod($file_out, 0666);
-	bors_thread_unlock('image_file_scale');
 	return false;
 }
 

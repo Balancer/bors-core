@@ -101,6 +101,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		return secure_path(config('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$rel_path);
 	}
 
+	function url_ex($page) { return $this->url(); }
 	function url()
 	{
 		if($u = $this->get('full_url'))

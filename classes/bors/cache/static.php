@@ -54,7 +54,7 @@ class cache_static extends bors_object_db
 		if(!$object || !config('cache_database'))
 			return;
 
-		if(!preg_match('/(post.php|edit.php)/', $_SERVER['REQUEST_URI']))
+		if(!preg_match('/(post.php|edit.php)/', @$_SERVER['REQUEST_URI']))
 			bors_debug::syslog('000-drop', $object->debug_title());
 
 		if($page)

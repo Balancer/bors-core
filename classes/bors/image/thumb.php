@@ -34,6 +34,8 @@ class bors_image_thumb extends bors_image
 
 	function replace_on_new_instance() { return true; }
 
+	function cache_static_root() { return $_SERVER['DOCUMENT_ROOT']; }
+
 	function data_load()
 	{
 		if(is_numeric($this->id()) && $this->args('geometry'))
@@ -96,10 +98,6 @@ class bors_image_thumb extends bors_image
 		if(!preg_match('!/cache.*/\d*x\d*!', $new_url))
 			bors_throw('Incorrect new url '.$new_url.' for '.$this->id().'; original url='.$original_url);
 
-//		if(config('is_developer')) { var_dump($original_url, $new_url); exit(); }
-//		if(config('is_developer')) { $o=$this->original; var_dump($original_url, $new_url, $o->class_name(), $o->id(), $o->db_name(), $o->table_name()); exit(); }
-//		if(config('is_developer')) { var_dump($original_path, $new_path); exit(); }
-
 		$this->set_full_url($new_url, $caching);
 
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
@@ -111,7 +109,6 @@ class bors_image_thumb extends bors_image
 		if(config('pics_base_safemodded'))
 		{
 			$file_thumb = $this->file_name_with_path();
-//			if(config('is_developer')) { var_dump($d, $file_thumb); exit(); }
 		}
 		else
 		{
@@ -120,7 +117,7 @@ class bors_image_thumb extends bors_image
 			if(!$oud['local'] || !$oud['local_path'])
 				bors_throw('Unknown local for thumb: '.print_r($oud, true)
 					.'; file_name_with_path='.$this->file_name_with_path());
-//			if(config('is_developer')) { var_dump($oud, $file_thumb); exit(); }
+
 			$file_thumb = $oud['local_path'];
 
 			if(!preg_match('!/cache.*/\d*x\d*!', $file_thumb))
@@ -129,7 +126,7 @@ class bors_image_thumb extends bors_image
 		}
 
 		$abs = false;
-//		if(config('is_developer')) var_dump($this->full_file_name(), $this->file_name_with_path(), $file_thumb);
+
 		if(!file_exists($file_orig) && !preg_match('!^/var/www/!', $file_orig)) // Заменить хардкод
 		{
 			$file_orig  = $_SERVER['DOCUMENT_ROOT'] . $file_orig;

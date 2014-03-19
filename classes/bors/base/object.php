@@ -326,12 +326,6 @@ class base_object extends base_empty
 		if(property_exists($this, $name_ec))
 			return $this->set_attr($name, ec($this->$name_ec));
 
-		// Почему-то раньше нотации шли после _{name}_def. Не логично, так как нотации должны перекрывать значения по умолчанию
-		// Но если где-то вылезут ошибки, нужно будет думать.
-		$x = bors_lib_orm::get_notation($this, $name);
-		if($x !== false)
-			return $this->attr[$name] = $x;
-
 		// Ищем методы, перекрываемые переменным по умолчанию
 		$m = "_{$name}_def";
 		if(method_exists($this, $m))

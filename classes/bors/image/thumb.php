@@ -65,6 +65,7 @@ class bors_image_thumb extends bors_image
 		//TODO: сделать вариант, совместимый с safe_mod!
 //		var_dump($this->width(), $this->file_name_with_path(), $this->data);
 
+		// Наша превьюшка уже есть в БД и описывает живые файлы
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_is_loaded(true);
 
@@ -82,8 +83,6 @@ class bors_image_thumb extends bors_image
 			$new_path = secure_path('/cache/'.$original_path.'/'.$this->geometry);
 		else
 			$new_path = NULL;
-
-//		if(config('is_developer')) { var_dump($original_path, $new_path, $this->original->url(), $this->original->data); exit(); }
 
 		$caching = config('cache_database') ? true : false;
 
@@ -165,8 +164,6 @@ class bors_image_thumb extends bors_image
 
 		mkpath($this->image_dir(), 0777);
 
-//		debug_hidden_log('000', "$file_orig_r :".@filesize($file_orig_r));
-
 		if(!$this->thumb_create($abs))
 			return $this->set_is_loaded(false);
 
@@ -180,23 +177,13 @@ class bors_image_thumb extends bors_image
 		$this->set_height($img_data[1], $caching);
 		$this->set_mime_type($img_data['mime'], $caching);
 
+		// Принудительно пропишем ID, чтобы он записался по new_instance
+		$this->data['id'] = $this->id();
+		$this->changed_fields['id'] = NULL;
+
 		if($caching && $img_data[0])
 			$this->new_instance();
 
-		//TODO: странный костыль.
-//		if($caching)
-//		{
-//			$prev = bors_find_first($this->class_name(), array(
-//				'full_file_name' => $this->full_file_name(),
-//			));
-
-//			if($prev)
-//				$prev->delete();
-//		}
-
-//		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
-
-//		echo "{$this}: {$this->wxh()}<br />\n";
 		$this->set_is_loaded(true);
 	}
 

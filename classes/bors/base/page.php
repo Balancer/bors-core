@@ -63,9 +63,9 @@ class base_page extends bors_object
 			$title = ec('<li>Страницы:</li>');
 
         include_once("inc/design/page_split.php");
-		$this->set_attr('___pagination_item_before', '<li>');
-		$this->set_attr('___pagination_item_before_current', '<li class="'.@$li_current_css.'">');
-		$this->set_attr('___pagination_item_after', '</li>');
+		$this->attr['___pagination_item_before'] = '<li>';
+		$this->attr['___pagination_item_before_current'] = '<li class="'.@$li_current_css.'">';
+		$this->attr['___pagination_item_after'] = '</li>';
 
         $pages = join("\n", pages_show(
 			$this, $this->total_pages(), $this->items_around_page(),

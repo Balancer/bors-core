@@ -86,7 +86,7 @@ function __session_init()
 
 function session_var($name, $def = NULL, $set = false)
 {
-	debug_hidden_log('__session', "Get $name");
+//	debug_hidden_log('__session', "Get $name");
 	if(config('system.session.skip'))
 		return $def;
 

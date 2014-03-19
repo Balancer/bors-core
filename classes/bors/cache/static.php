@@ -142,8 +142,8 @@ class cache_static extends bors_object_db
 		$object_uri = $object->url_ex($object->page());
 		$original_uri = $object->called_url();
 
-		if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
-			bors_debug::syslog('__cache_file_register', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache=".($cache?'yes':'no'));
+//		if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
+//			bors_debug::syslog('__cache_file_register', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache=".($cache?'yes':'no'));
 
 		if($cache)
 		{
@@ -186,8 +186,8 @@ class cache_static extends bors_object_db
 
 			config_set('debug_mysql_queries_log', false);
 
-			if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
-				bors_debug::syslog('__cache_file_register2', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache_id=".$cache->id()."\ncache_page=".$cache->target_page());
+//			if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
+//				bors_debug::syslog('__cache_file_register2', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache_id=".$cache->id()."\ncache_page=".$cache->target_page());
 		}
 
 		foreach(explode(' ', $object->cache_depends_on()) as $group_name)

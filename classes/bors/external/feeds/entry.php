@@ -214,15 +214,15 @@ class bors_external_feeds_entry extends base_object_db
 				$post->cache_clean();
 				$post->store();
 
-				$topic = $post->topic();
-				$topic->cache_clean();
-				$topic->set_modify_time(time(), true);
-				$topic->store();
-
 //				$blog = bors_load('balancer_board_blog', $post->id());
 
 				$post->body();
 			}
+
+			$topic = $post->topic();
+			$topic->cache_clean();
+			$topic->set_modify_time(time(), true);
+			$topic->store();
 
 			$pub_date = $this->pub_date();
 			if(!$pub_date)

@@ -346,36 +346,6 @@ class bors_lib_orm
 		return NULL;
 	}
 
-	static function get_notation($object, $name)
-	{
-		// Парсим файл класса на предмет @-нотаций
-		if(!method_exists($object, 'class_file') || !($class_file = $object->class_file()))
-			return false;
-
-		if(!($class_source = file_get_contents($class_file)))
-			return false;
-
-		if(preg_match("!^\s*@object:\s*$name\s*=\s*(\w+)\((\w+)\)\s*$!m", $class_source, $m))
-			return bors_load($m[1], $object->get($m[2]));
-
-		if(preg_match("!^\s*@$name\s*=(.+)*$!m", $class_source, $m))
-		{
-			$value = ec(trim($m[1]));
-			// Поддержка переменных вида %config.value%
-			$value = preg_replace('/%config\.(\w+)%/e', "config('$1');", $value);
-			// Поддержка переменных вида %this.property%
-			// Костыль под 5.2. Должно быть так:
-//			$value = preg_replace_callback('/%this\.(\w+)%/', function($m) use ($object) { return $object->get($m[1]); }, $value);
-			// Приходится извращаться так:
-			// Проверка на aviaport_export_full_rss_digest и aviaport_export_full_rss_news
-			$GLOBALS['___lib_orm_notation_object'] = $object;
-			$value = preg_replace_callback('/%this\.(\w+)%/', create_function('$m', 'return $GLOBALS["___lib_orm_notation_object"]->get($m[1]);'), $value);
-			return $value;
-		}
-
-		return false;
-	}
-
 	static function get_yaml_notation($object, $name)
 	{
 		// Парсим файл класса на предмет YAML-нотаций

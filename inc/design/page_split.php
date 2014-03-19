@@ -79,8 +79,8 @@
 
 		if(is_object($obj))
 		{
-			$b = $obj->get('___pagination_item_before_current');
-			$a = $obj->get('___pagination_item_after');
+			$b = @$obj->attr['___pagination_item_before_current'];
+			$a = @$obj->attr['___pagination_item_after'];
 		}
 
 		if($start > 2)
@@ -132,12 +132,12 @@
 		$link = "<a href=\"$p$q\"".($class? " class=\"$class\"" : "" ).">$title</a>";
 		if(is_object($obj))
 		{
-			if($is_current && ($b = $obj->get('___pagination_item_before_current')))
+			if($is_current && ($b = @$obj->attr['___pagination_item_before_current']))
 				$link = $b.$link;
-			elseif($b = $obj->get('___pagination_item_before'))
+			elseif($b = $obj->attr['___pagination_item_before'])
 				$link = $b.$link;
 
-			if($a = $obj->get('___pagination_item_after'))
+			if($a = @$obj->attr['___pagination_item_after'])
 				$link = $link.$a;
 		}
 		return $link;

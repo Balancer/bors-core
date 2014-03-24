@@ -134,7 +134,7 @@
 		{
 			if($is_current && ($b = @$obj->attr['___pagination_item_before_current']))
 				$link = $b.$link;
-			elseif($b = $obj->attr['___pagination_item_before'])
+			elseif($b = @$obj->attr['___pagination_item_before'])
 				$link = $b.$link;
 
 			if($a = @$obj->attr['___pagination_item_after'])

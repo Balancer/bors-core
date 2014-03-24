@@ -10,7 +10,7 @@ class bors_tools_search extends base_page
 		if(empty($_GET['t']))
 			return array('/tools/', '/forum/');
 		else
-			return array(object_load('forum_topic', $_GET['t']));
+			return array(object_load('balancer_board_topic', $_GET['t']));
 	}
 
 	function body_data()

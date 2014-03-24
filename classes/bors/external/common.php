@@ -27,7 +27,7 @@ class bors_external_common extends bors_object
 			$html = @iconv('utf-8', 'utf-8//ignore', $html);
 		}
 
-//		var_dump($html);
+//		if(config('is_developer')) var_dump($html);
 //		$html = bors_lib_http::get($url);
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
@@ -75,6 +75,10 @@ class bors_external_common extends bors_object
 
 		// Lenta.Ru: http://balancer.ru/g/p2580440
 		if(!$img && preg_match('!^<img src=(http://img.lenta.ru/news/\S+\.jpg) width=!m', $html, $m))
+			$img = $m[1];
+
+		// ВКонтакте, картинка, http://www.balancer.ru/g/p3416257
+		if(!$img && preg_match('!page_post_thumb_last_row"><img src="([^"]+)"!', $html, $m))
 			$img = $m[1];
 
 		// Андроид Маркет
@@ -158,7 +162,7 @@ class bors_external_common extends bors_object
 if(config('is_developer')) { exit($img); }
 */
 
-//		if(config('is_developer') && preg_match('/spb.ru/', $url)) { var_dump($description); print_dd($html); exit(); }
+//		if(config('is_developer') && preg_match('/./', $url)) { var_dump($description); print_dd($html); exit(); }
 
 		if(!$description)
 		{
@@ -207,6 +211,11 @@ if(config('is_developer')) { exit($img); }
 					'//*[contains(@class, "pages_select")]',
 					'//*[contains(@class, "warning")]',
 					'//*[contains(@class, "avatar_")]',
+
+					// Хардкод для ВКонтакте: http://www.balancer.ru/g/p3416257
+					'//div[@id="reg_bar_content"]',
+					'//div[@id="quick_login"]',
+					'//div[contains(@class, "full_wall_tabs")]',
 				) as $query)
 				{
 					foreach($xpath->query($query) as $node)

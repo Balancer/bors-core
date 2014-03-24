@@ -441,6 +441,9 @@ function bors_find($class_name)
 
 function bors_foo($class_name)
 {
+	require_once('inc/functions/cache/global_key.php');
+	require_once('inc/functions/cache/set_global_key.php');
+
 	if($cached_foo = global_key('___foos', $class_name))
 		return $cached_foo;
 

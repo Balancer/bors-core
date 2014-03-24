@@ -19,7 +19,16 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 	require_once 'composer/vendor/autoload.php';
 	// http://intervention.olivervogel.net/image
 
-	$img = Intervention\Image\Image::make($file_in);
+	try
+	{
+		$img = Intervention\Image\Image::make($file_in);
+	}
+	catch(Exception $e)
+	{
+		bors_debug::syslog('image-scale-exception', blib_exception::factory($e));
+		return false;
+	}
+
 	if($width && !$height)
 	{
 		if($width < $img->width)

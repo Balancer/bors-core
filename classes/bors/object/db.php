@@ -55,10 +55,10 @@ class bors_object_db extends base_object_db
 
 	function table_fields()
 	{
+//		echo "1: {$this->class_name()}<br/>";
 		if($fields = @self::$__parsed_fields[$this->class_name()])
 			return $fields;
 
-//		echo "1: {$this->class_name()}<br/>";
 		$dbh = new driver_mysql($this->db_name());
 		$info = $dbh->get("SHOW CREATE TABLE ".$this->table_name());
 //		print_dd($info);

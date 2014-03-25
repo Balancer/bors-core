@@ -256,7 +256,12 @@ class bors_lib_orm
 		$ch = new bors_cache_fast();
 		$ch_key = $class_name.':'.$object->class_filemtime();
 		if($ch->get('___main_fields', $ch_key))
+		{
+			$object->table_fields();// Хак. Дёргаем, чтобы извлечь данные по автоматическим полям,
+									// в частности — auto_objects из FOREIGN KEYS.
+
 			return set_global_key('___main_fields', $ch_key, $ch->last());
+		}
 
 		$fields_array = array();
 

@@ -2,6 +2,7 @@
 
 /**
 	Основные консольные операции
+	Используется composer jlogsdon/cli
 */
 
 class blib_cli
@@ -28,13 +29,18 @@ class blib_cli
 		fwrite(STDOUT, $message);
 	}
 
-	static function parse(&$text)
+	static function parse($text)
 	{
-		if(!third_composer::load())
-			return;
+		if(!class_exists('\cli\Colors'))
+			return $text;
 
 		$text = \cli\Colors::colorize($text);
 
 		return $text;
+	}
+
+	static function __dev()
+	{
+		echo blib_cli::parse('%YTest%n\n');
 	}
 }

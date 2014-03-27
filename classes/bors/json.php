@@ -4,12 +4,9 @@ class bors_json extends bors_object
 {
 	function pre_show()
 	{
-		header("Content-type: application/json");
+		header("Content-type: application/json; charset=".config('output_charset'));
 		config_set('debug.timing', false); // Чтобы не мусорить комментарием в конце JSON.
-		if($this->get('use_53'))
-			echo json_encode($this->data(), JSON_NUMERIC_CHECK);
-		else
-			echo json_encode($this->data());
+		echo json_encode($this->data(), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 		return true;
 	}
 }

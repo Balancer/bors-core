@@ -138,6 +138,10 @@ class bors_page extends base_page
 								$this->attr['body_template'] = $base.$test_ext;
 								$this->attr['body_template_class'] = 'bors_templates_bbhtpl';
 								continue;
+							case 'lcml.tpl':
+								$this->attr['body_template'] = $base.$test_ext;
+								$this->attr['body_template_class'] = 'bors_templates_lcmltpl';
+								continue;
 						}
 					}
 

@@ -70,27 +70,31 @@ function ungpc_array(&$array)
 		return array($res['engine'], $res['local_id']);
 	}
 
-function __session_init()
+function __session_init($init = true)
 {
 	static $session_started = false;
-	if(!$session_started)
-	{
-		if(!config('system.session.skip'))
-		{
-			@ini_set('session.use_trans_sid', false);
-			@session_start();
-			$session_started = true;
-		}
-	}
+	if($session_started)
+		return;
+
+	if(config('system.session.skip'))
+		return;
+
+	if(!$init && empty($_COOKIE['bors_session_init']))
+		return;
+
+	@SetCookie('bors_session_init',	true, ini_get('session.cookie_lifetime'), '/', $_SERVER['HTTP_HOST']);
+	@ini_set('session.use_trans_sid', false);
+	@session_start();
+//	bors_debug::syslog('__session', "session started");
+	$session_started = true;
 }
 
 function session_var($name, $def = NULL, $set = false)
 {
-//	debug_hidden_log('__session', "Get $name");
 	if(config('system.session.skip'))
 		return $def;
 
-	__session_init();
+	__session_init(false);
 
 	if($set)
 		return defvalset($_SESSION, $name, $def);
@@ -108,7 +112,7 @@ function pop_session_var($name, $def = NULL)
 function set_session_var($name, $value)
 {
 	if($value)
-		__session_init();
+		__session_init(true);
 
 	if($value)
 		$_SESSION[$name] = $value;

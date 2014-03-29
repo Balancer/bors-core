@@ -10,10 +10,10 @@ if(!config('geshi.include'))
 	http://balancer.ru/support/2010/12/t75934--voprosy-klassifikatsii-obektov.6737.html
 */
 
-include_once(config('geshi.include'));
-
 function lp_php($text, $params)
 {
+	require_once(config('geshi.include'));
+
 	$text = restore_format($text);
 //	$text = html_entity_decode($text, ENT_NOQUOTES);
 

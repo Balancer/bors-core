@@ -122,7 +122,7 @@ class bors_external_common extends bors_object
 		if(!$img)
 			$img = defval($params, 'default_image');
 
-		if(!$img)
+		if(!$img || !preg_match('/\.(jpe?g|png|gif)$/', $img))
 		{
 			// Ставим герерацию превьюшки
 			// Сперва дектодируем URL (urldecode + кодировка)
@@ -285,7 +285,7 @@ if(config('is_developer')) { exit($img); }
 
 [span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($original_url)."[/reference][/span][/round_box]";
 
-//			if(config('is_developer')) { print_dd($bbshort); var_dump(lcml($bbshort)); exit('bbcode'); }
+//			if(config('is_developer')) { print_dd($bbshort); var_dump(restore_format(lcml($bbshort))); exit('bbcode'); }
 
 			$tags = array();
 

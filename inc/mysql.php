@@ -155,7 +155,7 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true, $f
 function mysql_bors_join_parse($join, $class_name='', $was_joined = true, $for_order = false)
 {
 	$join = preg_replace_callback('!(\w+)\s+ON\s+!', function($m) { return bors_class_field_to_db($m[1]).' ON ';}, $join);
-	$join = preg_replace_callback('!^(\w+)\.(\w+)$!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
+	$join = preg_replace_callback('!^(\w+)\.(\w+)$!', function($m) { return bors_class_field_to_db($m[1], $m[2]);}, $join);
 	$join = preg_replace_callback('!(\w+)\.(\w+)\s*(=|>|<)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
 	$join = preg_replace_callback('!(\w+)\.(\w+)(\s+IN)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
 	$join = preg_replace_callback('!(\w+)\.(\w+)(\s+BETWEEN\s+\S+\s+AND\s+\S+)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);

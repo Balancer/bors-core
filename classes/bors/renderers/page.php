@@ -95,7 +95,10 @@ class bors_renderers_page extends base_null
 		);
 
 		if(config('debug.execute_trace'))
+		{
+			debug_execute_trace("bors_renderers_page::render(): was found page template '{$page_template}' by '{$object->page_template()}'");
 			debug_execute_trace("bors_renderers_page::render({$object->debug_title_short()}): call {$object->page_template_class()}->fetch()");
+		}
 
 		return call_user_func(
 			array($object->page_template_class(), 'fetch'),

@@ -19,6 +19,7 @@ class bors_template
 	{
 		$original_template_name = $template_name;
 		$template_name = preg_replace('!^xfile:!', '', $template_name);
+
 		foreach(bors_dirs(true) as $dir)
 		{
 			if(is_file($file = $dir.'/templates/'.$template_name))
@@ -52,7 +53,7 @@ class bors_template
 		{
 			$called_file = @$trace['file'];
 			$called_dirname = dirname($called_file);
-			if(file_exists($file = $called_dirname.'/'.$template_name))
+			if($called_dirname && file_exists($file = $called_dirname.'/'.$template_name))
 				return 'xfile:'.$file;
 		}
 

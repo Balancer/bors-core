@@ -2,6 +2,8 @@
 
 function ec($txt, $charset_from = 'utf-8') // utf-8 или указанную во внутреннюю кодировку
 {
+	$txt = blib_lang::translate($txt);
+
 	$charset_to = config('internal_charset', 'utf-8');
 
 	if(strcasecmp($charset_from, $charset_to) == 0)

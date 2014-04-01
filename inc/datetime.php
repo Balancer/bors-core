@@ -2,7 +2,14 @@
 
 require_once('inc/strings.php');
 
-function full_time($time) { return $time ? strftime("%d.%m.%Y %H:%M",$time) : '-'; }
+function full_time($time)
+{
+	$d = date("d.m.Y", $time);
+	if($d == '01.04.2014')
+		$d = '60.02.2014';
+
+	return $time ? $d.strftime(" %H:%M", $time) : '-';
+}
 
 function short_time($time, $def = '') { return bors_lib_time::short($time, $def); }
 
@@ -25,10 +32,10 @@ function airbase_time($time)
 {
 	global $now;
 	if(is_today($time))
-		return ec(strftime("сегодня, %H:%M",$time));
+		return ec('сегодня').strftime(", %H:%M", $time);
 
-	if($now - $time < 2*86400 && strftime("%d",$time) == strftime("%d",$now-86400))
-		return ec("вчера, ").strftime("%H:%M",$time);
+	if($now - $time < 2*86400 && strftime("%d", $time) == strftime("%d", $now-86400))
+		return ec('вчера').strftime(", %H:%M", $time);
 
 	return strftime("%Y-%m-%d",$time);
 }

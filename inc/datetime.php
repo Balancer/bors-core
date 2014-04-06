@@ -5,8 +5,8 @@ require_once('inc/strings.php');
 function full_time($time)
 {
 	$d = date("d.m.Y", $time);
-	if($d == '01.04.2014')
-		$d = '60.02.2014';
+//	if($d == '01.04.2014')
+//		$d = '60.02.2014';
 
 	return $time ? $d.strftime(" %H:%M", $time) : '-';
 }

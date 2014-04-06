@@ -277,6 +277,7 @@ try
 }
 catch(Exception $e)
 {
+	@header('HTTP/1.1 500 Internal Server Error');
 	bors_function_include('debug/trace');
 	bors_function_include('debug/hidden_log');
 //	var_dump($e->getTrace());

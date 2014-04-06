@@ -23,8 +23,6 @@
 				}
 			}
 
-		if(preg_match('/story-digest/', $tpl_name)) echo "get content for $tpl_name: $fn<br/>";
-
 		foreach(bors_dirs(true) as $dir)
 		{
 			if(file_exists($fn = $dir.'/templates/'.$tpl_name))

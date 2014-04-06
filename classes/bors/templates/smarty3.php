@@ -29,7 +29,8 @@ class bors_templates_smarty3 extends bors_template
 				bors_throw("Can't find Smarty");
 
 		$smarty = new Smarty();
-		require('classes/bors/templates/smarty3-register.php');
+//		require('classes/bors/templates/smarty3-register.php');
+		$smarty->registerResource('xfile', new bors_templates_smarty_resources_file($smarty));
 
 		$smarty->compile_dir = config('cache_dir').'/smarty3-templates_c/';
 		//TODO: придумать, как сделать разрешение для отдельных шаблонов.

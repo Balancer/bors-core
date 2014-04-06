@@ -7,8 +7,8 @@ class blib_lang
 		$lang = config('lang.ua');
 		if(empty($lang[$text]))
 		{
-			if(preg_match('/[а-яА-ЯёЁ]/u', $text) && !in_array($text, explode(' ', 'РД …')))
-				bors_debug::syslog('translations', "Need translate '{$text}'");
+//			if(preg_match('/[а-яА-ЯёЁ]/u', $text) && !in_array($text, explode(' ', 'РД …')))
+//				bors_debug::syslog('translations', "Need translate '{$text}'");
 		}
 		else
 			$text = $lang[$text];

@@ -5,6 +5,8 @@
 	Используется composer jlogsdon/cli
 */
 
+require_once('composer/vendor/autoload.php');
+
 class blib_cli
 {
 	/**
@@ -25,7 +27,7 @@ class blib_cli
 
 	static function out($message)
 	{
-		self::parse($message);
+		$message = self::parse($message);
 		fwrite(STDOUT, $message);
 	}
 
@@ -41,6 +43,6 @@ class blib_cli
 
 	static function __dev()
 	{
-		echo blib_cli::parse('%YTest%n\n');
+		blib_cli::out('%YTest%n\n');
 	}
 }

@@ -22,13 +22,13 @@ class bors_template
 
 		foreach(bors_dirs(true) as $dir)
 		{
-			if(is_file($file = $dir.'/templates/'.$template_name))
+			if(file_exists($file = $dir.'/templates/'.$template_name) && !is_dir($file))
 				return 'xfile:'.$file;
 
-			if(is_file($file = $dir.'/templates/'.$template_name.'/index.tpl'))
+			if(file_exists($file = $dir.'/templates/'.$template_name.'/index.tpl'))
 				return 'xfile:'.$file;
 
-			if(is_file($file = $dir.'/templates/'.$template_name.'/index.html'))
+			if(file_exists($file = $dir.'/templates/'.$template_name.'/index.html'))
 				return 'xfile:'.$file;
 		}
 

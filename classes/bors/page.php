@@ -278,6 +278,16 @@ class bors_page extends base_page
 	}
 
 	function html_meta($name, $content) { template_meta_prop($name, $content); }
+	function html_meta_name($name, $content)
+	{
+		bors_page::add_template_data_array('head_append', "<meta name=\"{$name}\" content=\"".htmlspecialchars($content)."\"/>");
+	}
+
+	function html_meta_names($data)
+	{
+		foreach($data as $name => $content)
+			$this->html_meta_name($name, $content);
+	}
 
 	function _parser_type_def() { return 'lcml'; }
 	function _html_def()

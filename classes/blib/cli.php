@@ -34,7 +34,10 @@ class blib_cli
 	static function parse($text)
 	{
 		if(!class_exists('\cli\Colors'))
+		{
+			echo "Please do composer require jlogsdon/cli=*\n";
 			return $text;
+		}
 
 		$text = \cli\Colors::colorize($text);
 

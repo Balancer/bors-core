@@ -17,7 +17,7 @@ class bors_templates_smarty_resources_file extends Smarty_Resource_Custom
   * @param integer $mtime template modification timestamp (epoch)
   * @return void
   */
-	protected function fetch($tpl_name, &$tpl_source, &$mtime)
+	public function fetch($tpl_name, &$tpl_source, &$mtime)
 	{
 		if(file_exists($tpl_name))
 		{

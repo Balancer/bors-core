@@ -3,7 +3,9 @@
 function smarty_function_include_html($params, &$smarty)
 {
 	$html = NULL;
-	smarty_resource_file_get_template($params['file'], $html, $smarty);
+	$mtime = NULL;
+	$loader = new bors_templates_smarty_resources_file($smarty);
+	$loader->fetch($params['file'], $html, $mtime);
 
 	return $html;
 }

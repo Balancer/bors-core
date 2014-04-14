@@ -7,7 +7,7 @@ if($x = config('cache.fast_engine'))
 	return;
 }
 
-// То же самое для совсестимости. Снести после проверок. Вроде бы, только на Авиабазе используется.
+// То же самое для совместимости. Снести после проверок. Вроде бы, только на Авиабазе используется.
 if($x = config('cache_fast_engine'))
 {
 	eval("class bors_cache_fast extends {$x} { }");
@@ -29,8 +29,12 @@ if(config('memcached') && class_exists('Memcache'))
 	return;
 }
 
+
 // В противном случае — заглушка
 
-bors_use('debug_hidden_log');
-debug_hidden_log('optimize-tips', "Usage bors_cache_fast without backends!");
 eval("class bors_cache_fast extends bors_cache_base { }");
+
+bors_debug::syslog('optimize-tips', "Usage bors_cache_fast without backends!");
+
+
+

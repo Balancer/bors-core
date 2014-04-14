@@ -298,7 +298,7 @@ function bors_throw($message)
 	if(config('exceptions.kill_on_throw'))
 	{
 		debug_hidden_log('exception-kill', $message);
-		exit('Error. See in logs');
+		exit('Error. See in BORS logs');
 	}
 
 //	echo $message;

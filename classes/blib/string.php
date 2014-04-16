@@ -41,7 +41,7 @@ class blib_string extends blib_object
 
 	// http://milianw.de/code-snippets/utf-8-wordwrap
 	// Не работает с cut = false
-	function _utf8_wordwrap2($str, $width = 75, $break = "\n", $cut = false)
+	static function _utf8_wordwrap2($str, $width = 75, $break = "\n", $cut = false)
 	{
 		if(!$cut)
 			$regexp = '#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){'.$width.',}\b#U';
@@ -73,7 +73,7 @@ class blib_string extends blib_object
 	// http://stackoverflow.com/questions/3825226/multi-byte-safe-wordwrap-function-for-utf-8
 	// Вроде, работает
 	// Bench: 0.9мс
-	function _mb_wordwrap3($str, $width = 75, $break = "\n", $cut = false)
+	static function _mb_wordwrap3($str, $width = 75, $break = "\n", $cut = false)
 	{
     	$lines = explode($break, $str);
 	    foreach ($lines as &$line)

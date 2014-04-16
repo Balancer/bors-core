@@ -16,7 +16,7 @@ function geoip_place($ip)
 	return $res;
 }
 
-function geoip_flag($ip, $fun = false, $must_be=false)
+function geoip_flag($ip, $fun = false, $must_be=false, $time = NULL)
 {
 	list($country_code, $country_name, $city) = geoip_info($ip);
 
@@ -28,16 +28,26 @@ function geoip_flag($ip, $fun = false, $must_be=false)
 		return '<img src="http://s.wrk.ru/f/xx.gif" class="flag" title="??" alt="??"/>';
 	}
 
-	$alt = "$country_name";
+	$alt = array($country_name);
 	if($city)
-		$alt .= ", $city";
+	{
+		$alt[] = $city;
+		// С 21.03.2014 Крым — российский
+		if(preg_match('/Sevastopol|Simferopol|Znamenka/', $city) && $time > 1395345600)
+		{
+			$alt[0] = 'Russian Federation';
+			$country_code = 'RU';
+		}
+	}
 
 	$file = bors_lower($country_code).".gif";
 //	if(!file_exists("/var/www/balancer.ru/htdocs/img/flags/$file"))
 //		$file = "-.gif";
 
 	if($fun)
-		$alt = "Earth, {$alt}";
+		array_unshift($alt, "Earth");
+
+	$alt = join(", ", $alt);
 
 	$res = '<img src="http://s.wrk.ru/f/'.$file.'" class="flag" title="'.addslashes($alt).'" alt="'.$country_code.'"/>';
 	return $res;

@@ -74,7 +74,10 @@ class bors_image_thumb extends bors_image
 		if(!$this->original)
 			return $this->set_is_loaded(false);
 
-		if(!preg_match('/\.(jpe?g|gif|png)$/i', $this->original->original_filename()))
+		// Тут было $this->original->file_name()
+		// Не ошибка ли? Если возвращать, то проверить WWW.aviaport_pictures на предмет соответствий
+		// Было сделано update aviaport_pictures set original_filename = file_name where original_filename = '';
+		if(!preg_match('/\.(jpe?g|gif|png)$/i', $this->original->file_name()))
 			return $this->set_is_loaded(false);
 
 //		$this->delete();

@@ -356,8 +356,8 @@ class DataBase
 		$ch = NULL;
 		if($cached !== false)
 		{
-			$ch = new Cache();
-			if($ch->get("DataBaseQuery:{$this->db_name}", $query) !== NULL)
+			$ch = new bors_cache();
+			if($ch->get("DataBaseQuery:{$this->db_name}", $query))
 				return unserialize($ch->last());
 		}
 

@@ -1,5 +1,6 @@
 <?php
 
+// Нужно для модификатора в шаблоне
 require_once('inc/clients/geoip-place.php');
 
 class bors_admin_reports_load extends bors_admin_page

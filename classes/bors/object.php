@@ -184,6 +184,7 @@ class bors_object extends base_object
 	}
 
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
+	function _is_changes_logging_def() { return false; }
 
 	function call($method_name)
 	{

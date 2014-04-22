@@ -868,6 +868,9 @@ defined at {$this->class_file()}<br/>
 //		if($was_modified)
 //			debug_hidden_log('00-modified', $this->debug_title().print_r($this->changed_fields, true));
 
+		if($this->get('is_changes_logging'))
+			bors_objects_changelog::add($this);
+
 		$this->changed_fields = array();
 
 		if(config('debug_trace_changed_save'))

@@ -36,6 +36,10 @@ class bors_image extends bors_object_db
 			'mime_type',
 			'created_from',
 			'moderated',
+			'hash_y',
+			'hash_r',
+			'hash_g',
+			'hash_b',
 		);
 	}
 
@@ -291,6 +295,12 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		$img->set_full_file_name($data['local_path'], $new_instance);
 		$img->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $img->original_filename()), $new_instance);
 		$img->set_file_name($img->original_filename(), $new_instance);
+
+		$img->set_hash_y($img->hash_grayscale(), $new_instance);
+		list($hr, $hg, $hb) = $img->hash_rgb();
+		$img->set_hash_r($hr, $new_instance);
+		$img->set_hash_g($hg, $new_instance);
+		$img->set_hash_b($hb, $new_instance);
 
 		@chmod($img->image_dir(), 0777);
 		@chmod($img->file_name_with_path(), 0666);

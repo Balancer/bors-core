@@ -11,20 +11,22 @@ if(empty($GLOBALS['stat']['start_microtime']))
 if(!defined('BORS_CORE'))
 	define('BORS_CORE', dirname(__FILE__));
 
+define('BORS_ROOT', dirname(BORS_CORE).DIRECTORY_SEPARATOR);
+
 if(!defined('BORS_EXT'))
-	define('BORS_EXT', dirname(BORS_CORE).DIRECTORY_SEPARATOR.'bors-ext');
+	define('BORS_EXT', BORS_ROOT.'bors-ext');
 
 if(!defined('BORS_LOCAL'))
-	define('BORS_LOCAL', dirname(BORS_CORE).DIRECTORY_SEPARATOR.'bors-local');
+	define('BORS_LOCAL', BORS_ROOT.'bors-local');
 
 if(!defined('BORS_HOST'))
-	define('BORS_HOST', dirname(BORS_CORE).DIRECTORY_SEPARATOR.'bors-host');
+	define('BORS_HOST', BORS_ROOT.'bors-host');
 
 if(!defined('BORS_SITE'))
 	define('BORS_SITE', dirname(@$_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'bors-site');
 
 if(!defined('BORS_3RD_PARTY'))
-	define('BORS_3RD_PARTY', dirname(BORS_CORE).DIRECTORY_SEPARATOR.'bors-third-party');
+	define('BORS_3RD_PARTY', BORS_ROOT.'bors-third-party');
 
 if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_REAL_IP'];
@@ -32,6 +34,9 @@ if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['
 foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 	if(file_exists($file = "{$base_dir}/config-pre.php"))
 		include_once($file);
+
+if(file_exists(BORS_ROOT.'composer'))
+	require_once(BORS_ROOT.'composer/vendor/autoload.php');
 
 $dir = dirname(__FILE__);
 bors_config_ini($dir.'/config.ini');

@@ -39,11 +39,14 @@ class bors_templates_smarty_resources_file extends Smarty_Resource_Custom
 			}
 		}
 
-		if(file_exists($fn = $this->smarty->template_dir."/".$tpl_name))
+		foreach($this->smarty->template_dir as $d)
 		{
-			$tpl_source = ec(file_get_contents($fn));
-			$mtime = filemtime($fn);
-			return;
+			if(file_exists($fn = "$d/$tpl_name"))
+			{
+				$tpl_source = ec(file_get_contents($fn));
+				$mtime = filemtime($fn);
+				return;
+			}
 		}
 
 		foreach(bors_dirs(true) as $dir)

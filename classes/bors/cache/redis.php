@@ -7,7 +7,8 @@
 		http://mikehaertl.github.io/phpwkhtmltopdf/
 */
 
-require_once(config('rediska.include'));
+if(!class_exists('Rediska'))
+	bors_throw("Can't find Rediska package. Go to composer directory at BORS_CORE level and execute composer require rediska/rediska=*");
 
 class bors_cache_redis extends bors_cache_base
 {

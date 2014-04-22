@@ -426,4 +426,79 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 			foreach($thumbnails as $t)
 				$t->delete();
 	}
+
+	function hash_grayscale()
+	{
+		// http://habrahabr.ru/post/120562/
+		// http://habrahabr.ru/post/143689/
+		$source = imagecreatefromjpeg($this->full_filename());
+		$hash = imagecreatetruecolor(8, 8);
+		imagecopyresampled($hash, $source, 0, 0, 0, 0, 8, 8, imagesx($source), imagesy($source));
+		imagefilter($hash, IMG_FILTER_GRAYSCALE);
+
+		$map = array();
+		$arr = array();
+
+		for($y=0; $y<8; $y++)
+			for($x=0; $x<8; $x++)
+				$arr[] = $map[$y][$x] = imagecolorat($hash, $x, $y) & 0xFF;
+
+		sort($arr);
+		$median = ($arr[31]+$arr[32])/2;
+
+		$mhash = 0;
+
+		for($y=0; $y<8; $y++)
+			for($x=0; $x<8; $x++)
+				$mhash = ($mhash<<2) | ($map[$y][$x] > $median ? 1 : 0);
+
+		return $mhash;
+	}
+
+	function hash_rgb()
+	{
+		$source = imagecreatefromjpeg($this->full_filename());
+		$hash = imagecreatetruecolor(8, 8);
+		imagecopyresampled($hash, $source, 0, 0, 0, 0, 8, 8, imagesx($source), imagesy($source));
+
+		$rmap = array();
+		$gmap = array();
+		$bmap = array();
+		$rarr = array();
+		$garr = array();
+		$barr = array();
+
+		for($y=0; $y<8; $y++)
+		{
+			for($x=0; $x<8; $x++)
+			{
+				$rarr[] = $rmap[$y][$x] = (imagecolorat($hash, $x, $y) >> 16) & 0xFF;
+				$garr[] = $gmap[$y][$x] = (imagecolorat($hash, $x, $y) >> 8) & 0xFF;
+				$barr[] = $bmap[$y][$x] =  imagecolorat($hash, $x, $y) & 0xFF;
+			}
+		}
+
+		sort($rarr);
+		sort($garr);
+		sort($barr);
+		$rmedian = ($rarr[31]+$rarr[32])/2;
+		$gmedian = ($garr[31]+$garr[32])/2;
+		$nmedian = ($barr[31]+$barr[32])/2;
+
+		$rhash = 0;
+		$ghash = 0;
+		$bhash = 0;
+
+		for($y=0; $y<8; $y++)
+		{
+			for($x=0; $x<8; $x++)
+			{
+				$rhash = ($rhash<<2) | ($rmap[$y][$x] > $rmedian ? 1 : 0);
+				$ghash = ($ghash<<2) | ($gmap[$y][$x] > $gmedian ? 1 : 0);
+				$bhash = ($bhash<<2) | ($bmap[$y][$x] > $bmedian ? 1 : 0);
+			}
+		}
+
+		return array($rhash, $ghash, $bhash);
+	}
 }

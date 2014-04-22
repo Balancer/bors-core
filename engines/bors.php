@@ -91,6 +91,8 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 
 	$object->set_owner_id(defval($data, 'owner_id', bors()->user_id()), true);
 	$object->set_last_editor_id(bors()->user_id());
+	$object->set_last_editor_ip(bors()->client()->ip());
+	$object->set_last_editor_ua(bors()->client()->agent());
 
 	$replace = popval($data, '*replace', false);
 

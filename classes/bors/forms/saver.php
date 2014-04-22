@@ -111,6 +111,9 @@ class bors_forms_saver extends base_empty
 		{
 			$object->set_modify_time(time(), true);
 			$object->set_last_editor_id(bors()->user_id(), true);
+			$object->set_last_editor_ip(bors()->client()->ip());
+			$object->set_last_editor_ua(bors()->client()->agent());
+
 			$object->post_set($data);
 
 			add_session_message(ec('Данные успешно сохранены'), array('type' => 'success'));

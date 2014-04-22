@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Image/Transform.php';
-require_once 'inc/filesystem.php';
-require_once 'inc/processes.php';
-require_once 'inc/debug.php';
-
 function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 {
 	if(file_exists($file_out))

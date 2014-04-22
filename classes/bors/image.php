@@ -481,9 +481,10 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		sort($rarr);
 		sort($garr);
 		sort($barr);
+
 		$rmedian = ($rarr[31]+$rarr[32])/2;
 		$gmedian = ($garr[31]+$garr[32])/2;
-		$nmedian = ($barr[31]+$barr[32])/2;
+		$bmedian = ($barr[31]+$barr[32])/2;
 
 		$rhash = 0;
 		$ghash = 0;

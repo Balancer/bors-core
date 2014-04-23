@@ -296,11 +296,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		$img->set_extension(preg_replace('!^.+\.([^\.]+)$!', '$1', $img->original_filename()), $new_instance);
 		$img->set_file_name($img->original_filename(), $new_instance);
 
-		$img->set_hash_y($img->hash_grayscale(), $new_instance);
-		list($hr, $hg, $hb) = $img->hash_rgb();
-		$img->set_hash_r($hr, $new_instance);
-		$img->set_hash_g($hg, $new_instance);
-		$img->set_hash_b($hb, $new_instance);
+		$img->hash_recalculate();
 
 		@chmod($img->image_dir(), 0777);
 		@chmod($img->file_name_with_path(), 0666);
@@ -441,7 +437,10 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 	{
 		// http://habrahabr.ru/post/120562/
 		// http://habrahabr.ru/post/143689/
-		$source = imagecreatefromjpeg($this->full_filename());
+		$source = $this->gd();
+		if(!$source)
+			return;
+
 		$hash = imagecreatetruecolor(8, 8);
 		imagecopyresampled($hash, $source, 0, 0, 0, 0, 8, 8, imagesx($source), imagesy($source));
 		imagefilter($hash, IMG_FILTER_GRAYSCALE);
@@ -467,7 +466,10 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 	function hash_rgb()
 	{
-		$source = imagecreatefromjpeg($this->full_filename());
+		$source = $this->gd();
+		if(!$source)
+			return;
+
 		$hash = imagecreatetruecolor(8, 8);
 		imagecopyresampled($hash, $source, 0, 0, 0, 0, 8, 8, imagesx($source), imagesy($source));
 
@@ -511,5 +513,40 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		}
 
 		return array($rhash, $ghash, $bhash);
+	}
+
+	function hash_recalculate($dbup=true)
+	{
+		if(!file_exists($f=$this->full_file_name()))
+		{
+			echo "Not found image $f\n";
+			return;
+		}
+		$this->set_hash_y($this->hash_grayscale(), $dbup);
+		list($hr, $hg, $hb) = $this->hash_rgb();
+		$this->set_hash_r($hr, $dbup);
+		$this->set_hash_g($hg, $dbup);
+		$this->set_hash_b($hb, $dbup);
+	}
+
+	private $__gd = -1;
+	function gd()
+	{
+		if($this->__gd !== -1)
+			return $this->__gd;
+
+		switch($e = strtolower($this->extension()))
+		{
+			case 'jpg':
+			case 'jpeg':
+				return $this->__gd = imagecreatefromjpeg($this->full_file_name());
+			case 'png':
+				return $this->__gd = imagecreatefrompng($this->full_file_name());
+			case 'gif':
+				return $this->__gd = imagecreatefromgif($this->full_file_name());
+			default:
+				echo "Unknown extension '$e' for image_id={$this->id()}\n";
+				return $this->__gd = NULL;
+		}
 	}
 }

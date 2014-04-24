@@ -18,10 +18,9 @@
 		"source": "https://bitbucket.org/Balancer/bors-core"
 	},
 
-	"minimum-stability": "dev",
-
 	"require": {
-		"php": ">=5.3"
+		"php": ">=5.3",
+		"balancer/bors-ext": "@dev"
 	},
 
     "suggest": {

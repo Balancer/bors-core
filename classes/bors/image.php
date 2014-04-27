@@ -517,11 +517,15 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 	function hash_recalculate($dbup=true)
 	{
+		if($this->get('hash_y'))
+			return;
+
 		if(!file_exists($f=$this->full_file_name()))
 		{
-			echo "Not found image $f\n";
+//			echo "Not found image $f\n";
 			return;
 		}
+
 		$this->set_hash_y($this->hash_grayscale(), $dbup);
 		list($hr, $hg, $hb) = $this->hash_rgb();
 		$this->set_hash_r($hr, $dbup);

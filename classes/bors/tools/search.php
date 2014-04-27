@@ -67,5 +67,6 @@ class bors_tools_search extends base_page
 	function skip_save() { return true; }
 
 	function is_public_access() { return true; }
-	function can_adsense() { return true; }
+	function can_adsense() { return !preg_match('/balancer\.ru/', $_SERVER['HTTP_HOST']); }
+	function can_yandex_direct() { return preg_match('/forums\.balancer\.ru/', $_SERVER['HTTP_HOST']); }
 }

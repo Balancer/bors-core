@@ -87,16 +87,7 @@ if($is_crawler && config('bot_lavg_limit'))
 	}
 
 	if($load_avg > config('bot_lavg_limit'))
-	{
-//		header('HTTP/1.1 503 Service Temporarily Unavailable');
-		header('Status: 503 Service Temporarily Unavailable');
-		header('Retry-After: 600');
-
-		debug_hidden_log('system_overload_crawlers', $load_avg, false);
-//		@file_put_contents($file = config('debug_hidden_log_dir')."/blocked-bots.log", $_SERVER['REQUEST_URI']."/".@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."; LA={$load_avg}\n", FILE_APPEND);
-//		@chmod($file, 0666);
-		exit("Service Temporarily Unavailable; load_avg={$load_avg}");
-	}
+		bors_main_error_503('system_overload_crawlers', $load_avg);
 }
 
 // Ловушка для ботов. Если сунется в /_bors/trap/* (например, где-то на странице скрытая ссылка туда)
@@ -106,9 +97,6 @@ if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect
 	if($is_bot)
 		if(config('404_page_url'))
 			return go(config('404_page_url'), true);
-
-	header('Status: 503 Service Temporarily Unavailable');
-	header('Retry-After: 3600');
 
 	//TODO: чёрт, надо сделать будет через hidden_log.
 	@file_put_contents($file = $_SERVER['DOCUMENT_ROOT']."/logs/load_trap.log", 
@@ -120,7 +108,7 @@ if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect
 			."; LA={$load_avg}\n", FILE_APPEND);
 	@chmod($file, 0666);
 
-	exit("Service Temporarily Unavailable; IP={$_SERVER['REMOTE_ADDR']}; LA={$load_avg}");
+	bors_main_error_503();
 }
 
 // Если есть строка запроса, но пустой $_GET, то PHP чего-то не распарсил. Бывает на некоторых
@@ -183,22 +171,10 @@ if(config('access_log')
 		}
 
 		if(!$is_crawler && $user_overload && $session_user_load_summary > $user_overload)
-		{
-			debug_hidden_log('system_overload_users', $session_user_load_summary.' of '.$user_overload, 0);
-
-			header('Status: 503 Service Temporarily Unavailable');
-			header('Retry-After: 600');
-			exit("Service Temporarily Unavailable; IP={$_SERVER['REMOTE_ADDR']}; time={$session_user_load_summary}s");
-		}
+			bors_main_error_503('system_overload_users', $session_user_load_summary.' of '.$user_overload);
 
 		if($is_crawler && $bot_overload && $session_user_load_summary > $bot_overload)
-		{
-			debug_hidden_log('system_overload_crawlers', $session_user_load_summary.' of '.$bot_overload."\nbot=$is_bot", 0);
-
-			header('Status: 503 Service Temporarily Unavailable');
-			header('Retry-After: 600');
-			exit("Service Temporarily Unavailable");
-		}
+			bors_main_error_503('system_overload_crawlers', $session_user_load_summary.' of '.$bot_overload."\nbot=$is_bot");
 	}
 }
 
@@ -491,6 +467,9 @@ if($cn = config('404.class_name'))
 	}
 }
 
+if($url = config('404.url'))
+	return readfile($url);
+
 if(config('404_page_url'))
 {
 	return go(config('404_page_url'), true);
@@ -498,3 +477,21 @@ if(config('404_page_url'))
 
 if(config('404_show', true))
 	echo ec("Page '$uri' not found\n<!--\nBORS_SITE=".BORS_SITE."\nBORS_CORE=".BORS_CORE."\n-->");
+
+function bors_main_error_503($logfile = NULL, $message = 'error 503', $trace = false)
+{
+//	header('HTTP/1.1 503 Service Temporarily Unavailable');
+
+	header('Status: 503 Service Temporarily Unavailable');
+	header('Retry-After: 600');
+
+	if($logfile)
+		debug_hidden_log($logfile, $message, $trace);
+
+	if($url = config('503.url'))
+		readfile($url);
+	else
+		echo "Service Temporarily Unavailable; load_avg={$load_avg}";
+
+	exit();
+}

@@ -27,6 +27,11 @@ function bors_bot_detect($user_agent, &$data = array())
 			'FTRF: Friendly robot',				// FTRF: Friendly robot/1.4
 			'GeliyooBot',						// Mozilla/5.0 (compatible; GeliyooBot/1.0beta; +http://www.geliyoo.com/)
 			'Gigabot' => 'Gigabot',				// Gigabot/3.0 (http://www.gigablast.com/spider.html)
+			'GrapeshotCrawler' => array(		// Mozilla/5.0 (compatible; GrapeshotCrawler/2.0; +http://www.grapeshot.co.uk/crawler.php)
+				'bot' => 'Grapeshot',
+				'url' => 'http://www.grapeshot.co.uk/crawler.php',
+				'crawler' => true,
+			),
 			'Mediapartners-Google' => array(	//	Mediapartners-Google
 				'bot' => 'Google Mediapartners',
 				'crawler' => false,

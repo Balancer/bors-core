@@ -31,12 +31,6 @@ function lt_img($params)
 //	require_once('inc/airbase/images.php');
 //	$data = airbase_image_data($params['url'], $url);
 
-	if(preg_match('/\.gif$/i', $params['url']))
-	{
-		$params['noresize'] = !@$params['resize'];
-		$params['nohref'] = true;
-	}
-
 //	if(!$data['local'])
 //		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.
 
@@ -258,8 +252,17 @@ function lt_img($params)
 					return lcml_urls_title($params['url']).'<small> [image link error]</small>';
 				}
 
+				if(preg_match('/\.gif$/i', $params['url']))
+				{
+					if(is_anigif($file))
+					{
+						$params['noresize'] = true;
+						$params['nohref'] = true;
+					}
+				}
 
-				if(preg_match('/airbase\.ru|balancer\.ru|wrk\.ru/', $data['uri']) && preg_match('!^(http://[^/]+/cache/.+/)\d*x\d*(/[^/]+)$!', $data['uri'], $m))
+				if(preg_match('/airbase\.ru|balancer\.ru|wrk\.ru/', $data['uri'])
+						&& preg_match('!^(http://[^/]+/cache/.+/)\d*x\d*(/[^/]+)$!', $data['uri'], $m))
 					$img_ico_uri  = $m[1].$params['size'].$m[2];
 				elseif(!empty($params['noresize']))
 					$img_ico_uri  = $uri;
@@ -268,7 +271,7 @@ function lt_img($params)
 				else
 					$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", "$store_url/$path");
 
-//				if(config('is_developer')) { var_dump($uri, $img_ico_uri, $data); exit(); }
+//				if(config('is_developer')) { echo '<xmp>'; var_dump($file, $uri, $img_ico_uri, $data, $params); exit(); }
 
 				if(preg_match('!\.[^/+]$!', $uri))
 					$img_page_uri = preg_replace("!^(http://.+?)(\.[^\.]+)$!", "$1.htm", $uri);
@@ -297,17 +300,17 @@ function lt_img($params)
 
 				// Дёргаем превьюшку, чтобы могла сгенерироваться.
 				// Кстати, ошибка может быть и от перегрузки. Надо будет сделать прямой вызов
-				blib_http::get($img_ico_uri, true, 100000); // До 100кб
+				blib_http::get($img_ico_uri, true, 200000); // До 200кб
 
 				list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
 
 				if(!intval($width) || !intval($height))
 				{
 					// Если с одного раза не сработало, пробуем ещё раз
-					sleep(5);
+					sleep(1);
 					blib_http::get($img_ico_uri, true, 1000000); // До 1Мб
 
-					list($width, $height, $type, $attr) = @getimagesize($img_ico_uri);
+					list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
 				}
 
 				if(!intval($width) || !intval($height))
@@ -465,4 +468,29 @@ function lt_img_bors($params)
 		return join('', $around_beg).$image->html_code(join(' ', $append)).join('', array_reverse($around_end));
 	else
 		return join('', $around_beg).$image->thumbnail($size)->html_code(join(' ', $append)).join('', array_reverse($around_end));
+}
+
+// http://stackoverflow.com/questions/280658/can-i-detect-animated-gifs-using-php-and-gd
+function is_anigif($filename)
+{
+    if(!($fh = @fopen($filename, 'rb')))
+        return false;
+
+    $count = 0;
+    //an animated gif contains multiple "frames", with each frame having a
+    //header made up of:
+    // * a static 4-byte sequence (\x00\x21\xF9\x04)
+    // * 4 variable bytes
+    // * a static 2-byte sequence (\x00\x2C)
+
+    // We read through the file til we reach the end of the file, or we've found
+    // at least 2 frame headers
+    while(!feof($fh) && $count < 2)
+	{
+        $chunk = fread($fh, 1024 * 100); //read 100kb at a time
+        $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00\x2C#s', $chunk, $matches);
+    }
+
+    fclose($fh);
+    return $count > 1;
 }

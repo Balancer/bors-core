@@ -69,7 +69,7 @@
 		$url_data = url_parse($pure_url);
 		$external = @$url_data['local'] ? '' : ' class="external"';
 
-		if(bors_exec_time() < 20)
+		if(bors_exec_time() < config('lcml.timeout', 30))
 		{
 			if(config('lcml_balancer'))
 			{
@@ -112,7 +112,7 @@
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
 
-		if(!function_exists('curl_init') || bors_exec_time() > 20)
+		if(!function_exists('curl_init') || bors_exec_time() > config('lcml.timeout', 30))
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
 		$data = bors_lib_http::get($url);

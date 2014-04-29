@@ -352,6 +352,7 @@ class base_object extends base_empty
 			bors_throw("__call[".__LINE__."]:
 undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>
 defined at {$this->class_file()}<br/>
+class_filemtime=".date('r', $this->class_filemtime())."<br/>
 ". (!empty($trace['file']) ? "called from {$trace['file']}:{$trace['line']}" : ''));
 		}
 
@@ -755,7 +756,7 @@ defined at {$this->class_file()}<br/>
 				if(is_numeric($key) && preg_match('/^\w+$/', $assert))
 				{
 					$key = $assert;
-					$assert = "!=''|Параметр должен быт указан";
+					$assert = "!=''|Параметр должен быть указан";
 				}
 
 				if(!$this->check_value($key, defval($data, $key, $this->get($key)), $assert))

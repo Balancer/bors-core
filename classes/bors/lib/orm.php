@@ -260,6 +260,8 @@ class bors_lib_orm
 			$object->table_fields();// Хак. Дёргаем, чтобы извлечь данные по автоматическим полям,
 									// в частности — auto_objects из FOREIGN KEYS.
 
+//			echo $object->class_name(),':',$object->class_file(), ':',date("r", $object->class_filemtime()),"<br/>\n";
+
 			return set_global_key('___main_fields', $ch_key, $ch->last());
 		}
 

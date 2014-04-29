@@ -111,6 +111,8 @@ class bors_core_find
 	function ge($property, $value) { $this->where_parse_set("$property>=", $value); return $this; }
 	function lt($property, $value) { $this->where_parse_set("$property<", $value); return $this; }
 
+	function is_not($sub_name) { return $this->eq('is_'.$sub_name, false); }
+
 	function in($property, $values) { $this->where_parse_set("$property IN", $values); return $this; }
 
 	function inner_join($join_class, $join_cond)

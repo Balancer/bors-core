@@ -273,4 +273,13 @@ class bors_object extends base_object
 
 		return $value;
 	}
+
+	function property_info($property_name)
+	{
+		foreach(bors_lib_orm::all_fields($this) as $f)
+			if($f['property'] == $property_name)
+				return $f;
+
+		return bors_throw("Can't find property $property_name in ".$this->class_name());
+	}
 }

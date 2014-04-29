@@ -39,6 +39,11 @@ class b2_core_find extends bors_core_find
 		return $this->eq('is_'.$sub_name, true);
 	}
 
+	function is_not($sub_name)
+	{
+		return $this->eq('is_'.$sub_name, false);
+	}
+
 	// Случайная сортировка
 	function rand()
 	{

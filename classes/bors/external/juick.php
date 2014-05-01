@@ -13,7 +13,7 @@ class bors_external_juick extends bors_object
 		if($raw_data = popval($data, 'raw_data'))
 		{
 			$f = new SimplePie();
-			$f->set_feed_url($f->feed_url());
+			$f->set_feed_url($feed->feed_url());
 			$f->enable_cache(false);
 			$f->init();
 
@@ -37,12 +37,20 @@ class bors_external_juick extends bors_object
 			}
 		}
 
-		$text = preg_replace('!<a [^>]*href="(http://pics\.livejournal\.com/[^"]+)"[^>]*>pics\.livejournal\.com</a>!e', 'lcml("[img]$1[/img]");', $text);
-		$text = preg_replace('!<a href="[^"]+youtube[^"]+v=([^"&]+)?"[^>]+>youtube\.com</a>!ie', "lcml('[youtube]$1[/youtube]');", $text);
-		$text = preg_replace('!<a href="([^"]+?\.(png|jpg|jpeg|gif))"[^>]+?>[\w\.]+</a>!ie', "lcml('[img]$1[/img]');", $text);
-		$text = preg_replace('!<a href="https?://picasaweb.google.com/lh/photo/([^"\?/]+)\?feat=directlink" rel="nofollow">picasaweb.google.com</a>!ie', "lcml('[picasa]$1[/picasa]');", $text);
-		$text = preg_replace('!^<a href="(http://([^/"]+)[^"]+)"[^>]*>\2</a><br />!mie', "lcml('$1');", $text);
-//		var_dump($text); exit();
+		$text = preg_replace_callback('!<a [^>]*href="(http://pics\.livejournal\.com/[^"]+)"[^>]*>pics\.livejournal\.com</a>!',
+			function($m) { return lcml("[img]{$m[1]}[/img]");}, $text);
+
+		$text = preg_replace_callback('!<a href="[^"]+youtube[^"]+v=([^"&]+)?"[^>]+>youtube\.com</a>!i',
+			function($m) { return lcml("[youtube]{$m[1]}[/youtube]");}, $text);
+
+		$text = preg_replace_callback('!<a href="([^"]+?\.(png|jpg|jpeg|gif))"[^>]+?>[\w\.]+</a>!i',
+			function($m) { return lcml("[img]{$m[1]}[/img]");}, $text);
+
+		$text = preg_replace_callback('!<a href="https?://picasaweb.google.com/lh/photo/([^"\?/]+)\?feat=directlink" rel="nofollow">picasaweb.google.com</a>!i',
+			function($m) { return lcml("[picasa]{$m[1]}[/picasa]");}, $text);
+
+		$text = preg_replace_callback('!^<a href="(http://([^/"]+)[^"]+)"[^>]*>\2</a><br />!mi',
+			function($m) { return lcml($m[1]);}, $text);
 
 		if($item)
 		{

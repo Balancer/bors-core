@@ -1,7 +1,7 @@
 <?php
 function lcml_heads($txt)
 { 
-	if(config('lcml_old_exclamation_heads'))
+	if(config('lcml_old_exclamation_heads') && preg_match('/^!/', $txt))
 	{
 		$txt=preg_replace("/^!!!!!(.+)$/me","'<h6>'.lcml(\"$1\").'</h6> '",$txt);
 	    $txt=preg_replace("/^!!!!(.+)$/me","'<h5>'.lcml(\"$1\").'</h5> '",$txt);

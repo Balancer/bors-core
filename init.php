@@ -199,7 +199,15 @@ function bors_dirs($skip_config = false, $host = NULL)
 			$data[] = $x['project_path'];
 
 	if(defined('COMPOSER_ROOT'))
-		var_dump($lock = json_decode(file_get_contents(COMPOSER_ROOT . '/composer.lock')));
+	{
+		$lock = json_decode(file_get_contents(COMPOSER_ROOT . '/composer.lock'), true);
+		foreach($lock['packages'] as $package)
+		{
+			$path = COMPOSER_ROOT . '/vendor/' . $package['name'];
+			if(file_exists($path.'/classes') || file_exists($path.'/templates'))
+				$data[] = $path;
+		}
+	}
 
 	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
 }

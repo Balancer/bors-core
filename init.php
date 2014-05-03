@@ -198,6 +198,9 @@ function bors_dirs($skip_config = false, $host = NULL)
 		foreach($prjs as $project_name => $x)
 			$data[] = $x['project_path'];
 
+	if(defined('COMPOSER_ROOT'))
+		var_dump($lock = json_decode(file_get_contents(COMPOSER_ROOT . '/composer.lock')));
+
 	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
 }
 

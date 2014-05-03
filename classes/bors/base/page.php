@@ -1,7 +1,5 @@
 <?php
 
-require_once('engines/lcml/main.php');
-
 class base_page extends bors_object
 {
 	function render_engine() { return config('render_engine', 'render_page'); }
@@ -232,7 +230,7 @@ class base_page extends bors_object
 		return $result;
 	}
 
-	function compiled_source() { return lcml($this->source()); }
+	function compiled_source() { return bors_lcml::lcml($this->source()); }
 
 	function _queries() { return array(); }
 
@@ -247,8 +245,10 @@ class base_page extends bors_object
 		while($current_class)
 		{
 			$template_file = preg_replace("!(.+/\w+)\..+?$!", "$1.$ext", bors_class_loader::file($current_class));
+
 			if(file_exists($template_file))
 				break;
+
 			$current_class = get_parent_class($current_class);
 		}
 
@@ -298,7 +298,7 @@ class base_page extends bors_object
 
 		$save_lcml_tags_enabled = config('lcml_tags_enabled');
 		config_set('lcml_tags_enabled', $this->lcml_tags_enabled());
-		$text = lcml($text,
+		$text = bors_lcml::lcml($text,
 			array(
 				'cr_type' => $this->cr_type(),
 				'sharp_not_comment' => $this->sharp_not_comment(),

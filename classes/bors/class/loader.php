@@ -39,6 +39,9 @@ class bors_class_loader
 			}
 		}
 
+		if($class_file = (new ReflectionClass($class_name))->getFileName())
+			return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
+
 		return NULL;
 	}
 

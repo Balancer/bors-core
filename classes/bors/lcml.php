@@ -501,4 +501,29 @@ class bors_lcml extends bors_object
 	{
 		return microtime(true) - $this->start_time > $time;
 	}
+
+	static function lcml($text, $params = array())
+	{
+		$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
+
+		static $lcs = array();
+		if(empty($lcs[$class_name]))
+			$lcs[$class_name] = new $class_name($params);
+
+		$lc = $lcs[$class_name];
+
+		$lc->set_p('level', $lc->p('level')+1);
+		$lc->set_p('prepare', popval($params, 'prepare'));
+		$save_tags = $lc->p('only_tags');
+		if(!empty($params['only_tags']))
+			$lc->set_p('only_tags', $params['only_tags']);
+		if($lc->p('level') == 1)
+			$lc->set_params($params);
+
+		$html = $lc->parse($text);
+		$lc->set_p('only_tags', $save_tags);
+		$lc->set_p('level', $lc->p('level')-1);
+
+		return $html;
+	}
 }

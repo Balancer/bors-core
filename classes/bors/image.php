@@ -40,6 +40,7 @@ class bors_image extends bors_object_db
 			'hash_r',
 			'hash_g',
 			'hash_b',
+			'hash_md5',
 		);
 	}
 
@@ -531,6 +532,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		$this->set_hash_r($hr, $dbup);
 		$this->set_hash_g($hg, $dbup);
 		$this->set_hash_b($hb, $dbup);
+		$this->set_hash_md5(hexdec(substr(md5_file($f), -16)), $dbup);
 	}
 
 	private $__gd = -1;

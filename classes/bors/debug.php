@@ -57,9 +57,9 @@ class bors_debug
 	}
 
 	//TODO: убрать аналог из bors_global
-	function memory_usage() { return round(memory_get_usage()/1048576)."/".round(memory_get_peak_usage()/1048576)."MB"; }
+	static function memory_usage() { return round(memory_get_usage()/1048576)."/".round(memory_get_peak_usage()/1048576)."MB"; }
 
-	function memory_usage_ping()
+	static function memory_usage_ping()
 	{
 		static $prev_usage = 0, $prev_peak_usage = 0;
 		static $mb = 1048576;

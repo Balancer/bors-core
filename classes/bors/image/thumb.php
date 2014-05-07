@@ -115,9 +115,11 @@ class bors_image_thumb extends bors_image
 		else
 		{
 //			$file_thumb = $this->file_name_with_path();
+			// WTF? http://www.balancer.ru/g/p3463879
+			$new_url = str_replace('forums.testing.airbase.ru', 'forums.balancer.ru', $new_url);
 			$oud = url_parse($new_url);
 			if(!$oud['local'] || !$oud['local_path'])
-				bors_throw('Unknown local for thumb: '.print_r($oud, true)
+				bors_throw('Unknown local for "'.$new_url.'" thumb: '.print_r($oud, true)
 					.'; file_name_with_path='.$this->file_name_with_path());
 
 			$file_thumb = $oud['local_path'];

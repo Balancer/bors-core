@@ -2,6 +2,8 @@
 
 // Парсинг RSS с простых ресурсов с HTML-контентом, *тегами в шапке и без заголовка
 
+require_once('engines/lcml/main.php');
+
 class bors_external_juick extends bors_object
 {
 	static function parse($data)

@@ -532,7 +532,8 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		$this->set_hash_r($hr, $dbup);
 		$this->set_hash_g($hg, $dbup);
 		$this->set_hash_b($hb, $dbup);
-		$this->set_hash_md5(hexdec(substr(md5_file($f), -16)), $dbup);
+//		echo hexdec(substr(md5_file($f), -15)), PHP_EOL;
+//		$this->set_hash_md5(hexdec(substr(md5_file($f), -15)), $dbup);
 	}
 
 	private $__gd = -1;

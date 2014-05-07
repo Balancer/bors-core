@@ -125,7 +125,7 @@ function quote_fix($text)
 
 function bors_text_clear($text, $morfology = true, $spacer = ' ')
 {
-	require_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
+	require_once('classes/inc/text/Stem_ru.php');
 
 	$text = preg_replace('/&\w+;/', ' ', $text);
 	$text = preg_replace('/&#\d+;/', ' ', $text);

@@ -12,7 +12,7 @@ class bors_lcml_tag_pair_h3 extends bors_lcml_tag_pair
 		return "\n".save_format("\n\n<h3>".lcml($title)."</h3>\n")."\n";
 	}
 
-	function text($title, $params)
+	function text($title, &$params)
 	{
 		return "\n\n*** $title ***\n";
 	}

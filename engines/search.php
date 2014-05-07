@@ -12,8 +12,6 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 	$source	= $object->search_source();
 	$title	= $object->title();
 
-//	include_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
-
 	if(!$db)
 		$db = new driver_mysql(config('search_db'));
 
@@ -141,7 +139,7 @@ function bors_search_in_titles($query, $params = array())
 	if(!$words)
 		return array();
 
-	include_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
+	include_once('classes/inc/text/Stem_ru.php');
 
 	$db = new driver_mysql(config('search_db'));
 
@@ -209,8 +207,6 @@ function bors_search_get_word_id($word, $db = NULL)
 	if(!empty($GLOBALS['bors_search_get_word_id_cache'][$word]))
 		return $GLOBALS['bors_search_get_word_id_cache'][$word];
 
-//	@include_once('classes/inc/text/Stem_ru-'.config('internal_charset', 'utf-8').'.php');
-
 	$Stemmer = new Lingua_Stem_Ru();
 	$original = $word;
 	$word = $Stemmer->stem_word($word);
@@ -244,7 +240,7 @@ function bors_search_stem($word)
 	static $Stemmer = NULL;
 	if(!$Stemmer)
 	{
-		require_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
+		require_once('classes/inc/text/Stem_ru.php');
 //		echo "**** New Stemmer ****\n";
 		$Stemmer = new Lingua_Stem_Ru();
 	}
@@ -301,7 +297,7 @@ function search_titles_like($title, $limit=20, $forum=0)
 	if(!$words)
 		return array();
 
-	include_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
+	include_once('classes/inc/text/Stem_ru.php');
 
 	$db = new driver_mysql(config('search_db'));
 
@@ -400,7 +396,7 @@ function search_titles_like($title, $limit=20, $forum=0)
 
 function bors_search_in_bodies($query, $where = array())
 {
-	require_once('classes/inc/text/Stem_ru-'.config('internal_charset').'.php');
+	require_once('classes/inc/text/Stem_ru.php');
 
 	// +word -word word
 

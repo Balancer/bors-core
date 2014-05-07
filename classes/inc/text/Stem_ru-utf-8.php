@@ -1,7 +1,7 @@
 <?php
 	// Источник: http://forum.dklab.ru/php/advises/HeuristicWithoutTheDictionaryExtractionOfARootFromRussianWord.html
 
-	class Lingua_Stem_Ru 
+	class Lingua_Stem_Ru_utf8
 	{
         var $VERSION = "0.02";
         var $Stem_Caching = 0;

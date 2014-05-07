@@ -24,7 +24,7 @@ function lcml_images($txt, $lcml)
 				'align' => 'left',
 				'flow' => 'noflow',
 				'no_lcml_description' => true,
-				'href' => $image_url,
+//				'href' => $image_url,
 				'self' => $lcml->p('self'),
 				'description' => "<a href=\"{$image_url}\">".basename($image_url)."</a> @ <a href=\"http://{$ud['host']}\">{$ud['host']}</a> [<a href=\"%IMAGE_PAGE_URL%\">кеш</a>]",
 				'border' => true,

@@ -91,7 +91,7 @@ class bors_lib_time
 
 		if(!empty($data["{$var}_is_fuzzy"]))
 		{
-			if(!$year) // Если формат плавающий и год не указан, то дата не задана
+			if(!$yyyy) // Если формат плавающий и год не указан, то дата не задана
 				return NULL;
 
 			// YYYY-MM-DD hh:ii:ss - xxx_is_fuzzy && xxx_have_time

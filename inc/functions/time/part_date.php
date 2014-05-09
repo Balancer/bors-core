@@ -35,5 +35,5 @@ function part_date($date, $int = false, $on_empty_text = '')
 	}
 
 	bors_function_include('time/month_name_rp');
-	return $day.' '.month_name_rp($month).' '.$year.ec(' г.');
+	return $day.' '.bors_lower(month_name_rp($month)).' '.$year.ec(' года');
 }

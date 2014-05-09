@@ -526,4 +526,28 @@ class bors_lcml extends bors_object
 
 		return $html;
 	}
+
+	static function bbh($string, $params = array())
+	{
+		// Fatal error: Call to undefined function lcml_tag_disabled() in /var/www/bors/bors-core/engines/lcml/pre/50-auto_images.php on line 5
+		require_once('engines/lcml/main.php');
+
+		$se = config('lcml_tags_enabled');
+		$sd = config('lcml_tags_disabled');
+		config_set('lcml_tags_enabled', NULL);
+		config_set('lcml_tags_disabled', NULL);
+
+		$result = bors_lcml::lcml($string, array_merge(array(
+				'cr_type' => 'save_cr',
+				'forum_type' => 'punbb',
+				'sharp_not_comment' => true,
+				'html_disable' => false,
+				'nocache' => true,
+		), $params));
+
+		config_set('lcml_tags_enabled', $se);
+		config_set('lcml_tags_disabled', $sd);
+
+		return $result;
+	}
 }

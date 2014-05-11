@@ -2,7 +2,7 @@
 
 class bors_admin_paginated extends bors_paginated
 {
-	function config_class() { return config('admin_config_class'); }
+	function _config_class_def() { return config('admin_config_class'); }
 
 	function access()
 	{

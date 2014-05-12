@@ -265,7 +265,14 @@ class base_object extends base_empty
 		// может лежать изменённое значение параметра
 		// Если это где-то что-то поломает — исправить там, а не тут.
 		if(@array_key_exists($method, $this->attr))
+		{
+			// Если хранимый атрибут — функция, то вызываем её, передав параметр.
+			if(is_callable($this->attr[$method]))
+				return call_user_func_array($this->attr[$method], $params);
+
+			// Иначе — просто возвращаем значение.
 			return $this->attr[$method];
+		}
 
 		// Проверяем нет ли уже загруженного значения данных объекта
 		if(@array_key_exists($method, $this->data))

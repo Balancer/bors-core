@@ -36,5 +36,9 @@ class bors_object_unittest extends PHPUnit_Framework_TestCase
 		$this->assertNull($object->get_data('set5'));
 
 //		$this->assertEquals('??', print_r(bors_lib_orm::all_fields($object), true));
+
+		// Проверка callable-атрибутов. Может использоваться для внедрения методов.
+		$object->set_attr('square', function($x) { return $x*$x;} );
+		$this->assertEquals(4, $object->square(2));
 	}
 }

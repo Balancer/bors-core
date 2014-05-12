@@ -1,6 +1,6 @@
 <?php
 
-function part_date($date, $int = false, $on_empty_text = '')
+function part_date($date, $int = false, $on_empty_text = '', $short=false, $rp=false)
 {
 	$year = $month = $day = 0;
 	if($int)
@@ -27,13 +27,23 @@ function part_date($date, $int = false, $on_empty_text = '')
 		return $on_empty_text;
 
 	if($month == 0)
-		return $year.ec(' г.');
+		return $year.ec(' г.');
+
 	if($day == 0)
 	{
+		if($rp)
+		{
+			bors_function_include('time/month_name_rp');
+			return bors_lower(month_name_rp($month)).' '.$year.ec(' г.');
+		}
+
 		bors_function_include('time/month_name');
-		return month_name($month).' '.$year.ec(' г.');
+		return month_name($month).' '.$year.ec(' г.');
 	}
 
+	if($short)
+		return sprintf("%02d.%02d.%04d", $day, $month, $year);
+
 	bors_function_include('time/month_name_rp');
-	return $day.' '.bors_lower(month_name_rp($month)).' '.$year.ec(' года');
+	return $day.' '.bors_lower(month_name_rp($month)).' '.$year.ec(' г.');
 }

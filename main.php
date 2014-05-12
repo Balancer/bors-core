@@ -323,6 +323,7 @@ if(config('access_log'))
 	if(empty($object) || !is_object($object))
 	{
 		$data['object_class_name'] = $_SERVER['REQUEST_URI'];
+		$data['access_url'] = $uri;
 	}
 	else
 	{
@@ -330,7 +331,7 @@ if(config('access_log'))
 		$data['object_id'] = $object->id();
 		$data['has_bors'] = 1;
 		$data['has_bors_url'] = 1;
-		$data['access_url'] = $object->url();
+		$data['access_url'] = ($u=$object->url()) ? $u : $uri;
 	}
 
 	bors_new('bors_access_log', $data);

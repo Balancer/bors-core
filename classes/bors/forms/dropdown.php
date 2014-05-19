@@ -151,7 +151,7 @@ class bors_forms_dropdown extends bors_forms_element
 
 		if(!empty($json))
 		{
-			jquery_select2::appear_ajax("'#{$id}'", $json, array_merge($params, array(
+			jquery_select2::appear_ajax("'#{$name}'", $json, array_merge(defval($params, 'edit_params', array()), array(
 				'order' => defval($params, 'order', 'title'),
 				'title_field' => defval($params, 'title_field', 'title'),
 //				'placeholder' => 'Введите часть названия источника',

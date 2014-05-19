@@ -126,6 +126,25 @@ class bors_admin_meta_edit extends bors_admin_page
 		if($ff = $this->get('form_fields'))
 			$form_fields = $ff;
 
+		if($form_fields == 'auto' && ($section = $this->get('admin_edit_section')))
+		{
+			$form_fields = bors_lib_orm::fields($target);
+			$form_fields = array_filter($form_fields, function($x) use ($section) {
+				if(!defval($x, "is_editable", true) && !defval($x, "is_admin_editable", false))
+					return false;
+
+				if(empty($x['admin_edit_section']) && $section == 'main')
+					return true;
+
+				if(($s = @$x['admin_edit_section']) == $section)
+					return true;
+
+				return false;
+			});
+
+			$form_fields = array_keys($form_fields);
+		}
+
 		return array_merge(
 			$data,
 			parent::body_data(),
@@ -144,7 +163,7 @@ class bors_admin_meta_edit extends bors_admin_page
 	function _go_new_url_def() { return 'newpage_admin'; }
 	// Куда переходим после сохранения изменённого старого объекта
 	// По умолчанию — на страницу-родителя
-	function go_edit_url() { return 'admin_parent'; }
+	function _go_edit_url_def() { return 'admin_parent'; }
 
 	function submit_button_title() { return $this->id() ? ec('Сохранить') : ec('Добавить'); }
 

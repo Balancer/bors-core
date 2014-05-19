@@ -444,6 +444,10 @@ class bors_form extends bors_object
 						$html .= $this->element_html('combobox', $data);
 						break;
 
+					case 'select2':
+						$html .= $this->element_html('select2', $data);
+						break;
+
 					case 'dropdown':
 					case 'dropdown_id':
 					case 'dropdown_edit':

@@ -2,7 +2,7 @@
 
 class bors_admin_page extends bors_page
 {
-	function config_class() { return config('admin_config_class', 'bors_admin_config'); }
+	function _config_class_def() { return config('admin_config_class', 'bors_admin_config'); }
 
 	function access()
 	{
@@ -23,5 +23,5 @@ class bors_admin_page extends bors_page
 
 	function _project_name_def() { return bors_core_object_defaults::project_name($this); }
 	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
-	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
+//	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
 }

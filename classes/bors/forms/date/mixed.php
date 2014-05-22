@@ -78,7 +78,7 @@ class bors_forms_date_mixed extends bors_forms_element
 		$year_min = max(1902, $year_min);// Минимальная корректная UNIXTIME дата - декабрь 1901-го.
 
 		if(empty($year_max))
-			$year_max = date('Y') + 1;
+			$year_max = date('Y') + 2;
 
 		if(empty($params['show_only']))
 			$shown = array('y','m','d','h','i','s');

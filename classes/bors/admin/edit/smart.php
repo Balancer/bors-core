@@ -9,10 +9,7 @@ class bors_admin_edit_smart extends bors_admin_page
 		if(!($obj = $this->object()))
 			return array();
 
-//		if(($adm = $obj->admin_parent_url()) && $adm != $this->url())
-//			return array($adm);
-
-		return array($obj->url());
+		return array($obj->admin_parent_url());
 	}
 
 	function title() { return ec('Редактор ').($this->object()->class_title_rp()).ec(' «').($this->object()->title()).ec('»'); }
@@ -23,11 +20,14 @@ class bors_admin_edit_smart extends bors_admin_page
 
 	function object()
 	{
+		if($this->__havefc())
+			return $this->__lastc();
+
 		$id = urldecode($this->id());
 		if(preg_match('!^/!', $id))
 			$id = 'http://'.$_SERVER['HTTP_HOST'].$id;
 
-		return bors_load_uri($id);
+		return $this->__setc(bors_load_uri($id));
 	}
 
 	function fields() { return explode(',', $this->args('fields')); }

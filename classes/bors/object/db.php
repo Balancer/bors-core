@@ -220,6 +220,7 @@ class bors_object_db extends base_object_db
 
 		$site_url = config('main_site_url');
 		$class_name = $this->class_name();
+
 		if(preg_match('/_admin_/', $class_name))
 		{
 			$site_url = config('admin_site_url');

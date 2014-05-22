@@ -46,6 +46,8 @@ class bors_forms_element
 
 	function element_name() { return str_replace('bors_forms_', '', get_class($this)); }
 
+	function property_name() { return $this->params['name']; }
+
 	function css()
 	{
 		if($css = defval($this->params, 'css'))

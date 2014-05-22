@@ -17,6 +17,7 @@ class bors_admin_engine extends bors_object
 	function url_ex($page)
 	{
 		$url = $this->admin_url();
+
 		if($page && $page != 1)
 			$url .= "$page/";
 
@@ -134,8 +135,8 @@ class bors_admin_engine extends bors_object
 			if($obj->url())
 				$res .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
 		}
-		catch(Exception $e) { }
 
+		catch(Exception $e) { }
 		return $res;
 	}
 

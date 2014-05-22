@@ -90,7 +90,7 @@ class bors_lib_orm
 				bors_throw(ec('Неизвестное поле ').$property);
 		}
 
-		if(in_array($property, array('id', 'create_time', 'create_ts', 'modify_time', 'modify_ts', 'last_editor_id')))
+		if(in_array($property, array('id', 'create_time', 'create_ts', 'modify_time', 'modify_ts', 'last_editor_id', 'last_editor_ua', 'last_editor_ip')))
 			set_def($field, 'is_editable', false);
 
 		if($field_title = @self::$default_field_names[$property])

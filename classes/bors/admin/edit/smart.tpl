@@ -59,7 +59,7 @@
 </ul>
 {/if}
 
-{if $object->id()}
+{if $object->id() && $object->access()->can_delete()}
 <div align="center">
 [ <b>{$object->admin()->imaged_delete_link(true)}</b> ]
 </div>

@@ -203,6 +203,8 @@ class bors_form extends bors_object
 				$object_fields = array();
 		}
 
+//		PC::dump(bors_lib_orm::all_fields(bors_foo($class_name)), $class_name);
+
 		if(array_key_exists('th', $params))
 			$th = defval_ne($params, 'th', '-');
 		else

@@ -87,7 +87,7 @@ if($is_crawler && config('bot_lavg_limit'))
 	}
 
 	if($load_avg > config('bot_lavg_limit'))
-		bors_main_error_503('system_overload_crawlers', $load_avg);
+		bors_main_error_503('system_overload_crawlers', "$is_bot: LA=$load_avg");
 }
 
 // Ловушка для ботов. Если сунется в /_bors/trap/* (например, где-то на странице скрытая ссылка туда)
@@ -492,7 +492,7 @@ function bors_main_error_503($logfile = NULL, $message = 'error 503', $trace = f
 	if($url = config('503.url'))
 		readfile($url);
 	else
-		echo "Service Temporarily Unavailable; load_avg={$load_avg}";
+		echo "Service Temporarily Unavailable";
 
 	exit();
 }

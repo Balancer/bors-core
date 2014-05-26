@@ -161,7 +161,7 @@ class DataBase
 	function query($query, $ignore_error=false, $reenter = false)
 	{
 		if(($watch = config('debug.mysql_queries_watch_regexp')) && preg_match($watch, $query))
-			debug_hidden_log('mysql-queries-log', $query);
+			debug_hidden_log('mysql-queries-watch-log', $query);
 
 		if($logs = config('debug.mysql_queries_logs'))
 		{

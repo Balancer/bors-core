@@ -90,7 +90,9 @@ function bors_form_save(&$obj)
 
 	$class_name = @$_GET['class_name'];
 	$form_class_name = @$_GET['form_class_name'];
-	if(($class_name && $class_name != 'NULL') || ($form_class_name && $form_class_name != 'NULL'))
+	if(
+			($class_name && $class_name != 'NULL')
+		||	($form_class_name && $form_class_name != 'NULL'))
 	{
 		if($class_name)
 			$tmp = new $class_name(NULL);

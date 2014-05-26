@@ -33,7 +33,17 @@ class bors_tools_search_result extends bors_tools_search
 	function y2() { return @$_GET['y2']; }
 	function y() { return @$_GET['y']; }
 	function u() { return urldecode(@$_GET['u']); }
-	function x() { return @$_GET['x']; }
+	function x()
+	{
+		$x = @$_GET['x'];
+		if(empty($x) && preg_match('/[&\|]/', $this->q()))
+			$x = 'b';
+
+		if(empty($x) && preg_match('/^=/', $this->q()))
+			$x = 'x';
+
+		return $x;
+	}
 	function w() { return urldecode(@$_GET['w']); }
 	function f()
 	{

@@ -216,7 +216,7 @@ if(get_magic_quotes_gpc() && $_POST)
 	ungpc_array($_POST);
 
 bors_init();
-register_shutdown_function('bors_exit');
+register_shutdown_function('bors_exit_handler');
 //stream_wrapper_register('xfile', 'bors_wrappers_xfile') or die('Failed to register protocol xfile');
 
 bors_function_include('client/bors_client_analyze');

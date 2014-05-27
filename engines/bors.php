@@ -155,6 +155,14 @@ function bors_clear() { $GLOBALS['bors_global'] = NULL; }
 
 function bors_exit($message = '')
 {
+	bors_exit_handler($message);
+
+	if(!config('do_not_exit'))
+		exit();
+}
+
+function bors_exit_handler($message = '')
+{
 	bors_function_include('debug/trace');
 	bors_function_include('debug/hidden_log');
 	bors_function_include('fs/file_put_contents_lock');
@@ -236,8 +244,9 @@ function bors_exit($message = '')
 			debug_hidden_log('mysql-trace/'.date('c').'-'.rand(0,999999), "URL={$_SERVER['REQUEST_URI']}\n".print_r(@$GLOBALS['debug_mysql_trace'], true));
 	}
 
-	if(!config('do_not_exit'))
-		exit();
+	if(!empty($GLOBALS['debugbar_renderer']))
+		echo $GLOBALS['debugbar_renderer']->render();
+
 
 	return true;
 }

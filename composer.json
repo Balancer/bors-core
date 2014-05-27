@@ -19,7 +19,11 @@
 	},
 
 	"require": {
-		"php": ">=5.3"
+		"php": ">=5.3",
+        "intervention/image": "<2",
+        "rediska/rediska": "*",
+        "smarty/smarty": "!=3.1.17",
+        "easybook/geshi": "*"
 	},
 
     "suggest": {

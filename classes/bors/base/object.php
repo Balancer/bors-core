@@ -746,7 +746,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return $this->imaged_delete_url(NULL, 'Удалить '.bors_lower($this->class_title_vp()));
 	}
 
-	function form_errors() { return array(); }
+	function form_errors($data) { return array(); }
 
 	// true if break
 	function check_data(&$data)
@@ -1278,7 +1278,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$this->set_last_visit_time($time, true);
 	}
 
-	function pre_action() { return false; }
+	function pre_action($data) { return false; }
 	function need_access_level() { return 0; }
 	function cache_life_time() { return 0; }
 

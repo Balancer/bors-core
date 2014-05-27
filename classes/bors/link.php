@@ -392,7 +392,8 @@ class bors_link extends bors_object_db
 				OR (to_class=$from_class AND to_id=$from_id AND from_class=$to_class))"));
 	}
 
-	function urls($type)
+	//TODO: перевести на вариант без параметра, через helper в base_object::urls(), чтобы избавиться от E_STRICT и значения по умолчанию.
+	function urls($type = NULL)
 	{
 		switch($type)
 		{

@@ -27,11 +27,7 @@ class bors_tools_delete extends base_page
 		if(!$obj)
 			return bors_message(ec('Не найден объект ').$this->id());
 
-		$act = NULL;
-		if(method_exists($obj, 'can_delete'))
-			$act = $obj;
-		elseif(method_exists($obj->access(), 'can_delete'))
-			$act = $obj->access();
+		$act = $obj->access();
 
 		if(!$act)
 			return bors_message(ec('Не определён доступ на удаление ').$obj->class_title_rp().' '.$obj->titled_link()."
@@ -40,11 +36,18 @@ class bors_tools_delete extends base_page
 				-->");
 
 		if(!$act->can_delete())
+		{
+			if(function_exists('d'))
+				d(array(
+					'tools delete pre_show. Can not delete obj' => $obj->debug_title(),
+					'access' => $act->debug_title(),
+				));
+
 			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_link()."
 				<!-- class_name = ".get_class($obj)."
 				access = {$obj->access()}
 				-->");
-
+		}
 
 		if($obj->get('can_delete_immediately'))
 			return $this->on_action_delete();

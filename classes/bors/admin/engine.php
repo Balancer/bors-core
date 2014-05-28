@@ -128,16 +128,24 @@ class bors_admin_engine extends bors_object
 		if(!$title)
 			$title = ec('[без имени]');
 
-		$res = "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$title}</a>";
+		if($obj->access()->can_edit())
+			$res = "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$title}</a>";
+		else
+			$res = "{$title}";
+
+		if($obj->access()->can_delete())
+			$del = '&nbsp;' . $this->imaged_delete_link('');
+		else
+			$del = '';
 
 		try
 		{
 			if($obj->url())
 				$res .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
 		}
-
 		catch(Exception $e) { }
-		return $res;
+
+		return $res.$del;
 	}
 
 	function imaged_direct_titled_link($title = NULL)

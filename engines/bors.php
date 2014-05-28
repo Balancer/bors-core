@@ -247,7 +247,6 @@ function bors_exit_handler($message = '')
 	if(!empty($GLOBALS['debugbar_renderer']))
 		echo $GLOBALS['debugbar_renderer']->render();
 
-
 	return true;
 }
 

@@ -1585,7 +1585,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function add_link_to($target, $params = array()) { bors_link::link_object_to($this, $target, $params); }
 
-	function on_action_link($data)
+	function on_action_link(&$data)
 	{
 		if(empty($data['link_object_from']))
 			$obj = $this;

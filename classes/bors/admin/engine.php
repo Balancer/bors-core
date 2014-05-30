@@ -133,11 +133,6 @@ class bors_admin_engine extends bors_object
 		else
 			$res = "{$title}";
 
-		if($obj->access()->can_delete())
-			$del = '&nbsp;' . $this->imaged_delete_link('');
-		else
-			$del = '';
-
 		try
 		{
 			if($obj->url())
@@ -146,6 +141,32 @@ class bors_admin_engine extends bors_object
 		catch(Exception $e) { }
 
 		return $res.$del;
+	}
+
+	function imaged_titled_link_ex($mode)
+	{
+		$obj = $this->real_object();
+		$title = $obj->title();
+
+		if(!$title)
+			$title = ec('[без имени]');
+
+		if($obj->access()->can_edit())
+			$html = "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$title}</a>";
+		else
+			$html = "{$title}";
+
+		try
+		{
+			if(stripos($mode, 'v') !== false && $obj->url())
+				$html .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->url()}\" target=\"_blank\"><img src=\"/_bors/i/look-16.gif\" width=\"16\" height=\"16\" alt=\"View\" title=\"".ec('Посмотреть на сайте')."\" style=\"vertical-align:middle\" /></a>";
+		}
+		catch(Exception $e) { }
+
+		if(stripos($mode, 'd') !== false && $obj->access()->can_delete())
+			$html .= '&nbsp;' . $this->imaged_delete_link('');
+
+		return $html;
 	}
 
 	function imaged_direct_titled_link($title = NULL)

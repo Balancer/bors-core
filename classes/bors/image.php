@@ -357,9 +357,14 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		if(!file_exists($file))
 			$file = $_SERVER['DOCUMENT_ROOT'] . $file;
 
+		//TODO: жёсткий хардкод для /http://files.balancer.ru/cache/forums/attaches/2014/05/640x640/30-3494498-94179008ec2197edc57c115615e4b431.jpg
+//		$file = preg_replace('!(/var/www/files.balancer.ru/files)/var/www/files.balancer.ru/files!', '$1', $file);
+
 		if(!file_exists($file))
 		{
-			config_set('bors-image-lasterror', "Image '$file' not exists");
+			if(!config('bors-image-lasterror'))
+				config_set('bors-image-lasterror', "[365] Image not exists:\n$file");
+
 			return false;
 		}
 

@@ -7,7 +7,13 @@
 	<td colSpan="5">{dropdown multiple="multiple" name="f" list="airbase_forum_listfull" size="10" class="w100p"}</td>
 </tr>
 <tr><td align="right"><small>Искать:</small></td><td>
-	{dropdown name="w" list="array('' => 'В заголовках, описания и ключевых словах', 'a'=>'Всюду', 't'=>'В заголовках', 'b' => 'В блогах');" is_int=false}
+	{dropdown name="w" list="array(
+		'' => 'В заголовках, описания и ключевых словах',
+		'a'=>'Всюду',
+		't'=>'В заголовках (названиях тем)',
+		'b' => 'В блогах',
+		'p' => 'В теле сообщений',
+	);" is_int=false}
 	{dropdown name="x" list="array(''=>'По умолчанию','e'=>'По фразе','a'=>'Любое слово','b'=>'Бинарный запрос', 'x'=>'Расширенный запрос');"}
 	<br/>
 	За&nbsp;какие&nbsp;даты:&nbsp;{input name="d1" placeholder="ДД" size="2"}.{input name="m1" placeholder="ММ" size="2"}.{input name="y1" placeholder="ГГГГ" size="4"}&nbsp;—&nbsp;{input name="d2" placeholder="ДД" size="2"}.{input name="m2" placeholder="ММ" size="2"}.{input name="y2" placeholder="ГГГГ" size="4"}

@@ -7,7 +7,7 @@ function lp_picasa($id, $params)
 
 	if(strlen($id) > 20) // Это фотография
 	{
-		$size = defval_ne($params, 'size', '640x');
+		$size = defval_ne($params, 'size', '640x640');
 		@list($width, $height) = explode('x', $size);
 
 		$url = "http://picasaweb.google.com/lh/photo/{$id}?feat=directlink";

@@ -2,6 +2,8 @@
 
 function lcml_auto_images($txt)
 {
+	require_once('engines/lcml/main.php');
+
 	if(lcml_tag_disabled('img'))
 		return $txt;
 

@@ -88,7 +88,7 @@ function lt_img($params)
 			if(preg_match('/\w{5,}$/', $data['path']))
 				$data['path'] .= '.jpg';
 
-//			if(config('is_developer') && preg_match('/_cg/', $uri)) { var_dump($data); exit(); }
+//			if(config('is_developer') && preg_match('/nevseoboi/', $uri)) { echo '<xmp>'; var_dump($data); exit(); }
 
 			$store_path = config('sites_store_path');
 			$store_url  = config('sites_store_url');
@@ -238,10 +238,11 @@ function lt_img($params)
 
 					$db->update('images', array('id' => $id), array('local_path' => $data['local_path']));
 
-					$img = airbase_image::register_file($file, true, true, 'airbase_image');
-					balancer_board_posts_object::register($img, $params);
 				}
 			}
+
+			$img = airbase_image::register_file($file, true, true, 'airbase_image');
+			balancer_board_posts_object::register($img, $params);
 
 			if($data['local'])
 			{

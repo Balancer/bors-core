@@ -4,6 +4,7 @@
 	{
 		$InsertPostMess = "";
 
+		$author = str_replace('_', ' ', $author);
 		$author = preg_replace('!^\[(.+?)\]$!','$1',$author);
 		$author = preg_replace('!^<(.+?)>$!','$1',$author);
 		$author = preg_replace('!^&lt;(.+?)&gt;$!','$1',$author);

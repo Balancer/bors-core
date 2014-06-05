@@ -1,11 +1,13 @@
 <?php
 
+define('LCML_IMG_TIMEOUT', ($t = ini_get('max_execution_time')) ? $t*3/4 : 30);
+
 function lcml_images($txt, $lcml)
 {
 	if(lcml_tag_disabled('img'))
 		return $txt;
 
-	if($lcml->is_timeout(10))
+	if($lcml->is_timeout(LCML_IMG_TIMEOUT))
 		return $txt;
 
 	$n=50;
@@ -13,7 +15,7 @@ function lcml_images($txt, $lcml)
 		$txt = str_replace($m[0], lcml("[img \"{$m[1]}\" noflow {$m[3]}]"), $txt);
 
 	while(preg_match("!^[\s￼ ]*(https?://\S+\.(jpg|png|gif|jpeg|sjpg))\s*$!im", $txt, $m)
-			&& !$lcml->is_timeout(10)
+			&& !$lcml->is_timeout(LCML_IMG_TIMEOUT)
 	)
 	{
 		$image_url = $m[1];

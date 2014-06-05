@@ -256,6 +256,7 @@ class blib_http_abstract
 			curl_setopt($ch, CURLOPT_PROXY, config('proxy.forced'));
 
 		$start_time = time();
+
 		$data = curl_exec($ch);
 		$info = curl_getinfo($ch);
 

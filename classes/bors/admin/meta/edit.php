@@ -126,7 +126,7 @@ class bors_admin_meta_edit extends bors_admin_page
 		if($ff = $this->get('form_fields'))
 			$form_fields = $ff;
 
-		if($form_fields == 'auto' && ($section = $this->get('admin_edit_section')))
+		if($form_fields == 'auto' && ($section = $this->get('admin_edit_section')) && $target)
 		{
 			$form_fields = bors_lib_orm::fields($target);
 			$form_fields = array_filter($form_fields, function($x) use ($section) {

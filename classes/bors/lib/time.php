@@ -68,7 +68,7 @@ class bors_lib_time
 		unset($array['time_vars']);
 	}
 
-	private function _join($var, &$data)
+	private static function _join($var, &$data)
 	{
 		$can_drop = popval($data, "{$var}_can_drop");
 		if(empty($data[$var]) && $can_drop)

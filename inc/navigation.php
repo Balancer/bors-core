@@ -32,6 +32,8 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 		if($x = @bors()->tmp_go_obj)
 			$body .= '<pre>'.bors_objects_helper::object_info($x).'</pre>';
 
+		$body .= '<xmp>'.print_r($_GET, true).'</xmp>';
+
 		$body .= "Go to <a href=\"{$uri}\" class=\"btn\">{$uri}</a>";
 
 		echo twitter_bootstrap::raw_message(array(

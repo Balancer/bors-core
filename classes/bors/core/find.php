@@ -21,7 +21,8 @@ class bors_core_find
 
 	function first()
 	{
-		return array_pop($this->all(1));
+		$arr = $this->all(1);
+		return array_pop($arr);
 	}
 
 	function page($page, $items_per_page)

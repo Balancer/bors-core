@@ -97,6 +97,22 @@ class bors_paginated extends base_page_paged
 		return $where;
 	}
 
+	function _default_order_def()
+	{
+		$sorts = $this->get('sortable', array());
+		if($x = $this->get('_sortable_append', array()))
+			$sorts = array_merge($x, $sorts);
+
+		if($sorts)
+		{
+			foreach($sorts as $f => $p)
+				if(preg_match('/^(.+)\*$/', $p, $m))
+					return $m[1];
+		}
+
+		return parent::default_order();
+	}
+
 	function make_sortable_th($property, $title)
 	{
 		if(is_numeric($property))

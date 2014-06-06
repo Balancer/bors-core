@@ -7,7 +7,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 
 	if(!file_exists($file_in))
 	{
-		config_set('bors-image-lasterror', ec('Файл не существует'));
+		config_set('bors-image-lasterror', "[10] Source image file not exists:\n".$file_in);
 		return false;
 	}
 
@@ -21,6 +21,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 	catch(Exception $e)
 	{
 		bors_debug::syslog('image-scale-exception', blib_exception::factory($e));
+		config_set('bors-image-lasterror', "[22] Thumbnail make exception\nImage:\n".$file_in."\nException:\n".$e->getMessage());
 		return false;
 	}
 
@@ -60,7 +61,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 	if(!$data || !$data[0])
 	{
 		config_set('bors-image-lasterror', ec('Не могу определить размеры изображения'));
-		debug_hidden_log('image-error', "Can't get width for image {$file_in} (tr resize to {$file_out}($width, $height, $opts); WxH = ".@$data[0].'x'.@$data[1]);
+		debug_hidden_log('image-error', "Can't get width for image {$file_in}\n(tr resize to {$file_out}($width, $height, $opts);\nWxH = ".@$data[0].'x'.@$data[1]);
 		return false;
 	}
 

@@ -85,7 +85,10 @@ class bors_tools_search_result extends bors_tools_search
 			case 'a':
 			case '1':
 			case 'na':
-				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta,posts,posts_delta,livestreet_topics";
+				$index = "blog_titles,topic_descriptions,blog_keywords,blog_sources,blog_sources_delta,posts,posts_delta,livestreet_topics";
+				break;
+			case 'p': // В теле сообщений
+				$index = "posts,posts_delta";
 				break;
 			case 'b':
 				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta,livestreet_topics";

@@ -4,8 +4,8 @@ function bors_image_message($message, $params = array())
 {
 	debug_hidden_log('image-messages', $message);
 
-	$ww = intval(defval($params, 'width', 100));
-	$hh = intval(defval($params, 'height', 100));
+	$ww = intval(defval($params, 'width', 640));
+	$hh = intval(defval($params, 'height', 400));
 
 	$img = imagecreatetruecolor($ww, $hh);
 
@@ -22,7 +22,7 @@ function bors_image_message($message, $params = array())
 	imagefill($img, 0, 0, $gray);
 
 	$x = 4;
-	$y = $hh/2;
+	$y = 20;
 	$angle = 0;
 	$size = 7;
 

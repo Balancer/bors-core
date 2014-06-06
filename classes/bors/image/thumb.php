@@ -69,7 +69,7 @@ class bors_image_thumb extends bors_image
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_is_loaded(true);
 
-		$this->original = object_load($this->arg('image_class_name', $this->image_class()), $id);
+		$this->original = bors_load($this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
 			return $this->set_is_loaded(false);
@@ -92,6 +92,11 @@ class bors_image_thumb extends bors_image
 		$this->set_relative_path($new_path, $caching);
 
 		$original_url = $this->original->url();
+
+		// Фикс кривых URL вида http:///sites/ru/de/demotivatorium/sstorage/3/2012/04/1304120411359847.jpg
+		if(preg_match('!^http://(/.+)$!', $original_url, $m))
+			$original_url = $m[1];
+
 		if($original_url[0] == '/')
 			$new_url = '/cache'.preg_replace('!^(/.+?)([^/]+)$!', '${1}'.$this->geometry.'/$2', $original_url);
 		else

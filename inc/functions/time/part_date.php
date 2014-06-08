@@ -2,6 +2,10 @@
 
 function part_date($date, $int = false, $on_empty_text = '', $short=false, $rp=false)
 {
+	//TODO: хак для http://www.aviaport.ru/job/resumes/747/ && #1248
+	if(is_numeric($date) && $date > 99999999)
+		return month_name(date('m', $date)).' '.date('Y', $date).ec(' г.');
+
 	$year = $month = $day = 0;
 	if($int)
 	{

@@ -91,9 +91,10 @@ class bors_image_autothumb extends bors_object
 		if(preg_match('!^/!', $u = $img->url()))
 		{
 			$ud = parse_url(bors()->request()->url());
-//			var_dump("http://{$ud['host']}$u"); exit();
-			if(config('is_developer')) { echo "set url3 = ".$new_url; exit(); }
-			$img->set_full_url("http://{$ud['host']}$u");
+			if(empty($ud['host']))
+				$img->set_full_url($u);
+			else
+				$img->set_full_url("http://{$ud['host']}$u");
 		}
 
 		$thumb = $img->thumbnail($this->geo);

@@ -289,7 +289,7 @@ if(config('is_developer')) { exit($img); }
 
 			$tags = array();
 
-			$bbshort = trim(bors_close_tags(bors_close_bbtags($bbshort)));
+			$bbshort = trim(bors_close_tags(bors_close_bbtags(blib_obscene::mask($bbshort, true))));
 
 //			if(config('is_developer')) { print_dd($bbshort); exit($title); }
 			return compact('tags', 'title', 'bbshort');

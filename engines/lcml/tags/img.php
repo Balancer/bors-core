@@ -307,9 +307,13 @@ function lt_img($params)
 			if(!$have_href)
 				$href = $uri;
 
-			$thumb = bors_load('bors_image_autothumb', preg_replace('!^http://[^/]+/cache/!', '/', $img_ico_uri));
-			$thumb = $thumb->make_self();
-			$thumb_file = $thumb->full_file_name();
+			if($thumb = bors_load('bors_image_autothumb', preg_replace('!^http://[^/]+/cache/!', '/', $img_ico_uri)))
+			{
+				$thumb = $thumb->make_self();
+				$thumb_file = $thumb->full_file_name();
+			}
+			else
+				$thumb_file = NULL;
 
 			if(file_exists($thumb_file))
 			{

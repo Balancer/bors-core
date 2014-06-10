@@ -106,6 +106,8 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		return secure_path(config('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$rel_path);
 	}
 
+	function _image_site_base_url_def() { return config('pics_base_url'); }
+
 	function url_ex($page) { return $this->url(); }
 	function url()
 	{
@@ -116,7 +118,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		if(preg_match('/\.$/', $fn))
 			$fn .= 'jpg';
 
-		return secure_path(config('pics_base_url').'/'.$this->relative_path().'/'.$fn);
+		return secure_path($this->image_site_base_url().'/'.$this->relative_path().'/'.$fn);
 	}
 
 	function wxh($use_alt_title = true)
@@ -167,9 +169,12 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 		debug_timing_start('image_recalculate');
 		$start = microtime(true);
-		$x = @getimagesize($this->url());
+
+		// Почему-то стояла сперва проверка не через файл, а через URL.
+		// Если будет глючить — вернуть с объяснением. Иначе тормозит.
+		$x = @getimagesize($this->file_name_with_path());
 		if(!$x)
-			$x = @getimagesize($this->file_name_with_path());
+			$x = @getimagesize($this->url());
 
 		if(!empty($x[0]) && !empty($x['mime']))
 		{

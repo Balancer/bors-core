@@ -110,7 +110,7 @@ class bors_paginated extends base_page_paged
 					return $m[1];
 		}
 
-		return parent::default_order();
+		return parent::_default_order_def();
 	}
 
 	function make_sortable_th($property, $title)

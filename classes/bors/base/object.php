@@ -338,7 +338,7 @@ class base_object extends base_empty
 		if(method_exists($this, $m))
 		{
 			// Try убран, так как нужно решить, как обрабатывать всякие function _title_def() { bors_throw('Заголовок не указан!';} — см. bors_rss
-			$value = $this->$m();
+			$value = call_user_func(array($this, $m));
 //			var_dump($m, $value);
 //			try { $value = $this->$m(); }
 //			catch(Exception $e) { $value = NULL; }

@@ -8,6 +8,8 @@ function bors_unplural($s)
 		return $m[1].'y';
 	if(preg_match('/^(.+s)es$/', $s, $m)) // newses -> news
 		return $m[1];
+	if(preg_match('/^(.+)es$/', $s, $m)) // attaches -> attach
+		return $m[1];
 	if(preg_match('/^(.+)s$/', $s, $m)) // planes -> plane
 		return $m[1];
 	return $s;

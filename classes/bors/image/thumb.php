@@ -65,6 +65,8 @@ class bors_image_thumb extends bors_image
 		//TODO: сделать вариант, совместимый с safe_mod!
 //		var_dump($this->width(), $this->file_name_with_path(), $this->data);
 
+//		if(config('is_debug')) var_dump('l', $this->file_name_with_path());
+
 		// Наша превьюшка уже есть в БД и описывает живые файлы
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_is_loaded(true);
@@ -96,6 +98,11 @@ class bors_image_thumb extends bors_image
 		// Фикс кривых URL вида http:///sites/ru/de/demotivatorium/sstorage/3/2012/04/1304120411359847.jpg
 		if(preg_match('!^http://(/.+)$!', $original_url, $m))
 			$original_url = $m[1];
+
+		// Заворачиваем адреса с уже кешем в оригинальные.
+		$original_url = preg_replace("!^(.*?)cache/(.+)/\d*x\d*/([^/]+?)$!", "$1$2/$3", $original_url);
+
+//		if(config('is_debug')) var_dump('o', $original_url);
 
 		if($original_url[0] == '/')
 			$new_url = '/cache'.preg_replace('!^(/.+?)([^/]+)$!', '${1}'.$this->geometry.'/$2', $original_url);

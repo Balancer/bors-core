@@ -306,7 +306,7 @@ function find_next_open_tag($txt, $pos)
 			$func = $m[1];
 			$params = "$func={$m[2]} {$m[3]}";
 		}
-		elseif(preg_match("!^(\w+)\|(.+)$!s", $tag, $m)) // func, params
+		elseif(preg_match("!^(\w+)\|(.*)$!s", $tag, $m)) // func, params
 		{
 			$func = $m[1];
 			$params = $tag;

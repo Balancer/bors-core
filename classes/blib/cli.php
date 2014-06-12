@@ -5,7 +5,7 @@
 	Используется composer jlogsdon/cli
 */
 
-require_once('composer/vendor/autoload.php');
+// require_once('composer/vendor/autoload.php');
 
 class blib_cli
 {

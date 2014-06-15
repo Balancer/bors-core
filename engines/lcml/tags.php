@@ -379,7 +379,7 @@ function next_open_brace($txt, $pos)
 	{
 		$params = array('lcml' => $lcml);
 		$params['self'] = defval($GLOBALS['lcml']['params'], 'self');
-		$params['container'] = defval($GLOBALS['lcml']['params'], 'container');
+		$params['container'] = $lcml->params('container');
 
 		if(!preg_match('!^\w+=!', $in) && preg_match("!^(.*?)\|(.*)$!s", $in, $m))
 		{

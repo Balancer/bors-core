@@ -59,7 +59,7 @@ class bors_page extends base_page
 
 	function _layout_def()
 	{
-		$layout = bors_load($this->layout_class(), $this);
+		$layout = new $this->layout_class();
 		$this->set_attr('layout', $layout);
 		return $layout;
 	}

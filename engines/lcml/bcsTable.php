@@ -23,7 +23,7 @@
 
         function __construct($args = array())
         {
-			var_dump($args);
+//			var_dump($args);
 
             $this->data      = array();
             $this->row_spans = array();

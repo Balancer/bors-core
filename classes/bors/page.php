@@ -55,6 +55,16 @@ class bors_page extends base_page
 		return parent::_body_template_def();
 	}
 
+	function _layout_class_def() { return 'bors_layout'; }
+
+	function _layout_def()
+	{
+		$layout = bors_load($this->layout_class(), $this);
+		$this->set_attr('layout', $layout);
+		return $layout;
+	}
+
+
 	// Вынесено в bors_lib_page. Проверить.
 	function __smart_body_template_check()
 	{

@@ -379,6 +379,7 @@ function next_open_brace($txt, $pos)
 	{
 		$params = array('lcml' => $lcml);
 		$params['self'] = defval($GLOBALS['lcml']['params'], 'self');
+		$params['container'] = defval($GLOBALS['lcml']['params'], 'container');
 
 		if(!preg_match('!^\w+=!', $in) && preg_match("!^(.*?)\|(.*)$!s", $in, $m))
 		{
@@ -545,7 +546,7 @@ function make_enabled_params($params, $names_list, $skip_list = '')
 
 	if($params)
 	{
-		$skip_list = " {$skip_list} align _align_b _align_e alt colspan is_alone name notitle orig rowspan skip_around_cr title valign _border url uri border width xwidth _width self skip_around_cr";
+		$skip_list = " {$skip_list} align _align_b _align_e alt colspan container is_alone name notitle orig rowspan skip_around_cr title valign _border url uri border width xwidth _width self skip_around_cr";
 		$att = array();
 		foreach($params as $key => $value)
 			if($value && strpos($skip_list, " $key ")===false)

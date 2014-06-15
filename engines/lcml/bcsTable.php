@@ -21,8 +21,10 @@
             $this->row = $this->col = 0;
         }
 
-        function bcsTable()
+        function __construct($args = array())
         {
+			var_dump($args);
+
             $this->data      = array();
             $this->row_spans = array();
             $this->col_spans = array();

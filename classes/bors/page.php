@@ -311,4 +311,6 @@ class bors_page extends base_page
 	{
 		bors_page::add_template_data_array('head_append', "<link rel=\"$rel\" href=\"".htmlspecialchars($href).'"/>');
 	}
+
+	function parents_links_lines() { return bors_pages_helper::parents_links_lines($this); }
 }

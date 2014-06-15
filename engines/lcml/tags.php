@@ -5,12 +5,12 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 	$taglist = config('lcml_tags_enabled');
 	$taglist_disabled = config('lcml_tags_disabled');
 
-	if(class_exists("b2"))
-	{
-		$composer = b2::factory()->composer();
+//	if(class_exists("b2"))
+//	{
+//		$composer = b2::factory()->composer();
 //		var_dump($composer->getClassMap());
-		var_dump($composer->getPrefixesPsr4());
-	}
+//		var_dump($composer->getPrefixesPsr4());
+//	}
 
 	$end = 0;
 	$next_end = -1;

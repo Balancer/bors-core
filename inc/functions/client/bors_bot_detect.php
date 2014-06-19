@@ -32,8 +32,13 @@ function bors_bot_detect($user_agent, &$data = array())
 				'url' => 'http://www.grapeshot.co.uk/crawler.php',
 				'crawler' => true,
 			),
-			'Mediapartners-Google' => array(	//	Mediapartners-Google
+			'Mediapartners-Google' => array(	// Mediapartners-Google
 				'bot' => 'Google Mediapartners',
+				'crawler' => false,
+			),
+			'Google.*snippet' => array(			// Mozilla/5.0 (Windows NT 6.1; rv:6.0) Gecko/20110814 Firefox/6.0 Google (+https://developers.google.com/+/web/snippet/)
+				'bot' => 'Google Plus snippet bot',
+				'url' => 'https://developers.google.com/+/web/snippet/',
 				'crawler' => false,
 			),
 			'google' => 'Google',		// Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)

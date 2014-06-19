@@ -94,9 +94,14 @@ class bors_page extends base_page
 
 		while($current_class)
 		{
-			if($base = preg_replace("!(.+/\w+)\..+?$!", "$1.", @$class_files[$current_class]))
+			if(!($class_file = @$class_files[$current_class]))
 			{
-//				echo "Check $current_class for $base$ext<Br/>";
+				$reflector = new ReflectionClass($current_class);
+				$class_file = $reflector->getFileName();
+			}
+
+			if($base = preg_replace("!(.+/\w+)\..+?$!", "$1.", $class_file))
+			{
 				if($is_smart)
 				{
 					if($suffix && file_exists($bt = $base.$suffix.'.tpl'))

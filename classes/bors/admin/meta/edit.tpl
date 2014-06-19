@@ -1,5 +1,4 @@
 {block name="admin_meta_edit_body_begin"}{/block}
-
 {form
 	class=$this->main_admin_class()
 	id=$this->id()

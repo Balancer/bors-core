@@ -2,8 +2,6 @@
 
 // Вариант без использования XMLWriter. Сырой. Пользоваться осторожно!
 
-require_once(dirname(__FILE__).'/../strings.php'); // нужно только для bors_unplural
-
 /** Вариант преобразования массива в XML с приоритетом параметров как атрибутов тегов:
 
 $data = array(
@@ -102,7 +100,7 @@ class Array2XMLWP2
             if(is_numeric($key))
             {
             	if($parent)
-	                $key = bors_unplural($parent);
+	                $key = blib_grammar::singular($parent);
             	else
 	                $key = 'key'.$key;
 

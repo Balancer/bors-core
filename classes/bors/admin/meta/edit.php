@@ -114,7 +114,7 @@ class bors_admin_meta_edit extends bors_admin_page
 			)
 			{
 //				var_dump($m);
-				set_session_var("form_value_".bors_unplural($m[1]).'_id', $m[2]);
+				set_session_var("form_value_".blib_grammar::singular($m[1]).'_id', $m[2]);
 			}
 
 		}

@@ -1,7 +1,5 @@
 <?php
 
-bors_function_include('natural/bors_unplural');
-
 class auto_object_php extends bors_object
 {
 	function data_load() { }
@@ -77,7 +75,7 @@ class auto_object_php extends bors_object
 				$class_path = $cp;
 				$is_auto = true;
 			}
-			elseif(is_numeric($object_id) && class_include($class_base.($cp = bors_unplural($m[1]).'_view')))
+			elseif(is_numeric($object_id) && class_include($class_base.($cp = blib_grammar::singular($m[1]).'_view')))
 			{
 				$class_path = $cp;
 				$is_auto = true;
@@ -103,7 +101,7 @@ class auto_object_php extends bors_object
 			}
 			else
 			{
-				$class_path = bors_unplural($m[1]);
+				$class_path = blib_grammar::singular($m[1]);
 				$object_id = $m[2];
 			}
 		}

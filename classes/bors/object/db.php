@@ -80,7 +80,7 @@ class bors_object_db extends base_object_db
 			{
 				$field_name = $mm[1]; // например, parent_project_id
 				$foreign_table = $mm[2];
-				$item = bors_unplural($foreign_table);
+				$item = blib_grammar::singular($foreign_table);
 				$item_class = "{$project}_".$item;
 				if(empty($fields[$field_name]['class']))
 					$fields[$field_name]['class'] = $item_class;

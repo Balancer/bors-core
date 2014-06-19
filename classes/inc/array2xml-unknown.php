@@ -1,7 +1,5 @@
 <?php
 
-require_once('inc/strings.php'); // нужно только для bors_unplural
-
 class Array2XML
 {
     private $writer;
@@ -39,7 +37,7 @@ class Array2XML
             if(is_numeric($key))
             {
             	if($parent)
-	                $key = bors_unplural($parent);
+	                $key = blib_grammar::singular($parent);
             	else
 	                $key = 'key'.$key;
             }

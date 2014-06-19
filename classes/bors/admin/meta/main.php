@@ -24,13 +24,13 @@ class bors_admin_meta_main extends bors_admin_paginated
 
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		$class_name = str_replace('_main', '', $class_name);
-		return bors_unplural($class_name);
+		return blib_grammar::singular($class_name);
 	}
 
 	function _main_admin_class_def()
 	{
 		$class_name = str_replace('_main', '', $this->class_name());
-		$admin_class_name = bors_unplural($class_name);
+		$admin_class_name = blib_grammar::singular($class_name);
 		if(class_include($admin_class_name))
 			return $admin_class_name;
 

@@ -4,16 +4,13 @@ class blib_grammar
 {
 	static function singular($s)
 	{
-		if(preg_match('/rss$/', $s, $m)) // xrss -> xrss. Исключения не трогаем
+		if(preg_match('/(rss|newses)$/', $s, $m)) // xrss -> xrss. Исключения не трогаем
 			return $s;
 
 		if(preg_match('/^(.+)ies$/', $s, $m)) // companies -> company
 			return $m[1].'y';
 
-		if(preg_match('/^(.+ase)s$/', $s, $m)) // phases => phase
-			return $m[1];
-
-		if(preg_match('/^(.+(o|s|ch|sh))es$/', $s, $m)) // newses -> news, attaches -> attach
+		if(preg_match('/^(.+(o|s|ch|sh))es$/', $s, $m)) // attaches -> attach
 			return $m[1];
 
 		if(preg_match('/^(.+)s$/', $s, $m)) // planes -> plane
@@ -27,7 +24,7 @@ class blib_grammar
 		foreach(array(
 			'rss' => 'rss',
 			'companies' => 'company',
-			'newses' => 'news',
+			'newses' => 'news', // Исключение — ошибочное слово
 			'attaches' => 'attach',
 			'planes' => 'plane',
 			'aerodromes' => 'aerodrome',

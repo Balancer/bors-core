@@ -24,6 +24,7 @@ class bors_admin_meta_main extends bors_admin_paginated
 
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		$class_name = str_replace('_main', '', $class_name);
+
 		return blib_grammar::singular($class_name);
 	}
 

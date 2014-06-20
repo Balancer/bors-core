@@ -4,7 +4,7 @@
 	Отложенная перекомпиляция LCML-разметки.
 */
 
-class bors_task_lcml extends base_empty
+class bors_task_lcml extends bors_object_simple
 {
 	function execute($object)
 	{

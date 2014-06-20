@@ -1,6 +1,6 @@
 <?php
 
-class bors_object_tools extends base_empty
+class bors_object_tools extends bors_object_simple
 {
 	function object() { return $this->id(); }
 

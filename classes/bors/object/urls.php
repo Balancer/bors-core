@@ -2,7 +2,7 @@
 
 // Создание всевозможных url'ов
 
-class bors_object_urls extends base_empty
+class bors_object_urls extends bors_object_simple
 {
 	function object() { return $this->id(); }
 

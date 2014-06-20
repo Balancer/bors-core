@@ -1,6 +1,6 @@
 <?php
 
-class bors_forms_saver extends base_empty
+class bors_forms_saver extends bors_object_simple
 {
 	function save($form_object, $data, $files)
 	{

@@ -1,6 +1,6 @@
 <?php
 
-class url_base extends base_empty
+class url_base extends bors_object_simple
 {
 	function url() { return $this->url_ex(NULL); }
 	function url_ex($args) { return '/'; }

@@ -1,6 +1,6 @@
 <?php
 
-class base_object extends base_empty
+class base_object extends bors_object_simple
 {
 	var $data = array();
 

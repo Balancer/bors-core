@@ -163,6 +163,9 @@ class bors_admin_engine extends bors_object
 		}
 		catch(Exception $e) { }
 
+		if(stripos($mode, 'e') !== false && $obj->access()->can_delete())
+			$html .= '&nbsp;' . $this->imaged_edit_link('');
+
 		if(stripos($mode, 'd') !== false && $obj->access()->can_delete())
 			$html .= '&nbsp;' . $this->imaged_delete_link('');
 

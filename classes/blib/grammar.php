@@ -19,6 +19,12 @@ class blib_grammar
 		return $s;
 	}
 
+	static function chunk_singular($string, $split='_', $join = '_')
+	{
+		return join($join, array_map(array('blib_grammar', 'singular'), explode($split, $string)));
+	}
+
+
 	static function __unit_test($suite)
 	{
 		foreach(array(
@@ -50,5 +56,7 @@ class blib_grammar
 			'skies' => 'sky',
 		) as $plural => $singular)
 			$suite->assertEquals($singular, blib_grammar::singular($plural));
+
+		$suite->assertEquals('airport_activity', blib_grammar::chunk_singular('airports_activities'));
 	}
 }

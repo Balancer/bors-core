@@ -99,6 +99,10 @@ class auto_object_php extends bors_object
 				$class_path = $cp;
 				$object_id = is_numeric($object_id) ? $object_id : NULL;
 			}
+			elseif(class_include($class_base.($cp = blib_grammar::chunk_singular($m[1]))))
+			{
+				$class_path = $cp;
+			}
 			else
 			{
 				$class_path = blib_grammar::singular($m[1]);

@@ -37,15 +37,11 @@ class bors_object_db extends base_object_db
 		if($tab = $this->get('table_name', NULL, true))
 			return $tab;
 
-		bors_function_include('natural/bors_chunks_unplural');
 		$class_name = str_replace('_admin_', '_', $this->class_name());
-		if(preg_match('/^'.$this->project_name().'_(\w+)$/i', $class_name, $m))
-		{
-//			echo bors_plural(bors_chunks_unplural($m[1]))."<br/>";
-			return bors_plural(bors_chunks_unplural($m[1]));
-		}
+		if(preg_match('/^'.preg_quote($this->project_name(),'/').'_(\w+)$/i', $class_name, $m))
+			return $this->attr['table_name'] = bors_plural(blib_grammar::chunk_singular($m[1]));
 
-		return $this->_item_name_m();
+		return $this->attr['table_name'] = $this->_item_name_m();
 	}
 
 	function set_table_name($table_name) { return $this->table_name = $table_name; }

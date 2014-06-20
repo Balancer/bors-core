@@ -1,6 +1,6 @@
 <?php
 
-class base_list extends base_empty
+class base_list extends bors_object_simple
 {
 	function id_to_name($id)
 	{

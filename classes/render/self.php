@@ -1,6 +1,6 @@
 <?php
 
-class render_self extends base_empty
+class render_self extends bors_object_simple
 {
 	function render($object)
 	{

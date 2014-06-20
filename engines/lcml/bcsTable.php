@@ -1,7 +1,5 @@
 <?php
 
-//use HtmlObject;
-
 class bcsTable
 {
 		var $table_data;
@@ -41,21 +39,19 @@ class bcsTable
 			$this->table_width = $width;
 		}
 
-		function set_max()
+		function set_max($row = NULL, $col = NULL)
 		{
-			if($this->col >= $this->cols)
-			{
-//				if($this->row > 0)
-//					error_log_translate_warning(__FILE__."[".__LINE__."] Cols (".($this->col+1).") in line {$this->row} greater then maximum in one of previous lines ({$this->cols})!<br />");
+			if(is_null($col))
+				$col = $this->col;
 
-				$this->cols = $this->col + 1;
+			if(is_null($row))
+				$row = $this->row;
 
-				if($this->rows == 0)
-					$this->rows = 1;
-			}
+			if($col >= $this->cols)
+				$this->cols = $col + 1;
 
-			if($this->row >= $this->rows)
-				$this->rows = $this->row + 1;
+			if($row >= $this->rows)
+				$this->rows = $row + 1;
 		}
 
 		function next_col()
@@ -68,18 +64,21 @@ class bcsTable
 
 		function new_row()
 		{
-			$this->set_max();
-//			echo "{$this->row} {$this->col} {$this->cols}\n";
-//			if($this->row > 0 && $this->col != $this->cols-1)
-//			  error_log_translate_warning(__FILE__."[".__LINE__."] Cols ({$this->col}) in line {$this->row} less then maximum in one of previous lines ({$this->cols})!<br />");
 			$this->col = 0;
+			$this->set_max();
 			$this->row++;
 		}
 
-		function setData($data)
+		function setData($data, $row = NULL, $col = NULL)
 		{
-			$this->set_max();
-			$this->data[$this->row][$this->col] = $data;
+			if(is_null($col))
+				$col = $this->col;
+
+			if(is_null($row))
+				$row = $this->row;
+
+			$this->set_max($row, $col);
+			$this->data[$row][$col] = $data;
 		}
 
 		function append($data)
@@ -100,9 +99,9 @@ class bcsTable
 				$this->row_spans[$this->row+$i][$this->col] = -1;
 		}
 
-		function setHead($head_bit=1)
+		function setHead($head_bit=1, $row = NULL, $col = NULL)
 		{
-			$this->heads[$this->row][$this->col] = $head_bit;
+			$this->heads[is_null($row) ? $this->row : $row][is_null($col) ? $this->col : $col] = $head_bit;
 		}
 
 		var $style = array();
@@ -110,7 +109,6 @@ class bcsTable
 
 		function get_html()
 		{
-//			$table = Table:: "<table{$this->table_width}{$this->table_border}>\n";
 			$table = \HtmlObject\Element::table();
 			if($w = $this->table_width)
 			{
@@ -124,15 +122,10 @@ class bcsTable
 			{
 				$tr = \HtmlObject\Element::tr();
 
-				$rspans = 0;
-				for($c=0; $c < $this->cols-1; $c++)
-					if(@$this->row_spans[$r][$c]<0)
-						$rspans++;
-
-				for($c=0; $c < $this->cols-1-$rspans; $c += @$this->col_spans[$r][$c] > 1 ? $this->col_spans[$r][$c] : 1)
+				for($c=0; $c < $this->cols; $c += @$this->col_spans[$r][$c] > 1 ? $this->col_spans[$r][$c] : 1)
 				{
-
-//					echo "$r, $c: rss={$this->row_spans[$r][$c]} ";
+					if(@$this->row_spans[$r][$c]<0)
+						continue;
 
 //	Убрано из-за	http://balancer.ru/2007/12/10/post-1361199.html
 //					if(@$this->row_spans[$r][$c] < 0)
@@ -144,6 +137,7 @@ class bcsTable
 						$data = '&nbsp;';
 
 					$tx = !empty($this->heads[$r][$c]) ? \HtmlObject\Element::th() : \HtmlObject\Element::td();
+
 					if(@$this->col_spans[$r][$c] > 1)
 						$tx->colspan($this->col_spans[$r][$c]);
 					if(@$this->row_spans[$r][$c] > 1)

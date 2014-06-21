@@ -37,7 +37,6 @@ function lp_ol($text, $param)
 	return save_format("\n<ol$type>".lcml($text)."</ol>\n");
 }
 
-require_once('inc/strings.php');
 function lp_list($text, &$params)
 {
 	$params['skip_around_cr'] = 'full';
@@ -47,5 +46,6 @@ function lp_list($text, &$params)
 	else
 		$tag = 'ul';
 
-	return save_format("\n<$tag>".preg_replace('/^\[\*\](.*?)$/me', "'<li>'.lcml(stripq('$1')).'</li>'", $text)."</$tag>\n");
+	return save_format("\n<$tag>".preg_replace_callback('/^\[\*\](.*?)$/m',
+		function($m) { return '<li>'.lcml(stripq($m[1])).'</li>';}, $text)."</$tag>\n");
 }

@@ -2,6 +2,8 @@
 
 define('MAX_EXECUTE_S', 0.5);
 
+require_once(__DIR__.'/../../engines/lcml/tags.php');
+
 class bors_lcml extends bors_object
 {
 	private $_params = array();
@@ -99,7 +101,7 @@ class bors_lcml extends bors_object
 	private static function actions_load($rel_dir, &$functions = array())
 	{
 		foreach(bors_dirs() as $base_dir)
-			bors_lcml::_actions_load(secure_path($base_dir.'/engines/lcml/'.$rel_dir), $functions);
+			bors_lcml::_actions_load($base_dir.'/engines/lcml/'.$rel_dir, $functions);
 	}
 
 	private static function _actions_load($dir, &$functions = array())

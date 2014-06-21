@@ -1,7 +1,5 @@
 <?php
 
-require_once('inc/strings.php');
-
 function lcml_save_tags_format($txt)
 {
 	$txt = str_replace('<?php', '&lt;?php', $txt);

@@ -18,14 +18,17 @@
 		"source": "https://bitbucket.org/Balancer/bors-core"
 	},
 
+	"prefer-stable": true,
+	"minimum-stability": "dev",
+
 	"require": {
 		"php": ">=5.3",
+		"balancer/blib-morfology-ru": "@dev",
 		"intervention/image": "<2",
 		"rediska/rediska": "*",
 		"smarty/smarty": "!=3.1.17",
 		"easybook/geshi": "*",
-		"anahkiasen/html-object": "*",
-		"makhov/phpmorphy": "*"
+		"anahkiasen/html-object": "*"
 	},
 
 	"suggest": {

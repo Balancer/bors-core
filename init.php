@@ -38,6 +38,8 @@ foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 if(file_exists(BORS_ROOT.'composer'))
 	require_once(BORS_ROOT.'composer/vendor/autoload.php');
 
+bors_funcs::noop();
+
 $dir = dirname(__FILE__);
 bors_config_ini($dir.'/config.ini');
 require_once($dir.'/config.php');
@@ -79,11 +81,6 @@ if(file_exists(dirname(BORS_SITE).'/composer'))
 	$includes[] = dirname(BORS_SITE);
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEPARATOR, array_unique($includes)));
-
-// Уникальный случай, грузим класс загрузчика вручную, так как
-// автоматическую загрузку обеспечивает именно он сам
-require BORS_CORE.'/classes/bors/class/loader.php';
-function class_include($class_name, &$args = array()) { return bors_class_loader::load($class_name, $args); }
 
 bors_function_include('locale/ec');
 
@@ -164,54 +161,6 @@ function bors_init()
 		debug_execute_trace('bors_init() done.');
 }
 
-function bors_dirs($skip_config = false, $host = NULL)
-{
-	static $dirs = NULL;
-
-	if(!$host)
-		$host = @$_SERVER['HTTP_HOST'];
-
-	if(isset($dirs[$skip_config][$host]))
-		return $dirs[$skip_config][$host];
-
-	$vhost = '/vhosts/'.$host;
-
-	$data = array();
-	if(!$skip_config && defined('BORS_APPEND'))
-		$data = array_merge($data, explode(' ', BORS_APPEND));
-
-	foreach(array(
-		BORS_SITE,
-		BORS_HOST,
-		BORS_LOCAL.$vhost,
-		BORS_LOCAL,
-		BORS_EXT,
-		BORS_CORE,
-		BORS_3RD_PARTY,
-	) as $dir)
-	{
-		if(is_dir($dir))
-			$data[] = $dir;
-	}
-
-	if($prjs = @$GLOBALS['bors_data']['projects'])
-		foreach($prjs as $project_name => $x)
-			$data[] = $x['project_path'];
-
-	if(defined('COMPOSER_ROOT'))
-	{
-		$lock = json_decode(file_get_contents(COMPOSER_ROOT . '/composer.lock'), true);
-		foreach($lock['packages'] as $package)
-		{
-			$path = COMPOSER_ROOT . '/vendor/' . $package['name'];
-			if(file_exists($path.'/classes') || file_exists($path.'/templates'))
-				$data[] = $path;
-		}
-	}
-
-	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
-}
-
 if(get_magic_quotes_gpc() && $_POST)
 	ungpc_array($_POST);
 
@@ -221,7 +170,6 @@ register_shutdown_function('bors_exit_handler');
 
 bors_function_include('client/bors_client_analyze');
 bors_client_analyze();
-
 
 if(file_exists(BORS_EXT.'/config-post.php'))
 	include_once(BORS_EXT.'/config-post.php');
@@ -372,8 +320,6 @@ function bors_auto_class($item_name, $action_name, $base_class_name, $attrs = ar
 	eval($code);
 }
 
-bors_funcs::init();
-
 function bors_include_once($file, $warn = false)
 {
 	return bors_include($file, $warn, true);
@@ -406,13 +352,6 @@ function bors_include($file, $warn = false, $once = false)
 }
 
 function nospace($str) { return str_replace(' ', '', $str); }
-
-function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }
-function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
-function config($key, $def = NULL) { return array_key_exists($key, $GLOBALS['cms']['config']) ? $GLOBALS['cms']['config'][$key] : $def; }
-
-function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
-function configh($section, $hash, $key, $def = NULL) { return @array_key_exists($key, @$GLOBALS['cms']['config'][$section][$hash]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
 
 function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 {

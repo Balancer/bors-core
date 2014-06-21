@@ -35,14 +35,42 @@ class bors_debug
 
 	static function timing_start($section)
 	{
-		bors_function_include('debug/timing_start');
-		debug_timing_start($section);
+		global $bors_debug_timing;
+		if(empty($bors_debug_timing[$section]))
+			$bors_debug_timing[$section] = array('start' => NULL, 'calls'=>0, 'total'=>0, 'mem_total' => 0);
+
+		$current = &$bors_debug_timing[$section];
+
+		if($current['start'])
+		{
+			//TODO: need best method
+//			debug_hidden_log('__debug_error', ec("Вторичный вызов незавершённой функции debug_timing_start('$section')."));
+			return;
+		}
+
+		$current['start'] = microtime(true);
+		$current['mem'] = memory_get_usage();
 	}
 
 	static function timing_stop($section)
 	{
-		bors_function_include('debug/timing_stop');
-		debug_timing_stop($section);
+		global $bors_debug_timing;
+		$current = &$bors_debug_timing[$section];
+
+		if(empty($current['start']))
+		{
+//			debug_hidden_log('__debug_error', ec("Вызов неактивированной функции debug_timing_stop('$section')."));
+			return;
+		}
+
+		$mem = memory_get_usage() - $current['mem'];
+		$time = microtime(true) - $current['start'];
+
+		$current['start'] = NULL;
+		$current['mem'] = NULL;
+		$current['calls']++;
+		$current['total'] += $time;
+		$current['mem_total'] += $mem;
 	}
 
 	static function trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)

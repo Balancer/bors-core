@@ -26,7 +26,6 @@ class bors_page_fs_markdown extends bors_page
 
 	function body()
 	{
-		require_once(config('markdown_include'));
 		return \Michelf\Markdown::defaultTransform($this->source());
 	}
 

@@ -24,7 +24,8 @@
 		"rediska/rediska": "*",
 		"smarty/smarty": "!=3.1.17",
 		"easybook/geshi": "*",
-		"anahkiasen/html-object": "*"
+		"anahkiasen/html-object": "*",
+		"makhov/phpmorphy": "*"
 	},
 
 	"suggest": {

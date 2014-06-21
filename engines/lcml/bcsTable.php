@@ -1,5 +1,9 @@
 <?php
 
+/*
+	Используется composer: anahkiasen/html-object
+*/
+
 class bcsTable
 {
 		var $table_data;

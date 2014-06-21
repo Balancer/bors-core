@@ -1,7 +1,5 @@
 <?php
 
-require_once('inc/urls.php');
-
 function lt_img($params)
 {
 	if(!trim($params['orig']))

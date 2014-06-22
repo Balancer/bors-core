@@ -7,7 +7,7 @@
 
 class bors_lcml_tag_pair_just extends bors_lcml_tag_pair
 {
-	function html($text)
+	function html($text, &$params)
 	{
 		return "<div align=\"justify\">".lcml($text)."</div>";
 	}

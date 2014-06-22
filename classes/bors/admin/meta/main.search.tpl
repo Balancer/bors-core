@@ -5,7 +5,9 @@
 		<input type="text" class="span4 search-query" name="q" value="{$query|htmlspecialchars}" placeholder="Введите подстроку для поиска" />
 		<button type="submit" class="btn">Искать</button>
 	</div><br/>
-	{bors_radio delim=' ' name="w" value=$w list="array('t' => 'в заголовках', 'a' => 'всюду', '*default' => 't');"}
+{if $search_where}
+	{bors_radio delim=' ' name="w" value=$w list=$search_where}
+{/if}
 </form>
 
 {else}

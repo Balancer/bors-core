@@ -23,9 +23,12 @@ class bors_object extends base_object
 	// Предустановленные автообъекты
 	function auto_objects()
 	{
-		$map = array();
 		if($orm_map = @$GLOBALS['bors-orm-cache']['auto_objects_append'])
 			$map = $orm_map;
+		else
+			$map = array();
+
+		$map['mtime'] = 'bors_time(modify_time)';
 
 		return $map;
 /*
@@ -141,14 +144,6 @@ class bors_object extends base_object
 			return $this->__lastc();
 
 		return bors_load('bors_time', $this->create_time());
-	}
-
-	function mtime()
-	{
-		if($this->__havefc())
-			return $this->__lastc();
-
-		return bors_load('bors_time', $this->modify_time());
 	}
 
 	function _admin_searchable_title_properties_def()

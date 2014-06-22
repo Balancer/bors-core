@@ -33,10 +33,10 @@ class bors_external_feeds_entry extends base_object_db
 
 	function auto_objects()
 	{
-		return array(
+		return array_merge(parent::auto_objects(), array(
 			'feed' => 'bors_external_feed(feed_id)',
 			'blog' => 'balancer_board_blog(target_object_id)',
-		);
+		));
 	}
 
 	function auto_targets()

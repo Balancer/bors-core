@@ -1029,6 +1029,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function data_providers() { return array(); }
 
 	function auto_objects() { return array(); }
+
 	function auto_targets()
 	{
 		return array(

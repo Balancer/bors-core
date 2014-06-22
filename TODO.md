@@ -9,7 +9,6 @@ M classes/bors/lcml.php
 M engines/lcml/pre/00-save_tags_format.php
 M engines/lcml/pre/50-auto_images.php
 M engines/lcml/tags/img.php
-M engines/lcml/tags/li.php
 M inc/functions/debug/timing_start.php
 M inc/functions/debug/timing_stop.php
 M init.php

@@ -109,7 +109,7 @@ class blib_string extends blib_object
     	return implode($break, $lines);
 	}
 
-	function __unit_test($test)
+	static function __unit_test($test)
 	{
 		$s = "Hello, world!";
 		$bs = new blib_string($s);

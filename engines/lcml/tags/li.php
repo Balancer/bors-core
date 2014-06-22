@@ -46,6 +46,11 @@ function lp_list($text, &$params)
 	else
 		$tag = 'ul';
 
-	return save_format("\n<$tag>".preg_replace_callback('/^\[\*\](.*?)$/m',
-		function($m) { return '<li>'.lcml(stripq($m[1])).'</li>';}, $text)."</$tag>\n");
+	$text = preg_replace_callback('!\[\*\](.*?)\[/\*\]!',
+		function($m) { return '<li>'.lcml($m[1]).'</li>';}, $text);
+
+	$text = preg_replace_callback('/^\[\*\](.*?)$/m',
+		function($m) { return '<li>'.lcml($m[1]).'</li>';}, $text);
+
+	return save_format("\n<$tag>".$text."</$tag>\n");
 }

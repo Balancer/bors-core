@@ -12,12 +12,14 @@ if(!ini_get('default_charset'))
 */
 
 if(!defined('BORS_CORE'))
-	define('BORS_CORE', dirname(__FILE__));
+	define('BORS_CORE', __DIR__);
 
 define('BORS_ROOT', dirname(BORS_CORE).DIRECTORY_SEPARATOR);
 
 if(file_exists(BORS_ROOT.'composer'))
-	require_once(BORS_ROOT.'composer/vendor/autoload.php');
+	require(BORS_ROOT.'composer/vendor/autoload.php');
+else
+	require(BORS_ROOT.'../autoload.php');
 
 if(!defined('BORS_EXT'))
 	define('BORS_EXT', BORS_ROOT.'bors-ext');

@@ -131,10 +131,7 @@ class bors_lib_orm
 		$cache_name = 'class_'.($only_editable ? 'editable' : 'all').'_fields';
 		$cached_data = $object->class_cache_data();
 		if(!empty($cached_data[$cache_name]))
-		{
-			echo '+++';
 			return $cached_data[$cache_name];
-		}
 
 		// Кеширование может быть сброшено из storage. При возможной замене менять сброс и там!
 		// При добавлении нового поля класса, например.
@@ -253,20 +250,12 @@ class bors_lib_orm
 	static function main_fields($object)
 	{
 		$class_name = $object->class_name();
-		if($fields = global_key('___main_fields', $class_name))
-			return $fields;
 
-		$ch = new bors_cache_fast();
-		$ch_key = $class_name.':'.$object->class_filemtime();
-		if($ch->get('___main_fields', $ch_key))
-		{
-			$object->table_fields();// Хак. Дёргаем, чтобы извлечь данные по автоматическим полям,
+		if($f = $object->class_cache_data($cache_key = 'main-fields-'.$class_name))
+			return $f;
+
+		$object->table_fields();	// Хак. Дёргаем, чтобы извлечь данные по автоматическим полям,
 									// в частности — auto_objects из FOREIGN KEYS.
-
-//			echo $object->class_name(),':',$object->class_file(), ':',date("r", $object->class_filemtime()),"<br/>\n";
-
-			return set_global_key('___main_fields', $ch_key, $ch->last());
-		}
 
 		$fields_array = array();
 
@@ -305,8 +294,7 @@ class bors_lib_orm
 			}
 		}
 
-		$ch->set($fields_array, 86400);
-		return set_global_key('___main_fields', $ch_key, $fields_array);
+		return $object->set_class_cache_data($cache_key, $fields_array);
 	}
 
 	static function fields($object)

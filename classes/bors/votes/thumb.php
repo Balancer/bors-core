@@ -26,10 +26,10 @@ class bors_votes_thumb extends base_object_db
 
 	function auto_objects()
 	{
-		return array(
+		return array_merge(parent::auto_objects(), array(
 			'owner' => 'forum_user(user_id)',
 			'target_user' => 'balancer_board_user(target_user_id)',
-		);
+		));
 	}
 
 	function score_html()

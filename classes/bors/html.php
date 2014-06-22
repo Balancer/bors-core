@@ -62,7 +62,11 @@ class bors_html
 
 		if(!empty($action) && empty($link))
 		{
-			if(!empty($smarty))
+			if($item)
+			{
+				$link = $item->url().'?act='.$action;
+			}
+			elseif(!empty($smarty))
 			{
 				$self = bors_templates_smarty::get_var($smarty, 'this');
 				$link = $self->url().'?act='.$action;
@@ -80,8 +84,13 @@ class bors_html
 		else
 			$link_target = " target=\"{$link_target}\"";
 
+		if(!empty($title))
+			$title = " title=\"".htmlspecialchars($title)."\"";
+		else
+			$title = "";
+
 		if(!empty($link))
-			$img = "<a href=\"{$link}\"{$link_target}>{$img}</a>";
+			$img = "<a href=\"{$link}\"{$link_target}{$title}>{$img}</a>";
 
 		return $img;
 	}

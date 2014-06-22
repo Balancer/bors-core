@@ -18,7 +18,7 @@ function object_load($class, $object_id=NULL, $args=array())
 	if(config('debug_trace_object_load'))
 	{
 		bors_function_include('debug/hidden_log');
-		debug_hidden_log('objects_load', "$class($object_id)", config('debug_trace_object_load_trace'));
+		debug_hidden_log('objects_load', "$class(".print_r($object_id, true).")", config('debug_trace_object_load_trace'));
 	}
 
 	if(!$class)

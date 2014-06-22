@@ -238,7 +238,7 @@ class bors_object extends base_object
 	}
 
 	var $__cache_data = array();
-	function __class_cache_data($name = NULL, $setter = NULL)
+	function class_cache_data($name = NULL, $setter = NULL)
 	{
 		if(empty($this->__cache_data))
 		{
@@ -256,12 +256,13 @@ class bors_object extends base_object
 			return $this->__cache_data[$name];
 
 		if($setter)
-			return $this->__class_cache_data_set($name, call_user_func($setter));
+			return $this->set_class_cache_data($name, call_user_func($setter));
 
 		return NULL;
 	}
 
-	function __class_cache_data_set($name, $value)
+	//TODO: переписать на однократный вызов в конце работы фреймворка по exit()
+	function set_class_cache_data($name, $value)
 	{
 		$this->__cache_data[$name] = $value;
 		$this->__cache_data['class_mtime'] = filemtime($this->class_file());

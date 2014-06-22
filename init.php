@@ -13,6 +13,9 @@ if(!defined('BORS_CORE'))
 
 define('BORS_ROOT', dirname(BORS_CORE).DIRECTORY_SEPARATOR);
 
+if(file_exists(BORS_ROOT.'composer'))
+	require_once(BORS_ROOT.'composer/vendor/autoload.php');
+
 if(!defined('BORS_EXT'))
 	define('BORS_EXT', BORS_ROOT.'bors-ext');
 
@@ -31,14 +34,11 @@ if(!defined('BORS_3RD_PARTY'))
 if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_REAL_IP'];
 
+bors_funcs::noop();
+
 foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 	if(file_exists($file = "{$base_dir}/config-pre.php"))
 		include_once($file);
-
-if(file_exists(BORS_ROOT.'composer'))
-	require_once(BORS_ROOT.'composer/vendor/autoload.php');
-
-bors_funcs::noop();
 
 $dir = dirname(__FILE__);
 bors_config_ini($dir.'/config.ini');
@@ -133,8 +133,6 @@ function bors_init()
 
 	if(config('locale'))
 		setlocale(LC_ALL, config('locale'));
-
-	require_once('engines/bors/generated.php');
 
 	if(config('memcached'))
 	{

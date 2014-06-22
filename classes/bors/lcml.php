@@ -2,7 +2,7 @@
 
 define('MAX_EXECUTE_S', 0.5);
 
-require_once(__DIR__.'/../../engines/lcml/tags.php');
+require_once(BORS_CORE.'/engines/lcml/tags.php');
 
 class bors_lcml extends bors_object
 {

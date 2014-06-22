@@ -2,8 +2,8 @@
 
 // Обновлённая версия старой LCML разметки.
 
-require_once('engines/lcml/tags.php');
-require_once('engines/lcml/funcs.php');
+require_once(BORS_CORE.'/engines/lcml/tags.php');
+require_once(BORS_CORE.'/engines/lcml/funcs.php');
 
 function lcml($text, $params = array())
 {

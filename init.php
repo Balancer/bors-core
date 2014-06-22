@@ -146,12 +146,12 @@ function bors_init()
 
 	require_once('engines/bors.php');
 
-	require_once('inc/navigation.php');
-	require_once('engines/bors/vhosts_loader.php');
-	require_once('engines/bors/users.php');
-	require_once('inc/locales.php');
-	require_once('inc/urls.php');
-	require_once('engines/bors/object_show.php');
+	require_once(BORS_CORE.'/inc/navigation.php');
+	require_once(BORS_CORE.'/engines/bors/vhosts_loader.php');
+	require_once(BORS_CORE.'/engines/bors/users.php');
+	require_once(BORS_CORE.'/inc/locales.php');
+	require_once(BORS_CORE.'/inc/urls.php');
+	require_once(BORS_CORE.'/engines/bors/object_show.php');
 
 	require_once('classes/Cache.php');
 

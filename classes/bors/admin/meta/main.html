@@ -9,7 +9,7 @@
 {/if}
 
 {if $admin_search_url}
-{include file='xfile:main.search.tpl'}
+{include file='xfile:main.search.tpl' search_where=$search_where}
 {/if}
 
 {$this->get('content_before_table')}

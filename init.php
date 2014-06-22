@@ -3,6 +3,9 @@
 if(empty($GLOBALS['stat']['start_microtime']))
 	$GLOBALS['stat']['start_microtime'] = microtime(true);
 
+if(!ini_get('default_charset'))
+	ini_set('default_charset', 'UTF-8');
+
 /*
 	Инициализация всех систем фреймворка.
 	После вызова этого файла можно использовать любой функционал.

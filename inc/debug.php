@@ -156,6 +156,7 @@ function debug($message,$comment='',$level=3)
 	//        return;
 	$trace = debug_backtrace();
 	$caller = $trace[0];
+	$trace = NULL;
 	$file = $caller['file'];
 	$line = $caller['line'];
 

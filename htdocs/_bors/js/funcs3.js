@@ -1,1 +1,1 @@
-../../../../bors-airbase/templates/forum/js/funcs3.js
+/var/www/bors/bors-airbase/templates/forum/js/funcs3.js

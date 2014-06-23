@@ -239,7 +239,6 @@ function curl_redir_exec($ch,$debug="")
             $url['path'] = $last_url['path'];*/
         $new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ($url['query']?'?'.$url['query']:'');
         curl_setopt($ch, CURLOPT_URL, $new_url);
-    //    debug('Redirecting to', $new_url);
 
         return curl_redir_exec($ch);
     }

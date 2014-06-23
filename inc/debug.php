@@ -151,21 +151,6 @@ function echolog($message, $level=3)
 	}
 }
 
-function debug($message,$comment='',$level=3)
-{
-	//        return;
-	$trace = debug_backtrace();
-	$caller = $trace[0];
-	$trace = NULL;
-	$file = $caller['file'];
-	$line = $caller['line'];
-
-	$fh=@fopen($GLOBALS['cms']['base_dir'].'/logs/debug.log','at');
-	@fwrite($fh,strftime("***	%Y-%m-%d %H:%M:%S			").($comment?"$comment:\n":"{$file}[$line]\n")."$message\n----------------------\n");
-	@fclose($fh);
-}
-
-
 function debug_page_stat()
 {
 	echo "<noindex>

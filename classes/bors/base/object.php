@@ -1073,9 +1073,15 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($called_url && !preg_match('/'.preg_quote($this->admin_url(),'/').'/', $called_url))
 			return bors()->main_object()->called_url();
 
-		if(($o = object_load($this->admin_url(true))))
-			if($p = $o->parents())
-				return $p[0];
+		if(($o = object_load($this->admin_url())))
+		{
+			if(!$o->attr('___parent_searching'))
+			{
+				$o->set_attr('___parent_searching', true);
+				if($p = $o->parents())
+					return $p[0];
+			}
+		}
 
 		return @$_SERVER['HTTP_REFERER'];
 	}

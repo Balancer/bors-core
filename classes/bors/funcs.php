@@ -176,7 +176,7 @@ function bors_dirs($skip_config = false, $host = NULL)
 	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
 }
 
-if(empty($GLOBALS['cms']))
+if(empty($GLOBALS['cms']) || empty($GLOBALS['cms']['config']))
 	$GLOBALS['cms']['config'] = array();
 
 function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }

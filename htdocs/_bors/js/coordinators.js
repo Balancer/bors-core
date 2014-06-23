@@ -1,1 +1,1 @@
-../../../../bors-airbase/templates/forum/js/coordinators.js
+/var/www/bors/bors-airbase/templates/forum/js/coordinators.js

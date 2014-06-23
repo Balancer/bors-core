@@ -161,7 +161,7 @@ class bors_lcml extends bors_object
 		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type functions execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
+			bors_debug::syslog('warning_lcml', "Too long ({$long}s) $type functions execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		return $text;
 	}

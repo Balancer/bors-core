@@ -307,14 +307,13 @@ function bors_throw($message)
 
 	if(config('exceptions.kill_on_throw'))
 	{
-		debug_hidden_log('exception-kill', $message);
+		bors_debug::syslog('exception-kill', $message);
 		exit('Error. See in BORS logs');
 	}
 
 //	echo $message;
 //	echo debug_trace();
-	bors_function_include('debug/hidden_log');
-	debug_hidden_log('__exceptions-unknown', $message);
+	bors_debug::syslog('__exceptions-unknown', $message);
 	throw new Exception($message);
 }
 

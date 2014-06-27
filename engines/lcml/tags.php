@@ -477,9 +477,6 @@ function next_open_brace($txt, $pos)
 		if(empty($params['uri']))
 			$params['uri'] = @$params['cms']['main_uri'];
 
-		require_once("inc/filesystem.php");
-		$params['uri'] = secure_path($params['uri']);
-
 		list($iws, $ihs) = explode("x", $params['size']."x");
 		if(!$params['width'] && $iws)
 			$params['width'] = $iws + 6;

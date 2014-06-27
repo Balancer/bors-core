@@ -89,6 +89,8 @@ function debug_trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
 			$s .= "[{$File}:{$Line}]";
 	}
 
+	$traceArr = NULL;
+
 	if($html)
 		$s .= '</pre>';
 

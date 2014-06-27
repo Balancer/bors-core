@@ -45,6 +45,9 @@ class bors_object_titles
 
 	private static function _class_title_helper($object, $case)
 	{
+		if($title = $object->class_cache_data($cache_key = 'class-title-case-'.$case))
+			return $title;
+
 		try
 		{
 			$title = bors_lower(lingustics_morphology::case_rus($object->class_title(), $case));
@@ -54,6 +57,7 @@ class bors_object_titles
 		if(empty($title))
 			$title = bors_lower(lingustics_morphology::case_rus(ec('объект'), $case)).' '.@get_class($object);
 
+		$object->set_class_cache_data($cache_key, $title);
 		return $title;
 	}
 }

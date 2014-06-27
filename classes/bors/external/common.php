@@ -280,18 +280,22 @@ if(config('is_developer')) { exit($img); }
 			$title = htmlspecialchars(strip_tags($title));
 			$description = htmlspecialchars(strip_tags($description));
 
-			$bbshort = "[round_box]{$img}[h][a href=\"{$original_url}\"]{$title}[/a][/h]
+			$html_url = str_replace('[', '%5B', $original_url);
+
+			$bbshort = "[round_box]{$img}[h][a href=\"{$html_url}\"]{$title}[/a][/h]
 {$description}
 
-[span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($original_url)."[/reference][/span][/round_box]";
-
-//			if(config('is_developer')) { print_dd($bbshort); var_dump(restore_format(lcml($bbshort))); exit('bbcode'); }
+[span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($html_url)."[/reference][/span][/round_box]";
 
 			$tags = array();
 
+			$bbshort = preg_replace('/[\x{10000}-\x{10FFFF}]/u', '?', $bbshort);
+			$bbshort = iconv('utf-8', 'utf-8//translit', $bbshort);
+
 			$bbshort = trim(bors_close_tags(bors_close_bbtags(blib_obscene::mask($bbshort, true))));
 
-//			if(config('is_developer')) { print_dd($bbshort); exit($title); }
+//			if(config('is_developer')) { echo "\n==============\n$bbshort\n=============\n";  echo bors_debug::trace(); }
+
 			return compact('tags', 'title', 'bbshort');
 		}
 

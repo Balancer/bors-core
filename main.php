@@ -2,6 +2,9 @@
 
 $GLOBALS['stat']['start_microtime'] = microtime(true);
 
+if(function_exists('xhprof_enable'))
+	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+
 // Если в запрашиваемом URL присутствуют параметры - переносим их в строку запроса
 // такая проблема всплывает на некоторых web-серверах.
 if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
@@ -407,6 +410,20 @@ if(config('debug.timing') && is_string($res))
 		debug_hidden_log('debug_timing', $deb, false);
 
 	$res = str_ireplace('</body>', $deb.'</body>', $res);
+}
+
+if(function_exists('xhprof_enable'))
+{
+	$xhprof_data = xhprof_disable();
+
+	$XHPROF_ROOT = "/var/www/composer/vendor/facebook/xhprof";
+	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
+	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+
+	$xhprof_runs = new XHProfRuns_Default();
+	$run_id = $xhprof_runs->save_run($xhprof_data, urlencode(preg_replace('!\W+!', '-', preg_replace("!^\w+://!", '', $uri))));
+
+//	echo "http://localhost/xhprof/xhprof_html/index.php?run={$run_id}&source=xhprof_testing\n";
 }
 
 // Если объект всё, что нужно нарисовал сам, то больше нам делать нечего. Выход.

@@ -4,7 +4,7 @@ define('LCML_IMG_TIMEOUT', ($t = ini_get('max_execution_time')) ? $t*3/4 : 30);
 
 function lcml_images($txt, $lcml)
 {
-	if(lcml_tag_disabled('img'))
+	if(!$lcml->is_tag_enabled('img'))
 		return $txt;
 
 	if($lcml->is_timeout(LCML_IMG_TIMEOUT))

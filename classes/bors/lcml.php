@@ -161,7 +161,7 @@ class bors_lcml extends bors_object
 		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type functions execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
+			bors_debug::syslog('warning_lcml', "Too long ({$long}s) $type functions execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		return $text;
 	}
@@ -525,6 +525,11 @@ class bors_lcml extends bors_object
 		$html = $lc->parse($text);
 		$lc->set_p('only_tags', $save_tags);
 		$lc->set_p('level', $lc->p('level')-1);
+
+
+		// Зачистим всё не-UTF-8 на всякий случай, а то пролезает, порой, всякое...
+		if(function_exists('mb_convert_encoding'))
+			$html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
 		return $html;
 	}

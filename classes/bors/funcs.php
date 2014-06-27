@@ -176,12 +176,25 @@ function bors_dirs($skip_config = false, $host = NULL)
 	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
 }
 
+if(empty($GLOBALS['cms']) || empty($GLOBALS['cms']['config']))
+	$GLOBALS['cms']['config'] = array();
+
 function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }
 function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
-function config($key, $def = NULL) { return @array_key_exists($key, $GLOBALS['cms']['config']) ? $GLOBALS['cms']['config'][$key] : $def; }
+
+// Не максировать через @!
+function config($key, $def = NULL)
+{
+	if(array_key_exists($key, $GLOBALS['cms']['config']))
+		return  $GLOBALS['cms']['config'][$key];
+
+	return $def;
+}
 
 function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
-function configh($section, $hash, $key, $def = NULL) { return @array_key_exists($key, @$GLOBALS['cms']['config'][$section][$hash]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
+
+// Не максировать через @!
+function configh($section, $hash, $key, $def = NULL) { return array_key_exists($key, @$GLOBALS['cms']['config'][$section][$hash]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
 
 if(function_exists('mb_strtolower') && strtolower(ini_get('default_charset')) == 'utf-8')
 {

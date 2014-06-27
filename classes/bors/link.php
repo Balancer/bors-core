@@ -43,9 +43,9 @@ class bors_link extends bors_object_db
 
 	function auto_objects()
 	{
-		return array(
+		return array_merge(parent::auto_objects(), array(
 			'type' => 'bors_links_types(type_id)',
-		);
+		));
 	}
 
 	function admin_url()

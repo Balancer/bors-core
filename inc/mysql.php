@@ -248,6 +248,12 @@ function mysql_args_compile($args, $class=NULL)
 
 		unset($args['use_index']);
 	}
+	elseif(!empty($args['force_index']))
+	{
+		$use_index = "FORCE INDEX ({$args['force_index']})";
+
+		unset($args['force_index']);
+	}
 	else
 		$use_index = '';
 

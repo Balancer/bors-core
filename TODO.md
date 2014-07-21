@@ -3,7 +3,10 @@
 
 27.06.2014
 ----------
-Улучшить систему определения текстов в снипетах. Тренировка на http://www.balancer.ru/g/p3523716
+— Улучшить систему определения текстов в снипетах. Тренировка на http://www.balancer.ru/g/p3523716
+— Изучить Lazy Ads: https://github.com/madgex/lazy-ads
+— Изучить Phastlight (asynchronous, event-driven command line tool and
+  web server written in PHP 5.3+) https://github.com/phastlight/phastlight
 
 25.06.2014. Изучить системы внешней авторизации
 -----------------------------------------------

@@ -230,7 +230,7 @@ class base_page extends bors_object
 		return $result;
 	}
 
-	function compiled_source() { return bors_lcml::lcml($this->source()); }
+	function compiled_source() { return bors_lcml::lcml($this->source(), array('container' => $this)); }
 
 	function _queries() { return array(); }
 

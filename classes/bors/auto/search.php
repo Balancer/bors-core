@@ -18,7 +18,7 @@ class bors_auto_search extends bors_paginated
 		$class = preg_replace('/^'.$this->project_name().'_/', '', $class);
 
 		if($class)
-			return bors_unplural($class);
+			return blib_grammar::singular($class);
 
 		bors_throw(ec("Не задан тип искомых объектов и его не удаётся вычислить"));
 	}

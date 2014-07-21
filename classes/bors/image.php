@@ -556,11 +556,11 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		{
 			case 'jpg':
 			case 'jpeg':
-				return $this->__gd = imagecreatefromjpeg($this->full_file_name());
+				return $this->__gd = @imagecreatefromjpeg($this->full_file_name());
 			case 'png':
-				return $this->__gd = imagecreatefrompng($this->full_file_name());
+				return $this->__gd = @imagecreatefrompng($this->full_file_name());
 			case 'gif':
-				return $this->__gd = imagecreatefromgif($this->full_file_name());
+				return $this->__gd = @imagecreatefromgif($this->full_file_name());
 			default:
 				echo "Unknown extension '$e' for image_id={$this->id()}\n";
 				return $this->__gd = NULL;

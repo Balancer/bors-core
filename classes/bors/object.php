@@ -1,5 +1,7 @@
 <?php
 
+bors_funcs::init();
+
 // Идёт процесс рефакторинга с переносом функционала base_object в bors_object
 class bors_object extends base_object
 {
@@ -21,9 +23,12 @@ class bors_object extends base_object
 	// Предустановленные автообъекты
 	function auto_objects()
 	{
-		$map = array();
 		if($orm_map = @$GLOBALS['bors-orm-cache']['auto_objects_append'])
 			$map = $orm_map;
+		else
+			$map = array();
+
+		$map['mtime'] = 'bors_time(modify_time)';
 
 		return $map;
 /*
@@ -141,14 +146,6 @@ class bors_object extends base_object
 		return bors_load('bors_time', $this->create_time());
 	}
 
-	function mtime()
-	{
-		if($this->__havefc())
-			return $this->__lastc();
-
-		return bors_load('bors_time', $this->modify_time());
-	}
-
 	function _admin_searchable_title_properties_def()
 	{
 		return $this->___admin_searchable_properties_def(false);
@@ -223,7 +220,7 @@ class bors_object extends base_object
 	function uses($asset, $args = NULL)
 	{
 		if($asset == 'composer')
-			return require_once('composer/vendor/autoload.php');
+			return require_once(__DIR__.'/../../../../autoload.php');
 
 		bors_throw("Unknown uses $asset");
 //		return parent::uses($asset, $args);
@@ -241,7 +238,7 @@ class bors_object extends base_object
 	}
 
 	var $__cache_data = array();
-	function __class_cache_data($name = NULL, $setter = NULL)
+	function class_cache_data($name = NULL, $setter = NULL)
 	{
 		if(empty($this->__cache_data))
 		{
@@ -259,12 +256,13 @@ class bors_object extends base_object
 			return $this->__cache_data[$name];
 
 		if($setter)
-			return $this->__class_cache_data_set($name, call_user_func($setter));
+			return $this->set_class_cache_data($name, call_user_func($setter));
 
 		return NULL;
 	}
 
-	function __class_cache_data_set($name, $value)
+	//TODO: переписать на однократный вызов в конце работы фреймворка по exit()
+	function set_class_cache_data($name, $value)
 	{
 		$this->__cache_data[$name] = $value;
 		$this->__cache_data['class_mtime'] = filemtime($this->class_file());

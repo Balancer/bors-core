@@ -55,6 +55,17 @@ class bors_page extends base_page
 		return parent::_body_template_def();
 	}
 
+	function _layout_class_def() { return 'bors_layout'; }
+
+	function _layout_def()
+	{
+		$class_name = $this->layout_class();
+		$layout = new $class_name;
+		$this->set_attr('layout', $layout);
+		return $layout;
+	}
+
+
 	// Вынесено в bors_lib_page. Проверить.
 	function __smart_body_template_check()
 	{
@@ -83,9 +94,14 @@ class bors_page extends base_page
 
 		while($current_class)
 		{
-			if($base = preg_replace("!(.+/\w+)\..+?$!", "$1.", @$class_files[$current_class]))
+			if(!($class_file = @$class_files[$current_class]))
 			{
-//				echo "Check $current_class for $base$ext<Br/>";
+				$reflector = new ReflectionClass($current_class);
+				$class_file = $reflector->getFileName();
+			}
+
+			if($base = preg_replace("!(.+/\w+)\..+?$!", "$1.", $class_file))
+			{
 				if($is_smart)
 				{
 					if($suffix && file_exists($bt = $base.$suffix.'.tpl'))
@@ -311,4 +327,6 @@ class bors_page extends base_page
 	{
 		bors_page::add_template_data_array('head_append', "<link rel=\"$rel\" href=\"".htmlspecialchars($href).'"/>');
 	}
+
+	function parents_links_lines() { return bors_pages_helper::parents_links_lines($this); }
 }

@@ -24,13 +24,14 @@ class bors_admin_meta_main extends bors_admin_paginated
 
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		$class_name = str_replace('_main', '', $class_name);
-		return bors_unplural($class_name);
+
+		return blib_grammar::singular($class_name);
 	}
 
 	function _main_admin_class_def()
 	{
 		$class_name = str_replace('_main', '', $this->class_name());
-		$admin_class_name = bors_unplural($class_name);
+		$admin_class_name = blib_grammar::singular($class_name);
 		if(class_include($admin_class_name))
 			return $admin_class_name;
 
@@ -89,11 +90,21 @@ class bors_admin_meta_main extends bors_admin_paginated
 			$data['bootstrap'] = false;
         }
 
+		$admin_search_url = $this->page() > 1 ? false : $this->get('admin_search_url');
+		if($admin_search_url)
+		{
+			if($foo->admin_searchable_properties() != $foo->admin_searchable_title_properties())
+				$search_where = array('t' => 'в заголовках', 'a' => 'всюду', '*default' => 't');
+			else
+				$search_where = NULL;
+		}
+
 		return array_merge(parent::body_data(), $data, array(
 			'query' => bors()->request()->data('q'),
 			'new_link_title' => $new_link_title,
 			'item_fields' => $parsed_fields,
-			'admin_search_url' => $this->page() > 1 ? false : $this->get('admin_search_url'),
+			'admin_search_url' => $admin_search_url,
+			'search_where' => $search_where,
 		));
 	}
 

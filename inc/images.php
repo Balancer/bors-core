@@ -11,7 +11,6 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 		return false;
 	}
 
-	require_once 'composer/vendor/autoload.php';
 	// http://intervention.olivervogel.net/image
 
 	try

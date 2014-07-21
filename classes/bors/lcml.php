@@ -2,6 +2,8 @@
 
 define('MAX_EXECUTE_S', 0.5);
 
+require_once(BORS_CORE.'/engines/lcml/tags.php');
+
 class bors_lcml extends bors_object
 {
 	private $_params = array();
@@ -99,7 +101,7 @@ class bors_lcml extends bors_object
 	private static function actions_load($rel_dir, &$functions = array())
 	{
 		foreach(bors_dirs() as $base_dir)
-			bors_lcml::_actions_load(secure_path($base_dir.'/engines/lcml/'.$rel_dir), $functions);
+			bors_lcml::_actions_load($base_dir.'/engines/lcml/'.$rel_dir, $functions);
 	}
 
 	private static function _actions_load($dir, &$functions = array())
@@ -159,7 +161,7 @@ class bors_lcml extends bors_object
 		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type functions execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
+			bors_debug::syslog('warning_lcml', "Too long ({$long}s) $type functions execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		return $text;
 	}
@@ -167,7 +169,7 @@ class bors_lcml extends bors_object
 
 	private $params;
 	function set_params($params) { $this->params = $params; }
-	function params($key, $def = NULL) { return defval($this->params, $key, $def); }
+	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->params : defval($this->params, $key, $def); }
 
 	function is_tag_enabled($tag_name, $default_enabled = true)
 	{
@@ -506,7 +508,10 @@ class bors_lcml extends bors_object
 	{
 		$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
 
-		static $lcs = array();
+		global $lcs;
+		if(!$lcs)
+			$lcs = array();
+
 		if(empty($lcs[$class_name]))
 			$lcs[$class_name] = new $class_name($params);
 
@@ -523,6 +528,10 @@ class bors_lcml extends bors_object
 		$html = $lc->parse($text);
 		$lc->set_p('only_tags', $save_tags);
 		$lc->set_p('level', $lc->p('level')-1);
+
+		// Зачистим всё не-UTF-8 на всякий случай, а то пролезает, порой, всякое...
+		if(function_exists('mb_convert_encoding'))
+			$html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
 		return $html;
 	}

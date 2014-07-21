@@ -10,7 +10,7 @@ class bors_page_meta_main extends bors_paginated
 	function _main_class_def()
 	{
 		$class_name = str_replace('_main', '', $this->class_name());
-		return bors_unplural($class_name);
+		return blib_grammar::singular($class_name);
 	}
 
 	function body_data()

@@ -12,8 +12,10 @@ class bors_admin_users_login extends bors_page
 
 	var $error;
 
-	function pre_parse($data)
+	function pre_parse()
 	{
+		$data = $_GET;
+
 		$this->referer = defval_ne($_GET, 'redirect_url', @$_SERVER['HTTP_REFERER']);
 		$this->referer = defval_ne($_GET, 'ref', $this->referer);
 

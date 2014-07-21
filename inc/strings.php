@@ -69,7 +69,6 @@ function bors_hypher($string)
 }
 
 bors_function_include('natural/bors_plural');
-bors_function_include('natural/bors_unplural');
 
 function bors_str_cat($string1, $string2, $explode_delimiter = ',', $join_delimiter = ', ')
 {

@@ -87,7 +87,7 @@ function lt_flash($params)
 
 	function lp_span($inner, $params)
 	{
-		return "<span ".make_enabled_params($params, 'style class').">".lcml($inner)."</span>";
+		return "<span ".make_enabled_params($params, 'style class').">".bors_lcml::lcml($inner)."</span>";
 	}
 
 

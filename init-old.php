@@ -227,8 +227,6 @@ function bors_init()
 	if(config('locale'))
 		setlocale(LC_ALL, config('locale'));
 
-	require_once('engines/bors/generated.php');
-
 	if(config('memcached'))
 	{
 		$memcache = new Memcache;

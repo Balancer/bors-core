@@ -22,11 +22,8 @@ class bors_templates_smarty3 extends bors_template
 
 	static function factory()
 	{
-		if(config('smarty.include'))
-			require_once(config('smarty.include'));
-		else
-			if(!class_exists('Smarty'))
-				bors_throw("Can't find Smarty. Go to composer directory in BORS_CORE level and enter composer require 'smarty/smarty=!=3.1.17'");
+		if(!class_exists('Smarty'))
+			bors_throw("Can't find Smarty. Please do \"composer require 'smarty/smarty=!=3.1.17'\"");
 
 		$smarty = new Smarty();
 //		require('classes/bors/templates/smarty3-register.php');

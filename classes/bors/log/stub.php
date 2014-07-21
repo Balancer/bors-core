@@ -5,7 +5,7 @@
 
 // «Пустой» логгер-заглушка, ничего не делает.
 
-class bors_log_stub extends base_empty
+class bors_log_stub extends bors_object_simple
 {
 	static function error() { }
 	static function warning() { }

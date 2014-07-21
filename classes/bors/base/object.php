@@ -1,6 +1,6 @@
 <?php
 
-class base_object extends base_empty
+class base_object extends bors_object_simple
 {
 	var $data = array();
 
@@ -149,8 +149,6 @@ class base_object extends base_empty
 
 		if(($config = $this->config_class()))
 		{
-//			var_dump($this, $config);
-//			if(!preg_match($config))
 			$this->config = new $config($this);
 
 			if(!$this->config)
@@ -366,7 +364,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return NULL;
 	}
 
-	function pre_parse($data) { return false; }
+	function pre_parse() { return false; }
 
 	function pre_show()
 	{
@@ -1031,6 +1029,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function data_providers() { return array(); }
 
 	function auto_objects() { return array(); }
+
 	function auto_targets()
 	{
 		return array(
@@ -1074,9 +1073,15 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($called_url && !preg_match('/'.preg_quote($this->admin_url(),'/').'/', $called_url))
 			return bors()->main_object()->called_url();
 
-		if(($o = object_load($this->admin_url(true))))
-			if($p = $o->parents())
-				return $p[0];
+		if(($o = object_load($this->admin_url())))
+		{
+			if(!$o->attr('___parent_searching'))
+			{
+				$o->set_attr('___parent_searching', true);
+				if($p = $o->parents())
+					return $p[0];
+			}
+		}
 
 		return @$_SERVER['HTTP_REFERER'];
 	}

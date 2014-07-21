@@ -1,6 +1,6 @@
 <?php
 
-class bors_task_index extends base_empty
+class bors_task_index extends bors_object_simple
 {
 	function execute($data)
 	{

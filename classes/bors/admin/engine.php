@@ -37,6 +37,19 @@ class bors_admin_engine extends bors_object
 		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
 	}
 
+	function edit_url()
+	{
+		$obj = $this->real_object();
+
+		if($url = $obj->get('edit_url'))
+			return $url;
+
+		if($url = $obj->get('admin_url'))
+			return $url;
+
+		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
+	}
+
 	function delete_url()
 	{
 		if(method_exists($obj = $this->real_object(), 'delete_url'))
@@ -163,6 +176,9 @@ class bors_admin_engine extends bors_object
 		}
 		catch(Exception $e) { }
 
+		if(stripos($mode, 'e') !== false && $obj->access()->can_delete())
+			$html .= '&nbsp;' . $this->imaged_edit_link('');
+
 		if(stripos($mode, 'd') !== false && $obj->access()->can_delete())
 			$html .= '&nbsp;' . $this->imaged_delete_link('');
 
@@ -224,7 +240,7 @@ class bors_admin_engine extends bors_object
 				.ec(' «').$obj->title().ec('»');
 
 		$x = $title ? '&nbsp;' : '';
-		$url = $this->admin_url();
+		$url = $this->edit_url();
 
 		if(is_null($popup))
 			$popup = $title;

@@ -39,10 +39,15 @@ class bors_admin_meta_edit extends bors_admin_page
 
 	function _main_class_def()
 	{
-		bors_function_include('natural/bors_chunks_unplural');
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		$class_name = str_replace('_edit', '', $class_name);
-		return bors_chunks_unplural($class_name);
+
+		$cn_test = blib_grammar::chunk_singular($class_name);
+
+		if(class_exists($cn_test))
+			return $cn_test;
+
+		return blib_grammar::singular($class_name);
 	}
 
 	function _main_admin_class_def()
@@ -114,7 +119,7 @@ class bors_admin_meta_edit extends bors_admin_page
 			)
 			{
 //				var_dump($m);
-				set_session_var("form_value_".bors_unplural($m[1]).'_id', $m[2]);
+				set_session_var("form_value_".blib_grammar::singular($m[1]).'_id', $m[2]);
 			}
 
 		}

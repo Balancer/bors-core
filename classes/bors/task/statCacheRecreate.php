@@ -1,6 +1,6 @@
 <?php
 
-class bors_task_statCacheRecreate extends base_empty
+class bors_task_statCacheRecreate extends bors_object_simple
 {
 	function execute()
 	{

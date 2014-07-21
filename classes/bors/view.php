@@ -27,20 +27,18 @@ class bors_view extends bors_page
 	// Класс отображаемого объекта
 	function main_class()
 	{
-		bors_function_include('natural/bors_unplural');
-
 		if($this->class_name() == 'bors_view')
 			return $this->arg('class_name');
 
 		// ucrm_companies_groups_view -> ucrm_companies_groups
 		$main_class = preg_replace('/_view$/', '', $this->extends_class_name());
 		// ucrm_companies_groups -> ucrm_company_group
-		$main_class = join('_', array_map('bors_unplural', explode('_', $main_class)));
+		$main_class = join('_', array_map(array('blib_grammar', 'singular'), explode('_', $main_class)));
 
 		if(class_include($main_class))
 			return $main_class;
 
-		$main_class_up = bors_unplural($main_class);
+		$main_class_up = blib_grammar::singular($main_class);
 		if(class_include($main_class_up))
 			return $main_class_up;
 
@@ -49,7 +47,7 @@ class bors_view extends bors_page
 		if(class_include($main_class))
 			return $main_class;
 
-		$main_class_up = bors_unplural($main_class);
+		$main_class_up = blib_grammar::singular($main_class);
 		if(class_include($main_class_up))
 			return $main_class_up;
 

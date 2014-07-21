@@ -5,6 +5,13 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 	$taglist = config('lcml_tags_enabled');
 	$taglist_disabled = config('lcml_tags_disabled');
 
+//	if(class_exists("b2"))
+//	{
+//		$composer = b2::factory()->composer();
+//		var_dump($composer->getClassMap());
+//		var_dump($composer->getPrefixesPsr4());
+//	}
+
 	$end = 0;
 	$next_end = -1;
 	$start = time();
@@ -306,7 +313,7 @@ function find_next_open_tag($txt, $pos)
 			$func = $m[1];
 			$params = "$func={$m[2]} {$m[3]}";
 		}
-		elseif(preg_match("!^(\w+)\|(.+)$!s", $tag, $m)) // func, params
+		elseif(preg_match("!^(\w+)\|(.*)$!s", $tag, $m)) // func, params
 		{
 			$func = $m[1];
 			$params = $tag;
@@ -372,6 +379,7 @@ function next_open_brace($txt, $pos)
 	{
 		$params = array('lcml' => $lcml);
 		$params['self'] = defval($GLOBALS['lcml']['params'], 'self');
+		$params['container'] = $lcml->params('container');
 
 		if(!preg_match('!^\w+=!', $in) && preg_match("!^(.*?)\|(.*)$!s", $in, $m))
 		{
@@ -469,9 +477,6 @@ function next_open_brace($txt, $pos)
 		if(empty($params['uri']))
 			$params['uri'] = @$params['cms']['main_uri'];
 
-		require_once("inc/filesystem.php");
-		$params['uri'] = secure_path($params['uri']);
-
 		list($iws, $ihs) = explode("x", $params['size']."x");
 		if(!$params['width'] && $iws)
 			$params['width'] = $iws + 6;
@@ -538,7 +543,7 @@ function make_enabled_params($params, $names_list, $skip_list = '')
 
 	if($params)
 	{
-		$skip_list = " {$skip_list} align _align_b _align_e alt colspan is_alone name notitle orig rowspan skip_around_cr title valign _border url uri border width xwidth _width self skip_around_cr";
+		$skip_list = " {$skip_list} align _align_b _align_e alt colspan container is_alone name notitle orig rowspan skip_around_cr title valign _border url uri border width xwidth _width self skip_around_cr";
 		$att = array();
 		foreach($params as $key => $value)
 			if($value && strpos($skip_list, " $key ")===false)

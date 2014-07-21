@@ -46,7 +46,7 @@ class bors_object_db2 extends bors_object
 			{
 				$field_name = $mm[1]; // например, parent_project_id
 				$foreign_table = $mm[2];
-				$item = bors_unplural($foreign_table);
+				$item = blib_grammar::singular($foreign_table);
 				$item_class = "{$project}_".$item;
 				$fields[$field_name]['class'] = $item_class;
 				$fields[$field_name]['have_null'] = "true";

@@ -30,6 +30,6 @@ class bors_access_log extends base_object_db
 	}
 
 	function auto_targets()	{ return array_merge(parent::auto_targets(), array('target' => 'target_class_name(target_object_id)')); }
-	function auto_objects()	{ return array('user' => 'bors_user(user_id)'); }
+	function auto_objects()	{ return array_merge(parent::auto_objects(), array('user' => 'bors_user(user_id)')); }
 	function insert_delayed_on_new_instance() { return true; }
 }

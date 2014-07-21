@@ -1,10 +1,8 @@
 <?php
 
-function lcml_auto_images($txt)
+function lcml_auto_images($txt, $lcml)
 {
-	require_once('engines/lcml/main.php');
-
-	if(lcml_tag_disabled('img'))
+	if(!$lcml->is_tag_enabled('img'))
 		return $txt;
 
 	$size = config('box_sizes', 640);

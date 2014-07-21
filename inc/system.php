@@ -194,7 +194,10 @@ function clean_all_session_vars()
 function calling_function_name()
 {
 	$backtrace = debug_backtrace();
-	return $backtrace[2]['function'];
+	$name = $backtrace[2]['function'];
+	$backtrace = NULL;
+
+	return $name;
 }
 
 function set_session_form_data($data)

@@ -511,7 +511,7 @@ class DataBaseHTS
 
 		if (!$parent || !$child)
 		{
-			debug(__FILE__.':'.__LINE__." Can't nav pair: $iparent-$ichild to $parent-$child", 1);
+			bors_debug::syslog('debug', __FILE__.':'.__LINE__." Can't nav pair: $iparent-$ichild to $parent-$child");
 			return;
 		}
 
@@ -519,7 +519,7 @@ class DataBaseHTS
 
 		if (!$this->parent_check($parent, $child))
 		{
-			debug(__FILE__.':'.__LINE__." Try to cycle parents-link: $child to $parent", 1);
+			bors_debug::syslog('debug', __FILE__.':'.__LINE__." Try to cycle parents-link: $child to $parent");
 			return;
 		}
 
@@ -534,7 +534,7 @@ class DataBaseHTS
 
 		if (!$parent || !$child)
 		{
-			debug(__FILE__.':'.__LINE__." Can't add child link: $parent-$child", 1);
+			bors_debug::syslog('debug', __FILE__.':'.__LINE__." Can't add child link: $parent-$child");
 			return;
 		}
 
@@ -542,7 +542,7 @@ class DataBaseHTS
 
 		if (!$this->parent_check($parent, $child))
 		{
-			debug(__FILE__.':'.__LINE__." Try to cycle parents-link: $child to $parent", 1);
+			bors_debug::syslog('debug', __FILE__.':'.__LINE__." Try to cycle parents-link: $child to $parent");
 			return;
 		}
 
@@ -557,13 +557,13 @@ class DataBaseHTS
 
 		if (!$parent || !$uri)
 		{
-			debug(__FILE__.':'.__LINE__." Can't add parent link $uri-$parent", 1);
+			bors_debug::syslog('debug', __FILE__.':'.__LINE__." Can't add parent link $uri-$parent");
 			return;
 		}
 
 		if (!$this->parent_check($parent, $uri))
 		{
-			debug(__FILE__.':'.__LINE__." Try to cycle parents-link: $parent to $uri", 1);
+			bors_debug::syslog('debug', __FILE__.':'.__LINE__." Try to cycle parents-link: $parent to $uri");
 			return;
 		}
 
@@ -581,7 +581,7 @@ class DataBaseHTS
 
 		if ($GLOBALS['tmp_dbhts_nav_check_count']++ > 10)
 		{
-			debug(__FILE__.':'.__LINE__." Cycled parents-link: $page to $parent_check", 1);
+			bors_debug::syslog('debug', __FILE__.':'.__LINE__." Cycled parents-link: $page to $parent_check");
 			return false;
 		}
 
@@ -630,7 +630,7 @@ class DataBaseHTS
 	{
 		if (!$uri || !$child)
 		{
-			debug(__FILE__.':'.__LINE__." Can't remove child link: $uri-$child", 1);
+			bors_debug::syslog('debug', __FILE__.':'.__LINE__." Can't remove child link: $uri-$child");
 			return;
 		}
 		$uri = $this->normalize_uri($uri);
@@ -642,7 +642,7 @@ class DataBaseHTS
 	{
 		if (!$parent || !$uri)
 		{
-			debug(__FILE__.':'.__LINE__." Can't remove parent link: $uri-$parent", 1);
+			bors_debug::syslog('debug', __FILE__.':'.__LINE__." Can't remove parent link: $uri-$parent");
 			return;
 		}
 		$uri = $this->normalize_uri($uri);

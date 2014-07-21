@@ -1,10 +1,10 @@
 {
 	"name": "balancer/bors-core",
-    "type": "framework",
+	"type": "framework",
 	"description": "PHP Framework",
-    "keywords": ["framework", "php"],
+	"keywords": ["framework", "php"],
 	"homepage": "http://bors.balancer.ru/",
-    "license": "GPL-3.0",
+	"license": "GPL-3.0",
 	"authors": [
 		{
 			"name": "Roman =Balancer= Karshiev",
@@ -18,19 +18,25 @@
 		"source": "https://bitbucket.org/Balancer/bors-core"
 	},
 
+	"prefer-stable": true,
+	"minimum-stability": "dev",
+
 	"require": {
 		"php": ">=5.3",
-        "intervention/image": "<2",
-        "rediska/rediska": "*",
-        "smarty/smarty": "!=3.1.17",
-        "easybook/geshi": "*"
+		"balancer/blib-morfology-ru": "@dev",
+		"intervention/image": "<2",
+		"rediska/rediska": "*",
+		"smarty/smarty": "!=3.1.17",
+		"easybook/geshi": "*",
+		"anahkiasen/html-object": "*",
+		"michelf/php-markdown": "*"
 	},
 
-    "suggest": {
-        "smarty/smarty": "Needed if you plan to use Smarty based templates"
-    },
+	"suggest": {
+		"smarty/smarty": "Needed if you plan to use Smarty based templates"
+	},
 
-    "autoload": {
+	"autoload": {
 		"classmap": ["classes/"]
-    }
+	}
 }

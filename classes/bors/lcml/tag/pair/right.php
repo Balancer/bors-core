@@ -7,7 +7,7 @@
 
 class bors_lcml_tag_pair_right extends bors_lcml_tag_pair
 {
-	function html($text)
+	function html($text, &$params)
 	{
 		return "<div align=\"right\">".lcml($text)."</div>";
 	}

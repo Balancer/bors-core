@@ -7,7 +7,7 @@
 
 class bors_lcml_tag_pair_notebox extends bors_lcml_tag_pair
 {
-	function html($text)
+	function html($text, &$params)
 	{
 		return "<div class=\"yellow_box\">".lcml($text)."</div>";
 	}

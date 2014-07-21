@@ -231,7 +231,10 @@ class bors_storage_htsu extends bors_storage
 		}
 
 		if($config_class = $this->ext('config', '-'))
-			$object->set_config_class($config_class, false);
+		{
+			$object->set_attr('config_class', $config_class);
+			$object->_configure();
+		}
 
 //		$this->hts = preg_replace_callback('/^#(template_data)_(\w+)\s+(.+)$/m', array(&$this, '_set_callback'), $this->hts);
 		$this->hts = preg_replace_callback('/^#call\s+(\w+)\s+(.+?)$/m', array(&$this, '_call_callback'), $this->hts);

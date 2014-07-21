@@ -19,8 +19,8 @@ class bors_xref_c2c extends bors_object_db
 		if(!$xref_class_name)
 			$xref_class_name = get_called_class();
 
-		$object_field_name = bors_unplural(self::object_name($xref_class_name)).'_id';
-		$target_field_name = bors_unplural(self::target_name($xref_class_name)).'_id';
+		$object_field_name = blib_grammar::singular(self::object_name($xref_class_name)).'_id';
+		$target_field_name = blib_grammar::singular(self::target_name($xref_class_name)).'_id';
 
 		$args[$object_field_name] = is_object($object) ? $object->id() : $object;
 		$args[$target_field_name] = is_object($target) ? $target->id() : $target;
@@ -33,7 +33,7 @@ class bors_xref_c2c extends bors_object_db
 		if(!$xref_class_name)
 			$xref_class_name = get_called_class();
 
-		return bors_unplural(self::object_name($xref_class_name)).'_id';
+		return blib_grammar::singular(self::object_name($xref_class_name)).'_id';
 	}
 
 	static function object_name($xref_class_name)
@@ -151,7 +151,7 @@ class bors_xref_c2c extends bors_object_db
 
 	function object() { return bors_load($this->object_class_name(), $this->get($this->object_field_name())); }
 	function target() { return bors_load($this->target_class_name(), $this->get($this->target_field_name())); }
-	function target_field_name() { return bors_unplural($this->target_name()).'_id'; }
+	function target_field_name() { return blib_grammar::singular($this->target_name()).'_id'; }
 
 	function admin_parent_url() { return $this->object()->admin()->urls(bors_plural($this->target_name())); }
 }

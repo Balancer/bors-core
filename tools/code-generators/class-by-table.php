@@ -17,9 +17,9 @@ function main($argv)
 
 	$x = $dbh->get("SHOW CREATE TABLE $table");
 
-	$class_name = bors_unplural($table);
+	$class_name = blib_grammar::singular($table);
 	$item_name = preg_replace('/^.*_(\w+)$/', '$1', $class_name);
-	$items_name = bors_plural($item_name);
+	$items_name = blib_grammar::singular($item_name);
 
 	$project = bors_lower($db);
 
@@ -43,7 +43,7 @@ function main($argv)
 		// FOREIGN KEY (`head_id`) REFERENCES `persons` (`id`)
 		if(preg_match('/FOREIGN KEY \(`(\w+)`\) REFERENCES `(\w+)` \(`id`\)/', $s, $mm))
 		{
-			$fields[$mm[1]]['class'] = "'{$project}_".bors_unplural($mm[2])."'";
+			$fields[$mm[1]]['class'] = "'{$project}_".blib_grammar::singular($mm[2])."'";
 			$fields[$mm[1]]['have_null'] = "true";
 			continue;
 		}

@@ -1,5 +1,4 @@
 {block name="admin_meta_edit_body_begin"}{/block}
-
 {form
 	class=$this->main_admin_class()
 	id=$this->id()
@@ -14,6 +13,8 @@
 {else}
 	{go value=$this->go_new_url()}
 {/if}
+
+{block name="admin_meta_edit_form_append"}{/block}
 
 {block name="admin_meta_edit_form_buttons"}
 {submit th=$this->submit_button_title()}

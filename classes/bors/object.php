@@ -151,10 +151,15 @@ class bors_object extends base_object
 
 	function _admin_searchable_title_properties_def()
 	{
-		return $this->_admin_searchable_properties_def(false);
+		return $this->___admin_searchable_properties_def(false);
 	}
 
-	function _admin_searchable_properties_def($any = true)
+	function _admin_searchable_properties_def()
+	{
+		return $this->___admin_searchable_properties_def(true);
+	}
+
+	function ___admin_searchable_properties_def($any)
 	{
 		$properties = array();
 		$title_properties = array();

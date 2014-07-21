@@ -169,7 +169,7 @@ class bors_lcml extends bors_object
 
 	private $params;
 	function set_params($params) { $this->params = $params; }
-	function params($key, $def = NULL) { return defval($this->params, $key, $def); }
+	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->params : defval($this->params, $key, $def); }
 
 	function is_tag_enabled($tag_name, $default_enabled = true)
 	{
@@ -508,7 +508,10 @@ class bors_lcml extends bors_object
 	{
 		$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
 
-		static $lcs = array();
+		global $lcs;
+		if(!$lcs)
+			$lcs = array();
+
 		if(empty($lcs[$class_name]))
 			$lcs[$class_name] = new $class_name($params);
 
@@ -525,7 +528,6 @@ class bors_lcml extends bors_object
 		$html = $lc->parse($text);
 		$lc->set_p('only_tags', $save_tags);
 		$lc->set_p('level', $lc->p('level')-1);
-
 
 		// Зачистим всё не-UTF-8 на всякий случай, а то пролезает, порой, всякое...
 		if(function_exists('mb_convert_encoding'))

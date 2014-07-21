@@ -9,7 +9,10 @@ function lcml($text, $params = array())
 {
 	$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
 
-	static $lcs = array();
+	global $lcs;
+	if(!$lcs)
+		$lcs = array();
+
 	if(empty($lcs[$class_name]))
 		$lcs[$class_name] = new $class_name($params);
 

@@ -366,7 +366,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return NULL;
 	}
 
-	function pre_parse() { return false; }
+	function pre_parse($data) { return false; }
 
 	function pre_show()
 	{

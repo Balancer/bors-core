@@ -19,15 +19,16 @@ if(!config('cache_database'))
 	exit("");
 }
 
+config_set('do_not_exit', true);
+
 try
 {
-
-	$db = new driver_mysql(config('cache_database'));
+	echo date("r\n");
 
 	// BETWEEN 0 AND NOW — чтобы не стирать -1.
 	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time())) as $x)
 	{
-		echo "{$x->original_uri()}, {$x->id()} [recreate={$x->recreate()}]: ";
+		echo "{$x->original_uri()}, {$x->id()} [recreate={$x->recreate()}]: \n";
 
 		$obj = $x->target();
 
@@ -45,10 +46,12 @@ try
 			{
 				$obj->set_attr('static_recreate_object', $x);
 				bors_object_create($obj);
+
 			}
 			else
 //				debug_hidden_log('static-cache', "Can't load recreateable object {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
 			echo "Recreated";
+
 		}
 		else
 		{
@@ -57,7 +60,7 @@ try
 
 			if(file_exists($x->id()))
 			{
-				debug_hidden_log('static-cache', "Can't delete file {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
+				debug_hidden_log('static-cache-error', "Can't delete file {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
 				echo "Can't delete";
 			}
 			else
@@ -74,7 +77,7 @@ try
 }
 catch(Exception $e)
 {
-	debug_hidden_log('exception-static', "Exception: ".bors_lib_exception::catch_trace($e));
+	debug_hidden_log('static-clean-exception', "Exception: ".bors_lib_exception::catch_trace($e));
 }
 
 bors_thread_unlock('statfile-cache-clean');

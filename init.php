@@ -11,6 +11,9 @@ if(!ini_get('default_charset'))
 	После вызова этого файла можно использовать любой функционал.
 */
 
+if(!defined('COMPOSER_ROOT'))
+	define('COMPOSER_ROOT', dirname(dirname(dirname(__DIR__))));
+
 if(!defined('BORS_CORE'))
 	define('BORS_CORE', __DIR__);
 

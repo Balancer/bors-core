@@ -246,7 +246,8 @@ class bors_storage_htsu extends bors_storage
 		if(config('storage.htsu.do_php'))
 		{
 			require_once('inc/php.php');
-			$this->hts = preg_replace("!\[php\](.+?)\[/php\]!es", "bors_php_fetch(stripq('$1'))", $this->hts);
+			$this->hts = preg_replace_callback("!\[php\](.+?)\[/php\]!s", function($m) {
+				return bors_php_fetch($m[1]); }, $this->hts);
 		}
 
     	$object->set_source(preg_replace("!\n+$!","",$this->hts), false);

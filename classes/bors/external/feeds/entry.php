@@ -284,12 +284,15 @@ class bors_external_feeds_entry extends base_object_db
 		$post->cache_clean();
 		$post->store();
 		$post->body();
+		$post->store();
 
-		$topic->cache_clean();
 		$topic->set_modify_time(time(), true);
+		$topic->cache_clean();
 		$topic->store();
 
-		echo "\tnew post {$post->debug_title()}\n";
+		$topic->recalculate();
+
+		echo "\nnew post {$post->debug_title()}\n\t{$post->url_for_igo()}\n";
 
 		$forum->update_num_topics();
 

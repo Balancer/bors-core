@@ -115,9 +115,6 @@ if(!file_exists($d = config('cache_dir')));
 
 @chmod(dirname($d), 0777);
 
-if(config('cache_code_monolith') && file_exists($php_cache_file = config('cache_dir') . '/functions.php'))
-	require_once($php_cache_file);
-
 if(config('debug_can_change_now'))
 {
 	$GLOBALS['now'] = empty($_GET['now']) ? time() : intval(strtotime($_GET['now']));
@@ -405,10 +402,6 @@ function bors_function_include($req_name)
 	$defined[$req_name] = true;
 
 	$file = BORS_CORE.'/inc/functions/'.$req_name.'.php';
-
-	if(!config('cache_code_monolith'))
-		// Если монолитное кеширование запрещено, то просто грузим файл и уходим
-		return require_once($file);
 
 	static $php_cache_file = NULL;
 	if(!$php_cache_file)

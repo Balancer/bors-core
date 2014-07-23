@@ -37,7 +37,14 @@ if(!defined('BORS_SITE'))
 	define('BORS_SITE', dirname(@$_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'bors-site');
 
 if(!defined('BORS_3RD_PARTY'))
-	define('BORS_3RD_PARTY', BORS_ROOT.'bors-third-party');
+{
+	if(file_exists($d = dirname(COMPOSER_ROOT).'/bors-third-party'))
+		define('BORS_3RD_PARTY', $d);
+	elseif(file_exists($d = BORS_ROOT.'bors-third-party'))
+		define('BORS_3RD_PARTY', $d);
+	elseif(file_exists($d = '/var/www/repos/bors-third-party'))
+		define('BORS_3RD_PARTY', $d);
+}
 
 if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_REAL_IP'];

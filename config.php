@@ -80,8 +80,6 @@ if(!config('cache_dir'))
 	config_set('cache_dir', '/tmp/bors-cache/'.join('-', array_filter($cache_dirs_parts)));
 }
 
-config_set('cache_code_monolith', 0);
-
 config_set('cache.webroot_dir', $_SERVER['DOCUMENT_ROOT'].'/cache');
 config_set('cache.webroot_url', "/cache");
 config_set('sites_store_path', $_SERVER['DOCUMENT_ROOT'].'/sites');

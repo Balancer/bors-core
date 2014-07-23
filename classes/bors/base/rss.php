@@ -2,9 +2,6 @@
 
 // composer: openpsa/universalfeedcreator
 
-if(!class_exists('UniversalFeedCreator'))
-	bors_throw("Use `composer require openpsa/universalfeedcreator=*`");
-
 class base_rss extends base_page
 {
 	function render_engine() { return 'bors_rss'; }
@@ -19,6 +16,9 @@ class base_rss extends base_page
 
 	function render($rss)
 	{
+		if(!class_exists('UniversalFeedCreator'))
+			bors_throw("Use:<br/>\ncomposer require openpsa/universalfeedcreator=*");
+
 //		$type = "ATOM1.0";
 		$type = "RSS2.0";
 

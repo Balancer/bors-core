@@ -44,6 +44,8 @@ if(!defined('BORS_3RD_PARTY'))
 		define('BORS_3RD_PARTY', $d);
 	elseif(file_exists($d = '/var/www/repos/bors-third-party'))
 		define('BORS_3RD_PARTY', $d);
+	else
+		define('BORS_3RD_PARTY', NULL);
 }
 
 if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])

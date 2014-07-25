@@ -66,7 +66,7 @@ if(!config('cache_dir'))
 	if(empty($_SERVER['HTTP_HOST']))
 		$cache_dirs_parts[] = 'cli';
 	else
-		$cache_dirs_parts[] = strtolower($_SERVER['HTTP_HOST']);
+		$cache_dirs_parts[] = str_replace(':', '=', strtolower($_SERVER['HTTP_HOST']));
 
 	$cache_dirs_parts[] = config('project.name');
 
@@ -77,10 +77,8 @@ if(!config('cache_dir'))
 
 //	var_dump($cache_dirs_parts);
 
-	config_set('cache_dir', '/tmp/bors-cache/'.join('-', array_filter($cache_dirs_parts)));
+	config_set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', array_filter($cache_dirs_parts)));
 }
-
-config_set('cache_code_monolith', 0);
 
 config_set('cache.webroot_dir', $_SERVER['DOCUMENT_ROOT'].'/cache');
 config_set('cache.webroot_url', "/cache");

@@ -44,6 +44,8 @@ if(!defined('BORS_3RD_PARTY'))
 		define('BORS_3RD_PARTY', $d);
 	elseif(file_exists($d = '/var/www/repos/bors-third-party'))
 		define('BORS_3RD_PARTY', $d);
+	else
+		define('BORS_3RD_PARTY', NULL);
 }
 
 if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])
@@ -114,9 +116,6 @@ if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0750);
 
 @chmod(dirname($d), 0777);
-
-if(config('cache_code_monolith') && file_exists($php_cache_file = config('cache_dir') . '/functions.php'))
-	require_once($php_cache_file);
 
 if(config('debug_can_change_now'))
 {
@@ -404,40 +403,7 @@ function bors_function_include($req_name)
 
 	$defined[$req_name] = true;
 
-	$file = BORS_CORE.'/inc/functions/'.$req_name.'.php';
-
-	if(!config('cache_code_monolith'))
-		// Если монолитное кеширование запрещено, то просто грузим файл и уходим
-		return require_once($file);
-
-	static $php_cache_file = NULL;
-	if(!$php_cache_file)
-		$php_cache_file = config('cache_dir') . '/functions.php';
-
-	static $php_cache_content = NULL;
-
-	if(!file_exists($php_cache_file))
-		file_put_contents($php_cache_file, "<?php\n");
-
-	if(!$php_cache_content)
-		$php_cache_content = file_get_contents($php_cache_file);
-
-	require_once($php_cache_file);
-
-	if(function_exists($name))
-		return;
-
-	if(function_exists($path.'_'.$name))
-		return;
-
-	if(function_exists('bors_'.$path.'_'.$name))
-		return;
-
-	require_once($file);
-	$function_code = file_get_contents($file);
-	$function_code = "\n".trim(preg_replace('/^<\?php/', '', $function_code))."\n";
-	$php_cache_content .= $function_code;
-	$GLOBALS['bors_data']['php_cache_content'] = $php_cache_content;
+	return require_once(BORS_CORE.'/inc/functions/'.$req_name.'.php');
 }
 
 /**

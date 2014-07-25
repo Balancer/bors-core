@@ -164,7 +164,7 @@ class bors_global extends bors_object_simple
 		debug_hidden_log('balabot_work', "$task_class: ".substr(serialize($data), 0, 50), false);
 	}
 
-	static function ping($loops, $message, $rest = 0)
+	static function ping($loops, $message = NULL, $rest = 0)
 	{
 		static $count = 0;
 		static $prev  = 0;

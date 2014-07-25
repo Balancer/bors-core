@@ -355,7 +355,7 @@ class bors_lcml extends bors_object
 					{
 						list($prio, $class_name) = preg_split("/\s+/", $s);
 						if($prio && $class_name)
-							$classes[$prio.':'.$class_name] = new $class_name(NULL);
+							$classes[$prio.':'.$class_name] = new $class_name($this);
 					}
 			}
 			ksort($classes);

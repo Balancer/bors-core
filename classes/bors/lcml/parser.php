@@ -6,6 +6,15 @@
 
 class bors_lcml_parser
 {
+	protected $lcml	= NULL;
+
+	function __construct($lcml)
+	{
+		$this->lcml = $lcml;
+	}
+
+	function lcml($code) { return $this->lcml->parse($code); }
+
 	function html($text) { return $text; }
 	function html_compact($text) { return $this->html($text); }
 	function html_simple($text) { return $this->html($text); }

@@ -8,6 +8,8 @@ require_once(BORS_CORE.'/init.php');
 require_once('obsolete/DataBase.php');
 require_once('inc/processes.php');
 
+bors_function_include('debug/execute_trace');
+
 // file_put_contents('/tmp/clean-trace-'.@$_SERVER['USER'], 'Go! '.print_r($_SERVER, true), FILE_APPEND);
 
 if(!bors_thread_lock('statfile-cache-clean', 600))
@@ -26,6 +28,7 @@ try
 	echo date("r\n");
 
 	// BETWEEN 0 AND NOW — чтобы не стирать -1.
+
 	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time())) as $x)
 	{
 		echo "{$x->original_uri()}, {$x->id()} [recreate={$x->recreate()}]: \n";
@@ -35,6 +38,7 @@ try
 		if($x->recreate() && config('cache_static'))
 		{
 			$data = url_parse($x->original_uri());
+
 			if(!empty($data['root']))
 			{
 				unset($_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT']);
@@ -44,9 +48,11 @@ try
 
 			if($obj)
 			{
+//				echo "Try recreate {$obj->debug_title()}\n";
 				$obj->set_attr('static_recreate_object', $x);
+//				config_set('debug.execute_trace', true);
 				bors_object_create($obj);
-
+//				echo "\t\tok\n";
 			}
 			else
 //				debug_hidden_log('static-cache', "Can't load recreateable object {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
@@ -70,6 +76,8 @@ try
 				$x->delete();
 			}
 		}
+
+		bors_global::ping(100);
 
 		echo "<br/>\n";
 	}

@@ -48,9 +48,7 @@ class bors_class_loader
 
 	static function load($class_name, &$args = array())
 	{
-//		echo "Check class $class_name<br/>\n";
 		static $skips = NULL; if(is_null($skips)) $skips = config('classes_skip', array());
-		static $monos = NULL; if(is_null($monos)) $monos = config('cache_code_monolith');
 		static $cachd = NULL; if(is_null($cachd)) $cachd = config('cache_dir').'/classes/';
 		if(in_array($class_name, $skips))
 			return false;
@@ -59,18 +57,6 @@ class bors_class_loader
 		// его реальный(! — например, .yaml) файл, не кешированный.
 		if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
 			return $real_class_file;
-
-		if($monos
-			&& empty($GLOBALS['bors_data']['classes_cache_content'])
-			&& file_exists($classes_cache_file = config('cache_dir') . '/classes.php')
-		)
-		{
-			$GLOBALS['bors_data']['classes_cache_content'] = file_get_contents($classes_cache_file);
-			require_once($classes_cache_file);
-
-			if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
-				return $real_class_file;
-		}
 
 		$class_base = str_replace('_', '/', $class_name);
 		$class_path = $class_base.'.php';
@@ -177,43 +163,9 @@ class bors_class_loader
 
 	static function load_and_cache($class_name, $class_file)
 	{
-//		echo "Find class $class_name = $class_file<br/>\n";
 		if(!class_exists($class_name, false))
-		{
-			if(config('cache_code_monolith'))
-			{
-				static $classes_cache_file = NULL;
-				if(!$classes_cache_file)
-					$classes_cache_file = config('cache_dir') . '/classes.php';
+			require_once($class_file);
 
-				if(!file_exists($classes_cache_file))
-					file_put_contents($classes_cache_file, "<?php\n");
-
-				if(empty($GLOBALS['bors_data']['classes_cache_content']))
-					$GLOBALS['bors_data']['classes_cache_content'] = file_get_contents($classes_cache_file);
-				require_once($classes_cache_file);
-				if(class_exists($class_name))
-					return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
-
-				require_once($class_file);
-
-//				echo "Store class $class_name to $classes_cache_file<br/>\n";
-				$class_code = file_get_contents($class_file);
-				$class_code = "\n".trim(preg_replace('/^<\?php/', '', $class_code))."\n";
-//				$class_code = preg_replace("/class $class_name/", "if(!class_exists('$class_name'))\n{  class $class_name", $class_code);
-				$class_code .= "\$GLOBALS['bors_data']['classes_included']['{$class_name}'] = '$class_file';\n";
-//				$class_code .= "}\n";
-				$GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
-				$GLOBALS['bors_data']['classes_cache_content'] .= $class_code;
-				$GLOBALS['bors_data']['classes_cache_content_updated'] = true;
-			}
-			else
-				require_once($class_file);
-		}
-//		else
-//			echo "Class $class_name already loaded<br/>\n";
-
-//		if(preg_match('/photoreport/', $class_name)) echo "Find class $class_name: $class_file<br/>\n";
 		return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
 	}
 }

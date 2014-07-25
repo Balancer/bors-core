@@ -102,5 +102,8 @@ function lcml_html_pre($txt)
 
 		// Придумать, как обойти порчу ссылок.
 		// Видимо, ставить в post? config('lcml_html_special_chars_enable') ? $txt : htmlspecialchars($txt, ENT_NOQUOTES);
-		return preg_replace('/([^\-])>/', '$1&gt;', $txt);
+		// Тест < : http://www.balancer.ru/g/p3537449
+		$txt = preg_replace('#<(?!(/?[a-z]+?>))#i', '&lt;', $txt);
+		$txt = preg_replace('/([^\-])>/', '$1&gt;', $txt);
+		return $txt;
     }

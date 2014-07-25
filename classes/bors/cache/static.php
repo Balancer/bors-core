@@ -36,9 +36,10 @@ class cache_static extends bors_object_db
 
 		if(!$x)
 		{
-			echo "Can't load {$this->original_uri()} nor {$this->object_uri()}\n";
 			if($x = bors_load($this->target_class_name(), $this->target_id()))
 				$x->set_page($this->target_page());
+			else
+				echo "Can't load {$this->original_uri()} nor {$this->object_uri()} nor {$this->target_class_name()}({$this->target_id()})\n";
 		}
 
 		return $x;

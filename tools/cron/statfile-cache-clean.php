@@ -29,9 +29,10 @@ try
 
 	// BETWEEN 0 AND NOW — чтобы не стирать -1.
 
-	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time())) as $x)
+	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time(), 'order' => 'expire_time')) as $x)
 	{
-		echo "{$x->original_uri()}, {$x->id()} [recreate={$x->recreate()}]: \n";
+//		echo "{$x->original_uri()}, {$x->id()} [rcr={$x->recreate()}]: ";
+		echo "{$x->original_uri()} [rcr={$x->recreate()}]: ";
 
 		$obj = $x->target();
 
@@ -77,9 +78,9 @@ try
 			}
 		}
 
-		bors_global::ping(100);
+		echo "\n";
 
-		echo "<br/>\n";
+		bors_global::ping(1000);
 	}
 
 }

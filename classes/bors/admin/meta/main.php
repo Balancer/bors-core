@@ -24,6 +24,7 @@ class bors_admin_meta_main extends bors_admin_paginated
 
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		$class_name = str_replace('_main', '', $class_name);
+		$class_name = str_replace('_search', '', $class_name);
 
 		return blib_grammar::singular($class_name);
 	}
@@ -31,11 +32,20 @@ class bors_admin_meta_main extends bors_admin_paginated
 	function _main_admin_class_def()
 	{
 		$class_name = str_replace('_main', '', $this->class_name());
+		$class_name = str_replace('_search', '', $class_name);
 		$admin_class_name = blib_grammar::singular($class_name);
-		if(class_include($admin_class_name))
+		if(class_exists($admin_class_name))
 			return $admin_class_name;
 
 		return $this->main_class();
+	}
+
+	function pre_show()
+	{
+		if(!class_exists($this->main_class()))
+			return bors_message("Class {$this->main_class()} not exists");
+
+		return parent::pre_show();
 	}
 
 	function body_data()

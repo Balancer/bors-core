@@ -114,7 +114,7 @@ class bors_admin_meta_main extends bors_admin_paginated
 			'new_link_title' => $new_link_title,
 			'item_fields' => $parsed_fields,
 			'admin_search_url' => $admin_search_url,
-			'search_where' => $search_where,
+			'search_where' => @$search_where,
 		));
 	}
 

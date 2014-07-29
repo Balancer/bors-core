@@ -156,18 +156,37 @@ class bors_admin_engine extends bors_object
 		return $res.$del;
 	}
 
-	function imaged_titled_link_ex($mode)
+	function imaged_titled_link_ex($params)
 	{
-		$obj = $this->real_object();
-		$title = $obj->title();
-
-		if(!$title)
-			$title = ec('[без имени]');
-
-		if($obj->access()->can_edit())
-			$html = "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$title}</a>";
+		if(is_array($params))
+			$mode = popval($params, 'mode');
 		else
-			$html = "{$title}";
+		{
+			$mode = $params;
+			$params = array();
+		}
+
+		$obj = $this->real_object();
+
+		if(array_key_exists('title', $params))
+		{
+			$title = defval($params, 'title');
+		}
+		else
+		{
+			$title = $obj->title();
+
+			if(!$title)
+				$title = ec('[без имени]');
+		}
+
+		if($title)
+		{
+			if($obj->access()->can_edit())
+				$html = "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$title}</a>";
+			else
+				$html = "{$title}";
+		}
 
 		try
 		{

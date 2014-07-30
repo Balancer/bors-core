@@ -201,30 +201,22 @@ function mysql_args_compile($args, $class=NULL)
 				$join[] = bors_upper($join_type).' JOIN '.$j;
 	}
 
-	if(!empty($args['inner_join']))
+	// join'ы рассматриваются по порядку.
+	foreach($args as $arg => $p)
 	{
-		if(is_array($args['inner_join']))
+		if(preg_match('!^(inner|left)_join\d*$!', $arg, $m))
 		{
-			foreach($args['inner_join'] as $j)
-				$join[] = 'INNER JOIN '.mysql_bors_join_parse($j, $class);
+			$type = strtoupper($m[1]);
+			if(is_array($p))
+			{
+				foreach($p as $j)
+					$join[] = $type.' JOIN '.mysql_bors_join_parse($j, $class);
+			}
+			else
+				$join[] = $type.' JOIN '.mysql_bors_join_parse($p, $class);
+
+			unset($args[$arg]);
 		}
-		else
-			$join[] = 'INNER JOIN '.mysql_bors_join_parse($args['inner_join'], $class);
-
-		unset($args['inner_join']);
-	}
-
-	if(!empty($args['left_join']))
-	{
-		if(is_array($args['left_join']))
-		{
-			foreach($args['left_join'] as $j)
-				$join[] = 'LEFT JOIN '.mysql_bors_join_parse($j, $class);
-		}
-		else
-			$join[] = 'LEFT JOIN '.mysql_bors_join_parse($args['left_join'], $class);
-
-		unset($args['left_join']);
 	}
 
 	$join = join(' ', $join);

@@ -219,8 +219,8 @@ class bors_object extends base_object
 
 	function uses($asset, $args = NULL)
 	{
-		if($asset == 'composer')
-			return require_once(__DIR__.'/../../../../autoload.php');
+//		if($asset == 'composer')
+//			return require_once(__DIR__.'/../../../../autoload.php');
 
 		bors_throw("Unknown uses $asset");
 //		return parent::uses($asset, $args);

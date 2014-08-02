@@ -12,6 +12,10 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Begun Robot Crawler' => 'Begun Robot Crawler',
 			'bingbot' => 'Bing',				// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
 			'BLEXBot' => 'BLEXBot',				// Mozilla/5.0 (compatible; BLEXBot/1.0; +http://webmeup.com/crawler.html)
+			'ColonkaCrawler' => array(			// ColonkaCrawler 1.0-alpha (http://colonka.com)
+				'bot' => 'ColonkaCrawler',
+				'url' => 'http://colonka.com',
+			),
 			'Digg Feed Fetcher' => array(		// Digg Feed Fetcher 1.0 (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_1) AppleWebKit/534.48.3 (KHTML, like Gecko) Version/5.1 Safari/534.48.3)
 				'bot' => 'Digg Feed Fetcher',
 				'crawler' => false,
@@ -31,6 +35,10 @@ function bors_bot_detect($user_agent, &$data = array())
 				'bot' => 'Grapeshot',
 				'url' => 'http://www.grapeshot.co.uk/crawler.php',
 				'crawler' => true,
+			),
+			'InterfaxScanBot' => array(			// Mozilla/5.0 (compatible; InterfaxScanBot/1.0; http://scan-interfax.ru)
+				'bot' => 'InterfaxScanBot',
+				'url' => 'http://scan-interfax.ru',
 			),
 			'Mediapartners-Google' => array(	// Mediapartners-Google
 				'bot' => 'Google Mediapartners',
@@ -117,6 +125,10 @@ function bors_bot_detect($user_agent, &$data = array())
 				'bot' => 'TppRFbot',
 				'url' => 'http://www.ruschamber.net/',
 			),
+			'trendictionbot' => array(			// Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.0; trendictionbot0.5.0; trendiction search; http://www.trendiction.de/bot; please let us know of any problems; web at trendiction.com) Gecko/20071127 Firefox/3.0.0.11
+				'bot' => 'trendictionbot',
+				'url' => 'http://www.trendiction.de/bot',
+			),
 			'TurnitinBot' => 'TurnitinBot', // TurnitinBot/2.1 (http://www.turnitin.com/robot/crawlerinfo.html)
 			'TweetedTimes' => array(	// Mozilla/5.0 (compatible; TweetedTimes Bot/1.0; +http://tweetedtimes.com)
 				'bot' => 'TweetedTimes',
@@ -128,6 +140,10 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Yeti' => 'Yeti',			// Yeti/1.0 (NHN Corp.; http://help.naver.com/robots/)
 			'VoilaBot' => 'VoilaBot',	// Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.8.1) VoilaBot BETA 1.2 (support.voilabot@orange-ftgroup.com)
 			'WebAlta' => 'WebAlta',
+			'Wotbox' => array(			// Wotbox/2.01 (+http://www.wotbox.com/bot/)
+				'bot' => 'Wotbox',
+				'url' => 'http://www.wotbox.com/bot/',
+			),
 			'YaDirectBot' => 'YandexDirect',	// YaDirectBot/1.0
 			'yahoo' => 'Yahoo',
 			'YandexMetrika' => array(

@@ -76,29 +76,7 @@ function date_tomorrow ($time = 0) { return strtotime(date('Y-m-d', $time ? $tim
 
 bors_function_include('time/part_date');
 
-function smart_interval($interval, $parts = 2)
-{
-	$res = array();
-	$res[] = ($x = $interval % 60) ? $x.ec(' секунд').sklon($x,ec('а,ы,')) : '';
-	$interval = intval($interval/60);
-	$res[] = ($x = $interval % 60) ? $x.ec(' минут').sklon($x,ec('а,ы,')) : '';
-	$interval = intval($interval/60);
-	$res[] = ($x = $interval % 24) ? $x.ec(' час').sklon($x,ec(',а,ов')) : '';
-	$interval = intval($interval/24);
-
-	$res[] = ($x = $interval % 365) ? $x.' '.sklon($x,ec('день,дня,дней')) : '';
-	$interval = intval($interval/365);
-
-	$res[] = ($x = $interval) ? $x.' '.sklon($x, ec('год,года,лет')) : '';
-
-	$res = array_reverse($res);
-
-	for($i=0; $i<count($res); $i++)
-		if(!empty($res[$i]))
-			break;
-
-	return join(' ', array_slice($res, $i, $parts));
-}
+function smart_interval($interval, $parts = 2) { return bors_lib_time::smart_interval($interval, $parts); }
 
 function short_interval($ss)
 {

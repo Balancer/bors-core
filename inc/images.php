@@ -298,7 +298,7 @@ function bors_icon($image, $params = array())
 	else
 	{
 		//TODO: вынести хардкод
-		$html = "<img src=\"http://s.wrk.ru/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$alt\" class=\"flag\" />";
+		$html = "<img src=\"http://s.wrk.ru/_bors/i16/$image\" width=\"16\" height=\"16\" title=\"$title\" alt=\"$alt\" />";
 	}
 
 	if($url = defval($params, 'url'))

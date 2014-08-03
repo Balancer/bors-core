@@ -59,7 +59,15 @@ class bors_lib_object
 		$foo = @$objects[$class_name];
 
 		if(!$foo)
+		{
+			if(!class_exists($class_name))
+				return $default;
+
 			$foo = $objects[$class_name] = new $class_name(NULL);
+
+			if(!$foo)
+				return $default;
+		}
 
 		$foo->_configure();
 		return $foo->get($name, $default);

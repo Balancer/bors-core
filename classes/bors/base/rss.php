@@ -1,8 +1,10 @@
 <?php
 
+// composer: openpsa/universalfeedcreator
+
 class base_rss extends base_page
 {
-	function render_engine() { return 'base_rss'; }
+	function render_engine() { return 'bors_rss'; }
 	function output_charset() { return 'utf-8'; }
 
 	function rss_strip() { return 1024;}
@@ -14,12 +16,13 @@ class base_rss extends base_page
 
 	function render($rss)
 	{
-		require_once(config('feedcreator_include'));
+		if(!class_exists('UniversalFeedCreator'))
+			bors_throw("Use:<br/>\ncomposer require openpsa/universalfeedcreator=*");
 
 //		$type = "ATOM1.0";
 		$type = "RSS2.0";
 
-		$feed = new UniversalFeedCreator(); 
+		$feed = new UniversalFeedCreator();
 		$feed->useCached($type, '/tmp/bors-rss-'.md5($rss->url()).'.xml', config('rss_static_lifetime'));
 		$feed->encoding = 'UTF-8';
 		$feed->title = $rss->rss_title();

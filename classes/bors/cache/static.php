@@ -36,9 +36,10 @@ class cache_static extends bors_object_db
 
 		if(!$x)
 		{
-			echo "Can't load {$this->original_uri()} nor {$this->object_uri()}\n";
 			if($x = bors_load($this->target_class_name(), $this->target_id()))
 				$x->set_page($this->target_page());
+			else
+				echo "Can't load {$this->original_uri()} nor {$this->object_uri()} nor {$this->target_class_name()}({$this->target_id()})\n";
 		}
 
 		return $x;
@@ -141,6 +142,9 @@ class cache_static extends bors_object_db
 
 		$object_uri = $object->url_ex($object->page());
 		$original_uri = $object->called_url();
+
+		if(!$original_uri)
+			$original_uri = $object_uri;
 
 //		if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
 //			bors_debug::syslog('__cache_file_register', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache=".($cache?'yes':'no'));

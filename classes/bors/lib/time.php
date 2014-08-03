@@ -132,7 +132,7 @@ class bors_lib_time
 			return strftime("%d.%m.%Y", $time);
 	}
 
-	function smart_interval_vp($interval, $parts = 2)
+	static function smart_interval_vp($interval, $parts = 2)
 	{
 		require_once('inc/strings.php');
 		$res = array();

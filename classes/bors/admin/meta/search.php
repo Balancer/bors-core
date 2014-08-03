@@ -8,11 +8,9 @@ class bors_admin_meta_search extends bors_admin_meta_main
 {
 	function admin_search_url() { return $this->url(); }
 
-	function title() { return ec('Поиск по ').$this->foo_object()->class_title_dpm(); }
+	function title() { return ec('Поиск по ').bors_lib_object::get_foo($this->main_class(), 'class_title_dpm'); }
 	function nav_name() { return ec('поиск'); }
 	function auto_map() { return true; }
-
-	function main_class() { bors_throw(ec('Не определён класс для поиска')); }
 
 	function q() { return trim(urldecode(defval($_GET, 'q', ''))); }
 	function w() { return trim(urldecode(defval($_GET, 'w', ''))); }

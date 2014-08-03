@@ -26,7 +26,7 @@
 		if($go = $obj->attr('redirect_to'))
 			return go($go);
 
-		$processed = $obj->pre_parse($_GET);
+		$processed = $obj->pre_parse();
 		if($processed === true)
 		{
 			if(config('debug_header_trace'))
@@ -177,7 +177,7 @@ function bors_object_create($obj, $page = NULL)
 
 	$page = $obj->set_page($page ?: $obj->args('page'));
 
-	$processed = $obj->pre_parse($_GET);
+	$processed = $obj->pre_parse();
 	if($processed === true)
 		return NULL;
 

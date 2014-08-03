@@ -26,10 +26,17 @@ class bors_legacy_53
 		// list_fields_format: '%title%%qshort%'
 		// qshort(): '$this->short() ? " (".$this->short().")" : ""'
 
-		foreach(bors_find_all($class_name, array_merge(array('order' => $order), $where)) as $x)
+		if(method_exists($class_name, 'storage'))
 		{
-			if($x->id() && ($t = preg_replace_callback('/(%(\w+)%)/', function($m) use ($x) { return $x->get($m[2]); }, $format)))
-				$list[$x->id()] = $t;
+			foreach(bors_find_all($class_name, array_merge(array('order' => $order), $where)) as $x)
+			{
+				if($x->id() && ($t = preg_replace_callback('/(%(\w+)%)/', function($m) use ($x) { return $x->get($m[2]); }, $format)))
+					$list[$x->id()] = $t;
+			}
+		}
+		if(method_exists($class_name, 'named_list'))
+		{
+			$list = bors_foo($class_name)->named_list();
 		}
 
 		return $list;

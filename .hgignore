@@ -1,0 +1,3 @@
+syntax: glob
+tools/setup-host.php
+tools/config-host.php

@@ -11,7 +11,7 @@ class bors_lcml_tag_pair_round_box extends bors_lcml_tag_pair
 	{
 		require_once(BORS_CORE.'/engines/lcml/funcs.php');
 //		var_dump($text);
-		return save_format("<div class=\"round_box shadow8 mtop8\">\n".bors_lcml::lcml($text)."\n<div class=\"clear\">&nbsp;</div></div>\n");
+		return save_format("<div class=\"round_box shadow8 mtop8\">\n".$this->lcml($text)."\n<div class=\"clear\">&nbsp;</div></div>\n");
 	}
 
 	static function __unit_test($suite)

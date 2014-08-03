@@ -65,7 +65,7 @@ bors_function_include('date/full_hdate');
 bors_function_include('time/date_format_mysqltime');
 bors_function_include('date/format_mysql');
 
-function date_day_begin($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time())); }
+function date_day_begin($time = 0) { return blib_time::day_begin($time); }
 function date_day_next($time)   { return strtotime(date('Y-m-d', $time).' +1 day');  }
 function date_month_next($time) { return strtotime(date('Y-m-d', $time).' +1 month');}
 function date_year_next($time)  { return strtotime(date('Y-m-d', $time).' +1 year'); }

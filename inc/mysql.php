@@ -135,6 +135,9 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true, $f
 		$class = new $class(NULL);
 	}
 
+	if(!method_exists($class, 'class_name'))
+		return $property ? $class.'.'.$property : $class;
+
 	if($f = bors_lib_orm::parse_property($class->class_name(), $property))
 	{
 		if($for_order && ($x = @$f['sql_order_field']))
@@ -155,12 +158,12 @@ function bors_class_field_to_db($class, $property = NULL, $was_joined = true, $f
 function mysql_bors_join_parse($join, $class_name='', $was_joined = true, $for_order = false)
 {
 	$join = preg_replace_callback('!(\w+)\s+ON\s+!', function($m) { return bors_class_field_to_db($m[1]).' ON ';}, $join);
-	$join = preg_replace_callback('!^(\w+)\.(\w+)$!', function($m) { return bors_class_field_to_db($m[1], $m[2]);}, $join);
-	$join = preg_replace_callback('!(\w+)\.(\w+)\s*(=|>|<)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
-	$join = preg_replace_callback('!(\w+)\.(\w+)(\s+IN)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
-	$join = preg_replace_callback('!(\w+)\.(\w+)(\s+BETWEEN\s+\S+\s+AND\s+\S+)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
+	$join = preg_replace_callback('!^(\w+_\w+)\.(\w+)$!', function($m) { return bors_class_field_to_db($m[1], $m[2]);}, $join);
+	$join = preg_replace_callback('!(\w+_\w+)\.(\w+)\s*(=|>|<)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
+	$join = preg_replace_callback('!(\w+_\w+)\.(\w+)(\s+IN)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
+	$join = preg_replace_callback('!(\w+_\w+)\.(\w+)(\s+BETWEEN\s+\S+\s+AND\s+\S+)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
 //	$join = preg_replace_callback('!(ON )(\w+)\.(\w+)(\s+)!', function($m) { return $m[1].bors_class_field_to_db($m[2], $m[3]).$m[4];}, $join);
-	$join = preg_replace_callback('!(=\s*|>|<)(\w+)\.(\w+)!', function($m) { return $m[1].bors_class_field_to_db($m[2], $m[3]);}, $join);
+	$join = preg_replace_callback('!(=\s*|>|<)(\w+_\w+)\.(\w+)!', function($m) { return $m[1].bors_class_field_to_db($m[2], $m[3]);}, $join);
 //	if(config('is_debug')) echo "    ??? result1: $join <br/>\n";
 	$join = preg_replace_callback('!^(\w+)((\s+NOT)?\s+IN)!', function($m) use ($class_name) { return bors_class_field_to_db($class_name, $m[1]).$m[2];}, $join);
 	$join = preg_replace_callback('!([ \(])(\w+)\s*(=|>|<)!', function($m) use ($class_name) { return $m[1].bors_class_field_to_db($class_name, $m[2]).$m[3];}, $join);
@@ -201,30 +204,22 @@ function mysql_args_compile($args, $class=NULL)
 				$join[] = bors_upper($join_type).' JOIN '.$j;
 	}
 
-	if(!empty($args['inner_join']))
+	// join'ы рассматриваются по порядку.
+	foreach($args as $arg => $p)
 	{
-		if(is_array($args['inner_join']))
+		if(preg_match('!^(inner|left)_join\d*$!', $arg, $m))
 		{
-			foreach($args['inner_join'] as $j)
-				$join[] = 'INNER JOIN '.mysql_bors_join_parse($j, $class);
+			$type = strtoupper($m[1]);
+			if(is_array($p))
+			{
+				foreach($p as $j)
+					$join[] = $type.' JOIN '.mysql_bors_join_parse($j, $class);
+			}
+			else
+				$join[] = $type.' JOIN '.mysql_bors_join_parse($p, $class);
+
+			unset($args[$arg]);
 		}
-		else
-			$join[] = 'INNER JOIN '.mysql_bors_join_parse($args['inner_join'], $class);
-
-		unset($args['inner_join']);
-	}
-
-	if(!empty($args['left_join']))
-	{
-		if(is_array($args['left_join']))
-		{
-			foreach($args['left_join'] as $j)
-				$join[] = 'LEFT JOIN '.mysql_bors_join_parse($j, $class);
-		}
-		else
-			$join[] = 'LEFT JOIN '.mysql_bors_join_parse($args['left_join'], $class);
-
-		unset($args['left_join']);
 	}
 
 	$join = join(' ', $join);
@@ -247,6 +242,12 @@ function mysql_args_compile($args, $class=NULL)
 		$use_index = "USE INDEX ({$args['use_index']})";
 
 		unset($args['use_index']);
+	}
+	elseif(!empty($args['force_index']))
+	{
+		$use_index = "FORCE INDEX ({$args['force_index']})";
+
+		unset($args['force_index']);
 	}
 	else
 		$use_index = '';

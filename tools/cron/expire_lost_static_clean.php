@@ -41,8 +41,8 @@ function do_clean($file)
 		return;
 	}
 
-//	echo "[{$m[1]}] $file\n";
-//	debug_hidden_log('static-clean2', "{$m[1]}: {$file}", false);
+	echo "[{$m[1]}] $file\n";
+	debug_hidden_log('expire-static-clear', "{$m[1]}: {$file}", false);
 	@unlink($file);
 	@rmdir(dirname($file));
 	@rmdir(dirname(dirname($file)));

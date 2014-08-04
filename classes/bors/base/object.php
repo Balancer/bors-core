@@ -1525,6 +1525,9 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			&& filemtime($file) >= $this->modify_time()
 			&& filemtime($file) >= $this->class_filemtime();
 
+		if(array_key_exists('nc', $_GET))
+			$file_fresh = false;
+
 		if($use_static && $file && $fe && !$recreate && $file_fresh)
 			return file_get_contents($file);
 

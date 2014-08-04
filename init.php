@@ -19,10 +19,11 @@ if(!defined('BORS_CORE'))
 
 define('BORS_ROOT', dirname(BORS_CORE).DIRECTORY_SEPARATOR);
 
-if(file_exists(BORS_ROOT.'composer'))
-	require(BORS_ROOT.'composer/vendor/autoload.php');
-else
-	require(BORS_ROOT.'../autoload.php');
+if(!defined('COMPOSER_INCLUDED'))
+{
+	require COMPOSER_ROOT.'/vendor/autoload.php';
+	define('COMPOSER_INCLUDED', true);
+}
 
 if(!defined('BORS_EXT'))
 	define('BORS_EXT', BORS_ROOT.'bors-ext');

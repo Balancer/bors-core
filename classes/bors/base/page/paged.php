@@ -91,7 +91,16 @@ class base_page_paged extends bors_page
 			return $this->_items;
 
 		$class_name = $this->get('is_admin_list') ? $this->main_admin_class() : $this->main_class();
-
+/*
+		echo '<xmp>';
+		var_dump($this->_where(array(
+			'page' => $this->page(),
+			'per_page' => $this->items_per_page(),
+			'order' => $this->order(),
+			'by_id' => true,
+		)));
+		echo '</xmp>';
+*/
 		$this->_items = bors_find_all($class_name, $this->_where(array(
 			'page' => $this->page(),
 			'per_page' => $this->items_per_page(),
@@ -116,9 +125,8 @@ class base_page_paged extends bors_page
 		// Если уберём try, проверить на http://admin.aviaport.ru/commerce/pressrelease/export.xls
 		try
 		{
-			$where = $this->where();
-			if($group = $this->group())
-				$where['group'] = $group;
+			$where = $this->_where();
+			unset($where['by_id']);
 
 			$count = $this->_total = bors_count($this->main_class(), $where);
 		}

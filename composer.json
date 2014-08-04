@@ -25,6 +25,7 @@
 		"php": ">=5.3",
 		"balancer/blib-morfology-ru": "@dev",
 		"intervention/image": "<2",
+		"monolog/monolog": "*",
 		"rediska/rediska": "*",
 		"smarty/smarty": "!=3.1.17",
 		"easybook/geshi": "*",

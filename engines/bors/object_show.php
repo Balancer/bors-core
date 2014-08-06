@@ -146,7 +146,7 @@
 		if(!$access_object->can_read())
 			return empty($GLOBALS['cms']['error_show']) ? bors_message(ec("Извините, у Вас нет доступа к этому ресурсу [2]\n<!-- $access_object, class_file = {$access_object->class_file()}-->")) : true;
 
-        $last_modify = @gmdate('D, d M Y H:i:s', $modify_time).' GMT';
+        $last_modify = @gmdate('D, d M Y H:i:s', $modify_time ? $modify_time : time()).' GMT';
    	    @header ('Last-Modified: '.$last_modify);
 
 		if($obj->cache_static())

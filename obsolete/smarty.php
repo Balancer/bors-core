@@ -163,7 +163,7 @@ function show_page($uri, $data = true)
 //		include_once("funcs/actions/subscribe.php");
 		$subscribed = false; //cms_funcs_action_is_subscribed($page);
 
-        $last_modify = gmdate('D, d M Y H:i:s', $modify_time).' GMT';
+        $last_modify = gmdate('D, d M Y H:i:s', $modify_time ? $modify_time : time()).' GMT';
    	    @header ('Last-Modified: '.$last_modify);
 
         if($nocache || !$smarty->is_cached($tpl, $page))

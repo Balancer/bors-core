@@ -55,7 +55,11 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Liferea' => 'Liferea',		// Liferea/1.6.2 (Linux; ru_RU.UTF-8; http://liferea.sf.net/)
 			'linkdexbot' => 'Linkdex Bot',  // Mozilla/5.0 (compatible; linkdexbot/2.0; +http://www.linkdex.com/about/bots/)
 			'lwp' => 'LWP',				// lwp-trivial/1.41
-			'MagpieRSS' => array(		//MagpieRSS/0.72 (+http://magpierss.sf.net; No cache)
+			'magpie-crawler' => array(	// magpie-crawler/1.1 (U; Linux amd64; en-GB; +http://www.brandwatch.net)
+				'bot' => 'Magpie Crawler',
+				'url' => 'http://www.brandwatch.net',
+			),
+			'MagpieRSS' => array(		// MagpieRSS/0.72 (+http://magpierss.sf.net; No cache)
 				'bot' => 'MagpieRSS',
 				'crawler' => false,
 			),

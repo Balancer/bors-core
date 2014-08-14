@@ -190,7 +190,9 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 		errno=$errno
 		errstr=$errstr
 		errfile=$errfile
-		errline=$errline", -1, array('append' => "stack:\n==============\n".debug_trace(0, false)."\nerrcontext=".print_r($errcontext, true)));
+		errline=$errline", -1
+			, array('append' => "stack:\n==============\n".debug_trace(0, false)."\nerrcontext=".print_r($errcontext, true))
+		);
 
 	return true;
 }

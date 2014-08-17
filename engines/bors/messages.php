@@ -131,6 +131,12 @@ function bors_message($text, $params=array())
 //	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 //		$template = "xfile:$template";
 
+	$data = array_merge($data, array(
+		'success_message' => session_var('success_message'),
+		'notice_message'  => session_var('notice_message'),
+		'error_message'   => session_var('error_message'),
+	));
+
 	$message = bors_templates_smarty::fetch($template, $data);
 
 	if(!$message) // Если всё плохо

@@ -65,11 +65,8 @@ require_once($dir.'/config.php');
 $GLOBALS['bors_data']['vhost_handlers'] = array();
 $GLOBALS['bors_map'] = array();
 
-if(!config('system.session.skip'))
-{
-	require_once('inc/system.php');
-	__session_init();
-}
+// Пока не убирать: Fatal error: Call to undefined function calling_function_name() in /var/www/bors/composer/vendor/balancer/bors-core/classes/bors/object/simple.php on line 288
+require_once('inc/system.php');
 
 $host = @$_SERVER['HTTP_HOST'];
 

@@ -142,6 +142,10 @@ function bors_message($text, $params=array())
 	if(!$message) // Если всё плохо
 		$message = $body;
 
+	// Используем до первого вывода по echo ниже
+	if(empty($params['save_session']))
+		clean_all_session_vars();
+
 	//TODO: исправить!!
 	if($ics != $ocs)
 		echo iconv($ics, $ocs, $message);
@@ -155,9 +159,6 @@ function bors_message($text, $params=array())
 		else
 			$redir = user_data('level') > 3 ? "/admin/news/" : "/";
 	}
-
-	if(empty($params['save_session']))
-		clean_all_session_vars();
 
 	if($hidden_log)
 		debug_hidden_log($hidden_log, "message: $text");

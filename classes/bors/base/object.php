@@ -93,7 +93,10 @@ class base_object extends bors_object_simple
 
 	function rss_body()
 	{
-		if($image = object_property($this, 'image'))
+		// Этот config пока используется только на лентах топиков:
+		// http://www.wrk.ru/society/2014/08/topic-89787-rss.xml
+		// Подумать, как сделать красиво и локально
+		if(!config('rss_skip_images') && ($image = object_property($this, 'image')))
  			$image_html = "<p>".$image->thumbnail('300x300')->html_code() . "</p>\n";
 		else
 			$image_html = '';

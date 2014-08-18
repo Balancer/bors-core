@@ -36,10 +36,10 @@ function borsmaps_load()
 	{
 		$map = array();
 		if(file_exists($file = secure_path("{$dir}/url_map.php")))
-			include($file);
+			require_once($file);
 		//TODO: перенести в проектах handlers/bors_map в url_map, тут пока остаётся для совместимости
 		elseif(file_exists($file = secure_path("{$dir}/handlers/bors_map.php")))
-			include($file);
+			require_once($file);
 		$bors_map = array_merge($bors_map, $map);
 	}
 }

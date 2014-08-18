@@ -238,21 +238,7 @@ class base_page extends bors_object
 
 	function _body_template_def()
 	{
-		$current_class = get_class($this);
-		$class_files = $GLOBALS['bors_data']['classes_included'];
-		$ext = $this->body_template_ext();
-
-		while($current_class)
-		{
-			$template_file = preg_replace("!(.+/\w+)\..+?$!", "$1.$ext", bors_class_loader::file($current_class));
-
-			if(file_exists($template_file))
-				break;
-
-			$current_class = get_parent_class($current_class);
-		}
-
-		return "xfile:{$template_file}";
+		return bors_lib_page::body_template($this);
 	}
 
 	function _nav_name_def()

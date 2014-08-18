@@ -5,7 +5,7 @@ class bors_lib_page
 	static function body($object)
 	{
 		if(config('debug.execute_trace'))
-			debug_execute_trace("{$object->debug_title_short()}->body() begin...");
+			bors_debug::execute_trace("{$object->class_name()}->body() begin...");
 
 		if($body = @$object->attr['body'])
 			return $body;
@@ -24,6 +24,24 @@ class bors_lib_page
 		}
 
 		bors_throw("Not defined body engine for class '{$object}'");
+	}
+
+	static function body_template($object)
+	{
+		$current_class = get_class($object);
+		$ext = $object->body_template_ext();
+
+		while($current_class)
+		{
+			$template_file = preg_replace("!(.+/\w+)\..+?$!", "$1.$ext", bors_class_loader::file($current_class));
+
+			if(file_exists($template_file))
+				return "xfile:{$template_file}";
+
+			$current_class = get_parent_class($current_class);
+		}
+
+		return NULL;
 	}
 
 	static function smart_body_template_check($object, $suffix = '')

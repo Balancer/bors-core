@@ -160,8 +160,10 @@ class base_object extends bors_object_simple
 
 	function data_load()
 	{
-		if(@$this->__loaded)
+		if(!empty($this->__loaded))
 			return true;
+
+		$this->__loaded = false;
 
 		if(($storage_engine = $this->storage_engine()))
 		{
@@ -184,7 +186,7 @@ class base_object extends bors_object_simple
 		if(($data_provider = $this->data_provider()))
 			object_load($data_provider, $this)->fill();
 
-		return false;
+		return $this->__loaded;
 	}
 
 	function class_id()

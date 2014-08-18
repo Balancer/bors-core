@@ -358,7 +358,7 @@ function class_load_by_local_url($url, $args)
 	$is_query = !empty($url_data['query']);
 	$host_helper = "!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)";
 
-//	var_dump($GLOBALS['bors_map']);
+//	if(config('is_developer')) r($GLOBALS['bors_map']);
 
 	foreach($GLOBALS['bors_map'] as $pair)
 	{
@@ -373,7 +373,7 @@ function class_load_by_local_url($url, $args)
 		else
 			$test_url = $check_url;
 
-		if(config('debug_trace')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for '.$test_url.'<br/>'.$check_url."<Br/>$url_pattern, class_path=$class_path<br/>";
+//		if(config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for '.$test_url.'<br/>'.$check_url."<Br/>$url_pattern, class_path=$class_path<br/>";
 		if(preg_match($host_helper.$url_pattern.'$!i', $test_url, $match))
 		{
 			if(($obj = try_object_load_by_map($url, $url_data, $test_url, $class_path, $match, $url_pattern, 1)))
@@ -407,6 +407,8 @@ function class_load_by_vhosts_url($url)
 		return NULL;
 
 	$host_data = $bors_data['vhosts'][$data['host']];
+
+//	if(config('is_debug')) r($host_data);
 
 	$url_noq = $data['scheme'].'://'.$data['host'].@$data['path'];
 	$query = @$data['query'];
@@ -476,13 +478,18 @@ function class_load_by_vhosts_url($url)
 				$class_path = $class_match[1];
 				$id = $match[$class_match[2]+1];
 			}
+			elseif(preg_match("!^(.+)\((url)\)$!", $class_path, $class_match))	
+			{
+				$class_path = $class_match[1];
+				$id = $url;
+			}
 
 			if(preg_match("!^(.+)/([^/]+)$!", $class_path, $m))
 				$class = $m[2];
 			else
 				$class = $class_path;
 
-//			echo "$class_path($id) - $url<br/>";
+//			if(config('is_debug')) r("$class_path($id) - $url");
 
 			$args = array(
 					'local_path' => $host_data['bors_local'],
@@ -494,12 +501,13 @@ function class_load_by_vhosts_url($url)
 			else
 				$args['page'] = $page;
 
-//			echo "Try to object_init($class_path, $id, $args) <br/>";
-//			print_d(bors_dirs());
+//			if(config('is_debug')) r("Try to object_init($class_path, $id)", $args);
+
 			$args['host'] = $data['host'];
+
 			if($obj = object_init($class_path, $id, $args))
 			{
-//				echo "init $obj.<br />Save to bors_data['classes_by_uri'][$url] = $obj<br/>";
+//				if(config('is_debug')) r("init $obj.<br />Save to bors_data['classes_by_uri'][$url] = $obj");
 				$bors_data['classes_by_uri'][$url] = $obj;
 
 				if($redirect)
@@ -613,7 +621,7 @@ function object_init($class_name, $object_id, $args = array())
 	if(!$loaded)
 		$loaded = $obj->data_load();
 
-	if(/*($object_id || $url) && */!$obj->can_be_empty() && !$obj->is_loaded())
+	if(!$obj->can_be_empty() && !$obj->is_loaded())
 		return NULL;
 
 	if(!empty($args['need_check_to_public_load']))

@@ -1,6 +1,6 @@
 <?php
 
-class base_page_db extends base_page
+class base_page_db extends bors_page
 {
 	function can_be_empty() { return false; }
 	function can_cached() { return true; } //TODO: пока не разберусь, откуда глюки сохранения memcache
@@ -116,7 +116,7 @@ class base_page_db extends base_page
 		return parent::delete();
 	}
 
-	function compiled_source() { return lcml($this->source()); }
+	function compiled_source() { return bors_lcml::lcml($this->source(), array('container' => $this)); }
 	static function objects_array($where) { return objects_array($where); }
 	static function objects_first($where) { return objects_first($where); }
 

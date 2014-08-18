@@ -246,6 +246,9 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 
 	$bors_map = array_merge($prev, $map2, $map);
 
+	if($prev_routes = @$bors_data['vhosts'][$host]['bors_map'])
+		$bors_map = array_merge($prev_routes, $bors_map);
+
 	$bors_data['vhosts'][$host] = array(
 		'bors_map' => $bors_map,
 		'bors_local' => $bors_host,
@@ -300,6 +303,12 @@ function bors_url_map($map_array)
 {
 	global $bors_map;
 	$bors_map = array_merge($bors_map, $map_array);
+}
+
+function bors_vhost_routes($host, $routes)
+{
+	global $bors_data;
+	$bors_data['vhosts'][$host]['bors_map'] = $routes;
 }
 
 function set_bors_project($project_name)

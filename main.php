@@ -315,7 +315,7 @@ if(config('access_log'))
 		'user_ip' => $_SERVER['REMOTE_ADDR'],
 		'user_id' => bors()->user_id(),
 		'server_uri' => $uri,
-		'referer' => @$_SERVER['HTTP_REFERER'],
+		'referer' => empty($_SERVER['HTTP_REFERER']) ? NULL : $_SERVER['HTTP_REFERER'],
 		'access_time' => round($GLOBALS['stat']['start_microtime']),
 		'operation_time' =>  str_replace(',', '.', $operation_time),
 		'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
@@ -360,7 +360,7 @@ $time = microtime(true) - $GLOBALS['stat']['start_microtime'];
 // Если время работы превышает заданный лимит, то логгируем
 if($time > config('timing_limit'))
 {
-	@file_put_contents($file = config('timing_log'), $time . " [".$uri . "]: " . @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
+	@file_put_contents($file = config('timing_log'), $time . " [".$uri . "]: " . defval($_SERVER, 'HTTP_REFERER') . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
 }
 

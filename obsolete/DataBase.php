@@ -44,9 +44,9 @@ class DataBase
 			do
 			{
 				if(config('mysql_persistent'))
-					$this->dbh = @mysql_pconnect($server, $login, $password, config('mysql_renew_links', true));
+					$this->dbh = mysql_pconnect($server, $login, $password, config('mysql_renew_links', true));
 				else
-					$this->dbh = @mysql_connect($server, $login, $password, config('mysql_renew_links', true));
+					$this->dbh = mysql_connect($server, $login, $password, config('mysql_renew_links', true));
 
 				if(!$this->dbh && config('mysql_try_reconnect'))
 				{

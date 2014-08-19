@@ -76,7 +76,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	if(is_array($id))
 	{
 		$data = $id;
-		$id = @$data['id'];
+		$id = empty($data['id']) ? NULL : $data['id'];
 	}
 	else
 		$data = false;

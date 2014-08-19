@@ -93,8 +93,8 @@ class bors_lib_orm
 		if(in_array($property, array('id', 'create_time', 'create_ts', 'modify_time', 'modify_ts', 'owner_id', 'last_editor_id', 'last_editor_ua', 'last_editor_ip')))
 			set_def($field, 'is_editable', false);
 
-		if($field_title = @self::$default_field_names[$property])
-			set_def($field, 'title', ec($field_title));
+		if(!empty(self::$default_field_names[$property]))
+			set_def($field, 'title', ec(self::$default_field_names[$property]));
 
 		return $field;
 	}
@@ -342,33 +342,6 @@ class bors_lib_orm
 				return $f;
 
 		return NULL;
-	}
-
-	static function get_yaml_notation($object, $name)
-	{
-		// Парсим файл класса на предмет YAML-нотаций
-		if(is_null(@$object->attr['__yaml_notations']))
-		{
-			$object->attr['__yaml_notations'] = array();
-			if(method_exists($object, 'class_file') && $class_file = $object->class_file())
-				if($class_source = file_get_contents($class_file))
-					if(preg_match_all("!^/\*\*(.+?)^\*/!ms", $class_source, $match, PREG_SET_ORDER))
-						foreach($match as $m)
-							if(is_array($data = bors_data_yaml::parse(trim($m[1]), true)))
-								$object->attr['__yaml_notations'] = array_merge($object->attr['__yaml_notations'], $data);
-		}
-
-		if($properties = @$object->attr['__yaml_notations']['properties'])
-		{
-			foreach($properties as $desc)
-			{
-				// default_image2 = aviaport_image(default_image_id)
-				if(preg_match('!^(\w+)\s*=\s*(\w+)\((\w+)\)$!', trim($desc), $m) && ($name == $m[1]))
-					return $object->attr[$name] = bors_load($m[2], $object->get($m[3]));
-			}
-		}
-
-		return false;
 	}
 
 	static function db_name($class_name)

@@ -5,6 +5,9 @@ $GLOBALS['stat']['start_microtime'] = microtime(true);
 if(function_exists('xhprof_enable'))
 	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 
+// Инициализация фреймворка
+require_once(dirname(__FILE__).'/init.php');
+
 // Если в запрашиваемом URL присутствуют параметры - переносим их в строку запроса
 // такая проблема всплывает на некоторых web-серверах.
 if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
@@ -18,16 +21,12 @@ if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 if(preg_match('!^(.+):\d+$!', $_SERVER['HTTP_HOST'], $m))
 	$_SERVER['HTTP_HOST'] = $m[1];
 
-
 // Если в имени хоста есть www, то убираем
 // $_SERVER['HTTP_HOST'] = preg_replace('!^www\.!', '', $_SERVER['HTTP_HOST']);
 
 // DOCUMENT_ROOT должен быть без слеша в конце.
 if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 	$_SERVER['DOCUMENT_ROOT'] = $m[1];
-
-// Инициализация фреймворка
-require_once(dirname(__FILE__).'/init.php');
 
 // Смотрим, нет ли доступных принудительных редиректов
 if(

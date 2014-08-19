@@ -212,7 +212,11 @@ class cache_static extends bors_object_db
 		{
 			file_put_contents($file, $content);
 			if(is_file($file))
+			{
 				chmod($file, 0666);
+				if($mt = $object->modify_time())
+					touch($file, $mt);
+			}
 		}
 
 		if(!file_exists($file) || !is_file($file))

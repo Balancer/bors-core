@@ -37,6 +37,9 @@ class bors_admin_edit_smart extends bors_admin_page
 	function pre_parse()
 	{
 		$object = $this->object();
+
+//		r(bors()->user()->id(), $object->access(), $object->access()->can_edit());
+
 		if(!$object->access()->can_edit())
 		{
 			bors_message(ec('Вы не можете редактировать ')

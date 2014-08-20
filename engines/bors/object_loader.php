@@ -15,7 +15,7 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 {
 	$obj = NULL;
 
-	if(is_object($id) || @$args['no_load_cache'])
+	if(is_object($id) || !empty($args['no_load_cache']))
 		return $obj;
 
 	if(!empty($GLOBALS['bors_data']['cached_objects4'][$class_name][$id]))

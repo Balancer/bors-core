@@ -3,6 +3,7 @@
 class base_object extends bors_object_simple
 {
 	var $data = array();
+	protected static $__auto_objects = array();
 
 	function attr_preset() { return array(
 		'title' => $this->class_title().' '.$this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
@@ -282,7 +283,7 @@ class base_object extends bors_object_simple
 			return $this->data[$method];
 
 		// Проверяем нет ли уже загруженного значения автообъекта
-		if(@array_key_exists($method, $this->__auto_objects))
+		if(array_key_exists($method, self::$__auto_objects))
 		{
 			$x = $this->__auto_objects[$method];
 			if($x['property_value'] == $this->get($x['property']))
@@ -299,9 +300,9 @@ class base_object extends bors_object_simple
 			unset($this->attr['___in_auto_object_routine']);
 		}
 
-		if(($f = @$auto_objs[$method]))
+		if(!empty($auto_objs[$method]))
 		{
-			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+			if(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$method], $m))
 			{
 				$property = $m[2];
 				if(config('orm.auto.cache_attr_skip'))
@@ -318,8 +319,8 @@ class base_object extends bors_object_simple
 
 		// Автоматические целевые объекты (имя класса задаётся)
 		$auto_targs = $this->auto_targets();
-		if(($f = @$auto_targs[$method]))
-			if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+		if(!empty($auto_targs[$method]))
+			if(preg_match('/^(\w+)\((\w+)\)$/', $auto_targs[$method], $m))
 				if(config('orm.auto.cache_attr_skip'))
 					return object_load($this->$m[1](), $this->$m[2]());
 				else
@@ -415,7 +416,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($db_update
 				&& !is_array($value)
 				&& !is_object($value)
-				&& strcmp(@$this->data[$prop], $value)
+				&& strcmp(empty($this->data[$prop]) ? NULL : $this->data[$prop], $value)
 			) // TODO: если без контроля типов, то !=, иначе - !==
 		{
 			if(config('mutex_lock_enable'))
@@ -430,7 +431,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 			// Запоминаем первоначальное значение переменной.
 			if(!@array_key_exists($prop, $this->changed_fields))
-				$this->changed_fields[$prop] = @$this->data[$prop];
+				$this->changed_fields[$prop] = empty($this->data[$prop]) ? NULL : $this->data[$prop];
 
 			bors()->add_changed_object($this);
 		}
@@ -1183,8 +1184,8 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function id_field()
 	{
 		$class_name = $this->class_name();
-		if($idf = @self::$id_fields_cache[$class_name])
-			return $idf;
+		if(!empty(self::$id_fields_cache[$class_name]))
+			return self::$id_fields_cache[$class_name];
 
 		if(method_exists($this, 'table_fields') && $this->storage_engine() != 'storage_db_mysql_smart')
 		{
@@ -1335,7 +1336,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return $file_name;
 	}
 
-	function class_file() { return @bors_class_loader::$class_files[$this->class_name()]; }
+	function class_file() { return empty(bors_class_loader::$class_files[$this->class_name()]) ? NULL : bors_class_loader::$class_files[$this->class_name()]; }
 	function class_filemtime() { return @bors_class_loader::$class_file_mtimes[$this->class_name()]; }
 
 	function real_class_file() { return @bors_class_loader::$class_files[$this->class_name()]; }

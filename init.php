@@ -113,8 +113,6 @@ foreach(array(BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $di
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0750);
 
-@chmod(dirname($d), 0777);
-
 if(config('debug_can_change_now'))
 {
 	$GLOBALS['now'] = empty($_GET['now']) ? time() : intval(strtotime($_GET['now']));
@@ -241,13 +239,15 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
 		require_once($file);
 
-	if(!($prev = @$bors_data['vhosts'][$host]['bors_map']))
+	if(empty($bors_data['vhosts'][$host]['bors_map']))
 		$prev = array();
+	else
+		$prev = $bors_data['vhosts'][$host]['bors_map'];
 
 	$bors_map = array_merge($prev, $map2, $map);
 
-	if($prev_routes = @$bors_data['vhosts'][$host]['bors_map'])
-		$bors_map = array_merge($prev_routes, $bors_map);
+	if(!empty($bors_data['vhosts'][$host]['bors_map']))
+		$bors_map = array_merge($bors_data['vhosts'][$host]['bors_map'], $bors_map);
 
 	$bors_data['vhosts'][$host] = array(
 		'bors_map' => $bors_map,

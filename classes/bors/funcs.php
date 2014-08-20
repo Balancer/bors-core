@@ -158,8 +158,8 @@ function bors_dirs($skip_config = false, $host = NULL)
 	if(defined('BORS_3RD_PARTY') && is_dir(BORS_3RD_PARTY))
 		$data[] = BORS_3RD_PARTY;
 
-	if($prjs = @$GLOBALS['bors_data']['projects'])
-		foreach($prjs as $project_name => $x)
+	if(!empty($GLOBALS['bors_data']['projects']))
+		foreach($GLOBALS['bors_data']['projects'] as $project_name => $x)
 			$data[] = $x['project_path'];
 
 	if(defined('COMPOSER_ROOT'))

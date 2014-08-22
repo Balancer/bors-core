@@ -285,7 +285,7 @@ class base_object extends bors_object_simple
 		// Проверяем нет ли уже загруженного значения автообъекта
 		if(array_key_exists($method, self::$__auto_objects))
 		{
-			$x = $this->__auto_objects[$method];
+			$x = self::$__auto_objects[$method];
 			if($x['property_value'] == $this->get($x['property']))
 				return $x['value'];
 		}
@@ -311,7 +311,7 @@ class base_object extends bors_object_simple
 				{
 					$property_value = $this->get($property);
 					$value = bors_load($m[1], $property_value);
-					$this->__auto_objects[$method] = compact('property', 'property_value', 'value');
+					self::$__auto_objects[$method] = compact('property', 'property_value', 'value');
 					return $value;
 				}
 			}
@@ -352,9 +352,6 @@ class base_object extends bors_object_simple
 		// Проверяем нет ли значения по умолчанию — это вместо бывшего attr
 		if(@array_key_exists($method, $this->defaults))
 			return $this->defaults[$method];
-
-		if(bors_lib_orm::get_yaml_notation($this, $name))
-			return $this->attr[$name];
 
 		if($this->strict_auto_fields_check())
 		{

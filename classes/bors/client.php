@@ -13,15 +13,14 @@ class bors_client extends bors_object_simple
 		if($this->id())
 			return $this->id();
 
-		$ip = @$_SERVER['REMOTE_ADDR'];
 		if(empty($_SERVER['HTTP_X_FORWARDED_FOR']))
-			return $ip;
+			return empty($_SERVER['REMOTE_ADDR']) ? NULL : $_SERVER['REMOTE_ADDR'];
 
 		return $_SERVER['HTTP_X_FORWARDED_FOR'];
 	}
 
 	function referer() { return @$_SERVER['HTTP_REFERER']; }
-	function agent() { return @$_SERVER['HTTP_USER_AGENT']; }
+	function agent() { return empty($_SERVER['HTTP_USER_AGENT']) ? NULL : $_SERVER['HTTP_USER_AGENT']; }
 	function url()
 	{
 		$url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI'];

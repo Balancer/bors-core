@@ -194,7 +194,12 @@ function config($key, $def = NULL)
 function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
 
 // Не максировать через @!
-function configh($section, $hash, $key, $def = NULL) { return array_key_exists($key, @$GLOBALS['cms']['config'][$section][$hash]) ? $GLOBALS['cms']['config'][$section][$hash][$key] : $def; }
+function configh($section, $hash, $key, $def = NULL)
+{
+	return !empty($GLOBALS['cms']['config'][$section][$hash]) && array_key_exists($key, $GLOBALS['cms']['config'][$section][$hash])
+		? $GLOBALS['cms']['config'][$section][$hash][$key]
+		: $def;
+}
 
 if(function_exists('mb_strtolower') && strtolower(ini_get('default_charset')) == 'utf-8')
 {

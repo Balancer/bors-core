@@ -47,8 +47,11 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 		if(!empty($_POST))
 			$data .= "_POST=".print_r($_POST, true)."\n";
 
-		$out .= "\turl: http://".@$_SERVER['HTTP_HOST'].@$_SERVER['REQUEST_URI']
-			.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
+		foreach(['HTTP_HOST', 'REQUEST_URI'] as $name)
+			if(!empty($_SERVER[$name]))
+				$out .= "\t".$_SERVER[$name]."\n";
+
+		$out .= (!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
 			. (!empty($_SERVER['HTTP_REFERER']) ? "\treferer: ".$_SERVER['HTTP_REFERER'] : "")."\n"
 			. (!empty($_SERVER['REMOTE_ADDR']) ? "\taddr: ".$_SERVER['REMOTE_ADDR'] : "")."\n"
 			. (!empty($_SERVER['HTTP_USER_AGENT']) ? "\tuser agent: ".$_SERVER['HTTP_USER_AGENT'] : "")."\n"

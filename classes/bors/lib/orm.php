@@ -155,13 +155,13 @@ class bors_lib_orm
 
 						// Если у нас явно указан класс поля, то это прямое указание
 						// для auto_objects()
-						if(($object_class = @$field['class']) && preg_match('/^(\w+)_id$/', $field['property'], $m))
-							$GLOBALS['bors-orm-cache']['auto_objects_append'][$m[1]] = "$object_class({$field['property']})";
+						if(!empty($field['class']) && preg_match('/^(\w+)_id$/', $field['property'], $m))
+							$GLOBALS['bors-orm-cache']['auto_objects_append'][$m[1]] = "{$field['class']}({$field['property']})";
 
 						if(strpos($field['name'], '`') === false)
 							$field['name'] = "`{$field['name']}`";
 
-						if(@$field['sql_function'] == 'UNIX_TIMESTAMP')
+						if(!empty($field['sql_function']) && $field['sql_function'] == 'UNIX_TIMESTAMP')
 							$field['sql_order_field'] = $field['name'];
 
 						// UNIX_TIMESTAMP(`Date`) => UNIX_TIMESTAMP(`News`.`Date`)

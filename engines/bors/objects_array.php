@@ -21,10 +21,10 @@ function objects_array($class, $args = array())
 		$cargs['select'] = $args['select'];
 	unset($args['select']);
 
-	if(($preload = @$args['*preload']))
+	if(!empty($args['*preload']))
 	{
+		$preload = explode(',', $args['*preload']);
 		unset($args['*preload']);
-		$preload = explode(',', $preload);
 	}
 
 	if(!preg_match('/^\w+$/', $class))
@@ -59,7 +59,7 @@ function objects_array($class, $args = array())
 		if(config('debug_trace_object_load'))
 			debug_hidden_log('objects_load', "all $class(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
 
-		if($preload)
+		if(!empty($preload))
 		{
 			foreach($preload as $x)
 				if(preg_match('/^(\w+)\((\w+)\)$/', $x, $m))

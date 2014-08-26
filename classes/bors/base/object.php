@@ -427,7 +427,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 //				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$prop]).'; new type: '.gettype($value));
 
 			// Запоминаем первоначальное значение переменной.
-			if(!@array_key_exists($prop, $this->changed_fields))
+			if(empty($this->changed_fields) || !array_key_exists($prop, $this->changed_fields))
 				$this->changed_fields[$prop] = empty($this->data[$prop]) ? NULL : $this->data[$prop];
 
 			bors()->add_changed_object($this);
@@ -1528,7 +1528,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			&& filemtime($file) >= $this->modify_time()
 			&& filemtime($file) >= $this->class_filemtime();
 
-		if(array_key_exists('nc', $_GET))
+		if(!empty($_GET) && array_key_exists('nc', $_GET))
 			$file_fresh = false;
 
 		if($use_static && $file && $fe && !$recreate && $file_fresh)

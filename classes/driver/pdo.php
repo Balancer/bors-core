@@ -13,9 +13,6 @@ class driver_pdo implements Iterator
 
 	function __construct($database = NULL)
 	{
-		if(empty($database))
-			$database = config('pdo_db_default');
-
 		$this->database = $database;
 
 		$this->_reconnect();
@@ -23,6 +20,10 @@ class driver_pdo implements Iterator
 
 	static function dsn($db_name)
 	{
+		// Что-то типа sqlite:/path/to/db.sqlite — имя БД уже содержит DNS
+		if(preg_match('/^\w+:/', $db_name))
+			return $db_name;
+
 		if($dsn = configh('pdo_access', $db_name, 'dsn'))
 			return $dsn;
 
@@ -40,6 +41,7 @@ class driver_pdo implements Iterator
 			configh('pdo_access', $this->database, 'user'),
 			configh('pdo_access', $this->database, 'password')
 		);
+
 		debug_timing_stop('pdo_connect');
 	}
 
@@ -164,14 +166,12 @@ class driver_pdo implements Iterator
 	{
 		$query = 'SELECT '.$fields.' FROM '.$table.' '.$this->args_compile($where);
 //		$query = str_replace('`', '"', $query);
-//		echo $query."\n";
 		return $this->get($query);
 	}
 
 	function select_array($table, $fields, $where)
 	{
 		$query = 'SELECT '.$fields.' FROM '.$table.' '.$this->args_compile($where);
-//		echo "select array: $query\n";
 //		$query = str_replace('`', '"', $query);
 		return $this->get_array($query);
 	}
@@ -272,7 +272,7 @@ class driver_pdo implements Iterator
 //			$this->connection->bindParam(":$name", );
 //		$this->prepare($query);
 //		$this->execute(array_values($fields));
-		echo "INSERT INTO $table ".$this->make_string_values($fields).PHP_EOL;
+//		echo "INSERT INTO $table ".$this->make_string_values($fields).PHP_EOL;
 		$this->exec("INSERT INTO $table ".$this->make_string_values($fields));
 	}
 

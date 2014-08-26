@@ -131,10 +131,20 @@ function bors_message($text, $params=array())
 //	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 //		$template = "xfile:$template";
 
+	$data = array_merge($data, array(
+		'success_message' => session_var('success_message'),
+		'notice_message'  => session_var('notice_message'),
+		'error_message'   => session_var('error_message'),
+	));
+
 	$message = bors_templates_smarty::fetch($template, $data);
 
 	if(!$message) // Если всё плохо
 		$message = $body;
+
+	// Используем до первого вывода по echo ниже
+	if(empty($params['save_session']))
+		clean_all_session_vars();
 
 	//TODO: исправить!!
 	if($ics != $ocs)
@@ -149,9 +159,6 @@ function bors_message($text, $params=array())
 		else
 			$redir = user_data('level') > 3 ? "/admin/news/" : "/";
 	}
-
-	if(empty($params['save_session']))
-		clean_all_session_vars();
 
 	if($hidden_log)
 		debug_hidden_log($hidden_log, "message: $text");

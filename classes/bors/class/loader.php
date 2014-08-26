@@ -55,8 +55,8 @@ class bors_class_loader
 
 		// Если у нас уже загружался соответствующий класс, то возвращаем
 		// его реальный(! — например, .yaml) файл, не кешированный.
-		if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
-			return $real_class_file;
+		if(!empty($GLOBALS['bors_data']['classes_included'][$class_name]))
+			return $GLOBALS['bors_data']['classes_included'][$class_name];
 
 		$class_base = str_replace('_', '/', $class_name);
 		$class_path = $class_base.'.php';

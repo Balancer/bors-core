@@ -212,13 +212,19 @@ class cache_static extends bors_object_db
 		{
 			file_put_contents($file, $content);
 			if(is_file($file))
+			{
 				chmod($file, 0666);
+				if($mt = $object->modify_time())
+					touch($file, $mt);
+			}
 		}
 
 		if(!file_exists($file) || !is_file($file))
-			debug_hidden_log('filesystem', "Can't create static file.\n\tobject: {$object}\n\tfile: {$file} (fe="
-				.file_exists($file).';isf='.is_file($file).';isw='.is_writable($dir)
-			.")");
+			debug_hidden_log('filesystem', "Can't create static file.\n
+	object: {$object}\n
+	file: {$file} (fe=".file_exists($file)
+		.';isf='.is_file($file)
+		.';isw='.is_writable($dir).")");
 	}
 
 	function replace_on_new_instance() { return true; }

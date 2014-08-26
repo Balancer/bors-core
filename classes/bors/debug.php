@@ -76,7 +76,7 @@ class bors_debug
 	static function trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
 	{
 		bors_function_include('debug/trace');
-		return debug_trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL);
+		return debug_trace($skip, $html, $level, $traceArr);
 	}
 
 	static function execute_trace($message)

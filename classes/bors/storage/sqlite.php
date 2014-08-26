@@ -4,10 +4,9 @@
 
 class bors_storage_sqlite extends bors_storage_pdo
 {
-	// Преобразуем имя БД, каким её возвращает db_name() объекта
+	// Преобразуем имя файла БД, которое возвращает мктод db_name() объекта
 	// в понимаемый PDO DSN.
-
-//	function _pdo_dsn($db_name) { return 'sqlite:'.$db_name; }
+	function pdo_dsn($db_name) { return 'sqlite:'.$db_name; }
 
 	function _db_driver_name() { return 'driver_pdo_sqlite'; }
 

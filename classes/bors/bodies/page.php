@@ -27,9 +27,12 @@ class bors_bodies_page extends base_null
 		if(config('debug.execute_trace'))
 			debug_execute_trace("{$object->body_template_class()}::fetch()");
 
-		return bors_lcml::output_parse(call_user_func(
+		$html = call_user_func(
 			array($object->body_template_class(), 'fetch'),
 			$body_template,
-			$data));
+			$data
+		);
+
+		return bors_lcml::output_parse($html);
 	}
 }

@@ -84,8 +84,8 @@ class bors_object_simple extends bors_object_empty
 		if(method_exists($this, 'auto_objects'))
 		{
 			$auto_objs = $this->auto_objects();
-			if(($f = @$auto_objs[$name]))
-				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+			if(!empty($auto_objs[$name]))
+				if(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$name], $m))
 				{
 					try { $value = bors_load($m[1], $this->get($m[2])); }
 					catch(Exception $e) { $value = NULL; }
@@ -97,8 +97,8 @@ class bors_object_simple extends bors_object_empty
 		if(method_exists($this, 'auto_targets'))
 		{
 			$auto_targs = $this->auto_targets();
-			if(($f = @$auto_targs[$name]))
-				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+			if(!empty($auto_targs[$name]))
+				if(preg_match('/^(\w+)\((\w+)\)$/', $auto_targs[$name], $m))
 					return $this->attr[$name] = bors_load($this->get($m[1]), $this->get($m[2]));
 		}
 
@@ -122,9 +122,6 @@ class bors_object_simple extends bors_object_empty
 
 		if(@array_key_exists($name, $this->defaults))
 			return $this->defaults[$name];
-
-		if(bors_lib_orm::get_yaml_notation($this, $name))
-			return $this->attr[$name];
 
 		return $default;
 	}

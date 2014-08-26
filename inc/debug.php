@@ -180,8 +180,13 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 	if(!($out_dir = config('debug_hidden_log_dir')))
 		return false;
 
-	@mkdir($dir = config('debug_hidden_log_dir').'/errors');
-	@chmod($dir, 0777);
+	$dir = config('debug_hidden_log_dir').'/errors';
+	if(!is_dir($dir))
+	{
+		mkdir($dir);
+		chmod($dir, 0777);
+	}
+
 	if(!file_exists($dir))
 		return false;
 
@@ -190,7 +195,9 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 		errno=$errno
 		errstr=$errstr
 		errfile=$errfile
-		errline=$errline", -1, array('append' => "stack:\n==============\n".debug_trace(0, false)."\nerrcontext=".print_r($errcontext, true)));
+		errline=$errline", -1
+			, array('append' => "stack:\n==============\n".debug_trace(0, false)."\nerrcontext=".print_r($errcontext, true))
+		);
 
 	return true;
 }

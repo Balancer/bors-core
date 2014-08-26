@@ -12,7 +12,7 @@ function lp_email($text, $params)
 		$rev .= $email[$i];
 
 	if($text == $email)
-		$text = "$user<span style=\"color: red;\"><img src=\"/_bors/i/rt.gif\" width=\"16\" height=\"16\" border=\"0\" align=\"absmiddle\"/></span>$domain";
+		$text = "$user<span style=\"color: red;\"><img src=\"/_bors/i/rt.gif\" width=\"16\" height=\"16\" border=\"0\" style=\"vertical-align: middle\"/></span>$domain";
 
 	return save_format("<script type=\"text/javascript\"><!--\ndocument.write('<a href='+'\"'+'ma'+'i'+'lto'+':'+'".addslashes($rev)."'.split('').reverse().join('')+'\">')\n--></script>{$text}<script type=\"text/javascript\"><!--\ndocument.write('</'+'a>')\n--></script>");
 }

@@ -17,7 +17,7 @@
 			$rev .= $email[$i];
 
 		if(!$text)
-			$text = $user.($img_mask ? "<span style=\"color: red;\"><img src=\"/_bors/i/rt.gif\" width=\"16\" height=\"16\" align=\"absmiddle\"/></span>" : "<span>&#64;</span>")
+			$text = $user.($img_mask ? "<span style=\"color: red;\"><img src=\"/_bors/i/rt.gif\" width=\"16\" height=\"16\" style=\"vertical-align: middle\"/></span>" : "<span>&#64;</span>")
 			.$domain;
 
 		return save_format("<script type=\"text/javascript\"><!--\ndocument.write('<a href='+'\"'+'ma'+'i'+'lto'+':' +'".addslashes($rev)."'.split('').reverse().join('') +'\">')\n--></script>{$text}<script type=\"text/javascript\"><!--\ndocument.write('</'+'a>')\n--></script>");

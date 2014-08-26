@@ -132,6 +132,30 @@ class bors_lib_time
 			return strftime("%d.%m.%Y", $time);
 	}
 
+	function smart_interval($interval, $parts = 2)
+	{
+		$res = array();
+		$res[] = ($x = $interval % 60) ? $x.ec(' секунд').sklon($x,ec('а,ы,')) : '';
+		$interval = intval($interval/60);
+		$res[] = ($x = $interval % 60) ? $x.ec(' минут').sklon($x,ec('а,ы,')) : '';
+		$interval = intval($interval/60);
+		$res[] = ($x = $interval % 24) ? $x.ec(' час').sklon($x,ec(',а,ов')) : '';
+		$interval = intval($interval/24);
+
+		$res[] = ($x = $interval % 365) ? $x.' '.sklon($x,ec('день,дня,дней')) : '';
+		$interval = intval($interval/365);
+
+		$res[] = ($x = $interval) ? $x.' '.sklon($x, ec('год,года,лет')) : '';
+
+		$res = array_reverse($res);
+
+		for($i=0; $i<count($res); $i++)
+			if(!empty($res[$i]))
+				break;
+
+		return join(' ', array_slice($res, $i, $parts));
+	}
+
 	static function smart_interval_vp($interval, $parts = 2)
 	{
 		require_once('inc/strings.php');

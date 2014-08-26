@@ -4,7 +4,6 @@
 
 class bors_object_db extends base_object_db
 {
-	private static $__auto_objects = array();
 	private static $__parsed_fields = array();
 
 	function _project_name() { return @array_shift(explode('_', $this->class_name())); }
@@ -245,16 +244,11 @@ class bors_object_db extends base_object_db
 
 	function auto_objects()
 	{
-//		echo "2: {$this->class_name()}<br/>";
-//		var_dump(self::$__auto_objects);
-//		var_dump(array_merge(parent::auto_objects(), $this->__auto_objects));
 		$p = parent::auto_objects();
 		$xs = self::$__auto_objects;
 		$cn = $this->class_name();
-		$x = @$xs[$cn];
-//		var_dump($x);
-		if($x)
-			return array_merge($p, $x);
+		if(!empty($xs[$cn]))
+			return array_merge($p, $xs[$cn]);
 
 		return $p;
 	}

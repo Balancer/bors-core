@@ -65,11 +65,8 @@ require_once($dir.'/config.php');
 $GLOBALS['bors_data']['vhost_handlers'] = array();
 $GLOBALS['bors_map'] = array();
 
-if(!config('system.session.skip'))
-{
-	require_once('inc/system.php');
-	__session_init();
-}
+// Пока не убирать: Fatal error: Call to undefined function calling_function_name() in /var/www/bors/composer/vendor/balancer/bors-core/classes/bors/object/simple.php on line 288
+require_once('inc/system.php');
 
 $host = @$_SERVER['HTTP_HOST'];
 
@@ -115,8 +112,6 @@ foreach(array(BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $di
 
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0750);
-
-@chmod(dirname($d), 0777);
 
 if(config('debug_can_change_now'))
 {
@@ -244,10 +239,15 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
 		require_once($file);
 
-	if(!($prev = @$bors_data['vhosts'][$host]['bors_map']))
+	if(empty($bors_data['vhosts'][$host]['bors_map']))
 		$prev = array();
+	else
+		$prev = $bors_data['vhosts'][$host]['bors_map'];
 
 	$bors_map = array_merge($prev, $map2, $map);
+
+	if(!empty($bors_data['vhosts'][$host]['bors_map']))
+		$bors_map = array_merge($bors_data['vhosts'][$host]['bors_map'], $bors_map);
 
 	$bors_data['vhosts'][$host] = array(
 		'bors_map' => $bors_map,
@@ -303,6 +303,12 @@ function bors_url_map($map_array)
 {
 	global $bors_map;
 	$bors_map = array_merge($bors_map, $map_array);
+}
+
+function bors_vhost_routes($host, $routes)
+{
+	global $bors_data;
+	$bors_data['vhosts'][$host]['bors_map'] = $routes;
 }
 
 function set_bors_project($project_name)

@@ -26,20 +26,12 @@ class bors_page_db extends base_object_db
 				return $this->attr['body_template'];
 		}
 
-		// Имитация parent:: из base_page
-		$current_class = get_class($this);
-		$class_files = $GLOBALS['bors_data']['classes_included'];
-		$ext = $this->body_template_ext();
+		$tpl = bors_lib_page::body_template($this);
 
-		while($current_class)
-		{
-			$template_file = preg_replace("!(.+/\w+)\..+?$!", "$1.$ext", $class_files[$current_class]);
-			if(file_exists($template_file))
-				break;
-			$current_class = get_parent_class($current_class);
-		}
+		if(!$tpl)
+			$tpl = 'xfile:'.BORS_CORE.'/classes/bors/base/page.html';
 
-		return "xfile:{$template_file}";
+		return $tpl;
 	}
 
 	function page_template()
@@ -108,4 +100,6 @@ class bors_page_db extends base_object_db
 				return lcml($this->source());
 		}
 	}
+
+	function compiled_source() { return bors_lcml::lcml($this->source(), array('container' => $this)); }
 }

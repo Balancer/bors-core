@@ -82,10 +82,26 @@ function __session_init($init = true)
 	if(!$init && empty($_COOKIE['bors_session_init']))
 		return;
 
-	@SetCookie('bors_session_init',	true, ini_get('session.cookie_lifetime'), '/', $_SERVER['HTTP_HOST']);
-	@ini_set('session.use_trans_sid', false);
-	@session_start();
-//	bors_debug::syslog('__session', "session started");
+	SetCookie('bors_session_init',	true, ini_get('session.cookie_lifetime'), '/', $_SERVER['HTTP_HOST']);
+	ini_set('session.use_trans_sid', false);
+
+	// via http://stackoverflow.com/a/22373561
+	$sn = session_name();
+	if (isset($_COOKIE[$sn]))
+		$sessid = $_COOKIE[$sn];
+	elseif (isset($_GET[$sn]))
+		$sessid = $_GET[$sn];
+	else
+	{
+		session_start();
+		$session_started = true;
+		return false;
+	}
+
+	if(!preg_match('/^[a-zA-Z0-9,\-]{22,40}$/', $sessid))
+		return false;
+
+	session_start();
 	$session_started = true;
 }
 
@@ -97,9 +113,9 @@ function session_var($name, $def = NULL, $set = false)
 	__session_init(false);
 
 	if($set)
-		return defvalset($_SESSION, $name, $def);
+		return defvalset(@$_SESSION, $name, $def);
 
-	return defval($_SESSION, $name, $def);
+	return defval(@$_SESSION, $name, $def);
 }
 
 function pop_session_var($name, $def = NULL)
@@ -116,7 +132,7 @@ function set_session_var($name, $value)
 
 	if($value)
 		$_SESSION[$name] = $value;
-	else
+	elseif(!empty($_SESSION))
 		unset($_SESSION[$name]);
 
 	return $value;

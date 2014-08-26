@@ -23,10 +23,10 @@ class bors_object extends base_object
 	// Предустановленные автообъекты
 	function auto_objects()
 	{
-		if($orm_map = @$GLOBALS['bors-orm-cache']['auto_objects_append'])
-			$map = $orm_map;
-		else
+		if(empty($GLOBALS['bors-orm-cache']['auto_objects_append']))
 			$map = array();
+		else
+			$map = $GLOBALS['bors-orm-cache']['auto_objects_append'];
 
 		$map['mtime'] = 'bors_time(modify_time)';
 

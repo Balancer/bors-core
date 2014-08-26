@@ -5,6 +5,9 @@ $GLOBALS['stat']['start_microtime'] = microtime(true);
 if(function_exists('xhprof_enable'))
 	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 
+// Инициализация фреймворка
+require_once(dirname(__FILE__).'/init.php');
+
 // Если в запрашиваемом URL присутствуют параметры - переносим их в строку запроса
 // такая проблема всплывает на некоторых web-серверах.
 if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
@@ -18,16 +21,12 @@ if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 if(preg_match('!^(.+):\d+$!', $_SERVER['HTTP_HOST'], $m))
 	$_SERVER['HTTP_HOST'] = $m[1];
 
-
 // Если в имени хоста есть www, то убираем
 // $_SERVER['HTTP_HOST'] = preg_replace('!^www\.!', '', $_SERVER['HTTP_HOST']);
 
 // DOCUMENT_ROOT должен быть без слеша в конце.
 if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
 	$_SERVER['DOCUMENT_ROOT'] = $m[1];
-
-// Инициализация фреймворка
-require_once(dirname(__FILE__).'/init.php');
 
 // Смотрим, нет ли доступных принудительных редиректов
 if(
@@ -315,7 +314,7 @@ if(config('access_log'))
 		'user_ip' => $_SERVER['REMOTE_ADDR'],
 		'user_id' => bors()->user_id(),
 		'server_uri' => $uri,
-		'referer' => @$_SERVER['HTTP_REFERER'],
+		'referer' => empty($_SERVER['HTTP_REFERER']) ? NULL : $_SERVER['HTTP_REFERER'],
 		'access_time' => round($GLOBALS['stat']['start_microtime']),
 		'operation_time' =>  str_replace(',', '.', $operation_time),
 		'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
@@ -360,7 +359,7 @@ $time = microtime(true) - $GLOBALS['stat']['start_microtime'];
 // Если время работы превышает заданный лимит, то логгируем
 if($time > config('timing_limit'))
 {
-	@file_put_contents($file = config('timing_log'), $time . " [".$uri . "]: " . @$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
+	@file_put_contents($file = config('timing_log'), $time . " [".$uri . "]: " . defval($_SERVER, 'HTTP_REFERER') . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
 }
 

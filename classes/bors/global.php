@@ -179,7 +179,7 @@ class bors_global extends bors_object_simple
 				if($prev)
 				{
 					$rest_us = $rest*(microtime(true) - $prev_ts)/($prev - $rest);
-					$rest_msg = 'ETA '.smart_interval(intval($rest_us+0.5));
+					$rest_msg = 'ETA '.bors_lib_time::smart_interval(intval($rest_us+0.5));
 				}
 
 				$prev = $rest;

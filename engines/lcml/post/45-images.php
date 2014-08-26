@@ -12,7 +12,7 @@ function lcml_images($txt, $lcml)
 
 	$n=50;
 	while(preg_match("!\[([https?://\w\.\-\+%_/:&\?=#]+\.(jpg|jpeg|gif|png|sjpg))([^\]]*)\]!i", $txt, $m) && $n-->0)
-		$txt = str_replace($m[0], lcml("[img \"{$m[1]}\" noflow {$m[3]}]"), $txt);
+		$txt = str_replace($m[0], $lcml->parse("[img \"{$m[1]}\" noflow {$m[3]}]"), $txt);
 
 	while(preg_match("!^[\s￼ ]*(https?://\S+\.(jpg|png|gif|jpeg|sjpg))\s*$!im", $txt, $m)
 			&& !$lcml->is_timeout(LCML_IMG_TIMEOUT)

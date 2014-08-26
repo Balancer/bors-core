@@ -49,7 +49,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 
 		foreach(['HTTP_HOST', 'REQUEST_URI'] as $name)
 			if(!empty($_SERVER[$name]))
-				$out .= "\t".$_SERVER[$name]."\n";
+				$out .= "\t{$name} = ".$_SERVER[$name]."\n";
 
 		$out .= (!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : '')."\n"
 			. (!empty($_SERVER['HTTP_REFERER']) ? "\treferer: ".$_SERVER['HTTP_REFERER'] : "")."\n"

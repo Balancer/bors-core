@@ -5,6 +5,7 @@ class bors_var
 	static function get($name, $default = NULL)
 	{
 		$x = bors_find_first('bors_var_db', array('name' => $name));
+
 		if(!$x)
 			return $default;
 

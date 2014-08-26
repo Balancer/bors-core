@@ -285,7 +285,7 @@ class base_object extends bors_object_simple
 		// Проверяем нет ли уже загруженного значения автообъекта
 		if(array_key_exists($method, self::$__auto_objects))
 		{
-			$x = $this->__auto_objects[$method];
+			$x = self::$__auto_objects[$method];
 			if($x['property_value'] == $this->get($x['property']))
 				return $x['value'];
 		}
@@ -311,7 +311,7 @@ class base_object extends bors_object_simple
 				{
 					$property_value = $this->get($property);
 					$value = bors_load($m[1], $property_value);
-					$this->__auto_objects[$method] = compact('property', 'property_value', 'value');
+					self::$__auto_objects[$method] = compact('property', 'property_value', 'value');
 					return $value;
 				}
 			}
@@ -1528,7 +1528,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			&& filemtime($file) >= $this->modify_time()
 			&& filemtime($file) >= $this->class_filemtime();
 
-		if(array_key_exists('nc', $_GET))
+		if(!empty($_GET) && array_key_exists('nc', $_GET))
 			$file_fresh = false;
 
 		if($use_static && $file && $fe && !$recreate && $file_fresh)

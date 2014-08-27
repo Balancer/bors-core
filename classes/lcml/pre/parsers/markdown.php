@@ -1,5 +1,8 @@
 <?php
 
+//	Элементы поддержки markdown в lcml
+//	http://www.aviaport.ru/services/
+
 class lcml_parsers_pre_markdown extends bors_lcml_parser
 {
 	function html($text)

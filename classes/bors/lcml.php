@@ -358,6 +358,21 @@ class bors_lcml extends bors_object
 							$classes[$prio.':'.$class_name] = new $class_name($this);
 					}
 			}
+
+			if(!empty($GLOBALS['bors.composer.class_loader']))
+			{
+				$map = $GLOBALS['bors.composer.class_loader']->getClassMap();
+				$lcml_parsers = array_filter(array_keys($map), function($class_name) use ($type) {
+					return preg_match('/^lcml_parsers_'.$type.'_/', $class_name);
+				});
+
+				foreach($lcml_parsers as $class_name)
+				{
+					$parser = new $class_name($this);
+					$classes[$parser->priority().':'.$class_name] = $parser;
+				}
+			}
+
 			ksort($classes);
 			$parser_classes[$type] = $classes;
 		}

@@ -285,7 +285,7 @@ class base_object extends bors_object_simple
 		// Проверяем нет ли уже загруженного значения автообъекта
 		if(array_key_exists($method, self::$__auto_objects))
 		{
-			$x = $this->__auto_objects[$method];
+			$x = self::$__auto_objects[$method];
 			if($x['property_value'] == $this->get($x['property']))
 				return $x['value'];
 		}
@@ -311,7 +311,7 @@ class base_object extends bors_object_simple
 				{
 					$property_value = $this->get($property);
 					$value = bors_load($m[1], $property_value);
-					$this->__auto_objects[$method] = compact('property', 'property_value', 'value');
+					self::$__auto_objects[$method] = compact('property', 'property_value', 'value');
 					return $value;
 				}
 			}
@@ -427,7 +427,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 //				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$prop]).'; new type: '.gettype($value));
 
 			// Запоминаем первоначальное значение переменной.
-			if(!@array_key_exists($prop, $this->changed_fields))
+			if(empty($this->changed_fields) || !array_key_exists($prop, $this->changed_fields))
 				$this->changed_fields[$prop] = empty($this->data[$prop]) ? NULL : $this->data[$prop];
 
 			bors()->add_changed_object($this);
@@ -1536,7 +1536,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			&& filemtime($file) >= $this->modify_time()
 			&& filemtime($file) >= $this->class_filemtime();
 
-		if(array_key_exists('nc', $_GET))
+		if(!empty($_GET) && array_key_exists('nc', $_GET))
 			$file_fresh = false;
 
 		$this->hcom("f=$file, fe=$fe, fresh=$file_fresh (mt={$this->modify_time()}, fm=".@filemtime($file).")");

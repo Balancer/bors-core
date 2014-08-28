@@ -368,32 +368,49 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		if(!$data)
 			return;
 
-		$main_table = true;
 		$db_driver_name = $this->_db_driver_name();
+		$main_table = true;
+		$new_id = NULL;
 
 		foreach($data as $db_name => $tables)
 		{
-			$dbh = new $db_driver_name($db_name);
+			$dbh = new $db_driver_name($this->pdo_dsn($db_name));
 			foreach($tables as $table_name => $fields)
 			{
-				if($main_table)
-				{
-					unset($fields[$object->id_field()]);
-				}
-				else
+				if(!$main_table)
 				{
 					$id_field = $fields['*id_field'];
 					unset($fields['*id_field']);
 					$fields[$id_field] = $new_id;
 				}
 
+//				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
+
 				$object->storage()->storage_create();
 
-				$dbh->insert($table_name, $fields);
-				if($main_table)
+				if($object->replace_on_new_instance() || $object->attr('__replace_on_new_instance'))
+					$dbh->replace($table_name, $fields);
+				elseif($object->ignore_on_new_instance())
+					$dbh->insert_ignore($table_name, $fields);
+				else
+				{
+					if($object->get('insert_delayed_on_new_instance'))
+						$fields['*DELAYED'] = true;
+
+					$dbh->insert($table_name, $fields);
+				}
+
+				// Закомментировано, так как не позволяет аплоадить изображения с ignore.
+				if($main_table && !$object->get('insert_delayed_on_new_instance')/* && !$object->ignore_on_new_instance()*/)
 				{
 					$main_table = false;
 					$new_id = $dbh->last_id();
+					if(!$new_id)
+						$new_id = $object->id();
+					if(!$new_id && ($idf = $object->id_field()))
+						$new_id = $object->get($idf);
+					if(!$new_id && !$object->ignore_on_new_instance())
+						debug_hidden_log('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
 				}
 			}
 		}
@@ -492,9 +509,8 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		$query = "CREATE TABLE IF NOT EXISTS $table_name (".join(', ', array_values($db_fields)).");";
 
 		$db_driver_name = $this->_db_driver_name();
-		$db = new $db_driver_name($db_name);
+		$db = new $db_driver_name($this->pdo_dsn($db_name));
 		$db->exec($query);
-//		$db->close();
 	}
 
 	static function drop_table($class_name)
@@ -502,10 +518,11 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		if(!config('can-drop-tables'))
 			return bors_throw(ec('Удаление таблиц запрещено'));
 
-		$class = new $class_name(NULL);
-		foreach($class->fields() as $db_name => $tables)
+		$foo = new $class_name(NULL);
+		$foo_storage = $foo->storage();
+		foreach($foo->fields() as $db_name => $tables)
 		{
-			$db = new driver_pdo($db_name);
+			$db = new driver_pdo($foo_storage->pdo_dsn($db_name));
 
 			foreach($tables as $table_name => $fields)
 			{

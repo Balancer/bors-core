@@ -4,6 +4,10 @@ class driver_pdo_sqlite extends driver_pdo
 {
 	static function dsn($db_name)
 	{
+		// Если готовый формат DSN, то ничего не добавляем.
+		if(preg_match('/^sqlite/', $db_name))
+			return $db_name;
+
 		if($dsn = configh('pdo_access', $db_name, 'dsn'))
 			return $dsn;
 
@@ -12,7 +16,7 @@ class driver_pdo_sqlite extends driver_pdo
 
 	protected function _reconnect()
 	{
-		$dir = dirname($this->database);
+		$dir = dirname(preg_replace('/^sqlite\d*:/', '', $this->database));
 		if(!file_exists($dir))
 			mkpath($dir, 0750);
 
@@ -28,7 +32,7 @@ class driver_pdo_sqlite extends driver_pdo
 //			'timestamp' => "datetime(%d, 'unixepoch')",
 		);
 
-		return @$map[$type];
+		return empty($map[$type]) ? NULL : $map[$type];
 	}
 
 	static function load_sql_function($type)
@@ -37,6 +41,6 @@ class driver_pdo_sqlite extends driver_pdo
 //			'timestamp' => "strftime('%%s', %s)",
 		);
 
-		return @$map[$type];
+		return empty($map[$type]) ? NULL : $map[$type];
 	}
 }

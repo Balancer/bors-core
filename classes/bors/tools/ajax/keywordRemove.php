@@ -7,6 +7,9 @@ class bors_tools_ajax_keywordRemove extends base_page
 		if(!bors()->user())
 			return;
 
+		if(bors()->user()->is_destructive())
+			return true;
+
 		$keyword = str_replace(' ', ' ', @$_GET['keyword']);
 		$keyword = trim($keyword);
 		if(!$keyword)
@@ -20,7 +23,7 @@ class bors_tools_ajax_keywordRemove extends base_page
 		$obj->set_modify_time(time(), true);
 
 		if(bors()->user_id() != 10000)
-			debug_hidden_log('tag-remove', "user=".bors()->user().' '.str_replace("\n", " ", print_r($_POST, true)), false);
+			debug_hidden_log('tag-remove', "user=".bors()->user().' ['.bors()->user_id().']:'.str_replace("\n", " ", print_r($_POST, true)), false);
 
 		return true;
 	}

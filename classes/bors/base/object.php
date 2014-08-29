@@ -7,10 +7,10 @@ class base_object extends bors_object_simple
 
 	function attr_preset() { return array(
 		'title' => $this->class_title().' '.$this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
-		'config_class' => config('config_class'),
 	); }
 
 	function _url_engine_def() { return 'url_calling2'; }
+	function _config_class_def() { return config('config_class'); }
 
 //	При настройке проверить:
 //	— http://www.aviaport.ru/services/events/arrangement/

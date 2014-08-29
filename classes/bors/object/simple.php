@@ -22,6 +22,11 @@ class bors_object_simple extends bors_object_empty
 		$this->set_id($this->initial_id = $id);
 	}
 
+	static function foo($id = NULL)
+	{
+		return bors_foo(get_called_class(), $id);
+	}
+
 	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
 		if(!$name)

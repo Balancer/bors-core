@@ -234,7 +234,7 @@ class base_page extends bors_object
 
 	function _queries() { return array(); }
 
-	function body_template_ext() { return 'html'; }
+	function _body_template_ext_def() { return 'html'; }
 
 	function _body_template_def()
 	{

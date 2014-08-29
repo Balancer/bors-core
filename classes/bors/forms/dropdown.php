@@ -15,7 +15,7 @@ class bors_forms_dropdown extends bors_forms_element
 
 		extract($params);
 
-		$id = defval($params, 'dom_id', $id);
+		$dom_id = defval($params, 'dom_id', $id);
 
 		$object = object_property($form, 'object');
 		$html = "";
@@ -40,9 +40,9 @@ class bors_forms_dropdown extends bors_forms_element
 				$style = "width: 99%";
 		}
 
-		if(!empty($json) && empty($id))
+		if(!empty($json) && empty($dom_id))
 		{
-			$id = md5(rand());
+			$dom_id = md5(rand());
 			$tag = "<input type=\"hidden\"";
 		}
 		else
@@ -50,7 +50,11 @@ class bors_forms_dropdown extends bors_forms_element
 
 		$html .= $tag;
 
-		foreach(explode(' ', 'id size style multiple class onchange') as $p)
+		foreach(array('dom_id' => 'id') as $var => $hn)
+			if(!empty($$var))
+				$html .= " $hn=\"{$$var}\"";
+
+		foreach(explode(' ', 'size style multiple class onchange') as $p)
 			if(!empty($$p))
 				$html .= " $p=\"{$$p}\"";
 
@@ -151,7 +155,7 @@ class bors_forms_dropdown extends bors_forms_element
 
 		if(!empty($json))
 		{
-			jquery_select2::appear_ajax("'#{$name}'", $json, array_merge(defval($params, 'edit_params', array()), array(
+			jquery_select2::appear_ajax("'#{$dom_id}'", $json, array_merge(defval($params, 'edit_params', array()), array(
 				'order' => defval($params, 'order', 'title'),
 				'title_field' => defval($params, 'title_field', 'title'),
 //				'placeholder' => 'Введите часть названия источника',

@@ -161,7 +161,7 @@ class auto_object_php extends bors_object
 		if($object_id == $this->called_url())
 			$object_id = NULL;
 
-		if(!($object = bors_load($class_base.$class_path, $object_id)))
+		if(!(class_exists($class_base.$class_path) && ($object = bors_load($class_base.$class_path, $object_id))))
 		{
 			$class_path = $class_path ? $class_path . '_main' : 'main';
 			$object = bors_load($class_base.$class_path, $object_id);

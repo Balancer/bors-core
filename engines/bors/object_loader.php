@@ -577,6 +577,9 @@ function object_init($class_name, $object_id, $args = array())
 	if(!$obj)
 	{
 		$found = 0;
+		if($class_name == 'server')
+			echo bors_debug::trace();
+
 		$obj = new $class_name($object_id);
 
 		if(!method_exists($obj, 'set_class_file'))

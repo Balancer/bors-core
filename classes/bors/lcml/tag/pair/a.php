@@ -13,6 +13,9 @@ class bors_lcml_tag_pair_a extends bors_lcml_tag_pair
 			debug_hidden_log('errors_lcml_parameters', "Tag [a] without href param for '{$text}'");
 
 		$url = @$params['href'];
+		if(preg_match('/^bors\.base64:(.+)$/', $url, $m))
+			$url = base64_decode($m[1]);
+
 		return "<a href=\"$url\""
 			.bors_lib_urls::check_nofollow($url)
 			.bors_lib_urls::check_external($url)

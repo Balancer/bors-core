@@ -1545,31 +1545,17 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 //		$mem = new \Jamm\Memory\RedisObject('dog-pile-cacher', '192.168.1.3');
 
-		$item = NULL;
-		if($this->id() && $this->modify_time())
+		$stash_item = NULL;
+		if($this->id() && $this->modify_time() && ($pool = config('cache.stash.pool')))
 		{
-/*
-			$driver = new Stash\Driver\FileSystem();
-			$options = array('path' => '/tmp/stash-cache/');
-			$driver->setOptions($options);
-*/
+			$stash_item = $pool->getItem('dog-pill-protect/'.$this->internal_uri_ascii().'/'.$this->page().'/'.$this->modify_time());
 
-			$driver = new Stash\Driver\Redis();
-			$redis_servers = [];
-			foreach(config('redis.servers') as $s)
-				$redis_servers[] = [$s['host'], $s['port']];
+			$content = $stash_item->get(Stash\Invalidation::SLEEP, 300, 100);
 
-			$driver->setOptions(['servers' => $redis_servers]);
-
-			$pool = new Stash\Pool($driver);
-			$item = $pool->getItem('dog-pill-protect/'.$this->internal_uri_ascii().'/'.$this->page().'/'.$this->modify_time());
-
-			$content = $item->get(Stash\Invalidation::SLEEP, 300, 100);
-
-			if(!$item->isMiss())
+			if(!$stash_item->isMiss())
 				return $content;
 
-			$item->lock();
+			$stash_item->lock();
 			$this->hcom("stash locked");
 		}
 
@@ -1607,8 +1593,8 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		else
 			$output_content = $content;
 
-		if($item)
-			$item->set($content, 10);
+		if($stash_item)
+			$stash_item->set($content, 10);
 
 		if(empty($content) && $use_static)
 		{

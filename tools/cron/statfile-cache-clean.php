@@ -12,6 +12,8 @@ bors_function_include('debug/execute_trace');
 
 // file_put_contents('/tmp/clean-trace-'.@$_SERVER['USER'], 'Go! '.print_r($_SERVER, true), FILE_APPEND);
 
+// bors_thread_unlock('statfile-cache-clean');
+
 if(!bors_thread_lock('statfile-cache-clean', 600))
 	exit("Locked\n");
 

@@ -280,12 +280,12 @@ if(config('is_developer')) { exit($img); }
 			$title = htmlspecialchars(strip_tags($title));
 			$description = htmlspecialchars(strip_tags($description));
 
-			$html_url = str_replace('[', '%5B', $original_url);
+			$html_url = 'bors.base64:'.base64_encode($original_url);
 
 			$bbshort = "[round_box]{$img}[h][a href=\"{$html_url}\"]{$title}[/a][/h]
 {$description}
 
-[span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($html_url)."[/reference][/span][/round_box]";
+[span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($original_url)."[/reference][/span][/round_box]";
 
 			$tags = array();
 

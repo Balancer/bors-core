@@ -7,6 +7,9 @@ class bors_tools_ajax_setkeywords extends base_page
 		if(!bors()->user())
 			return;
 
+		if(bors()->user()->is_destructive())
+			return true;
+
 		$keyword = @$_GET['keyword'];
 		if(!$keyword)
 			return true;
@@ -16,7 +19,7 @@ class bors_tools_ajax_setkeywords extends base_page
 			return true;
 
 		if(bors()->user_id() != 10000)
-			debug_hidden_log('tag-add', "user=".bors()->user().' '.str_replace("\n", " ", print_r($_POST, true)), false);
+			debug_hidden_log('tag-add', "user=".bors()->user().' ['.bors()->user_id().']:'.str_replace("\n", " ", print_r($_POST, true)), false);
 
 		$obj->add_keyword($keyword, true);
 		$obj->set_modify_time(time(), true);

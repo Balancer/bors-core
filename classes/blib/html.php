@@ -16,10 +16,12 @@ class blib_html
 		$dom = new DOMDocument('1.0', 'utf-8');
 		@$dom->loadHTML('<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><body>' . $html . '</body></html>');
 		$html = $dom->saveHTML();
+
 		$html = preg_replace("!^.+?</head>!is", "", $html);
 //		$html = preg_replace("/\<\/?(body|html|p)>/i", "", $html);
 //		Зачем я выкидываю <p>..</p>? Пока убираю, а то не проходят юнит-тесты.
 		$html = preg_replace("/\<\/?(body|html)>/i", "", $html);
+
 		return trim($html);
 	}
 

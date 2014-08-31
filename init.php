@@ -113,6 +113,45 @@ foreach(array(BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $di
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0750);
 
+//	Инициализация Stash-кеша с автоопределением типа движка, если в локальном конфиге не было задано заранее
+if(!config('cache.stash.pool') && class_exists('Stash\Pool'))
+{
+	$pool = NULL;
+
+	if(class_exists('Redis', false))
+	{
+		$driver = new Stash\Driver\Redis();
+
+		if(config('redis.servers'))
+		{
+			$servers = array();
+			foreach(config('redis.servers') as $s)
+				$servers[] = [$s['host'], $s['port']];
+
+		}
+		else
+			$servers = array(array('server' => '127.0.0.1', 'port' => 6379, 'ttl' => 86400));
+
+		$driver->setOptions(['servers' => $servers]);
+
+		try
+		{
+			$pool = new Stash\Pool($driver);
+			$pool->getItem('foo')->get();
+		} catch(Exception $e) { $pool = NULL; }
+	}
+
+	//TODO: elseif() { ... } — добавить другие варианты Stash-драйверов
+/*
+			$driver = new Stash\Driver\FileSystem();
+			$options = array('path' => '/tmp/stash-cache/');
+			$driver->setOptions($options);
+*/
+
+	if($pool)
+		config_set('cache.stash.pool', $pool);
+}
+
 if(config('debug_can_change_now'))
 {
 	$GLOBALS['now'] = empty($_GET['now']) ? time() : intval(strtotime($_GET['now']));

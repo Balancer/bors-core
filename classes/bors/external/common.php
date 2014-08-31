@@ -125,7 +125,7 @@ class bors_external_common extends bors_object
 		if(!$img || !preg_match('/\.(jpe?g|png|gif)$/', $img))
 		{
 			// Ставим герерацию превьюшки
-			// Сперва дектодируем URL (urldecode + кодировка)
+			// Сперва декодируем URL (urldecode + кодировка)
 			$url = blib_urls::decode($url);
 
 			$url_data = parse_url($url);

@@ -141,6 +141,12 @@ function lt_img($params)
 			if(!file_exists($file) || filesize($file)==0 || !($image_size = @getimagesize($file)))
 			{
 				$path = web_import_image::storage_place_rel($params['url']);
+				// Тестировать http://www.balancer.ru/g/p3576581
+				// Проверить http://www.balancer.ru/g/p3576651
+				// Novice1975> [URL=http://radikal.ru/fp/a488e474eeee440090b1840e81f69ccc][img Мляяяяя....
+
+				if(!$path)
+					return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[incorrect image]</small>";
 				$file = "$store_path/$path";
 			}
 
@@ -148,7 +154,7 @@ function lt_img($params)
 
 //			if(config('is_developer')) { echo '<xmp>'; var_dump($params['url'], $file, $image_size); }
 
-			if(file_exists($file) && !$image_size)
+			if($path && file_exists($file) && !$image_size)
 			{
 				//TODO: Придумать, что сделать с этим хардкодом.
 				$thumbnails = bors_find_all('bors_image_thumb', array(
@@ -165,6 +171,8 @@ function lt_img($params)
 			if(!file_exists($file) || filesize($file)==0 || !$image_size)
 			{
 				$path = web_import_image::storage_place_rel($params['url']);
+				if(!$path)
+					return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[incorrect image]</small>";
 				$file = "$store_path/$path";
 
 				require_once('inc/filesystem.php');

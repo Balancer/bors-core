@@ -1546,7 +1546,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 //		$mem = new \Jamm\Memory\RedisObject('dog-pile-cacher', '192.168.1.3');
 
 		$stash_item = NULL;
-		if($this->id() && $this->modify_time() && ($pool = config('cache.stash.pool')))
+		if($this->id() && !is_object($this->id()) && $this->modify_time() && ($pool = config('cache.stash.pool')))
 		{
 			$stash_item = $pool->getItem('dog-pill-protect/'.$this->internal_uri_ascii().'/'.$this->page().'/'.$this->modify_time());
 

@@ -376,7 +376,7 @@ class bors_form extends bors_object
 
 				$edit_type = defval($data, 'edit_type', $type);
 
-				if($type != 'bool' && $edit_type != 'hidden')
+				if($type != 'bool' && $edit_type != 'hidden' && $edit_type != 'bool')
 					$html .= "\t<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$title}</th><td>\n\t\t";
 
 				switch($edit_type)

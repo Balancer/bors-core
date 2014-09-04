@@ -15,11 +15,8 @@ function object_load($class, $object_id=NULL, $args=array())
 	if(is_numeric($class))
 		$class = class_id_to_name($class);
 
-	if(config('debug_trace_object_load'))
-	{
-		bors_function_include('debug/hidden_log');
-		debug_hidden_log('objects_load', "$class(".print_r($object_id, true).")", config('debug_trace_object_load_trace'));
-	}
+	if(config('debug.trace_object_load'))
+		bors_debug::syslog('objects_load', "$class(".print_r($object_id, true).")", config('debug_trace_object_load_trace'));
 
 	if(!$class)
 		return;

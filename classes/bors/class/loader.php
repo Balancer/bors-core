@@ -85,41 +85,11 @@ class bors_class_loader
 			}
 		}
 
-		$cached_class_file = $cachd.$class_base.'.php';
-		$class_info_path = $class_base.'.ini';
-		$cached_class_info_file = $cachd.$class_info_path;
-
-		if(file_exists($cached_class_file) && file_exists($cached_class_info_file))
-		{
-			$info = parse_ini_file($cached_class_info_file);
-			$real_class_file = $info['real_class_file'];
-			if(file_exists($real_class_file) && ($info['cached_class_filemtime'] >= filemtime($real_class_file)))
-			{
-				if(!($php_inc = @$info['real_class_php_inc_file'])
-						|| !file_exists($php_inc)
-						|| (@$info['real_class_php_inc_filemtime'] >= filemtime($php_inc)))
-				{
-//					if(config('is_debug')) echo "Load cached class $class_name<br/>\n";
-					require_once($cached_class_file);
-					return $GLOBALS['bors_data']['classes_included'][$class_name] = $real_class_file;
-				}
-			}
-
-			@unlink($cached_class_file);
-			@unlink($cached_class_info_file);
-		}
-
-//		~r($class_name, $cached_class_file, $cached_class_info_file);
-
 		$class_file = self::find_and_include($class_name, $args);
-		if($class_file)
+		if($class_file && preg_match('/\.php$/', $class_file))
 		{
 			self::set_class_cache_data($class_name, $class_file, 'class_file_real', $class_file);
-
-			if(preg_match('/\.php$/', $class_file))
-				self::set_class_cache_data($class_name, $class_file, 'class_file_php', $class_file);
-			else
-				r('nc', $class_file);
+			self::set_class_cache_data($class_name, $class_file, 'class_file_php', $class_file);
 		}
 
 		return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
@@ -127,8 +97,9 @@ class bors_class_loader
 
 	private static function find_and_include($class_name, &$args = array())
 	{
-		//TODO: в режиме профилирования отлавливать этот вызов. Он должен кешироваться и вызываться только один раз.
-		// r($class_name);
+		if(config('debug.profiling'))
+			bors_debug::syslog('profiling', "Load non cached class $class_name; bors_dirs=".print_r(bors_dirs(), true));
+
 		$class_path = "";
 		$class_file = $class_name;
 
@@ -179,24 +150,6 @@ class bors_class_loader
 		}
 
 		return false;
-	}
-
-	static function cache_make_info($class_name, $class_file, $cached_class_file)
-	{
-		$data = array(
-			'real_class_file' => $class_file,
-			'cached_class_filemtime' => filemtime($class_file),
-		);
-
-		if(file_exists($file = preg_replace('/^(.+)\.\w+$/', '$1.inc.php', $class_file)))
-		{
-			$data['real_class_php_inc_file'] = $file;
-			$data['real_class_php_inc_filemtime'] = filemtime($file);
-		}
-
-		$ini_file = str_replace('.php', '.ini', $cached_class_file);
-		mkpath(dirname($ini_file), 0755);
-		bors_file_ini::write($ini_file, $data);
 	}
 
 	static function load_and_cache($class_name, $class_file)

@@ -2,7 +2,15 @@
 
 function lp_translit($s) { return lp_tr($s); }
 
-function lp_tr($s)
+function lp_tr($s, $params)
+{
+	if($params['lcml']->p('last_tag') == 'table')
+		return "<tr ".make_enabled_params($params, 'class style').">".$params['lcml']->parse($s)."</tr>";
+
+	return __lp_tr($s);
+}
+
+function __lp_tr($s)
 {
     $s=str_replace("&#39;","'",$s);
     $s=str_replace("&quot;","\"",$s);

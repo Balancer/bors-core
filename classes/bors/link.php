@@ -278,7 +278,7 @@ class bors_link extends bors_object_db
 
 			$x->set_bors_link($link, false);
 
-			$result[] = $x;
+			$result[$x->id()] = $x;
 		}
 
 		return $result;

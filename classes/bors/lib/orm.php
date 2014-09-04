@@ -50,6 +50,25 @@ class bors_lib_orm
 			$field['sql_function'] = $m[1];
 		}
 
+		if(preg_match('/^(\w+)(,(\w+))+$/', $field['name']))
+		{
+			$parts = [];
+			$first = true;
+			foreach(explode(',', $field['name']) as $n)
+			{
+				if(!$first)
+					$parts[] = "':'";
+				else
+					$first = false;
+
+				$parts[] = '`'.$n.'`';
+			}
+
+			//	Запись вида 'id' => 'company_id,user_id' — составной первичный или уникальный ключ
+			//TODO: Дублируется с записью в блоке выше — объединить
+			$field['name'] = 'CONCAT('.join(',', $parts).')';
+		}
+
 		// Если имя поля вида 'Header|bors_entity_decode', то вторая часть — постфункция.
 		if(preg_match('!^(\w+)\|(\w+)$!', $field['name'], $m))
 		{

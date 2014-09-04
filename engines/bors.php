@@ -176,7 +176,6 @@ function bors_exit_handler($message = '')
 		file_put_contents_lock(config('cache_dir') . '/classes.php', $GLOBALS['bors_data']['classes_cache_content']);
 	}
 
-
 	static $bors_exit_doing = false;
 	if($bors_exit_doing)
 		return true;
@@ -191,6 +190,11 @@ function bors_exit_handler($message = '')
 	try
 	{
 		bors()->changed_save();
+
+		if(!empty($GLOBALS['bors_data']['classes_cache_updates']))
+			foreach($GLOBALS['bors_data']['classes_cache_updates'] as $class_name => $x)
+				bors_class_loader::classes_cache_data_save($class_name, $x['cache_data'], $x['class_file']);
+
 	}
 	catch(Exception $e)
 	{

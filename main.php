@@ -415,12 +415,18 @@ if(function_exists('xhprof_enable'))
 {
 	$xhprof_data = xhprof_disable();
 
-	$XHPROF_ROOT = "/var/www/composer/vendor/facebook/xhprof";
-	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
-	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+	$XHPROF_ROOT = COMPOSER_ROOT."/vendor/facebook/xhprof";
+	if(file_exists($XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php"))
+	{
+		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
+		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+	}
 
-	$xhprof_runs = new XHProfRuns_Default();
-	$run_id = $xhprof_runs->save_run($xhprof_data, urlencode(preg_replace('!\W+!', '-', preg_replace("!^\w+://!", '', $uri))));
+	if(class_exists('XHProfRuns_Default'))
+	{
+		$xhprof_runs = new XHProfRuns_Default();
+		$run_id = $xhprof_runs->save_run($xhprof_data, urlencode(preg_replace('!\W+!', '-', preg_replace("!^\w+://!", '', $uri))));
+	}
 
 //	echo "http://localhost/xhprof/xhprof_html/index.php?run={$run_id}&source=xhprof_testing\n";
 }

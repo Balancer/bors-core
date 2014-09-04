@@ -41,7 +41,11 @@ function lp_table($inner, $params)
 		unset($params['border']);
 		$params['class'] = 'btab';
 	}
-	return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">".lcml($inner)."</table>";
+
+	$params['lcml']->set_p('last_tag', 'table');
+	$inner_html = $params['lcml']->parse($inner);
+//	$params['lcml']->set_p('last_tag', NULL);
+	return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">{$inner_html}</table>";
 }
 
 function lp_table_html($inner, $params)

@@ -7,8 +7,8 @@ class bors_class_loader
 
 	static function file($class_name, $dirs = array())
 	{
-		if($real_class_file = @$GLOBALS['bors_data']['classes_included'][$class_name])
-			return $real_class_file;
+		if(!empty($GLOBALS['bors_data']['classes_included'][$class_name]))
+			return $GLOBALS['bors_data']['classes_included'][$class_name];
 
 		if($c = @$GLOBALS['bors.composer.class_loader'])
 		{

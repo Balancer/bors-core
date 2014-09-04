@@ -14,7 +14,9 @@ class blib_html
 	private static function __close_tags_new($html)
 	{
 		$dom = new DOMDocument('1.0', 'utf-8');
-		@$dom->loadHTML('<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><body>' . $html . '</body></html>');
+		try {
+			$dom->loadHTML('<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><body>' . $html . '</body></html>');
+		} catch(Exception $e) { }
 		$html = $dom->saveHTML();
 
 		$html = preg_replace("!^.+?</head>!is", "", $html);

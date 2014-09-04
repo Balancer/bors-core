@@ -17,8 +17,8 @@ class bors_lcml extends bors_object
 	function _disabled_tags_string_def() { return ''; }
 	function _enabled_tags_def()
 	{
-		if($enabled = @$this->_params['enabled_tags'])
-			return $enabled;
+		if(!empty($this->_params['enabled_tags']))
+			return $this->_params['enabled_tags'];
 
 		if($enabled_tags = $this->enabled_tags_string())
 			return explode(' ', $enabled_tags);
@@ -28,8 +28,8 @@ class bors_lcml extends bors_object
 
 	function _disabled_tags_def()
 	{
-		if($disabled = @$this->_params['disabled_tags'])
-			return $disabled;
+		if(!empty($this->_params['disabled_tags']))
+			return $this->_params['disabled_tags'];
 
 		if($disabled_tags = $this->disabled_tags_string())
 			return explode(' ', $disabled_tags);
@@ -41,8 +41,8 @@ class bors_lcml extends bors_object
 	function _disabled_functions_string_def() { return ''; }
 	function _enabled_functions_def()
 	{
-		if($enabled = @$this->_params['enabled_functions'])
-			return $enabled;
+		if(!empty($this->_params['enabled_functions']))
+			return $this->_params['enabled_functions'];
 
 		if($enabled_functions = $this->enabled_functions_string())
 			return explode(' ', $enabled_functions);
@@ -52,8 +52,8 @@ class bors_lcml extends bors_object
 
 	function _disabled_functions_def()
 	{
-		if($disabled = @$this->_params['disabled_functions'])
-			return $disabled;
+		if(!empty($this->_params['disabled_functions']))
+			return $this->_params['disabled_functions'];
 
 		if($disabled_functions = $this->disabled_functions_string())
 			return explode(' ', $disabled_functions);
@@ -240,7 +240,7 @@ class bors_lcml extends bors_object
 
 		$GLOBALS['lcml']['params'] = $this->_params;
 		$GLOBALS['lcml']['params']['html_disable'] = $this->p('html_disable');
-		$GLOBALS['lcml']['cr_type'] = @$params['cr_type'];
+		$GLOBALS['lcml']['cr_type'] = empty($params['cr_type']) ? NULL : $params['cr_type'];
 //		echo "cr-type = {$GLOBALS['lcml']['cr_type']}\n";
 
 		if($this->_params['level'] == 1 || $need_prepare)

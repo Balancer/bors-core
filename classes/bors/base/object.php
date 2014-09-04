@@ -221,7 +221,7 @@ class base_object extends bors_object_simple
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 
 	//TODO: под рефакторинг. Данные шаблона - отдельная сущность.
-	static function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
+	static function template_data($var_name) { return empty($GLOBALS['cms']['templates']['data'][$var_name]) ? NULL : $GLOBALS['cms']['templates']['data'][$var_name]; }
 
 	private $template_data = array();
 	function add_local_template_data($var_name, $value)
@@ -491,7 +491,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	}
 
 	/** Истинный заголовок объекта. Метод или параметр объекта. */
-	function title_true() { return method_exists($this, 'title') ? $this->title() : @$this->data['title']; }
+	function title_true() { return method_exists($this, 'title') ? $this->title() : empty($this->data['title']) ? NULL : $this->data['title']; }
 
 	function set_title($new_title, $db_up=true) { return $this->set('title', $new_title, $db_up); }
 
@@ -501,7 +501,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function debug_title_short() { return "{$this->class_name()}({$this->id()})"; }
 
-	function _description_def() { return @$this->data['description']; }
+	function _description_def() { return empty($this->data['description']) ? NULL : $this->data['description']; }
 	function set_description($description, $db_update=true) { return $this->set('description', $description, $db_update); }
 
 	function _nav_name_def()

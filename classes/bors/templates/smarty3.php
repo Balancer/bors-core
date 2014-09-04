@@ -92,7 +92,10 @@ class bors_templates_smarty3 extends bors_template
 
 		for($i=1, $stop=count($trace); $i<$stop; $i++)
 		{
-			$php_file_dir = dirname(@$trace[$i]['file']).'/';
+			if(!empty($trace[$i]['file']))
+				$php_file_dir = dirname(@$trace[$i]['file']).'/';
+			else
+				$php_file_dir = '/unknown/';
 
 			if(file_exists($php_file_dir.$wo_xfile_prefix))
 			{
@@ -114,7 +117,7 @@ class bors_templates_smarty3 extends bors_template
 		$smarty->assign("template_dirnames", $dir_names);
 
 		$smarty->assign('me', bors()->user());
-		$smarty->assign("main_uri", @$GLOBALS['main_uri']);
+		$smarty->assign("main_uri", empty($GLOBALS['main_uri']) ? NULL : $GLOBALS['main_uri']);
 
 		// Снести в пользу render_page(), наверное.
 		if(!$smarty->templateExists($template))

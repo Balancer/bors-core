@@ -357,6 +357,11 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
 		$objects = array();
 
+		$num_objects = count($datas);
+
+		if($num_objects > 50 && config('debug.profiling'))
+			bors_debug::syslog('profiling', "Load {$num_objects} of $class_name");
+
 		foreach($datas as $data)
 		{
 			$object->set_id(@$data['id']);
@@ -402,7 +407,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			else
 				$objects[] = $object;
 
-			save_cached_object($object);
+			if($num_objects <= 100)
+				save_cached_object($object);
 
 			$object = new $class_name(NULL);
 			$object->set_class_file($class_file);

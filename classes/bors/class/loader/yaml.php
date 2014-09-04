@@ -131,16 +131,20 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 		$cached_class_file = config('cache_dir').'/classes/'.str_replace('_', '/', $class_name).'.php';
 
 		mkpath(dirname($cached_class_file), 0750);
-		@file_put_contents($cached_class_file, "<?php\n\n".$class);
-		@chmod($generated_name, 0640);
+		if(is_writable(dirname($cached_class_file)))
+		{
+			file_put_contents($cached_class_file, "<?php\n\n".$class);
+			chmod($cached_class_file, 0640);
+		}
 
-//		eval($class);
-		bors_class_loader::cache_make_info($class_name, $class_file, $cached_class_file);
+		bors_class_loader::set_class_cache_data($class_name, $class_file, 'class_file_real', $class_file);
+		bors_class_loader::set_class_cache_data($class_name, $class_file, 'class_file_php',  $cached_class_file);
+
 		require($cached_class_file);
 		return $class_file;
 	}
 
-	function tr_array(&$data, $tabs)
+	static function tr_array(&$data, $tabs)
 	{
 		$res = array();
 		foreach($data as $key => $val)
@@ -165,7 +169,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 		return join("\n", $res);
 	}
 
-	function array2str($arr)
+	static function array2str($arr)
 	{
 		$res = "";
 		foreach($arr as $key => $value)

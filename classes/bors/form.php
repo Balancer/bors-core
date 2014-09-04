@@ -8,11 +8,11 @@ class bors_form extends bors_object
 
 	function object() { return $this->id() ? $this->id() : $this->attr('object'); }
 
+	static function current_form() { return self::$_current_form; }
+
 	function append_attr($name, $value)
 	{
-		$form = $this ? $this : self::$_current_form;
-
-		$form->_attrs[$name][] = $value;
+		$this->_attrs[$name][] = $value;
 	}
 
 	function hidden_attr($name)

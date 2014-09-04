@@ -677,15 +677,18 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				}
 
 				// Закомментировано, так как не позволяет аплоадить изображения с ignore.
-				if($main_table && !$object->get('insert_delayed_on_new_instance')/* && !$object->ignore_on_new_instance()*/)
+				if($main_table
+					&& !$object->get('insert_delayed_on_new_instance')
+					// && !$object->ignore_on_new_instance()
+				)
 				{
 					$main_table = false;
 					$new_id = $dbh->last_id();
 					if(!$new_id)
 						$new_id = $object->id();
-					if(!$new_id && ($idf = $object->id_field()))
+					if(!$new_id && ($idf = $object->id_field()) && preg_match('/^\w+$/', $idf))
 						$new_id = $object->get($idf);
-					if(!$new_id && !$object->ignore_on_new_instance())
+					if(!$new_id && !$object->ignore_on_new_instance() && preg_match('/^\w+$/', $idf))
 						debug_hidden_log('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
 				}
 			}

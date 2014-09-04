@@ -99,7 +99,7 @@ class DataBase
 
 	function __construct($base=NULL, $login=NULL, $password=NULL, $server=NULL) // DataBase
 	{
-		$this->ics = config('internal_charset');
+		$this->ics = str_replace('-', '', config('internal_charset'));
 		$this->dcs = config('db_charset');
 		if($this->need_encode = ($this->ics != $this->dcs))
 		{

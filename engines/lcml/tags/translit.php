@@ -1,6 +1,6 @@
 <?php
 
-function lp_translit($s) { return lp_tr($s); }
+function lp_translit($s, $params) { return lp_tr($s, $params); }
 
 function lp_tr($s, $params)
 {

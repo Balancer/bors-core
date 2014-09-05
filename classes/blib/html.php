@@ -15,7 +15,7 @@ class blib_html
 	{
 		$dom = new DOMDocument('1.0', 'utf-8');
 		try {
-			$dom->loadHTML('<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><body>' . $html . '</body></html>');
+			@$dom->loadHTML('<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><body>' . $html . '</body></html>');
 		} catch(Exception $e) { }
 		$html = $dom->saveHTML();
 

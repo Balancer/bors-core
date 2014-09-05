@@ -3,7 +3,9 @@
 function lcml_tags($txt, &$mask, $lcml = NULL)
 {
 	$taglist = config('lcml_tags_enabled');
-	$taglist_disabled = config('lcml_tags_disabled', array());
+	$taglist_disabled = config('lcml_tags_disabled');
+	if(!$taglist_disabled)
+		$taglist_disabled = array();
 
 //	if(class_exists("b2"))
 //	{

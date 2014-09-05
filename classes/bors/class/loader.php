@@ -48,6 +48,11 @@ class bors_class_loader
 
 	static function load($class_name, &$args = array())
 	{
+		if(!preg_match('/^\w{2,}$/', $class_name)
+			|| preg_match('/^Smarty_Resource_Custom/', $class_name) // Чтобы не мусорило логи
+		)
+			return false;
+
 		static $skips = NULL;
 		if(is_null($skips))
 			$skips = config('classes_skip', array());
@@ -71,6 +76,8 @@ class bors_class_loader
 		if(file_exists($cached_class_info_json))
 		{
 			$info = json_decode(file_get_contents($cached_class_info_json), true);
+
+			bors_object::$__cache_data[$class_name] = $info;
 
 			if(!empty($info['class_file_real'])
 				&& file_exists($info['class_file_real'])

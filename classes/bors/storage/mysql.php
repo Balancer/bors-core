@@ -359,7 +359,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$num_objects = count($datas);
 
-		if($num_objects > 50 && config('debug.profiling'))
+		if($num_objects > 200 && config('debug.profiling'))
 			bors_debug::syslog('profiling', "Load {$num_objects} of $class_name");
 
 		foreach($datas as $data)

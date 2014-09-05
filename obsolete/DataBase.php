@@ -198,6 +198,12 @@ class DataBase
 		if($qtime > config('debug.mysql_slow', 5))
 			debug_hidden_log('mysql-queries-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
 
+		if(config('debug.profiling') && $qtime > 0.01)
+			$GLOBALS['bors_profiling']['mysql-queries'][] = array(
+				'query' => $query,
+				'time'  => $qtime,
+			);
+
 		if($type = config('debug.trace_queries'))
 		{
 			echo "q=$query<br/>";

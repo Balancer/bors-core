@@ -355,6 +355,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$select[] = $s;
 
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
+
 		$objects = array();
 
 		$num_objects = count($datas);

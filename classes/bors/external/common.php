@@ -37,13 +37,9 @@ class bors_external_common extends bors_object
 		if(preg_match('/503 - Forwarding failure/', $html))
 			$html = '';
 
-		$title = @$meta['og:title'];
-		if(!$title)
-			$title = @$meta['title'];
+		$title = @$meta['title'];
 
-		$description = @$meta['og:description'];
-		if(!$description)
-			$description = @$meta['description'];
+		$description = @$meta['description'];
 
 		$img = @$meta['og:image'];
 		if(!$img)
@@ -286,15 +282,12 @@ if(config('is_developer')) { exit($img); }
 {$description}
 
 [span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($original_url)."[/reference][/span][/round_box]";
-
 			$tags = array();
 
 			$bbshort = preg_replace('/[\x{10000}-\x{10FFFF}]/u', '?', $bbshort);
 			$bbshort = iconv('utf-8', 'utf-8//translit', $bbshort);
 
 			$bbshort = trim(bors_close_tags(bors_close_bbtags(blib_obscene::mask($bbshort, true))));
-
-//			if(config('is_developer')) { echo "\n==============\n$bbshort\n=============\n";  echo bors_debug::trace(); }
 
 			return compact('tags', 'title', 'bbshort');
 		}

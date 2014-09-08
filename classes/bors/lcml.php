@@ -206,12 +206,17 @@ class bors_lcml extends bors_object
 
 	function parse($text, $params = array())
 	{
+		$this->set_p('level', $this->p('level')+1);
+
 		$params = array_merge($this->params, $params);
 
 		$text = str_replace("\r", '', $text);
 
 		if(strlen(trim($text)) == 0)
+		{
+			$this->set_p('level', $this->p('level')-1);
 			return '';
+		}
 
 		if($this->_params['level'] == 1)
 		{
@@ -232,6 +237,7 @@ class bors_lcml extends bors_object
 			if($cache->get('lcml-cache-v'.config('lcml.cache_tag'), $text))
 			{
 				bors_debug::timing_stop('lcml_parse');
+				$this->set_p('level', $this->p('level')-1);
 				return $cache->last();
 			}
 		}
@@ -257,11 +263,13 @@ class bors_lcml extends bors_object
 		// ******* Собственно, главная часть — обработка тегов *******
 		$ts = microtime(true);
 		$text = lcml_tags($t0 = $text, $mask, $this);
+
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
 			debug_hidden_log('warning_lcml', "Too long ({$long}s) tags execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		if($this->p('only_tags'))
 		{
+			$this->set_p('level', $this->p('level')-1);
 			bors_debug::timing_stop('lcml_parse');
 			return $cache ? $cache->set($text, 86400) : $text;
 		}
@@ -334,6 +342,7 @@ class bors_lcml extends bors_object
 		}
 
 		bors_debug::timing_stop('lcml_parse');
+		$this->set_p('level', $this->p('level')-1);
 		return $cache ? $cache->set($text, 86400) : $text;
 	}
 

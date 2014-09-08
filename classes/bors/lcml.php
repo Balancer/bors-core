@@ -169,8 +169,8 @@ class bors_lcml extends bors_object
 
 
 	private $params;
-	function set_params($params) { $this->params = $params; }
-	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->params : defval($this->params, $key, $def); }
+	function set_params($params) { $this->_params = $params; }
+	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->_params : defval($this->_params, $key, $def); }
 
 	function is_tag_enabled($tag_name, $default_enabled = true)
 	{
@@ -208,7 +208,7 @@ class bors_lcml extends bors_object
 	{
 		$this->set_p('level', $this->p('level')+1);
 
-		$params = array_merge($this->params, $params);
+		$params = array_merge($this->_params, $params);
 
 		$text = str_replace("\r", '', $text);
 

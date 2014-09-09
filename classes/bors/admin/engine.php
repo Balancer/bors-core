@@ -201,6 +201,13 @@ class bors_admin_engine extends bors_object
 		if(stripos($mode, 'd') !== false && $obj->access()->can_delete())
 			$html .= '&nbsp;' . $this->imaged_delete_link('');
 
+		if(!empty($params['actions']))
+		{
+			require_once('inc/images.php');
+			foreach($params['actions'] as $x)
+				$html .= '&nbsp;' . bors_icon($x['image'], array('url' => $x['url'], 'title' => $x['title']));
+		}
+
 		return $html;
 	}
 

@@ -39,6 +39,8 @@ class bors_forms_dropdown extends bors_forms_element
 			if(empty($style))
 				$style = "width: 99%";
 		}
+		elseif(!empty($params['width']))
+			$style = "width: ".$params['width'];
 
 		if(!empty($json) && empty($dom_id))
 		{

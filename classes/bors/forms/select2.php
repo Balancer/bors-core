@@ -10,10 +10,15 @@ class bors_forms_select2 extends bors_forms_element
 		$value = $this->value();
 		$class_name = $params['main_class'];
 
-		// https://github.com/Anahkiasen/html-object
-		$input = HtmlObject\Input::hidden($this->property_name(), $value, array(
+		$data = array(
 			'id' => $element_id,
-		));
+		);
+
+		if(!empty($params['width']))
+			$data['style'] = 'width: '.$params['width'];
+
+		// https://github.com/Anahkiasen/html-object
+		$input = HtmlObject\Input::hidden($this->property_name(), $value, $data);
 
 		$edit_params = defval($params, 'edit_params', array());
 
@@ -29,8 +34,8 @@ class bors_forms_select2 extends bors_forms_element
 			$value_title = object_property(bors_load($class_name, $value), 'title');
 			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '{$value}', text: \"$value_title\" })");
 		}
-		else
-			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '', text: '' })");
+//		else
+//			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '', text: '' })");
 
 		return bors_forms_helper::element_html($input, $params);
 	}

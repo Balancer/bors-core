@@ -165,10 +165,13 @@ function bors_dirs($skip_config = false, $host = NULL)
 	if(defined('COMPOSER_ROOT'))
 	{
 		$lock = json_decode(file_get_contents(COMPOSER_ROOT . '/composer.lock'), true);
+
 		foreach($lock['packages'] as $package)
 		{
-			$path = COMPOSER_ROOT . '/vendor/' . $package['name'];
-			if(file_exists($path.'/classes') || file_exists($path.'/templates'))
+			$extra = empty($package['extra']) ? NULL : $package['extra'];
+				$path = COMPOSER_ROOT . '/vendor/' . $package['name'];
+
+			if(!empty($extra['bors-classes']) || !empty($extra['bors-templates']))
 				$data[] = $path;
 		}
 	}

@@ -41,5 +41,10 @@
 
 	"autoload": {
 		"classmap": ["classes/"]
-	}
+	},
+
+    "extra": {
+        "bors-classes": "classes",
+        "bors-templates": "templates"
+    }
 }

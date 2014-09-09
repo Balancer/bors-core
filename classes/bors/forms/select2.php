@@ -20,12 +20,17 @@ class bors_forms_select2 extends bors_forms_element
 		jquery_select2::appear_ajax("'#{$element_id}'", $class_name, array_merge($edit_params, array(
 			'order' => defval($params, 'order', 'title'),
 			'title_field' => defval($params, 'title_field', 'title'),
-//			'width' => defval($params, 'width', 'resolve'),
-			'dropdownAutoWidth' => true,
+			'width' => defval($params, 'width' /*, 'resolve'*/),
+//			'dropdownAutoWidth' => true,
 		)));
 
-		$value_title = object_property(bors_load($class_name, $value), 'title');
-		jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '{$value}', text: \"$value_title\" })");
+		if($value)
+		{
+			$value_title = object_property(bors_load($class_name, $value), 'title');
+			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '{$value}', text: \"$value_title\" })");
+		}
+		else
+			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '', text: '' })");
 
 		return bors_forms_helper::element_html($input, $params);
 	}

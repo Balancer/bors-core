@@ -165,6 +165,8 @@ function bors_dirs($skip_config = false, $host = NULL)
 	if(defined('COMPOSER_ROOT'))
 	{
 		$lock = json_decode(file_get_contents(COMPOSER_ROOT . '/composer.lock'), true);
+
+echo "<xmp>"; print_r($lock); echo "</xmp>";
 		foreach($lock['packages'] as $package)
 		{
 			$path = COMPOSER_ROOT . '/vendor/' . $package['name'];

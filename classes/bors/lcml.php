@@ -542,17 +542,16 @@ class bors_lcml extends bors_object
 
 		$lc = $lcs[$class_name];
 
-		$lc->set_p('level', $lc->p('level')+1);
 		$lc->set_p('prepare', popval($params, 'prepare'));
 		$save_tags = $lc->p('only_tags');
 		if(!empty($params['only_tags']))
 			$lc->set_p('only_tags', $params['only_tags']);
-		if($lc->p('level') == 1)
+
+		if($lc->p('level') < 1)
 			$lc->set_params($params);
 
 		$html = $lc->parse($text);
 		$lc->set_p('only_tags', $save_tags);
-		$lc->set_p('level', $lc->p('level')-1);
 
 		// Зачистим всё не-UTF-8 на всякий случай, а то пролезает, порой, всякое...
 		if(function_exists('mb_convert_encoding'))

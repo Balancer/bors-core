@@ -20,6 +20,11 @@ class base_page extends bors_object
 		return $this->page_title();
 	}
 
+	function _browser_description_def()
+	{
+		return $this->description();
+	}
+
 	function source() { return @$this->data['source']; }
 	function set_source($source, $db_update) { return $this->set('source', $source, $db_update); }
 

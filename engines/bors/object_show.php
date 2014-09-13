@@ -107,8 +107,8 @@
 			}
 		}
 
-		$called_url = preg_replace('/\?.*$/', '', $obj->called_url());
-		$target_url = preg_replace('/\?.*$/', '', $obj->url_ex($page));
+		$called_url = urldecode(preg_replace('/\?.*$/', '', $obj->called_url()));
+		$target_url = urldecode(preg_replace('/\?.*$/', '', $obj->url_ex($page)));
 //		if(config('is_developer')) echo "{$obj->debug_title()}:<br/>.called={$obj->called_url()},<br/>target={$target_url} && called={$called_url} && {$obj->_auto_redirect()}<br/>";
 		if($obj->called_url()
 				&& !preg_match('!'.preg_quote($target_url).'$!', $called_url)

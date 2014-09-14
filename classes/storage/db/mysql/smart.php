@@ -2,7 +2,7 @@
 
 if(!config('obsolete.use_mysql_smart'))
 {
-	debug_hidden_log('obsolete_error', "Try to use storage_db_mysql_smart");
+	bors_debug::syslog('obsolete_error', "Try to use storage_db_mysql_smart");
 	bors_throw('Error: Try to use storage_db_mysql_smart');
 }
 

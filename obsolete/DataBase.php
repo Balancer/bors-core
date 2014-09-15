@@ -50,7 +50,7 @@ class DataBase
 
 				if(!$this->dbh && config('mysql_try_reconnect'))
 				{
-					debug_hidden_log('mysql_try_reconnect', NULL, false);
+					bors_debug::syslog('mysql_try_reconnect', NULL, false);
 					sleep(5);
 				}
 
@@ -75,7 +75,7 @@ class DataBase
 
 		if(!mysql_select_db($real_db, $this->dbh))
 		{
-			debug_hidden_log('mysql_error', $msg = "Could not select database ".($real_db ? "'{$db_name}' as '{$real_db}'" : "'{$db_name}'. <br/>\nError ").mysql_errno($this->dbh).": ".mysql_error($this->dbh)." <br />\n");
+			bors_debug::syslog('mysql_error', $msg = "Could not select database ".($real_db ? "'{$db_name}' as '{$real_db}'" : "'{$db_name}'. <br/>\nError ").mysql_errno($this->dbh).": ".mysql_error($this->dbh)." <br />\n");
 			bors_throw($msg, 1);
 		}
 
@@ -163,7 +163,7 @@ class DataBase
 	function query($query, $ignore_error=false, $reenter = false)
 	{
 		if(($watch = config('debug.mysql_queries_watch_regexp')) && preg_match($watch, $query))
-			debug_hidden_log('mysql-queries-watch-log', $query);
+			bors_debug::syslog('mysql-queries-watch-log', $query);
 
 		if($logs = config('debug.mysql_queries_logs'))
 		{
@@ -198,7 +198,7 @@ class DataBase
 		$qtime = microtime(true) - $qstart;
 
 		if($qtime > config('debug.mysql_slow', 5))
-			debug_hidden_log('mysql-queries-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
+			bors_debug::syslog('mysql-queries-slow', "Slow query [{$this->db_name} {$qtime}s]: ".$query);
 
 		if(config('debug.profiling') && $qtime > 0.01)
 			$GLOBALS['bors_profiling']['mysql-queries'][] = array(
@@ -218,7 +218,7 @@ class DataBase
 			if($cdmql == 'false')
 				$cdmql = false;
 
-			debug_hidden_log(
+			bors_debug::syslog(
 				'mysql-queries',
 				"[{$this->db_name}, ".sprintf('%.1f', $qtime*1000.0)."ms]: ".$query,
 				$cdmql,
@@ -657,7 +657,7 @@ class DataBase
 			return;
 
 //		mysql_close($this->dbh);
-		debug_hidden_log("SerializeOfDataBase");
+		bors_debug::syslog("SerializeOfDataBase");
 		return array_keys(get_object_vars($this));
 	}
 */

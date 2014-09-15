@@ -725,8 +725,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$dbh->delete($table_name, array($fields['*id_field'] => $object->id()));
 		}
 
-			$dbh = new driver_mysql($object->db_name());
-			$dbh->delete($object->table_name(), array($object->id_field() => $object->id()));
+		$dbh = new driver_mysql($object->db_name());
+		$dbh->delete($object->table_name(), array($object->id_field() => $object->id()));
 	}
 
 	function create_table($class_name = NULL)

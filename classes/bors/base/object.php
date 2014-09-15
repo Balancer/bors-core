@@ -1333,7 +1333,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return $file_name;
 	}
 
-	function class_file() { return empty(bors_class_loader::$class_files[$this->class_name()]) ? NULL : bors_class_loader::$class_files[$this->class_name()]; }
+	function class_file() { return bors_class_loader::file($this->class_name()); }
 	function class_filemtime() { return @bors_class_loader::$class_file_mtimes[$this->class_name()]; }
 
 	function real_class_file() { return @bors_class_loader::$class_files[$this->class_name()]; }

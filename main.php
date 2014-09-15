@@ -414,7 +414,7 @@ if(config('debug.timing') && is_string($res))
 if(!empty($GLOBALS['bors_profiling']['mysql-queries']) && count($GLOBALS['bors_profiling']['mysql-queries']) > 30)
 	bors_debug::syslog('profiling-mysql', "Too many queries: ".print_r($GLOBALS['bors_profiling']['mysql-queries'], true));
 
-if(function_exists('xhprof_enable') && $time >= config('debug.profile_min', 5.0))
+if(function_exists('xhprof_enable') && $time >= config('debug.profile_min', 1.0))
 {
 	$xhprof_data = xhprof_disable();
 

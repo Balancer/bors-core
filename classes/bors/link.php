@@ -372,13 +372,13 @@ class bors_link extends bors_object_db
 
 	static function drop_objects($from, $to)
 	{
-		self::drop($from->class_name(), $from->id(), $to->class_name(), $to->id());
+		self::drop($from->extends_class_name(), $from->id(), $to->extends_class_name(), $to->id());
 	}
 
 	static function drop($from_class, $from_id, $to_class, $to_id = NULL)
 	{
 		$from_id = intval($from_id);
-		$to = intval($to_id);
+		$to_id = intval($to_id);
 		if(!$from_id)
 			return;
 

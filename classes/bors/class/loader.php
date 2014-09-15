@@ -77,8 +77,6 @@ class bors_class_loader
 		{
 			$info = json_decode(file_get_contents($cached_class_info_json), true);
 
-			bors_object::$__cache_data[$class_name] = $info;
-
 			if(!empty($info['class_file_real'])
 				&& file_exists($info['class_file_real'])
 				&& ($info['was_changed'] >= filemtime($info['class_file_real']))
@@ -86,6 +84,7 @@ class bors_class_loader
 				&& file_exists($info['class_file_php'])
 			)
 			{
+				bors_object::$__cache_data[$class_name] = $info;
 				require_once($info['class_file_php']);
 
 				return $GLOBALS['bors_data']['classes_included'][$class_name] = $info['class_file_real'];
@@ -181,7 +180,6 @@ class bors_class_loader
 		return $value;
 	}
 
-
 	static function classes_cache_data_save($class_name, $data, $class_file = NULL)
 	{
 		if(empty($data['was_changed']))
@@ -193,6 +191,9 @@ class bors_class_loader
 
 		if(!$class_file)
 			$class_file = bors_foo($class_name)->class_file();
+
+		if(!$class_file)
+			echo "Can't find class_file for $class_name</br>\n";
 
 		$data['class_mtime'] = filemtime($class_file);
 

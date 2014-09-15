@@ -79,6 +79,11 @@ class bors_html
 		if(!empty($ref))
 			$link .= '&ref='.urlencode($ref);
 
+		$link_attrs = array();
+
+		if(!empty($ajax))
+			$link_attrs[] = "data-ajax-link=\"".htmlspecialchars($ajax)."\"";
+
 		if(empty($link_target))
 			$link_target = "";
 		else
@@ -90,7 +95,9 @@ class bors_html
 			$title = "";
 
 		if(!empty($link))
-			$img = "<a href=\"{$link}\"{$link_target}{$title}>{$img}</a>";
+			$img = "<a href=\"{$link}\"{$link_target}".($link_attrs?' '.join(' ', $link_attrs):'')."{$title}>{$img}</a>";
+		elseif($link_attrs)
+			$img = "<a href=\"#\"{$link_target}".($link_attrs?' '.join(' ', $link_attrs):'')."{$title}>{$img}</a>";
 
 		return $img;
 	}

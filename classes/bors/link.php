@@ -370,6 +370,11 @@ class bors_link extends bors_object_db
 				OR (to_class=$fc AND to_id=$fi AND from_class=$tc))"));
 	}
 
+	static function drop_objects($from, $to)
+	{
+		self::drop($from->class_name(), $from->id(), $to->class_name(), $to->id());
+	}
+
 	static function drop($from_class, $from_id, $to_class, $to_id = NULL)
 	{
 		$from_id = intval($from_id);

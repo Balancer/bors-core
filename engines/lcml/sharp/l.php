@@ -1,12 +1,11 @@
 <?php
 
-function lsp_l($txt, $params)
+function lsp_l($txt, $params, $lcml)
 {
-	$html = preg_replace_callback("!^(\-|#i)\s+(.+)$!m", function($m) use($params) {
-		return "\t<li>".$params['lcml']->parse($m[2])."</li>";
+	$html = preg_replace_callback("!^(\-|#i)\s+(.+)$!m", function($m) use($lcml) {
+		return "\t<li>".$lcml->parse($m[2])."</li>";
 	}, $txt);
 
-//	echo "================\n$html\n===============\n";
 	return save_format("\n<ul>\n{$html}\n</ul>\n");
 }
 

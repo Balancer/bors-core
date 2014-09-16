@@ -51,7 +51,7 @@ function lcml_sharp($txt, &$mask, $lcml)
                 if(function_exists("lst_{$m[1]}"))
                 {
                     $func = "lst_$m[1]";
-                    $array[$i] = $func(trim($m[3]), array('lcml' => $lcml));
+                    $array[$i] = $func(trim($m[3]), $lcml);
 					$mask_array[$i] = str_repeat('X', bors_strlen($array[$i])+1);
                     $changed = 1;
                     continue;
@@ -65,8 +65,7 @@ function lcml_sharp($txt, &$mask, $lcml)
                 {
                     $func = "lsp_$tag";
 
-					$params['lcml'] = $lcml;
-                    $txt = $func(join("\n", array_slice($array,$start+1,$i-$start-1)), $params);
+                    $txt = $func(join("\n", array_slice($array,$start+1,$i-$start-1)), $params, $lcml);
                     $txt = explode("\n",$txt);
 
                     $left       = array_slice($array, 0, $start);
@@ -110,7 +109,7 @@ function lcml_sharp($txt, &$mask, $lcml)
         $mask = join("",  $mask_array);
 
 		if($changed)
-            $txt = lcml_sharp($txt, $mask);
+            $txt = lcml_sharp($txt, $mask, $lcml);
 
 /*        if(!isset($GLOBALS['forum_tag_found'] && !$GLOBALS['forum_tag_found']))
             $txt.="\n<?\$id=\"$::page_data{forum_id}\";\$page=\"$::page\";include(\"/home/airbase/html/inc/show/forum-comments.phtml\");?>\n";

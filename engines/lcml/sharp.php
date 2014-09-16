@@ -1,6 +1,6 @@
 <?php
 
-function lcml_sharp($txt, &$mask)
+function lcml_sharp($txt, &$mask, $lcml)
 {
 //		if(config('is_developer'))
 //			var_dump($txt, restore_format($txt));
@@ -51,7 +51,7 @@ function lcml_sharp($txt, &$mask)
                 if(function_exists("lst_{$m[1]}"))
                 {
                     $func = "lst_$m[1]";
-                    $array[$i] = $func(trim($m[3]));
+                    $array[$i] = $func(trim($m[3]), array('lcml' => $lcml));
 					$mask_array[$i] = str_repeat('X', bors_strlen($array[$i])+1);
                     $changed = 1;
                     continue;
@@ -65,7 +65,8 @@ function lcml_sharp($txt, &$mask)
                 {
                     $func = "lsp_$tag";
 
-                    $txt = $func(join("\n",array_slice($array,$start+1,$i-$start-1)), $params);
+					$params['lcml'] = $lcml;
+                    $txt = $func(join("\n", array_slice($array,$start+1,$i-$start-1)), $params);
                     $txt = explode("\n",$txt);
 
                     $left       = array_slice($array, 0, $start);

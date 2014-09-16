@@ -19,6 +19,7 @@ class bors_object_empty
 	static function id_prepare($id) { return $id; }
 	function __toString() { return $this->class_name().'://!'; }
 	function id() { return NULL; }
+	function get($name) { return NULL; }
 
 	static function __unit_test($suite)
 	{

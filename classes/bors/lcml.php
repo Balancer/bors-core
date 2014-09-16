@@ -277,7 +277,7 @@ class bors_lcml extends bors_object
 		if(config('lcml_sharp_markup'))
 		{
 			require_once('engines/lcml/sharp.php');
-			$text = lcml_sharp($text, $mask);
+			$text = lcml_sharp($text, $mask, $this);
 		}
 
 		$result = "";

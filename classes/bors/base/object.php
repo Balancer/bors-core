@@ -270,8 +270,8 @@ class base_object extends bors_object_simple
 		// Если это где-то что-то поломает — исправить там, а не тут.
 		if(@array_key_exists($method, $this->attr))
 		{
-			// Если хранимый атрибут — функция, то вызываем её, передав параметр.
-			if(is_callable($this->attr[$method]))
+			// Если хранимый атрибут — функция (и в случае строки её имя 3 символа и более), то вызываем её, передав параметр.
+			if(is_callable($this->attr[$method]) && (!is_string($this->attr[$method]) || strlen($this->attr[$method]) >= 3))
 				return call_user_func_array($this->attr[$method], $params);
 
 			// Иначе — просто возвращаем значение.

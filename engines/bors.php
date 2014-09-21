@@ -212,12 +212,13 @@ function bors_exit_handler($message = '')
 			@mkdir(config('debug_hidden_log_dir').'/errors');
 			if(file_exists(config('debug_hidden_log_dir').'/errors'))
 			{
-				debug_hidden_log('errors/'.date('c'), "Handled fatal error:
+				bors_debug::syslog('errors/'.date('c'), "Handled fatal error:
 		errno={$error['type']}
 		errstr={$error['message']}
 		errfile={$error['file']}
 		errline={$error['line']}", -1, array('append' => "stack\n=====\n".debug_trace(0, false)));
 			}
+
 		}
 	}
 
@@ -313,7 +314,8 @@ function bors_throw($message)
 	}
 
 //	echo $message;
-//	echo debug_trace();
+//	echo bors_debug::trace();
+
 	bors_debug::syslog('__exceptions-unknown', $message);
 	throw new Exception($message);
 }

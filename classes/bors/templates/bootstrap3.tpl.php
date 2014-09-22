@@ -85,6 +85,8 @@
 			<?php if($self->description()) echo "<p>".htmlspecialchars($self->description())."</p>"; ?>
 		</div>
 
+<?php require __DIR__.'/bootstrap3/breadcrumbs.tpl.php'; ?>
+
 		<?= $self->body() ?>
 
 	</div> <!-- /container -->

@@ -29,7 +29,7 @@ class bors_layouts_bootstrap3_dropdown extends bors_layouts_html_dropdown
 			{
 				$dom_id = md5(rand());
 				$html[] = "<a href=\"".($url?$url:'#')."\" data-toggle=\"dropdown\" class=\"dropdown-toggle\" xid=\"{$dom_id}\">{$title} <span class=\"caret\"></span></a>";
-				$html[] = "<ul class=\"dropdown-menu\" role=\"menu\" xaria-labelledby=\"{$dom_id}\">";
+				$html[] = "<ul class=\"dropdown-menu multi-level\" role=\"menu\" xaria-labelledby=\"{$dom_id}\">";
 			}
 			else
 			{

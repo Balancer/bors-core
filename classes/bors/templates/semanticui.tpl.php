@@ -7,16 +7,9 @@
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="mobile-web-app-capable" content="yes">
 
-	<!-- build:css styles/vendor.css -->
-	<!-- bower:css -->
 	<link rel="stylesheet" href="//cdn.jsdelivr.net/semantic-ui/0.19.3/css/semantic.min.css">
-	<!-- endbower -->
-	<!-- endbuild -->
 	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,700,300&subset=latin,vietnamese' rel='stylesheet' type='text/css'>
 
-	<!-- build:css styles/main.css -->
-	<link rel="stylesheet" href="main.css">
-	<!-- endbuild -->
 </head>
 <body>
 
@@ -78,8 +71,9 @@
 		</div>
 		<div class="row">
 			<div class="column padding-reset">
+<?php require __DIR__.'/semanticui/breadcrumbs.tpl.php'; ?>
 				<div class="ui large message">
-					<h1 class="ui huge header">Navbar example</h1>
+					<h1 class="ui huge header"><?= htmlspecialchars($self->page_title()); ?></h1>
 					<p>This example is a quick exercise to illustrate how the default, static navbar and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>
 					<a href="" class="ui blue button">View navbar docs &raquo;</a>
 				</div>
@@ -94,12 +88,7 @@
 
 	</div>
 
-	<!-- build:js scripts/vendor.js -->
-	<!-- bower:js -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.13.0/javascript/semantic.min.js"></script>
-	<script src="main.js"></script>
-	<!-- endbower -->
-	<!-- endbuild -->
 </body>
 </html>

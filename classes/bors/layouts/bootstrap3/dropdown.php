@@ -1,10 +1,11 @@
 <?php
 
-class bors_templates_bootstrap3_dropdown extends bors_templates_html_dropdown
+class bors_layouts_bootstrap3_dropdown extends bors_layouts_html_dropdown
 {
 	function html_code()
 	{
-		return "<div class=\"dropdown\">\n".self::draw_dropdown($this->args('menu'))."\n</div>";
+//		return "<div class=\"dropdown\">\n".self::draw_dropdown($this->args('menu'))."\n</div>";
+		return self::draw_dropdown($this->args('menu'));
 	}
 
 	static function draw_dropdown($menu, $level=0)

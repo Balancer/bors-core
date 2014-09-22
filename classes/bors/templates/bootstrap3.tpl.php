@@ -45,6 +45,7 @@
 ?>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
+
 <?php
 		foreach($nav_menu as $title => $submenu)
 		{
@@ -54,7 +55,7 @@
 				<li class="dropdown">
 <!--				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>-->
 <?php
-			bors_templates_bootstrap3_dropdown::show(array('menu' => array($title => $submenu))); ?>
+			bors_layouts_bootstrap3_dropdown::show(array('menu' => array($title => $submenu)));
 ?>
 				</li>
 <?php

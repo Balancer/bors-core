@@ -40,7 +40,7 @@
 				<a class="navbar-brand" href="<?= $self->project()->url();/*"*/?>"><?= htmlspecialchars($self->project()->title()); ?></a>
 			</div>
 <?php
-	if($nav_menu = $self->get('top_menu'))
+	if($nav_menu = $self->get('navbar'))
 	{
 ?>
 			<div class="navbar-collapse collapse">

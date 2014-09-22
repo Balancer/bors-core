@@ -50,6 +50,7 @@ class bors_object extends base_object
 
 	function is_value() { return true; }
 
+/*
 	function show()
 	{
 //		if($go = $obj->attr('redirect_to'))
@@ -60,6 +61,7 @@ class bors_object extends base_object
 //		echo $this->content();
 //		return true;
 	}
+*/
 
 	// возвращает полное содержимое объекта для вывода в браузер. Некешированное.
 	function __content() // пока не используется, т.к. более древнее в base_object

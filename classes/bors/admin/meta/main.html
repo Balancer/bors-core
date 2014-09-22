@@ -15,7 +15,9 @@
 {$this->get('content_before_table')}
 {/block}
 
+{if not $this->get('skip_top_pagination')}
 {$pagination}
+{/if}
 
 {if $bootstrap}
 	{if $new_link_title && count($items) > 15}

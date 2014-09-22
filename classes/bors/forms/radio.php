@@ -45,7 +45,10 @@ class bors_forms_radio extends bors_forms_element
 				$list = $list->named_list();
 			}
 			else
+			{
+				require_once(BORS_CORE.'/inc/bors/lists.php');
 				eval('$list='.$list);
+			}
 		}
 
 		if(preg_match('/^(\w+)\[\]$/', $name, $m))

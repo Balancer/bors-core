@@ -47,6 +47,8 @@
 
                     <article class="uk-article">
 
+<?php require __DIR__.'/uikit/breadcrumbs.tpl.php'; ?>
+
                         <h1 class="uk-article-title">
                             <a href="<?= $self->called_url() ?>"><?= htmlspecialchars($self->page_title()); ?></a>
                         </h1>

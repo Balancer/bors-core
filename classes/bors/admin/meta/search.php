@@ -63,10 +63,10 @@ class bors_admin_meta_search extends bors_admin_meta_main
 
 	function where()
 	{
-		$where = parent::where();
-
 		if(empty($_GET['q']))
-			return $where;
+			return array('1<>1');
+
+		$where = parent::where();
 
 		$q = "'%".addslashes(trim(urldecode($_GET['q'])))."%'";
 

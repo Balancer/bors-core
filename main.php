@@ -234,7 +234,7 @@ try
 
 		if(config('bors.version_show'))
 			header('X-bors-object: '.$object->internal_uri());
-
+/*
 		// Новый метод вывода, полностью на самом объекте
 		if(method_exists($object, 'show'))
 		{
@@ -243,7 +243,7 @@ try
 
 			$res = $object->show();
 		}
-
+*/
 		if(!$res)	// Если новый метод не обработан, то выводим как раньше.
 		{
 			if(config('debug.execute_trace'))
@@ -479,8 +479,8 @@ if($cn = config('404.class_name'))
 {
 	if($object404 = bors_load($cn, $uri))
 	{
-		if(method_exists($object404, 'show'))
-			$res = $object404->show();
+//		if(method_exists($object404, 'show'))
+//			$res = $object404->show();
 
 		if(!$res)
 			$res = bors_object_show($object404);

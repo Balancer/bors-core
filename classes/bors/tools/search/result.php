@@ -95,10 +95,7 @@ class bors_tools_search_result extends bors_tools_search
 				$weights = array ('blog_titles' => 100 , 'blog_keywords' => 1000, 'blog_sources' => 10);
 				break;
 			case 't':
-if(config('is_developer'))
 				$index = "topic_titles,livestreet_topic_titles,hbr_titles";
-else
-				$index = "topic_titles,livestreet_topic_titles";
 //				$weights = array ('topic_titles' => 100);
 				break;
 			default:

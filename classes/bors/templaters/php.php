@@ -1,6 +1,6 @@
 <?php
 
-class bors_templates_php
+class bors_templaters_php
 {
 	static function fetch($template, $data)
 	{

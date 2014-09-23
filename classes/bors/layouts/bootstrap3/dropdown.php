@@ -44,7 +44,7 @@ class bors_layouts_bootstrap3_dropdown extends bors_layouts_html_dropdown
 				{
 					// Рисуем подменю
 					// Рекурсивно
-					$html[] = "{$indent}\t<li role=\"presentation\" class=\"dropdown-submenu\"><a role=\"menuitem\" href=\"{$url}\" tabindex=\"-1\">{$title}</a>";
+					$html[] = "{$indent}\t<li role=\"presentation\" class=\"dropdown-submenu\"><a role=\"menuitem\" href=\"{$url}\" tabindex=\"-1\" class=\"dropdown-toggle\">{$title}</a>";
 					$html[] = self::draw_dropdown(array('title' => $items), $level+2);
 					$html[] = "{$indent}\t</li>";
 				}

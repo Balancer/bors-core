@@ -91,7 +91,14 @@ class bors_object extends base_object
 		if($renderer_class == 'self')
 			return $this;
 
-		return $renderer_class ? bors_load($renderer_class, NULL) : NULL;
+		if(!$renderer_class)
+			return NULL;
+
+		$renderer = bors_load($renderer_class, $this);
+		if(!$renderer)
+			bors_throw("Can't load theme renderer $renderer_class");
+
+		return $renderer;
 	}
 
 	function direct_content()

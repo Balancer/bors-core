@@ -1,6 +1,6 @@
 <?php
 
-class bors_templates_bootstrap3 extends bors_object
+class bors_themes_bootstrap3 extends bors_object
 {
 	function render_class() { return 'self'; }
 

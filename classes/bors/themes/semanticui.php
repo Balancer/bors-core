@@ -2,7 +2,7 @@
 
 // http://ehkoo.github.io/semantic-ui-examples/
 
-class bors_templates_semanticui extends bors_object
+class bors_themes_semanticui extends bors_object
 {
 	function render_class() { return 'self'; }
 

@@ -80,7 +80,7 @@ class bors_object extends base_object
 
 	function renderer()
 	{
-		$renderer_class = $this->get('template_class');
+		$renderer_class = $this->get('theme_class');
 
 		if(!$renderer_class)
 			$renderer_class = $this->get('renderer_class');

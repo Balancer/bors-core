@@ -4,4 +4,5 @@
 
 class bors_layouts_html extends bors_object
 {
+	function object() { return $this->id(); }
 }

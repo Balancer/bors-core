@@ -80,7 +80,7 @@ class bors_lib_page
 				if(file_exists($bt = $base.'tpl.php'))
 				{
 					$object->attr['body_template'] = $bt;
-					$object->attr['body_template_class'] = 'bors_templates_php';
+					$object->attr['body_template_class'] = 'bors_templaters_php';
 					return;
 				}
 				if(file_exists($bt = $base.'haml') && class_exists('bors_templates_phaml'))

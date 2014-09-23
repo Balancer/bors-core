@@ -123,7 +123,7 @@ class bors_page extends base_page
 					if(file_exists($bt = $base.'tpl.php'))
 					{
 						$this->attr['body_template'] = $bt;
-						$this->attr['body_template_class'] = 'bors_templates_php';
+						$this->attr['body_template_class'] = 'bors_templaters_php';
 						return;
 					}
 					if(file_exists($bt = $base.'tpl'))

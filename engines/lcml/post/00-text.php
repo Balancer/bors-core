@@ -14,7 +14,7 @@ function lcml_text($txt)
 
 	$txt = preg_replace("!\^(\-?[\d\.]+)!","<sup>$1</sup>",$txt);
 	$txt = str_ireplace("^o","°",$txt);
-	$txt = str_ireplace("(C)","&copy;",$txt);
+	$txt = preg_replace("/\((c|с)\)/ui", "&copy;",$txt);
 //	$txt = preg_replace("!_(\-?[\d\.]+)!","<sub>$1</sub>",$txt);
 
 //	$txt = preg_replace("!&lt;&lt;!", "&laquo;", $txt);

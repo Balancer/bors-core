@@ -92,6 +92,9 @@ class bors_lib_object
 			else
 				$parent_object = object_load($parent);
 
+			if(!$parent_object)
+				continue;
+
 			if($parent_object->url() == $object->url())
 				continue;
 

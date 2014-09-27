@@ -13,8 +13,8 @@
 
 <ul>
 {if $this->get('search_link')}<li class="imaged type-search"><a href="{$this->get('search_link')}">Поиск</a></li>{/if}
-{if $this->get('right_menu_links')}
-	{foreach $this->get('right_menu_links') as $title => $list}
+{if $this->get('side_menu')}
+	{foreach $this->side_menu() as $title => $list}
 		<h2>{$title|htmlspecialchars}</h2>
 		<ul style="padding-bottom: 8px;">
 		{foreach $list as $link}

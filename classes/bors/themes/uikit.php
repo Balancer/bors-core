@@ -1,6 +1,6 @@
 <?php
 
-class bors_templates_uikit extends bors_object
+class bors_themes_uikit extends bors_object
 {
 	function render_class() { return 'self'; }
 

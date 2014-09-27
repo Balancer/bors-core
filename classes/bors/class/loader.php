@@ -53,6 +53,9 @@ class bors_class_loader
 		)
 			return false;
 
+		// Заставляем сработать class_loader
+		class_exists($class_name);
+
 		static $skips = NULL;
 		if(is_null($skips))
 			$skips = config('classes_skip', array());
@@ -133,6 +136,7 @@ class bors_class_loader
 
 		if(file_exists($file_name = BORS_CORE."/classes/inc/$class_name.php"))
 			return self::load_and_cache($class_name, $file_name);
+
 
 		if(class_exists($class_name, false))
 			return class_include(get_parent_class($class_name));

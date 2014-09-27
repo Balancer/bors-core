@@ -25,7 +25,7 @@
 	{/if}
 {/if}
 
-<table class="{if $bootstrap}table table-bordered table-hover{else}btab w100p{/if}">
+<table class="{$this->layout()->table_class()}">
 <thead>
 <tr>
 {foreach $item_fields as $prop_name => $prop_title}

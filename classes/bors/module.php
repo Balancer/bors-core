@@ -44,6 +44,11 @@ class bors_module extends bors_page
 		echo self::mod_html($class_name, $args);
 	}
 
+	static function show($args = array())
+	{
+		echo self::mod_html(get_called_class(), $args);
+	}
+
 	static function mod_html($class_name, $args = NULL)
 	{
 		if(preg_match('/^(\w+)::(\w+)$/', $class_name, $m))
@@ -66,6 +71,7 @@ class bors_module extends bors_page
 		$mod = bors_load_ex($class_name, NULL, $args);
 		if(!$mod)
 			return "Can't load module '$class_name'";
+
 		return $mod->$func();
 	}
 

@@ -17,7 +17,7 @@ class bors_forms_checkbox_list extends bors_forms_element
 
 		$obj = $form->object();
 		if(!$obj)
-			$obj = $form->calling_object();
+			$obj = $form->call('calling_object');
 
 		$el_params = "";
 		foreach(explode(' ', 'size style') as $p)
@@ -73,6 +73,8 @@ class bors_forms_checkbox_list extends bors_forms_element
 			$delim = "<br />";
 
 		$ids = array();
+
+		$values = $value;
 
 		if(empty($values))
 		{

@@ -15,11 +15,8 @@ function object_load($class, $object_id=NULL, $args=array())
 	if(is_numeric($class))
 		$class = class_id_to_name($class);
 
-	if(config('debug_trace_object_load'))
-	{
-		bors_function_include('debug/hidden_log');
-		debug_hidden_log('objects_load', "$class(".print_r($object_id, true).")", config('debug_trace_object_load_trace'));
-	}
+	if(config('debug.trace_object_load'))
+		bors_debug::syslog('objects_load', "$class(".print_r($object_id, true).")", config('debug_trace_object_load_trace'));
 
 	if(!$class)
 		return;
@@ -176,7 +173,6 @@ function bors_exit_handler($message = '')
 		file_put_contents_lock(config('cache_dir') . '/classes.php', $GLOBALS['bors_data']['classes_cache_content']);
 	}
 
-
 	static $bors_exit_doing = false;
 	if($bors_exit_doing)
 		return true;
@@ -191,6 +187,11 @@ function bors_exit_handler($message = '')
 	try
 	{
 		bors()->changed_save();
+
+		if(!empty($GLOBALS['bors_data']['classes_cache_updates']))
+			foreach($GLOBALS['bors_data']['classes_cache_updates'] as $class_name => $x)
+				bors_class_loader::classes_cache_data_save($class_name, $x['cache_data'], $x['class_file']);
+
 	}
 	catch(Exception $e)
 	{
@@ -211,12 +212,13 @@ function bors_exit_handler($message = '')
 			@mkdir(config('debug_hidden_log_dir').'/errors');
 			if(file_exists(config('debug_hidden_log_dir').'/errors'))
 			{
-				debug_hidden_log('errors/'.date('c'), "Handled fatal error:
+				bors_debug::syslog('errors/'.date('c'), "Handled fatal error:
 		errno={$error['type']}
 		errstr={$error['message']}
 		errfile={$error['file']}
 		errline={$error['line']}", -1, array('append' => "stack\n=====\n".debug_trace(0, false)));
 			}
+
 		}
 	}
 
@@ -312,7 +314,8 @@ function bors_throw($message)
 	}
 
 //	echo $message;
-//	echo debug_trace();
+//	echo bors_debug::trace();
+
 	bors_debug::syslog('__exceptions-unknown', $message);
 	throw new Exception($message);
 }

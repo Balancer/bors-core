@@ -51,8 +51,6 @@ class bors_external_feed extends base_object_db
 
 	function update($is_test = false, $rss_reread = false, $force_update = false)
 	{
-		require_once('/var/www/bors/composer/vendor/autoload.php');
-
 		$feed = new SimplePie();
 		$feed->set_feed_url($this->feed_url());
 		$feed->enable_cache(false);

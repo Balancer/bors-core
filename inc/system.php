@@ -73,7 +73,7 @@ function ungpc_array(&$array)
 function __session_init($init = true)
 {
 	static $session_started = false;
-	if($session_started)
+	if($session_started || empty($_SERVER['HTTP_HOST']))
 		return;
 
 	if(config('system.session.skip'))

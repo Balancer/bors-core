@@ -8,8 +8,6 @@ class bors_external_juick extends bors_object
 {
 	static function parse($data)
 	{
-		require_once('/var/www/bors/composer/vendor/autoload.php');
-
 		$tags = popval($data, 'tags', array());
 		$feed = popval($data, 'feed');
 		if($raw_data = popval($data, 'raw_data'))

@@ -60,7 +60,7 @@ class bcsTable
 
 		function next_col()
 		{
-			if(@$this->col_spans[$this->row][$this->col] > 1)
+			if(!empty($this->col_spans[$this->row][$this->col]) && $this->col_spans[$this->row][$this->col] > 1)
 				$this->col += $this->col_spans[$this->row][$this->col];
 			else
 				$this->col++;
@@ -126,9 +126,9 @@ class bcsTable
 			{
 				$tr = \HtmlObject\Element::tr();
 
-				for($c=0; $c < $this->cols; $c += @$this->col_spans[$r][$c] > 1 ? $this->col_spans[$r][$c] : 1)
+				for($c=0; $c < $this->cols; $c += (!empty($this->col_spans[$r][$c]) && $this->col_spans[$r][$c] > 1 ? $this->col_spans[$r][$c] : 1))
 				{
-					if(@$this->row_spans[$r][$c]<0)
+					if(!empty($this->row_spans[$r][$c]) && $this->row_spans[$r][$c] < 0)
 						continue;
 
 //	Убрано из-за	http://balancer.ru/2007/12/10/post-1361199.html
@@ -142,9 +142,9 @@ class bcsTable
 
 					$tx = !empty($this->heads[$r][$c]) ? \HtmlObject\Element::th() : \HtmlObject\Element::td();
 
-					if(@$this->col_spans[$r][$c] > 1)
+					if(!empty($this->col_spans[$r][$c]) && $this->col_spans[$r][$c] > 1)
 						$tx->colspan($this->col_spans[$r][$c]);
-					if(@$this->row_spans[$r][$c] > 1)
+					if(!empty($this->row_spans[$r][$c]) && $this->row_spans[$r][$c] > 1)
 						$tx->rowspan($this->row_spans[$r][$c]);
 
 					$tx->nest($data);

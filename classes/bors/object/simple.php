@@ -22,6 +22,11 @@ class bors_object_simple extends bors_object_empty
 		$this->set_id($this->initial_id = $id);
 	}
 
+	static function foo($id = NULL)
+	{
+		return bors_foo(get_called_class(), $id);
+	}
+
 	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
 		if(!$name)
@@ -156,8 +161,8 @@ class bors_object_simple extends bors_object_empty
 		if(method_exists($this, 'auto_objects'))
 		{
 			$auto_objs = $this->auto_objects();
-			if(($f = @$auto_objs[$name]))
-				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+			if(!empty($auto_objs[$name]))
+				if(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$name], $m))
 					return $this->attr[$name] = object_load($m[1], $this->$m[2]());
 		}
 
@@ -165,8 +170,8 @@ class bors_object_simple extends bors_object_empty
 		if(method_exists($this, 'auto_targets'))
 		{
 			$auto_targs = $this->auto_targets();
-			if(($f = @$auto_targs[$name]))
-				if(preg_match('/^(\w+)\((\w+)\)$/', $f, $m))
+			if(!empty($auto_targs[$name]))
+				if(preg_match('/^(\w+)\((\w+)\)$/', $auto_targs[$name], $m))
 					return $this->attr[$name] = object_load($this->$m[1](), $this->$m[2]());
 		}
 

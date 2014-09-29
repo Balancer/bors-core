@@ -7,10 +7,10 @@ class base_object extends bors_object_simple
 
 	function attr_preset() { return array(
 		'title' => $this->class_title().' '.$this->class_name(),	// В качестве заголовка объекта по умолчанию используется имя класса
-		'config_class' => config('config_class'),
 	); }
 
 	function _url_engine_def() { return 'url_calling2'; }
+	function _config_class_def() { return config('config_class'); }
 
 //	При настройке проверить:
 //	— http://www.aviaport.ru/services/events/arrangement/
@@ -92,7 +92,7 @@ class base_object extends bors_object_simple
 		return $this->__setc($child_objects);
 	}
 
-	function rss_body()
+	function rss_body($object, $strip = 0)
 	{
 		// Этот config пока используется только на лентах топиков:
 		// http://www.wrk.ru/society/2014/08/topic-89787-rss.xml
@@ -221,7 +221,7 @@ class base_object extends bors_object_simple
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 
 	//TODO: под рефакторинг. Данные шаблона - отдельная сущность.
-	static function template_data($var_name) { return @$GLOBALS['cms']['templates']['data'][$var_name]; }
+	static function template_data($var_name) { return empty($GLOBALS['cms']['templates']['data'][$var_name]) ? NULL : $GLOBALS['cms']['templates']['data'][$var_name]; }
 
 	private $template_data = array();
 	function add_local_template_data($var_name, $value)
@@ -270,8 +270,8 @@ class base_object extends bors_object_simple
 		// Если это где-то что-то поломает — исправить там, а не тут.
 		if(@array_key_exists($method, $this->attr))
 		{
-			// Если хранимый атрибут — функция, то вызываем её, передав параметр.
-			if(is_callable($this->attr[$method]))
+			// Если хранимый атрибут — функция (и в случае строки её имя 3 символа и более), то вызываем её, передав параметр.
+			if(is_callable($this->attr[$method]) && (!is_string($this->attr[$method]) || strlen($this->attr[$method]) >= 3))
 				return call_user_func_array($this->attr[$method], $params);
 
 			// Иначе — просто возвращаем значение.
@@ -491,7 +491,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	}
 
 	/** Истинный заголовок объекта. Метод или параметр объекта. */
-	function title_true() { return method_exists($this, 'title') ? $this->title() : @$this->data['title']; }
+	function title_true() { return method_exists($this, 'title') ? $this->title() : empty($this->data['title']) ? NULL : $this->data['title']; }
 
 	function set_title($new_title, $db_up=true) { return $this->set('title', $new_title, $db_up); }
 
@@ -501,7 +501,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function debug_title_short() { return "{$this->class_name()}({$this->id()})"; }
 
-	function _description_def() { return @$this->data['description']; }
+	function _description_def() { return empty($this->data['description']) ? NULL : $this->data['description']; }
 	function set_description($description, $db_update=true) { return $this->set('description', $description, $db_update); }
 
 	function _nav_name_def()
@@ -1333,7 +1333,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return $file_name;
 	}
 
-	function class_file() { return empty(bors_class_loader::$class_files[$this->class_name()]) ? NULL : bors_class_loader::$class_files[$this->class_name()]; }
+	function class_file() { return bors_class_loader::file($this->class_name()); }
 	function class_filemtime() { return @bors_class_loader::$class_file_mtimes[$this->class_name()]; }
 
 	function real_class_file() { return @bors_class_loader::$class_files[$this->class_name()]; }
@@ -1514,12 +1514,20 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 //	function __use_static() { return config('cache_static') && $this->cache_static() > 0; }
 
+	function hcom($msg)
+	{
+//		if(preg_match('/\.html$/', $this->url()))
+//			echo "<!-- $msg -->\n";
+	}
+
 	function content()
 	{
 		$recreate = $this->get('recreate_on_content') || $this->get('cache_static_recreate');
 
 		$use_static = config('cache_static')
 			&& ($recreate || $this->cache_static() > 0);
+
+		$this->hcom("rcr=$recreate; static=$use_static");
 
 		$file = $this->static_file();
 		$fe = file_exists($file);
@@ -1531,15 +1539,36 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if(!empty($_GET) && array_key_exists('nc', $_GET))
 			$file_fresh = false;
 
+		$this->hcom("f=$file, fe=$fe, fresh=$file_fresh (mt={$this->modify_time()}, fm=".@filemtime($file).")");
 		if($use_static && $file && $fe && !$recreate && $file_fresh)
 			return file_get_contents($file);
 
-		if($use_static
+//		$mem = new \Jamm\Memory\RedisObject('dog-pile-cacher', '192.168.1.3');
+
+		$stash_item = NULL;
+		if($this->id() && !is_object($this->id()) && $this->modify_time() && ($pool = config('cache.stash.pool')))
+		{
+			$stash_item = $pool->getItem('dog-pill-protect/'.$this->internal_uri_ascii().'/'.$this->page().'/'.$this->modify_time());
+
+			$content = $stash_item->get(Stash\Invalidation::SLEEP, 300, 100);
+
+			if(!$stash_item->isMiss())
+				return $content;
+
+			$stash_item->lock();
+			$this->hcom("stash locked");
+		}
+
+
+		if(0 && $use_static
 			&& !$fs
 			&& $this->use_temporary_static_file()
 			&& config('temporary_file_contents')
 			&& !file_exists($this->static_file())
 		)
+		{
+			$this->hcom("tmp: {$this->static_file()}");
+
 			cache_static::save_object($this, /*$this->cs_i2o*/(str_replace(array(
 				'$url',
 				'$title',
@@ -1550,15 +1579,22 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 				$this->output_charset(),
 			), $this->cs_u2i(config('temporary_file_contents')))), 120);
 
+			$this->hcom("tmp fs= ".filesize($this->static_file()));
+		}
+
 		if(config('debug.execute_trace'))
 			debug_execute_trace("{$this->debug_title_short()}->direct_content()");
 
+		$this->hcom("get direct content");
 		$content = $this->direct_content();
 
 		if($this->internal_charset() != $this->output_charset())
 			$output_content = $this->cs_i2o($content);
 		else
 			$output_content = $content;
+
+		if($stash_item)
+			$stash_item->set($content, 10);
 
 		if(empty($content) && $use_static)
 		{

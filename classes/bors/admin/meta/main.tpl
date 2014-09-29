@@ -15,7 +15,9 @@
 {$this->get('content_before_table')}
 {/block}
 
+{if not $this->get('skip_top_pagination')}
 {$pagination}
+{/if}
 
 {if $bootstrap}
 	{if $new_link_title && count($items) > 15}
@@ -23,7 +25,7 @@
 	{/if}
 {/if}
 
-<table class="{if $bootstrap}table table-bordered table-hover{else}btab w100p{/if}">
+<table class="{$this->layout()->table_class()}">
 <thead>
 <tr>
 {foreach $item_fields as $prop_name => $prop_title}

@@ -5,6 +5,8 @@ class cache_static extends bors_object_db
 	function db_name() { return config('cache_database'); }
 	function table_name() { return 'cached_files'; }
 	function storage_engine() { return 'bors_storage_mysql'; }
+	function ignore_on_new_instance() { return true; }
+
 	function table_fields()
 	{
 		return array(
@@ -208,6 +210,9 @@ class cache_static extends bors_object_db
 
 		mkpath($dir = dirname($file), 0777);
 
+		if($file == '/var/www/wrk.ru/htdocs/cache-static/society/2014/04/t89533,402--voennye-dejstviya-v-donbasse.html')
+			bors_debug::syslog('000fs', "Write:\n".$content);
+
 		if(is_writable($dir))
 		{
 			file_put_contents($file, $content);
@@ -227,5 +232,4 @@ class cache_static extends bors_object_db
 		.';isw='.is_writable($dir).")");
 	}
 
-	function replace_on_new_instance() { return true; }
 }

@@ -17,8 +17,8 @@ class bors_lcml extends bors_object
 	function _disabled_tags_string_def() { return ''; }
 	function _enabled_tags_def()
 	{
-		if($enabled = @$this->_params['enabled_tags'])
-			return $enabled;
+		if(!empty($this->_params['enabled_tags']))
+			return $this->_params['enabled_tags'];
 
 		if($enabled_tags = $this->enabled_tags_string())
 			return explode(' ', $enabled_tags);
@@ -28,8 +28,8 @@ class bors_lcml extends bors_object
 
 	function _disabled_tags_def()
 	{
-		if($disabled = @$this->_params['disabled_tags'])
-			return $disabled;
+		if(!empty($this->_params['disabled_tags']))
+			return $this->_params['disabled_tags'];
 
 		if($disabled_tags = $this->disabled_tags_string())
 			return explode(' ', $disabled_tags);
@@ -41,8 +41,8 @@ class bors_lcml extends bors_object
 	function _disabled_functions_string_def() { return ''; }
 	function _enabled_functions_def()
 	{
-		if($enabled = @$this->_params['enabled_functions'])
-			return $enabled;
+		if(!empty($this->_params['enabled_functions']))
+			return $this->_params['enabled_functions'];
 
 		if($enabled_functions = $this->enabled_functions_string())
 			return explode(' ', $enabled_functions);
@@ -52,8 +52,8 @@ class bors_lcml extends bors_object
 
 	function _disabled_functions_def()
 	{
-		if($disabled = @$this->_params['disabled_functions'])
-			return $disabled;
+		if(!empty($this->_params['disabled_functions']))
+			return $this->_params['disabled_functions'];
 
 		if($disabled_functions = $this->disabled_functions_string())
 			return explode(' ', $disabled_functions);
@@ -169,8 +169,8 @@ class bors_lcml extends bors_object
 
 
 	private $params;
-	function set_params($params) { $this->params = $params; }
-	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->params : defval($this->params, $key, $def); }
+	function set_params($params) { $this->_params = $params; }
+	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->_params : defval($this->_params, $key, $def); }
 
 	function is_tag_enabled($tag_name, $default_enabled = true)
 	{
@@ -206,12 +206,17 @@ class bors_lcml extends bors_object
 
 	function parse($text, $params = array())
 	{
-		$params = array_merge($this->params, $params);
+		$this->set_p('level', $this->p('level')+1);
+
+		$params = array_merge($this->_params, $params);
 
 		$text = str_replace("\r", '', $text);
 
 		if(strlen(trim($text)) == 0)
+		{
+			$this->set_p('level', $this->p('level')-1);
 			return '';
+		}
 
 		if($this->_params['level'] == 1)
 		{
@@ -232,6 +237,7 @@ class bors_lcml extends bors_object
 			if($cache->get('lcml-cache-v'.config('lcml.cache_tag'), $text))
 			{
 				bors_debug::timing_stop('lcml_parse');
+				$this->set_p('level', $this->p('level')-1);
 				return $cache->last();
 			}
 		}
@@ -240,7 +246,7 @@ class bors_lcml extends bors_object
 
 		$GLOBALS['lcml']['params'] = $this->_params;
 		$GLOBALS['lcml']['params']['html_disable'] = $this->p('html_disable');
-		$GLOBALS['lcml']['cr_type'] = @$params['cr_type'];
+		$GLOBALS['lcml']['cr_type'] = empty($params['cr_type']) ? NULL : $params['cr_type'];
 //		echo "cr-type = {$GLOBALS['lcml']['cr_type']}\n";
 
 		if($this->_params['level'] == 1 || $need_prepare)
@@ -257,11 +263,13 @@ class bors_lcml extends bors_object
 		// ******* Собственно, главная часть — обработка тегов *******
 		$ts = microtime(true);
 		$text = lcml_tags($t0 = $text, $mask, $this);
+
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
 			debug_hidden_log('warning_lcml', "Too long ({$long}s) tags execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		if($this->p('only_tags'))
 		{
+			$this->set_p('level', $this->p('level')-1);
 			bors_debug::timing_stop('lcml_parse');
 			return $cache ? $cache->set($text, 86400) : $text;
 		}
@@ -269,7 +277,7 @@ class bors_lcml extends bors_object
 		if(config('lcml_sharp_markup'))
 		{
 			require_once('engines/lcml/sharp.php');
-			$text = lcml_sharp($text, $mask);
+			$text = lcml_sharp($text, $mask, $this);
 		}
 
 		$result = "";
@@ -334,6 +342,7 @@ class bors_lcml extends bors_object
 		}
 
 		bors_debug::timing_stop('lcml_parse');
+		$this->set_p('level', $this->p('level')-1);
 		return $cache ? $cache->set($text, 86400) : $text;
 	}
 
@@ -358,6 +367,21 @@ class bors_lcml extends bors_object
 							$classes[$prio.':'.$class_name] = new $class_name($this);
 					}
 			}
+
+			if(!empty($GLOBALS['bors.composer.class_loader']))
+			{
+				$map = $GLOBALS['bors.composer.class_loader']->getClassMap();
+				$lcml_parsers = array_filter(array_keys($map), function($class_name) use ($type) {
+					return preg_match('/^lcml_parsers_'.$type.'_/', $class_name);
+				});
+
+				foreach($lcml_parsers as $class_name)
+				{
+					$parser = new $class_name($this);
+					$classes[$parser->priority().':'.$class_name] = $parser;
+				}
+			}
+
 			ksort($classes);
 			$parser_classes[$type] = $classes;
 		}
@@ -386,8 +410,8 @@ class bors_lcml extends bors_object
 				"/<!--###use\s+(\w+)\s*=\s*([^\]]+?)\s*###-->/s",
 			), 'bors_lcml::_output_parse_use', $html_bb);
 
-		if(class_exists('airbase_fun'))
-			$html_bb = airbase_fun::replace_2014($html_bb);
+//		if(class_exists('airbase_fun'))
+//			$html_bb = airbase_fun::replace_2014($html_bb);
 
 		return $html_bb;
 	}
@@ -518,17 +542,16 @@ class bors_lcml extends bors_object
 
 		$lc = $lcs[$class_name];
 
-		$lc->set_p('level', $lc->p('level')+1);
 		$lc->set_p('prepare', popval($params, 'prepare'));
 		$save_tags = $lc->p('only_tags');
 		if(!empty($params['only_tags']))
 			$lc->set_p('only_tags', $params['only_tags']);
-		if($lc->p('level') == 1)
+
+		if($lc->p('level') < 1)
 			$lc->set_params($params);
 
 		$html = $lc->parse($text);
 		$lc->set_p('only_tags', $save_tags);
-		$lc->set_p('level', $lc->p('level')-1);
 
 		// Зачистим всё не-UTF-8 на всякий случай, а то пролезает, порой, всякое...
 		if(function_exists('mb_convert_encoding'))

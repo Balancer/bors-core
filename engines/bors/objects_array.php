@@ -56,7 +56,7 @@ function objects_array($class, $args = array())
 			debug_count_inc("bors_find_all($class) count", count($objects));
 		}
 
-		if(config('debug_trace_object_load'))
+		if(config('debug.trace_object_load'))
 			debug_hidden_log('objects_load', "all $class(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
 
 		if(!empty($preload))
@@ -81,7 +81,7 @@ function objects_first($class, $args = array())
 	if(config('debug_objects_create_counting_details'))
 		debug_count_inc("bors_find_first($class)");
 
-	if(config('debug_trace_object_load'))
+	if(config('debug.trace_object_load'))
 		debug_hidden_log('objects_load', "first $class(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
 
 	return $objs ? $objs[0] : NULL;

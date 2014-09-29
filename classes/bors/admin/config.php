@@ -26,6 +26,33 @@ class bors_admin_config extends bors_config
 
 		$data['template'] = config('admin_template', 'default');
 
+		set_def($data, 'side_menu', array());
+
+		if($this->get('new_sublink') || $this->id()->get('real_object'))
+		{
+			set_def($data['side_menu'], 'Действия', array());
+
+			//<li class="b{$new_object_type}"><a href="{$this->get('new_sublink')}">{$this->get('new_title')}</a></li>{/if}
+			if($this->get('new_sublink'))
+			{
+				$data['side_menu']['Действия'][] = array(
+					'url' => $this->get('new_sublink'),
+					'title' => $this->get('new_title'),
+				);
+			}
+
+			//{if $real_object}<li{$c_li_type}><a href="{$real_object->url()}" target="_blank">Посмотреть на сайте</a></li>{/if}
+			if($this->id()->get('real_object'))
+			{
+				$data['side_menu']['Действия'][] = array(
+					'url' => $this->id()->real_object()->url(),
+					'title' => 'Посмотреть на сайтe',
+					'type' => 'view',
+					'link_target' => '_blank',
+				);
+			}
+		}
+
 		$recurse = false;
 		return $data;
 	}

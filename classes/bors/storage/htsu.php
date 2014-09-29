@@ -73,6 +73,7 @@ class bors_storage_htsu extends bors_storage
 		{
 			foreach(bors_dirs() as $d)
 			{
+//				if(config('is_developer')) echo "Find in $d as rel=$rel, base=$base, ext=$ext; {$d}/webroot/{$rel}.{$ext}<br/>\n";
 				if($base && file_exists($file = secure_path("{$d}/webroot/{$rel}/{$base}.{$ext}")))
 					return $file;
 
@@ -134,7 +135,7 @@ class bors_storage_htsu extends bors_storage
 		if(!($file = $object->get('htsu_file')))
 			$file = $this->__find($object);
 
-//		echo "Found hts at $file<br/>\n";
+//		if(config('is_developer')) echo "Found hts at $file<br/>\n";
 
 		if(!$file)
 			return $object->set_is_loaded(false);

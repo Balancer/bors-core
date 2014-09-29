@@ -46,8 +46,11 @@ if(class_exists('XMLWriter'))
 	{
 		if(is_null($root))
 		{
-			$root = @array_pop(array_keys($data));
-			$data = $data[$root];
+			foreach($data as $root => $data)
+				break;
+//			$keys = array_keys($data);
+//			$root = array_pop($keys);
+//			$data = $data[$root];
 		}
 
 		$converter = new Array2XMLWP();

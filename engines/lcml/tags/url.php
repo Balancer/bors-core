@@ -21,7 +21,7 @@ function lp_url($text, $params)
 function lt_url($params) 
 {
 	$url = $params['url'];
-	$description = @$params['description'];
+	$description = empty($params['description']) ? NULL : $params['description'];
 
 	if(preg_match('/^www\./', $url))
 		$url = 'http://'.$url;

@@ -1,9 +1,9 @@
 <?php
 
-function lsp_logos($txt,$params)
+function lsp_logos($txt, $params)
 {
     $w=''; $h='';
-    if(preg_match("!^\s*(\d*)\s*,\s*(\d*)\s*$!s",$params,$m))
+    if(preg_match("!^\s*(\d*)\s*,\s*(\d*)\s*$!s", $params, $m))
     {
         $w=$m[1];
         $h=$m[2];

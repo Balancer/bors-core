@@ -64,7 +64,11 @@ class bors_forms_dropdown extends bors_forms_element
 
 		$html .= ">\n";
 
-		if(!is_array($list))
+		if(empty($list) && !empty($params['class_name']))
+		{
+			$list = base_list::make($params['class_name'], array(), array());
+		}
+		elseif(!is_array($list))
 		{
 			if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))
 			{

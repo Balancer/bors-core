@@ -577,7 +577,13 @@ class bors_form extends bors_object
 						break;
 
 					default:
-						if(class_include($edit_type) && ($element = new $edit_type) && ($element->is_form_element()))
+						if(class_exists($edit_type) && ($element = new $edit_type) && ($element->is_form_element()))
+						{
+							$element->set_params($data);
+							$element->set_form($this);
+							$html .= $element->html();
+						}
+						elseif(class_exists($edit_class = "bors_forms_".$edit_type) && ($element = new $edit_class) && ($element->is_form_element()))
 						{
 							$element->set_params($data);
 							$element->set_form($this);

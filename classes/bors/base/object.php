@@ -92,7 +92,7 @@ class base_object extends bors_object_simple
 		return $this->__setc($child_objects);
 	}
 
-	function rss_body()
+	function rss_body($object, $strip = 0)
 	{
 		// Этот config пока используется только на лентах топиков:
 		// http://www.wrk.ru/society/2014/08/topic-89787-rss.xml

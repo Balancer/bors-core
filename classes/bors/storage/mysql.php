@@ -355,7 +355,13 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$select[] = $s;
 
 		$datas = $dbh->select_array($table_name, join(',', $select), $where, $class_name);
+
 		$objects = array();
+
+		$num_objects = count($datas);
+
+		if($num_objects > 200 && config('debug.profiling'))
+			bors_debug::syslog('profiling', "Load {$num_objects} of $class_name");
 
 		foreach($datas as $data)
 		{
@@ -402,7 +408,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			else
 				$objects[] = $object;
 
-			save_cached_object($object);
+			if($num_objects <= 100)
+				save_cached_object($object);
 
 			$object = new $class_name(NULL);
 			$object->set_class_file($class_file);
@@ -677,15 +684,18 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				}
 
 				// Закомментировано, так как не позволяет аплоадить изображения с ignore.
-				if($main_table && !$object->get('insert_delayed_on_new_instance')/* && !$object->ignore_on_new_instance()*/)
+				if($main_table
+					&& !$object->get('insert_delayed_on_new_instance')
+					// && !$object->ignore_on_new_instance()
+				)
 				{
 					$main_table = false;
 					$new_id = $dbh->last_id();
 					if(!$new_id)
 						$new_id = $object->id();
-					if(!$new_id && ($idf = $object->id_field()))
+					if(!$new_id && ($idf = $object->id_field()) && preg_match('/^\w+$/', $idf))
 						$new_id = $object->get($idf);
-					if(!$new_id && !$object->ignore_on_new_instance())
+					if(!$new_id && !$object->ignore_on_new_instance() && preg_match('/^\w+$/', $idf))
 						debug_hidden_log('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
 				}
 			}
@@ -715,8 +725,8 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$dbh->delete($table_name, array($fields['*id_field'] => $object->id()));
 		}
 
-			$dbh = new driver_mysql($object->db_name());
-			$dbh->delete($object->table_name(), array($object->id_field() => $object->id()));
+		$dbh = new driver_mysql($object->db_name());
+		$dbh->delete($object->table_name(), array($object->id_field() => $object->id()));
 	}
 
 	function create_table($class_name = NULL)

@@ -278,7 +278,7 @@ class bors_link extends bors_object_db
 
 			$x->set_bors_link($link, false);
 
-			$result[] = $x;
+			$result[$x->id()] = $x;
 		}
 
 		return $result;
@@ -370,10 +370,15 @@ class bors_link extends bors_object_db
 				OR (to_class=$fc AND to_id=$fi AND from_class=$tc))"));
 	}
 
+	static function drop_objects($from, $to)
+	{
+		self::drop($from->extends_class_name(), $from->id(), $to->extends_class_name(), $to->id());
+	}
+
 	static function drop($from_class, $from_id, $to_class, $to_id = NULL)
 	{
 		$from_id = intval($from_id);
-		$to = intval($to_id);
+		$to_id = intval($to_id);
 		if(!$from_id)
 			return;
 

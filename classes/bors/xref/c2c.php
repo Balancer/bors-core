@@ -134,15 +134,15 @@ class bors_xref_c2c extends bors_object_db
 	// Отладка на:
 	//	— http://admin.aviaport.wrk.ru/projects/1/
 	//	— http://admin.aviaport.ru/directory/aviafirms/6/groups/
-	function target_ids($where)
+	static function target_ids($where)
 	{
 		$xref_class_name = popval($where, 'xref_class_name');
 		if(!$xref_class_name)
-			$xref_class_name = $this->class_name();
+			$xref_class_name = get_called_class();
 
 		$target_field_name = popval($where, 'target_field_name');
 		if(!$target_field_name)
-			$target_field_name = $this->target_field_name();
+			$target_field_name = bors_foo($xref_class_name)->target_field_name();
 
 		$xrefs = bors_find_all($xref_class_name, $where);
 

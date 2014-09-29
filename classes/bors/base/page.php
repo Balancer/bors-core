@@ -20,6 +20,11 @@ class base_page extends bors_object
 		return $this->page_title();
 	}
 
+	function _browser_description_def()
+	{
+		return $this->description();
+	}
+
 	function source() { return @$this->data['source']; }
 	function set_source($source, $db_update) { return $this->set('source', $source, $db_update); }
 
@@ -234,7 +239,7 @@ class base_page extends bors_object
 
 	function _queries() { return array(); }
 
-	function body_template_ext() { return 'html'; }
+	function _body_template_ext_def() { return 'html'; }
 
 	function _body_template_def()
 	{

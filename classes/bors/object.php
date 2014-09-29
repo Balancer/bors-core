@@ -48,8 +48,10 @@ class bors_object extends base_object
 		));
 	}
 
+	function this() { return $this; }
 	function is_value() { return true; }
 
+/*
 	function show()
 	{
 //		if($go = $obj->attr('redirect_to'))
@@ -60,6 +62,7 @@ class bors_object extends base_object
 //		echo $this->content();
 //		return true;
 	}
+*/
 
 	// возвращает полное содержимое объекта для вывода в браузер. Некешированное.
 	function __content() // пока не используется, т.к. более древнее в base_object
@@ -77,7 +80,10 @@ class bors_object extends base_object
 
 	function renderer()
 	{
-		$renderer_class = $this->get('renderer_class');
+		$renderer_class = $this->get('theme_class');
+
+		if(!$renderer_class)
+			$renderer_class = $this->get('renderer_class');
 
 		if(!$renderer_class)
 			$renderer_class = $this->get('render_engine'); // Старый API, для совместимости.
@@ -85,7 +91,14 @@ class bors_object extends base_object
 		if($renderer_class == 'self')
 			return $this;
 
-		return $renderer_class ? bors_load($renderer_class, NULL) : NULL;
+		if(!$renderer_class)
+			return NULL;
+
+		$renderer = bors_load($renderer_class, $this);
+		if(!$renderer)
+			bors_throw("Can't load theme renderer $renderer_class");
+
+		return $renderer;
 	}
 
 	function direct_content()
@@ -237,23 +250,25 @@ class bors_object extends base_object
 		return config('cache_dir').'/classes/'.str_replace('_', '/', get_class($this));
 	}
 
-	var $__cache_data = array();
+	static $__cache_data = array();
 	function class_cache_data($name = NULL, $setter = NULL)
 	{
-		if(empty($this->__cache_data))
+		if(empty(self::$__cache_data[$this->class_name()]))
 		{
 			if(file_exists($f = $this->__class_cache_base().'.data.json'))
 				$data = json_decode(file_get_contents($f), true);
 
-			if(!empty($data['class_mtime']) && $data['class_mtime'] == filemtime($this->class_file()))
-				$this->__cache_data = $data;
+			if(empty($data['class_mtime']) || $data['class_mtime'] != filemtime($this->class_file()))
+				self::$__cache_data[$this->class_name()] = $data = array();
+			else
+				self::$__cache_data[$this->class_name()] = $data;
 		}
 
 		if(!$name)
-			return $this->__cache_data;
+			return empty(self::$__cache_data[$this->class_name()]) ? array() : self::$__cache_data[$this->class_name()];
 
-		if(array_key_exists($name, $this->__cache_data))
-			return $this->__cache_data[$name];
+		if(!empty(self::$__cache_data[$this->class_name()]) && array_key_exists($name, self::$__cache_data[$this->class_name()]))
+			return self::$__cache_data[$this->class_name()][$name];
 
 		if($setter)
 			return $this->set_class_cache_data($name, call_user_func($setter));
@@ -261,20 +276,9 @@ class bors_object extends base_object
 		return NULL;
 	}
 
-	//TODO: переписать на однократный вызов в конце работы фреймворка по exit()
 	function set_class_cache_data($name, $value)
 	{
-		$this->__cache_data[$name] = $value;
-		$this->__cache_data['class_mtime'] = filemtime($this->class_file());
-		bors_function_include('fs/file_put_contents_lock');
-		$f = $this->__class_cache_base().'.data.json';
-		mkpath(dirname($f), 0775);
-		$flags = 0;
-		if(version_compare(PHP_VERSION, '5.4') >= 0)
-			$flags = JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE;
-		file_put_contents_lock($f, json_encode($this->__cache_data, $flags));
-
-		return $value;
+		return bors_class_loader::set_class_cache_data($this->class_name(), $this->class_file(), $name, $value);
 	}
 
 	function property_info($property_name)

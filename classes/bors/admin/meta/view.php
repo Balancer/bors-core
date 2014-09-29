@@ -7,6 +7,9 @@ class bors_admin_meta_view extends bors_admin_page
 	function _title_def() { return $this->target()->title(); }
 	function _nav_name_def() { return $this->target()->nav_name(); }
 
+	function can_be_empty() { return false; }
+	function is_loaded() { return (bool) $this->model(); }
+
 	function pre_show()
 	{
 		if(!$this->target())
@@ -33,18 +36,14 @@ class bors_admin_meta_view extends bors_admin_page
 
 	function _main_admin_class_def()
 	{
-		$admin_class_name = str_replace('_edit', '', $this->class_name());
-		$admin_class_name = preg_replace('/_view$/', '', $admin_class_name);
-		$admin_class_name = blib_grammar::singular($admin_class_name);
+//		$admin_class_name = str_replace('_edit', '', $this->class_name());
+//		$admin_class_name = preg_replace('/_view$/', '', $admin_class_name);
+//		$admin_class_name = blib_grammar::singular($admin_class_name);
 
-		if(class_exists($admin_class_name))
-			return $admin_class_name;
+//		if(class_exists($admin_class_name))
+//			return $admin_class_name;
 
-		return $this->main_class();
-	}
-
-	function admin_target()
-	{
+//		return $this->main_class();
 	}
 
 	function _item_name_def()
@@ -55,7 +54,15 @@ class bors_admin_meta_view extends bors_admin_page
 	function auto_objects()
 	{
 		return array_merge(parent::auto_objects(), array(
+			'model' => $this->main_class().'(id)',
 			$this->item_name() => $this->main_class().'(id)',
+		));
+	}
+
+	function auto_targets()
+	{
+		return array_merge(parent::auto_targets(), array(
+			'admin_target' => 'main_admin_class(id)',
 		));
 	}
 
@@ -72,15 +79,13 @@ class bors_admin_meta_view extends bors_admin_page
 			$data = array();
 			if($ref = bors()->request()->referer())
 				$this->set_attr('go_new_url', $ref);
-//var_dump($ref);
+
 			if(preg_match('!/(\w+s)/(\d+)/?$!', $ref, $m)
 				|| preg_match('!/(\w+s)/(\d+)/\w+/?$!', $ref, $m)
 			)
 			{
-//				var_dump($m);
 				set_session_var("form_value_".blib_grammar::singular($m[1]).'_id', $m[2]);
 			}
-
 		}
 
 		$target = $this->id() ? $this->target() : NULL;
@@ -93,7 +98,8 @@ class bors_admin_meta_view extends bors_admin_page
 				$this->item_name() => $target,
 				'admin_'.$this->item_name() => $admin_target,
 				'target' => $target,
-//				'admin_target' => $admin_target,
+				'admin_target' => $admin_target,
+				'model' => $this->model(),
 			)
 		);
 	}

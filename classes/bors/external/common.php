@@ -27,25 +27,22 @@ class bors_external_common extends bors_object
 			$html = @iconv('utf-8', 'utf-8//ignore', $html);
 		}
 
-//		if(config('is_developer')) var_dump($html);
+//		if(config('is_developer')) ~r($html);
 //		$html = bors_lib_http::get($url);
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
 
-//		if(config('is_developer')) { var_dump($original_url, $url, $meta, $html); print_dd($html); echo debug_trace(); exit('meta'); }
+//		if(config('is_developer')) { bors_debug::syslog("0000-test", "orgiginal=$original_url\nurl=$url\nmeta=".print_r($meta, true)."\n$html"); }
 
 		if(preg_match('/503 - Forwarding failure/', $html))
 			$html = '';
 
-		$title = @$meta['og:title'];
-		if(!$title)
-			$title = @$meta['title'];
+		$title = @$meta['title'];
 
-		$description = @$meta['og:description'];
-		if(!$description)
-			$description = @$meta['description'];
+		$description = @$meta['description'];
 
 		$img = @$meta['og:image'];
+
 		if(!$img)
 			$img = @$meta['img_src'];
 
@@ -56,6 +53,7 @@ class bors_external_common extends bors_object
 		// http://balancer.ru/g/p2728087 для http://video.yandex.ru/users/cnewstv/view/3/
 		if(strpos($title, "\\'") !== false)
 			$title = stripslashes($title);
+
 		if(strpos($description, "\\'") !== false)
 			$description = stripslashes($description);
 
@@ -125,7 +123,7 @@ class bors_external_common extends bors_object
 		if(!$img || !preg_match('/\.(jpe?g|png|gif)$/', $img))
 		{
 			// Ставим герерацию превьюшки
-			// Сперва дектодируем URL (urldecode + кодировка)
+			// Сперва декодируем URL (urldecode + кодировка)
 			$url = blib_urls::decode($url);
 
 			$url_data = parse_url($url);
@@ -226,13 +224,13 @@ if(config('is_developer')) { exit($img); }
 //				if($divs = $xpath->query('//div[@id="content"]'))
 				// Тест на http://www.balancer.ru/g/p2982207
 
-//				if(config('is_developer')) { print_dd($dom->saveHTML()); }
+//				if(config('is_developer')) { ~r($dom->saveHTML()); }
 
 				$divs = $xpath->query('//p');
 				if(!$divs->length)
 					$divs = $xpath->query('//div');
 
-//				if(config('is_developer')) { var_dump($divs, $divs->length); }
+//				if(config('is_developer')) { r($divs, $divs->length); }
 
 				if($divs)
 				{
@@ -280,21 +278,18 @@ if(config('is_developer')) { exit($img); }
 			$title = htmlspecialchars(strip_tags($title));
 			$description = htmlspecialchars(strip_tags($description));
 
-			$html_url = str_replace('[', '%5B', $original_url);
+			$html_url = 'bors.base64:'.base64_encode($original_url);
 
 			$bbshort = "[round_box]{$img}[h][a href=\"{$html_url}\"]{$title}[/a][/h]
 {$description}
 
-[span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($html_url)."[/reference][/span][/round_box]";
-
+[span class=\"transgray\"][reference]".($more ? ec('Дальше — '):'').bors_external_feeds_entry::url_host_link($original_url)."[/reference][/span][/round_box]";
 			$tags = array();
 
 			$bbshort = preg_replace('/[\x{10000}-\x{10FFFF}]/u', '?', $bbshort);
 			$bbshort = iconv('utf-8', 'utf-8//translit', $bbshort);
 
 			$bbshort = trim(bors_close_tags(bors_close_bbtags(blib_obscene::mask($bbshort, true))));
-
-//			if(config('is_developer')) { echo "\n==============\n$bbshort\n=============\n";  echo bors_debug::trace(); }
 
 			return compact('tags', 'title', 'bbshort');
 		}

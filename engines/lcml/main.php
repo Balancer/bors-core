@@ -18,19 +18,17 @@ function lcml($text, $params = array())
 
 	$lc = $lcs[$class_name];
 
-	$lc->set_p('level', $lc->p('level')+1);
 	$lc->set_p('prepare', popval($params, 'prepare'));
 	$save_tags = $lc->p('only_tags');
+
 	if(!empty($params['only_tags']))
 		$lc->set_p('only_tags', $params['only_tags']);
-	if($lc->p('level') == 1)
-	{
+
+	if($lc->p('level') == 0)
 		$lc->set_params($params);
-	}
 
 	$res = $lc->parse($text);
 	$lc->set_p('only_tags', $save_tags);
-	$lc->set_p('level', $lc->p('level')-1);
 
 	return $res;
 }

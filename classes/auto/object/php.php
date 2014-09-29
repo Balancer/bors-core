@@ -34,17 +34,15 @@ class auto_object_php extends bors_object
 		}
 
 		$class_base = NULL;
-		if($routers = @$GLOBALS['bors_data']['routers'])
+		if(!empty($GLOBALS['bors_data']['routers']))
 		{
-//			var_dump($routers);
-			foreach($routers as $base_url => $x)
+			foreach($GLOBALS['bors_data']['routers'] as $base_url => $x)
 			{
 				$base_class = $x['base_class'];
 				if(strpos($path, $base_url) === 0)
 				{
 					$class_base = $base_class.'_';
 					$path = str_replace($base_url, '', $path);
-//					var_dump($base_class, $base_url, $path);
 				}
 			}
 		}
@@ -161,7 +159,7 @@ class auto_object_php extends bors_object
 		if($object_id == $this->called_url())
 			$object_id = NULL;
 
-		if(!($object = bors_load($class_base.$class_path, $object_id)))
+		if(!(class_exists($class_base.$class_path) && ($object = bors_load($class_base.$class_path, $object_id))))
 		{
 			$class_path = $class_path ? $class_path . '_main' : 'main';
 			$object = bors_load($class_base.$class_path, $object_id);

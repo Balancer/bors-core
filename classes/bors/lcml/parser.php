@@ -35,4 +35,6 @@ class bors_lcml_parser
 				return $this->html($text);
 		}
 	}
+
+	function priority() { return 0; }
 }

@@ -342,10 +342,8 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 
 function class_load_by_local_url($url, $args)
 {
-	$obj = @$GLOBALS['bors_data']['classes_by_uri'][$url];
-
-	if(!empty($obj) && empty($args['no_load_cache']))
-		return $obj;
+	if(!empty($GLOBALS['bors_data']['classes_by_uri'][$url]) && empty($args['no_load_cache']))
+		return $GLOBALS['bors_data']['classes_by_uri'][$url];
 
 	if(empty($GLOBALS['bors_map']))
 	{
@@ -399,9 +397,8 @@ function class_load_by_vhosts_url($url)
 
 	global $bors_data;
 
-	$obj = @$bors_data['classes_by_uri'][$url];
-	if(!empty($obj))
-		return $obj;
+	if(!empty($bors_data['classes_by_uri'][$url]))
+		return $bors_data['classes_by_uri'][$url]; // return object
 
 	if(empty($bors_data['vhosts'][$data['host']]))
 		return NULL;
@@ -411,7 +408,7 @@ function class_load_by_vhosts_url($url)
 //	if(config('is_debug')) r($host_data);
 
 	$url_noq = $data['scheme'].'://'.$data['host'].@$data['path'];
-	$query = @$data['query'];
+	$query = empty($data['query']) ? NULL : $data['query'];
 
 	foreach($host_data['bors_map'] as $pair)
 	{
@@ -577,6 +574,9 @@ function object_init($class_name, $object_id, $args = array())
 	if(!$obj)
 	{
 		$found = 0;
+		if($class_name == 'server')
+			echo bors_debug::trace();
+
 		$obj = new $class_name($object_id);
 
 		if(!method_exists($obj, 'set_class_file'))

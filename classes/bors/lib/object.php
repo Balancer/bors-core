@@ -72,4 +72,39 @@ class bors_lib_object
 		$foo->_configure();
 		return $foo->get($name, $default);
 	}
+
+	static function parent_lines($object, $level=0)
+	{
+		$parent_lines = array();
+
+		$current_line = array(
+			'url' => $object->url(),
+			'title' => $object->nav_name()
+		);
+
+		if($level == 0)
+			$current_line['is_active'] = true;
+
+		foreach($object->parents() as $parent)
+		{
+			if(is_object($parent))
+				$parent_object = $parent;
+			else
+				$parent_object = object_load($parent);
+
+			if(!$parent_object)
+				continue;
+
+			if($parent_object->url() == $object->url())
+				continue;
+
+			foreach(self::parent_lines($parent_object, $level+1) as $parent_uplines)
+				$parent_lines[] = array_merge($parent_uplines, array($current_line));
+		}
+
+		if(empty($parent_lines))
+			$parent_lines[] = array($current_line);
+
+		return $parent_lines;
+	}
 }

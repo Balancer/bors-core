@@ -234,7 +234,7 @@ try
 
 		if(config('bors.version_show'))
 			header('X-bors-object: '.$object->internal_uri());
-
+/*
 		// Новый метод вывода, полностью на самом объекте
 		if(method_exists($object, 'show'))
 		{
@@ -243,7 +243,7 @@ try
 
 			$res = $object->show();
 		}
-
+*/
 		if(!$res)	// Если новый метод не обработан, то выводим как раньше.
 		{
 			if(config('debug.execute_trace'))
@@ -411,16 +411,25 @@ if(config('debug.timing') && is_string($res))
 	$res = str_ireplace('</body>', $deb.'</body>', $res);
 }
 
-if(function_exists('xhprof_enable'))
+if(!empty($GLOBALS['bors_profiling']['mysql-queries']) && count($GLOBALS['bors_profiling']['mysql-queries']) > 30)
+	bors_debug::syslog('profiling-mysql', "Too many queries: ".print_r($GLOBALS['bors_profiling']['mysql-queries'], true));
+
+if(function_exists('xhprof_enable') && $time >= config('debug.profile_min', 1.0))
 {
 	$xhprof_data = xhprof_disable();
 
-	$XHPROF_ROOT = "/var/www/composer/vendor/facebook/xhprof";
-	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
-	include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+	$XHPROF_ROOT = COMPOSER_ROOT."/vendor/facebook/xhprof";
+	if(file_exists($XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php"))
+	{
+		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
+		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+	}
 
-	$xhprof_runs = new XHProfRuns_Default();
-	$run_id = $xhprof_runs->save_run($xhprof_data, urlencode(preg_replace('!\W+!', '-', preg_replace("!^\w+://!", '', $uri))));
+	if(class_exists('XHProfRuns_Default'))
+	{
+		$xhprof_runs = new XHProfRuns_Default();
+		$run_id = $xhprof_runs->save_run($xhprof_data, urlencode(preg_replace('!\W+!', '-', preg_replace("!^\w+://!", '', $uri))));
+	}
 
 //	echo "http://localhost/xhprof/xhprof_html/index.php?run={$run_id}&source=xhprof_testing\n";
 }
@@ -470,8 +479,8 @@ if($cn = config('404.class_name'))
 {
 	if($object404 = bors_load($cn, $uri))
 	{
-		if(method_exists($object404, 'show'))
-			$res = $object404->show();
+//		if(method_exists($object404, 'show'))
+//			$res = $object404->show();
 
 		if(!$res)
 			$res = bors_object_show($object404);

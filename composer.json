@@ -34,10 +34,17 @@
 	},
 
 	"suggest": {
-		"smarty/smarty": "Needed if you plan to use Smarty based templates"
+		"smarty/smarty": "Needed if you plan to use Smarty based templates (composer require smarty/smarty=*)",
+		"tedivm/stash": "Used to cache (composer require tedivm/stash=*)",
+		"ext-redis": "The php redis extension https://github.com/nicolasff/phpredis/ is required for connecting to redis server (sudo apt-get install php5-redis)"
 	},
 
 	"autoload": {
 		"classmap": ["classes/"]
-	}
+	},
+
+    "extra": {
+        "bors-classes": "classes",
+        "bors-templates": "templates"
+    }
 }

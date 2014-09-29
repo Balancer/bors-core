@@ -24,9 +24,10 @@ function url_parse($url)
 			'document_root' => bors()->server()->root(),
 		);
 
-	$root = @$data['root'];
-	if(!$root && ($root = @$vhost_data['document_root']))
-		$data['root'] = $root;
+	if(empty($data['root']) && !empty($vhost_data['document_root']))
+		$data['root'] = $vhost_data['document_root'];
+
+	$root = empty($data['root']) ? NULL : $data['root'];
 
 	//TODO: а вот это теперь, наверное, можно будет снести благодаря {if(empty($vhost_data) && $host == bors()->server()->host())} ...
 //	if(empty($data['root']) && file_exists(bors()->server()->root().$data['path']))
@@ -63,7 +64,7 @@ function url_parse($url)
 	//TODO: грязный хак
 	$data['uri'] = preg_replace('!^(http://files.balancer.ru/)[0-9a-f]{32}/(.*)$!', '$1$2', $data['uri']);
 
-	if(@$data['root'] == $data['local_path'])
+	if(!empty($data['root']) && $data['root'] == $data['local_path'])
 		$data['local_path'] .= '/';
 
 	if(preg_match('/^(.+?)\?.+/', $data['local_path'], $m))

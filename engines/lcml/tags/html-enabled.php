@@ -11,14 +11,15 @@ foreach(explode(" ","br hr") as $tag)
 
 function lp_html_iframe($inner, $params)
 {
-	if(@$params['width'] < 200)
+	// http://www.balancer.ru/g/p3577020
+	if(@$params['width'] < 200 && !preg_match('/width:/', @$params['style']))
 		$params['width'] = 200;
-	if(@$params['height'] < 200)
+	if(@$params['height'] < 200 && !preg_match('/height:/', @$params['style']))
 		$params['height'] = 200;
 
 	$params['src'] = html_entity_decode(@$params['src']);
 
-	return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling marginheight marginwidth src webkitAllowFullScreen mozallowfullscreen allowfullscreen').">$inner</iframe>";
+	return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling style marginheight marginwidth src webkitAllowFullScreen mozallowfullscreen allowfullscreen').">$inner</iframe>";
 }
 
 /*
@@ -40,7 +41,11 @@ function lp_table($inner, $params)
 		unset($params['border']);
 		$params['class'] = 'btab';
 	}
-	return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">".lcml($inner)."</table>";
+
+	$params['lcml']->set_p('last_tag', 'table');
+	$inner_html = $params['lcml']->parse($inner);
+//	$params['lcml']->set_p('last_tag', NULL);
+	return "<table ".make_enabled_params($params, 'cellpadding cellspacing class style border').">{$inner_html}</table>";
 }
 
 function lp_table_html($inner, $params)

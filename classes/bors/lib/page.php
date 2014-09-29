@@ -58,7 +58,13 @@ class bors_lib_page
 
 		while($current_class)
 		{
-			$base = preg_replace("!(.+/\w+)\..+?$!", "$1.", $class_files[$current_class]);
+			//TODO: тут пропадают Composer-файлы. Нужно учесть и исправить.
+			if(empty($class_files[$current_class]))
+				$class_file = bors_foo($current_class)->get('class_file');
+			else
+				$class_file = $class_files[$current_class];
+
+			$base = preg_replace("!(.+/\w+)\..+?$!", "$1.", $class_file);
 
 			if($suffix)
 			{
@@ -74,7 +80,7 @@ class bors_lib_page
 				if(file_exists($bt = $base.'tpl.php'))
 				{
 					$object->attr['body_template'] = $bt;
-					$object->attr['body_template_class'] = 'bors_templates_php';
+					$object->attr['body_template_class'] = 'bors_templaters_php';
 					return;
 				}
 				if(file_exists($bt = $base.'haml') && class_exists('bors_templates_phaml'))

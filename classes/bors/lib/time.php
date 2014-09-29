@@ -132,7 +132,7 @@ class bors_lib_time
 			return strftime("%d.%m.%Y", $time);
 	}
 
-	function smart_interval($interval, $parts = 2)
+	static function smart_interval($interval, $parts = 2)
 	{
 		$res = array();
 		$res[] = ($x = $interval % 60) ? $x.ec(' секунд').sklon($x,ec('а,ы,')) : '';

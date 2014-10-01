@@ -361,7 +361,7 @@ class {$admin_class_name}s_main extends aviaport_admin_paged
 	file_put_contents(str_replace('.sqlt', '.admin.main.php', $sqlt_file), $php, FILE_APPEND);
 
 // Генерация HTML общей админки
-$html = "{\$this->pages_links_nul()}
+$html = "{\$this->layout()->mod('pagination')}
 
 <table class=\"btab\">
 <tr>
@@ -379,7 +379,7 @@ $html = "{\$this->pages_links_nul()}
 {/foreach}
 </table>
 
-{\$this->pages_links_nul()}
+{\$this->layout()->mod('pagination')}
 ";
 
 	file_put_contents(str_replace('.sqlt', '.admin.main.html', $sqlt_file), $html, FILE_APPEND);

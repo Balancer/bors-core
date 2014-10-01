@@ -6,7 +6,7 @@
 {/form}
 
 {if $this->query() && $items}
-{$this->pages_links_nul()}
+{$this->layout()->mod('pagination')}
 
 <table class="btab w100p">
 <thead>
@@ -27,5 +27,5 @@
 </tbody>
 </table>
 
-{$this->pages_links_nul()}
+{$this->layout()->mod('pagination')}
 {/if}

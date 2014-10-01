@@ -102,4 +102,14 @@ class bors_page_db extends base_object_db
 	}
 
 	function compiled_source() { return bors_lcml::lcml($this->source(), array('container' => $this)); }
+
+	function _layout_class_def() { return 'bors_layouts_bors'; }
+
+	function _layout_def()
+	{
+		$class_name = $this->layout_class();
+		$layout = new $class_name($this);
+		$this->set_attr('layout', $layout);
+		return $layout;
+	}
 }

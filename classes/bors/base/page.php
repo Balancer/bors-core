@@ -375,7 +375,7 @@ class base_page extends bors_object
 		)));
 	}
 
-	function page_data() { return array(); }
+	function page_data() { return empty($GLOBALS['cms']['templates']['data']) ? array() : $GLOBALS['cms']['templates']['data']; }
 	function body_data() { return array(); }
 
 	function global_data()

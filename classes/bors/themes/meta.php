@@ -17,6 +17,7 @@ class bors_themes_meta extends bors_object
 			'self' => $this->object(),
 			'style' => array(),
 		), $this->object()->page_data());
+
 		$this->object()->set_attr('layout_class', $this->layout_class());
 	}
 

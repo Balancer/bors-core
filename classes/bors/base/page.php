@@ -375,16 +375,13 @@ class base_page extends bors_object
 		)));
 	}
 
-	function page_data() { return empty($GLOBALS['cms']['templates']['data']) ? array() : $GLOBALS['cms']['templates']['data']; }
 	function body_data() { return array(); }
 
-	function global_data()
+	function page_data()
 	{
 		if($config = $this->config())
 			$config->template_init();
 
-		return array_merge(parent::global_data(), $this->page_data());
+		return empty($GLOBALS['cms']['templates']['data']) ? array() : $GLOBALS['cms']['templates']['data'];
 	}
-
-	function local_data()  { return array_merge(parent::local_data(), $this->body_data()); }
 }

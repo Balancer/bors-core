@@ -11,7 +11,7 @@ class base_xml_array extends base_page
 		header("Status: 200 OK");
 		header("HTTP/1.1 200 OK");
 #		require_once('inc/xml/array2xml.php');
-#		return array2xml($obj->local_data(), 'data', NULL, $obj->internal_charset());
+#		return array2xml($obj->body_data(), 'data', NULL, $obj->internal_charset());
 		require_once("class.array2xml2array.php");
 
 		$array2XML = new CArray2xml2array();

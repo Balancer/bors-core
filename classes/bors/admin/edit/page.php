@@ -4,7 +4,7 @@ class bors_admin_edit_page extends bors_admin_base_page
 {
 	function title() { return ec('редактор'); }
 
-	function local_data()
+	function body_data()
 	{
 		template_noindex();
 

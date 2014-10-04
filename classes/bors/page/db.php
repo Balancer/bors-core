@@ -82,8 +82,6 @@ class bors_page_db extends base_object_db
 
 	function page_data() { return array(); }
 
-	function local_data()  { return array_merge(parent::local_data(), $this->body_data()); }
-
 	// под снос. Но пока используется широко а ля bors-core/classes/bors/renderers/page.php:77
 	function me() { return bors()->user(); }
 	function me_id() { return bors()->user_id(); }

@@ -9,7 +9,7 @@ class render_xml extends base_null
 		if(!$object->is_loaded() && !$object->can_be_empty())
 			return false;
 
-		$object_data = $object->local_template_data_set();
+		$object_data = $object->body_data();
 		$object_fields = $object_data['xml_fields'];
 		unset($object_data['xml_fields']);
 		$xml_data = array();

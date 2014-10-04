@@ -27,7 +27,7 @@ class bors_admin_property extends bors_admin_page
 		return false;
 	}
 
-	function local_data()
+	function body_data()
 	{
 		template_noindex();
 

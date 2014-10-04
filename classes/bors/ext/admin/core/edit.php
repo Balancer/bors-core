@@ -14,7 +14,7 @@ class bors_ext_admin_core_edit extends base_page
 		return false;
 	}
 
-	function local_data()
+	function body_data()
 	{
 		$class_name = $this->id();
 		return array(

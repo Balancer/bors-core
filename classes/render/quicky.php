@@ -12,10 +12,7 @@ class render_quicky extends base_null
 		$tpl->compiler_prefs['interpret_varname_params'] = true;
 		$tpl->template_dir = dirname($object->class_file()).'/';
 
-		foreach($object->local_template_data_array() as $var => $value)
-			$tpl->assign($var, $value);
-
-		foreach($object->local_data() as $var => $value)
+		foreach($object->body_data() as $var => $value)
 			$tpl->assign($var, $value);
 
 		$tpl->compile_dir = config('cache_dir').'/quicky-templates_c/';

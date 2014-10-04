@@ -232,9 +232,7 @@ class base_object extends bors_object_simple
 			return $this->template_data[$var_name] = $value;
 	}
 
-	function local_data() { return $this->local_template_data_set(); }
-	function global_data() { return $this->global_template_data_set(); }
-	function local_template_data_set() { return array('me' => bors()->user()); }
+	function body_data() { return array('me' => bors()->user()); }
 	function local_template_data_array() { return $this->template_data; }
 
 	function set_template_data($data, $db_up)
@@ -245,7 +243,6 @@ class base_object extends bors_object_simple
 	}
 
 	function add_global_template_data($var_name, $value) { return set_global_template_var($var_name, $value); }
-	function global_template_data_set() { return array(); }
 	function global_template_data_array() { return global_template_vars(); }
 
 	static function add_template_data_array($var_name, $value)
@@ -547,10 +544,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			}
 		}
 
-		foreach($this->global_data() as $key => $value)
+		foreach($this->page_data() as $key => $value)
 			$this->add_global_template_data($key, $value);
 
-		if(($data = $this->local_data()))
+		if(($data = $this->body_data()))
 		{
 			if(!is_array($data)) //TODO: снести после отлавливания
 				debug_hidden_log('__data_error', 'Not array local_data: '.print_r($data, true).' for '.$this->debug_title_dc());

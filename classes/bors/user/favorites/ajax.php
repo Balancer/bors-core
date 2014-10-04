@@ -2,7 +2,7 @@
 
 class bors_user_favorites_ajax extends base_jss
 {
-	function local_data()
+	function bors_data()
 	{
 		$get = $_GET;
 		$object = object_load(urldecode(@$_GET['object']));
@@ -32,7 +32,7 @@ img.attr('src', '{$img}')
 img.parent().attr('href', '{$aurl}')
 ";
 
-		return array_merge(parent::local_data(), array(
+		return array_merge(parent::body_data(), array(
 			'script' => $script,
 		));
 	}

@@ -4,7 +4,7 @@ require_once('inc/strings.php');
 
 class module_date_calend_month extends base_page
 {
-	function local_data()
+	function body_data()
 	{
 		$now		= $this->args('now', time());
 		$show_date	= $this->args('show_date', $now);

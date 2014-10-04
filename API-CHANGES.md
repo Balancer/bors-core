@@ -1,6 +1,11 @@
 Изменения в API фреймворка
 ==========================
 
+2014-10-04
+----------
+ * Снос древнего legacy. Вместо global_template_data_set() и global_data() используется page_data()
+ * Вместо local_template_data_set() и local_data() — body_data()
+
 2014-09-23
 ----------
  * Свойства ```right_menu_links``` переименованы в ```side_menu```

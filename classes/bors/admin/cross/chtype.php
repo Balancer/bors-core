@@ -27,7 +27,7 @@ class bors_admin_cross_chtype extends bors_admin_page
 	function sort_order() { return $this->link()->sort_order(); }
 //	function sort_order() { return bors_cross_sort_order($this->from(), $this->to()); }
 
-	function local_data()
+	function body_data()
 	{
 		return array(
 			'type_id' => abs($this->type_id()),

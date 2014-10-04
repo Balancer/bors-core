@@ -1,18 +1,18 @@
 <?php
 
-class bors_referer_backlinks extends base_page
+class bors_referer_backlinks extends bors_page
 {
 	function title() { return ec('Внешние ссылки на ').$this->object()->class_name_vp().' '.$this->objecet()->title(); }
 	function object() { return $this->__havec('object') ? $this->__lastc() : $this->__setc(object_load($this->id())); }
-	function local_data()
+	function body_data()
 	{
 		return array(
-			'searches' => objects_array('bors_referer_search', array(
+			'searches' => bors_find_all('bors_referer_search', array(
 				'target_class_name' => $this->object()->class_name(), 
 				'target_object_id' => $this->object()->id(),
 				'order' => '-count',
 			)),
-			'links' => objects_array('bors_referer_links', array(
+			'links' => bors_find_all('bors_referer_links', array(
 				'target_class_name' => $this->object()->class_name(), 
 				'target_object_id' => $this->object()->id(),
 				'order' => '-count',

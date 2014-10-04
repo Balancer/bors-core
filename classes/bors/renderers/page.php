@@ -28,7 +28,7 @@ class bors_renderers_page extends base_null
 			debug_execute_trace("bors_renderers_page::render({$object->debug_title_short()}) begin");
 
 		$data = array();
-		$data = array_merge($data, $object->global_data());
+		$data = array_merge($data, $object->page_data());
 
 		if(config('debug.execute_trace'))
 			debug_execute_trace("bors_renderers_page::render() call object->body() ...");

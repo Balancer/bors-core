@@ -13,6 +13,8 @@ class bors_themes_meta extends bors_object
 
 	function pre_show()
 	{
+		$this->object()->template_data_fill();
+
 		$this->page_data = array_merge($this->page_data, array(
 			'self' => $this->object(),
 			'style' => array(),

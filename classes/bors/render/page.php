@@ -25,7 +25,7 @@ class bors_render_page extends base_null
 	static function render($object)
 	{
 		$data = array();
-		$data = array_merge($data, $object->global_data());
+		$data = array_merge($data, $object->page_data());
 
 		$data['body'] = $object->body();
 		$data['self'] = $object;

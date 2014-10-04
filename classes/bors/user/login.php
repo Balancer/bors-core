@@ -2,7 +2,7 @@
 
 class bors_user_login extends base_page
 {
-	function local_data()
+	function body_data()
 	{
 		$base = object_load($_SERVER['REQUEST_URI']);
 

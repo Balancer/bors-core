@@ -121,6 +121,16 @@ class blib_urls
 		return self::path($url1) == self::path($url2);
 	}
 
+	// Если $url1 является родителем для $url2
+	// Если один из URL не содержит хоста, то сравниваются только пути
+	static function is_parent($url1, $url2)
+	{
+		if(preg_match('!^\w+://!', $url1) && preg_match('!^\w+://!', $url2))
+			return strpos($url2, $url1) === 0;
+
+		return strpos(self::path($url2), self::path($url1)) === 0;
+	}
+
 	static function in_array($test_url, $urls_array)
 	{
 		foreach($urls_array as $url)

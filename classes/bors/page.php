@@ -238,6 +238,8 @@ class bors_page extends base_page
 			return $bde->body_data($data);
 		}
 
+		$data['layout'] = $this->layout();
+
 		return $data;
 	}
 
@@ -330,4 +332,17 @@ class bors_page extends base_page
 	}
 
 	function parents_links_lines() { return bors_pages_helper::parents_links_lines($this); }
+
+	function template_metas($indent = '')
+	{
+		$result = [];
+
+		$data = bors_template::page_data($this);
+
+		if(!empty($data['meta']))
+			foreach($data['meta'] as $name => $content)
+				$result[] = $indent . \HtmlObject\Element::meta()->name($name)->content($content);
+
+		return join("\n", $result);
+	}
 }

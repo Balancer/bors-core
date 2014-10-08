@@ -96,7 +96,7 @@ class bors_admin_meta_main extends bors_admin_paginated
         else
         {
             $data['tcfg'] = bors_load('balancer_board_themes_default', NULL);
-            $data['pagination'] = $this->pages_links_nul();
+            $data['pagination'] = $this->layout()->mod('pagination');
 			$data['bootstrap'] = false;
         }
 

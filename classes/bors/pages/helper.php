@@ -52,4 +52,17 @@ class bors_pages_helper
 
 		return $result;
 	}
+
+/*
+	$style = array with styles
+*/
+	function style($style)
+	{
+		if(empty($style))
+			return '';
+
+		return "<style type=\"text/css\" media=\"all\"><!--\n"
+			.join("\n", $style)
+			."\n--></style>\n";
+	}
 }

@@ -379,8 +379,8 @@ class base_page extends bors_object
 
 	function page_data()
 	{
-		if($config = $this->config())
-			$config->template_init();
+//		if($config = $this->config())
+//			$config->template_init();
 
 		return empty($GLOBALS['cms']['templates']['data']) ? array() : $GLOBALS['cms']['templates']['data'];
 	}

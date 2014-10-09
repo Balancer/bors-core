@@ -14,7 +14,7 @@ class bors_bodies_page extends base_null
 
 		$body_template = $object->body_template();
 
-		$object->template_data_fill();
+		$object->body_data_fill();
 
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$data[$var] = $object->$var();

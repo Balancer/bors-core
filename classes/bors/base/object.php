@@ -533,6 +533,21 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($this->config)
 			$this->config->template_init();
 
+		foreach($this->page_data() as $key => $value)
+			$this->add_global_template_data($key, $value);
+
+		static $called = false; //TODO: в будущем снести вторые вызовы.
+		if($called)
+			return;
+
+		$called = true;
+
+		foreach($this->data_providers() as $key => $value)
+			$this->add_template_data($key, $value);
+	}
+
+	function body_data_fill()
+	{
 		if($this->auto_assign_all_fields())
 		{
 			foreach($this->fields_map() as $property => $field)
@@ -544,9 +559,6 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			}
 		}
 
-		foreach($this->page_data() as $key => $value)
-			$this->add_global_template_data($key, $value);
-
 		if(($data = $this->body_data()))
 		{
 			if(!is_array($data)) //TODO: снести после отлавливания
@@ -555,15 +567,6 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 				foreach($data as $key => $value)
 					$this->add_local_template_data($key, $value);
 		}
-
-		static $called = false; //TODO: в будущем снести вторые вызовы.
-		if($called)
-			return;
-
-		$called = true;
-
-		foreach($this->data_providers() as $key => $value)
-			$this->add_template_data($key, $value);
 	}
 
 	function titled_link()

@@ -28,9 +28,11 @@ class bors_admin_meta_edit_parts extends bors_admin_meta_edit
 		$data = object_property($target, 'data', array());
 
 		return array_merge(
+			parent::body_data(),
 			$data,
 			array(
 				$this->item_name() => $target,
+				'view' => $this,
 				'admin_'.$this->item_name() => $admin_target,
 				'target' => $target,
 				'admin_target' => $admin_target,

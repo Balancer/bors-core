@@ -2,6 +2,7 @@
 {form
 	class=$this->main_admin_class()
 	id=$this->id()
+	view=$view
 	object=$target
 	fields=$form_fields
 	calling_object=$this

@@ -35,7 +35,7 @@ class bors_admin_meta_edit_parts extends bors_admin_meta_edit
 				'target' => $target,
 				'admin_target' => $admin_target,
 				'form_fields' => $this->edit_fields(),
-				'step' => bors()->request()->data('step'),
+				'step' => bors()->request()->data('step', 1),
 			)
 		);
 	}

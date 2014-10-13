@@ -9,6 +9,10 @@ function smarty_function_module($params, &$smarty)
 			$$name = @$params[$name];
 			unset($params[$name]);
 		}
+
+		if(empty($params['view']))
+			$params['view'] = $smarty->getVariable('this')->value;
+
 /*
 		if(empty($object))
 			$obj = object_load($class, $id, $params);

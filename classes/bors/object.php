@@ -98,6 +98,9 @@ class bors_object extends base_object
 		if(!$renderer)
 			bors_throw("Can't load theme renderer $renderer_class");
 
+		if($layout_class = $renderer->get('layout_class'))
+			$this->set_attr('layout_class', $layout_class);
+
 		return $renderer;
 	}
 

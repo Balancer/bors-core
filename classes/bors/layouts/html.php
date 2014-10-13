@@ -12,8 +12,20 @@ class bors_layouts_html extends bors_object
 		set_def($args, 'object', $this->object());
 
 		for($class = get_class($this); $class; $class = get_parent_class($class))
+		{
 			if(class_exists($mod_class = $class.'_'.$name))
 				return bors_module::mod_html($mod_class, $args);
+			else
+			{
+				$file = bors_foo($class)->class_file();
+
+				if(file_exists($tpl = str_replace('.php', "/$name.tpl.php", $file)))
+					return bors_templaters_php::fetch($tpl, $args);
+
+				if(file_exists($tpl = str_replace('.php', "/$name.tpl", $file)))
+					return bors_templates_smarty::fetch('xfile:'.$tpl, $args);
+			}
+		}
 
 		return NULL;
 	}

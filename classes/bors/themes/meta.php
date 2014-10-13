@@ -13,10 +13,12 @@ class bors_themes_meta extends bors_object
 
 	function pre_show()
 	{
+		$body = $this->object()->body();
 		$this->object()->template_data_fill();
 
 		$this->page_data = array_merge($this->page_data, array(
 			'self' => $this->object(),
+			'body' => $body,
 			'style' => array(),
 		), $this->object()->page_data());
 
@@ -56,6 +58,7 @@ class bors_themes_meta extends bors_object
 
 		if(!empty($files['css']))
 			$this->page_data['style'] = array_merge($this->page_data['style'], array(file_get_contents($files['css'])));
+
 
 		return bors_templaters_php::fetch($files['tpl'], $this->page_data);
 	}

@@ -115,7 +115,6 @@ class bors_forms_checkbox_list extends bors_forms_element
 		if($input_data_toggle = defval($params, 'input_data_toggle', ''))
 			$input_data_toggle = " data-toggle=\"$input_data_toggle\"";
 
-
 		$html = '';
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
@@ -129,27 +128,24 @@ class bors_forms_checkbox_list extends bors_forms_element
 		$labels_html = array();
 
 		if($columns)
-		{
-			$span = "<div class=\"span".(12/$columns)."\">";
-			$labels_html[] = "<div class=\"container\"><div class=\"row\">$span";
-		}
+			$labels_html[] = "<table><tr><td style=\"padding: 0 10px 0 0\">";
 
 		$pos = 0;
+		$per_column = ceil(count($list) / $columns);
 		foreach($list as $id => $iname)
 		{
+			if($columns && $pos && $pos % $per_column == 0)
+				$labels_html[] = "</td><td>";
+
 			$ids[] = $id;
 			$checked = in_array($id, $current);
 			$labels_html[] = "<label{$label_css}><input type=\"checkbox\" name=\"".addslashes($name)."[]\" value=\"$id\"".($checked ? " checked=\"checked\"" : "")."$el_params$class$input_data_toggle />".($checked?'<b>':'')."&nbsp;$iname".($checked?'</b>':'')."</label>$delim\n";
 			$pos++;
-			if($columns && $pos >= count($list) / $columns)
-			{
-				$pos = 0;
-				$labels_html[] = "</div>$span";
-			}
+
 		}
 
 		if($columns)
-			$labels_html[] = "</div></div>";
+			$labels_html[] = "</td></tr></table>";
 
 		$labels_html = join("", $labels_html);
 

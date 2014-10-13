@@ -45,7 +45,7 @@ class bors_forms_dropdown extends bors_forms_element
 		if(!empty($json) && empty($dom_id))
 		{
 			$dom_id = md5(rand());
-			$tag = "<input type=\"hidden\"";
+			$tag = "<input type=\"hidden\" style=\"width: 100%\"";
 		}
 		else
 			$tag = "<select";

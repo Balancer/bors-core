@@ -120,12 +120,4 @@ class bors_admin_meta_view extends bors_admin_page
 
 	// Нельзя так: возможна ситуация, когда объект читать можно, а вот редактировать — нет. Тогда он будет показан!
 //	function access() { return $this->admin_target() ? $this->admin_target()->access() : parent::access(); }
-
-	function _form_template_class_def()
-	{
-		if($this->get('use_bootstrap'))
-			return 'bors_forms_templates_bootstrap';
-		else
-			return 'bors_forms_templates_default';
-	}
 }

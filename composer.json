@@ -27,7 +27,7 @@
 		"intervention/image": "<2",
 		"monolog/monolog": "*",
 		"rediska/rediska": "*",
-		"smarty/smarty": "!=3.1.17",
+		"smarty/smarty": "!=3.1.20",
 		"easybook/geshi": "*",
 		"anahkiasen/html-object": "*",
 		"michelf/php-markdown": "*"

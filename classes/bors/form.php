@@ -47,8 +47,6 @@ class bors_form extends bors_object
 
 	function html_open($params)
 	{
-//		var_dump($params);
-
 		$this->_params = $params;
 		extract($params);
 
@@ -378,6 +376,13 @@ class bors_form extends bors_object
 
 				if($type != 'bool' && $edit_type != 'hidden' && $edit_type != 'bool')
 					$html .= "\t<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$title}</th><td>\n\t\t";
+
+				$data['form'] = $this;
+				$data['form_params'] = $params;
+				if(empty($data['view']))
+					$data['view'] = $params['view'];
+
+//				echo '<xmp>'; var_dump($data); echo '</xmp>';
 
 				switch($edit_type)
 				{

@@ -68,6 +68,7 @@ class bors_image_thumb extends bors_image
 //		if(config('is_debug')) var_dump('l', $this->file_name_with_path());
 
 		// Наша превьюшка уже есть в БД и описывает живые файлы
+
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_is_loaded(true);
 
@@ -83,6 +84,7 @@ class bors_image_thumb extends bors_image
 			return $this->set_is_loaded(false);
 
 //		$this->delete();
+
 
 		if($original_path = $this->original->relative_path())
 			$new_path = secure_path('/cache/'.$original_path.'/'.$this->geometry);
@@ -217,6 +219,7 @@ class bors_image_thumb extends bors_image
 		}
 		else
 			$err = image_file_scale($this->original->file_name_with_path(), $this->file_name_with_path(), $this->geo_width, $this->geo_height, $this->geo_opts);
+
 
 		return $err == NULL;
 	}

@@ -29,4 +29,6 @@ class bors_layouts_html extends bors_object
 
 		return NULL;
 	}
+
+	function forms_template_class() { return 'bors_forms_templates_default'; }
 }

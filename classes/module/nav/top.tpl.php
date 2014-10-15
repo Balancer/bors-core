@@ -1,4 +1,5 @@
 <?php
+
 foreach($links as $linkline)
 {
 	$first = true;

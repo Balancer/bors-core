@@ -95,7 +95,6 @@ class bors_image_thumbnail extends bors_image
 		else
 			$new_url = NULL;
 
-		if(config('is_developer')) { echo "set url1 = ".$new_url; exit(); }
 		$this->set_full_url($new_url, $caching);
 
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)

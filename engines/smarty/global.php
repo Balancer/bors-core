@@ -1,6 +1,5 @@
 <?php
 
-function set_global_template_vars($data) { return $GLOBALS['cms']['templates']['data'] = $data; }
 function set_global_template_var($name, $value) { return $GLOBALS['cms']['templates']['data'][$name] = $value; }
 function global_template_vars() { return is_array($x = @$GLOBALS['cms']['templates']['data']) ? $x : array(); }
 
@@ -49,16 +48,30 @@ function template_js_include_post($js_link)
 
 function template_css($css, $prepend = false)
 {
+	static $included = array();
 	$hash = md5(print_r($css, true));
-	if(bors_page::template_data('template_css_'.$hash))
+	if(!empty($included[$hash]))
 		return;
 
-	if($prepend)
-		bors_page::prepend_template_data_array('css_list', array($css));
-	else
-		bors_page::merge_template_data_array('css_list', array($css));
 
-	bors_page::add_template_data('template_css_'.$hash, true);
+	if($main_object = bors()->main_object())
+	{
+		if($prepend)
+			$main_object->prepend_page_data_array('css_list', array($css));
+		else
+			$main_object->merge_page_data_array('css_list', array($css));
+	}
+	else
+	{
+		bors_debug::syslog('obsolete-can-be-dangerous', "Set css_list without main_object");
+
+		if($prepend)
+			bors_page::prepend_template_data_array('css_list', array($css));
+		else
+			bors_page::merge_template_data_array('css_list', array($css));
+	}
+
+	$included[$hash] = true;
 }
 
 function template_style($style)

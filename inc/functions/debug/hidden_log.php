@@ -47,6 +47,8 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 		if(!empty($_POST))
 			$data .= "_POST=".print_r($_POST, true)."\n";
 
+		$out .= "\tmain_url: ".@$GLOBALS['main_uri']."\n";
+
 		foreach(['HTTP_HOST', 'REQUEST_URI', 'QUERY_STRING', 'HTTP_REFERER', 'REMOTE_ADDR', 'HTTP_USER_AGENT'] as $name)
 			if(!empty($_SERVER[$name]))
 				$out .= "\t{$name}: ".$_SERVER[$name]."\n";

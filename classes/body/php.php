@@ -14,7 +14,9 @@ class body_php extends base_null
 
 		debug_timing_start('body_php_body-'.$object->class_name());
 
-		$object->template_data_fill();
+//		Не восстанавливать. Внутри body не инициализируются данные page.
+//		$object->template_data_fill();
+		$object->body_data_fill();
 
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$$var = $object->$var();

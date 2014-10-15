@@ -83,6 +83,9 @@
 		if(config('debug.execute_trace'))
 			debug_execute_trace("{$obj->debug_title_short()}->pre_show()");
 
+		if(!(bors()->main_object()))
+			bors()->set_main_object($obj);
+
 		$processed = $obj->pre_show();
 		if($processed === true)
 		{
@@ -122,9 +125,6 @@
 
 		if($processed === false)
 		{
-			if(!(bors()->main_object()))
-				bors()->set_main_object($obj);
-
 			if(empty($GLOBALS['main_uri']))
 				$GLOBALS['main_uri'] = preg_replace('!:\d+/!', '/', $obj->url());
 			else

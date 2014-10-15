@@ -92,7 +92,7 @@ class base_object extends bors_object_simple
 		return $this->__setc($child_objects);
 	}
 
-	function rss_body($object, $strip = 0)
+	function rss_body()
 	{
 		// Этот config пока используется только на лентах топиков:
 		// http://www.wrk.ru/society/2014/08/topic-89787-rss.xml
@@ -221,7 +221,7 @@ class base_object extends bors_object_simple
 	static function add_template_data($var_name, $value) { return $GLOBALS['cms']['templates']['data'][$var_name] = $value; }
 
 	//TODO: под рефакторинг. Данные шаблона - отдельная сущность.
-	static function template_data($var_name) { return empty($GLOBALS['cms']['templates']['data'][$var_name]) ? NULL : $GLOBALS['cms']['templates']['data'][$var_name]; }
+	static function template_data($var_name, $default = NULL) { return empty($GLOBALS['cms']['templates']['data'][$var_name]) ? $default : $GLOBALS['cms']['templates']['data'][$var_name]; }
 
 	private $template_data = array();
 	function add_local_template_data($var_name, $value)

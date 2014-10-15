@@ -348,18 +348,12 @@ class base_page extends bors_object
 
 	static function merge_template_data_array($key, $merge_values)
 	{
-		$prev = self::template_data($key);
-		if(!$prev)
-			$prev = array();
-		self::add_template_data($key, array_merge($prev, $merge_values));
+		self::add_template_data($key, array_merge(self::template_data($key, array()), $merge_values));
 	}
 
 	static function prepend_template_data_array($key, $prepend_values)
 	{
-		$prev = self::template_data($key);
-		if(!$prev)
-			$prev = array();
-		self::add_template_data($key, array_merge($prepend_values, $prev));
+		self::add_template_data($key, array_merge($prepend_values, self::template_data($key, array())));
 	}
 
 	function keywords_linked() { return ''; }
@@ -377,11 +371,36 @@ class base_page extends bors_object
 
 	function body_data() { return array(); }
 
+	private $page_data = array();
+
+	function set_page_datum($key, $value) { $this->page_data[$key] = $value; }
+	function page_datum($key, $default = NULL) { return empty($this->page_data[$key]) ? $default : $this->page_data[$key]; }
+
+	function merge_page_data_array($key, $merge_values)
+	{
+		$this->set_page_datum($key, array_merge($this->page_datum($key, array()), $merge_values));
+	}
+
+	function prepend_page_data_array($key, $prepend_values)
+	{
+		$this->set_page_datum($key, array_merge($prepend_values, $this->page_datum($key, array())));
+	}
+
+	// Данные общего («внешнего») шаблона
 	function page_data()
 	{
 //		if($config = $this->config())
 //			$config->template_init();
 
-		return empty($GLOBALS['cms']['templates']['data']) ? array() : $GLOBALS['cms']['templates']['data'];
+		static $called = false;
+		if($called)
+			bors_debug::syslog('000-oops', "Second call for page_data, first was in ".$called);
+
+		$called = bors_debug::trace();
+
+		if(empty($GLOBALS['cms']['templates']['data']))
+			return $this->page_data;
+
+		return array_merge($GLOBALS['cms']['templates']['data'], $this->page_data);
 	}
 }

@@ -28,12 +28,13 @@ class bors_renderers_page extends base_null
 			debug_execute_trace("bors_renderers_page::render({$object->debug_title_short()}) begin");
 
 		$data = array();
-		$data = array_merge($data, $object->page_data());
+
+		// body() нужно вызывать перед page, т.к. body может устанавливать переменные для page
+		$data['body'] = $object->body();
+		$data = array_merge($object->page_data(), $data);
 
 		if(config('debug.execute_trace'))
 			debug_execute_trace("bors_renderers_page::render() call object->body() ...");
-
-		$data['body'] = $object->body();
 
 		if(config('debug.execute_trace'))
 			debug_execute_trace("\tbody done");
@@ -64,20 +65,10 @@ class bors_renderers_page extends base_null
 				debug_execute_trace("\t->{$var}()...");
 				$data[$var] = $object->get($var);
 			}
-
-			foreach(explode(' ', $object->template_local_vars()) as $var)
-			{
-				debug_execute_trace("\t->{$var}()...");
-				$data[$var] = $object->$var();
-			}
 		}
 		else
 		{
 			foreach(explode(' ', $object->template_vars()) as $var)
-				if(!array_key_exists($var, $data))
-					$data[$var] = $object->get($var);
-
-			foreach(explode(' ', $object->template_local_vars()) as $var)
 				if(!array_key_exists($var, $data))
 					$data[$var] = $object->get($var);
 		}

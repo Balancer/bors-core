@@ -41,7 +41,6 @@ class bors_admin_config extends bors_config
 				);
 			}
 
-			//{if $real_object}<li{$c_li_type}><a href="{$real_object->url()}" target="_blank">Посмотреть на сайте</a></li>{/if}
 			if($this->id()->get('real_object'))
 			{
 				$data['side_menu']['Действия'][] = array(

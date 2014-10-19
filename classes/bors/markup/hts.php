@@ -1,6 +1,6 @@
 <?php
 
-class bors_markup_hts extends base_object
+class bors_markup_hts extends bors_object
 {
 	var $object;
 

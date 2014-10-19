@@ -1,6 +1,6 @@
 <?php
 
-class user_cookieHashUpdate extends base_object
+class user_cookieHashUpdate extends bors_object
 {
 	function pre_parse()
 	{

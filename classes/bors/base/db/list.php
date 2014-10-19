@@ -1,6 +1,6 @@
 <?php
 
-class base_db_list extends base_object
+class base_db_list extends bors_object
 {
 	function storage_engine() { return ''; }
 

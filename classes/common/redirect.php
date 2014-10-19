@@ -1,6 +1,6 @@
 <?php
 
-class common_redirect extends base_object
+class common_redirect extends bors_object
 {
 	function title()
 	{

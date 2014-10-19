@@ -1,6 +1,6 @@
 <?php
 
-class bors_markup_markdown extends base_object
+class bors_markup_markdown extends bors_object
 {
 	static function factory($text = NULL, $args = array())
 	{

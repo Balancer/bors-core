@@ -151,6 +151,9 @@ class base_object extends bors_object_simple
 			if(!array_key_exists($attr, $this->defaults))
 				$this->defaults[$attr] = $val;
 
+		// Вызываем в холостую, чтобы получить автоматические поля и т.п.
+		bors_lib_orm::all_fields($this);
+
 		if(($config = $this->config_class()))
 		{
 			$this->config = new $config($this);

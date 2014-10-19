@@ -1,6 +1,6 @@
 <?php
 
-class bors_request extends base_object
+class bors_request extends bors_object
 {
 	function can_cached() { return true; }
 

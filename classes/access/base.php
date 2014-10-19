@@ -1,6 +1,6 @@
 <?php
 
-class access_base extends base_object
+class access_base extends bors_object
 {
 	function object() { return $this->id(); }
 

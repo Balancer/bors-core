@@ -1,6 +1,6 @@
 <?php
 
-class base_image_svg extends base_object
+class base_image_svg extends bors_object
 {
 	function can_be_empty() { return true; }
 

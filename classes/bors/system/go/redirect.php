@@ -1,6 +1,6 @@
 <?php
 
-class bors_system_go_redirect extends base_object
+class bors_system_go_redirect extends bors_object
 {
 	function title() { return object_property($this->object(), 'title'); }
 

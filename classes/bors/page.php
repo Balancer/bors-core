@@ -15,6 +15,13 @@ class bors_page extends base_page
 	var $_uses_script	= array();
 	var $_uses_style	= array();
 
+	function bors_di_classes()
+	{
+		return array_merge(parent::bors_di_classes(), array(
+			'bors_di_page',
+		));
+	}
+
 	function page_template_class()
 	{
 		if($class_name = config('templates_page_engine'))
@@ -335,7 +342,7 @@ class bors_page extends base_page
 
 	function template_metas($indent = '')
 	{
-		$result = [];
+		$result = array();
 
 		$data = bors_template::page_data($this);
 

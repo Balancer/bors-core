@@ -102,27 +102,31 @@ class bors_global extends bors_object_simple
 
 		$entered = true;
 
-		if(empty($this->changed_objects))
-			return $entered = false;
-
-//		include_once('engines/search.php');
-
-		foreach($this->changed_objects as $name => $x)
+		if(!empty($this->changed_objects))
 		{
-			$obj = $x;
-			if(!$obj->id() || empty($obj->changed_fields))
-				continue;
-
-			if($obj != $x)
+			foreach($this->changed_objects as $name => $x)
 			{
-				debug_hidden_log('__workaround', "strange object cache clean error: {$x} -> {$obj}");
 				$obj = $x;
+				if(!$obj->id() || empty($obj->changed_fields))
+					continue;
+
+				if($obj != $x)
+				{
+					debug_hidden_log('__workaround', "strange object cache clean error: {$x} -> {$obj}");
+					$obj = $x;
+				}
+
+				$obj->store();
 			}
 
-			$obj->store();
+			$this->changed_objects = false;
+			$entered = false;
 		}
 
-		$this->changed_objects = false;
+		if(!empty($GLOBALS['bors_data']['classes_cache_updates']))
+			foreach($GLOBALS['bors_data']['classes_cache_updates'] as $class_name => $x)
+				bors_class_loader::classes_cache_data_save($class_name, $x['cache_data'], $x['class_file']);
+
 		$entered = false;
 	}
 

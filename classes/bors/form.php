@@ -736,7 +736,15 @@ class bors_form extends bors_object
 		if($t = $this->attr('form_template'))
 			return $t;
 
-		$tpl_name = $this->_params['view']->layout()->forms_template_class();
+		$view = $this->_params['view'];
+
+		if(!$view)
+			$view = bors()->main_object();
+
+		if(!$view)
+			bors_throw("Undefined form view");
+
+		$tpl_name = $view->layout()->forms_template_class();
 		$form_template = bors_load($tpl_name, NULL);
 		if($form_template)
 			return $this->set_attr('form_template', $form_template);

@@ -151,6 +151,9 @@ class base_object extends bors_object_simple
 			if(!array_key_exists($attr, $this->defaults))
 				$this->defaults[$attr] = $val;
 
+		// Вызываем в холостую, чтобы получить автоматические поля и т.п.
+		bors_lib_orm::all_fields($this);
+
 		if(($config = $this->config_class()))
 		{
 			$this->config = new $config($this);
@@ -273,6 +276,15 @@ class base_object extends bors_object_simple
 
 			// Иначе — просто возвращаем значение.
 			return $this->attr[$method];
+		}
+
+		foreach($this->bors_di_classes() as $class_name)
+		{
+			if(method_exists($class_name, $method))
+			{
+				array_unshift($params, $this);
+				return call_user_func_array(array($class_name, $method), $params);
+			}
 		}
 
 		// Проверяем нет ли уже загруженного значения данных объекта

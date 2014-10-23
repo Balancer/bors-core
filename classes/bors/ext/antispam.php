@@ -1,6 +1,6 @@
 <?php
 
-class bors_ext_antispam extends base_object
+class bors_ext_antispam extends bors_object
 {
 	private $b8;
 	private $dbh;

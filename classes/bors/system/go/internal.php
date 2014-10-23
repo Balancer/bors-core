@@ -1,6 +1,6 @@
 <?php
 
-class bors_system_go_internal extends base_object
+class bors_system_go_internal extends bors_object
 {
 	function pre_show()
 	{

@@ -1,6 +1,6 @@
 <?php
 
-class bors_server extends base_object
+class bors_server extends bors_object
 {
 	var $_web_server = NULL;
 

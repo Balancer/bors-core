@@ -520,7 +520,7 @@ class bors_lcml extends bors_object
 		}
 
 		self::output_parse('<!--###use js="/_bors3rdp/js/foo.test.js"###-->');
-		$suite->assertContains('/_bors3rdp/js/foo.test.js', base_object::template_data('js_include'));
+		$suite->assertContains('/_bors3rdp/js/foo.test.js', bors_object::template_data('js_include'));
 
 	}
 

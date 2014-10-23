@@ -1,6 +1,6 @@
 <?php
 
-class bors_image_jpeg extends base_object
+class bors_image_jpeg extends bors_object
 {
 	function can_be_empty() { return true; }
 

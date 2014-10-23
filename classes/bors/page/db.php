@@ -12,6 +12,13 @@ class bors_page_db extends base_object_db
 	function _is_smart_def() { return true; }
 	function _body_template_ext_def() { return 'html'; }
 
+	function bors_di_classes()
+	{
+		return array_merge(parent::bors_di_classes(), array(
+			'bors_di_page',
+		));
+	}
+
 	function body_template_class()
 	{
 		return config('body_template_class', $this->page_template_class());

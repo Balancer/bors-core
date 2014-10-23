@@ -73,9 +73,9 @@ class bors_forms_multiselect extends bors_forms_element
 
 		$html .= "</select>";
 
-		$vcbs = base_object::template_data('form_checkboxes_list');
+		$vcbs = bors_object::template_data('form_checkboxes_list');
 		$vcbs[] = $name;
-		base_object::add_template_data('form_checkboxes_list', $vcbs);
+		bors_object::add_template_data('form_checkboxes_list', $vcbs);
 
 		return $html;
 	}

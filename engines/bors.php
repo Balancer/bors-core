@@ -179,7 +179,8 @@ function bors_exit_handler($message = '')
 
 	$bors_exit_doing = true;
 
-	echo $message;
+	if($message)
+		echo $message;
 
 	if(config('cache_static') && $message)
 		cache_static::drop(bors()->main_object());
@@ -187,11 +188,6 @@ function bors_exit_handler($message = '')
 	try
 	{
 		bors()->changed_save();
-
-		if(!empty($GLOBALS['bors_data']['classes_cache_updates']))
-			foreach($GLOBALS['bors_data']['classes_cache_updates'] as $class_name => $x)
-				bors_class_loader::classes_cache_data_save($class_name, $x['cache_data'], $x['class_file']);
-
 	}
 	catch(Exception $e)
 	{
@@ -199,10 +195,7 @@ function bors_exit_handler($message = '')
 		$error = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка сохранения</div>"));
 	}
 
-	if(function_exists('error_get_last')) // Заразо. Оно только с PHP 5 >= 5.2.0
-		$error = error_get_last();
-	else
-		$error = array('type' => 0);
+	$error = error_get_last();
 
     if ($error['type'] == 1)
     {

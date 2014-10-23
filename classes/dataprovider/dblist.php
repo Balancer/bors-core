@@ -1,6 +1,6 @@
 <?php
 
-class dataprovider_dblist extends base_object
+class dataprovider_dblist extends bors_object
 {
 	function storage_engine() { return NULL; }
 

@@ -42,10 +42,10 @@ function lcml_smilies_by_files($dir, &$txt)
 		$from = array();
 		$to   = array();
 
-        foreach(lcml_smilies_list($dir) as $code)
+        foreach(lcml_smilies_list($dir) as $code => $ext)
 		{
 			$from[] = '/(?<!"):'.preg_quote($code, '/').':/';
-			$to[]   = "<img src=\"".config('smilies_url')."/{$code}.gif\" alt=\":{$code}:\" title=\":{$code}:\" class=\"smile\" />";
+			$to[]   = "<img src=\"".config('smilies_url')."/{$code}.{$ext}\" alt=\":{$code}:\" title=\":{$code}:\" class=\"smile\" />";
 		}
 
 //		if(config('is_developer')) { print_dd($from); print_dd($to); }
@@ -93,8 +93,8 @@ function lcml_smilies_load($dir, $prefix="")
             {
                 while(($file = readdir($dh)) !== false) 
                 {
-                    if(substr($file,-4)=='.gif')
-                        $list[] = $prefix.substr($file,0,-4);
+                    if(preg_match('/^(.+)\.(gif|png|jpe?g)$/', $file, $m))
+                        $list[$prefix.$m[1]] = $m[2];
                     elseif(filetype("$dir/$file")=='dir' && substr($file,0,1)!='.')
                         $list = array_merge($list, lcml_smilies_load("$dir/$file", "$file/"));
                 }

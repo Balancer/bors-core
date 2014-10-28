@@ -15,10 +15,14 @@ class bors_forms_element
 		$params = $this->params;
 
 		$name = defval($params, 'name');
-		$def  = defval($params, 'def');
-		$value = defval($params, $param_name);
 
 		$object = object_property($form, 'object');
+
+		if($val = bors_global::gvar('override_form_values.'.$name))
+			return $val;
+
+		$def  = defval($params, 'def');
+		$value = defval($params, $param_name);
 
 		if(!array_key_exists($param_name, $params))
 		{

@@ -228,7 +228,7 @@ class blib_http_abstract
 		$curl_options = array(
 			CURLOPT_TIMEOUT => $timeout,
 			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_MAXREDIRS => 5,
+			CURLOPT_MAXREDIRS => 10,
 			CURLOPT_ENCODING => 'gzip,deflate',
 //			CURLOPT_RANGE => '0-4095',
 			CURLOPT_REFERER => defval($params, 'referer', $original_url),

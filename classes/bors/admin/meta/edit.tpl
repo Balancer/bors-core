@@ -26,6 +26,7 @@
 {block name="admin_meta_edit_body_end"}{/block}
 
 {if $this->id()
+	&& $target->access()
 	&& $target->access()->get('can_delete')
 	&& !$this->get('__skip_delete')
 }

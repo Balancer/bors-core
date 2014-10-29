@@ -73,6 +73,7 @@ class base_rss extends base_page
 			if($add = $rss->item_additional($o, $rss))
 				$item->additionalElements = $add;
 
+/*
 			if($e = $rss->item_rss_enclosure($o))
 			{
 	 			$item->enclosure = new EnclosureItem();
@@ -81,7 +82,6 @@ class base_rss extends base_page
 				if($s = @$e['size'])
 					$item->enclosure->length = $s;
 			}
-/*
 			if($image = $this->item_image($o, $rss))
 			{
 				print_dd($image);

@@ -38,6 +38,11 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 		return $this->_value[$key];
 	}
 
+	function first()
+	{
+		return reset($this->_value);
+	}
+
 	function append_array(blib_array $array)
 	{
 		$this->_value += $array->value();

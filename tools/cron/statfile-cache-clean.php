@@ -20,7 +20,7 @@ if(!bors_thread_lock('statfile-cache-clean', 600))
 if(!config('cache_database'))
 {
 	bors_thread_unlock('statfile-cache-clean');
-	exit("");
+	exit("no db configure\n");
 }
 
 config_set('do_not_exit', true);

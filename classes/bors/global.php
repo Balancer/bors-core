@@ -198,4 +198,8 @@ class bors_global extends bors_object_simple
 
 //		var_dump($GLOBALS);
 	}
+
+	static $global_data = array();
+	static function gvar($name, $def = NULL) { return array_key_exists($name, self::$global_data) ? self::$global_data[$name] : $def; }
+	static function set_gvar($name, $value) { return self::$global_data[$name] = $value; }
 }

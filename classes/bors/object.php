@@ -292,4 +292,15 @@ class bors_object extends base_object
 
 		return bors_throw("Can't find property $property_name in ".$this->class_name());
 	}
+
+	static function find($where = array())
+	{
+		$class_name = get_called_class();
+		$finder = new b2_core_find($class_name);
+
+		if($where)
+			$finder->where($where);
+
+		return $finder;
+	}
 }

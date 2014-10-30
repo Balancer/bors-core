@@ -124,7 +124,7 @@ class cache_static extends bors_object_db
 	}
 
 	//TODO: можно делать static, если static будет у родителя. Или переименовать.
-	static function save_object($object, $content, $expire_time = false)
+	static function save_object($object, $content, $ttl = false)
 	{
 		$object_id = $object->id();
 
@@ -151,6 +151,9 @@ class cache_static extends bors_object_db
 //		if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
 //			bors_debug::syslog('__cache_file_register', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache=".($cache?'yes':'no'));
 
+		$expire_time = time() + ($ttl === false ? $object->cache_static() : $ttl);
+//		bors_debug::syslog('00time', date('r', $expire_time));
+
 		if($cache)
 		{
 //			echo "Update $file<br/>\n";
@@ -159,7 +162,7 @@ class cache_static extends bors_object_db
 			$cache->set_target_id($object->id(), true);
 			$cache->set_target_page($object->page(), true);
 			$cache->set_last_compile(time(), true);
-			$cache->set_expire_time(time() + ($expire_time === false ? $object->cache_static() : $expire_time), true);
+			$cache->set_expire_time($expire_time, true);
 			$cache->set_recreate($object->cache_static_recreate(), true);
 
 			if($object_uri)
@@ -185,7 +188,7 @@ class cache_static extends bors_object_db
 				'target_id' => $object->id(),
 				'target_page' => $object->page(),
 				'last_compile' => time(),
-				'expire_time' => time() + ($expire_time === false ? $object->cache_static() : $expire_time),
+				'expire_time' => $expire_time,
 				'recreate' => $object->cache_static_recreate(),
 				'bors_site' => BORS_SITE,
 			));
@@ -219,8 +222,11 @@ class cache_static extends bors_object_db
 			if(is_file($file))
 			{
 				chmod($file, 0666);
-				if($mt = $object->modify_time())
-					touch($file, $mt);
+
+				if(!($mt = $object->modify_time()))
+					$mt = time();
+
+				touch($file, $mt, $expire_time);
 			}
 		}
 

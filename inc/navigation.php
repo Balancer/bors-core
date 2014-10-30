@@ -27,7 +27,7 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 		if(!empty($SESSION))
 			$body .= '<pre>$_SESSION:</pre>'.print_r($_SESSION, true)."<br/>\n";
 
-		$body .= bors_debug::trace();
+		$body .= bors_debug::trace(1, true);
 
 		if($x = @bors()->tmp_go_obj)
 			$body .= '<pre>'.bors_objects_helper::object_info($x).'</pre>';

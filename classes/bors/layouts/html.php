@@ -31,6 +31,7 @@ class bors_layouts_html extends bors_object
 			}
 		}
 
+		bors_debug::syslog('layout-error', "Can't find layout module $name");
 		return NULL;
 	}
 

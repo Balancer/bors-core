@@ -135,10 +135,11 @@ class bors_storage_htsu extends bors_storage
 		if(!($file = $object->get('htsu_file')))
 			$file = $this->__find($object);
 
-//		if(config('is_developer')) echo "Found hts at $file<br/>\n";
 
 		if(!$file)
 			return $object->set_is_loaded(false);
+
+//		if(config('is_developer')) echo "Found hts at $file<br/>\n";
 
 		// По дефолту в index.hts разрешёны HTML и все BB-теги.
 		$object->set_html_disable(false, false);

@@ -141,8 +141,15 @@ class base_object extends bors_object_simple
 	}
 
 	private $config;
+	private $___was_configured = false;
+
 	function _configure()
 	{
+		if($this->___was_configured)
+			return;
+
+		$this->___was_configured = true;
+
 		foreach($this->properties_preset() as $name => $val)
 			if(!property_exists($this, $name) && !property_exists($this, "{$name}_ec"))
 				$this->$name = $val;
@@ -152,7 +159,8 @@ class base_object extends bors_object_simple
 				$this->defaults[$attr] = $val;
 
 		// Вызываем в холостую, чтобы получить автоматические поля и т.п.
-		bors_lib_orm::all_fields($this);
+		if($this->storage())
+			bors_lib_orm::all_fields($this);
 
 		if(($config = $this->config_class()))
 		{
@@ -1077,7 +1085,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		else
 			$obj = $this;
 
-		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii(); 
+		if($obj->storage())
+			return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii(); 
+
+		return NULL;
 	}
 
 	function _admin_url_def() { return $this->edit_url(); }

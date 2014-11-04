@@ -39,16 +39,29 @@ class bors_themes_meta extends bors_object
 				$class_file = $reflector->getFileName();
 			}
 
-			$template_file = str_replace('.php', '.tpl.php', $class_file);
-			if(file_exists($template_file))
-				$tpl_found = $template_file;
+			if(!$tpl_found)
+			{
+				$template_file = str_replace('.php', '.tpl.php', $class_file);
+				if(file_exists($template_file))
+				{
+					$templater = 'bors_templaters_php';
+					$tpl_found = $template_file;
+				}
+
+				$template_file = str_replace('.php', '.tpl', $class_file);
+				if(file_exists($template_file))
+				{
+					$templater = 'bors_templates_smarty';
+					$tpl_found = $template_file;
+				}
+			}
 
 			$css_file = str_replace('.php', '.inc.css', $class_file);
 			if(file_exists($css_file))
 				$css_found = $css_file;
 		}
 
-		return array('tpl' => $tpl_found, 'css' => $css_found);
+		return array('templater' => $templater, 'tpl' => $tpl_found, 'css' => $css_found);
 	}
 
 	function render()
@@ -59,7 +72,8 @@ class bors_themes_meta extends bors_object
 		if(!empty($files['css']))
 			$this->page_data['style'] = array_merge($this->page_data['style'], array(file_get_contents($files['css'])));
 
+		$this->page_data['this'] = $this->object();
 
-		return bors_templaters_php::fetch($files['tpl'], $this->page_data);
+		return call_user_func(array($files['templater'], 'fetch'), $files['tpl'], $this->page_data);
 	}
 }

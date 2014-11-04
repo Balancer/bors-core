@@ -404,7 +404,16 @@ function bors_load_ex($class_name, $id, $attrs)
 	return $x;
 }
 
-function bors_load_uri($uri) { return object_load($uri); }
+function bors_load_uri($uri)
+{
+	static $loaded = array();
+
+	if(!empty($loaded[$uri]))
+		return $loaded[$uri];
+
+	return $loaded[$uri] = object_load($uri);
+}
+
 function bors_find_all($class_name, $where) { return objects_array($class_name, $where); }
 function bors_find_first($class_name, $where) { return objects_first($class_name, $where); }
 

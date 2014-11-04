@@ -3,6 +3,7 @@
 class bors_admin_engine extends bors_object
 {
 	function object() { return $this->id(); }
+
 	function real_object()
 	{
 		$obj = $this->object();
@@ -10,6 +11,12 @@ class bors_admin_engine extends bors_object
 			$obj = object_property($this->object(), 'real_object', $this->object());
 
 		return $obj;
+	}
+
+	function admin_object()
+	{
+		$obj = $this->object();
+		return object_property($this->object(), 'admin_object', $this->object());
 	}
 
 	function url() { return $this->url_ex($this->page()); }
@@ -34,7 +41,10 @@ class bors_admin_engine extends bors_object
 		if($url = $obj->get('edit_url'))
 			return $url;
 
-		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
+		if($obj->storage())
+			return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
+
+		return NULL;
 	}
 
 	function edit_url()
@@ -47,15 +57,20 @@ class bors_admin_engine extends bors_object
 		if($url = $obj->get('admin_url'))
 			return $url;
 
-		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
+		if($obj->storage())
+			return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
+
+		return NULL;
 	}
 
 	function delete_url()
 	{
-		if(method_exists($obj = $this->real_object(), 'delete_url'))
+		$obj = $this->admin_object();
+
+		if(method_exists($obj, 'delete_url'))
 			return $obj->delete_url();
 
-		$ref = urlencode($obj->admin()->parent_delete_url());
+		$ref = urlencode($this->parent_delete_url());
 
 		//TODO: придумать лучший вариант определения. Отказаться от has_smart_field.
 		if(method_exists($obj, 'fields') && $obj->has_smart_field('is_deleted'))
@@ -66,15 +81,16 @@ class bors_admin_engine extends bors_object
 
 	function parent_delete_url()
 	{
+
 		$obj = $this->real_object();
-		$obj_admin_url = $obj->admin()->url();
+		$obj_admin_url = $this->url();
 
 		$request_url = bors()->request()->url();
 		// Хак для edit-smart: http://admin.aviaport.ru/_bors/admin/edit-smart/?object=aviaport_directory_airline_xref_plane__3
 		if($x = $this->get('object'))
 		{
 			$obj = $x;
-			$obj_admin_url = $obj->admin()->url();
+			$obj_admin_url = $this->admin()->url();
 			$request_url = $x->get('url');
 		}
 
@@ -93,9 +109,17 @@ class bors_admin_engine extends bors_object
 			return $url;
 
 		// Иначе берём первого родителя из ссылки (если есть)
-		$ps1 = object_property(bors_load_uri($obj_admin_url), 'parents');
-		if($p1 = $ps1[0])
-			return $p1;
+		if($obj_admin_url)
+		{
+			if($this->url() != $obj_admin_url)
+				$obj = bors_load_uri($obj_admin_url);
+			else
+				$obj = $this;
+
+			$ps1 = object_property($this, 'parents');
+			if($p1 = $ps1[0])
+				return $p1;
+		}
 
 //WTF?
 //		$ps2 = object_property(bors_load_uri($p1), 'parents');

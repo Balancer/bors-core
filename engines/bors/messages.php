@@ -95,7 +95,7 @@ function bors_message($text, $params=array())
 
 	$data['url_engine'] = 'url_calling';
 
-	$page_class_name = defval($params, 'page_class_name', 'base_page');
+	$page_class_name = defval($params, 'page_class_name', 'bors_page');
 	$page = new $page_class_name(NULL);
 	$page->_configure();
 	try { $page->template_data_fill(); }
@@ -137,7 +137,14 @@ function bors_message($text, $params=array())
 		'error_message'   => session_var('error_message'),
 	));
 
-	$message = bors_templates_smarty::fetch($template, $data);
+	try
+	{
+		$message = bors_templates_smarty::fetch($template, $data);
+	}
+	catch(Exception $e)
+	{
+		$message = NULL;
+	}
 
 	if(!$message) // Если всё плохо
 		$message = $body;

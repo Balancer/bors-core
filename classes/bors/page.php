@@ -210,7 +210,6 @@ class bors_page extends base_page
 */
 	function pre_show()
 	{
-
 		if($this->is_smart())
 		{
 			$class_file_base = str_replace('.php', '', $this->class_file());

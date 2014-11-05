@@ -17,6 +17,9 @@ class bors_tools_ajax_module extends bors_object
 
 		$object->set_args($params);
 
+		if(!$object->can_read())
+			bors_throw("Module access denied for ".$object->internal_uri_ascii());
+
 		$html = $object->html();
 
 		if(!$html)
@@ -24,4 +27,6 @@ class bors_tools_ajax_module extends bors_object
 
 		return $html;
 	}
+
+	function can_read() { return true; }
 }

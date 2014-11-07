@@ -239,7 +239,7 @@ class bors_object_db extends base_object_db
 		if(bors_load($url))
 			return $url;
 
-		if($obj->storage())
+		if($this->storage())
 			return $admin.'/_bors/admin/edit-smart/?object='.$this->internal_uri_ascii(); 
 
 		return NULL;

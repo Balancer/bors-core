@@ -89,13 +89,6 @@ class bors_page_db extends base_page_db
 		return array();
 	}
 
-	private $page_data = array();
-
-	function set_page_datum($key, $value) { $this->page_data[$key] = $value; }
-	function page_datum($key, $default = NULL) { return empty($this->page_data[$key]) ? $default : $this->page_data[$key]; }
-
-	function page_data() { return array(); }
-
 	function merge_page_data_array($key, $merge_values)
 	{
 		$this->set_page_datum($key, array_merge($this->page_datum($key, array()), $merge_values));

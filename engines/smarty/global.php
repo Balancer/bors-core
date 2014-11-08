@@ -53,7 +53,6 @@ function template_css($css, $prepend = false)
 	if(!empty($included[$hash]))
 		return;
 
-
 	if($main_object = bors()->main_object())
 	{
 		if($prepend)

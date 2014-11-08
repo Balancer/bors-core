@@ -47,7 +47,7 @@ function object_load($class, $object_id=NULL, $args=array())
 	if($object = class_load($class, $object_id, $args))
 		return $object;
 
-	if($object = bors_objects_loaders_meta::find($class, $object_id))
+	if($object = bors_objects_loaders_meta::object_load($class, $object_id))
 		return $object;
 
 	return NULL;

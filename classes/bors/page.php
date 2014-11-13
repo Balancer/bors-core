@@ -327,9 +327,11 @@ class bors_page extends base_page
 		}
 	}
 
+	function _project_class_def() { return 'bors_project'; }
+
 	function _project_def()
 	{
-		return bors_load('bors_project', NULL);
+		return bors_load($this->project_class(), NULL);
 	}
 
 	static function link_rel($rel, $href)

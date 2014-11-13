@@ -29,9 +29,9 @@ class bors_themes_meta extends bors_object
 	{
 		// Ищем файл .tpl.php рядом с .php файлом класса от текущего и вверх по родительским.
 		$tpl_found = NULL;
-		$css_found = NULL;
+		$css_found = array();
 
-		for($class_name = get_class($this); $class_name && !($tpl_found && $css_found); $class_name = get_parent_class($class_name))
+		for($class_name = get_class($this); $class_name; $class_name = get_parent_class($class_name))
 		{
 			if(!($class_file = @$class_files[$class_name]))
 			{
@@ -58,7 +58,7 @@ class bors_themes_meta extends bors_object
 
 			$css_file = str_replace('.php', '.inc.css', $class_file);
 			if(file_exists($css_file))
-				$css_found = $css_file;
+				$css_found[] = $css_file;
 		}
 
 		return array('templater' => $templater, 'tpl' => $tpl_found, 'css' => $css_found);
@@ -70,7 +70,10 @@ class bors_themes_meta extends bors_object
 		$files = $this->template_files();
 
 		if(!empty($files['css']))
-			$this->page_data['style'] = array_merge($this->page_data['style'], array(file_get_contents($files['css'])));
+		{
+			foreach($files['css'] as $css)
+				$this->page_data['style'] = array_merge($this->page_data['style'], array(file_get_contents($css)));
+		}
 
 		$this->page_data['this'] = $this->object();
 

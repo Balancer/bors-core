@@ -12,7 +12,7 @@ class bors_admin_edit_smart extends bors_admin_page
 		return array($obj->admin_parent_url());
 	}
 
-	function title() { return ec('Редактор ').($this->object()->class_title_rp()).ec(' «').($this->object()->title()).ec('»'); }
+	function title() { return ec('Редактор ').object_property($this->object(), 'class_title_rp').ec(' «').object_property($this->object(), 'title').ec('»'); }
 	function nav_name() { return $this->object() ? $this->object()->nav_name() : ec('редактор'); }
 
 	function can_be_empty() { return false; }

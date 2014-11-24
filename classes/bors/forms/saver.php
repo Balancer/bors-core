@@ -63,14 +63,16 @@ class bors_forms_saver extends bors_object_simple
 				)
 			);
 
-		if(empty($data['subaction']))
+		if(preg_match('/^\w+$/', @$data['act']))
+			$method = '_'.$data['act'];
+		elseif(empty($data['subaction']))
 			$method = '';
 		else
 			$method = '_'.addslashes($data['subaction']);
 
 		if(method_exists($object, $method = 'on_action'.$method))
-			if($object->$method($data))
-				return true;
+			if($ret = $object->$method($data))
+				return $ret;
 
 		$object->pre_set($data);
 

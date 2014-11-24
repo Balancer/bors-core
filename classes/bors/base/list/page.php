@@ -1,6 +1,6 @@
 <?php
 
-class base_list_page extends base_page
+class base_list_page extends bors_page
 {
 	function bors_di_classes()
 	{

@@ -372,7 +372,7 @@ class bors_lcml extends bors_object
 			{
 				$map = $GLOBALS['bors.composer.class_loader']->getClassMap();
 				$lcml_parsers = array_filter(array_keys($map), function($class_name) use ($type) {
-					return preg_match('/^lcml_parsers_'.$type.'_/', $class_name);
+					return preg_match('/^lcml_parser_'.$type.'_/', $class_name);
 				});
 
 				foreach($lcml_parsers as $class_name)
@@ -387,7 +387,7 @@ class bors_lcml extends bors_object
 		}
 
 		foreach($parser_classes[$type] as $foo => $parser)
-			$text = $parser->parse($text, $this);
+			$text = $parser->parse($text);
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
 			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type parsers execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);

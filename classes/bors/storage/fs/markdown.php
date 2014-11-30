@@ -72,17 +72,24 @@ class bors_storage_fs_markdown extends bors_storage
 			$content = $m[2];
 			$data = bors_data_yaml::parse($m[1]);
 
-//TODO: Надо подумать, нужны ли такие сокращённые записи.
-/*
-			foreach(array('Date' => 'create_time', 'Config' => 'config_class') as $md => $field)
+			foreach(array(
+					'Date' => array(
+						'create_time',
+						'strtotime'
+					),
+//					'Config' => 'config_class'
+			) as $md => $field)
 			{
 				if(!empty($data[$md]))
 				{
-					$data[$field] = strtotime($data[$md]);
+					if(is_array($field))
+						$data[$field[0]] = call_user_func($field[1], $data[$md]);
+					else
+						$data[$field] = strtotime($data[$md]);
+
 					unset($data[$md]);
 				}
 			}
-*/
 
 			foreach($data as $key => $value)
 				$object->set_attr($key, $value);
@@ -97,6 +104,12 @@ class bors_storage_fs_markdown extends bors_storage
 
 		if(!$object->title_true())
 			return $object->set_is_loaded(false);
+
+// Разные трактовки переменных в Markdown:
+//	* http://assemble.io/docs/Markdown.html
+//	* http://docs.runmyprocess.com/Training/Markdown_Template
+//	* http://johnmacfarlane.net/pandoc/README.html
+//		$content = 
 
 		$object->set_source($content, false);
 

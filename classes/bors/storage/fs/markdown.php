@@ -64,8 +64,28 @@ class bors_storage_fs_markdown extends bors_storage
 
 		$object->set_markup('bors_markup_markdown', false);
 
+
 		$content = $object->cs_f2i(file_get_contents($file));
-		if(preg_match('/(^|\n)(.+?)\n(=+)\n/s', $content, $m))
+
+		if(preg_match("/^---\n(.+?)\n---\n(.+)$/s", $content, $m))
+		{
+			$content = $m[2];
+			$data = bors_data_yaml::parse($m[1]);
+
+			if(!empty($data['Date']))
+			{
+				$data['create_time'] = strtotime($data['Date']);
+				unset($data['Date']);
+			}
+
+			$object->data = array_merge($object->data, $data);
+		}
+
+		if(preg_match('/^#\s+(.+?)\s+#$/m', $content, $m))
+			$object->set_title($m[2], false);
+		elseif(preg_match('/^#\s+(.+)$/m', $content, $m))
+			$object->set_title($m[2], false);
+		elseif(preg_match('/(^|\n)(.+?)\n(=+)\n/s', $content, $m))
 			$object->set_title($m[2], false);
 
 		if(!$object->title_true())

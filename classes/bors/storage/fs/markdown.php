@@ -17,7 +17,7 @@ class bors_storage_fs_markdown extends bors_storage
 
 		$rel = secure_path(str_replace(bors()->server()->root(), '/', $dir));
 
-		if($base && is_file($file = "{$dir}/{$base}.mdml"))
+		if($base && is_file($file = "{$dir}/{$base}.md"))
 			return $file;
 
 		if($base && is_file($file = "{$dir}/{$base}"))
@@ -26,7 +26,7 @@ class bors_storage_fs_markdown extends bors_storage
 		if(is_file($file = "{$dir}/index.markdown"))
 			return $file;
 
-		if(is_file($file = "{$dir}.mdml"))
+		if(is_file($file = "{$dir}.md"))
 			return $file;
 
 		if(is_file($file = "{$dir}.markdown"))
@@ -34,22 +34,22 @@ class bors_storage_fs_markdown extends bors_storage
 
 		foreach(bors_dirs() as $d)
 		{
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}.mdml")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}.md")))
 				return $file;
 
-			if($base && is_file($file = secure_path("{$d}/data/fs/{$rel}/{$base}.mdml")))
+			if($base && is_file($file = secure_path("{$d}/webroot/{$rel}/{$base}.md")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}/main.mdml")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}/main.md")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}/index.mdml")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}/index.md")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}.markdown")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}.markdown")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}/index.markdown")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}/index.markdown")))
 				return $file;
 		}
 

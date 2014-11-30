@@ -72,13 +72,20 @@ class bors_storage_fs_markdown extends bors_storage
 			$content = $m[2];
 			$data = bors_data_yaml::parse($m[1]);
 
-			if(!empty($data['Date']))
+//TODO: Надо подумать, нужны ли такие сокращённые записи.
+/*
+			foreach(array('Date' => 'create_time', 'Config' => 'config_class') as $md => $field)
 			{
-				$data['create_time'] = strtotime($data['Date']);
-				unset($data['Date']);
+				if(!empty($data[$md]))
+				{
+					$data[$field] = strtotime($data[$md]);
+					unset($data[$md]);
+				}
 			}
+*/
 
-			$object->data = array_merge($object->data, $data);
+			foreach($data as $key => $value)
+				$object->set_attr($key, $value);
 		}
 
 		if(preg_match('/^#\s+(.+?)\s+#$/m', $content, $m))

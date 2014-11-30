@@ -96,9 +96,9 @@ class bors_storage_fs_markdown extends bors_storage
 		}
 
 		if(preg_match('/^#\s+(.+?)\s+#$/m', $content, $m))
-			$object->set_title($m[2], false);
+			$object->set_title($m[1], false);
 		elseif(preg_match('/^#\s+(.+)$/m', $content, $m))
-			$object->set_title($m[2], false);
+			$object->set_title($m[1], false);
 		elseif(preg_match('/(^|\n)(.+?)\n(=+)\n/s', $content, $m))
 			$object->set_title($m[2], false);
 

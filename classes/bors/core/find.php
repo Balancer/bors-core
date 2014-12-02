@@ -370,6 +370,20 @@ class bors_core_find
 		return $this->where("$property_name LIKE", $value);
 	}
 
+	function like_id($property_name, $value)
+	{
+		$property_name = $this->first_parse($property_name);
+		$property_name = $this->stack_parse($property_name);
+		$property_name = $this->class_parse($property_name);
+
+		if(preg_match('/^\d+$/', $value))
+			$this->where("($property_name LIKE '%{$value}%' OR ".$this->class_parse('id')."={$value})");
+		else
+			$this->where("$property_name LIKE", $value);
+
+		return $this;
+	}
+
 	function like_any($properties_array, $value)
 	{
 		$q = array();
@@ -380,6 +394,23 @@ class bors_core_find
 			$property_name = $this->class_parse($property_name);
 			$q[] = "$property_name LIKE '%".addslashes($value)."%'";
 		}
+
+		return $this->where('('.join(' OR ', $q).')');
+	}
+
+	function like_any_id($properties_array, $value)
+	{
+		$q = array();
+		foreach($properties_array as $property_name)
+		{
+			$property_name = $this->first_parse($property_name);
+			$property_name = $this->stack_parse($property_name);
+			$property_name = $this->class_parse($property_name);
+			$q[] = "$property_name LIKE '%".addslashes($value)."%'";
+		}
+
+		if(preg_match('/^\d+$/', $value))
+			$q[] = $this->class_parse('id').'='.$value;
 
 		return $this->where('('.join(' OR ', $q).')');
 	}

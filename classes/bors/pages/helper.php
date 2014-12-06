@@ -82,12 +82,20 @@ class bors_pages_helper
 
 		$parsed_sorts = array();
 
+		$model_class = $view->get('model_class');
+
+		if(!$model_class)
+			$model_class = $view->get('main_class');
+
+		if(!$model_class)
+			bors_throw("Can't get model class for ".$view->debug_title());
+
 		foreach($sorts as $f => $p)
 		{
 			if(is_numeric($f))
 			{
 				$f = $p;
-				$x = bors_lib_orm::parse_property($view->model_class(), $f);
+				$x = bors_lib_orm::parse_property($model_class, $f);
 				$t = defval($x, 'title', $f);
 			}
 

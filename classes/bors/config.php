@@ -24,6 +24,8 @@ class bors_config extends base_config
 
 	function pre_show()
 	{
+		$this->template_init();
+
 		return false;
 	}
 }

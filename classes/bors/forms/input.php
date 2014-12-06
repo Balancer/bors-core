@@ -28,6 +28,8 @@ class bors_forms_input extends bors_forms_element
 				echo "<label$label_css for=\"$id\">{$label}</label>\n";
 		}
 
+		$type = defval($params, 'type', 'text');
+
 		// Если у нас используется валидация данных формы
 		if($form->attr('ajax_validate'))
 		{
@@ -93,7 +95,7 @@ class bors_forms_input extends bors_forms_element
 
 		$class = join(' ', $class);
 
-		$result .= "<input type=\"text\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
+		$result .= "<input type=\"{$type}\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
 
 		foreach(explode(' ', 'class id maxlength size style placeholder') as $p)
 			if(!empty($$p))

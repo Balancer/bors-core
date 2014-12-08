@@ -87,8 +87,12 @@ class bors_pages_helper
 		if(!$model_class)
 			$model_class = $view->get('main_class');
 
+		// Для использования в bors_pages_module_paginated_items::make_sortable_th
+		if(!$model_class && ($items = $view->args('items')))
+			$model_class = get_class($items[0]);
+
 		if(!$model_class)
-			bors_throw("Can't get model class for ".$view->debug_title());
+			bors_throw("Can't get model class for view ".$view->debug_title());
 
 		foreach($sorts as $f => $p)
 		{

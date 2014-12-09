@@ -38,16 +38,20 @@ class bors_forms_submit extends bors_forms_element
 				break;
 
 			default:
+				$attrs = array();
+				foreach(explode(' ', 'style onClick onclick name') as $p)
+					if(!empty($$p))
+						$attrs[] = "$p=\"{$$p}\"";
+
 				if($image_src = defval($params, 'image'))
 					$html .= "<input type=\"image\" src=\"".htmlspecialchars($image_src)."\" value=\"".htmlspecialchars($value)."\"";
 				else
-					$html .= "<input type=\"submit\" value=\"".htmlspecialchars($value)."\"";
+//					"<input type=\"submit\" value=\"".htmlspecialchars($value)."\"";
+					$html .= sprintf($this->form()->templater()->form_element_submit_html(),
+						htmlspecialchars($value),
+						join(" ", $attrs).' '.$css_class_html
+					);
 
-				foreach(explode(' ', 'style onClick onclick name') as $p)
-					if(!empty($$p))
-						$html .= " $p=\"{$$p}\"";
-
-				$html .= "{$css_class_html} />";
 				break;
 		}
 

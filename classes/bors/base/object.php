@@ -1744,7 +1744,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return defval($desc, 'title', $field_name);
 	}
 
-	function add_keyword($keyword, $up)
+	function add_keyword($keyword, $up = true)
 	{
 		$keyword = trim($keyword);
 		$keywords = $this->keywords();

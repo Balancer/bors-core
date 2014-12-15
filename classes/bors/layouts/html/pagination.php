@@ -6,6 +6,6 @@ class bors_layouts_html_pagination extends bors_module
 	{
 		$object = $this->args('object');
 
-		return $object->pages_links();
+		return $object->pages_links('pages_select', $this->args('pages_title'));
 	}
 }

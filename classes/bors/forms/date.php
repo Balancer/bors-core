@@ -160,14 +160,13 @@ class bors_forms_date extends bors_forms_element
 		{
 			template_jquery();
 			$html .= ec("&nbsp;<label><input name=\"{$name}_is_null\" type=\"checkbox\"".($can_drop && empty($value) ? " checked=\"checked\"" : "")." />&nbsp;не задано</label>");
-			template_js("$(function () {
+			jquery::on_ready("
 $('input[name=\"{$name}_is_null\"]').change(function() {
 	var f=$(this).is(':checked')
 	$('select[name^=\"$name\"]').each(function(){
 		el=$(this)
 		if(f) el.attr('disabled', 'disabled'); else el.removeAttr('disabled')
 	})
-})
 })");
 		}
 

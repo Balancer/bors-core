@@ -68,7 +68,6 @@ function get_browser_info($user_agent, $log_unknown = true)
 	// ************************************************************
 	// Обнаруживаем ОС и устройства
 	// ************************************************************
-
 	if(!$os)
 	{
 		if(preg_match('!Android!i', $user_agent))
@@ -77,6 +76,8 @@ function get_browser_info($user_agent, $log_unknown = true)
 			if(preg_match('!Android ([\d\.]+);!', $user_agent, $m))
 				$osv = $m[1];
 		}
+		elseif(preg_match('!tizen!i', $user_agent))
+			$os = 'Tizen';
 		elseif(preg_match('!FreeBSD!', $user_agent))
 			$os = 'FreeBSD';
 		elseif(preg_match('!Mint!', $user_agent))

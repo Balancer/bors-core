@@ -47,7 +47,7 @@ function object_load($class, $object_id=NULL, $args=array())
 	if($object = class_load($class, $object_id, $args))
 		return $object;
 
-	if($object = bors_objects_loaders_meta::find($class, $object_id))
+	if($object = bors_objects_loaders_meta::object_load($class, $object_id))
 		return $object;
 
 	return NULL;
@@ -404,7 +404,16 @@ function bors_load_ex($class_name, $id, $attrs)
 	return $x;
 }
 
-function bors_load_uri($uri) { return object_load($uri); }
+function bors_load_uri($uri)
+{
+	static $loaded = array();
+
+	if(!empty($loaded[$uri]))
+		return $loaded[$uri];
+
+	return $loaded[$uri] = object_load($uri);
+}
+
 function bors_find_all($class_name, $where) { return objects_array($class_name, $where); }
 function bors_find_first($class_name, $where) { return objects_first($class_name, $where); }
 

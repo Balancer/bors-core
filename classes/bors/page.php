@@ -15,6 +15,13 @@ class bors_page extends base_page
 	var $_uses_script	= array();
 	var $_uses_style	= array();
 
+	function bors_di_classes()
+	{
+		return array_merge(parent::bors_di_classes(), array(
+			'bors_di_page',
+		));
+	}
+
 	function page_template_class()
 	{
 		if($class_name = config('templates_page_engine'))
@@ -203,7 +210,6 @@ class bors_page extends base_page
 */
 	function pre_show()
 	{
-
 		if($this->is_smart())
 		{
 			$class_file_base = str_replace('.php', '', $this->class_file());
@@ -321,9 +327,11 @@ class bors_page extends base_page
 		}
 	}
 
+	function _project_class_def() { return 'bors_project'; }
+
 	function _project_def()
 	{
-		return bors_load('bors_project', NULL);
+		return bors_load($this->project_class(), NULL);
 	}
 
 	static function link_rel($rel, $href)
@@ -335,7 +343,7 @@ class bors_page extends base_page
 
 	function template_metas($indent = '')
 	{
-		$result = [];
+		$result = array();
 
 		$data = bors_template::page_data($this);
 

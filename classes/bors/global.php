@@ -77,7 +77,7 @@ class bors_global extends bors_object_simple
 	function add_changed_object($obj)
 	{
 //		echo "Add {$obj->debug_title()}<Br/>"; echo debug_trace();
-		$this->changed_objects[$obj->internal_uri()] = $obj;
+		$this->changed_objects[$obj->internal_uri_ascii()] = $obj;
 	}
 
 	function drop_changed_object($obj)
@@ -198,4 +198,8 @@ class bors_global extends bors_object_simple
 
 //		var_dump($GLOBALS);
 	}
+
+	static $global_data = array();
+	static function gvar($name, $def = NULL) { return array_key_exists($name, self::$global_data) ? self::$global_data[$name] : $def; }
+	static function set_gvar($name, $value) { return self::$global_data[$name] = $value; }
 }

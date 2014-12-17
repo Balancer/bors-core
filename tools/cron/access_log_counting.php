@@ -22,7 +22,9 @@ foreach(objects_array('bors_access_log', array('was_counted' => 0)) as $x)
 {
 	if(!$x->is_bot() && ($target = $x->target()))
 	{
-		bors_external_referer::register($x->server_uri(), $x->referer(), $target);
+		try {
+			bors_external_referer::register($x->server_uri(), $x->referer(), $target);
+		} catch(Exception $e) { }
 #		$target->visits_inc();
 		$x->set_was_counted(1, true);
 		echo "+";

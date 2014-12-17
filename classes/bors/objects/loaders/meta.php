@@ -14,7 +14,7 @@ class bors_objects_loaders_meta extends bors_object
 		}
 	}
 
-	static function find($class_name, $object_id)
+	static function object_load($class_name, $object_id)
 	{
 //		echo "Find $class_name ($object_id)<Br/>\n";
 		foreach(self::$class_loaders as $class_loader)

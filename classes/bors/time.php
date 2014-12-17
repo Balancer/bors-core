@@ -5,7 +5,7 @@
 	Тупой вариант на базе unix timestamp
 */
 
-class bors_time_ts extends bors_time_meta
+class bors_time extends bors_time_meta
 {
 	/**
 		Если параметр - NULL, то текущее время
@@ -28,13 +28,13 @@ class bors_time_ts extends bors_time_meta
 		parent::__construct(date('c', $time)); //TODO: может быть uuid()?
 	}
 
-	static function now() { return new bors_time_ts(time()); }
-	static function yesterday() { return new bors_time_ts(strtotime('yesterday')); }
-	static function tomorrow() { return new bors_time_ts(strtotime('tomorrow')); }
+	static function now() { return new bors_time(time()); }
+	static function yesterday() { return new bors_time(strtotime('yesterday')); }
+	static function tomorrow() { return new bors_time(strtotime('tomorrow')); }
 
 	function before($offset)
 	{
-		return new bors_time_ts(strtotime('-'.$offset, $this->_value));
+		return new bors_time(strtotime('-'.$offset, $this->_value));
 	}
 
 	function date($format) { return date($format, $this->_value); }
@@ -55,8 +55,8 @@ class bors_time_ts extends bors_time_meta
 			usleep(1000);
 
 		$time = time();
-		$t = new bors_time_ts($time);
-		$now = bors_time_ts::now();
+		$t = new bors_time($time);
+		$now = bors_time::now();
 
 		$suite->assertEquals($time, $t->timestamp());
 		$suite->assertEquals($time, $now->timestamp());

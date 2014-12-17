@@ -110,6 +110,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 							if($class_pair_name)
 							{
 								$class = new $class_pair_name($lcml);
+								$tag_params['tag_name'] = $func;
 								$part2 = $class->parse($part2, $tag_params);
 							}
 							else
@@ -178,6 +179,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 				if($class_single_name)
 				{
 					$class = new $class_single_name($lcml);
+					$tag_params['tag_name'] = $func;
 					$part2 = $class->parse($tag_params);
 				}
 				else

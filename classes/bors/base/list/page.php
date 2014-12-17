@@ -1,7 +1,14 @@
 <?php
 
-class base_list_page extends base_page
+class base_list_page extends bors_page
 {
+	function bors_di_classes()
+	{
+		return array_merge(parent::bors_di_classes(), array(
+			'bors_di_page',
+		));
+	}
+
 	function id_to_name($id)
 	{
 		$list = $this->named_list();

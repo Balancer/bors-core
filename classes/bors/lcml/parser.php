@@ -20,9 +20,9 @@ class bors_lcml_parser
 	function html_simple($text) { return $this->html($text); }
 	function text($text) { return strip_tags($this->html($text)); }
 
-	function parse($text, $lcml)
+	function parse($text)
 	{
-		switch($lcml->output_type())
+		switch($this->lcml->output_type())
 		{
 			case 'text':
 				return $this->text($text);

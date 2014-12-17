@@ -26,7 +26,7 @@ class bors_page_fs_markdown extends bors_page
 
 	function body()
 	{
-		return \Michelf\Markdown::defaultTransform($this->source());
+		return \Michelf\MarkdownExtra::defaultTransform($this->source());
 	}
 
 	static function __unit_test($suite)

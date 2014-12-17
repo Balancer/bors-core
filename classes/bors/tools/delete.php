@@ -1,6 +1,6 @@
 <?php
 
-class bors_tools_delete extends base_page
+class bors_tools_delete extends bors_page
 {
 	function config_class() { return config('admin_config_class'); }
 	function access() { return $this->object()->access(); }

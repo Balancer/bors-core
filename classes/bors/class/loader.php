@@ -95,6 +95,7 @@ class bors_class_loader
 		}
 
 		$class_file = self::find_and_include($class_name, $args);
+
 		if($class_file && preg_match('/\.php$/', $class_file))
 		{
 			self::set_class_cache_data($class_name, $class_file, 'class_file_real', $class_file);

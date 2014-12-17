@@ -203,7 +203,9 @@ class bors_form extends bors_object
 
 //		PC::dump(bors_lib_orm::all_fields(bors_foo($class_name)), $class_name);
 
-		if(array_key_exists('th', $params))
+		if(array_key_exists('label', $params))
+			$th = defval_ne($params, 'label', '-');
+		elseif(array_key_exists('th', $params))
 			$th = defval_ne($params, 'th', '-');
 		else
 			$th = false;
@@ -468,12 +470,10 @@ class bors_form extends bors_object
 							$this->append_attr('override_fields', $data['name']);
 							$html .= "ID:";
 							$html .= $this->element_html('input', $data);
-							template_jquery();
-							template_js("\$(function() {
+							jquery::on_ready("
 	\$('select[name={$data['name']}]').change(function(){
 		\$('input[name={$data['input_name']}]').val(\$(this).val())
-	});
-});");
+	});");
 							unset($data['maxlength'], $data['size']);
 							$data['class'] = $saveclass;
 						}
@@ -485,12 +485,10 @@ class bors_form extends bors_object
 							$data['input_name'] = '_'.$data['name'];
 							$this->append_attr('override_fields', $data['name']);
 							$html_append = $this->element_html('input', $data);
-							template_jquery();
-							template_js("\$(function() {
+							jquery::on_ready("
 	\$('select[name={$data['name']}]').change(function(){
 		\$('input[name={$data['input_name']}]').val(\$(this).val())
-	});
-});");
+	});");
 						}
 
 						if(array_key_exists('named_list', $data))

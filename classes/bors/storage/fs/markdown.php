@@ -17,7 +17,7 @@ class bors_storage_fs_markdown extends bors_storage
 
 		$rel = secure_path(str_replace(bors()->server()->root(), '/', $dir));
 
-		if($base && is_file($file = "{$dir}/{$base}.mdml"))
+		if($base && is_file($file = "{$dir}/{$base}.md"))
 			return $file;
 
 		if($base && is_file($file = "{$dir}/{$base}"))
@@ -26,7 +26,7 @@ class bors_storage_fs_markdown extends bors_storage
 		if(is_file($file = "{$dir}/index.markdown"))
 			return $file;
 
-		if(is_file($file = "{$dir}.mdml"))
+		if(is_file($file = "{$dir}.md"))
 			return $file;
 
 		if(is_file($file = "{$dir}.markdown"))
@@ -34,22 +34,22 @@ class bors_storage_fs_markdown extends bors_storage
 
 		foreach(bors_dirs() as $d)
 		{
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}.mdml")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}.md")))
 				return $file;
 
-			if($base && is_file($file = secure_path("{$d}/data/fs/{$rel}/{$base}.mdml")))
+			if($base && is_file($file = secure_path("{$d}/webroot/{$rel}/{$base}.md")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}/main.mdml")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}/main.md")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}/index.mdml")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}/index.md")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}.markdown")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}.markdown")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/data/fs/{$rel}/index.markdown")))
+			if(is_file($file = secure_path("{$d}/webroot/{$rel}/index.markdown")))
 				return $file;
 		}
 
@@ -64,12 +64,58 @@ class bors_storage_fs_markdown extends bors_storage
 
 		$object->set_markup('bors_markup_markdown', false);
 
+
 		$content = $object->cs_f2i(file_get_contents($file));
-		if(preg_match('/(^|\n)(.+?)\n(=+)\n/s', $content, $m))
+
+		if(preg_match("/^---\n(.+?)\n---\n(.+)$/s", $content, $m))
+		{
+			$content = $m[2];
+			$data = bors_data_yaml::parse($m[1]);
+
+			foreach(array(
+					'Date' => array(
+						'create_time',
+						'strtotime'
+					),
+//					'Config' => 'config_class'
+			) as $md => $field)
+			{
+				if(!empty($data[$md]))
+				{
+					if(is_array($field))
+						$data[$field[0]] = call_user_func($field[1], $data[$md]);
+					else
+						$data[$field] = strtotime($data[$md]);
+
+					unset($data[$md]);
+				}
+			}
+
+			foreach($data as $key => $value)
+				$object->set_attr($key, $value);
+		}
+
+		if(preg_match('/^#\s+(.+?)\s+#$/m', $content, $m))
+		{
+			$object->set_title($m[1], false);
+			$content = preg_replace('/^#\s+(.+?)\s+#$/m', '', $content);
+		}
+		elseif(preg_match('/^#\s+(.+)$/m', $content, $m))
+		{
+			$object->set_title($m[1], false);
+			$content = preg_replace('/^#\s+(.+)$/m', '', $content);
+		}
+		elseif(preg_match('/(^|\n)(.+?)\n(=+)\n/s', $content, $m))
 			$object->set_title($m[2], false);
 
 		if(!$object->title_true())
 			return $object->set_is_loaded(false);
+
+// Разные трактовки переменных в Markdown:
+//	* http://assemble.io/docs/Markdown.html
+//	* http://docs.runmyprocess.com/Training/Markdown_Template
+//	* http://johnmacfarlane.net/pandoc/README.html
+//		$content = 
 
 		$object->set_source($content, false);
 

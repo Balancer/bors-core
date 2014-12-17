@@ -141,8 +141,15 @@ class base_object extends bors_object_simple
 	}
 
 	private $config;
+	private $___was_configured = false;
+
 	function _configure()
 	{
+		if($this->___was_configured)
+			return;
+
+		$this->___was_configured = true;
+
 		foreach($this->properties_preset() as $name => $val)
 			if(!property_exists($this, $name) && !property_exists($this, "{$name}_ec"))
 				$this->$name = $val;
@@ -152,7 +159,8 @@ class base_object extends bors_object_simple
 				$this->defaults[$attr] = $val;
 
 		// Вызываем в холостую, чтобы получить автоматические поля и т.п.
-		bors_lib_orm::all_fields($this);
+		if($this->storage())
+			bors_lib_orm::all_fields($this);
 
 		if(($config = $this->config_class()))
 		{
@@ -276,6 +284,15 @@ class base_object extends bors_object_simple
 
 			// Иначе — просто возвращаем значение.
 			return $this->attr[$method];
+		}
+
+		foreach($this->bors_di_classes() as $class_name)
+		{
+			if(method_exists($class_name, $method))
+			{
+				array_unshift($params, $this);
+				return call_user_func_array(array($class_name, $method), $params);
+			}
 		}
 
 		// Проверяем нет ли уже загруженного значения данных объекта
@@ -1068,7 +1085,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		else
 			$obj = $this;
 
-		return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii(); 
+		if($obj->storage())
+			return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii(); 
+
+		return NULL;
 	}
 
 	function _admin_url_def() { return $this->edit_url(); }
@@ -1724,7 +1744,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return defval($desc, 'title', $field_name);
 	}
 
-	function add_keyword($keyword, $up)
+	function add_keyword($keyword, $up = true)
 	{
 		$keyword = trim($keyword);
 		$keywords = $this->keywords();

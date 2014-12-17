@@ -137,6 +137,7 @@ class base_page extends bors_object
 	}
 
 	function _items_per_page_def() { return 25; }
+
 	private $__total_items = -1;
 	function total_items() { return $this->__total_items; }
 	function set_total_items($count) { return $this->__total_items = $count; }
@@ -373,7 +374,11 @@ class base_page extends bors_object
 
 	private $page_data = array();
 
-	function set_page_datum($key, $value) { $this->page_data[$key] = $value; }
+	function set_page_datum($key, $value)
+	{
+		$this->page_data[$key] = $value;
+	}
+
 	function page_datum($key, $default = NULL) { return empty($this->page_data[$key]) ? $default : $this->page_data[$key]; }
 
 	function merge_page_data_array($key, $merge_values)

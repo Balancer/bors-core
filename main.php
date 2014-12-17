@@ -1,6 +1,7 @@
 <?php
 
-$GLOBALS['stat']['start_microtime'] = microtime(true);
+if(empty($GLOBALS['stat']['start_microtime']))
+	$GLOBALS['stat']['start_microtime'] = microtime(true);
 
 if(function_exists('xhprof_enable'))
 	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);

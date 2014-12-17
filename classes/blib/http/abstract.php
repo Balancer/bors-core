@@ -228,7 +228,7 @@ class blib_http_abstract
 		$curl_options = array(
 			CURLOPT_TIMEOUT => $timeout,
 			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_MAXREDIRS => 5,
+			CURLOPT_MAXREDIRS => defval($params, 'MAXREDIRS', 10),
 			CURLOPT_ENCODING => 'gzip,deflate',
 //			CURLOPT_RANGE => '0-4095',
 			CURLOPT_REFERER => defval($params, 'referer', $original_url),
@@ -240,6 +240,9 @@ class blib_http_abstract
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_SSL_VERIFYPEER => false,
 		);
+
+		if($opt = defval($params, 'FRESH_CONNECT'))
+			$curl_options[CURLOPT_FRESH_CONNECT] = true;
 
 		if($save_file = defval($params, 'file'))
 		{
@@ -311,7 +314,7 @@ array (size=22)
 			if($save_file)
 				@unlink($save_file);
 
-			debug_hidden_log('curl-error', "Curl ($url) error: ".$err_str);
+			bors_debug::syslog('curl-error', "Curl ($url) error: ".$err_str);
 			return array('content' => NULL, 'content_type' => NULL, 'error' => $err_str);
 		}
 

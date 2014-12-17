@@ -29,8 +29,14 @@ class bors_object_simple extends bors_object_empty
 
 	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
-		if(!$name)
+		static $get_lock = array();
+		$lock_name = get_class($this).'/'.serialize($this->id()).'.'.$name;
+
+		if(!$name || !empty($get_lock[$lock_name]))
+//		if(!$name)
 			return NULL;
+
+		$get_lock[$lock_name] = true;
 
 		if(!preg_match('/^\w+$/', $name))
 		{
@@ -38,7 +44,10 @@ class bors_object_simple extends bors_object_empty
 			// Хак: если это SQL-id вида 'id' => "CONCAT_WS('-', person_id, list_id)",
 
 			if(preg_match('/^CONCAT/', $name))
+			{
+				unset($get_lock[$lock_name]);
 				return NULL;
+			}
 
 			$result = NULL;
 
@@ -57,6 +66,7 @@ class bors_object_simple extends bors_object_empty
 			}
 			catch(Exception $e) { $result = NULL; }
 
+			unset($get_lock[$lock_name]);
 			return $result;
 		}
 
@@ -65,25 +75,38 @@ class bors_object_simple extends bors_object_empty
 			$value = NULL;
 			try { $value = $this->$name(); }
 			catch(Exception $e) { $value = NULL; }
+			unset($get_lock[$lock_name]);
 			return $value;
 		}
 
 		// У атрибутов приоритет выше, так как они могут перекрывать data.
 		// Смотри также в __call
 		if(array_key_exists($name, $this->attr))
+		{
+			unset($get_lock[$lock_name]);
 			return $this->attr[$name];
+		}
 
-		if(@array_key_exists($name, $this->data))
+		if(!empty($this->data) && array_key_exists($name, $this->data))
+		{
+			unset($get_lock[$lock_name]);
 			return $this->data[$name];
+		}
 
 		if($name == 'this')
+		{
+			unset($get_lock[$lock_name]);
 			return $this;
+		}
 
 		// Проверяем параметры присоединённых объектов
 		if($prop_joins = @$this->_prop_joins)
 			foreach($prop_joins as $x)
 				if(array_key_exists($name, $x->data))
+				{
+					unset($get_lock[$lock_name]);
 					return $this->attr[$name] = $x->data[$name];
+				}
 
 		// Проверяем автоматические объекты.
 		if(method_exists($this, 'auto_objects'))
@@ -94,6 +117,7 @@ class bors_object_simple extends bors_object_empty
 				{
 					try { $value = bors_load($m[1], $this->get($m[2])); }
 					catch(Exception $e) { $value = NULL; }
+					unset($get_lock[$lock_name]);
 					return $this->attr[$name] = $value;
 				}
 		}
@@ -104,17 +128,26 @@ class bors_object_simple extends bors_object_empty
 			$auto_targs = $this->auto_targets();
 			if(!empty($auto_targs[$name]))
 				if(preg_match('/^(\w+)\((\w+)\)$/', $auto_targs[$name], $m))
+				{
+					unset($get_lock[$lock_name]);
 					return $this->attr[$name] = bors_load($this->get($m[1]), $this->get($m[2]));
+				}
 		}
 
 		// Проверяем одноимённые переменные (var $title = 'Files')
 		if(property_exists($this, $name) && !$skip_properties)
+		{
+			unset($get_lock[$lock_name]);
 			return $this->set_attr($name, $this->$name);
+		}
 
 		// Проверяем одноимённые переменные, требующие перекодирования (var $title_ec = 'Сообщения')
 		$name_ec = "{$name}_ec";
 		if(property_exists($this, $name_ec) && !$skip_properties)
+		{
+			unset($get_lock[$lock_name]);
 			return $this->set_attr($name, ec($this->$name_ec));
+		}
 
 		// Ищем методы, перекрываемые переменным по умолчанию
 		$m = "_{$name}_def";
@@ -122,10 +155,14 @@ class bors_object_simple extends bors_object_empty
 		{
 			try { $value = $this->$m(); }
 			catch(Exception $e) { $value = NULL; }
+			unset($get_lock[$lock_name]);
 			return $this->attr[$name] = $value;
 		}
 
-		if(@array_key_exists($name, $this->defaults))
+		// С этого места и ниже никаких потенциально рекурсивных вызовов быть не должно, так что разлочиваем.
+		unset($get_lock[$lock_name]);
+
+		if(array_key_exists($name, $this->defaults))
 			return $this->defaults[$name];
 
 		return $default;

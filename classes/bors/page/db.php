@@ -1,6 +1,6 @@
 <?php
 
-class bors_page_db extends base_object_db
+class bors_page_db extends base_page_db
 {
 	function _renderer_class_def() { return 'bors_renderers_page'; }
 	function _body_def() { return bors_lib_page::body($this); }
@@ -11,6 +11,15 @@ class bors_page_db extends base_object_db
 
 	function _is_smart_def() { return true; }
 	function _body_template_ext_def() { return 'html'; }
+
+	function bors_di_classes()
+	{
+		return array_merge(parent::bors_di_classes(), array(
+			'bors_di_page',
+		));
+	}
+
+	function is_reversed() { return false; }
 
 	function body_template_class()
 	{
@@ -80,7 +89,15 @@ class bors_page_db extends base_object_db
 		return array();
 	}
 
-	function page_data() { return array(); }
+	function merge_page_data_array($key, $merge_values)
+	{
+		$this->set_page_datum($key, array_merge($this->page_datum($key, array()), $merge_values));
+	}
+
+	function prepend_page_data_array($key, $prepend_values)
+	{
+		$this->set_page_datum($key, array_merge($prepend_values, $this->page_datum($key, array())));
+	}
 
 	// под снос. Но пока используется широко а ля bors-core/classes/bors/renderers/page.php:77
 	function me() { return bors()->user(); }
@@ -109,5 +126,18 @@ class bors_page_db extends base_object_db
 		$layout = new $class_name($this);
 		$this->set_attr('layout', $layout);
 		return $layout;
+	}
+
+	function template_metas($indent = '')
+	{
+		$result = [];
+
+		$data = bors_template::page_data($this);
+
+		if(!empty($data['meta']))
+			foreach($data['meta'] as $name => $content)
+				$result[] = $indent . \HtmlObject\Element::meta()->name($name)->content($content);
+
+		return join("\n", $result);
 	}
 }

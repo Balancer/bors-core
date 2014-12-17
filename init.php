@@ -21,7 +21,10 @@ define('BORS_ROOT', dirname(BORS_CORE).DIRECTORY_SEPARATOR);
 
 if(!defined('COMPOSER_INCLUDED'))
 {
-	$GLOBALS['bors.composer.class_loader'] = require COMPOSER_ROOT.'/vendor/autoload.php';
+	if(!file_exists($cr = COMPOSER_ROOT.'/vendor/autoload.php'))
+		exit("Can't find Composer as $cr");
+
+	$GLOBALS['bors.composer.class_loader'] = require $cr;
 	define('COMPOSER_INCLUDED', true);
 }
 

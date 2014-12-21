@@ -77,7 +77,6 @@ class blib_http_guzzle
 			$timeout *= 2;
 /*
 		$curl_options = array(
-			CURLOPT_TIMEOUT => $timeout,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_MAXREDIRS => 10,
 			CURLOPT_ENCODING => 'gzip,deflate',
@@ -94,7 +93,10 @@ class blib_http_guzzle
 */
 		$client = new Guzzle\Http\Client();
 
-		$params = array();
+		$params = array(
+			'timeout' => $timeout,
+			'connect_timeout' => $timeout,
+		);
 
 		if($save_file)
 			$params['save_to'] = $save_file;
@@ -105,25 +107,40 @@ class blib_http_guzzle
 		$start_time = time();
 
 		$request = $client->get($url, $params);
-		$response = $request->send();
 
-		$body = $response->getBody();
+//		print_r($request);
+
+		$exception = NULL;
+
+		try
+		{
+			$response = $request->send();
+			$body = $response->getBody();
+		}
+		catch(Exception $e)
+		{
+			$response = NULL;
+			$body = NULL;
+			$exception = $e;
+		}
 
 //		echo "body=",$body,PHP_EOL;
 
 		// Пытаемся ловить защиту от DDOS, требующую релоада с Cookie.
 
-		if(strlen($body) <  2000 && preg_match('/document.cookie=.*(__DDOS_COOKIE)=(\w+);/', $body, $m) && preg_match('/window.location.reload\(true\)/', $body))
+		if(strlen($body) <  2000 && preg_match('/document.cookie=.*(__DDOS_COOKIE|_ddn_intercept_2_)=(\w+);/', $body, $m) && preg_match('/window.location.reload\(true\)/', $body))
 		{
 			$request->addCookie($m[1], $m[2]);
 			$response = $request->send();
 			$body = $response->getBody();
+			$response->getBody()->getSize() . "\n";
+			$response->getBody() . "\n";
 		}
 
 //		echo "size=" . $response->getBody()->getSize() . "\n";
 
 		$time = time() - $start_time;
-		if($time > 5 || $response->getBody()->getSize() > 1000000)
+		if($time > 5 || ($response && ($response->getBody()->getSize() > 1000000)))
 			bors_debug::syslog('guzzle-warnings', "Too long or too big download for $original_url; time=$time; info=".print_r($response->getInfo(), true));
 
 		if(preg_match('/balancer\.ru|airbase\.ru/', $original_url))
@@ -139,8 +156,13 @@ class blib_http_guzzle
 			if($save_file)
 				@unlink($save_file);
 
-			debug_hidden_log('guzzle-error', "Guzzle ($url) error: now unknown yet");
-			return array('content' => NULL, 'content_type' => NULL, 'error' => "BORS: Not implemente yet");
+			$msg = $exception ? ' Exception: ' . $exception->getMessage() : '';
+			if(strpos($msg, '[status code] 404') !== false)
+				$msg = "Страница не найдена";
+			else
+				bors_debug::syslog('guzzle-error', "Guzzle ($url) error: " . $msg);
+
+			return array('content' => NULL, 'content_type' => NULL, 'error' => str_replace(array('[', 'http'), array('&#91;', '_http'), $msg));
 		}
 
 		if(!$raw)
@@ -170,7 +192,7 @@ class blib_http_guzzle
 				$charset = config('lcml_request_charset_default');
 
 			if($charset)
-				$body = iconv($charset, config('internal_charset').'//IGNORE', $body);
+				$body = @iconv($charset, config('internal_charset').'//IGNORE', $body);
 		}
 
 	    return array('content' => $body, 'content_type' => $content_type, 'error' => false);
@@ -205,6 +227,11 @@ class blib_http_guzzle
 	</body>
 	</html>
 */
-		print_r(self::get_ex($url));
+
+		config_set('proxy.force_regexp', '/novorossia\.su/');
+		config_set('proxy.forced', '192.168.1.3:8118');
+
+		$url = "http://novorossia.su/ru/node/11315";
+		print_r(self::get_ex($url, array('timeout' => 3)));
 	}
 }

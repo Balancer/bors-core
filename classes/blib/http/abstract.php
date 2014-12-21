@@ -261,6 +261,13 @@ class blib_http_abstract
 		$start_time = time();
 
 		$data = curl_exec($ch);
+
+		if(strlen($data) <  2000 && preg_match('/document.cookie=.*(__DDOS_COOKIE|_ddn_intercept_2_)=(\w+);/', $data, $m) && preg_match('/window.location.reload\(true\)/', $data))
+		{
+			curl_setopt($ch, CURLOPT_COOKIE, "{$m[1]}={$m[2]}");
+			$data = curl_exec($ch);
+		}
+
 		$info = curl_getinfo($ch);
 
 		$time = time() - $start_time;
@@ -351,6 +358,16 @@ array (size=22)
 		curl_close($ch);
 
 	    return array('content' => $data, 'content_type' => $content_type, 'error' => false);
+	}
+
+	static function __dev()
+	{
+//		config_set('proxy.force_regexp', '/novorossia\.su/');
+//		config_set('proxy.forced', '192.168.1.3:8118');
+
+//		$url = "http://novorossia.su/ru/node/11315";
+		$url = "http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html";
+		print_r(self::get_ex($url, array('timeout' => 3)));
 	}
 }
 

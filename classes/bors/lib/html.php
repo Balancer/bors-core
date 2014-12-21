@@ -68,7 +68,7 @@ class bors_lib_html
 		if(empty($meta['title']) && !empty($meta['twitter:title']))
 			$meta['title'] = $meta['twitter:title'];
 
-		if(empty($meta['title']) && preg_match('!<title>([^>]+)</title>!si', $content, $m))
+		if(empty($meta['title']) && preg_match('!<title>(.+?)</title>!si', $content, $m))
 			$meta['title'] = self::decode($m[1]);
 
 		if(empty($meta['title']) && preg_match('!<h1[^>]*>([^>]+)</h1>!si', $content, $m))

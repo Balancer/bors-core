@@ -337,6 +337,10 @@ array (size=22)
 				// <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
 				if(preg_match("!<meta\s+http\-equiv\s*=\s*\"Content\-Type\"[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
 					$charset = $m[1];
+				// <meta charset="utf-8" />
+				// http://portnews.ru/news/184445/
+				elseif(preg_match("!<meta[^>]+charset\s*=\s*\"(.+?)\"!i", $data, $m))
+					$charset = $m[1];
 				elseif(preg_match("!<meta[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
 					$charset = $m[1];
 				// <meta http-equiv="Content-Type" content="text/html;UTF-8">
@@ -372,13 +376,14 @@ array (size=22)
 
 	static function __dev()
 	{
+		config_set('is_debug', true);
 //		config_set('proxy.force_regexp', '/novorossia\.su/');
 //		config_set('proxy.forced', '192.168.1.3:8118');
 
 //		$url = "http://novorossia.su/ru/node/11315";
 //		$url = "http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html";
 //		$url = "http://space.skyrocket.de/doc_sdat/tks-m.htm";
-		$url = "http://roosevelt-memory.narod.ru/";
+//		$url = "http://roosevelt-memory.narod.ru/";
 		print_r(self::get_ex($url, array('timeout' => 3)));
 	}
 }

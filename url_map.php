@@ -44,6 +44,14 @@ $map = array(
 	'/_bors/users/do\-login\.bas => bors_admin_users_login',
 	'/_bors/users/do\-logout\.bas => bors_admin_users_logout',
 
+	'.* => page_fs_xml(url)',
+	'.* => page_fs_separate(url)',
+//	'.* => page_db(url)',
+	'.* => auto_object_php(url)',
+	'.* => bors_page_fs_bbh(url)',
+	'.* => bors_page_fs_markdown(url)',
+	'.* => bors_page_fs_htsu(url)', //TODO: снести нафиг после конвертации старых hts Авиабазы
+
 //	Заглушки для удобства.
 	'/login/? => bors_admin_users_login',
 	'/_bors/login/? => bors_admin_users_login',
@@ -66,14 +74,6 @@ $map = array(
 //	'/admin/logout/ => bors_admin_logout',
 
 	'/admin/image/append => bors_admin_image_append',
-
-	'.* => page_fs_xml(url)',
-	'.* => page_fs_separate(url)',
-//	'.* => page_db(url)',
-	'.* => auto_object_php(url)',
-	'.* => bors_page_fs_bbh(url)',
-	'.* => bors_page_fs_markdown(url)',
-	'.* => bors_page_fs_htsu(url)', //TODO: снести нафиг после конвертации старых hts Авиабазы
 );
 
 if(config('obsolete.use_mysql_smart'))

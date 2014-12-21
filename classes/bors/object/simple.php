@@ -30,7 +30,7 @@ class bors_object_simple extends bors_object_empty
 	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
 		static $get_lock = array();
-		$lock_name = get_class($this).'/'.$this->id().'.'.$name;
+		$lock_name = get_class($this).'/'.serialize($this->id()).'.'.$name;
 
 		if(!$name || !empty($get_lock[$lock_name]))
 //		if(!$name)

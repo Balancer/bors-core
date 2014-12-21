@@ -7,7 +7,7 @@ class bors_external_common extends bors_object
 		if(!is_array($params))
 			$limit = $params; // Раньше второй параметр был длиной
 		else
-			$limit = defval($params, 'limit', 5000); // Теперь — из массива аргументов
+			$limit = defval($params, 'limit', 5000); // Теперь — из массива аргументов. Это длина описания максимальная.
 
 		$original_url = defval($params, 'original_url', $url);
 
@@ -17,6 +17,7 @@ class bors_external_common extends bors_object
 		$more = false;
 
 		$html = defval($params, 'html');
+
 		if(!$html)
 		{
 			if(config('lcml_cache_disable_full'))
@@ -27,7 +28,9 @@ class bors_external_common extends bors_object
 			$html = @iconv('utf-8', 'utf-8//ignore', $html);
 		}
 
-//		if(config('is_developer')) ~r($html);
+		$html = str_replace("\r", "", $html);
+
+//		if(config('is_developer')) ~r(config('lcml_cache_disable_full'), $params, debug_trace());
 //		$html = bors_lib_http::get($url);
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
@@ -40,6 +43,8 @@ class bors_external_common extends bors_object
 		$title = @$meta['title'];
 
 		$description = @$meta['description'];
+
+//		if(config('is_developer') && $url == 'http://vrtp.ru/index.php?showtopic=6437') ~r($url, $title, $description, $html);
 
 		$img = @$meta['og:image'];
 
@@ -157,7 +162,7 @@ class bors_external_common extends bors_object
 			foreach($images as $x)
 				var_dump($x->getAttribute('src'));
 		}
-if(config('is_developer')) { exit($img); }
+		if(config('is_developer')) { exit($img); }
 */
 
 //		if(config('is_developer') && preg_match('/./', $url)) { var_dump($description); print_dd($html); exit(); }
@@ -201,6 +206,7 @@ if(config('is_developer')) { exit($img); }
 					'//*[contains(@class, "tag")]',
 					'//*[contains(@class, "adv")]',
 					'//*[contains(@class, "head")]',
+					'//*[contains(@style, "display: none")]',
 
 					// Хардкод для форумной разметки
 					'//*[@class="rep"]',
@@ -214,6 +220,11 @@ if(config('is_developer')) { exit($img); }
 					'//div[@id="reg_bar_content"]',
 					'//div[@id="quick_login"]',
 					'//div[contains(@class, "full_wall_tabs")]',
+
+					// Хардкод для страниц http://rusnovosti.ru/news/357750/
+					'//div[@class="top-news fbr"]',
+					'//div[@class="find-in-news"]',
+					'//ul[@class="newslist lp"]',
 				) as $query)
 				{
 					foreach($xpath->query($query) as $node)
@@ -263,7 +274,7 @@ if(config('is_developer')) { exit($img); }
 				$description = '';
 		}
 
-		if($title && strlen($title) > 5)
+		if($title && ($description || strlen($title) >= 3))
 		{
 			require_once('inc/texts.php');
 
@@ -294,7 +305,6 @@ if(config('is_developer')) { exit($img); }
 			return compact('tags', 'title', 'bbshort');
 		}
 
-
 		if(preg_match('!^(http://)pda\.(.+)$!', $url, $m))
 			return self::content_extract($m[1].$m[2]);
 
@@ -318,5 +328,14 @@ if(config('is_developer')) { exit($img); }
 			$parser = 'bors_external_common';
 
 		return call_user_func(array($parser, 'content_extract'), $url, $limit);
+	}
+
+	static function __dev()
+	{
+		config_set('lcml_cache_disable_full', true);
+//		print_r(self::content_extract("http://rusnovosti.ru/news/357750/", ['limit' => 10000])); // Прокси?
+//		print_r(self::content_extract("http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html", ['limit' => 10000])); // Защита от DDOS
+//		print_r(self::content_extract("http://vrtp.ru/index.php?showtopic=6437", ['limit' => 10000])); // ">" в заголовке
+		print_r(self::content_extract("http://ru.delfi.lt/news/live/za-nepodchinenie-rasporyazheniyam-voennosluzhaschego-v-litve-budut-shtrafovat.d?id=66705496&rsslink=true", ['limit' => 10000])); // 404
 	}
 }

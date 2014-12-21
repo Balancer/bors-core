@@ -575,6 +575,10 @@ function object_init($class_name, $object_id, $args = array())
 	{
 		$found = 0;
 
+		// Ловим так fatal error
+		if(!class_exists($class_name))
+			bors_throw("Class '$class_name' not found");
+
 		$obj = new $class_name($object_id);
 
 		if(!method_exists($obj, 'set_class_file'))

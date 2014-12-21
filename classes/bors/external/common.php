@@ -274,7 +274,7 @@ class bors_external_common extends bors_object
 				$description = '';
 		}
 
-		if($title && strlen($title) > 5)
+		if($title && ($description || strlen($title) >= 3))
 		{
 			require_once('inc/texts.php');
 

@@ -300,8 +300,8 @@ array (size=22)
   'starttransfer_time' => float 0.421616
   'redirect_time' => float 0
   'certinfo' => 
-    array (size=0)
-      empty
+	array (size=0)
+	  empty
   'redirect_url' => string '' (length=0)
 */
 
@@ -330,34 +330,39 @@ array (size=22)
 
 		$content_type = $info['content_type'];
 
+		//  [content_type] => text/html; charset=UTF-8
 		if(!$charset && !$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
-    	    $charset = $m[1];
+			$charset = $m[1];
 
 		if(!$raw)
 		{
 			if(empty($charset))
 			{
-    	    	if(preg_match("!<meta\s+http\-equiv\s*=\s*\"Content\-Type\"[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
-	    	    	$charset = $m[1];
+				if(preg_match("!<meta\s+http\-equiv\s*=\s*\"Content\-Type\"[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
+					$charset = $m[1];
 				elseif(preg_match("!<meta[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
-			        $charset = $m[1];
+					$charset = $m[1];
 				// <meta http-equiv="Content-Type" content="text/html;UTF-8">
 				elseif(preg_match("!<meta [^>]+Content-Type[^>]+content=\"text/html;([^>]+)\">!i", $data, $m))
-			        $charset = $m[1];
+					$charset = $m[1];
 				elseif(preg_match("!<meta charset=\"(.+?)\" />\">!i", $data, $m))
-			        $charset = $m[1];
+					$charset = $m[1];
 			}
 
-	    	if(!$charset)
+			if(!$charset)
 				$charset = config('lcml_request_charset_default');
 
-			if($charset)
-				$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
+			// Совать в лоб iconv нельзя. Оказывается, //IGNORE или //TRANSLIT нынче, порой, не работают.
+			if(strtolower($charset) == 'utf-8')
+				$data = blib_str_charset::utf8_fix($data);
+
+			if($charset && strtolower(config('internal_charset')) != strtolower($charset))
+				$data = iconv($charset, config('internal_charset').'//TRANSLIT', $data);
 		}
 
 		curl_close($ch);
 
-	    return array('content' => $data, 'content_type' => $content_type, 'error' => false);
+		return array('content' => $data, 'content_type' => $content_type, 'error' => false);
 	}
 
 	static function __dev()
@@ -366,7 +371,9 @@ array (size=22)
 //		config_set('proxy.forced', '192.168.1.3:8118');
 
 //		$url = "http://novorossia.su/ru/node/11315";
-		$url = "http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html";
+//		$url = "http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html";
+//		$url = "http://space.skyrocket.de/doc_sdat/tks-m.htm";
+		$url = "http://roosevelt-memory.narod.ru/";
 		print_r(self::get_ex($url, array('timeout' => 3)));
 	}
 }

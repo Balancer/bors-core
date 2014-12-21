@@ -326,7 +326,7 @@ class bors_tools_search_result extends bors_tools_search
 
 			if($contents)
 			{
-				$exc = $cl->BuildExcerpts($docs, 'posts', $this->q(), $opts);
+				$exc = $cl->BuildExcerpts($docs, 'posts', preg_replace("/\W/u", " ", $this->q()), $opts);
 
 				if(!$exc)
 					echo $data['error'] = $cl->GetLastError();

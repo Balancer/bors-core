@@ -7,7 +7,7 @@ class bors_external_common extends bors_object
 		if(!is_array($params))
 			$limit = $params; // Раньше второй параметр был длиной
 		else
-			$limit = defval($params, 'limit', 5000); // Теперь — из массива аргументов
+			$limit = defval($params, 'limit', 10000); // Теперь — из массива аргументов
 
 		$original_url = defval($params, 'original_url', $url);
 
@@ -20,14 +20,16 @@ class bors_external_common extends bors_object
 		if(!$html)
 		{
 			if(config('lcml_cache_disable_full'))
-				$html = blib_http::get_cached($url, 7200, false, true); // Для сборса кеша
+				$html = blib_http_guzzle::get_cached($url, 7200, false, true); // Для сборса кеша
 			else
-				$html = blib_http::get_cached($url, 7200);
+				$html = blib_http_guzzle::get_cached($url, 7200);
 
 			$html = @iconv('utf-8', 'utf-8//ignore', $html);
 		}
 
-//		if(config('is_developer')) ~r($html);
+		$html = str_replace("\r", "", $html);
+
+//		if(config('is_developer')) ~r(config('lcml_cache_disable_full'), $params, debug_trace());
 //		$html = bors_lib_http::get($url);
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
@@ -201,6 +203,7 @@ if(config('is_developer')) { exit($img); }
 					'//*[contains(@class, "tag")]',
 					'//*[contains(@class, "adv")]',
 					'//*[contains(@class, "head")]',
+					'//*[contains(@style, "display: none")]',
 
 					// Хардкод для форумной разметки
 					'//*[@class="rep"]',
@@ -214,6 +217,11 @@ if(config('is_developer')) { exit($img); }
 					'//div[@id="reg_bar_content"]',
 					'//div[@id="quick_login"]',
 					'//div[contains(@class, "full_wall_tabs")]',
+
+					// Хардкод для страниц http://rusnovosti.ru/news/357750/
+					'//div[@class="top-news fbr"]',
+					'//div[@class="find-in-news"]',
+					'//ul[@class="newslist lp"]',
 				) as $query)
 				{
 					foreach($xpath->query($query) as $node)
@@ -318,5 +326,12 @@ if(config('is_developer')) { exit($img); }
 			$parser = 'bors_external_common';
 
 		return call_user_func(array($parser, 'content_extract'), $url, $limit);
+	}
+
+	static function __dev()
+	{
+		config_set('lcml_cache_disable_full', true);
+//		print_r(self::content_extract("http://rusnovosti.ru/news/357750/", ['limit' => 10000]));
+		print_r(self::content_extract("http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html", ['limit' => 10000]));
 	}
 }

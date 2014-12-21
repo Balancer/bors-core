@@ -330,14 +330,11 @@ array (size=22)
 
 		$content_type = $info['content_type'];
 
-		//  [content_type] => text/html; charset=UTF-8
-		if(!$charset && !$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
-			$charset = $m[1];
-
 		if(!$raw)
 		{
 			if(empty($charset))
 			{
+				// <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
 				if(preg_match("!<meta\s+http\-equiv\s*=\s*\"Content\-Type\"[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
 					$charset = $m[1];
 				elseif(preg_match("!<meta[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
@@ -349,8 +346,16 @@ array (size=22)
 					$charset = $m[1];
 			}
 
+			//  [content_type] => text/html; charset=UTF-8
+			if(!$charset && !$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
+				$charset = $m[1];
+
 			if(!$charset)
 				$charset = config('lcml_request_charset_default');
+
+			// Фикс кривой настройки, типа http://www.garant.ru/products/ipo/prime/doc/70625926/
+			if($charset == 'cp-1251')
+				$charset = 'windows-1251';
 
 			// Совать в лоб iconv нельзя. Оказывается, //IGNORE или //TRANSLIT нынче, порой, не работают.
 			if(strtolower($charset) == 'utf-8')

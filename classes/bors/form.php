@@ -347,6 +347,14 @@ class bors_form extends bors_object
 					$class = $data['named_list'];
 				}
 
+				if(!empty($data['list']))
+				{
+					if(empty($data['type']) || $data['type'] == 'string')
+						$type = 'dropdown';
+
+					$class = $data['list'];
+				}
+
 				$property_name = defval($data, 'property', defval($data, 'name', $property_name));
 
 				if($append = @$edit_properties_append[$property_name])
@@ -384,7 +392,7 @@ class bors_form extends bors_object
 				if(empty($data['view']))
 					$data['view'] = $params['view'];
 
-//				echo '<xmp>'; var_dump($data); echo '</xmp>';
+//				echo '<xmp>'; var_dump($edit_type, $data); echo '</xmp>';
 
 				switch($edit_type)
 				{
@@ -460,6 +468,7 @@ class bors_form extends bors_object
 					case 'dropdown':
 					case 'dropdown_id':
 					case 'dropdown_edit':
+//						echo '<xmp>'; var_dump($data); echo '</xmp>';
 						if($edit_type == 'dropdown_id')
 						{
 							$saveclass = @$data['class'];
@@ -491,7 +500,11 @@ class bors_form extends bors_object
 	});");
 						}
 
-						if(array_key_exists('named_list', $data))
+						if(array_key_exists('list', $data))
+						{
+							// Ничего не делаем, массив уже в данных.
+						}
+						elseif(array_key_exists('named_list', $data))
 						{
 							if(preg_match('/^(\w+):(\w+)$/', $data['named_list'], $m))
 							{
@@ -503,6 +516,7 @@ class bors_form extends bors_object
 								$list_class_name = $data['named_list'];
 								$id = NULL;
 							}
+
 							$list = new $list_class_name($id);	//TODO: статический вызов тут не прокатит, пока не появится повсеместный PHP-5.3.3.
 							$data['list'] = $list->named_list();
 						}

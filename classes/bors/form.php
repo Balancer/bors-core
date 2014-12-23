@@ -437,6 +437,7 @@ class bors_form extends bors_object
 					case 'bbcode':
 					case 'text':
 					case 'textarea':
+					case 'markdown':
 						$data['rows'] = defval($data, 'rows', $type_arg);
 //						$html .= bors_forms_textarea::html($data, $this);
 						$html .= $this->element_html('textarea', $data);

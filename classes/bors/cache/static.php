@@ -24,6 +24,8 @@ class cache_static extends bors_object_db
 		);
 	}
 
+	function can_have_cross() { return false; }
+
 	function target()
 	{
 		if($this->__havefc())

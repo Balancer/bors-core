@@ -82,7 +82,7 @@ function __session_init($init = true)
 	if(!$init && empty($_COOKIE['bors_session_init']))
 		return;
 
-	SetCookie('bors_session_init',	true, ini_get('session.cookie_lifetime'), '/', $_SERVER['HTTP_HOST']);
+	@SetCookie('bors_session_init',	true, ini_get('session.cookie_lifetime'), '/', @$_SERVER['HTTP_HOST']);
 	ini_set('session.use_trans_sid', false);
 
 	// via http://stackoverflow.com/a/22373561

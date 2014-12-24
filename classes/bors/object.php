@@ -48,6 +48,7 @@ class bors_object extends base_object
 
 	function this() { return $this; }
 	function is_value() { return true; }
+	function can_have_cross() { return NULL; }
 
 	function bors_di_classes() { return array(); }
 

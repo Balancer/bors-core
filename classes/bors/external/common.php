@@ -30,12 +30,10 @@ class bors_external_common extends bors_object
 
 		$html = str_replace("\r", "", $html);
 
-//		if(config('is_developer')) ~r(config('lcml_cache_disable_full'), $params, debug_trace());
+//		if(config('is_developer') && preg_match('/facebook/', $url)) { ~r($title); }
 //		$html = bors_lib_http::get($url);
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
-
-//		if(config('is_developer')) { bors_debug::syslog("0000-test", "orgiginal=$original_url\nurl=$url\nmeta=".print_r($meta, true)."\n$html"); }
 
 		if(preg_match('/503 - Forwarding failure/', $html))
 			$html = '';
@@ -43,8 +41,6 @@ class bors_external_common extends bors_object
 		$title = @$meta['title'];
 
 		$description = @$meta['description'];
-
-//		if(config('is_developer') && $url == 'http://vrtp.ru/index.php?showtopic=6437') ~r($url, $title, $description, $html);
 
 		$img = @$meta['og:image'];
 
@@ -165,7 +161,7 @@ class bors_external_common extends bors_object
 		if(config('is_developer')) { exit($img); }
 */
 
-//		if(config('is_developer') && preg_match('/./', $url)) { var_dump($description); print_dd($html); exit(); }
+//		if(config('is_developer') && preg_match('/./', $url)) { ~r($description, $html); }
 
 		if(!$description)
 		{
@@ -333,9 +329,12 @@ class bors_external_common extends bors_object
 	static function __dev()
 	{
 		config_set('lcml_cache_disable_full', true);
-//		print_r(self::content_extract("http://rusnovosti.ru/news/357750/", ['limit' => 10000])); // Прокси?
-//		print_r(self::content_extract("http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html", ['limit' => 10000])); // Защита от DDOS
-//		print_r(self::content_extract("http://vrtp.ru/index.php?showtopic=6437", ['limit' => 10000])); // ">" в заголовке
-		print_r(self::content_extract("http://ru.delfi.lt/news/live/za-nepodchinenie-rasporyazheniyam-voennosluzhaschego-v-litve-budut-shtrafovat.d?id=66705496&rsslink=true", ['limit' => 10000])); // 404
+//		$url = "http://rusnovosti.ru/news/357750/";					// Прокси?
+//		$url = "http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html";	// Защита от DDOS
+//		$url = "http://vrtp.ru/index.php?showtopic=6437";			// ">" в заголовке
+//		$url = "http://ru.delfi.lt/news/live/za-nepodchinenie-rasporyazheniyam-voennosluzhaschego-v-litve-budut-shtrafovat.d?id=66705496&rsslink=true";	// 404
+//		$url = 'https://www.facebook.com/nastya.stanko?fref=nf';	// <title ...> — с параметрами.
+		$url = 'http://www.interfax.ru/business/413219';			//
+		print_r(self::content_extract($url, ['limit' => 10000]));
 	}
 }

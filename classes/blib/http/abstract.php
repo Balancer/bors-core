@@ -380,10 +380,7 @@ array (size=22)
 //		config_set('proxy.force_regexp', '/novorossia\.su/');
 //		config_set('proxy.forced', '192.168.1.3:8118');
 
-//		$url = "http://novorossia.su/ru/node/11315";
-//		$url = "http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html";
-//		$url = "http://space.skyrocket.de/doc_sdat/tks-m.htm";
-//		$url = "http://roosevelt-memory.narod.ru/";
+		$url = "https://www.facebook.com/nastya.stanko?fref=nf";
 		print_r(self::get_ex($url, array('timeout' => 3)));
 	}
 }

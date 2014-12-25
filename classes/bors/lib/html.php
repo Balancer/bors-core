@@ -20,29 +20,26 @@ class bors_lib_html
 			if(!$property)
 				$property = $m->getAttribute('name');
 
-	 		$val  = $m->getAttribute('content');
+	 		$val  = trim($m->getAttribute('content'));
 			if(!$val)
-		 		$val  = $m->getAttribute('value');
+		 		$val  = trim($m->getAttribute('value'));
 
 			if($property)
 		    	$meta[$property] = $val;
 	    }
 
-//		if(config('is_developer')) { var_dump($content, $meta); exit('html-meta'); }
-
-		$content = preg_replace("'<style[^>]*>.*</style>'siU",'',$content);  // strip js
-		$content = preg_replace("'<script[^>]*>.*</script>'siU",'',$content); // strip css
+		$content = preg_replace("'<style[^>]*>.*</style>'siU",  '', $content); // strip js
+		$content = preg_replace("'<script[^>]*>.*</script>'siU",'', $content); // strip css
 
 		foreach(explode("\n", $content) as $s)
 			if(preg_match("!<link rel=\"([^\"]+)\" href=\"([^\"]+)\" />!i", trim($s), $m))
-				$meta[$m[1]] = $m[2];
+				$meta[$m[1]] = trim($m[2]);
 
 		$content = str_replace("\n", " ", $content);
 		$content = preg_replace("!<meta !i", "\n<meta ", $content);
 		$content = preg_replace("!/>!", "/>\n", $content);
 
 		$url_data = parse_url($url);
-
 
 		foreach(explode("\n", $content) as $s)
 		{
@@ -68,7 +65,7 @@ class bors_lib_html
 		if(empty($meta['title']) && !empty($meta['twitter:title']))
 			$meta['title'] = $meta['twitter:title'];
 
-		if(empty($meta['title']) && preg_match('!<title>(.+?)</title>!si', $content, $m))
+		if(empty($meta['title']) && preg_match('!<title[^>]*>(.+?)</title>!si', $content, $m))
 			$meta['title'] = self::decode($m[1]);
 
 		if(empty($meta['title']) && preg_match('!<h1[^>]*>([^>]+)</h1>!si', $content, $m))
@@ -87,7 +84,7 @@ class bors_lib_html
 
 	static function decode($text)
 	{
-		return html_entity_decode(html_entity_decode($text, ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8');
+		return trim(html_entity_decode(html_entity_decode($text, ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'));
 	}
 
 	static function norm($url_data, $value, $type = NULL)

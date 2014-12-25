@@ -3,7 +3,7 @@
 </ul>
 
 <h2>Загрузка по пользователям</h2>
-<table class="btab w100p">
+<table class="{$this->layout()->table_class()}">
 <thead><tr>
 	<th>user ip</th>
 	<th>user id</th>
@@ -29,7 +29,7 @@
 </table>
 
 <h2>Загрузка по классам</h2>
-<table class="btab w100p">
+<table class="{$this->layout()->table_class()}">
 <thead>
 <tr><th>class name</th>
 	<th>max uri</th>
@@ -53,7 +53,7 @@
 </table>
 
 <h2>Загрузка комбинированная</h2>
-<table class="btab w100p">
+<table class="{$this->layout()->table_class()}">
 <thead>
 <tr><th>user ip</th>
 	<th>user id</th>

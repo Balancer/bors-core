@@ -139,7 +139,7 @@ class bors_storage_htsu extends bors_storage
 		if(!$file)
 			return $object->set_is_loaded(false);
 
-//		if(config('is_developer')) echo "Found hts at $file<br/>\n";
+		debug_log_var('data_file', $file);
 
 		// По дефолту в index.hts разрешёны HTML и все BB-теги.
 		$object->set_html_disable(false, false);

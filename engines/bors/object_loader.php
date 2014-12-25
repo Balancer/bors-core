@@ -613,7 +613,8 @@ function object_init($class_name, $object_id, $args = array())
 		$obj->set_called_url($called_url);
 	}
 
-	$obj->_configure();
+	if(($new_obj = $obj->_configure()) && is_object($new_obj))
+		$obj = $new_obj;
 
 	$loaded = $obj->is_loaded();
 

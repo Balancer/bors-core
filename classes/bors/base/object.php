@@ -146,7 +146,7 @@ class base_object extends bors_object_simple
 	function _configure()
 	{
 		if($this->___was_configured)
-			return;
+			return true;
 
 		$this->___was_configured = true;
 
@@ -162,15 +162,17 @@ class base_object extends bors_object_simple
 		if($this->storage())
 			bors_lib_orm::all_fields($this);
 
-		if(($config = $this->config_class()))
+		if(($config_class = $this->config_class()))
 		{
-			$this->config = new $config($this);
+			$this->config = bors_load($config_class, $this);
 
 			if(!$this->config)
 				debug_exit("Can't load config class '{$config}'.");
 
 			$this->config->target_configure();
 		}
+
+		return true;
 	}
 
 	function data_load()

@@ -12,7 +12,7 @@ class bors_object_empty
 	function can_be_empty() { return true; }
 	function class_name() { return get_class($this); }
 	function data_load() { return false; }
-	function _configure() { return false; }
+	function _configure() { return true; }
 	function can_cached() { return false; }
 	function is_loaded() { return false; }
 	function set_class_file($foo) { }

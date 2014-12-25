@@ -29,7 +29,9 @@ class url_auto extends url_base
 			// aviaport_directory_airline -> directory_airline
 			$rel_class_name = str_replace(config('classes_auto_base'), '', $class_name);
 			// directory_airline -> /directory/airlines/
-			$path = str_replace('_', '/', bors_plural($rel_class_name)).'/';
+//			$path = str_replace('_', '/', bors_plural($rel_class_name)).'/';
+			$rel_class_name = ltrim($rel_class_name, '_');
+			$path = '/'.blib_grammar::chunk_plural($rel_class_name, '/').'/';
 		}
 
 		$path .= $obj->id().'/';

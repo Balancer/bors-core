@@ -207,6 +207,8 @@ class bors_object_db extends base_object_db
 		return $fields;
 	}
 
+	function url() { return $this->url_ex($this->default_page()); }
+
 	function url_ex($page)
 	{
 		// http://la2.balancer.ru/forum/index.php?showtopic=524&view=findpost&p=4163

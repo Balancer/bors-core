@@ -30,7 +30,8 @@ class bors_admin_reports_ip extends bors_admin_page
 
 		$requests = $dbh->select_array('bors_access_log', '*', array(
 			'user_ip IN' => $ips,
-			'order' => 'access_time',
+//			'order' => 'access_time',
+			'order' => '-operation_time',
 		));
 
 		return compact('country_code', 'country_name', 'city_name', 'city_object', 'ip', 'requests', 'whois');

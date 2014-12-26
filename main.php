@@ -174,7 +174,7 @@ if(config('access_log')
 		}
 
 		if(!$is_crawler && $user_overload && $session_user_load_summary > $user_overload)
-			bors_main_error_503('system_overload_users', $session_user_load_summary.' of '.$user_overload);
+			bors_main_error_503('system_overload_users', $session_user_load_summary.' of '.$user_overload . " [{$_SERVER['REMOTE_ADDR']}]");
 
 		if($is_crawler && $bot_overload && $session_user_load_summary > $bot_overload)
 			bors_main_error_503('system_overload_crawlers', $session_user_load_summary.' of '.$bot_overload."\nbot=$is_bot");

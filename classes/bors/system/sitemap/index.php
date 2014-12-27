@@ -5,31 +5,25 @@
 	Например: http://forums.balancer.ru/sitemap-index.xml
 */
 
-class bors_system_sitemap_index extends bors_page
+class bors_system_sitemap_index extends bors_xml
 {
-	function pre_show()
+	function body_data()
 	{
-		header("Content-Type: application/xml; charset=utf-8");
-		echo '<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-';
+		$class_data = array();
 		if(config('sitemap.classes', config('sitemap_classes')))
 		{
 			foreach(explode(' ', config('sitemap_classes')) as $class_name)
 			{
 				$last = bors_find_first($class_name, array('order' => '-modify_time'));
+				if(!$last)
+					continue;
 
-				echo "	<sitemap>
-		<loc>http://{$_SERVER['HTTP_HOST']}/sitemap-{$class_name}.xml</loc>
-		<lastmod>".date('c', $last->modify_time())."</lastmod>
-	</sitemap>
-";
+				$last->set_attr('sitemap_class_index_url', "http://{$_SERVER['HTTP_HOST']}/sitemap-{$class_name}.xml");
+				$class_data[$class_name] = $last;
 			}
 		}
 
-		echo "</sitemapindex>\n";
-
-		return true;
+		return compact('class_data');
 	}
 
 	function cache_static() { return rand(60, 120); }

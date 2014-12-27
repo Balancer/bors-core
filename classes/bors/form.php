@@ -133,7 +133,7 @@ class bors_form extends bors_object
 		{
 			$dom_form_id = 'form_'.md5(rand());
 
-			jquery::css('/htdocs/_bors-3rd/bower_components/validationEngine/css/validationEngine.jquery.css');
+			jquery::css('/_bors-3rd/bower_components/validationEngine/css/validationEngine.jquery.css');
 			jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/languages/jquery.validationEngine-ru.js');
 			jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/jquery.validationEngine.js');
 			jquery::on_ready("jQuery('#{$dom_form_id}').validationEngine()");
@@ -437,6 +437,7 @@ class bors_form extends bors_object
 					case 'bbcode':
 					case 'text':
 					case 'textarea':
+					case 'markdown':
 						$data['rows'] = defval($data, 'rows', $type_arg);
 //						$html .= bors_forms_textarea::html($data, $this);
 						$html .= $this->element_html('textarea', $data);

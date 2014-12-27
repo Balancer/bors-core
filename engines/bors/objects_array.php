@@ -108,6 +108,9 @@ function objects_count($class, $args = array())
 	if(!empty($args['object_id']))
 		$cargs['object_id'] = $args['object_id'];
 
+	if(!$storage)
+		bors_throw("Empty storage for ".$class);
+
 	return $storage->load($init, $where, true, $cargs);
 }
 

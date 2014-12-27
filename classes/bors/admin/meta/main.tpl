@@ -25,6 +25,7 @@
 	{/if}
 {/if}
 
+{if $items}
 <table class="{$this->layout()->table_class()}">
 <thead>
 <tr>
@@ -43,6 +44,7 @@
 {/foreach}
 </tbody>
 </table>
+{/if}
 
 {if $new_link_title}
 	{if $bootstrap}

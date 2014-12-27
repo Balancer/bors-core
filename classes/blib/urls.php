@@ -115,6 +115,9 @@ class blib_urls
 	//TODO: сделать корректным сравнение с GET-запросами с разным порядком параметров
 	static function eq($url1, $url2)
 	{
+		if($url1 == $url2)
+			return true;
+
 		if(preg_match('!^\w+://!', $url1) && preg_match('!^\w+://!', $url2))
 			return $url1 == $url2;
 

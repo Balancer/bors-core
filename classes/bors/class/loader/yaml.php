@@ -90,7 +90,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				if(preg_match('/^(\w+)\[\]$/', $key, $m))
 				{
 					$key = $m[1];
-					$value = "parent::$key() + $value";
+					$value = "array_merge(parent::$key(), $value)";
 				}
 
 				$class .= "\n\tfunction $key()\n\t{\n\t\treturn $value;\n\t}\n";

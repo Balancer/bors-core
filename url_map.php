@@ -40,7 +40,8 @@ $map = array(
 	'/_bors/js/touch\?(.+) => bors_system_js_touch(1)',
 
 	'/sitemap-index.xml => bors_system_sitemap_index',
-	'/sitemap-(\w+)-(\d+).xml => bors_system_sitemap_map(1,2)',
+	'/sitemap-(\w+).xml => bors_system_sitemap_class(1)',
+	'/sitemap-(\w+)-(.+).xml => bors_system_sitemap_map(1,2)',
 	'/_bors/users/do\-login\.bas => bors_admin_users_login',
 	'/_bors/users/do\-logout\.bas => bors_admin_users_logout',
 

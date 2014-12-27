@@ -162,6 +162,9 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true, $for_o
 	$join = preg_replace_callback('!(\w+_\w+)\.(\w+)\s*(=|>|<)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
 	$join = preg_replace_callback('!(\w+_\w+)\.(\w+)(\s+IN)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
 	$join = preg_replace_callback('!(\w+_\w+)\.(\w+)(\s+BETWEEN\s+\S+\s+AND\s+\S+)!', function($m) { return bors_class_field_to_db($m[1], $m[2]).$m[3];}, $join);
+	$join = preg_replace_callback('!^(\w+)(\s+BETWEEN\s+\S+\s+AND\s+\S+)$!', function($m) use ($class_name) {
+		return bors_class_field_to_db($class_name, $m[1]).$m[2];
+	}, $join);
 //	$join = preg_replace_callback('!(ON )(\w+)\.(\w+)(\s+)!', function($m) { return $m[1].bors_class_field_to_db($m[2], $m[3]).$m[4];}, $join);
 	$join = preg_replace_callback('!(=\s*|>|<)(\w+_\w+)\.(\w+)!', function($m) { return $m[1].bors_class_field_to_db($m[2], $m[3]);}, $join);
 //	if(config('is_debug')) echo "    ??? result1: $join <br/>\n";

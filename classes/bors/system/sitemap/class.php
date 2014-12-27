@@ -11,22 +11,17 @@ class bors_system_sitemap_class extends bors_xml
 	{
 		$map = array();
 
-		if(config('sitemap.classes', config('sitemap_classes')))
+		$class_name = $this->id();
+
+		$ids = call_user_func(array($class_name, 'sitemap_ids'));
+
+		foreach($ids as $id)
 		{
-			foreach(explode(' ', config('sitemap_classes')) as $class_name)
-			{
-				$ids = call_user_func(array($class_name, 'sitemap_ids'));
+			$last = call_user_func(array($class_name, 'sitemap_last_modified'), $id);
 
-				foreach($ids as $id)
-				{
-					$last = call_user_func(array($class_name, 'sitemap_last_modified'), $id);
-
-					if(!$last)
-						continue;
-
-					$map["http://{$_SERVER['HTTP_HOST']}/sitemap-{$class_name}-{$id}.xml"] = $last;
-				}
-			}
+			if(!$last)
+				continue;
+			$map["http://{$_SERVER['HTTP_HOST']}/sitemap-{$class_name}-{$id}.xml"] = $last;
 		}
 
 		return compact('map');

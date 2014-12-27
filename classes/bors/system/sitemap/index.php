@@ -10,9 +10,9 @@ class bors_system_sitemap_index extends bors_xml
 	function body_data()
 	{
 		$class_data = array();
-		if(config('sitemap.classes', config('sitemap_classes')))
+		if(config('sitemap.classes'))
 		{
-			foreach(explode(' ', config('sitemap_classes')) as $class_name)
+			foreach(preg_split('/[,\s]+/', config('sitemap.classes')) as $class_name)
 			{
 				$last = bors_find_first($class_name, array('order' => '-modify_time'));
 				if(!$last)

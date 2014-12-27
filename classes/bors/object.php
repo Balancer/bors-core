@@ -304,4 +304,61 @@ class bors_object extends base_object
 
 		return $finder;
 	}
+
+	// Возвращает список ID файлов sitemap со списком объектов классов.
+	// Например, список номеров страниц или список дат.
+	static function sitemap_ids()
+	{
+		$first = bors_find_first(get_called_class(), array('order' => 'create_time'));
+		$last = bors_find_first(get_called_class(), array('order' => '-create_time'));
+
+		if(!$first)
+			return array();
+
+		$first = $first->create_time();
+		if(!$last)
+			$last = time();
+		else
+			$last = $last->create_time();
+
+
+		$ids = array();
+		for($year = date('Y', $first); $year <= date('Y', $last); $year++)
+			for($month = 1; $month<=12; $month++)
+				$ids[] = sprintf('%04d-%02d', $year, $month);
+
+		return $ids;
+
+	}
+
+	// Возвращает список объектов по ID sitemap-класса. Например, по номеру страницы или по дате
+	static function sitemap_index($sitemap_id)
+	{
+		$start = strtotime($sitemap_id . '-01 00:00:00');
+		$days = date('t', $start);
+		$stop  = strtotime($sitemap_id . sprintf('-%02d', $days).' 23:59:59') + 1;
+
+		return bors_each(get_called_class(), array(
+			"create_time BETWEEN $start AND $stop",
+			'order' => '-modify_time',
+		));
+	}
+
+	// Возвращает последний изменённый объект среди объектов соответствующих
+	// определённому sitemap-файлу по его ID.
+	static function sitemap_last_modified($sitemap_id)
+	{
+		// В данном случае у нас гвоздями прибито ID = новостной день
+
+		$start = strtotime($sitemap_id . '-01 00:00:00');
+		$days = date('t', $start);
+		$stop  = strtotime($sitemap_id . sprintf('-%02d', $days).' 23:59:59') + 1;
+
+		$last_news = bors_find_first(get_called_class(), array(
+			'order' => '-modify_time',
+			"create_time BETWEEN $start AND $stop",
+		));
+
+		return $last_news;
+	 }
 }

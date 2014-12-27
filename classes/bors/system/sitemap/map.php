@@ -41,5 +41,16 @@ class bors_system_sitemap_map extends bors_xml
 		return compact('map');
 	}
 
-	function cache_static() { return rand(3600, 7200); }
+	function cache_static()
+	{
+		// хард
+		$time = strtotime($this->id().'-01 00:00:00');
+		if($time < time() - 86400*365) // Старше года
+			return rand(30*86400, 90*86400); // Кешируем на 1-3 мес.
+
+		if($time < time() - 86400*30) // Старше месяца
+			return rand(86400, 7*86400); // Кешируем на 1-7 дней
+
+		return rand(600, 1200);
+	}
 }

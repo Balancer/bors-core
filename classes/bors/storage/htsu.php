@@ -117,6 +117,9 @@ class bors_storage_htsu extends bors_storage
 		else
 		{
 			$data = bors_vhost_data($object->host());
+			if(empty($data['bors_site']))
+				return false;
+
 			if(file_exists($file = "{$data['bors_site']}/data/fs/{$rel}main.{$ext}"))
 				return $file;
 

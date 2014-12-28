@@ -335,6 +335,10 @@ class bors_object extends base_object
 	static function sitemap_index($sitemap_id)
 	{
 		$start = strtotime($sitemap_id . '-01 00:00:00');
+
+		if(!$start)
+			return array();
+
 		$days = date('t', $start);
 		$stop  = strtotime($sitemap_id . sprintf('-%02d', $days).' 23:59:59') + 1;
 

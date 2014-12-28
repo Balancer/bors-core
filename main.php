@@ -266,8 +266,8 @@ catch(Exception $e)
 	try
 	{
 		bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")
-			."<div class=\"red_box\">$message</div>\n"
-			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~1")
+			."<div class=\"red_box alert alert-danger\">$message</div>\n"
+			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n<span style=\"color: #ccc\">~~~1</span>")
 			.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
 //				'template' => 'xfile:default/popup.html',
 		));

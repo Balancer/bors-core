@@ -21,6 +21,7 @@ class bors_system_sitemap_class extends bors_xml
 
 			if(!$last)
 				continue;
+
 			$map["http://{$_SERVER['HTTP_HOST']}/sitemap-{$class_name}-{$id}.xml"] = $last;
 		}
 

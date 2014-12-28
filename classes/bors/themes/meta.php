@@ -13,6 +13,11 @@ class bors_themes_meta extends bors_object
 
 	function _page_data_def() { return array(); }
 
+	function append_data($data = array())
+	{
+		$this->__page_data = array_merge($this->__page_data, $data);
+	}
+
 	function pre_show()
 	{
 		$body = $this->object()->body();
@@ -25,7 +30,7 @@ class bors_themes_meta extends bors_object
 			'javascript_post' => array(),
 		), $this->page_data(), $this->object()->page_data());
 
-		$this->object()->set_attr('layout_class', $this->layout_class());
+		$this->object()->set_attr('layout_class', $this->get('layout_class'));
 	}
 
 	function template_files()

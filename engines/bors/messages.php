@@ -44,15 +44,25 @@ function bors_message($text, $params=array())
 		$link_url = defval($params, 'link_url', $redir);
 	}
 
+	$is_error = preg_match('/ошибк/i', bors_lower($title));
+
+	if($redir === true)
+	{
+		if(!empty($_POST['ref']))
+			$redir = $_POST['ref'];
+		else
+			$redir = user_data('level') > 3 ? "/admin/news/" : "/";
+	}
+
 	$data = array();
-	foreach(explode(' ', 'title text link_text link_url nav_name') as $key)
+	foreach(explode(' ', 'is_error title text link_text link_url nav_name redir timeout') as $key)
 		$data[$key] = $$key;
 
 	foreach(explode(' ', 'login_form login_referer') as $key)
 		$data[$key] = @$params[$key];
 
 	if(empty($data['this']))
-		$data['this'] = object_load('base_page', NULL);
+		$data['this'] = object_load('bors_page', NULL);
 
 	bors_function_include('debug/trace');
 	$data['debug_trace'] = debug_trace(0, false);
@@ -104,8 +114,6 @@ function bors_message($text, $params=array())
 
 	$page->set_parents(array(@$_SERVER['REQUEST_URI']), false);
 
-	$is_error = preg_match('/ошибк/i', bors_lower($title));
-
 	$data = array(
 		'title' => $title,
 		'nav_name' => $nav_name,
@@ -120,30 +128,45 @@ function bors_message($text, $params=array())
 	if($is_error)
 		$data['skip_nav'] = true;
 
-	$template = defval($params, 'template');
-
-	if(!$template && defval($params, 'page_class_name'))
-		$template = $page->template();
-
-	if(!$template)
-		$template = config('default_message_template', config('default_template'));
-
-//	if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
-//		$template = "xfile:$template";
-
 	$data = array_merge($data, array(
 		'success_message' => session_var('success_message'),
 		'notice_message'  => session_var('notice_message'),
 		'error_message'   => session_var('error_message'),
 	));
 
-	try
+	$template = defval($params, 'template');
+
+	if(!$template && class_exists('bors_themes_bootstrap3'))
 	{
-		$message = bors_templates_smarty::fetch($template, $data);
+		$page->set_parents(array('/'));
+		$page->set_body('<hr/><div style="font-size: 24px">'.$page->body().'</div><hr/>');
+		$renderer = bors_load('bors_themes_bootstrap3', $page);
+//		if($layout_class = $renderer->get('layout_class'))
+//			$page->set_attr('layout_class', $layout_class);
+
+		$renderer->append_data($data);
+
+		$message = $renderer->render();
 	}
-	catch(Exception $e)
+	else
 	{
-		$message = NULL;
+		if(!$template && defval($params, 'page_class_name'))
+			$template = $page->template();
+
+		if(!$template)
+			$template = config('default_message_template', config('default_template'));
+
+//		if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
+//			$template = "xfile:$template";
+
+		try
+		{
+			$message = bors_templates_smarty::fetch($template, $data);
+		}
+		catch(Exception $e)
+		{
+			$message = NULL;
+		}
 	}
 
 	if(!$message) // Если всё плохо
@@ -158,14 +181,6 @@ function bors_message($text, $params=array())
 		echo iconv($ics, $ocs, $message);
 	else
 		echo $message;
-
-	if($redir === true)
-	{
-		if(!empty($_POST['ref']))
-			$redir = $_POST['ref'];
-		else
-			$redir = user_data('level') > 3 ? "/admin/news/" : "/";
-	}
 
 	if($hidden_log)
 		debug_hidden_log($hidden_log, "message: $text");

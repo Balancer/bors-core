@@ -70,9 +70,6 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 
 	echo "<meta http-equiv=\"refresh\" content=\"$time; url=$uri\">";
 
-	if($time > 0)
-		echo ec("Редирект по адресу <a href=\"$uri\">$uri</a> через $time секунд");
-
 	if($exit)
 		bors_exit('');
 

@@ -105,8 +105,8 @@ class base_object extends bors_object_simple
 		if(($body = $this->description()))
 			return $image_html . '<p>'.bors_lcml::bbh($body).'</p>';
 
-		if(($body = $this->source()))
-			return $image_html . '<p>'.bors_lcml::bbh($body).'</p>';
+//		if(($body = $this->source()))
+//			return $image_html . '<p>'.bors_lcml::bbh($body).'</p>';
 
 		return $image_html . '<p>'.$this->body().'</p>';
 	}

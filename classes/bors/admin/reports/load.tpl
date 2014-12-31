@@ -79,3 +79,25 @@
 {/foreach}
 </tbody>
 </table>
+
+<h2>Тяжёлые ссылки</h2>
+<table class="{$this->layout()->table_class()}">
+<thead>
+<tr>
+	<th>Ссылка</th>
+	<th>Время исполнения</th>
+	<th>Время запроса</th>
+	<th>Объект</th>
+</tr>
+</thead>
+<tbody>
+{foreach $heavy_links as $x}
+<tr>
+	<td><a href="{$x.url}" target="_blank">{$x.url}</a></td>
+	<td>{$x.operation_time}</td>
+	<td>{$x.access_time|date:'H:i:s'}</td>
+	<td>{$x.class_name}({$x.object_id})</td>
+</tr>
+{/foreach}
+</tbody>
+</table>

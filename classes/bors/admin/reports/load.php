@@ -43,6 +43,14 @@ class bors_admin_reports_load extends bors_admin_page
 				)
 			),
 
+			'heavy_links' => $dbh->select_array('bors_access_log',
+				'*',
+				array(
+					'order' => '-operation_time',
+					'limit' => 20,
+				)
+			),
+
 			'can_see_ip' => object_property(bors()->user(), 'is_coordinator'),
 		);
 	}

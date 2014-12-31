@@ -29,13 +29,15 @@ Array
 {if $requests}
 <table class="{$this->layout()->table_class()}">
 <tr>
-	<th>url</th>
-	<th>time</th>
+	<th>Ссылка</th>
+	<th>Время исполнения</th>
+	<th>Время запроса</th>
 </tr>
 {foreach $requests as $x}
 <tr>
-	<td>{$x.url}</td>
+	<td><a href="{$x.url}" target="_blank">{$x.url}</a></td>
 	<td>{$x.operation_time}</td>
+	<td>{$x.access_time|date:'H:i:s'}</td>
 </tr>
 {/foreach}
 </table>

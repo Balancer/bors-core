@@ -4,15 +4,17 @@ require_once('inc/clients/geoip-place.php');
 
 class bors_admin_reports_ip extends bors_admin_page
 {
-	function title() { return ec('Информация об IP ').$this->ip(); }
-	function nav_name() { return $this->ip(); }
+	function title() { return ec('Информация об IP ').join(',', $this->ips()); }
+	function nav_name() { return join(',', $this->ips()); }
 	function ip() { return urldecode($this->id()); }
 	function parents() { return array('/_bors/admin/reports/load/'); }
+
+	function ips() { return preg_split('!(<br/>|,)!', $this->ip()); }
 
 	function body_data()
 	{
 		$ip = $this->ip();
-		$ips = explode('<br/>', $ip);
+		$ips = $this->ips();
 
 		if(count($ips) > 1)
 			$ip = $ips[0];

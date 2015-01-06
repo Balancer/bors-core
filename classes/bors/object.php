@@ -309,17 +309,17 @@ class bors_object extends base_object
 	// Например, список номеров страниц или список дат.
 	static function sitemap_ids()
 	{
-		$first = bors_find_first(get_called_class(), array('order' => 'create_time'));
-		$last = bors_find_first(get_called_class(), array('order' => '-create_time'));
+		$first = bors_find_first(get_called_class(), array('order' => 'modify_time'));
+		$last = bors_find_first(get_called_class(), array('order' => '-modify_time'));
 
 		if(!$first)
 			return array();
 
-		$first = $first->create_time();
+		$first = $first->modify_time();
 		if(!$last)
 			$last = time();
 		else
-			$last = $last->create_time();
+			$last = $last->modify_time();
 
 
 		$ids = array();
@@ -343,7 +343,7 @@ class bors_object extends base_object
 		$stop  = strtotime($sitemap_id . sprintf('-%02d', $days).' 23:59:59') + 1;
 
 		return bors_each(get_called_class(), array(
-			"create_time BETWEEN $start AND $stop",
+			"modify_time BETWEEN $start AND $stop",
 			'order' => '-modify_time',
 		));
 	}
@@ -360,7 +360,7 @@ class bors_object extends base_object
 
 		$last_news = bors_find_first(get_called_class(), array(
 			'order' => '-modify_time',
-			"create_time BETWEEN $start AND $stop",
+			"modify_time BETWEEN $start AND $stop",
 		));
 
 		return $last_news;

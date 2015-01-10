@@ -777,6 +777,9 @@ class bors_form extends bors_object
 		if($mc = @$this->_params['class'])
 			return $mc;
 
+		if($x = @$this->_params['object'])
+			return $x->class_name();
+
 		return NULL;
 	}
 }

@@ -1550,6 +1550,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$recreate = $this->get('recreate_on_content') || $this->get('cache_static_recreate');
 
 		$use_static = config('cache_static')
+			&& !config('skip_cache_static')
 			&& ($recreate || $this->cache_static() > 0);
 
 		$this->hcom("rcr=$recreate; static=$use_static");

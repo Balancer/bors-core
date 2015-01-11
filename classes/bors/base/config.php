@@ -59,6 +59,9 @@ class base_config extends bors_object_simple
 			'error_message'   => session_var('error_message'),
 		);
 
+		if($data['success_message'] || $data['notice_message'] || $data['error_message'])
+			config_set('skip_cache_static', true);
+
 		if(($post_js = session_var('javascript_post_append')))
 		{
 			foreach($post_js as $js)

@@ -134,6 +134,9 @@ function bors_message($text, $params=array())
 		'error_message'   => session_var('error_message'),
 	));
 
+	if($data['success_message'] || $data['notice_message'] || $data['error_message'])
+		config_set('skip_cache_static', true);
+
 	$template = defval($params, 'template');
 
 	if(!$template && class_exists('bors_themes_bootstrap3'))

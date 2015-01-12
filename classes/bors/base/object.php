@@ -35,7 +35,13 @@ class base_object extends bors_object_simple
 			return $ps;
 
 		if(empty($this->__match[2]))
-			$parent = secure_path(dirname($this->called_url()).'/');
+		{
+			$url = $this->called_url();
+			if(preg_match('!^(.*/)'.$this->page().'.html$!', $url, $m))
+				$url = $m[1];
+
+			$parent = secure_path(dirname($url).'/');
+		}
 		else
 			$parent = "http://{$this->__match[1]}{$this->__match[2]}";
 

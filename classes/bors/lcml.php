@@ -103,6 +103,8 @@ class bors_lcml extends bors_object
 	{
 		foreach(bors_dirs() as $base_dir)
 			bors_lcml::_actions_load($base_dir.'/engines/lcml/'.$rel_dir, $functions);
+
+		ksort($functions);
 	}
 
 	private static function _actions_load($dir, &$functions = array())
@@ -110,7 +112,7 @@ class bors_lcml extends bors_object
         if(!is_dir($dir))
 			return;
 
-		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_3:'.$dir);
+		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_4:'.$dir);
 		if(!$files)
 		{
 	        $files = array();
@@ -123,17 +125,23 @@ class bors_lcml extends bors_object
 	        closedir($dh);
 
 			sort($files);
+
 			self::memcache()->set($files);
 		}
 
-        foreach($files as $file) 
+        foreach($files as $file)
         {
             if(preg_match("!(.+)\.php$!", $file, $m) && file_exists($f = "$dir/$file"))
             {
                 include_once($f);
 
-                $fn = "lcml_".($ffn=substr($file, 3, -4));
-				$functions[] = $fn;
+				if(!preg_match('/^(\d+)\-(.+)\.php$/', $file, $m))
+				{
+					bors_debug::syslog('lcml-code-error', "Incorret file format: '$file' ($f)");
+					continue;
+				}
+
+				$functions[$file] = "lcml_".$m[2];
             }
         }
 	}

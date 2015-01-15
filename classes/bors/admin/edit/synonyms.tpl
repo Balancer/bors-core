@@ -19,7 +19,7 @@
 <br />
 
 <div  id="list">
-<table class="btab w100p">
+<table class="{$this->layout()->table_class()}">
 <tr>
 	<th>ID</th>
 	<th>Синоним</th>

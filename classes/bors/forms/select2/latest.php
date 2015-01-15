@@ -3,13 +3,18 @@
 use HtmlObject\Element;
 use HtmlObject\Input;
 
+/*
+	Тесты и проверки на http://admin.aviaport.wrk.ru/infrastructure/events/new/
+*/
+
 class bors_forms_select2_latest extends bors_forms_select2
 {
 	function html()
 	{
 //		$this->params['width'] = '50%';
 
-		$select2_html = Element::div()->appendChild(parent::html())->getChild(0);
+		$parent_html = parent::html();
+		$select2_html = Element::div()->appendChild($parent_html)->getChild(0);
 		$select2_html->style('width:80%')
 //			->addClass('form-control')
 		;
@@ -34,7 +39,7 @@ class bors_forms_select2_latest extends bors_forms_select2
 			'limit' => 4,
 		));
 
-		$input_name = '_s2l_'.$field_name.'[]';
+		$input_name = '_s2l_'.$field_name;
 
 /*
 	<div class="input-group">
@@ -55,7 +60,7 @@ class bors_forms_select2_latest extends bors_forms_select2
 		foreach($latest as $x)
 		{
 			$inp = Input::radio($input_name, $x->get($field_name))
-				->style('margin: 4px 10px 4px 7px')
+				->style('margin: 4px 15px 4px 7px')
 				.$x->airport()->title();
 
 //				->appendChild(Element::br())
@@ -68,6 +73,17 @@ class bors_forms_select2_latest extends bors_forms_select2
 		}
 
 //		echo "<code>Result:\n", htmlspecialchars($html), "</code>";
+
+		$select2_id = preg_replace('/^.*<input id="(.+?)".+$/', '$1', $parent_html);
+		jquery::on_ready("
+$('#{$select2_id}').on('select2-selecting', function(e) {
+	$('input:radio[name={$input_name}]').filter('[value=0]').prop('checked', true)
+})
+
+$('input:radio[name={$input_name}]').click(function() {
+	$('#{$select2_id}').select2('data', {id: $(this).val(), text: $(this).parent().text() })
+})
+");
 
 		return $html;
 	}

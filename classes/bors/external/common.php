@@ -336,7 +336,8 @@ class bors_external_common extends bors_object
 //		$url = 'https://www.facebook.com/nastya.stanko?fref=nf';	// <title ...> — с параметрами.
 //		$url = 'http://www.interfax.ru/business/413219';			//
 //		$url = 'http://www.airbase.ru/forum/smilies/';				// Голый HTML без заголовков
-		$url = 'http://censor.net.ua/forum/747286';					//
+//		$url = 'http://censor.net.ua/forum/747286';					//
+		$url = 'http://www.fontanka.ru/2015/01/15/183/';			//
 		var_dump(self::content_extract($url, ['limit' => 10000]));
 	}
 }

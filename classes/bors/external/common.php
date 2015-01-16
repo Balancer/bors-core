@@ -187,7 +187,11 @@ class bors_external_common extends bors_object
 				$xpath = new DOMXPath($dom);
 
 //				if(config('is_developer')) { var_dump($query); print_dd($html); print_dd($dom->saveHTML()); }
-				foreach(array(
+
+				foreach($xpath->query('//comment()') as $comment)
+				    $comment->parentNode->removeChild($comment);
+
+				$remove_nodes = array(
 					'//script',
 					'//noscript',
 					'//style',
@@ -197,6 +201,15 @@ class bors_external_common extends bors_object
 					'//h4',
 					'//h5',
 					'//h6',
+
+					'//head',
+					'//header',
+					'//footer',
+					'//button',
+					'//form',
+					'//label',
+					'//input',
+
 					'//*[contains(@class, "nav")]',
 					'//*[contains(@class, "keyword")]',
 					'//*[contains(@class, "tag")]',
@@ -221,17 +234,37 @@ class bors_external_common extends bors_object
 					'//div[@class="top-news fbr"]',
 					'//div[@class="find-in-news"]',
 					'//ul[@class="newslist lp"]',
-				) as $query)
+				);
+
+				// Хардкод для ЖЖ
+				if(preg_match('!^https?://[^/]+\.livejournal\.com/!', $url))
 				{
+					$remove_nodes = array_merge($remove_nodes, array(
+						'//div[@id="comments"]',
+						'//div[@id="hello-world"]',
+						'//div[@class="b-singlepost-standout"]',
+						'//ul',
+						'//li',
+						'//p[contains(@class, "b-msgsystem-error")]',
+						'//div[contains(@class, "s-welcometo")]',
+						'//div[contains(@class, "b-loginform-body")]',
+						'//div[contains(@class, "s-feedback")]',
+						'//div[contains(@class, "s-copyright")]',
+						'//div[contains(@class, "xylem")]',
+						'//div[contains(@class, "s-ljvideo")]',
+						'//div[contains(@class, "button")]',
+						'//span[contains(@class, "bubble")]',
+					));
+				}
+
+				foreach($remove_nodes as $query)
 					foreach($xpath->query($query) as $node)
 						$node->parentNode->removeChild($node);
-
-				}
 
 //				if($divs = $xpath->query('//div[@id="content"]'))
 				// Тест на http://www.balancer.ru/g/p2982207
 
-//				if(config('is_developer')) { ~r($dom->saveHTML()); }
+//				if(config('is_developer')) { ~r(Mihaeu\HtmlFormatter::format($dom->saveHTML())); }
 
 				$divs = $xpath->query('//p');
 				if(!$divs->length)
@@ -245,8 +278,7 @@ class bors_external_common extends bors_object
 					for($i=0; $i<$divs->length; $i++)
 					{
 						$content = $divs->item($i);
-//						if(config('is_developer')) { print_dd($dom->saveHTML($content)); var_dump($content->nodeValue); }
-						$text = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
+						$text = @$content->nodeValue;
 						// Для http://www.balancer.ru/g/p1241837
 						// В тексте может попасться ссылка, которая вызовет зацикливание lcml
 						$text = preg_replace("!^\s*https?://\S+\s*$!im", '', $text);
@@ -254,8 +286,6 @@ class bors_external_common extends bors_object
 						$text = preg_replace("/\n+/", ' ', $text);
 						$source[] = trim($text);
 					}
-
-//					if(config('is_developer')) { var_dump($source); exit('src[]'); }
 
 					$source = join("\n", $source);
 

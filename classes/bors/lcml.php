@@ -166,7 +166,10 @@ class bors_lcml extends bors_object
 				$text = $fn($text, $this);
 
 			if(!trim($text) && trim($original))
-				debug_hidden_log('lcml-error', "Drop on $fn convert '$original'");
+			{
+				bors_debug::syslog('lcml-error', "Drop on $fn convert '$original'");
+				$text = $original;
+			}
 		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)

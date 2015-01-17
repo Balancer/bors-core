@@ -416,6 +416,8 @@ function lt_img($params)
 
 			}
 
+//			if(config('is_developer')) ~r($href, $title, $description, $a_href_b);
+
 			$out = '';
 
 			if(@$params['border'])

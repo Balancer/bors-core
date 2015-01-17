@@ -38,9 +38,10 @@ class bors_lib_exception extends bors_object
 
 	static function catch_html_code($e, $message = NULL)
 	{
+//		r($_SERVER);
 		$trace = debug_trace(0, false, -1, $e->getTrace());
 		$message = $e->getMessage();
-		debug_hidden_log('exception', "$message\n\n$trace", true, array('dont_show_user' => true));
+		bors_debug::syslog('exception', "$message (SERVER info below trace)\n\n$trace", true, array('dont_show_user' => true));
 
 		try
 		{

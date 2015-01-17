@@ -10,6 +10,9 @@ require_once('engines/smarty/global.php');
 
 function object_load($class, $object_id=NULL, $args=array())
 {
+	if(is_object($class))
+		return $class;
+
 //	echo "object_load($class, $object_id, ".print_dl($args).")\n";
 
 	if(is_numeric($class))

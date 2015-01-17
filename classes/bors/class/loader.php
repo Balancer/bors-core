@@ -48,6 +48,12 @@ class bors_class_loader
 
 	static function load($class_name, &$args = array())
 	{
+		if(is_object($class_name))
+		{
+			bors_debug::syslog('class-loader-error', "Try to load class with name = object ".$class_name->debug_title());
+			$class_name = $class_name->class_name();
+		}
+
 		if(!preg_match('/^\w{2,}$/', $class_name)
 			|| preg_match('/^Smarty_Resource_Custom/', $class_name) // Чтобы не мусорило логи
 		)
@@ -69,6 +75,7 @@ class bors_class_loader
 
 		// Если у нас уже загружался соответствующий класс, то возвращаем
 		// его реальный(! — например, .yaml) файл, не кешированный.
+
 		if(!empty($GLOBALS['bors_data']['classes_included'][$class_name]))
 			return $GLOBALS['bors_data']['classes_included'][$class_name];
 

@@ -392,6 +392,7 @@ if(config('debug.timing') && is_string($res))
 	bors_function_include('debug/count');
 	bors_function_include('debug/count_info_all');
 	bors_function_include('debug/timing_info_all');
+
 	if($deb_vars = debug_vars_info())
 	{
 		$deb .= "\n=== debug vars: ===\n";

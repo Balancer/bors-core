@@ -87,7 +87,6 @@ class bors_image_thumb extends bors_image
 
 //		$this->delete();
 
-
 		if($original_path = $this->original->relative_path())
 			$new_path = secure_path('/cache/'.$original_path.'/'.$this->geometry);
 		else
@@ -124,26 +123,19 @@ class bors_image_thumb extends bors_image
 		$this->set_file_name($this->original->file_name(), $caching);
 
 		$file_orig  = $this->original->file_name_with_path();
-		if(config('pics_base_safemodded'))
-		{
-			$file_thumb = $this->file_name_with_path();
-		}
-		else
-		{
-//			$file_thumb = $this->file_name_with_path();
-			// WTF? http://www.balancer.ru/g/p3463879
-			$new_url = str_replace('forums.testing.airbase.ru', 'forums.balancer.ru', $new_url);
-			$oud = url_parse($new_url);
-			if(!$oud['local'] || !$oud['local_path'])
-				bors_throw('Unknown local for "'.$new_url.'" thumb: '.print_r($oud, true)
-					.'; file_name_with_path='.$this->file_name_with_path());
 
-			$file_thumb = $oud['local_path'];
+//		$file_thumb = $this->file_name_with_path();
+		// WTF? http://www.balancer.ru/g/p3463879
+		$new_url = str_replace('forums.testing.airbase.ru', 'forums.balancer.ru', $new_url);
+		$oud = url_parse($new_url);
+		if(!$oud['local'] || !$oud['local_path'])
+			bors_throw('Unknown local for "'.$new_url.'" thumb: '.print_r($oud, true)
+				.'; file_name_with_path='.$this->file_name_with_path());
 
-			if(!preg_match('!/cache.*/\d*x\d*!', $file_thumb))
-				bors_throw('Incorrect thumb file '.$file_thumb.' for '.print_r($oud, true));
+		$file_thumb = $oud['local_path'];
 
-		}
+		if(!preg_match('!/cache.*/\d*x\d*!', $file_thumb))
+			bors_throw('Incorrect thumb file '.$file_thumb.' for '.print_r($oud, true));
 
 		$abs = false;
 
@@ -154,29 +146,14 @@ class bors_image_thumb extends bors_image
 			$abs = true;
 		}
 
-		if(config('pics_base_safemodded'))
-		{
-			$file_orig_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_orig);
-			//TODO: ужасно, но пока только так.
-			$fsize_orig = strlen(@file_get_contents($file_orig_r));
+		$file_orig_r = $file_orig;
+		if(!($fsize_orig = @filesize($file_orig_r)))
+			debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
 
-			$file_thumb_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_thumb);
-			//TODO: ужасно, но пока только так.
-			$fsize_thumb = strlen(file_get_contents($file_thumb_r));
-			//TODO: а это  совсем жопа
-			$this->set_full_file_name(str_replace('http://pics.aviaport.ru/', '/var/www/pics.aviaport.ru/htdocs/', $file_thumb_r), true);
-		}
-		else
-		{
-			$file_orig_r = $file_orig;
-			if(!($fsize_orig = @filesize($file_orig_r)))
-				debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
-
-			$file_thumb_r = $file_thumb;
-			//TODO: придумать обработку больших картинок.
-			$fsize_thumb = @filesize($file_thumb_r);
-			$this->set_full_file_name($file_thumb, $caching);
-		}
+		$file_thumb_r = $file_thumb;
+		//TODO: придумать обработку больших картинок.
+		$fsize_thumb = @filesize($file_thumb_r);
+		$this->set_full_file_name($file_thumb, $caching);
 
 		$this->set_size($fsize_thumb, $caching);
 
@@ -188,6 +165,7 @@ class bors_image_thumb extends bors_image
 		if(!$this->thumb_create($abs))
 			return $this->set_is_loaded(false);
 
+		bors_debug::syslog('000-image-debug', "Get thumb size for ".$file_thumb_r);
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
 			debug_hidden_log('image-error', 'Cannot get image width for '.$file_thumb_r

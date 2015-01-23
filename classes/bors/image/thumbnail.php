@@ -112,18 +112,9 @@ class bors_image_thumbnail extends bors_image
 			$abs = true;
 		}
 
-		if(config('pics_base_safemodded'))
-		{
-			$file_orig_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_orig);
-			//TODO: ужасно, но пока только так.
-			$fsize_orig = strlen(@file_get_contents($file_orig_r));
-		}
-		else
-		{
-			$file_orig_r = $file_orig;
-			if(!($fsize_orig = @filesize($file_orig_r)))
-				debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
-		}
+		$file_orig_r = $file_orig;
+		if(!($fsize_orig = @filesize($file_orig_r)))
+			debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
 
 		if(!$this->original->file_name() || !$fsize_orig)
 			return;
@@ -133,25 +124,15 @@ class bors_image_thumbnail extends bors_image
 		if(!$this->thumb_create($abs))
 			return $this->set_is_loaded(false);
 
-		if(config('pics_base_safemodded'))
-		{
-			$file_thumb_r = str_replace(config('pics_base_dir'), config('pics_base_url'), $file_thumb);
-			//TODO: ужасно, но пока только так.
-			$fsize_thumb = strlen(file_get_contents($file_thumb_r));
-			//TODO: а это  совсем жопа
-			$this->set_full_file_name(str_replace('http://pics.aviaport.ru/', '/var/www/pics.aviaport.ru/htdocs/', $file_thumb_r), true);
-		}
-		else
-		{
-			$file_thumb_r = $file_thumb;
-			//TODO: придумать обработку больших картинок.
-			$fsize_thumb = @filesize($file_thumb_r);
-			$this->set_full_file_name($file_thumb, true);
-		}
+		$file_thumb_r = $file_thumb;
+		//TODO: придумать обработку больших картинок.
+		$fsize_thumb = @filesize($file_thumb_r);
+		$this->set_full_file_name($file_thumb, true);
 
 //		echo "File {$this->file_name_with_path()}, size=$fsize_thumb<br />\n"; exit();
 		$this->set_size($fsize_thumb, $caching);
 
+		bors_debug::syslog('000-image-debug', "Get thumbnail size for ".$file_thumb_r);
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
 			debug_hidden_log('image-error', 'Cannot get image width');

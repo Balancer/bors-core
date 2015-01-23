@@ -172,9 +172,15 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 		// Почему-то стояла сперва проверка не через файл, а через URL.
 		// Если будет глючить — вернуть с объяснением. Иначе тормозит.
+
+		bors_debug::syslog('000-image-debug', "Get image size [1] for ".$this->file_name_with_path());
+
 		$x = @getimagesize($this->file_name_with_path());
 		if(!$x)
+		{
+			bors_debug::syslog('000-image-debug', "Get image size [2] for ".$this->url());
 			$x = @getimagesize($this->url());
+		}
 
 		if(!empty($x[0]) && !empty($x['mime']))
 		{
@@ -202,6 +208,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 			debug_exit("Can't load image {$data['name']}: Uploaded tmp file not exists<br/>");
 		}
 
+		bors_debug::syslog('000-image-debug', "Get image size [4] for ".$file);
 		if(!($x = @getimagesize($file)))
 		{
 			debug_hidden_log('image-error', 'Can not get image sizes for '.$file);
@@ -233,6 +240,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		else
 			$this->set_relative_path(secure_path($dir.'/'.sprintf("%03d", intval($this->id()/1000))));
 
+		bors_debug::syslog('000-image-debug', "Get image size [3] for ".$file);
 		$data = @getimagesize($file);
 		switch($data['mime'])
 		{

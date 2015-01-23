@@ -23,9 +23,13 @@ class bors_image_file extends bors_object
 		if($this->__havefc())
 			return $this->__lastc();
 
+		bors_debug::syslog('000-image-debug', "Get image file size for ".$this->file_name_with_path());
 		$x = @getimagesize($this->file_name_with_path());
 		if(!$x)
+		{
+			bors_debug::syslog('000-image-debug', "Get image file size for ".$this->url());
 			$x = @getimagesize($this->url());
+		}
 
 		$data = array();
 

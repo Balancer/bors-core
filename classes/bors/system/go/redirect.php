@@ -12,6 +12,11 @@ class bors_system_go_redirect extends bors_object
 		return false; // bors_message("Can't find object {$this->id()}");
 	}
 
+	function parents()
+	{
+		return $this->object()->parents();
+	}
+
 	function object()
 	{
 		$object = NULL;

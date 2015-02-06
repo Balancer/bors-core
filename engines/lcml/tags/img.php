@@ -138,6 +138,7 @@ function lt_img($params)
 				$file = "$store_path/$path";
 			}
 
+			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
 			if(!file_exists($file) || filesize($file)==0 || !($image_size = @getimagesize($file)))
 			{
 				$path = web_import_image::storage_place_rel($params['url']);
@@ -150,6 +151,7 @@ function lt_img($params)
 				$file = "$store_path/$path";
 			}
 
+			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
 			$image_size = @getimagesize($file);
 
 //			if(config('is_developer')) { echo '<xmp>'; var_dump($params['url'], $file, $image_size); }
@@ -222,7 +224,10 @@ function lt_img($params)
 			}
 
 			if(!$image_size)
+			{
+				bors_debug::syslog('000-image-debug', "Get image size for ".$file);
 				$image_size = @getimagesize($file);
+			}
 
 //			if(config('is_developer')) { echo '<xmp>'; var_dump($params['url'], $file, $image_size); }
 
@@ -334,6 +339,7 @@ function lt_img($params)
 				// Кстати, ошибка может быть и от перегрузки.
 				blib_http::get($img_ico_uri, true, 200000); // До 200кб
 
+				bors_debug::syslog('000-image-debug', "Get image size for ".$img_ico_uri);
 				list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
 
 				if(!intval($width) || !intval($height))
@@ -342,6 +348,7 @@ function lt_img($params)
 					sleep(5);
 					blib_http::get($img_ico_uri, true, 1000000); // До 1Мб
 
+					bors_debug::syslog('000-image-debug', "Get image size for ".$img_ico_uri);
 					list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
 				}
 			}
@@ -357,7 +364,7 @@ function lt_img($params)
 			}
 			else
 			{
-				bors_debug::syslog('obsolete-imagesize-by-url', "Can't register image\n$file\n$uri");
+				bors_debug::syslog('000-image-debug', "Can't register image\n$file\n$uri");
 				@list($img_w, $img_h) = @getimagesize($uri);
 			}
 
@@ -415,6 +422,8 @@ function lt_img($params)
 				}
 
 			}
+
+//			if(config('is_developer')) ~r($href, $title, $description, $a_href_b);
 
 			$out = '';
 

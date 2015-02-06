@@ -365,8 +365,9 @@ array (size=22)
 			if(strtolower($charset) == 'utf-8')
 				$data = blib_str_charset::utf8_fix($data);
 
+			// модификатор TRANSLIT не использовать, в ряде случаев ломается. Так что — только IGNORE
 			if($charset && strtolower(config('internal_charset')) != strtolower($charset))
-				$data = iconv($charset, config('internal_charset').'//TRANSLIT', $data);
+				$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
 		}
 
 		curl_close($ch);

@@ -55,6 +55,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 	$img->save($file_out, 85);
 	return false;
 
+	bors_debug::syslog('000-image-debug', "Get image size for ".$file_in);
 	$data = getimagesize($file_in);
 
 	if(!$data || !$data[0])

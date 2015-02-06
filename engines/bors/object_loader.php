@@ -13,6 +13,12 @@ function bors_object_caches_drop()
 
 function &load_cached_object($class_name, $id, $args, &$found=0)
 {
+	if(is_object($class_name))
+	{
+		bors_debug::syslog('class-loader-error', "Try to load class with name = object ".$class_name->debug_title());
+		$class_name = $class_name->class_name();
+	}
+
 	$obj = NULL;
 
 	if(is_object($id) || !empty($args['no_load_cache']))

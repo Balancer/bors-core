@@ -135,13 +135,8 @@ class bors_lcml extends bors_object
             {
                 include_once($f);
 
-				if(!preg_match('/^(\d+)\-(.+)\.php$/', $file, $m))
-				{
-					bors_debug::syslog('lcml-code-error', "Incorret file format: '$file' ($f)");
-					continue;
-				}
-
-				$functions[$file] = "lcml_".$m[2];
+				if(preg_match('/^(\d+)\-(.+)\.php$/', $file, $m2))
+					$functions[$file] = "lcml_".$m2[2];
             }
         }
 	}
@@ -166,7 +161,10 @@ class bors_lcml extends bors_object
 				$text = $fn($text, $this);
 
 			if(!trim($text) && trim($original))
-				debug_hidden_log('lcml-error', "Drop on $fn convert '$original'");
+			{
+				bors_debug::syslog('lcml-error', "Drop on $fn convert '$original'");
+				$text = $original;
+			}
 		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)

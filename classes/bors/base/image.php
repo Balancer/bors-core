@@ -22,9 +22,13 @@ class base_image extends bors_object
 
 	function recalculate($db_update)
 	{
+		bors_debug::syslog('000-image-debug', "Get image size [5] for ".$this->url());
 		$x = @getimagesize($this->url());
 		if(!$x)
+		{
+			bors_debug::syslog('000-image-debug', "Get image size [6] for ".$this->file_name_with_path());
 			$x = @getimagesize($this->file_name_with_path());
+		}
 		$this->set_width($x[0], $db_update);
 		$this->set_height($x[1], $db_update);
 		$this->set_size(@filesize($this->file_name_with_path()), $db_update);

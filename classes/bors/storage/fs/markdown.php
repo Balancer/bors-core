@@ -77,7 +77,7 @@ class bors_storage_fs_markdown extends bors_storage
 						'create_time',
 						'strtotime'
 					),
-//					'Config' => 'config_class'
+					'Config' => 'config_class'
 			) as $md => $field)
 			{
 				if(!empty($data[$md]))
@@ -85,7 +85,7 @@ class bors_storage_fs_markdown extends bors_storage
 					if(is_array($field))
 						$data[$field[0]] = call_user_func($field[1], $data[$md]);
 					else
-						$data[$field] = strtotime($data[$md]);
+						$data[$field] = $data[$md];
 
 					unset($data[$md]);
 				}
@@ -105,8 +105,11 @@ class bors_storage_fs_markdown extends bors_storage
 			$object->set_title($m[1], false);
 			$content = preg_replace('/^#\s+(.+)$/m', '', $content);
 		}
-		elseif(preg_match('/(^|\n)(.+?)\n(=+)\n/s', $content, $m))
+		elseif(preg_match("/(^|\n)(.+?)\n(=+)\n/s", $content, $m))
+		{
 			$object->set_title($m[2], false);
+			$content = preg_replace("/(^|\n)(.+?)\n(=+)\n/", '', $content, 1);
+		}
 
 		if(!$object->title_true())
 			return $object->set_is_loaded(false);

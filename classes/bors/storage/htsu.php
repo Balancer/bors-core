@@ -220,7 +220,6 @@ class bors_storage_htsu extends bors_storage
 
 		if(!$object->modify_time(true) && $file)
 			$object->set('modify_time', filemtime($file), false);
-
 		if(!$object->title_true())
 			if(preg_match("/(^|\n)([^\n]+)\n(==+)\n/s", $this->hts, $m))
 			{

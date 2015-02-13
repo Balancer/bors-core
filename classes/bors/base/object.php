@@ -521,7 +521,13 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	/** Истинный заголовок объекта. Метод или параметр объекта. */
 	function title_true() { return method_exists($this, 'title') ? $this->title() : empty($this->data['title']) ? NULL : $this->data['title']; }
 
-	function set_title($new_title, $db_up=true) { return $this->set('title', $new_title, $db_up); }
+	function set_title($new_title, $db_up=true)
+	{
+		// Хардкод: сбросим заголовки браузера и страниц — вдруг они уже были запрошены со старым значением title?
+		unset($this->attr['browser_title']);
+		unset($this->attr['page_title']);
+		return $this->set('title', $new_title, $db_up);
+	}
 
 	function debug_title() { return "'".trim(object_property($this, 'title'))."' {$this->class_name()}({$this->id()})"; }
 	function debug_titled_link() { return "<a href=\"{$this->url()}\">'{$this->title()}' {$this->class_name()}({$this->id()})</a>"; }

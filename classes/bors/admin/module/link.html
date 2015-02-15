@@ -13,9 +13,9 @@
 </ul>
 
 {form act="link" object=$target}
-{dropdown name="link_class_name" list=$linkable value=""}&nbsp;№&nbsp;{input name="link_object_id" value=""}<br/>
+{dropdown name="link_class_name" list=$linkable value="" style="width: 30%; float: none"}&nbsp;№&nbsp;{input name="link_object_id" value="" style="width: 20%; float: none"}<br/>
 <small>или укажите ссылки на привязываемые объекты, по одной в строке:</small><br/>
-{textarea name="link_urls" value="" rows="4" cols="50"}<br/>
+{textarea name="link_urls" value="" rows="4" cols="50" style="width: 100%; float: none"}<br/>
 {submit value="Добавить привязки"}
 {hidden name="link_object_from" value=$target->internal_uri()}
 {go value=$this->url()}

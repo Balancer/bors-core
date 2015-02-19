@@ -177,10 +177,6 @@ class cache_static extends bors_object_db
 		}
 		else
 		{
-//			echo "New $file<br/>\n";
-			if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
-				config_set('debug_mysql_queries_log', true);
-
 			$cache = bors_new('cache_static', array(
 				'id' => $file,
 				'object_uri' => $object_uri,

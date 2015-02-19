@@ -86,10 +86,20 @@ function lt_img($params)
 		if(preg_match('/\w{5,}$/', $data['path']))
 			$data['path'] .= '.jpg';
 
-//		if(config('is_debug') /*&& preg_match('/nevseoboi/', $uri)*/) { echo '<xmp>'; var_dump($data); exit(); }
+//		if(config('is_debug') && preg_match('/kaban.*png/', $uri)) { echo '<xmp>', $uri,' '; var_dump($params); var_dump($data); exit(); }
 
 		$store_path = config('sites_store_path');
 		$store_url  = config('sites_store_url');
+
+		if(!empty($params['flow']))
+			$align_class = ' pull-left';
+		else
+			$align_class = '';
+
+		if(!empty($params['width']) && !empty($params['height']))
+			$err_box = "<div class=\"alert alert-danger{$align_class}\" style=\"width: {$params['width']}px; width: {$params['height']}px; overflow: hidden; margin: 0 8px 0 0;\">%s</div>";
+		else
+			$err_box = "%s";
 
 		if(preg_match('!/_cg/!', $uri))
 		{
@@ -182,9 +192,8 @@ function lt_img($params)
 
 				if(!is_writable(dirname($file)))
 				{
-					bors_use('debug_hidden_log');
-					debug_hidden_log('access_error', "Can't write to ".dirname($file));
-					return "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$file']</small>";
+					bors_debug::syslog('file_access_error', "Can't write to ".dirname($file)."\nparams=".print_r($params, true));
+					return sprintf($err_box, "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$file']</small>");
 				}
 
 				$x = blib_http::get_ex(str_replace(' ', '%20', $params['url']), array(
@@ -354,7 +363,7 @@ function lt_img($params)
 			}
 
 			if(!intval($width) || !intval($height))
-				return "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get <a href=\"{$img_ico_uri}\">icon's</a> size]";
+				return sprintf($err_box, "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get <a href=\"{$img_ico_uri}\">icon's</a> size]");
 
 			//TODO: придумать, как обойти хардкод имени класса картинки
 			if($image = bors_image::register_file($file))

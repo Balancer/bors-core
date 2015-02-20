@@ -220,7 +220,7 @@ function lt_img($params)
 					)
 				{
 //					debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type."\n".$content); // Это не картинка
-					return lcml_urls_title($params['url']).'<small> [not image]</small>';
+					return sprintf($err_box, lcml_urls_title($params['url']).'<small> [not image]</small>');
 				}
 
 				//TODO: придумать, блин, какой-нибудь .d вместо каталогов. А то, вдруг, картинка будет и прямая

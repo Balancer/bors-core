@@ -35,7 +35,13 @@ class base_object extends bors_object_simple
 			return $ps;
 
 		if(empty($this->__match[2]))
-			$parent = secure_path(dirname($this->called_url()).'/');
+		{
+			$url = $this->called_url();
+			if(preg_match('!^(.*/)'.$this->page().'.html$!', $url, $m))
+				$url = $m[1];
+
+			$parent = secure_path(dirname($url).'/');
+		}
 		else
 			$parent = "http://{$this->__match[1]}{$this->__match[2]}";
 
@@ -105,8 +111,8 @@ class base_object extends bors_object_simple
 		if(($body = $this->description()))
 			return $image_html . '<p>'.bors_lcml::bbh($body).'</p>';
 
-		if(($body = $this->source()))
-			return $image_html . '<p>'.bors_lcml::bbh($body).'</p>';
+//		if(($body = $this->source()))
+//			return $image_html . '<p>'.bors_lcml::bbh($body).'</p>';
 
 		return $image_html . '<p>'.$this->body().'</p>';
 	}
@@ -146,7 +152,7 @@ class base_object extends bors_object_simple
 	function _configure()
 	{
 		if($this->___was_configured)
-			return;
+			return true;
 
 		$this->___was_configured = true;
 
@@ -162,15 +168,17 @@ class base_object extends bors_object_simple
 		if($this->storage())
 			bors_lib_orm::all_fields($this);
 
-		if(($config = $this->config_class()))
+		if(($config_class = $this->config_class()))
 		{
-			$this->config = new $config($this);
+			$this->config = bors_load($config_class, $this);
 
 			if(!$this->config)
 				debug_exit("Can't load config class '{$config}'.");
 
 			$this->config->target_configure();
 		}
+
+		return true;
 	}
 
 	function data_load()
@@ -278,8 +286,11 @@ class base_object extends bors_object_simple
 		// Если это где-то что-то поломает — исправить там, а не тут.
 		if(@array_key_exists($method, $this->attr))
 		{
-			// Если хранимый атрибут — функция (и в случае строки её имя 3 символа и более), то вызываем её, передав параметр.
-			if(is_callable($this->attr[$method]) && (!is_string($this->attr[$method]) || strlen($this->attr[$method]) >= 3))
+			// Если хранимый атрибут — функция, то вызываем её, передав параметр.
+			// Простые строки в виде имён не используем. Иначе возможна ситуация,
+			// когда в атрибут будет сохранена строка, совпадающая с именем функции.
+			// Произойдёт неождаемый вызов функции.
+			if(is_callable($this->attr[$method]) && !is_string($this->attr[$method]))
 				return call_user_func_array($this->attr[$method], $params);
 
 			// Иначе — просто возвращаем значение.
@@ -510,7 +521,13 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	/** Истинный заголовок объекта. Метод или параметр объекта. */
 	function title_true() { return method_exists($this, 'title') ? $this->title() : empty($this->data['title']) ? NULL : $this->data['title']; }
 
-	function set_title($new_title, $db_up=true) { return $this->set('title', $new_title, $db_up); }
+	function set_title($new_title, $db_up=true)
+	{
+		// Хардкод: сбросим заголовки браузера и страниц — вдруг они уже были запрошены со старым значением title?
+		unset($this->attr['browser_title']);
+		unset($this->attr['page_title']);
+		return $this->set('title', $new_title, $db_up);
+	}
 
 	function debug_title() { return "'".trim(object_property($this, 'title'))."' {$this->class_name()}({$this->id()})"; }
 	function debug_titled_link() { return "<a href=\"{$this->url()}\">'{$this->title()}' {$this->class_name()}({$this->id()})</a>"; }
@@ -1548,6 +1565,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$recreate = $this->get('recreate_on_content') || $this->get('cache_static_recreate');
 
 		$use_static = config('cache_static')
+			&& !config('skip_cache_static')
 			&& ($recreate || $this->cache_static() > 0);
 
 		$this->hcom("rcr=$recreate; static=$use_static");

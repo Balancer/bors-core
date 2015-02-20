@@ -66,8 +66,16 @@ function original_filename() { return @$this->data['original_filename']; }
 function set_original_filename($v, $dbup=true) { return $this->set('original_filename', $v, $dbup); }
 function resolution_limit() { return @$this->data['resolution_limit']; }
 function set_resolution_limit($v, $dbup=true) { return $this->set('resolution_limit', $v, $dbup); }
+
 function width() { return @$this->data['width']; }
-function set_width($v, $dbup=true) { return $this->set('width', $v, $dbup); }
+function set_width($w, $dbup=true)
+{
+	if(!$w)
+		bors_debug::syslog('image-error', "Set width=0 for ".$this->debug_title());
+
+	return $this->set('width', $w, $dbup);
+}
+
 function height() { return @$this->data['height']; }
 function set_height($v, $dbup=true) { return $this->set('height', $v, $dbup); }
 function size() { return @$this->data['size']; }
@@ -172,9 +180,15 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 		// Почему-то стояла сперва проверка не через файл, а через URL.
 		// Если будет глючить — вернуть с объяснением. Иначе тормозит.
+
+		bors_debug::syslog('000-image-debug', "Get image size [1] for ".$this->file_name_with_path());
+
 		$x = @getimagesize($this->file_name_with_path());
 		if(!$x)
+		{
+			bors_debug::syslog('000-image-debug', "Get image size [2] for ".$this->url());
 			$x = @getimagesize($this->url());
+		}
 
 		if(!empty($x[0]) && !empty($x['mime']))
 		{
@@ -202,6 +216,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 			debug_exit("Can't load image {$data['name']}: Uploaded tmp file not exists<br/>");
 		}
 
+		bors_debug::syslog('000-image-debug', "Get image size [4] for ".$file);
 		if(!($x = @getimagesize($file)))
 		{
 			debug_hidden_log('image-error', 'Can not get image sizes for '.$file);
@@ -233,6 +248,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		else
 			$this->set_relative_path(secure_path($dir.'/'.sprintf("%03d", intval($this->id()/1000))));
 
+		bors_debug::syslog('000-image-debug', "Get image size [3] for ".$file);
 		$data = @getimagesize($file);
 		switch($data['mime'])
 		{

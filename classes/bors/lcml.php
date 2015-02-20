@@ -103,6 +103,8 @@ class bors_lcml extends bors_object
 	{
 		foreach(bors_dirs() as $base_dir)
 			bors_lcml::_actions_load($base_dir.'/engines/lcml/'.$rel_dir, $functions);
+
+		ksort($functions);
 	}
 
 	private static function _actions_load($dir, &$functions = array())
@@ -110,7 +112,7 @@ class bors_lcml extends bors_object
         if(!is_dir($dir))
 			return;
 
-		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_3:'.$dir);
+		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_4:'.$dir);
 		if(!$files)
 		{
 	        $files = array();
@@ -123,17 +125,18 @@ class bors_lcml extends bors_object
 	        closedir($dh);
 
 			sort($files);
+
 			self::memcache()->set($files);
 		}
 
-        foreach($files as $file) 
+        foreach($files as $file)
         {
             if(preg_match("!(.+)\.php$!", $file, $m) && file_exists($f = "$dir/$file"))
             {
                 include_once($f);
 
-                $fn = "lcml_".($ffn=substr($file, 3, -4));
-				$functions[] = $fn;
+				if(preg_match('/^(\d+)\-(.+)\.php$/', $file, $m2))
+					$functions[$file] = "lcml_".$m2[2];
             }
         }
 	}
@@ -158,7 +161,10 @@ class bors_lcml extends bors_object
 				$text = $fn($text, $this);
 
 			if(!trim($text) && trim($original))
-				debug_hidden_log('lcml-error', "Drop on $fn convert '$original'");
+			{
+				bors_debug::syslog('lcml-error', "Drop on $fn convert '$original'");
+				$text = $original;
+			}
 		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)

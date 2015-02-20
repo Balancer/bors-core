@@ -128,10 +128,13 @@ class bors_forms_checkbox_list extends bors_forms_element
 		$labels_html = array();
 
 		if($columns)
+		{
 			$labels_html[] = "<table><tr><td style=\"padding: 0 10px 0 0\">";
+			$per_column = ceil(count($list) / $columns);
+		}
 
 		$pos = 0;
-		$per_column = ceil(count($list) / $columns);
+
 		foreach($list as $id => $iname)
 		{
 			if($columns && $pos && $pos % $per_column == 0)

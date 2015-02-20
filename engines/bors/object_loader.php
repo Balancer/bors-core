@@ -13,6 +13,12 @@ function bors_object_caches_drop()
 
 function &load_cached_object($class_name, $id, $args, &$found=0)
 {
+	if(is_object($class_name))
+	{
+		bors_debug::syslog('class-loader-error', "Try to load class with name = object ".$class_name->debug_title());
+		$class_name = $class_name->class_name();
+	}
+
 	$obj = NULL;
 
 	if(is_object($id) || !empty($args['no_load_cache']))
@@ -575,6 +581,10 @@ function object_init($class_name, $object_id, $args = array())
 	{
 		$found = 0;
 
+		// Ловим так fatal error
+		if(!class_exists($class_name))
+			bors_throw("Class '$class_name' not found");
+
 		$obj = new $class_name($object_id);
 
 		if(!method_exists($obj, 'set_class_file'))
@@ -609,7 +619,8 @@ function object_init($class_name, $object_id, $args = array())
 		$obj->set_called_url($called_url);
 	}
 
-	$obj->_configure();
+	if(($new_obj = $obj->_configure()) && is_object($new_obj))
+		$obj = $new_obj;
 
 	$loaded = $obj->is_loaded();
 

@@ -1,23 +1,31 @@
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <div class="{if $is_error}yellow_box{/if} message">
 
-<div class="message-text">
-{$text}
-</div>
+	<div class="message-tex1t alert {if $is_error}alert-error{else}alert-success{/if}">
+	{$text}
+	</div>
 
-<center>
+	<center>
 {if $login_form}
-<form method="post" action="/users/do-login" class="big">
-<table class="null big20">
-<tr><td>Имя:&nbsp;</td><td><input name="req_username" size="16" maxlength="25" tabindex="1" /></td></tr>
-<tr><td>Пароль:&nbsp;</td><td><input type="password" name="req_password" size="16" maxlength="16" tabindex="2" /></td></tr>
-<tr><td></td><td><input type="submit" name="login" value="Зайти" tabindex="3" /></td></tr>
-</table>
-<input type="hidden" name="redirect_url" value="{$login_referer}" />
-</form>
+		<form method="post" action="/users/do-login" class="big">
+			<table class="null big20">
+				<tr><td>Имя:&nbsp;</td><td><input name="req_username" size="16" maxlength="25" tabindex="1" /></td></tr>
+				<tr><td>Пароль:&nbsp;</td><td><input type="password" name="req_password" size="16" maxlength="16" tabindex="2" /></td></tr>
+				<tr><td></td><td><input type="submit" name="login" value="Зайти" tabindex="3" /></td></tr>
+			</table>
+			<input type="hidden" name="redirect_url" value="{$login_referer}" />
+		</form>
 {/if}
 
-<a href="{$link_url|htmlspecialchars}" class="current_page">{$link_text}</a>
-</center>
+		<a href="{$link_url|htmlspecialchars}" class="current_page btn btn-primary">{$link_text}</a>
+	</center>
+
+{if $timeout > 0}
+	<hr/>
+	<div class="alert alert-info" style="font-size: x-small; padding: 4px">
+		Автоматический переход по адресу <a href="{$redir}">{$redir}</a> через
+		{$timeout|sklonn:"секунду,секунды,секунд"}
+	</div>
+{/if}
 
 </div>

@@ -37,11 +37,7 @@ class bors_tools_delete extends bors_page
 
 		if(!$act->can_delete())
 		{
-			if(function_exists('d'))
-				d(array(
-					'tools delete pre_show. Can not delete obj' => $obj->debug_title(),
-					'access' => $act->debug_title(),
-				));
+//			r('tools delete pre_show. Can not delete obj', $obj->debug_title(), 'access', $act->debug_title());
 
 			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_link()."
 				<!-- class_name = ".get_class($obj)."

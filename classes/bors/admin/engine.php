@@ -67,6 +67,9 @@ class bors_admin_engine extends bors_object
 	{
 		$obj = $this->admin_object();
 
+		if(!$obj)
+			return NULL;
+
 		if(method_exists($obj, 'delete_url'))
 			return $obj->delete_url();
 

@@ -27,6 +27,16 @@ class blib_grammar
 		return join($join, array_map(array('blib_grammar', 'singular'), explode($split, $string)));
 	}
 
+	static function plural($string)
+	{
+		bors_function_include('natural/bors_plural');
+		return bors_plural($string);
+	}
+
+	static function chunk_plural($string, $join='_', $split = '_')
+	{
+		return join($join, array_map(array('blib_grammar', 'plural'), explode($split, $string)));
+	}
 
 	static function __unit_test($suite)
 	{

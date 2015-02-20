@@ -45,7 +45,7 @@
 {$this->layout()->mod('pagination')}
 
 <div  id="crosslinks">
-<table class="btab w100p">
+<table class="{$this->layout()->table_class()}">
 <tr>
 	<th>Раздел</th>
 	<th>Тип связи</th>

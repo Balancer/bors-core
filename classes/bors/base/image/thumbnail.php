@@ -41,6 +41,7 @@ class base_image_thumbnail extends base_image
 //		echo "File {$this->file_name_with_path()}<br />\n";
 		$this->set_size(filesize($this->file_name_with_path()), true);
 
+		bors_debug::syslog('000-image-debug', "Get thumbnail size for ".$this->file_name_with_path());
 		$img_data = getimagesize($this->file_name_with_path());
 
 		$this->set_width($img_data[0], true);

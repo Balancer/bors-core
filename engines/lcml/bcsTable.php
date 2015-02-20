@@ -119,7 +119,7 @@ class bcsTable
 				$table->width($w);
 				if(is_numeric($w))
 					$w = "{$w}px";
-				$this->addStyle("width:{$w}");
+				$this->addStyle("width:{$w}!important");
 			}
 
 			for($r=0; $r < $this->rows; $r++)

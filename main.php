@@ -174,7 +174,7 @@ if(config('access_log')
 		}
 
 		if(!$is_crawler && $user_overload && $session_user_load_summary > $user_overload)
-			bors_main_error_503('system_overload_users', $session_user_load_summary.' of '.$user_overload);
+			bors_main_error_503('system_overload_users', $session_user_load_summary.' of '.$user_overload . " [{$_SERVER['REMOTE_ADDR']}]");
 
 		if($is_crawler && $bot_overload && $session_user_load_summary > $bot_overload)
 			bors_main_error_503('system_overload_crawlers', $session_user_load_summary.' of '.$bot_overload."\nbot=$is_bot");
@@ -235,7 +235,7 @@ try
 
 		if(config('bors.version_show'))
 			header('X-bors-object: '.$object->internal_uri());
-/*
+
 		// Новый метод вывода, полностью на самом объекте
 		if(method_exists($object, 'show'))
 		{
@@ -244,7 +244,7 @@ try
 
 			$res = $object->show();
 		}
-*/
+
 		if(!$res)	// Если новый метод не обработан, то выводим как раньше.
 		{
 			if(config('debug.execute_trace'))
@@ -266,8 +266,8 @@ catch(Exception $e)
 	try
 	{
 		bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")
-			."<div class=\"red_box\">$message</div>\n"
-			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~1")
+			."<div class=\"red_box alert alert-danger\">$message</div>\n"
+			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n<span style=\"color: #ccc\">~~~1</span>")
 			.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
 //				'template' => 'xfile:default/popup.html',
 		));
@@ -392,6 +392,7 @@ if(config('debug.timing') && is_string($res))
 	bors_function_include('debug/count');
 	bors_function_include('debug/count_info_all');
 	bors_function_include('debug/timing_info_all');
+
 	if($deb_vars = debug_vars_info())
 	{
 		$deb .= "\n=== debug vars: ===\n";
@@ -480,8 +481,8 @@ if($cn = config('404.class_name'))
 {
 	if($object404 = bors_load($cn, $uri))
 	{
-//		if(method_exists($object404, 'show'))
-//			$res = $object404->show();
+		if(method_exists($object404, 'show'))
+			$res = $object404->show();
 
 		if(!$res)
 			$res = bors_object_show($object404);

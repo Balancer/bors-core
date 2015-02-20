@@ -7,7 +7,7 @@ class bors_external_common extends bors_object
 		if(!is_array($params))
 			$limit = $params; // Раньше второй параметр был длиной
 		else
-			$limit = defval($params, 'limit', 5000); // Теперь — из массива аргументов
+			$limit = defval($params, 'limit', 5000); // Теперь — из массива аргументов. Это длина описания максимальная.
 
 		$original_url = defval($params, 'original_url', $url);
 
@@ -17,6 +17,7 @@ class bors_external_common extends bors_object
 		$more = false;
 
 		$html = defval($params, 'html');
+
 		if(!$html)
 		{
 			if(config('lcml_cache_disable_full'))
@@ -27,12 +28,12 @@ class bors_external_common extends bors_object
 			$html = @iconv('utf-8', 'utf-8//ignore', $html);
 		}
 
-//		if(config('is_developer')) ~r($html);
+		$html = str_replace("\r", "", $html);
+
+//		if(config('is_developer') && preg_match('/facebook/', $url)) { ~r($title); }
 //		$html = bors_lib_http::get($url);
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
-
-//		if(config('is_developer')) { bors_debug::syslog("0000-test", "orgiginal=$original_url\nurl=$url\nmeta=".print_r($meta, true)."\n$html"); }
 
 		if(preg_match('/503 - Forwarding failure/', $html))
 			$html = '';
@@ -157,10 +158,10 @@ class bors_external_common extends bors_object
 			foreach($images as $x)
 				var_dump($x->getAttribute('src'));
 		}
-if(config('is_developer')) { exit($img); }
+		if(config('is_developer')) { exit($img); }
 */
 
-//		if(config('is_developer') && preg_match('/./', $url)) { var_dump($description); print_dd($html); exit(); }
+//		if(config('is_developer') && preg_match('/./', $url)) { ~r($description, $html); }
 
 		if(!$description)
 		{
@@ -186,7 +187,11 @@ if(config('is_developer')) { exit($img); }
 				$xpath = new DOMXPath($dom);
 
 //				if(config('is_developer')) { var_dump($query); print_dd($html); print_dd($dom->saveHTML()); }
-				foreach(array(
+
+				foreach($xpath->query('//comment()') as $comment)
+				    $comment->parentNode->removeChild($comment);
+
+				$remove_nodes = array(
 					'//script',
 					'//noscript',
 					'//style',
@@ -196,11 +201,21 @@ if(config('is_developer')) { exit($img); }
 					'//h4',
 					'//h5',
 					'//h6',
+
+					'//head',
+					'//header',
+					'//footer',
+					'//button',
+					'//form',
+					'//label',
+					'//input',
+
 					'//*[contains(@class, "nav")]',
 					'//*[contains(@class, "keyword")]',
 					'//*[contains(@class, "tag")]',
 					'//*[contains(@class, "adv")]',
 					'//*[contains(@class, "head")]',
+					'//*[contains(@style, "display: none")]',
 
 					// Хардкод для форумной разметки
 					'//*[@class="rep"]',
@@ -214,17 +229,42 @@ if(config('is_developer')) { exit($img); }
 					'//div[@id="reg_bar_content"]',
 					'//div[@id="quick_login"]',
 					'//div[contains(@class, "full_wall_tabs")]',
-				) as $query)
+
+					// Хардкод для страниц http://rusnovosti.ru/news/357750/
+					'//div[@class="top-news fbr"]',
+					'//div[@class="find-in-news"]',
+					'//ul[@class="newslist lp"]',
+				);
+
+				// Хардкод для ЖЖ
+				if(preg_match('!^https?://[^/]+\.livejournal\.com/!', $url))
 				{
+					$remove_nodes = array_merge($remove_nodes, array(
+						'//div[@id="comments"]',
+						'//div[@id="hello-world"]',
+						'//div[@class="b-singlepost-standout"]',
+						'//ul',
+						'//li',
+						'//p[contains(@class, "b-msgsystem-error")]',
+						'//div[contains(@class, "s-welcometo")]',
+						'//div[contains(@class, "b-loginform-body")]',
+						'//div[contains(@class, "s-feedback")]',
+						'//div[contains(@class, "s-copyright")]',
+						'//div[contains(@class, "xylem")]',
+						'//div[contains(@class, "s-ljvideo")]',
+						'//div[contains(@class, "button")]',
+						'//span[contains(@class, "bubble")]',
+					));
+				}
+
+				foreach($remove_nodes as $query)
 					foreach($xpath->query($query) as $node)
 						$node->parentNode->removeChild($node);
-
-				}
 
 //				if($divs = $xpath->query('//div[@id="content"]'))
 				// Тест на http://www.balancer.ru/g/p2982207
 
-//				if(config('is_developer')) { ~r($dom->saveHTML()); }
+//				if(config('is_developer')) { ~r(Mihaeu\HtmlFormatter::format($dom->saveHTML())); }
 
 				$divs = $xpath->query('//p');
 				if(!$divs->length)
@@ -238,8 +278,7 @@ if(config('is_developer')) { exit($img); }
 					for($i=0; $i<$divs->length; $i++)
 					{
 						$content = $divs->item($i);
-//						if(config('is_developer')) { print_dd($dom->saveHTML($content)); var_dump($content->nodeValue); }
-						$text = preg_replace('/<!--.*?-->/s', '', @$content->nodeValue);
+						$text = @$content->nodeValue;
 						// Для http://www.balancer.ru/g/p1241837
 						// В тексте может попасться ссылка, которая вызовет зацикливание lcml
 						$text = preg_replace("!^\s*https?://\S+\s*$!im", '', $text);
@@ -247,8 +286,6 @@ if(config('is_developer')) { exit($img); }
 						$text = preg_replace("/\n+/", ' ', $text);
 						$source[] = trim($text);
 					}
-
-//					if(config('is_developer')) { var_dump($source); exit('src[]'); }
 
 					$source = join("\n", $source);
 
@@ -263,7 +300,7 @@ if(config('is_developer')) { exit($img); }
 				$description = '';
 		}
 
-		if($title && strlen($title) > 5)
+		if($title && ($description || strlen($title) >= 3))
 		{
 			require_once('inc/texts.php');
 
@@ -294,7 +331,6 @@ if(config('is_developer')) { exit($img); }
 			return compact('tags', 'title', 'bbshort');
 		}
 
-
 		if(preg_match('!^(http://)pda\.(.+)$!', $url, $m))
 			return self::content_extract($m[1].$m[2]);
 
@@ -318,5 +354,20 @@ if(config('is_developer')) { exit($img); }
 			$parser = 'bors_external_common';
 
 		return call_user_func(array($parser, 'content_extract'), $url, $limit);
+	}
+
+	static function __dev()
+	{
+		config_set('lcml_cache_disable_full', true);
+//		$url = "http://rusnovosti.ru/news/357750/";					// Прокси?
+//		$url = "http://dnr-news.com/dnr/10520-eduard-limonov-pribyl-na-donbass.html";	// Защита от DDOS
+//		$url = "http://vrtp.ru/index.php?showtopic=6437";			// ">" в заголовке
+//		$url = "http://ru.delfi.lt/news/live/za-nepodchinenie-rasporyazheniyam-voennosluzhaschego-v-litve-budut-shtrafovat.d?id=66705496&rsslink=true";	// 404
+//		$url = 'https://www.facebook.com/nastya.stanko?fref=nf';	// <title ...> — с параметрами.
+//		$url = 'http://www.interfax.ru/business/413219';			//
+//		$url = 'http://www.airbase.ru/forum/smilies/';				// Голый HTML без заголовков
+//		$url = 'http://censor.net.ua/forum/747286';					//
+		$url = 'http://www.kaban4x4.ru/forum/viewtopic.php?f=16&t=999#p6280';			//
+		var_dump(self::content_extract($url, ['limit' => 10000]));
 	}
 }

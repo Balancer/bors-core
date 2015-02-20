@@ -15,6 +15,12 @@ class bors_legacy_53
 		if(empty($class_name))
 			$class_name = defval($data, 'main_class');
 
+		if(empty($class_name))
+		{
+			bors_debug::syslog("classes-warning", "Try to make list without name");
+			return array();
+		}
+
 //		echo debug_trace();
 		$foo = new $class_name(NULL);
 		$order = $foo->get('list_fields_sort', 'title');

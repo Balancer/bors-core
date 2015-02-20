@@ -117,6 +117,9 @@ class bors_storage_htsu extends bors_storage
 		else
 		{
 			$data = bors_vhost_data($object->host());
+			if(empty($data['bors_site']))
+				return false;
+
 			if(file_exists($file = "{$data['bors_site']}/data/fs/{$rel}main.{$ext}"))
 				return $file;
 
@@ -139,7 +142,7 @@ class bors_storage_htsu extends bors_storage
 		if(!$file)
 			return $object->set_is_loaded(false);
 
-//		if(config('is_developer')) echo "Found hts at $file<br/>\n";
+		debug_log_var('data_file', $file);
 
 		// По дефолту в index.hts разрешёны HTML и все BB-теги.
 		$object->set_html_disable(false, false);
@@ -217,7 +220,6 @@ class bors_storage_htsu extends bors_storage
 
 		if(!$object->modify_time(true) && $file)
 			$object->set('modify_time', filemtime($file), false);
-
 		if(!$object->title_true())
 			if(preg_match("/(^|\n)([^\n]+)\n(==+)\n/s", $this->hts, $m))
 			{

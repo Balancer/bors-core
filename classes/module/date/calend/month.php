@@ -53,7 +53,9 @@ class module_date_calend_month extends base_page
 		$this_month = ($this->args('show_today', true)
 			&& $year == strftime('%Y', $now) 
 			&& $month == strftime('%m', $now));
-		$this_day = strftime('%d', $now);
+
+		// http://www.aviaport.ru/digest/2014/01/03.html
+		$this_day = intval($day); // intval(strftime('%d', $now));
 
 		$shown_days = 0;
 		$show_empty = $this->args('show_empty', false);
@@ -64,7 +66,7 @@ class module_date_calend_month extends base_page
 			{
 				if($shown_days == 0 && $wd == $wd1)
 					$shown_days = 1;
-					
+
 				if($shown_days == 0 || $shown_days > $days_in_month)
 					$week[] = array();
 				else
@@ -103,6 +105,7 @@ class module_date_calend_month extends base_page
 			'now' => $now,
 			'show_date' => $show_date,
 			'show_caption' => $this->args('show_caption'),
+			'style' => $this->args('style'),
 		);
 	}
 }

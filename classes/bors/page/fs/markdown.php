@@ -26,7 +26,10 @@ class bors_page_fs_markdown extends bors_page
 
 	function body()
 	{
-		return \Michelf\MarkdownExtra::defaultTransform($this->source());
+		$html = \Michelf\MarkdownExtra::defaultTransform($this->source());
+		// Пока в Michelf\Markdown нельзя задавать классы таблиц:
+		$html = str_replace("<table>", "<table class=\"{$this->layout()->table_class()}\">", $html);
+		return $html;
 	}
 
 	static function __unit_test($suite)

@@ -2,7 +2,7 @@
 
 class bors_admin_edit_go extends bors_admin_page
 {
-	function _configure() { } // Ничего не делаем
+	function _configure() { return true; } // Ничего не делаем
 	function init() { } // Ничего не делаем
 	function url() { return NULL; }
 

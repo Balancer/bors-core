@@ -14,8 +14,10 @@ class bors_forms_select2 extends bors_forms_element
 			'id' => $element_id,
 		);
 
-		if(!empty($params['width']))
-			$data['style'] = 'width: '.$params['width'];
+		$width = defval_ne($params, 'width', '100%');
+
+		if($width)
+			$data['style'] = 'width:'.$width;
 
 		// https://github.com/Anahkiasen/html-object
 		$input = HtmlObject\Input::hidden($this->property_name(), $value, $data);
@@ -25,7 +27,7 @@ class bors_forms_select2 extends bors_forms_element
 		jquery_select2::appear_ajax("'#{$element_id}'", $class_name, array_merge($edit_params, array(
 			'order' => defval($params, 'order', 'title'),
 			'title_field' => defval($params, 'title_field', 'title'),
-			'width' => defval($params, 'width' /*, 'resolve'*/),
+			'width' => $width,
 //			'dropdownAutoWidth' => true,
 		)));
 
@@ -37,6 +39,20 @@ class bors_forms_select2 extends bors_forms_element
 //		else
 //			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '', text: '' })");
 
-		return bors_forms_helper::element_html($input, $params);
+		$html = bors_forms_helper::element_html($input, $params);
+
+		// Если указано, то это заголовок строки таблицы: <tr><th>{$label}</th><td>...code...</td></tr>
+		if($label = defval($params, 'label', defval($params, 'th')))
+		{
+			if($label == 'def')
+			{
+				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
+				$label = $x['title'];
+			}
+
+			$html = "<tr><th>{$label}</th><td>$html</td></tr>";
+		}
+
+		return $html;
 	}
 }

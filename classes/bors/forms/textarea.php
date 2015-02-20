@@ -36,8 +36,6 @@ class bors_forms_textarea extends bors_forms_element
 		else
 			$has_versioning = false;
 
-		$class = join(' ', $class);
-
 		$html = '';
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
@@ -64,6 +62,13 @@ class bors_forms_textarea extends bors_forms_element
 
 			jquery_markitup::appear('#'.$id);
 		}
+		elseif(@$type == 'markdown')
+		{
+			$class[] = 'markdownEditor';
+//			jquery_markitup_markdown::appear('.markdownEditor');
+		}
+
+		$class = join(' ', $class);
 
 		$html .= "<textarea name=\"$name\"";
 		foreach(explode(' ', 'class id style rows cols') as $p)

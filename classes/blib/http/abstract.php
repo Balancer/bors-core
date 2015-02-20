@@ -261,6 +261,13 @@ class blib_http_abstract
 		$start_time = time();
 
 		$data = curl_exec($ch);
+
+		if(strlen($data) <  2000 && preg_match('/document.cookie=.*(__DDOS_COOKIE|_ddn_intercept_2_)=(\w+);/', $data, $m) && preg_match('/window.location.reload\(true\)/', $data))
+		{
+			curl_setopt($ch, CURLOPT_COOKIE, "{$m[1]}={$m[2]}");
+			$data = curl_exec($ch);
+		}
+
 		$info = curl_getinfo($ch);
 
 		$time = time() - $start_time;
@@ -293,8 +300,8 @@ array (size=22)
   'starttransfer_time' => float 0.421616
   'redirect_time' => float 0
   'certinfo' => 
-    array (size=0)
-      empty
+	array (size=0)
+	  empty
   'redirect_url' => string '' (length=0)
 */
 
@@ -323,34 +330,59 @@ array (size=22)
 
 		$content_type = $info['content_type'];
 
-		if(!$charset && !$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
-    	    $charset = $m[1];
-
 		if(!$raw)
 		{
 			if(empty($charset))
 			{
-    	    	if(preg_match("!<meta\s+http\-equiv\s*=\s*\"Content\-Type\"[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
-	    	    	$charset = $m[1];
+				// <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+				if(preg_match("!<meta\s+http\-equiv\s*=\s*\"Content\-Type\"[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
+					$charset = $m[1];
+				// <meta charset="utf-8" />
+				// http://portnews.ru/news/184445/
+				elseif(preg_match("!<meta[^>]+charset\s*=\s*\"(.+?)\"!i", $data, $m))
+					$charset = $m[1];
 				elseif(preg_match("!<meta[^>]+charset\s*=\s*(.+?)\"!i", $data, $m))
-			        $charset = $m[1];
+					$charset = $m[1];
 				// <meta http-equiv="Content-Type" content="text/html;UTF-8">
 				elseif(preg_match("!<meta [^>]+Content-Type[^>]+content=\"text/html;([^>]+)\">!i", $data, $m))
-			        $charset = $m[1];
+					$charset = $m[1];
 				elseif(preg_match("!<meta charset=\"(.+?)\" />\">!i", $data, $m))
-			        $charset = $m[1];
+					$charset = $m[1];
 			}
 
-	    	if(!$charset)
+			//  [content_type] => text/html; charset=UTF-8
+			if(!$charset && !$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
+				$charset = $m[1];
+
+			if(!$charset)
 				$charset = config('lcml_request_charset_default');
 
-			if($charset)
+			// Фикс кривой настройки, типа http://www.garant.ru/products/ipo/prime/doc/70625926/
+			if($charset == 'cp-1251')
+				$charset = 'windows-1251';
+
+			// Совать в лоб iconv нельзя. Оказывается, //IGNORE или //TRANSLIT нынче, порой, не работают.
+			if(strtolower($charset) == 'utf-8')
+				$data = blib_str_charset::utf8_fix($data);
+
+			// модификатор TRANSLIT не использовать, в ряде случаев ломается. Так что — только IGNORE
+			if($charset && strtolower(config('internal_charset')) != strtolower($charset))
 				$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
 		}
 
 		curl_close($ch);
 
-	    return array('content' => $data, 'content_type' => $content_type, 'error' => false);
+		return array('content' => $data, 'content_type' => $content_type, 'error' => false);
+	}
+
+	static function __dev()
+	{
+		config_set('is_debug', true);
+//		config_set('proxy.force_regexp', '/novorossia\.su/');
+//		config_set('proxy.forced', '192.168.1.3:8118');
+
+		$url = "https://www.facebook.com/nastya.stanko?fref=nf";
+		print_r(self::get_ex($url, array('timeout' => 3)));
 	}
 }
 

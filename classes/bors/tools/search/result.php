@@ -294,10 +294,16 @@ class bors_tools_search_result extends bors_tools_search
 			$this->_data['posts'] = array();
 			foreach($contents as $class_id => $ids)
 			{
-				$objects = bors_find_all($class_id, array('id IN' => array_unique($ids), 'by_id' => true));
+				try
+				{
+					$objects = bors_find_all($class_id, array('id IN' => array_unique($ids), 'by_id' => true));
 
-				foreach($ids as $id)
-					$this->_data['posts'][$id] = $objects[$id];
+					foreach($ids as $id)
+						$this->_data['posts'][$id] = $objects[$id];
+				}
+				catch(Exception $e)
+				{
+				}
 			}
 
 			$this->_data['topics'] = array();
@@ -308,11 +314,18 @@ class bors_tools_search_result extends bors_tools_search
 					continue;
 				}
 
-				$objects = bors_find_all($class_id, array('id IN' => array_unique($ids), 'by_id' => true));
+				try
+				{
+					$objects = bors_find_all($class_id, array('id IN' => array_unique($ids), 'by_id' => true));
 //if(config('is_developer')) { echo $class_id; print_r($ids); print_dd($objects); }
-				foreach($ids as $id)
-					if(!empty($objects[$id]))
-						$this->_data['topics'][$id] = $objects[$id];
+					foreach($ids as $id)
+						if(!empty($objects[$id]))
+							$this->_data['topics'][$id] = $objects[$id];
+				}
+				catch(Exception $e)
+				{
+					bors_debug::syslog('object-load-search-warn', "Error while get objects in search: " . $e->getMessage());
+				}
 
 			}
 
@@ -326,7 +339,7 @@ class bors_tools_search_result extends bors_tools_search
 
 			if($contents)
 			{
-				$exc = $cl->BuildExcerpts($docs, 'posts', $this->q(), $opts);
+				$exc = $cl->BuildExcerpts($docs, 'posts', preg_replace("/\W/u", " ", $this->q()), $opts);
 
 				if(!$exc)
 					echo $data['error'] = $cl->GetLastError();

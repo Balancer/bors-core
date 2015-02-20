@@ -133,7 +133,7 @@ class bors_form extends bors_object
 		{
 			$dom_form_id = 'form_'.md5(rand());
 
-			jquery::css('/htdocs/_bors-3rd/bower_components/validationEngine/css/validationEngine.jquery.css');
+			jquery::css('/_bors-3rd/bower_components/validationEngine/css/validationEngine.jquery.css');
 			jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/languages/jquery.validationEngine-ru.js');
 			jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/jquery.validationEngine.js');
 			jquery::on_ready("jQuery('#{$dom_form_id}').validationEngine()");
@@ -347,6 +347,14 @@ class bors_form extends bors_object
 					$class = $data['named_list'];
 				}
 
+				if(!empty($data['list']))
+				{
+					if(empty($data['type']) || $data['type'] == 'string')
+						$type = 'dropdown';
+
+					$class = $data['list'];
+				}
+
 				$property_name = defval($data, 'property', defval($data, 'name', $property_name));
 
 				if($append = @$edit_properties_append[$property_name])
@@ -384,7 +392,7 @@ class bors_form extends bors_object
 				if(empty($data['view']))
 					$data['view'] = $params['view'];
 
-//				echo '<xmp>'; var_dump($data); echo '</xmp>';
+//				echo '<xmp>'; var_dump($edit_type, $data); echo '</xmp>';
 
 				switch($edit_type)
 				{
@@ -429,6 +437,7 @@ class bors_form extends bors_object
 					case 'bbcode':
 					case 'text':
 					case 'textarea':
+					case 'markdown':
 						$data['rows'] = defval($data, 'rows', $type_arg);
 //						$html .= bors_forms_textarea::html($data, $this);
 						$html .= $this->element_html('textarea', $data);
@@ -460,6 +469,7 @@ class bors_form extends bors_object
 					case 'dropdown':
 					case 'dropdown_id':
 					case 'dropdown_edit':
+//						echo '<xmp>'; var_dump($data); echo '</xmp>';
 						if($edit_type == 'dropdown_id')
 						{
 							$saveclass = @$data['class'];
@@ -491,7 +501,11 @@ class bors_form extends bors_object
 	});");
 						}
 
-						if(array_key_exists('named_list', $data))
+						if(array_key_exists('list', $data))
+						{
+							// Ничего не делаем, массив уже в данных.
+						}
+						elseif(array_key_exists('named_list', $data))
 						{
 							if(preg_match('/^(\w+):(\w+)$/', $data['named_list'], $m))
 							{
@@ -503,6 +517,7 @@ class bors_form extends bors_object
 								$list_class_name = $data['named_list'];
 								$id = NULL;
 							}
+
 							$list = new $list_class_name($id);	//TODO: статический вызов тут не прокатит, пока не появится повсеместный PHP-5.3.3.
 							$data['list'] = $list->named_list();
 						}
@@ -761,6 +776,9 @@ class bors_form extends bors_object
 
 		if($mc = @$this->_params['class'])
 			return $mc;
+
+		if($x = @$this->_params['object'])
+			return $x->class_name();
 
 		return NULL;
 	}

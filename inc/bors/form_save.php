@@ -25,7 +25,7 @@ function bors_form_save(&$obj)
 		if(!$obj->access()->can_action($_GET['act'], $_GET))
 		{
 //			jquery::load();
-			$message = ec("<div class=\"alert alert-error\">Извините, у Вас недостаточный уровень доступа для операций с этим ресурсом ({$obj->titled_link()})</div>
+			$message = ec("<div class=\"alert alert-error\">Извините, у Вас недостаточный уровень доступа для операций с этим ресурсом ({$obj->titled_link()} -> {$obj->access()} -> can_action())</div>
 <div class=\"accordion\" id=\"sysinfoacc\">
 	<div class=\"accordion-group\">
 		<div class=\"accordion-heading\">

@@ -29,6 +29,12 @@ class bors_request extends bors_object
 				case 'int':
 					$val = intval($val);
 					break;
+				case 'color':
+					if(preg_match('/^[\da-f]{3}$/i', $val) || preg_match('/^[\da-f]{6}$/i', $val))
+						$val = "#$val";
+					elseif(!preg_match('/^\w+$/', $val) && !preg_match('/^#[\da-f]+$/i', $val))
+						$val = "";
+					break;
 				case 'float_str':
 					$val = str_replace(',', '.', floatval($val));
 					break;

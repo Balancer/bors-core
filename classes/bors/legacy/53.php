@@ -23,9 +23,9 @@ class bors_legacy_53
 
 //		echo debug_trace();
 		$foo = new $class_name(NULL);
-		$order = $foo->get('list_fields_sort', 'title');
+		$order = defval_ne($data, 'order', $foo->get('list_fields_sort', 'title'));
 
-		$format = $foo->get('list_fields_format', '%title%');
+		$format = defval_ne($data, 'format', $foo->get('list_fields_format', '%title%'));
 
 		// Возможность задать произвольный формат текста элемента списка
 		// Используется в ucrm/company/business/entity.yaml

@@ -71,7 +71,7 @@ class driver_oci implements Iterator
 			if(@$error['sqltext'] && @$error['offset'])
 				$error['error_in'] = substr($error['sqltext'], $error['offset']);
 			bors_function_include('debug/print_d');
-			print_d($error);
+//			print_d($error);
 			bors_throw('oci_execute error: '.print_r($error, true));
 		}
 		debug_timing_stop('oci_execute');

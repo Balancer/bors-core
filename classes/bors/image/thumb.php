@@ -62,22 +62,17 @@ class bors_image_thumb extends bors_image
 		else
 			return $this->set_is_loaded(false);
 
-		//TODO: сделать вариант, совместимый с safe_mod!
-//		var_dump($this->width(), $this->file_name_with_path(), $this->data);
-
-//		if(config('is_debug')) var_dump('l', $this->file_name_with_path());
-
-		// Наша превьюшка уже есть в БД и описывает живые файлы
-
-//		if(config('is_developer')) { var_dump($this->width(), $this->file_name_with_path()); exit(); }
-
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_is_loaded(true);
+
+		$this->set_height(1); // трассировка
 
 		$this->original = bors_load($this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
 			return $this->set_is_loaded(false);
+
+		$this->set_height(2); // трассировка
 
 		// Тут было $this->original->file_name()
 		// Не ошибка ли? Если возвращать, то проверить WWW.aviaport_pictures на предмет соответствий
@@ -86,6 +81,8 @@ class bors_image_thumb extends bors_image
 			return $this->set_is_loaded(false);
 
 //		$this->delete();
+
+		$this->set_height(3); // трассировка
 
 		if($original_path = $this->original->relative_path())
 			$new_path = secure_path('/cache/'.$original_path.'/'.$this->geometry);
@@ -115,6 +112,8 @@ class bors_image_thumb extends bors_image
 		if(!preg_match('!/cache.*/\d*x\d*!', $new_url))
 			bors_throw('Incorrect new url '.$new_url.' for '.$this->id().'; original url='.$original_url);
 
+		$this->set_height(4); // трассировка
+
 		$this->set_full_url($new_url, $caching);
 
 		foreach(explode(' ', 'extension title alt description author_name image_type') as $key)
@@ -132,10 +131,14 @@ class bors_image_thumb extends bors_image
 			bors_throw('Unknown local for "'.$new_url.'" thumb: '.print_r($oud, true)
 				.'; file_name_with_path='.$this->file_name_with_path());
 
+		$this->set_height(5); // трассировка
+
 		$file_thumb = $oud['local_path'];
 
 		if(!preg_match('!/cache.*/\d*x\d*!', $file_thumb))
 			bors_throw('Incorrect thumb file '.$file_thumb.' for '.print_r($oud, true));
+
+		$this->set_height(6); // трассировка
 
 		$abs = false;
 
@@ -148,7 +151,7 @@ class bors_image_thumb extends bors_image
 
 		$file_orig_r = $file_orig;
 		if(!($fsize_orig = @filesize($file_orig_r)))
-			debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
+			bors_debug::syslog('invalid-image', "Image '$file_orig_r' size zero");
 
 		$file_thumb_r = $file_thumb;
 		//TODO: придумать обработку больших картинок.
@@ -160,15 +163,25 @@ class bors_image_thumb extends bors_image
 		if(!$this->original->file_name() || !$fsize_orig)
 			return;
 
+		$this->set_height(7); // трассировка
+
 		mkpath($this->image_dir(), 0777);
 
 		if(!$this->thumb_create($abs))
 			return $this->set_is_loaded(false);
 
+		$this->set_height(8); // трассировка
+
 		bors_debug::syslog('000-image-debug', "Get thumb size for ".$file_thumb_r);
-		$img_data = @getimagesize($file_thumb_r);
+		if(!file_exists($file_thumb_r))
+			bors_debug::syslog('image-error', 'Image file not exists: ' . $file_thumb_r .'; image_dir='.$this->image_dir());
+
+		$img_data = getimagesize($file_thumb_r);
+
+		bors_debug::syslog('000-image-debug', "Size for ".$file_thumb_r." = ".print_r($img_data, true));
+
 		if(empty($img_data[0]))
-			debug_hidden_log('image-error', 'Cannot get image width for '.$file_thumb_r
+			bors_debug::syslog('image-error', 'Cannot get image width for '.$file_thumb_r
 				.'; image_dir='.$this->image_dir()
 			);
 

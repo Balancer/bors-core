@@ -523,7 +523,7 @@ class bors_form extends bors_object
 						}
 						else
 						{
-							$list_filter = popval($data, 'list_filter', array());
+							$list_filter = popval($data, 'where', popval($data, 'list_filter', array()));
 							if(is_string($list_filter))
 								eval("\$list_filter = $list_filter;");
 

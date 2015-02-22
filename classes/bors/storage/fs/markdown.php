@@ -70,7 +70,15 @@ class bors_storage_fs_markdown extends bors_storage
 		if(preg_match("/^---\n(.+?)\n---\n(.+)$/s", $content, $m))
 		{
 			$content = $m[2];
-			$data = bors_data_yaml::parse($m[1]);
+			try
+			{
+				$data = bors_data_yaml::parse($m[1]);
+			}
+			catch(Exception $e)
+			{
+				bors_debug::syslog('yaml-parse-error', "Error in $file: " . blib_exception::factory($e)->message());
+				return $object->set_is_loaded(false);
+			}
 
 			foreach(array(
 					'Date' => array(

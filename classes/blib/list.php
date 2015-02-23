@@ -9,7 +9,7 @@ class blib_list
 
 		$result = array();
 		foreach(explode(",", $list) as $i)
-			$result[] = intval($i);
+			$result[] = intval(trim($i));
 
 		return join(",", $result);
 	}
@@ -21,6 +21,8 @@ class blib_list
 
 		foreach(explode(",", $condensed_string) as $n)
 		{
+			$n = trim($n);
+
 			if(!$n)
 				continue;
 

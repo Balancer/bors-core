@@ -64,7 +64,11 @@ class bors_storage_fs_markdown extends bors_storage
 
 		$object->set_markup('bors_markup_markdown', false);
 
+		return self::load_from_file($object, $file);
+	}
 
+	static function load_from_file($object, $file)
+	{
 		$content = file_get_contents($file);
 
 		if(preg_match("/^---\n(.+?)\n---\n(.+)$/s", $content, $m))

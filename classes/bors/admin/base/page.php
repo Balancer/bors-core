@@ -4,7 +4,7 @@
 
 class bors_admin_base_page extends bors_admin_page
 {
-	function config_class() { return config('admin_config_class'); }
+	function _config_class_def() { return config('admin_config_class'); }
 	function parents() { return array($this->object()->url()); }
 
 	function object()

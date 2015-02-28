@@ -51,7 +51,7 @@ class bors_data_yaml extends bors_data_meta
 			{
 				$data = NULL;
 				if(!$ignore_errors)
-					bors_throw("Yaml parse error for string:<xmp>$string</xmp>;".blib_exception::factory($e)->message());
+					bors_throw("Yaml parse error for string:<xmp>{$string}</xmp>;".blib_exception::factory($e)->message());
 			}
 		}
 

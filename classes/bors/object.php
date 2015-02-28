@@ -79,6 +79,16 @@ class bors_object extends base_object
 		}
 	}
 
+	static function load($id)
+	{
+		$object = bors_load(get_called_class(), $id);
+
+		if(!$object)
+			$object = new b2_null(NULL);
+
+		return $object;
+	}
+
 	function renderer()
 	{
 		$renderer_class = $this->get('theme_class');

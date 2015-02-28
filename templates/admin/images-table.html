@@ -9,6 +9,10 @@
 	$image_type = тип загружаемого изображения по умолчанию
 	$skip_image_type = не показывать выбор типа изображения
 	$title = если указано, то названия файлов берутся отсюда. Иначе — из таблицы
+
+
+Используется:
+ — apa.ru/photoreports/215/
 *}
 {defval var="image_class" value="bors_image"}
 {defval var="go" value=$this->url()}
@@ -25,7 +29,7 @@
 {/if}
 <h3>Добавить изображения:</h3>
 {form class="bors_admin_image_append" action="target"}
-<table class="btab w100p">
+<table class="{$this->layout()->table_class()}">
 <tr>
 {if not $title}
 	<th>Название</th>
@@ -74,7 +78,7 @@
 {if $list}
 <h3>Связанные изображения:</h3>
 {*assign var="order" value="0"*}
-<table class="btab w100p">
+<table class="{$this->layout()->table_class()}">
 <tr><th>Изображение</th><th>Описание</th><th>Операции</th></tr>
 {foreach from=$list item="i"}{if $i}
 <tr{if $item->default_image_id() == $i->id()} class="is_default"{/if}>

@@ -12,7 +12,7 @@ class bors_admin_meta_edit_parts extends bors_admin_meta_edit
 		return ec('добавление');
 	}
 
-	function title()
+	function _title_def()
 	{
 		if($this->target())
 			return ec('Редактирование ').bors_lib_object::get_foo($this->main_class(), 'class_title_rp') . ' ' . $this->target();

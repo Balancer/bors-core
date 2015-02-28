@@ -64,13 +64,25 @@ class bors_storage_fs_markdown extends bors_storage
 
 		$object->set_markup('bors_markup_markdown', false);
 
+		return self::load_from_file($object, $file);
+	}
 
-		$content = $object->cs_f2i(file_get_contents($file));
+	static function load_from_file($object, $file)
+	{
+		$content = file_get_contents($file);
 
 		if(preg_match("/^---\n(.+?)\n---\n(.+)$/s", $content, $m))
 		{
 			$content = $m[2];
-			$data = bors_data_yaml::parse($m[1]);
+			try
+			{
+				$data = bors_data_yaml::parse($m[1]);
+			}
+			catch(Exception $e)
+			{
+				bors_debug::syslog('yaml-parse-error', "Error in $file: " . blib_exception::factory($e)->message());
+				return $object->set_is_loaded(false);
+			}
 
 			foreach(array(
 					'Date' => array(

@@ -20,7 +20,7 @@ class bors_forms_submit extends bors_forms_element
 			$value = $label;
 
 		if(empty($value))
-			$value = @$title;
+			$value = ec('Сохранить');
 
 		$css = array($this->css());
 		$css_class_html = $css ? ' class="'.join(' ', $css).'"' : '';

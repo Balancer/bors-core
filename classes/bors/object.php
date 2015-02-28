@@ -375,4 +375,6 @@ class bors_object extends base_object
 
 		return $last_news;
 	 }
+
+	function uuid_hash() { return md5($this->class_name().':'.$this->id()); }
 }

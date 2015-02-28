@@ -112,7 +112,7 @@ class bors_lcml extends bors_object
         if(!is_dir($dir))
 			return;
 
-		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_4:'.$dir);
+		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_5:'.$dir);
 		if(!$files)
 		{
 	        $files = array();

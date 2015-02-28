@@ -97,7 +97,7 @@ function lt_img($params)
 			$align_class = '';
 
 		if(!empty($params['width']) && !empty($params['height']))
-			$err_box = "<div class=\"alert alert-danger{$align_class}\" style=\"width: {$params['width']}px; width: {$params['height']}px; overflow: hidden; margin: 0 8px 0 0;\">%s</div>";
+			$err_box = "<div class=\"alert alert-info{$align_class}\" style=\"background-color: #eee; border-color: #ccc; color:#ccc; font-size: 8pt; width: {$params['width']}px; width: {$params['height']}px; overflow: hidden; margin: 0 8px 0 0;\">%s</div>";
 		else
 			$err_box = "%s";
 
@@ -107,7 +107,7 @@ function lt_img($params)
 			$file = $data['local_path'];;
 			$store_url  = 'http://www.balancer.ru';
 			$store_path = str_replace($path, '', $data['local_path']);
-//			var_dump($path, $file, $data, $store_path); exit();
+//			if(config('is_developer')) r($path, $file, $data, $store_path);
 		}
 		else
 		{
@@ -192,7 +192,11 @@ function lt_img($params)
 
 				if(!is_writable(dirname($file)))
 				{
-					bors_debug::syslog('file_access_error', "Can't write to ".dirname($file)."\nparams=".print_r($params, true));
+					bors_debug::syslog('file_access_error', "Can't write to "
+						.dirname($file)
+						."\nparams=".print_r($params, true)
+						."\npath=".$path
+					);
 					return sprintf($err_box, "<a href=\"{$params['url']}\">{$params['url']}</a><small class=\"gray\"> [can't write '$file']</small>");
 				}
 
@@ -208,7 +212,7 @@ function lt_img($params)
 				$content_type = $x['content_type'];
 
 				if(@filesize($file) <= 0)
-					return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[zero size or time out]</small>";
+					return sprintf($err_box, "<a href=\"{$uri}\">{$uri}</a> [zero size or time out]");
 
 //				if(config('is_developer')) { var_dump($params, $content_type); exit(); }
 				// Яндекс.Видео — такое Яндекс.Видео...

@@ -26,4 +26,6 @@ class bors_page_fs_htsu extends bors_page
 //	function cache_static() { return rand(10*86400, 30*86400); }
 
 //	function cache_static()		{ return config('page_fs_cache_static'); }
+
+	function uuid_hash() { return md5($this->class_name().':'.$this->called_url()); }
 }

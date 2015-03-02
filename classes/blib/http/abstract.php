@@ -360,8 +360,26 @@ array (size=22)
 			}
 
 			//  [content_type] => text/html; charset=UTF-8
-			if(!$charset && !$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
-				$charset = $m[1];
+			if(preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
+				$header_charset = $m[1];
+			else
+				$header_charset = $charset;
+
+			if(!$charset && $header_charset)
+				$charset = $header_charset;
+
+			if($charset != $header_charset)
+			{
+				// Если кодировка в ответе сервера не совпадает с кодировкой в мета-теге, то
+				// проверяем, нормально ли конвертируется с кодировкой сервера. Если всё ок,
+				// то так и оставляем.
+				$cvtd = iconv($header_charset, config('internal_charset').'//IGNORE', $data);
+				if($data == iconv(config('internal_charset'), $header_charset.'//IGNORE', $cvtd))
+				{
+					$charset = config('internal_charset');
+					$data = $cvtd;
+				}
+			}
 
 			if(!$charset)
 				$charset = config('lcml_request_charset_default');

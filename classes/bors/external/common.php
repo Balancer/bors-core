@@ -368,7 +368,9 @@ class bors_external_common extends bors_object
 //		$url = 'http://www.interfax.ru/business/413219';			//
 //		$url = 'http://www.airbase.ru/forum/smilies/';				// Голый HTML без заголовков
 //		$url = 'http://censor.net.ua/forum/747286';					//
-		$url = 'http://www.jpl.nasa.gov/news/news.php?release=2014-075';	// &#039; в заголовках.
+//		$url = 'http://www.jpl.nasa.gov/news/news.php?release=2014-075';	// &#039; в заголовках.
+//		$url = 'http://alexandr-rogers.livejournal.com/339029.html';// &quot; в og:description. Исправлено циклом decode
+//		$url = 'http://www.kriegsmarine.ru/h_linkor.php';			// Разная кодировка в ответе сервера и в мета-тегах. Верная — в хедере
 		var_dump(self::content_extract($url, ['limit' => 10000]));
 	}
 }

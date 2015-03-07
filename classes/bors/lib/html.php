@@ -89,7 +89,7 @@ class bors_lib_html
 		while(preg_match('/&\w+;/', $text))
 			$text = html_entity_decode($text, ENT_COMPAT | ENT_HTML401, 'UTF-8');
 
-		$text = preg_replace_callback("/(&#[0-9]+;)/", function($m)
+		$text = preg_replace_callback("/(&#[0-9a-fx]+;)/", function($m)
 		{
 			return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
 		}, $text);

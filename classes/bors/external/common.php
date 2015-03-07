@@ -371,6 +371,7 @@ class bors_external_common extends bors_object
 //		$url = 'http://www.jpl.nasa.gov/news/news.php?release=2014-075';	// &#039; в заголовках.
 //		$url = 'http://alexandr-rogers.livejournal.com/339029.html';// &quot; в og:description. Исправлено циклом decode
 //		$url = 'http://www.kriegsmarine.ru/h_linkor.php';			// Разная кодировка в ответе сервера и в мета-тегах. Верная — в хедере
+		$url = 'https://www.facebook.com/dmitry.tymchuk/posts/655410954587563?fref=nf';			// Русская кодировка в виде &#x41e;&#x442;&#x43d;&#x43e;&#x441;...
 		var_dump(self::content_extract($url, ['limit' => 10000]));
 	}
 }

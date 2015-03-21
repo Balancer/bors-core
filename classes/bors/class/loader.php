@@ -79,6 +79,13 @@ class bors_class_loader
 		if(!empty($GLOBALS['bors_data']['classes_included'][$class_name]))
 			return $GLOBALS['bors_data']['classes_included'][$class_name];
 
+		if(class_exists($class_name))
+		{
+			$reflector = new ReflectionClass($class_name);
+			if($class_file = $reflector->getFileName())
+				return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
+		}
+
 		$class_base = str_replace('_', '/', $class_name);
 
 		$cached_class_info_json = $cachd.$class_base.'.data.json';

@@ -99,7 +99,7 @@ class bors_lib_html
 
 	static function norm($url_data, $value, $type = NULL)
 	{
-		if(!$url_data || $value[0] != '/')
+		if(!$url_data || !$value || $value[0] != '/')
 			return $value;
 
 		if($type && $type != 'og:image')

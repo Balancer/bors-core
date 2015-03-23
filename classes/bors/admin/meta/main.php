@@ -12,6 +12,8 @@ class bors_admin_meta_main extends bors_admin_paginated
 
 	function _new_object_url_def() { return $this->url().'new/'; }
 
+	function _have_page_search_def() { return $this->layout()->get('have_page_search'); }
+
 	function _model_class_def()
 	{
 		return NULL;

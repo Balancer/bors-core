@@ -106,7 +106,9 @@ class base_rss extends base_page
 	function item_rss_full_html($item, $rss) { return $item->html(); }
 	function item_rss_url($item) { return $item->url(); }
 	function item_rss_guid($item) { return $item->url(); }
+	function item_guid($item) { return $item->url(); }
 	function item_rss_keywords_string($item) { return object_property($item, 'keywords_string'); }
+	function item_keywords_string($item) { return strip_tags(object_property($item, 'keywords_string')); }
 //	function item_rss_gmtime($item) { return time_local_to_gmt($item->create_time()); }
 
 	function item_additional($item, $rss)
@@ -118,6 +120,7 @@ class base_rss extends base_page
 	}
 
 	function item_rss_enclosure($item) { return NULL; }
+	function item_enclosure($item) { return NULL; }
 
 	function rss_body($object, $strip = 0)
 	{

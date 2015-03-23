@@ -7,6 +7,7 @@
 class bors_admin_meta_search extends bors_admin_meta_main
 {
 	function _admin_search_url_def() { return $this->url(); }
+	function _have_page_search_def() { return false; }
 
 	function _title_def() { return ec('Поиск по ').bors_lib_object::get_foo($this->main_class(), 'class_title_dpm'); }
 	function _nav_name_def() { return ec('поиск'); }
@@ -36,6 +37,7 @@ class bors_admin_meta_search extends bors_admin_meta_main
 		$where['order'] = $this->order();
 
 		$data['items'] = bors_find_all($this->main_admin_class(), $where);
+//		r($data, $this->main_admin_class(), $where);
 
 		$data['query'] = trim(urldecode(@$_GET['q']));
 
@@ -111,5 +113,5 @@ class bors_admin_meta_search extends bors_admin_meta_main
 		return $where;
 	}
 
-	function append_template() { return 'xfile:main.html'; }
+	function append_template() { return 'xfile:main.tpl'; }
 }

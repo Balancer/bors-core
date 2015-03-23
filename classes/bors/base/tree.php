@@ -5,7 +5,7 @@ class base_tree extends base_page_db
 	function all_ids()
 	{
 		$result = array();
-		
+
 		foreach($this->db()->get_array("
 				SELECT `".$this->tree_table_id()."`
 					FROM `".$this->table_name()."`
@@ -13,14 +13,14 @@ class base_tree extends base_page_db
 		{
 			$result[] = $obj_id;
 		}
-		
+
 		return $result;
 	}
 
 	function root_ids()
 	{
 		$result = array();
-		
+
 		foreach($this->db()->get_array("
 				SELECT `".$this->tree_table_id()."`
 					FROM `".$this->table_name()."`
@@ -29,7 +29,7 @@ class base_tree extends base_page_db
 		{
 			$result[] = $obj_id;
 		}
-		
+
 		return $result;
 	}
 
@@ -40,7 +40,7 @@ class base_tree extends base_page_db
 	{
 		$this->tree = array();
 		$this->names = array();
-		
+
 		foreach($this->db()->get_array("
 				SELECT `".$this->tree_table_id()."` AS `id`, `".$this->tree_table_title()."` AS `title`, `".$this->tree_parent_id()."` AS `parent`
 					FROM `".$this->table_name()."`
@@ -56,7 +56,7 @@ class base_tree extends base_page_db
 		if($this->tree == NULL)
 			$this->db_load();
 
-		
+
 		return $this->tree;
 	}
 
@@ -65,14 +65,14 @@ class base_tree extends base_page_db
 		if($this->names == NULL)
 			$this->db_load();
 
-		
+
 		return @$this->names[$id];
 	}
 
 	function children_ids()
 	{
 		$result = array();
-		
+
 		foreach($this->db()->get_array("
 				SELECT `".$this->tree_table_id()."`
 					FROM `".$this->table_name()."`
@@ -81,20 +81,20 @@ class base_tree extends base_page_db
 		{
 			$result[] = $obj_id;
 		}
-		
+
 		return $result;
 	}
-	
+
 	function children_subs_ids($self = false)
 	{
 		$result = $self ? array($this->id()) : array();
 
 		foreach($this->children_ids() as $chid)
 			$result = array_merge($result, class_load(get_class($this), $chid)->children_subs_ids(true));
-			
+
 		return $result;
 	}
-	
+
 	function is_root() { return !$this->parent_id(); }
 	function have_children() { return count($this->children_ids()) > 0; }
 	function have_parent() { return $this->get('parent_id'); }

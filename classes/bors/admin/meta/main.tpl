@@ -8,7 +8,7 @@
 	{/if}
 {/if}
 
-{if $admin_search_url && !$this->layout()->get('have_page_search')}
+{if $admin_search_url && !$this->get('have_page_search')}
 {include file='xfile:main.search.tpl' search_where=$search_where}
 {/if}
 

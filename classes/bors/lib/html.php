@@ -59,6 +59,8 @@ class bors_lib_html
 				$meta[bors_lower($m[1])] = self::norm($url_data, self::decode($m[3]));
 		}
 
+//		if(config('is_developer')) { r(($meta['og:title'], )); }
+
 		if(!empty($meta['og:title']))
 			$meta['title'] = $meta['og:title'];
 
@@ -84,12 +86,20 @@ class bors_lib_html
 
 	static function decode($text)
 	{
-		return trim(html_entity_decode(html_entity_decode($text, ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8'));
+		while(preg_match('/&\w+;/', $text))
+			$text = html_entity_decode($text, ENT_COMPAT | ENT_HTML401, 'UTF-8');
+
+		$text = preg_replace_callback("/(&#[0-9a-fx]+;)/", function($m)
+		{
+			return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
+		}, $text);
+
+		return trim($text);
 	}
 
 	static function norm($url_data, $value, $type = NULL)
 	{
-		if(!$url_data || $value[0] != '/')
+		if(!$url_data || !$value || $value[0] != '/')
 			return $value;
 
 		if($type && $type != 'og:image')

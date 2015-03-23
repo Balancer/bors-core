@@ -67,10 +67,13 @@ class blib_http_abstract
 			CURLOPT_NOBODY => 1,		// no body return. it will faster
 			CURLOPT_TIMEOUT => defval($curl_options, 'timeout', 5),
 			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_MAXREDIRS => 21,
 			CURLOPT_USERAGENT => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; FunWebProducts; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
 			CURLOPT_REFERER => defval($curl_options, 'referer', $url),
 			CURLOPT_AUTOREFERER => true,
+			CURLOPT_COOKIESESSION => true,
+			CURLOPT_COOKIEJAR => blib_files::tmp('cookie-jar-1'),
+			CURLOPT_COOKIEFILE => blib_files::tmp('cookie-file-1'),
 		));
 
 		$headers = curl_exec($ch);
@@ -103,13 +106,16 @@ class blib_http_abstract
 		curl_setopt_array($ch, array(
 			CURLOPT_TIMEOUT => defval($curl_options, 'timeout', 15),
 			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_MAXREDIRS => 22,
 			CURLOPT_ENCODING => 'gzip, deflate',
 			CURLOPT_REFERER => defval($curl_options, 'referer', $original_url),
 			CURLOPT_AUTOREFERER => true,
 //			CURLOPT_HTTPHEADER => $header,
 			CURLOPT_USERAGENT => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; FunWebProducts; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
 			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_COOKIESESSION => true,
+			CURLOPT_COOKIEJAR => blib_files::tmp('cookie-jar-2'),
+			CURLOPT_COOKIEFILE => blib_files::tmp('cookie-file-2'),
 		));
 
 //	if(preg_match("!lenta\.ru!", $url))
@@ -228,7 +234,7 @@ class blib_http_abstract
 		$curl_options = array(
 			CURLOPT_TIMEOUT => $timeout,
 			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_MAXREDIRS => defval($params, 'MAXREDIRS', 10),
+			CURLOPT_MAXREDIRS => defval($params, 'MAXREDIRS', 23),
 			CURLOPT_ENCODING => 'gzip,deflate',
 //			CURLOPT_RANGE => '0-4095',
 			CURLOPT_REFERER => defval($params, 'referer', $original_url),
@@ -239,6 +245,9 @@ class blib_http_abstract
 			CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_COOKIESESSION => true,
+			CURLOPT_COOKIEJAR => blib_files::tmp('cookie-jar-3'),
+			CURLOPT_COOKIEFILE => blib_files::tmp('cookie-file-3'),
 		);
 
 		if($opt = defval($params, 'FRESH_CONNECT'))
@@ -351,8 +360,26 @@ array (size=22)
 			}
 
 			//  [content_type] => text/html; charset=UTF-8
-			if(!$charset && !$raw && preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
-				$charset = $m[1];
+			if(preg_match("!charset\s*=\s*(\S+)!i", $content_type, $m))
+				$header_charset = $m[1];
+			else
+				$header_charset = $charset;
+
+			if(!$charset && $header_charset)
+				$charset = $header_charset;
+
+			if($charset != $header_charset)
+			{
+				// Если кодировка в ответе сервера не совпадает с кодировкой в мета-теге, то
+				// проверяем, нормально ли конвертируется с кодировкой сервера. Если всё ок,
+				// то так и оставляем.
+				$cvtd = iconv($header_charset, config('internal_charset').'//IGNORE', $data);
+				if($data == iconv(config('internal_charset'), $header_charset.'//IGNORE', $cvtd))
+				{
+					$charset = config('internal_charset');
+					$data = $cvtd;
+				}
+			}
 
 			if(!$charset)
 				$charset = config('lcml_request_charset_default');

@@ -30,7 +30,6 @@ class bors_external_common extends bors_object
 
 		$html = str_replace("\r", "", $html);
 
-//		if(config('is_developer') && preg_match('/facebook/', $url)) { ~r($title); }
 //		$html = bors_lib_http::get($url);
 
 		$meta = bors_lib_html::get_meta_data($html, $url);
@@ -49,6 +48,8 @@ class bors_external_common extends bors_object
 
 		if(!$img)
 			$img = @$meta['image_src'];
+
+//		if(config('is_developer') && preg_match('/nasa/', $url)) { ~r($meta); }
 
 		// Яндекс.Видео — такое Яндекс.Видео...
 		// http://balancer.ru/g/p2728087 для http://video.yandex.ru/users/cnewstv/view/3/
@@ -367,7 +368,10 @@ class bors_external_common extends bors_object
 //		$url = 'http://www.interfax.ru/business/413219';			//
 //		$url = 'http://www.airbase.ru/forum/smilies/';				// Голый HTML без заголовков
 //		$url = 'http://censor.net.ua/forum/747286';					//
-		$url = 'http://www.kaban4x4.ru/forum/viewtopic.php?f=16&t=999#p6280';			//
+//		$url = 'http://www.jpl.nasa.gov/news/news.php?release=2014-075';	// &#039; в заголовках.
+//		$url = 'http://alexandr-rogers.livejournal.com/339029.html';// &quot; в og:description. Исправлено циклом decode
+//		$url = 'http://www.kriegsmarine.ru/h_linkor.php';			// Разная кодировка в ответе сервера и в мета-тегах. Верная — в хедере
+		$url = 'https://www.facebook.com/dmitry.tymchuk/posts/655410954587563?fref=nf';			// Русская кодировка в виде &#x41e;&#x442;&#x43d;&#x43e;&#x441;...
 		var_dump(self::content_extract($url, ['limit' => 10000]));
 	}
 }

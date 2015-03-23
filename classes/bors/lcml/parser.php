@@ -13,7 +13,7 @@ class bors_lcml_parser
 		$this->lcml = $lcml;
 	}
 
-	function lcml($code) { return $this->lcml->parse($code); }
+	function lcml($code, $params=array()) { return $this->lcml->parse($code, $params); }
 
 	function html($text) { return $text; }
 	function html_compact($text) { return $this->html($text); }

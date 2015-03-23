@@ -112,7 +112,7 @@ class bors_lcml extends bors_object
         if(!is_dir($dir))
 			return;
 
-		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_4:'.$dir);
+		$files = self::memcache()->get('lcml_actions_'.BORS_SITE.'_5:'.$dir);
 		if(!$files)
 		{
 	        $files = array();
@@ -257,7 +257,7 @@ class bors_lcml extends bors_object
 
 		if($this->_params['level'] == 1 || $need_prepare)
 		{
-			$text = bors_lcml::parsers_do('pre', $text);
+			$text = $this->parsers_do('pre', $text);
 			$text = $this->functions_do(bors_lcml::$lcml_global_data['pre_functions'], $text, 'pre');
 		}
 
@@ -299,7 +299,8 @@ class bors_lcml extends bors_object
 					if($start != $i)
 					{
 						$code = bors_substr($text, $start, $i-$start);
-						$result .= bors_lcml::parsers_do('post', bors_lcml::functions_do(bors_lcml::$lcml_global_data['post_functions'], $code, 'post'));
+						$html = $this->functions_do(bors_lcml::$lcml_global_data['post_functions'], $code, 'post');
+						$result .= $this->parsers_do('post', $html);
 					}
 
 					$start = $i;
@@ -329,7 +330,8 @@ class bors_lcml extends bors_object
 			if($can_modif/* && $this->_params['level'] == 1*/)
 			{
 				$code = bors_substr($text, $start, bors_strlen($text) - $start);
-				$result .= bors_lcml::parsers_do('post', $this->functions_do(bors_lcml::$lcml_global_data['post_functions'], $code, 'post'));
+				$html = $this->functions_do(bors_lcml::$lcml_global_data['post_functions'], $code, 'post');
+				$result .= $this->parsers_do('post', $html);
 			}
 			else
 				$result .= bors_substr($text, $start, bors_strlen($text) - $start);

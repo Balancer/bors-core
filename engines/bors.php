@@ -218,6 +218,19 @@ function bors_exit_handler($message = '')
 		}
 	}
 
+	if(!empty($GLOBALS['bors_data']['shutdown_handlers']))
+	{
+		foreach($GLOBALS['bors_data']['shutdown_handlers'] as $info)
+		{
+			if(!empty($info['arg']))
+				call_user_func($info['callback'], $info['arg']);
+			elseif(!empty($info['args']))
+				call_user_func_array($info['callback'], $info['args']);
+			else
+				call_user_func($info['callback']);
+		}
+	}
+
 	if(config('debug.show_variables'))
 	{
 		bors_use('debug_count_info_all');

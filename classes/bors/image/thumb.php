@@ -172,7 +172,7 @@ class bors_image_thumb extends bors_image
 
 		$this->set_height(8); // трассировка
 
-		bors_debug::syslog('000-image-debug', "Get thumb size for ".$file_thumb_r);
+//		bors_debug::syslog('000-image-debug', "Get thumb size for ".$file_thumb_r);
 		if(!file_exists($file_thumb_r))
 			bors_debug::syslog('image-error', 'Image file not exists: ' . $file_thumb_r .'; image_dir='.$this->image_dir());
 

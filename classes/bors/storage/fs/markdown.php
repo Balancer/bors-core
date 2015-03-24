@@ -93,7 +93,11 @@ class bors_storage_fs_markdown extends bors_storage
 			}
 
 			foreach($data as $key => $value)
+			{
 				$object->set_attr($key, $value);
+				// Хм. Атрибуты не всегда работают.
+				$object->set($key, $value, false);
+			}
 		}
 
 		if(preg_match('/^#\s+(.+?)\s+#$/m', $content, $m))

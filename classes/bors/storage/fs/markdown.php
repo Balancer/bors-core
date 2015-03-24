@@ -23,14 +23,9 @@ class bors_storage_fs_markdown extends bors_storage
 		if($base && is_file($file = "{$dir}/{$base}"))
 			return $file;
 
-		if(is_file($file = "{$dir}/index.markdown"))
-			return $file;
-
 		if(is_file($file = "{$dir}.md"))
 			return $file;
 
-		if(is_file($file = "{$dir}.markdown"))
-			return $file;
 
 		foreach(bors_dirs() as $d)
 		{
@@ -44,12 +39,6 @@ class bors_storage_fs_markdown extends bors_storage
 				return $file;
 
 			if(is_file($file = secure_path("{$d}/webroot/{$rel}/index.md")))
-				return $file;
-
-			if(is_file($file = secure_path("{$d}/webroot/{$rel}.markdown")))
-				return $file;
-
-			if(is_file($file = secure_path("{$d}/webroot/{$rel}/index.markdown")))
 				return $file;
 		}
 

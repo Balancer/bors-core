@@ -138,6 +138,8 @@ class bors_object_db extends base_object_db
 				{
 					$args['title'] = trim($m[1]);
 					$class_name = $m[2];
+					if(!class_exists($class_name))
+						bors_throw("Can't find class $class_name linked as type '$s' for table ".$this->db_name().'.'.$this->table_name());
 					$foo = new $class_name(NULL);
 					if(method_exists($foo, 'named_list'))
 						$args['named_list'] = $class_name;

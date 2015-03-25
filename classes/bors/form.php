@@ -631,7 +631,7 @@ class bors_form extends bors_object
 			{
 				foreach($xrefs as $xref)
 				{
-					$html .= "<tr><th>".call_user_func(array($xref, 'class_title'))."</th><td>";
+					$html .= "<tr><th>".bors_foo($xref)->class_title()."</th><td>";
 					$html .= $this->element_html('checkbox_list', array('xref' => $xref));
 					$html .= "</td></tr>";
 				}

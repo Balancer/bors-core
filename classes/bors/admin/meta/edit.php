@@ -23,7 +23,7 @@ class bors_admin_meta_edit extends bors_admin_page
 	function pre_show()
 	{
 		if($this->id() && !$this->target())
-			return bors_throw("Can't load editor");
+			return bors_throw("Can't load editor: have id ({$this->id()}) but have not target");
 
 		return parent::pre_show();
 	}
@@ -54,9 +54,9 @@ class bors_admin_meta_edit extends bors_admin_page
 			return $c;
 		}
 
-		$class_name = str_replace('_admin_', '_', $this->class_name());
+		$class_name = $this->class_name();
+		$class_name = str_replace('_admin_', '_', $class_name);
 		$class_name = str_replace('_edit', '', $class_name);
-
 
 		$cn_test = blib_grammar::chunk_singular($class_name);
 

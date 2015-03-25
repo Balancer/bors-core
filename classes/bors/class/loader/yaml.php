@@ -2,7 +2,7 @@
 
 class bors_class_loader_yaml extends bors_class_loader_meta
 {
-	static function load($class_name, $class_file)
+	static function load_from_file($class_name, $class_file)
 	{
 		$parse = bors_data_yaml::load($class_file);
 		if(!$parse)

@@ -20,7 +20,7 @@ class base_page_db extends bors_page
 //			bors_db_fields_init($this);
 	}
 
-	function template_data_fill()
+	function template_data_fill($data = array())
 	{
 		parent::template_data_fill();
 

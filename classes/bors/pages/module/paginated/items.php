@@ -10,7 +10,7 @@ class bors_pages_module_paginated_items extends bors_module
 		if($view = $this->args('view'))
 			$table_classes = array($view->layout()->table_class());
 		else
-			$table_classes = array('btab', 'w100p');
+			$table_classes = array('table', 'table-bordered', 'btab', 'w100p');
 
 		if($ajax_sortable = $this->args('ajax_sortable'))
 		{

@@ -10,7 +10,7 @@ class base_object extends bors_object_simple
 	); }
 
 	function _url_engine_def() { return 'url_calling2'; }
-	function _config_class_def() { return config('config_class'); }
+	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
 
 //	При настройке проверить:
 //	— http://www.aviaport.ru/services/events/arrangement/
@@ -172,8 +172,8 @@ class base_object extends bors_object_simple
 		{
 			$this->config = bors_load($config_class, $this);
 
-			if(!$this->config)
-				debug_exit("Can't load config class '{$config}'.");
+			if(empty($this->config))
+				bors_throw("Can't load config class '{$config}' for object {$this->class_name()}({$this->id()})");
 
 			$this->config->target_configure();
 		}
@@ -565,12 +565,15 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function children_string() { return ($cs = $this->children()) ? join("\n", $cs) : '';  }
 	function set_children_string($string, $dbup) { $this->set_children(array_filter(explode("\n", $string)), $dbup); return $string;  }
 
-	function template_data_fill()
+	function template_data_fill($page_data = array())
 	{
 		if($this->config)
 			$this->config->template_init();
 
-		foreach($this->page_data() as $key => $value)
+		if(!$page_data)
+			$page_data = $this->page_data();
+
+		foreach($page_data as $key => $value)
 			$this->add_global_template_data($key, $value);
 
 		static $called = false; //TODO: в будущем снести вторые вызовы.

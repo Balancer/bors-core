@@ -49,7 +49,21 @@ class bors_core_object_defaults
 
 	static function config_class($object)
 	{
-		return join('_', array_filter(array($object->project_name(), $object->section_name(), 'config')));
+		if(($prefix = object_property($object->get('project'), 'class_prefix'))
+			&& ($section = $object->get('section_name')))
+		{
+			$class_name = "{$prefix}_{$section}_config";
+			if(class_exists($class_name))
+				return $object->set_attr('config_class', $class_name);
+		}
+
+		$class_name = preg_replace('!^(.+)_(\w+?)$!', '$1', $object->class_name()).'_config';
+
+		if(class_exists($class_name))
+			return $object->set_attr('config_class', $class_name);
+
+
+		return $object->set_attr('config_class', config('config_class'));
 	}
 
 	static function item_name($class_name)

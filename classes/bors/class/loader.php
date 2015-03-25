@@ -33,7 +33,7 @@ class bors_class_loader
 
 			if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.yaml"))
 			{
-				bors_class_loader_yaml::load($class_name, $file_name);
+				bors_class_loader_yaml::load_from_file($class_name, $file_name);
 				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
 				return $GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
 			}
@@ -143,7 +143,7 @@ class bors_class_loader
 
 			if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.yaml"))
 			{
-				bors_class_loader_yaml::load($class_name, $file_name);
+				bors_class_loader_yaml::load_from_file($class_name, $file_name);
 				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
 				return $file_name;
 			}

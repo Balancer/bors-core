@@ -21,7 +21,6 @@ class bors_themes_meta extends bors_object
 	function pre_show()
 	{
 		$body = $this->object()->body();
-		$this->object()->template_data_fill();
 
 		$this->__page_data = array_merge($this->__page_data, array(
 			'self' => $this->object(),
@@ -29,6 +28,8 @@ class bors_themes_meta extends bors_object
 			'style' => array(),
 			'javascript_post' => array(),
 		), $this->page_data(), $this->object()->page_data());
+
+		$this->object()->template_data_fill($this->__page_data);
 
 		$this->object()->set_attr('layout_class', $this->get('layout_class'));
 	}

@@ -17,15 +17,16 @@ class base_config extends bors_object_simple
 			if(!$object->is_set($key))
 				$object->set_attr($key, $value);
 
-		if($object->get('self_class_bors_object_type') == 'view')
+		switch($object->get('self_class_bors_object_type'))
 		{
-			foreach($this->view_data() as $key => $value)
-				$object->set_attr($key, $value);
-		}
-		elseif($object->get('self_class_bors_object_type') == 'model')
-		{
-			foreach($this->model_data() as $key => $value)
-				$object->set_attr($key, $value);
+			case 'view':
+				foreach($this->view_data() as $key => $value)
+					$object->set_attr($key, $value);
+				break;
+			case 'model':
+				foreach($this->model_data() as $key => $value)
+					$object->set_attr($key, $value);
+				break;
 		}
 	}
 
@@ -77,6 +78,8 @@ class base_config extends bors_object_simple
 	}
 
 	function page_data() { return array(); }
+	function view_data() { return array(); }
+	function model_data() { return array(); }
 
 	function object() { return $this->id(); }
 }

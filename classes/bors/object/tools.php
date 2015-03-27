@@ -8,7 +8,7 @@ class bors_object_tools extends bors_object_simple
 
 	function favorite_link($is_ajax = false)
 	{
-		$f = bors_user_favorite::find(bors()->user(), $this->object());
+		$f = bors_user_favorite::check(bors()->user(), $this->object());
 		$target_title = $this->object()->object_title();
 		$target_uri = $this->object()->internal_uri_ascii();
 

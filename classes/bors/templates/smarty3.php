@@ -79,6 +79,9 @@ class bors_templates_smarty3 extends bors_template
 //		if($template[0] == '/')
 //			$template = 'xfile:'.$template;
 
+//		PhpConsole\Handler::getInstance()->debug($template, 'tpl');
+//		PhpConsole\Handler::getInstance()->debug($data, 'tpldata');
+
 		if(!$smarty)
 			$smarty = self::factory();
 

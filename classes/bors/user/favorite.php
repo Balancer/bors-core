@@ -43,7 +43,7 @@ class bors_user_favorite extends base_object_db
 
 	// Фактически это не find(), а check() или is_exists()
 	// Проверка на наличие в избранном
-	static function find($user, $where = array())
+	static function check($user, $where = array())
 	{
 		if(!$user || !$where)
 			return NULL;

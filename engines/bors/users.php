@@ -7,8 +7,8 @@ function bors_user($id)
 
 if($user_class = config('user_class'))
 {
-	if(class_exists($user_class))
-		bors_throw("Unknown user class '$user_class'");
-
+	ob_start();
 	eval("class bors_user extends {$user_class} { function extends_class_name() { return '$user_class'; } }");
+	if(($err = ob_get_clean()) != '')
+		bors_throw("Error eval bors_user extends '$user_class': $err");
 }

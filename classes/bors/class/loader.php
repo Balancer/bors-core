@@ -83,7 +83,11 @@ class bors_class_loader
 		{
 			$reflector = new ReflectionClass($class_name);
 			if($class_file = $reflector->getFileName())
-				return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
+			{
+				// Требуется проверка существования файла, иначе не определяются случаи с классами, определёнными по eval.
+				if(file_exists($class_file))
+					return $GLOBALS['bors_data']['classes_included'][$class_name] = $class_file;
+			}
 		}
 
 		$class_base = str_replace('_', '/', $class_name);

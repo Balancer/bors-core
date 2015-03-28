@@ -84,7 +84,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	if(!class_exists($class))
 		bors_throw("Class name '$class' not exists");
 
-	$id = call_user_func(array($class, 'id_prepare'), $id, $class);
+	$id = call_user_func(array($class, 'id_prepare'), $id);
 	$object = &object_new($class, $id);
 	$object->data = $data;
 	$object->changed_fields = $data;

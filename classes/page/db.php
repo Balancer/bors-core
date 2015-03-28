@@ -28,10 +28,11 @@ class page_db extends base_page_db
 		);
 	}
 
-	static function id_prepare($id, $class_name)
+	static function id_prepare($id)
 	{
 		if(!is_numeric(rtrim($id, '/')))
 		{
+			$class_name = get_called_class();
 			$db = new driver_mysql(call_user_func(array($class_name, 'db_name')));
 			$object = objects_first($class_name, array('main_url' => $id));
 			$db->close();

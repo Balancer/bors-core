@@ -212,7 +212,7 @@ class bors_page extends base_page
 	{
 		if($this->is_smart())
 		{
-			$class_file_base = str_replace('.php', '', $this->class_file());
+			$class_file_base = preg_replace('/\.\w+$/', '', $this->class_file());
 			if(file_exists($f="$class_file_base.inc.css"))
 				$this->add_template_data_array('style', ec(file_get_contents($f)));
 			if(file_exists($f="$class_file_base.inc.js"))

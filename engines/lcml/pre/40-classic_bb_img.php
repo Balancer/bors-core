@@ -1,7 +1,10 @@
 <?php
 
-function lcml_classic_bb_img($txt)
+function lcml_classic_bb_img($txt, $lcml)
 {
+	if(!$lcml->is_tag_enabled('img'))
+		return str_replace('[img', '&#91;img', $txt);
+
 	// простые .jpg и .png отрабатываем с утягиванием:
 //	$txt = preg_replace("!\[url=([^\]]+)\]\[img\]([^\[&\?]+\.(jpe?g|png))\[/img\]\[/url\]!is", "[img=$2]// $1\n", $txt);
 	$txt = preg_replace("!\[img\]((https?|ftp)://[^\[&\?]+\.(jpe?g|png))\[/img\]!is", "[img=$1]", $txt);

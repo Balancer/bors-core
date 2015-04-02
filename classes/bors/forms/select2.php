@@ -27,6 +27,7 @@ class bors_forms_select2 extends bors_forms_element
 		jquery_select2::appear_ajax("'#{$element_id}'", $class_name, array_merge($edit_params, array(
 			'order' => defval($params, 'order', 'title'),
 			'title_field' => defval($params, 'title_field', 'title'),
+			'search_fields' => defval($params, 'search_fields', 'title'),
 			'width' => $width,
 //			'dropdownAutoWidth' => true,
 		)));

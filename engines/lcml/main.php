@@ -71,15 +71,15 @@ function lcml_hp($string)
 }
 
 function lcmlbb($string) { return lcml_bb($string); } // Нужно для совместимости со старым кодом.
-function lcml_bb($string)
+function lcml_bb($string, $params = array())
 {
-	return lcml($string, array(
-			'cr_type' => 'save_cr',
-			'forum_type' => 'punbb',
-			'sharp_not_comment' => true,
-			'html_disable' => 'full',
-			'nocache' => true,
-	));
+	return lcml($string, array_merge(array(
+		'cr_type' => 'save_cr',
+		'forum_type' => 'punbb',
+		'sharp_not_comment' => true,
+		'html_disable' => 'full',
+		'nocache' => true,
+	), $params));
 }
 
 function lcml_bbh($string, $params = array())

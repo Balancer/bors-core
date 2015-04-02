@@ -40,6 +40,14 @@ class bors_votes_thumb extends base_object_db
 			return "<span style=\"color:red\">".$this->score()."</span>";
 	}
 
+	static function colorize_html($score)
+	{
+		if($score > 0)
+			return "<span style=\"color:green\">+".intval($score)."</span>";
+		else
+			return "<span style=\"color:red\">".$score."</span>";
+	}
+
 	static function colorize_pm($plus, $minus)
 	{
 		if(!$plus && !$minus)

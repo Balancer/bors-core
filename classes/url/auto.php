@@ -52,8 +52,8 @@ class url_auto extends url_base
 
 //			echo $obj->debug_title().', /^'.$project_name.'_(\w+)$/i == '. $class_name.'<br/>';
 
-			if(preg_match('/^'.$project_name.'_(\w+)$/i', $class_name, $m))
-				return $obj->project()->url().'/'.join('/', array_map('bors_plural', explode('_', bors_lower($m[1])))).'/'.$obj->id().'/';
+			if(preg_match('/^'.$project_name.'_(\w+)$/i', $class_name, $m) && ($project = $obj->get('project')))
+				return $project->url().'/'.join('/', array_map('bors_plural', explode('_', bors_lower($m[1])))).'/'.$obj->id().'/';
 
 			$path = '/'.blib_grammar::plural($rel_class_name, '/').'/';
 		}

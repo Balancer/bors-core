@@ -56,16 +56,24 @@ class bors_ext_mail extends bors_empty
 		if(empty($template_data))
 			$template_data = array();
 
+		$data = [
+			'user' => $user,
+		];
+
+		$html = preg_replace_callback('!%(\w+)\.(\w+)%!', function($m) use($data){ return $data[$m[1]]->get($m[2]);}, $html);
+		$text = preg_replace_callback('!%(\w+)\.(\w+)%!', function($m) use($data){ return $data[$m[1]]->get($m[2]);}, $text);
+
 		require_once("engines/smarty/assign.php");
 		//  'xfile:aviaport/mail.txt'
 		if($tpl = config('mail.template.txt'))
-			$text = template_assign_data($tpl, array('body' => $text));
+			$text = template_assign_data($tpl, array('body' => $text, 'user' => $user));
 
 		if($html)
 		{
 			if($tpl = config('mail.template.html')) // , 'xfile:aviaport/mail.html'
 				$html = template_assign_data($tpl, array_merge(array(
 					'body' => $html,
+					'user' => $user,
 					'skip_title' => true,
 				), $template_data));
 		}
@@ -126,9 +134,9 @@ class bors_ext_mail extends bors_empty
 			$email = $user->email();
 		}
 
-		if(preg_match('/^[\w\s]+$/'))
+		if(preg_match('/^[\w\s]+$/', $name))
 			return "$name <$email>";
 
-		return "=?UTF-8?B?".base64_encode($name)."?= <$email>";
+		return "=?utf-8?B?".base64_encode($name)."?= <$email>";
 	}
 }

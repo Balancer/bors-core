@@ -11,15 +11,12 @@ require_once(dirname(__FILE__).'/init.php');
 
 // Если в запрашиваемом URL присутствуют параметры - переносим их в строку запроса
 // такая проблема всплывает на некоторых web-серверах.
-/*
-	Пока — заблокировано. Если всплывёт снова, то эмулировать $_SERVER['REQUEST_METHOD']?
 if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 {
 	$_SERVER['REQUEST_URI'] = $m[1];
 	if(empty($_SERVER['QUERY_STRING']))
 		$_SERVER['QUERY_STRING'] = $m[2];
 }
-*/
 
 // Если в имени хоста есть порт, то вырезаем
 if(preg_match('!^(.+):\d+$!', $_SERVER['HTTP_HOST'], $m))

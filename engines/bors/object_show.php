@@ -36,6 +36,33 @@
 
 		if(!empty($_GET) && !$obj->get('skip_auto_forms'))
 		{
+			// Если у нас запрос subaction...
+			if((!empty($_GET['act']) || !empty($_GET['subaction'])))
+			{
+				// Если запрос картинки, то это вызов subaction через img src, т.е. грубый XSS
+				if(bors()->request()->is_accept_image())
+				{
+					bors_debug::syslog('hack-attempt', "Try to hack by img src");
+					header("Content-type: " . image_type_to_mime_type(IMAGETYPE_GIF));
+					return file_get_contents(BORS_CORE.'/htdocs/_bors/images/hacker.gif');
+				}
+
+				// Если запрашивается не страница, а не пойми чего, то тоже считаем за хак.
+				if(!bors()->request()->is_accept_text())
+				{
+					bors_debug::syslog('hack-attempt', "Try to hack by call as not page: ".$_SERVER['HTTP_ACCEPT']);
+					return "Request error";
+				}
+
+				// Если метод запроса GET, а на странице таковой явно не разрешён, то тоже хак.
+				// Осторожнее с явным разрешением!
+				if(!bors()->request()->is_post() && !$obj->get('can_action_method_get'))
+				{
+					bors_debug::syslog('hack-attempt', "Try to hack by call get method");
+					return "Request error";
+				}
+			}
+
 			require_once('inc/bors/form_save.php');
 			$processed = bors_form_save($obj);
 			if($processed === true)

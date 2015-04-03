@@ -1,9 +1,5 @@
 <?php
 
-//TODO: в старом коде сделать замены:
-//		preAction -> pre_action
-//		onAction* -> on_action*
-
 //передать также: 'subaction'
 
 function bors_form_save(&$obj)

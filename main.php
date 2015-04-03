@@ -11,19 +11,19 @@ require_once(dirname(__FILE__).'/init.php');
 
 // Если в запрашиваемом URL присутствуют параметры - переносим их в строку запроса
 // такая проблема всплывает на некоторых web-серверах.
+/*
+	Пока — заблокировано. Если всплывёт снова, то эмулировать $_SERVER['REQUEST_METHOD']?
 if(preg_match('!^([^?]+)\?(.*)$!', $_SERVER['REQUEST_URI'], $m))
 {
 	$_SERVER['REQUEST_URI'] = $m[1];
 	if(empty($_SERVER['QUERY_STRING']))
 		$_SERVER['QUERY_STRING'] = $m[2];
 }
+*/
 
 // Если в имени хоста есть порт, то вырезаем
 if(preg_match('!^(.+):\d+$!', $_SERVER['HTTP_HOST'], $m))
 	$_SERVER['HTTP_HOST'] = $m[1];
-
-// Если в имени хоста есть www, то убираем
-// $_SERVER['HTTP_HOST'] = preg_replace('!^www\.!', '', $_SERVER['HTTP_HOST']);
 
 // DOCUMENT_ROOT должен быть без слеша в конце.
 if(preg_match('!^(.+)/$!', $_SERVER['DOCUMENT_ROOT'], $m))
@@ -66,6 +66,7 @@ if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 		@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']
 		."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
+	@header('HTTP/1.1 500 Internal Server Error');
 	exit("Do not use direct bors-call!\n");
 }
 
@@ -93,43 +94,17 @@ if($is_crawler && config('bot_lavg_limit'))
 		bors_main_error_503('system_overload_crawlers', "$is_bot: LA=$load_avg");
 }
 
-// Ловушка для ботов. Если сунется в /_bors/trap/* (например, где-то на странице скрытая ссылка туда)
-// то шлём его нафиг. Соответственно, /_bors/trap/ должен быть запрещённ в robots.txt
-if(preg_match('!/_bors/trap/!', $_SERVER['REQUEST_URI']) && config('load_protect_trap'))
-{
-	if($is_bot)
-		if(config('404_page_url'))
-			return go(config('404_page_url'), true);
-
-	//TODO: чёрт, надо сделать будет через hidden_log.
-	@file_put_contents($file = $_SERVER['DOCUMENT_ROOT']."/logs/load_trap.log", 
-		date('Y.m.d H:i:s ')
-			.$_SERVER['REQUEST_URI']
-			."; ref=".@$_SERVER['HTTP_REFERER'] 
-			. "; IP=".@$_SERVER['REMOTE_ADDR']
-			."; UA=".@$_SERVER['HTTP_USER_AGENT']
-			."; LA={$load_avg}\n", FILE_APPEND);
-	@chmod($file, 0666);
-
-	bors_main_error_503();
-}
-
 // Если есть строка запроса, но пустой $_GET, то PHP чего-то не распарсил. Бывает на некоторых
 // режимах в некоторых серверах.
-//TODO: проверить по проектам, чтобы нигде не использовалось $GLOBALS['cms']['only_load'] и убрать.
-if(empty($GLOBALS['cms']['only_load']) && empty($_GET) && !empty($_SERVER['QUERY_STRING']))
-{
+if(empty($_GET) && !empty($_SERVER['QUERY_STRING']))
 	parse_str($_SERVER['QUERY_STRING'], $_GET);
-	if(empty($_POST))
-		$_POST = $_GET; // поскольку мы не знаем, что там и куда
-}
 
-$_GET = array_merge($_GET, $_POST); // но, вообще, нужно с этим завязывать
+// Если метод запроса POST и только тогда — добавляем к _GET ещё и _POST
+if(@$_SERVER['REQUEST_METHOD'] == 'POST')
+	$_GET = array_merge($_GET, $_POST); // но, вообще, нужно с этим завязывать
 
 // Проверка на загрузку системы данным пользователем или ботом
 // Если делает много тяжёлых запросов - просим подождать.
-
-//var_dump(preg_split('/[,\s]+/', config('overload.skip_ips')));
 
 if(config('access_log')
 		&& !in_array($_SERVER['REMOTE_ADDR'], preg_split('/[,\s]+/', config('overload.skip_ips', '127.0.0.1')))

@@ -44,8 +44,7 @@ class bors_request extends bors_object
 		return $val;
 	}
 
-	function url() { return @$GLOBALS['bors_full_request_url']; }
-	function referer() { return defval($_GET, 'ref', @$_SERVER['HTTP_REFERER']); }
+	function is_post() { return @$_SERVER['REQUEST_METHOD'] == 'POST'; }
 
 	function pure_url()
 	{
@@ -55,6 +54,13 @@ class bors_request extends bors_object
 
 		return $url;
 	}
+
+	function referer() { return defval($_GET, 'ref', @$_SERVER['HTTP_REFERER']); }
+
+	function is_accept_image() { return preg_match('!^image/!', @$_SERVER['HTTP_ACCEPT']); }
+	function is_accept_text()  { return preg_match('!^text/!' , @$_SERVER['HTTP_ACCEPT']); }
+
+	function url() { return @$GLOBALS['bors_full_request_url']; }
 
 	function url_data($name = NULL, $default = NULL)
 	{

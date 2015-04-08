@@ -154,7 +154,18 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 	function thumbnail_class() { return 'bors_image_thumb'; }
 	function thumbnail($geometry)
 	{
-		return bors_load_ex($this->thumbnail_class(), $this->id().','.$geometry, array(
+		$class = $this->thumbnail_class();
+		//FIXME: хардкод
+		if(preg_match('/^b2_/', $class))
+		{
+			return bors_load_ex($class, NULL, array(
+				'image_class_name' => $this->class_name(),
+				'image_id' => $this->id(),
+				'geometry' => $geometry,
+			));
+		}
+
+		return bors_load_ex($class, $this->id().','.$geometry, array(
 			'image_class_name' => $this->class_name(),
 		));
 	}

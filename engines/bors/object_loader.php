@@ -630,6 +630,9 @@ function object_init($class_name, $object_id, $args = array())
 	if(!$loaded)
 		$loaded = $obj->data_load();
 
+	if(is_object($loaded))
+		$obj = $loaded;
+
 	if(!$obj->can_be_empty() && !$obj->is_loaded())
 		return NULL;
 

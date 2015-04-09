@@ -9,7 +9,7 @@ class bors_core_object_defaults
 		// При прямом возвращении через array_shift сыплется NOTICE «Only variables should be passed by reference»
 		return @$arr[0];
 	}
-//	static function access_name($object) { return bors_plural(array_pop(explode('_', $object->class_name()))); }
+//	static function access_name($object) { return blib_grammar::plural(array_pop(explode('_', $object->class_name()))); }
 
 	static function _obsolete_project_name($object)
 	{
@@ -36,7 +36,7 @@ class bors_core_object_defaults
 		if(!preg_match('/^\w+$/', $name))
 		{
 			// "/data/var/www/ru/wrk/ucrm/bors-site/classes/ucrm/person.yaml"
-			$name = bors_plural(preg_replace('!^.+/bors-site/classes/'.$object->get('project_name').'(/admin)?/(\w+)\.\w+.+$!', '$2', $class_file));
+			$name = blib_grammar::plural(preg_replace('!^.+/bors-site/classes/'.$object->get('project_name').'(/admin)?/(\w+)\.\w+.+$!', '$2', $class_file));
 		}
 
 //FIXME FOR http://matf.aviaport.ru/

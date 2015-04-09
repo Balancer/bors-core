@@ -18,6 +18,8 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 	if(!empty($_GET['inframe']))
 		$uri = url_append_param($uri, 'inframe', 'yes');
 
+	config_set('_debug_go_uri', $uri);
+
 	if(config('debug_redirect_trace'))
 	{
 		$body = ec("<p>Это режим отладки переходов. При его

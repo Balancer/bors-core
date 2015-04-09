@@ -33,15 +33,11 @@ class bors_templates_smarty3 extends bors_template
 		//TODO: придумать, как сделать разрешение для отдельных шаблонов.
 		//		Хотя ниже есть вариант через данные шаблона.
 		$smarty->auto_literal = true;
+//		http://www.smarty.net/docs/en/variable.escape.html.tpl
+//		This is a compile time option. If you change the setting you must make sure that the templates get recompiled.
+//		$smarty->escape_html = true;
+//		$smarty->escape_html = true; // config('smarty3.autoescape', true);
 
-/*
-		$smarty->compile_id = defval($data, 'compile_id');
-		if(strlen($smarty->compile_id) > 128)
-		{
-			debug_hidden_log('need-attention', 'too long compile id: '.$smarty->compile_id);
-			$smarty->compile_id = substr($smarty->compile_id, 0, 128);
-		}
-*/
 		$smarty->cache_dir = config('cache_dir').'/smarty3-cache/';
 
 		if(!file_exists($smarty->compile_dir))
@@ -61,10 +57,6 @@ class bors_templates_smarty3 extends bors_template
 
 		$smarty->compile_check = true;
 
-//		$smarty->caching = true;
-//		$smarty->compile_check = true;
-//		$smarty->security = false;
-//		$smarty->escape_html = true; // config('smarty3.autoescape', true);
 		$smarty->cache_modified_check = true;
 		$smarty->cache_lifetime = 86400*7;
 

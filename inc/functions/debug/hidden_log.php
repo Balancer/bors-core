@@ -49,7 +49,7 @@ function debug_hidden_log($type, $message=NULL, $trace = true, $args = array())
 
 		$out .= "\tmain_url: ".@$GLOBALS['main_uri']."\n";
 
-		foreach(['HTTP_HOST', 'REQUEST_URI', 'QUERY_STRING', 'HTTP_REFERER', 'REMOTE_ADDR', 'HTTP_USER_AGENT'] as $name)
+		foreach(array('HTTP_HOST', 'REQUEST_URI', 'QUERY_STRING', 'HTTP_REFERER', 'REMOTE_ADDR', 'HTTP_USER_AGENT', 'HTTP_ACCEPT', 'REQUEST_METHOD') as $name)
 			if(!empty($_SERVER[$name]))
 				$out .= "\t{$name}: ".$_SERVER[$name]."\n";
 

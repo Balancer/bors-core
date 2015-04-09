@@ -1,6 +1,6 @@
 <?php
 
-class bors_tools_delete extends bors_page
+class bors_tools_delete extends bors_admin_page
 {
 	function config_class() { return config('admin_config_class'); }
 	function access() { return $this->object()->access(); }
@@ -19,13 +19,13 @@ class bors_tools_delete extends bors_page
 	function title() { return $this->object()->class_title() . ec(': подтверждение удаления'); }
 	function nav_name() { return ec('удаление'); }
 
-	function object() { return object_load($this->id()); }
+	function object() { return bors_load_uri(bors()->request()->data('object')); }
 
 	function pre_show()
 	{
 		$obj = $this->object();
 		if(!$obj)
-			return bors_message(ec('Не найден объект ').$this->id());
+			return bors_message(ec('Не найден объект ').@$_POST['object']);
 
 		$act = $obj->access();
 
@@ -51,11 +51,19 @@ class bors_tools_delete extends bors_page
 		return false;
 	}
 
-	function on_action_delete()
+	function on_action_delete($data)
 	{
+//		echo '<xmp>'; var_dump($_POST, $_GET, $data); exit('</xmp>');
+
+		if(!empty($data['no']))
+			return go($this->ref(@$data['no_ref']));
+
+		if(empty($data['yes']))
+			return go($this->ref(@$data['no_ref']));
+
 		$obj = $this->object();
 		if(!$obj)
-			return bors_message(ec('Не найден объект ').$this->id());
+			return bors_message(ec('Не найден объект ').@$_POST['object']);
 
 		$act = NULL;
 		if(method_exists($obj, 'can_delete'))
@@ -84,8 +92,11 @@ class bors_tools_delete extends bors_page
 
 	function url_engine() { return 'url_getp'; }
 
-	function ref()
+	function ref($url = NULL)
 	{
+		if($url)
+			return $url;
+
 		if(!empty($_GET['ref']))
 			return $_GET['ref'];
 

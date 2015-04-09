@@ -8,7 +8,7 @@ bors_url_submap(array(
 	'/classes/(\w+)/new/? => _classes_new(1)',
 	'/cross_chtype\?.* => _cross_chtype',
 	'/cross_unlink\?.* => _cross_unlink',
-	'/delete/\?object=([^&]+).* => bors_tools_delete(1)',
+	'/delete/\?object=([^&]+).* => bors_tools_delete',
 	'/dev/chuser/(.+)$ => _dev_chuser(1)',
 	'/edit/crosslinks/ => bors_admin_edit_crosslinks',
 	'/edit/page\?object=([^&]+) => _edit_page(1)',

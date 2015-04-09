@@ -8,11 +8,13 @@ class bors_users_tools_favorites extends base_page
 	function can_action($action) { return in_array($action, array('add', 'remove')); }
 	function can_read() { return true; }
 
+	var $can_action_method_get = true;
+
 	private function check_register()
 	{
 		if(bors()->user())
 			return true;
-			
+
 		bors_message(ec('Извините, эта функция доступна только зарегистрированным пользователям сайта'));
 		return false;
 	}
@@ -21,11 +23,11 @@ class bors_users_tools_favorites extends base_page
 	{
 		if(!$this->check_register())
 			return true;
-	
+
 		$object = object_load($data['object']);
 		if(!$object)
 			return bors_message(ec('Не могу найти объект ').$data['object']);
-		
+
 		bors()->user()->favorite_add($object);
 		return go_ref(@$data['ref']);
 	}
@@ -34,7 +36,7 @@ class bors_users_tools_favorites extends base_page
 	{
 		if(!$this->check_register())
 			return true;
-			
+
 		$object = object_load($data['object']);
 		if(!$object)
 			return bors_message(ec('Не могу найти объект ').$data['object']);

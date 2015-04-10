@@ -172,7 +172,7 @@ class bors_view extends bors_page
 				$out[] = "<li><b>{$title}</b>: ".$value."</li>\n";
 		}
 
-		$html .= join("", $out);
+		$html = join("", $out);
 
 		return $html;
 	}

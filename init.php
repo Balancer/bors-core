@@ -92,6 +92,9 @@ $includes = array(
 if(defined('BORS_APPEND'))
 	$includes = array_merge($includes, explode(' ', BORS_APPEND));
 
+if(defined('COMPOSER_ROOT'))
+	$includes[] = COMPOSER_ROOT;
+
 if(defined('INCLUDES_APPEND'))
 	$includes = array_merge($includes, explode(' ', INCLUDES_APPEND));
 

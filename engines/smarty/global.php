@@ -57,8 +57,10 @@ function template_css($css, $prepend = false)
 	{
 		if($prepend)
 			$main_object->prepend_page_data_array('css_list', array($css));
-		else
+		elseif(method_exists($main_object, 'merge_page_data_array'))
 			$main_object->merge_page_data_array('css_list', array($css));
+		else
+			bors_debug::syslog('template-error', "Undefined method merge_page_data_array for ".$main_object->debug_title());
 	}
 	else
 	{

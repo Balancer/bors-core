@@ -1,6 +1,6 @@
 <?php
 
-class bors_objects_loaders_meta extends bors_object
+class bors_objects_loaders_meta
 {
 	static private $class_loaders = array();
 

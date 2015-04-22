@@ -18,4 +18,10 @@ class bors
 		$view = bors_load_uri($url);
 		return $view;
 	}
+
+	static function run()
+	{
+		self::init();
+		require_once(BORS_CORE.'/main.php');
+	}
 }

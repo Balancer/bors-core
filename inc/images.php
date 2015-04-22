@@ -27,30 +27,39 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 		return false;
 	}
 
-	$origin_width  = $img->width;
-	$origin_height = $img->height;
+	$origin_width  = $img->width();
+	$origin_height = $img->height();
+
+	if(!$opts && $width == $origin_width && $height == $origin_height)
+	{
+		copy($file_in, $file_out);
+		return false;
+	}
 
 	if($width && !$height)
 	{
-		if($width < $img->width)
+		if($width < $img->width())
 			$img->widen($width);
 	}
 	elseif(!$width && $height)
 	{
-		if($height < $img->height)
+		if($height < $img->height())
 			$img->heighten($height);
 	}
 	elseif(!$opts)
-		$img->resize($width, $height, true, false);
+		$img->resize($width, $height, function ($constraint) {
+			$constraint->aspectRatio();
+			$constraint->upsize();
+		});
 	elseif($opts == 'up,crop')
 		$img->grab($width, $height); // Пропорции + обрезка + увеличение, если надо
 	elseif($opts == 'crop')
 	{
 		// Большие картинки уменьшаем и кропаем, маленькие оставляем как есть.
-		if($height < $img->height || $width < $img->width)
+		if($height < $img->height() || $width < $img->width())
 			$img->grab($width, $height); // Пропорции + обрезка + увеличение, если надо
 		// else // Вся картинка меньше, ничего не делаем.
-//		var_dump($img->height, $img->width); exit();
+//		var_dump($img->height(), $img->width()); exit();
 	}
 	else
 	{
@@ -58,8 +67,9 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 		$img->grab($width, $height); // Пропорции + обрезка + увеличение, если надо
 	}
 
+//	~r($origin_width, $origin_height, $img->width(), $img->height());
 	// Если исходник такой же, как результат, то просто копируем.
-	if(!$opts && $img->width == $origin_width && $img->height == $origin_height)
+	if(!$opts && $img->width() == $origin_width && $img->height() == $origin_height)
 		copy($file_in, $file_out);
 	else
 		$img->save($file_out, 85);

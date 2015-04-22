@@ -56,7 +56,7 @@ class bors_pages_helper
 /*
 	$style = array with styles
 */
-	function style($style)
+	static function style($style)
 	{
 		if(empty($style))
 			return '';
@@ -65,7 +65,6 @@ class bors_pages_helper
 			.join("\n", $style)
 			."\n--></style>\n";
 	}
-
 
 	static function make_sortable_th($view, $property, $title)
 	{

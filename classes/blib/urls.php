@@ -131,6 +131,9 @@ class blib_urls
 		if(preg_match('!^\w+://!', $url1) && preg_match('!^\w+://!', $url2))
 			return strpos($url2, $url1) === 0;
 
+		if(!$url2)
+			return false;
+
 		return strpos(self::path($url2), self::path($url1)) === 0;
 	}
 

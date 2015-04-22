@@ -24,7 +24,7 @@
 	"require": {
 		"php": ">=5.3",
 		"balancer/blib-morfology-ru": "@dev",
-		"intervention/image": "<2",
+		"intervention/image": "*",
 		"monolog/monolog": "*",
 		"rediska/rediska": "*",
 		"smarty/smarty": "!=3.1.20",

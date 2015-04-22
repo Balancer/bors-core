@@ -1,5 +1,7 @@
 <?php
 
+use Intervention\Image\ImageManagerStatic as Image;
+
 function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 {
 	if(file_exists($file_out))
@@ -15,7 +17,8 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 
 	try
 	{
-		$img = Intervention\Image\Image::make($file_in);
+		Image::configure(array('driver' => 'imagick'));
+		$img = Image::make($file_in);
 	}
 	catch(Exception $e)
 	{
@@ -23,6 +26,9 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 		config_set('bors-image-lasterror', "[22] Thumbnail make exception\nImage:\n".$file_in."\nException:\n".$e->getMessage());
 		return false;
 	}
+
+	$origin_width  = $img->width;
+	$origin_height = $img->height;
 
 	if($width && !$height)
 	{
@@ -52,7 +58,12 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 		$img->grab($width, $height); // Пропорции + обрезка + увеличение, если надо
 	}
 
-	$img->save($file_out, 85);
+	// Если исходник такой же, как результат, то просто копируем.
+	if(!$opts && $img->width == $origin_width && $img->height == $origin_height)
+		copy($file_in, $file_out);
+	else
+		$img->save($file_out, 85);
+
 	return false;
 
 	bors_debug::syslog('000-image-debug', "Get image size for ".$file_in);

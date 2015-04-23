@@ -52,19 +52,19 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 			$constraint->upsize();
 		});
 	elseif($opts == 'up,crop')
-		$img->grab($width, $height); // Пропорции + обрезка + увеличение, если надо
+		$img->fit($width, $height); // Пропорции + обрезка + увеличение, если надо
 	elseif($opts == 'crop')
 	{
 		// Большие картинки уменьшаем и кропаем, маленькие оставляем как есть.
 		if($height < $img->height() || $width < $img->width())
-			$img->grab($width, $height); // Пропорции + обрезка + увеличение, если надо
+			$img->fit($width, $height); // Пропорции + обрезка + увеличение, если надо
 		// else // Вся картинка меньше, ничего не делаем.
 //		var_dump($img->height(), $img->width()); exit();
 	}
 	else
 	{
 		bors_debug::syslog('00-image-options-code-append', "Unknown options in image_file_scale($file_in, $file_out, $width, $height, $opts)");
-		$img->grab($width, $height); // Пропорции + обрезка + увеличение, если надо
+		$img->fit($width, $height); // Пропорции + обрезка + увеличение, если надо
 	}
 
 //	~r($origin_width, $origin_height, $img->width(), $img->height());

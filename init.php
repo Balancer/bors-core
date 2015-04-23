@@ -116,8 +116,11 @@ foreach(array(BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $di
 		include_once($dir.'/config.php');
 }
 
-if(!file_exists($d = config('cache_dir')));
+if(!file_exists($d = config('cache_dir')))
+{
 	mkpath($d, 0750);
+	bors_debug::syslog('init-info', 'Create tmp cache dir '.$d);
+}
 
 //	Инициализация Stash-кеша с автоопределением типа движка, если в локальном конфиге не было задано заранее
 if(!config('cache.stash.pool') && class_exists('Stash\Pool'))

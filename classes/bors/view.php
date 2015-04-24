@@ -177,10 +177,13 @@ class bors_view extends bors_page
 		return $html;
 	}
 
-	function access()
+	function _access_def()
 	{
 		$access = $this->model()->access();
-		$access->set_attr('view', $this);
+
+		if($access)
+			$access->set_attr('view', $this);
+
 		return $access;
 	}
 

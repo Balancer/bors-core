@@ -495,7 +495,7 @@ function class_load_by_vhosts_url($url)
 //			if(config('is_debug')) r("$class_path($id) - $url");
 
 			$args = array(
-					'local_path' => $host_data['bors_local'],
+					'local_path' => @$host_data['bors_local'],
 					'match' => empty($match[2]) ? NULL : $match,
 					'called_url' => $url,
 			);

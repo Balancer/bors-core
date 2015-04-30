@@ -374,9 +374,13 @@ function bors_form_errors($data, $conditions = array())
 			$fail_message = NULL;
 		}
 
-		$error_cond = trim($error_condition);
+		$error_cond = @trim($error_condition);
 
-		if(is_array($fail_message))
+		if(is_callable($error_condition))
+		{
+			$error_cond = call_user_func($callback, $data);
+		}
+		elseif(is_array($fail_message))
 		{
 			$fields = array($fail_message[0]);
 			$error_cond = $fail_message[1];

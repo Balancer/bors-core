@@ -813,8 +813,17 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		}
 
 		foreach(bors_lib_orm::all_fields($this) as $f)
+		{
+			if(!array_key_exists($f['property'], $data))
+				continue;
+
 			if(!empty($f['is_req']) && empty($data[$f['property']]))
 				return go_ref_message(ec('Не задано обязательное поле «').$f['title'].ec('»'), array('error_fields' => $f['property']));
+
+			if(!empty($f['check_regexp']))
+				if(!preg_match($f['check_regexp'], $data[$f['property']]))
+					return go_ref_message(ec('Неверный формат параметра «').$f['title'].ec('»'), array('error_fields' => $f['property']));
+		}
 
 		return false;
 	}

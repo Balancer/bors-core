@@ -80,19 +80,19 @@ class bors_log_monolog
 			$log->pushProcessor(function ($record) use($trace) {
 
 				if(function_exists('gethostname'))
-					$record['extra']['host'] = gethostname();
+					$record['context']['host'] = gethostname();
 
 				if(bors()->user())
-					$record['extra']['user'] = bors()->user()->get('title');
+					$record['context']['user'] = bors()->user()->get('title');
 				if(bors()->user_id())
-					$record['extra']['user_id'] = bors()->user_id();
+					$record['context']['user_id'] = bors()->user_id();
 
 				if($trace)
 				{
-					$record['extra']['trace'] = debug_backtrace();
-					$record['extra']['SERVER'] = @$_SERVER;
-					$record['extra']['GET'] = @$_GET;
-					$record['extra']['POST'] = @$_POST;
+					$record['context']['trace'] = debug_backtrace();
+					$record['context']['SERVER'] = @$_SERVER;
+					$record['context']['GET'] = @$_GET;
+					$record['context']['POST'] = @$_POST;
 				}
 
 			    return $record;

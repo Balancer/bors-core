@@ -5,6 +5,10 @@ class bors_debug
 	static function syslog($type, $message, $trace = true, $args = array())
 	{
 		bors_function_include('debug/hidden_log');
+
+		if(preg_match('/error/', $type))
+			bors::log()->error($message, $type, $trace, $args);
+
 		return debug_hidden_log($type, $message, $trace, $args);
 	}
 

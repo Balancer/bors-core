@@ -5,27 +5,104 @@ use Monolog\Handler\StreamHandler;
 
 class bors_log_monolog
 {
-	var $log;
+	// (600): Emergency: system is unusable
+	function emergency($msg, $section = 'bors', $trace = false, $extra = array()) { $this->logger($section, Logger::EMERGENCY, $trace)->addEmergency($msg, $extra); }
 
-	function __construct()
+	// (550): Action must be taken immediately. Example: Entire website
+	//        down, database unavailable, etc. This should trigger the
+	//        SMS alerts and wake you up.
+	function alert($msg, $section = 'bors', $trace = false, $extra = array()) { $this->logger($section, Logger::ALERT, $trace)->addAlert($msg, $extra); }
+
+	// (500): Critical conditions. Example: Application component
+	//        unavailable, unexpected exception.
+	function critical($msg, $section = 'bors', $trace = false, $extra = array()) { $this->logger($section, Logger::CRITICAL, $trace)->addCritical($msg, $extra); }
+
+	// (400): Runtime errors that do not require immediate action but
+	//        should typically be logged and monitored.
+	function error($msg, $section = 'bors', $trace = false, $extra = array()) { $this->logger($section, Logger::ERROR, $trace)->addError($msg, $extra); }
+
+	// (300): Exceptional occurrences that are not errors.
+	//        Examples: Use of deprecated APIs, poor use of an API,
+	//        undesirable things that are not necessarily wrong
+	function warning($msg, $section = 'bors', $trace = false, $extra = array()) { $this->logger($section, Logger::WARNING, $trace)->addWarning($msg, $extra); }
+
+	// (250): Normal but significant events.
+	function notice($msg, $section = 'bors', $trace = false, $extra = array()) { $this->logger($section, Logger::NOTICE, $trace)->addNotice($msg, $extra); }
+
+	// (200): Interesting events. Examples: User logs in, SQL logs.
+	function info($msg, $section = 'bors', $trace = false, $extra = array()) { $this->logger($section, Logger::INFO, $trace)->addInfo($msg, $extra); }
+
+	// (100): Detailed debug information.
+	function debug($msg, $section = 'bors', $trace = false, $extra = array()) { $this->logger($section, Logger::DEBUG, $trace)->addDebug($msg, $extra); }
+
+	static $loggers = array();
+
+	function logger($name, $level, $trace = false)
 	{
-		$log = new Logger('BORS');
-		$log->pushHandler(new StreamHandler('debug_hidden_log_dir'.DIRECTORY_SEPARATOR.'mono-warnings.log', Logger::WARNING));
-		$log->pushHandler(new StreamHandler('debug_hidden_log_dir'.DIRECTORY_SEPARATOR.'mono-info.log', Logger::INFO));
+		$trace = (bool) $trace;
+		if(empty($this->loggers[$name][$trace]))
+		{
+			$log = new Logger($name);
 
-		$log->pushProcessor(function ($record) {
-			$record['extra']['user'] = object_property(bors()->user(), 'title');
-			$record['extra']['user_id'] = object_property(bors()->user_id());
-			$record['extra']['trace'] = debug_backtrace();
+			switch($level)
+			{
+				case Logger::EMERGENCY:
+					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-emergency.log', $level));
+//					$log->pushHandler(new HipChatHandler($token, $room, $name = 'Monolog', $notify = false, Logger::ERROR));
+					break;
+				case Logger::ALERT:
+					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-alert.log', $level));
+//					$log->pushHandler(new HipChatHandler($token, $room, $name = 'Monolog', $notify = false, Logger::ERROR));
+					break;
+				case Logger::CRITICAL:
+					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-critical.log', $level));
+//					$log->pushHandler(new HipChatHandler($token, $room, $name = 'Monolog', $notify = false, Logger::ERROR));
+					break;
+				case Logger::ERROR:
+					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-error.log', $level));
+//					$log->pushHandler(new HipChatHandler($token, $room, $name = 'Monolog', $notify = false, Logger::ERROR));
+					break;
+				case Logger::WARNING:
+					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-warning.log', $level));
+					break;
+				case Logger::NOTICE:
+					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-notice.log', $level));
+					break;
+				case Logger::INFO:
+					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-info.log', $level));
+					break;
+				case Logger::DEBUG:
+				default:
+					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-debug.log', $level));
+					break;
+			}
 
-		    return $record;
-		});
+			$log->pushProcessor(function ($record) use($trace) {
+				$record['extra']['user'] = bors()->user() ?  bors()->user()->get('title') : NULL;
+				$record['extra']['user_id'] = bors()->user_id();
 
-		$log->pushProcessor(new \Monolog\Processor\WebProcessor);
-		$log->pushProcessor(new \Monolog\Processor\MemoryUsageProcessor);
-		$log->pushProcessor(new \Monolog\Processor\IntrospectionProcessor);
+				if($trace)
+				{
+					$record['extra']['trace'] = debug_backtrace();
+					$record['extra']['SERVER'] = @$_SERVER;
+					$record['extra']['GET'] = @$_GET;
+					$record['extra']['POST'] = @$_POST;
+				}
 
-		$this->log = $log;
+			    return $record;
+			});
+
+			if($trace)
+			{
+				$log->pushProcessor(new \Monolog\Processor\WebProcessor);
+				$log->pushProcessor(new \Monolog\Processor\MemoryUsageProcessor);
+				$log->pushProcessor(new \Monolog\Processor\IntrospectionProcessor);
+			}
+
+			$this->loggers[$name][$trace] = $log;
+		}
+
+		return $this->loggers[$name][$trace];
 	}
 
 	static function instance()
@@ -38,9 +115,4 @@ class bors_log_monolog
 		return $instance;
 	}
 
-	function error($msg, $section, $extra = NULL) { $this->log($section)->addError($msg, $extra); }
-	function warning($msg, $section, $extra = NULL) { $this->log($section)->addWarning($msg, $extra); }
-	function notice($msg, $section, $extra = NULL) { $this->log($section)->addNotice($msg, $extra); }
-	function info($msg, $section, $extra = NULL) { $this->log($section)->addInfo($msg, $extra); }
-	function debug($msg, $section, $extra = NULL) { $this->log($section)->addDebug($msg, $extra); }
 }

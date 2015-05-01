@@ -10,6 +10,11 @@ class bors
 		require_once(BORS_CORE.'/init.php');
 	}
 
+	static function log()
+	{
+		return bors_log_monolog::instance();
+	}
+
 	function route_view($url = NULL, $host = NULL, $port = NULL)
 	{
 		if(!$url)

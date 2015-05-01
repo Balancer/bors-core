@@ -2,6 +2,7 @@
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Handler\HipChatHandler;
 
 class bors_log_monolog
 {
@@ -48,19 +49,15 @@ class bors_log_monolog
 			{
 				case Logger::EMERGENCY:
 					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-emergency.log', $level));
-//					$log->pushHandler(new HipChatHandler($token, $room, $name = 'Monolog', $notify = false, Logger::ERROR));
 					break;
 				case Logger::ALERT:
 					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-alert.log', $level));
-//					$log->pushHandler(new HipChatHandler($token, $room, $name = 'Monolog', $notify = false, Logger::ERROR));
 					break;
 				case Logger::CRITICAL:
 					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-critical.log', $level));
-//					$log->pushHandler(new HipChatHandler($token, $room, $name = 'Monolog', $notify = false, Logger::ERROR));
 					break;
 				case Logger::ERROR:
 					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-error.log', $level));
-//					$log->pushHandler(new HipChatHandler($token, $room, $name = 'Monolog', $notify = false, Logger::ERROR));
 					break;
 				case Logger::WARNING:
 					$log->pushHandler(new StreamHandler(config('debug_hidden_log_dir').DIRECTORY_SEPARATOR.'monolog-warning.log', $level));
@@ -77,7 +74,13 @@ class bors_log_monolog
 					break;
 			}
 
+			if($level >= Logger::ERROR && config('log.hipchat_v1_room_id'))
+				$log->pushHandler(new HipChatHandler(config('log.hipchat_v1_room_token'), config('log.hipchat_v1_room_id'), $name, true, $level));
+
 			$log->pushProcessor(function ($record) use($trace) {
+
+				if(function_exists('gethostname'))
+					$record['extra']['host'] = gethostname();
 
 				if(bors()->user())
 					$record['extra']['user'] = bors()->user()->get('title');

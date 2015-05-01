@@ -114,5 +114,5 @@ class bors_view_container extends bors_view
 	function url_engine() { return 'url_calling2'; }
 
 	function default_page() { return $this->is_reversed() ? $this->total_pages() : 1; }
-	function visits_inc($inc = 1) { return $this->container()->visits_inc($inc); }
+	function visits_inc($inc = 1, $time=NULL) { return $this->container()->visits_inc($inc, $time); }
 }

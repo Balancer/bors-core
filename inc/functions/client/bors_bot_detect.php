@@ -12,6 +12,10 @@ function bors_bot_detect($user_agent, &$data = array())
 			'Begun Robot Crawler' => 'Begun Robot Crawler',
 			'bingbot' => 'Bing',				// 207.46.195.234, Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
 			'BLEXBot' => 'BLEXBot',				// Mozilla/5.0 (compatible; BLEXBot/1.0; +http://webmeup.com/crawler.html)
+			'BoardReader' => array(				// BoardReader/1.0 (http://spider.boardreader.com)
+				'bot' => 'Board Reader',
+				'url' => 'http://spider.boardreader.com',
+			),
 			'ColonkaCrawler' => array(			// ColonkaCrawler 1.0-alpha (http://colonka.com)
 				'bot' => 'ColonkaCrawler',
 				'url' => 'http://colonka.com',

@@ -78,8 +78,11 @@ class bors_log_monolog
 			}
 
 			$log->pushProcessor(function ($record) use($trace) {
-				$record['extra']['user'] = bors()->user() ?  bors()->user()->get('title') : NULL;
-				$record['extra']['user_id'] = bors()->user_id();
+
+				if(bors()->user())
+					$record['extra']['user'] = bors()->user()->get('title');
+				if(bors()->user_id())
+					$record['extra']['user_id'] = bors()->user_id();
 
 				if($trace)
 				{

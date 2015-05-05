@@ -80,6 +80,17 @@ class bors_tools_search_result extends bors_tools_search
 
 		$weights = NULL;
 
+		$cl = new SphinxClient();
+		$cl->SetServer($host, $port);
+		$cl->SetConnectTimeout(1);
+
+		if($this->origins())
+		{
+			$cl->SetFilter('answer_to_post_id', [0]);
+			// Этого поля нет нигде, кроме индекса сообщений, поэтому переключаемся на него.
+			$_GET['w'] = 'p';
+		}
+
 		switch($this->w())
 		{
 			case 'a':
@@ -116,10 +127,6 @@ class bors_tools_search_result extends bors_tools_search
 #		$sortby = "timestamp";
 //echo $index;
 		$ranker = false; // SPH_RANK_PROXIMITY_BM25;
-
-		$cl = new SphinxClient ();
-		$cl->SetServer ( $host, $port );
-		$cl->SetConnectTimeout ( 1 );
 
 		if($weights)
 			$cl->SetIndexWeights ( $weights );
@@ -170,7 +177,6 @@ class bors_tools_search_result extends bors_tools_search
 			if($user)
 			$cl->SetFilter('owner_id', array($user->id()));
 		}
-
 		if($this->t())
 			$cl->SetFilter('topic_id', array(intval($this->t())));
 

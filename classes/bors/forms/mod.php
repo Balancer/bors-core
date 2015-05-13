@@ -17,6 +17,6 @@ class bors_forms_mod extends bors_forms_element
 
 	function body_data()
 	{
-		return array();
+		return $this->params();
 	}
 }

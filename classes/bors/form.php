@@ -636,7 +636,13 @@ class bors_form extends bors_object
 				if($element)
 				{
 					$element->set_params($data);
+					$params = $element->params();
+					if($pre = @$params['html_pre'])
+						$html .= $pre;
+
 					$html .= $element->html();
+
+					$append_append = @$params['html_append'];
 				}
 
 				$html .= $html_append;

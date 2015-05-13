@@ -2,6 +2,6 @@
 
 namespace B2;
 
-class Object extends bors_object
+class Object extends \bors_object
 {
 }

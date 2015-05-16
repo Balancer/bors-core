@@ -384,7 +384,26 @@ class bors_form extends bors_object
 
 				$edit_type = defval($data, 'edit_type', $type);
 
-				if($type != 'bool' && $edit_type != 'hidden' && $edit_type != 'bool')
+				$element = NULL;
+
+				if(class_exists($edit_type) && ($element = new $edit_type) && ($element->is_form_element()))
+				{
+					$element->set_params($data);
+					$element->set_form($this);
+				}
+				elseif(class_exists($edit_class = "bors_forms_".$edit_type) && ($element = new $edit_class) && ($element->is_form_element()))
+				{
+					$element->set_params($data);
+					$element->set_form($this);
+				}
+
+				$is_hidden = false;
+				if($element && $element->is_hidden())
+					$is_hidden = true;
+				elseif($type == 'bool' || $edit_type == 'hidden' || $edit_type == 'bool')
+					$is_hidden = true;
+
+				if(!$is_hidden)
 					$html .= "\t<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$title}</th><td>\n\t\t";
 
 				$data['form'] = $this;
@@ -394,10 +413,12 @@ class bors_form extends bors_object
 
 //				echo '<xmp>'; var_dump($edit_type, $data); echo '</xmp>';
 
-				switch($edit_type)
+				if(!$element)
 				{
+					switch($edit_type)
+					{
 					case 'checkbox_list':
-						$html .= $this->element_html('checkbox_list', $data);
+						$element = $this->element('checkbox_list');
 						break;
 
 					case 'string':
@@ -405,10 +426,10 @@ class bors_form extends bors_object
 					case 'int':
 					case 'uint':
 					case 'float':
-						$html .= $this->element_html('input', $data);
+						$element = $this->element('input');
 						break;
 					case 'hidden':
-						$html .= $this->element_html('hidden', $data);
+						$element= $this->element('hidden');
 						break;
 					case 'input_date':
 					case 'date':
@@ -464,79 +485,6 @@ class bors_form extends bors_object
 
 					case 'select2':
 						$html .= $this->element_html('select2', $data);
-						break;
-
-					case 'dropdown':
-					case 'dropdown_id':
-					case 'dropdown_edit':
-//						echo '<xmp>'; var_dump($data); echo '</xmp>';
-						if($edit_type == 'dropdown_id')
-						{
-							$saveclass = @$data['class'];
-							$data['class'] = 'wa';
-							$data['input_name'] = '_'.$data['name'];
-							if($chars = defval($data, 'form_chars'))
-								$data['maxlength'] = $data['size'] = $chars;
-							$this->append_attr('override_fields', $data['name']);
-							$html .= "ID:";
-							$html .= $this->element_html('input', $data);
-							jquery::on_ready("
-	\$('select[name={$data['name']}]').change(function(){
-		\$('input[name={$data['input_name']}]').val(\$(this).val())
-	});");
-							unset($data['maxlength'], $data['size']);
-							$data['class'] = $saveclass;
-						}
-
-						if($edit_type == 'dropdown_edit')
-						{
-							$saveclass = @$data['class'];
-							$data['class'] = 'w50p';
-							$data['input_name'] = '_'.$data['name'];
-							$this->append_attr('override_fields', $data['name']);
-							$html_append = $this->element_html('input', $data);
-							jquery::on_ready("
-	\$('select[name={$data['name']}]').change(function(){
-		\$('input[name={$data['input_name']}]').val(\$(this).val())
-	});");
-						}
-
-						if(array_key_exists('list', $data))
-						{
-							// Ничего не делаем, массив уже в данных.
-						}
-						elseif(array_key_exists('named_list', $data))
-						{
-							if(preg_match('/^(\w+):(\w+)$/', $data['named_list'], $m))
-							{
-								$list_class_name = $m[1];
-								$id = $m[2];
-							}
-							else
-							{
-								$list_class_name = $data['named_list'];
-								$id = NULL;
-							}
-
-							$list = new $list_class_name($id);	//TODO: статический вызов тут не прокатит, пока не появится повсеместный PHP-5.3.3.
-							$data['list'] = $list->named_list();
-						}
-						else
-						{
-							$list_filter = popval($data, 'where', popval($data, 'list_filter', array()));
-							if(is_string($list_filter))
-								eval("\$list_filter = $list_filter;");
-
-							// $data['main_class'] — http://admin.aviaport.wrk.ru/job/cabinets/236/
-							$data['list'] = base_list::make(defval($data, 'main_class', $class), $list_filter, $data);
-						}
-
-						// Смешанная проверка для тестирования на http://ucrm.wrk.ru/admin/persons/9/
-						if($data['is_int'] = defval($data, 'is_int', true))
-							foreach($data['list'] as $k => $v)
-								$data['is_int'] &= !$k || is_numeric($k);
-
-						$html .= $this->element_html('dropdown', $data);
 						break;
 
 					case 'timestamp_date_droppable':
@@ -599,16 +547,29 @@ class bors_form extends bors_object
 						{
 							$element->set_params($data);
 							$element->set_form($this);
-							$html .= $element->html();
+//							$html .= $element->html();
 						}
 						elseif(class_exists($edit_class = "bors_forms_".$edit_type) && ($element = new $edit_class) && ($element->is_form_element()))
 						{
 							$element->set_params($data);
 							$element->set_form($this);
-							$html .= $element->html();
+//							$html .= $element->html();
 						}
 						else
 							$html .= ec("Неизвестный тип '{$edit_type}' поля '{$property_name}'");
+					}
+				}
+
+				if($element)
+				{
+					$element->set_params($data);
+					$params = $element->params();
+					if($pre = @$params['html_pre'])
+						$html .= $pre;
+
+					$html .= $element->html();
+
+					$append_append = @$params['html_append'];
 				}
 
 				$html .= $html_append;
@@ -707,12 +668,18 @@ class bors_form extends bors_object
 		return $instance;
 	}
 
-	function element_html($element_name, $params = array())
+	function element($element_name)
 	{
 		$element_name = 'bors_forms_'.$element_name;
 		$element = new $element_name;
-		$element->set_params($params);
 		$element->set_form($this);
+		return $element;
+	}
+
+	function element_html($element_name, $params = array())
+	{
+		$element = $this->element($element_name);
+		$element->set_params($params);
 		return $element->html();
 	}
 

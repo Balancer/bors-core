@@ -277,7 +277,7 @@ if(config('debug.timing') && is_string($res))
 		."log_dir = ".config('debug_hidden_log_dir')."\n"
 		."created = ".date('r')."\n";
 
-	if($object)
+	if($object = bors()->main_object())
 	{
 		foreach(explode(' ', 'class_name class_file template body_template') as $var)
 			if($val = @$object->get($var))

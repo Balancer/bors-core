@@ -408,6 +408,7 @@ class bors_tools_search_result extends bors_tools_search
 			'm2' => $this->m2(),
 			'y2' => $this->y2(),
 			'p' => $page > 1 ? $page : NULL,
+			'origins' => $this->origins() ? 1 : NULL,
 		));
 	}
 

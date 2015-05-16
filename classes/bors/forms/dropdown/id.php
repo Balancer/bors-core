@@ -1,6 +1,6 @@
 <?php
 
-class bors_forms_dropdown extends bors_forms_element
+class bors_forms_dropdown_id extends bors_forms_dropdown
 {
 	function html()
 	{
@@ -180,6 +180,23 @@ class bors_forms_dropdown extends bors_forms_element
 	{
 		$data = $this->params();
 		$form = $this->form();
+
+//		echo '<xmp>'; var_dump($data); echo '</xmp>';
+
+		$saveclass = @$data['class'];
+		$data['class'] = 'wa';
+		$data['input_name'] = '_'.$data['name'];
+		if($chars = defval($data, 'form_chars'))
+			$data['maxlength'] = $data['size'] = $chars;
+		$form->append_attr('override_fields', $data['name']);
+		$data['html_pre'] = "ID:";
+		$data['html_pre'] .= $form->element_html('input', $data);
+		jquery::on_ready("
+	\$('select[name={$data['name']}]').change(function(){
+		\$('input[name={$data['input_name']}]').val(\$(this).val())
+	});");
+		unset($data['maxlength'], $data['size']);
+		$data['class'] = $saveclass;
 
 		if(array_key_exists('list', $data))
 		{

@@ -8,6 +8,7 @@ class bors_forms_element
 	function params() { return $this->params; }
 	function form() { return $this->form; }
 	function is_form_element() { return true; }
+	function is_hidden() { return false; }
 
 	function value($param_name = 'value')
 	{

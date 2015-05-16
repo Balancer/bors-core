@@ -75,7 +75,7 @@ class bors_log_monolog
 			}
 
 			if($level >= Logger::ERROR && config('log.hipchat_v1_room_id'))
-				$log->pushHandler(new HipChatHandler(config('log.hipchat_v1_room_token'), config('log.hipchat_v1_room_id'), $name, true, $level));
+				$log->pushHandler(new HipChatHandler(config('log.hipchat_v1_room_token'), config('log.hipchat_v1_room_id'), substr(0, 15, $name), true, $level));
 
 			$log->pushProcessor(function ($record) use($trace) {
 

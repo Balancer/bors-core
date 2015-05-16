@@ -185,78 +185,11 @@ if($uri == 'http:///')
 
 /**********************************************************************************************************/
 // Собственно, самое главное. Грузим объект и показываем его.
-$res = false;
-try
-{
-	if(config('debug.execute_trace'))
-		debug_execute_trace("bors_load_uri('$uri');");
 
-	config_set('__main_object_load', true); // костыли, ну и фиг с ними. Боком нигде не должно вылезти.
-	if($object = bors_load_uri($uri))
-	{
-		config_set('__main_object_load', false);
-
-		// Если это редирект
-		if(!is_object($object))
-		{
-			if(config('bors.version_show'))
-				header('X-bors-object: redirect to '.$object);
-
-			return go($object);
-		}
-
-		if(config('bors.version_show'))
-			header('X-bors-object: '.$object->internal_uri());
-
-		// Новый метод вывода, полностью на самом объекте
-		if(method_exists($object, 'show'))
-		{
-			if(config('debug.execute_trace'))
-				debug_execute_trace("{$object}->show()");
-
-			$res = $object->show();
-		}
-
-		if(!$res)	// Если новый метод не обработан, то выводим как раньше.
-		{
-			if(config('debug.execute_trace'))
-				debug_execute_trace("bors_object_show($object)");
-
-			$res = bors_object_show($object);
-		}
-	}
-}
-catch(Exception $e)
-{
-	@header('HTTP/1.1 500 Internal Server Error');
-	bors_function_include('debug/trace');
-	bors_function_include('debug/hidden_log');
-//	var_dump($e->getTrace());
-	$trace = debug_trace(0, false, -1, $e->getTrace());
-	$message = $e->getMessage();
-	debug_hidden_log('exception', "$message\n\n$trace", true, array('dont_show_user' => true));
-	try
-	{
-		bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")
-			."<div class=\"red_box alert alert-danger\">$message</div>\n"
-			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n<span style=\"color: #ccc\">~~~1</span>")
-			.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
-//				'template' => 'xfile:default/popup.html',
-		));
-	}
-	catch(Exception $e2)
-	{
-		bors()->set_main_object(NULL);
-		bors_message(ec("При попытке просмотра этой страницы возникли ошибки:\n")
-			."<div class=\"red_box\">$message</div>\n"
-			.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~2")
-			.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
-			'template' => 'xfile:default/popup.html',
-		));
-	}
-
-	$res = true;
-}
+if(config('mode.debug'))
+	$res = bors::show_uri($uri);
+else
+	$res = bors::try_show_uri($uri);
 
 if(config('debug.execute_trace'))
 	debug_execute_trace("process done. Return type is ".gettype($res)."; Next — changed save");

@@ -41,7 +41,7 @@ class bors_log_monolog
 	function logger($name, $level, $trace = false)
 	{
 		$trace = (bool) $trace;
-		if(empty($this->loggers[$name][$trace]))
+		if(empty(self::$loggers[$name][$trace]))
 		{
 			$log = new Logger($name);
 
@@ -105,10 +105,10 @@ class bors_log_monolog
 				$log->pushProcessor(new \Monolog\Processor\IntrospectionProcessor);
 			}
 
-			$this->loggers[$name][$trace] = $log;
+			self::$loggers[$name][$trace] = $log;
 		}
 
-		return $this->loggers[$name][$trace];
+		return self::$loggers[$name][$trace];
 	}
 
 	static function instance()

@@ -9,6 +9,7 @@ class bors_modules_ajax extends bors_module
 		$x = bors_load($class, NULL);
 		$x->set_attr('static', true);
 		$x->set_mode('static');
+		$x->set('is_static', true);
 		$uri = $x->internal_uri_ascii();
 		$dom_id = "bors_mod_ajax_".md5($uri);
 		echo "<div id=\"$dom_id\">";

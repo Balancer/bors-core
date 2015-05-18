@@ -149,6 +149,7 @@ server_name={config('debug.server_name')}
 {foreach from=$js_include_post item="s"}
 <script type="text/javascript" src="{$s}"></script>
 {/foreach}
+{$jquery_document_ready=bors_page::template_data('jquery_document_ready')}
 {if $javascript_post || $jquery_document_ready}
 <script type="text/javascript"><!--
 {foreach from=$javascript_post item="s"}

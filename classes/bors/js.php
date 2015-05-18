@@ -8,11 +8,12 @@ class bors_js extends bors_page
 
 	function pre_show()
 	{
-//		header("Content-type: text/javascript");
+		$parent = parent::pre_show();
+
 		// Маскировано, потому что может вызываться из cli
 		@header('Content-type: text/javascript; charset='.$this->output_charset());
 		config_set('debug.timing', false); // Чтобы не мусорить комментарием в конце JS.
-		return false;
+		return $parent;
 	}
 
 	function body_data()

@@ -7,6 +7,8 @@ class bors_module extends bors_page
 {
 	function body_engine()	{ return 'bors_bodies_page'; }
 
+	function _is_static_def() { return false; }
+
 	function html()
 	{
 		if($ttl = $this->get('body_cache_ttl'))

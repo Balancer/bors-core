@@ -39,7 +39,7 @@ class bors_forms_textarea extends bors_forms_element
 		$html = '';
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($th = defval($params, 'th'))
+		if($th = defval($params, 'label', defval($params, 'th')))
 		{
 			if($th == 'def')
 			{

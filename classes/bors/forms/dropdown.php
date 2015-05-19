@@ -212,7 +212,7 @@ class bors_forms_dropdown extends bors_forms_element
 		}
 
 		// Смешанная проверка для тестирования на http://ucrm.wrk.ru/admin/persons/9/
-		if($data['is_int'] = defval($data, 'is_int', true))
+		if(is_array($data['list']) && ($data['is_int'] = defval($data, 'is_int', true)))
 			foreach($data['list'] as $k => $v)
 				$data['is_int'] &= !$k || is_numeric($k);
 

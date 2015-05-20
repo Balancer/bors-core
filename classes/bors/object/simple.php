@@ -41,8 +41,8 @@ class bors_object_simple extends bors_object_empty
 		if(!preg_match('/^\w+$/', $name))
 		{
 			// Если оформлено как функциональный вызов
-			// Хак: если это SQL-id вида 'id' => "CONCAT_WS('-', person_id, list_id)",
 
+			// Хак: если это SQL-id вида 'id' => "CONCAT_WS('-', person_id, list_id)",
 			if(preg_match('/^CONCAT/', $name))
 			{
 				unset($get_lock[$lock_name]);
@@ -59,12 +59,45 @@ class bors_object_simple extends bors_object_empty
 			else
 				$post_function = false;
 
-			try{
-				eval("\$result = \$this->$name;");
+			try
+			{
+				$result = $this;
+				$ok = true;
+
+				// Если сразу вызывать eval для цепочек $this->target()->titled_link(),
+				// то вываливается неперехватываемое исключение, если target() вернёт NULL
+				// Поэтому пробуем разобрать по цепочке.
+				foreach(explode('->', $name) as $method)
+				{
+					if(preg_match('/(\w+)\(\)/', $method, $m))
+					{
+						// Если следом вызов метода от NULL, то облом и возвращаем умолчение.
+						if(is_null($result))
+						{
+							unset($get_lock[$lock_name]);
+							return $default;
+						}
+
+						$result = call_user_func(array($result, $m[1]));
+					}
+					else
+					{
+						// Попался не чисто функциональный вызов. Если так, то пробуем, всё же, eval();
+						$ok = false;
+						break;
+					}
+				}
+
+				if(!$ok)
+					eval("\$result = \$this->$name;");
+
 				if($post_function)
 					$result = $post_function($result);
 			}
-			catch(Exception $e) { $result = NULL; }
+			catch(Exception $e)
+			{
+				$result = $default;
+			}
 
 			unset($get_lock[$lock_name]);
 			return $result;

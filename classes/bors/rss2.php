@@ -6,7 +6,15 @@ use \Suin\RSSWriter\Item;
 
 class bal_suin_rsswriter_channel extends Channel
 {
+	private $image = NULL;
 	private $yandex_logo = NULL;
+
+	function image($image)
+	{
+		$this->image = $image;
+		return $this;
+	}
+
 	function yandex_logo($image)
 	{
 		$this->yandex_logo = $image;
@@ -16,6 +24,33 @@ class bal_suin_rsswriter_channel extends Channel
 	function asXML()
 	{
 		$xml = parent::asXML();
+
+		if($this->image)
+		{
+/*
+			<image>
+				<url>http://example.com/rss_banner.gif</url>
+				<title>Example.com</title>
+				<link>http://example.com/</link>
+				<width>111</width>
+				<height>32</height>
+				<description>Example.com features tips, tricks, and bookmarks on web development</description>
+			</image>
+*/
+
+			$img = $xml->addChild('image');
+			$img->addChild('url', $this->image->thumbnail('300x300(up)')->url());
+
+			if($this->title)
+				$img->addChild('title', $this->title);
+
+			if($this->url)
+				$img->addChild('link', $this->url);
+
+			if($this->description)
+				$img->addChild('description', $this->description);
+		}
+
 		if($this->yandex_logo)
 		{
 			$NS = array(
@@ -28,9 +63,10 @@ class bal_suin_rsswriter_channel extends Channel
 			$NS = (object) $NS; 
 
 			$xml->addChild('yandex:logo', $this->yandex_logo->thumbnail('300x300(up)')->url(), $NS->g);
-			$xml->addChild('yandex:logo', $this->yandex_logo->thumbnail('300x300(up,crop)')->url(), $NS->g)
+			$xml->addChild('yandex:logo', $this->yandex_logo->thumbnail('300x300(up,fillpad)')->url(), $NS->g)
 				->addAttribute('type', 'square');
 		}
+
 		return $xml;
 	}
 }
@@ -58,7 +94,6 @@ class bors_rss2 extends bors_rss
 
 		$xml = $channel->asXML();
 
-
 //		$feed->useCached($type, '/tmp/bors-rss-'.md5($rss->url()).'.xml', config('rss_static_lifetime'));
 //		$feed->encoding = 'UTF-8';
 //		$feed->link = $rss->main_url();
@@ -72,8 +107,10 @@ class bors_rss2 extends bors_rss
 
 		if($feed_image = $rss->get('image'))
 		{
+			$channel->image($feed_image);
 			$channel->yandex_logo($feed_image);
 		}
+
 /*
 		foreach(explode(' ', 'copyright docs language') as $n)
 			if($x = $rss->get($n))

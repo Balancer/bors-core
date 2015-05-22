@@ -257,10 +257,12 @@ class bors_forms_saver extends bors_object_simple
 				//	attach=attach_class_name(attach_id)
 				$old_file = $object->get($file_class_name_field);
 //				echo "f=$f; file_class_name_field=$file_class_name_field; ".$file_name; var_dump($data); exit();
-				if($old_file)
+				if(is_object($old_file))
 					$old_file->delete();
-				elseif($old_file = $object->get($file_name))
+				elseif(is_object($old_file = $object->get($file_name)))
 					$old_file->delete();
+				elseif($old_file)
+					bors_debug::syslog('object-type-error-important', "Not object old file: ".var_export($old_file));
 
 				if(method_exists($object, $remove_method = "remove_{$file_name}_file"))
 					$object->$remove_method($data);

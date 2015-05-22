@@ -61,6 +61,24 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 		// else // Вся картинка меньше, ничего не делаем.
 //		var_dump($img->height(), $img->width()); exit();
 	}
+	elseif($opts == 'up')
+	{
+		// Большие уменьшаем, мелкие увеличиваем, пропорции сохраняем
+		$img->resize($width, $height, function ($constraint) {
+			$constraint->aspectRatio();
+		});
+//		var_dump($img->height(), $img->width()); exit();
+	}
+	elseif($opts == 'up,fillpad')
+	{
+		// Большие уменьшаем, мелкие увеличиваем, пропорции сохраняем
+		$img->resize($width, $height, function ($constraint) {
+			$constraint->aspectRatio();
+		});
+
+		$img->resizeCanvas($width, $height);
+//		var_dump($img->height(), $img->width()); exit();
+	}
 	else
 	{
 		bors_debug::syslog('00-image-options-code-append', "Unknown options in image_file_scale($file_in, $file_out, $width, $height, $opts)");

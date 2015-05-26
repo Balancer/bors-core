@@ -7,7 +7,7 @@ function lp_iframe($inner, &$params)
 		return ec("Запрещённый <a href=\"{$params['src']}\">iframe</a>");
 
 	$params['skip_around_cr'] = true;
-	$html = "<iframe ".make_enabled_params($params, 'src width height frameborder style')."></iframe>";
+	$html = "<iframe ".make_enabled_params($params, 'src width height frameborder style')." sandbox></iframe>";
 
 	if(config('is_developer'))
 		r($html);

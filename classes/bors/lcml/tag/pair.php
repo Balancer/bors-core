@@ -4,6 +4,8 @@ class bors_lcml_tag_pair extends bors_lcml_tag
 {
 	function parse($code, &$params = array())
 	{
+		$params = array_merge($this->lcml->params(), $params);
+
 		switch($this->lcml->output_type())
 		{
 			case 'text':

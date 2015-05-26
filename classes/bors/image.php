@@ -553,14 +553,18 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		return array($rhash, $ghash, $bhash);
 	}
 
-	function hash_recalculate($dbup=true)
+	function hash_recalculate($dbup=true, $force=false)
 	{
-		if($this->get('hash_y'))
+		if(!$force && $this->get('hash_y'))
 			return;
 
 		if(!file_exists($f=$this->full_file_name()))
 		{
-//			echo "Not found image $f\n";
+			$this->set_hash_y(NULL, $dbup);
+			$this->set_hash_r(NULL, $dbup);
+			$this->set_hash_g(NULL, $dbup);
+			$this->set_hash_b(NULL, $dbup);
+
 			return;
 		}
 

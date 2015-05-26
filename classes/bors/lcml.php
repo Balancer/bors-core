@@ -412,11 +412,12 @@ class bors_lcml extends bors_object
 	static function output_parse($html_bb)
 	{
 		// Обработка <!--[[use ...]]-->
+
 		$html_bb = preg_replace_callback(array(
 				'/<!--###use\s+(\w+)\s*=\s*"([^"]+?)\s*"\s*###-->/s',
 				"/<!--###use\s+(\w+)\s*=\s*'([^']+?)\s*'\s*###-->/s",
 				"/<!--###use\s+(\w+)\s*=\s*([^\]]+?)\s*###-->/s",
-			), 'bors_lcml::_output_parse_use', $html_bb);
+			), array('bors_lcml', 'output_parse_use'), $html_bb);
 
 //		if(class_exists('airbase_fun'))
 //			$html_bb = airbase_fun::replace_2014($html_bb);

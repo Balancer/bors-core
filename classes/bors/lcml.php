@@ -417,7 +417,7 @@ class bors_lcml extends bors_object
 				'/<!--###use\s+(\w+)\s*=\s*"([^"]+?)\s*"\s*###-->/s',
 				"/<!--###use\s+(\w+)\s*=\s*'([^']+?)\s*'\s*###-->/s",
 				"/<!--###use\s+(\w+)\s*=\s*([^\]]+?)\s*###-->/s",
-			), array('bors_lcml', 'output_parse_use'), $html_bb);
+			), function ($text) { return bors_lcml::output_parse_use($text); }, $html_bb);
 
 //		if(class_exists('airbase_fun'))
 //			$html_bb = airbase_fun::replace_2014($html_bb);

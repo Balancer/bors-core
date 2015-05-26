@@ -584,19 +584,27 @@ class bors_form extends bors_object
 					$html .= $this->element_html('checkbox', $data);
 				$html .= "</td></tr>\n";
 			}
-
+/*
+			//TODO: глючит, видимо из-за конфликта параметра xrefs с авторедакторами, типа http://admin.aviaport.wrk.ru/_bors/admin/edit-smart/?object=aviaport_directory_airline_xref_airport__165
 			if(
 				($object && ($xrefs = $object->get('xrefs')))
 				|| ($class_name && ($xrefs = bors_lib_object::get_foo($class_name, 'xrefs')))
 			)
 			{
+				r($class_name);
 				foreach($xrefs as $xref)
 				{
-					$html .= "<tr><th>".bors_foo($xref)->class_title()."</th><td>";
-					$html .= $this->element_html('checkbox_list', array('xref' => $xref));
+					if(is_object($xref))
+						$xref_obj = $xref;
+					else
+						$xref_obj = bors_foo($xref);
+
+					$html .= "<tr><th>".$xref->class_title()."</th><td>";
+//					$html .= $this->element_html('checkbox_list', array('xref' => $xref->class_name()));
 					$html .= "</td></tr>";
 				}
 			}
+*/
 		}
 
 		return $html;

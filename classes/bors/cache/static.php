@@ -141,8 +141,13 @@ class cache_static extends bors_object_db
 		bors()->changed_save();
 
 		// Если это просто обновление кеша, то у нас тут будет найденная запись из ::drop
-		if(!($cache = $object->attr('static_recreate_object')))
-			$cache = bors_load_ex('cache_static', $file, array('no_load_cache' => true));
+		if(config('cache_database'))
+		{
+			if(!($cache = $object->attr('static_recreate_object')))
+				$cache = bors_load_ex('cache_static', $file, array('no_load_cache' => true));
+		}
+		else
+			$cache = NULL;
 
 		$object_uri = $object->url_ex($object->page());
 		$original_uri = $object->called_url();
@@ -156,63 +161,63 @@ class cache_static extends bors_object_db
 		$expire_time = time() + ($ttl === false ? $object->cache_static() : $ttl);
 //		bors_debug::syslog('00time', date('r', $expire_time));
 
-		if($cache)
+		if(config('cache_database'))
 		{
-//			echo "Update $file<br/>\n";
-			$cache->set_target_class_name($object->class_name(), true);
-			$cache->set_target_class_id($object->class_id(), true);
-			$cache->set_target_id($object->id(), true);
-			$cache->set_target_page($object->page(), true);
-			$cache->set_last_compile(time(), true);
-			$cache->set_expire_time($expire_time, true);
-			$cache->set_recreate($object->cache_static_recreate(), true);
+			if($cache)
+			{
+//				echo "Update $file<br/>\n";
+				$cache->set_target_class_name($object->class_name(), true);
+				$cache->set_target_class_id($object->class_id(), true);
+				$cache->set_target_id($object->id(), true);
+				$cache->set_target_page($object->page(), true);
+				$cache->set_last_compile(time(), true);
+				$cache->set_expire_time($expire_time, true);
+				$cache->set_recreate($object->cache_static_recreate(), true);
 
-			if($object_uri)
-				$cache->set('object_uri', $object_uri, true);
+				if($object_uri)
+					$cache->set('object_uri', $object_uri, true);
 
-			if($original_uri)
-				$cache->set('original_uri', $original_uri, true);
+				if($original_uri)
+					$cache->set('original_uri', $original_uri, true);
 
-			$cache->store();
+				$cache->store();
+			}
+			else
+			{
+				$cache = bors_new('cache_static', array(
+					'id' => $file,
+					'object_uri' => $object_uri,
+					'original_uri' => $original_uri,
+					'target_class_name' => $object->class_name(),
+					'target_class_id' => $object->class_id(),
+					'target_id' => $object->id(),
+					'target_page' => $object->page(),
+					'last_compile' => time(),
+					'expire_time' => $expire_time,
+					'recreate' => $object->cache_static_recreate(),
+					'bors_site' => BORS_SITE,
+				));
+
+				config_set('debug_mysql_queries_log', false);
+
+//				if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
+//					bors_debug::syslog('__cache_file_register2', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache_id=".$cache->id()."\ncache_page=".$cache->target_page());
+			}
+
+			foreach(explode(' ', $object->cache_depends_on()) as $group_name)
+				if($group_name)
+					cache_group::register($group_name, $object);
+
+			foreach($object->cache_parents() as $parent_object)
+				cache_group::register($parent_object->internal_uri_ascii(), $object);
+
+//			$object->set_was_cleaned(false);
 		}
-		else
-		{
-			$cache = bors_new('cache_static', array(
-				'id' => $file,
-				'object_uri' => $object_uri,
-				'original_uri' => $original_uri,
-				'target_class_name' => $object->class_name(),
-				'target_class_id' => $object->class_id(),
-				'target_id' => $object->id(),
-				'target_page' => $object->page(),
-				'last_compile' => time(),
-				'expire_time' => $expire_time,
-				'recreate' => $object->cache_static_recreate(),
-				'bors_site' => BORS_SITE,
-			));
-
-			config_set('debug_mysql_queries_log', false);
-
-//			if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
-//				bors_debug::syslog('__cache_file_register2', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache_id=".$cache->id()."\ncache_page=".$cache->target_page());
-		}
-
-		foreach(explode(' ', $object->cache_depends_on()) as $group_name)
-			if($group_name)
-				cache_group::register($group_name, $object);
-
-		foreach($object->cache_parents() as $parent_object)
-			cache_group::register($parent_object->internal_uri_ascii(), $object);
-
-//		$object->set_was_cleaned(false);
 
 		if(($ic=config('internal_charset')) != ($oc=config('output_charset')))
 			$content = iconv($ic, $oc.'//translit', $content);
 
 		mkpath($dir = dirname($file), 0777);
-
-		if($file == '/var/www/wrk.ru/htdocs/cache-static/society/2014/04/t89533,402--voennye-dejstviya-v-donbasse.html')
-			bors_debug::syslog('000fs', "Write:\n".$content);
 
 		if(is_writable($dir))
 		{
@@ -235,5 +240,4 @@ class cache_static extends bors_object_db
 		.';isf='.is_file($file)
 		.';isw='.is_writable($dir).")");
 	}
-
 }

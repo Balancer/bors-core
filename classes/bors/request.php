@@ -76,4 +76,12 @@ class bors_request extends bors_object
 	}
 
 	function path() { return $this->url_data('path'); }
+
+	function url_match($regexp)
+	{
+		if(preg_match($regexp, $this->url(), $m))
+			return $m;
+
+		return false;
+	}
 }

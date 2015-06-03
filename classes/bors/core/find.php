@@ -327,6 +327,13 @@ class bors_core_find
 		return $this;
 	}
 
+	function order_field($key, $values)
+	{
+		$this->_where['*raw_order'] = "ORDER BY FIELD(`$key`, ".join(', ', $values).")";
+
+		return $this;
+	}
+
 	function debug($type = 'hidden')
 	{
 //		$this->_where['*debug'] = $type;

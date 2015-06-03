@@ -198,12 +198,14 @@ function bors_search_sphinx_find_links($object, $delete_old = false, $is_auto = 
 	foreach($object->get('all_names') as $name)
 		$names[$name] = false;
 
+	if(empty($names))
+		$names[$object->title()] = true;
+
 	foreach(bors_synonym::synonyms($object, array('is_disabled' => 0)) as $syn)
-		if($syn)
+		if($syn && $syn->title())
 			$names[$syn->is_exactly() ? bors_lower($syn->title()) : bors_text_clear($syn->title(), false)] = $syn->is_exactly();
 
 	$log = "Names = [".join(', ', $names)."]";
-
 
 	foreach($names as $name => $is_exactly)
 	{
@@ -228,7 +230,8 @@ function bors_search_sphinx_find_links($object, $delete_old = false, $is_auto = 
 
 		foreach($objects as $x)
 		{
-//			echo ".";
+			echo ".";
+//			echo $x->title();
 //			if($x->id() == 28880)
 //				exit("!");
 			$found = false;

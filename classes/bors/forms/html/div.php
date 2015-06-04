@@ -8,6 +8,6 @@ class bors_forms_html_div extends bors_forms_element
 
 		extract($params);
 
-		return "<div id=\"{$name}\"></div>";
+		return "<div id=\"{$name}\">".@$value."</div>";
 	}
 }

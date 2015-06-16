@@ -221,7 +221,8 @@ class cache_static extends bors_object_db
 
 		if(is_writable($dir))
 		{
-			file_put_contents($file, $content);
+			bors_function_include('fs/file_put_contents_lock');
+			file_put_contents_lock($file, $content);
 			if(is_file($file))
 			{
 				chmod($file, 0666);

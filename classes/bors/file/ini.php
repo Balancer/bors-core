@@ -23,7 +23,8 @@ class bors_file_ini
 			}
 		}
 
-		file_put_contents($file, $content);
+		bors_function_include('fs/file_put_contents_lock');
+		file_put_contents_lock($file, $content);
 	}
 
 	// Запись массива без секций
@@ -43,6 +44,7 @@ class bors_file_ini
 				$content .= $key." = \n";
 		}
 
-		file_put_contents($file, $content);
+		bors_function_include('fs/file_put_contents_lock');
+		file_put_contents_lock($file, $content);
 	}
 }

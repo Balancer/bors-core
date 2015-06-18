@@ -24,7 +24,14 @@ class blib_http_abstract
 			return $res;
 		}
 
+		bors_function_include('debug/timing_start');
+		debug_timing_start('bors_lib_url: get_cached('.$url.')');
+
 		$x = self::get_ex($url, array('is_raw' => $raw));
+
+		bors_function_include('debug/timing_stop');
+		debug_timing_stop('bors_lib_url: get_cached('.$url.')');
+
 		$content = $x['content'];
 
 		// Запоминаем не более одного мегабайта, а то по max_allowed_packet можно влететь.

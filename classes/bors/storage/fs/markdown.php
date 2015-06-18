@@ -17,15 +17,14 @@ class bors_storage_fs_markdown extends bors_storage
 
 		$rel = secure_path(str_replace(bors()->server()->root(), '/', $dir));
 
-		if($base && is_file($file = "{$dir}/{$base}.md"))
+		if(is_file($file = "{$dir}/{$base}.md"))
 			return $file;
 
-		if($base && is_file($file = "{$dir}/{$base}"))
+		if(is_file($file = "{$dir}/$base/main.md"))
 			return $file;
 
-		if(is_file($file = "{$dir}.md"))
+		if(is_file($file = "{$dir}/$base/index.md"))
 			return $file;
-
 
 		foreach(bors_dirs() as $d)
 		{
@@ -117,7 +116,8 @@ class bors_storage_fs_markdown extends bors_storage
 		}
 
 		if(!$object->title_true())
-			return $object->set_is_loaded(false);
+			$object->set_title($object->_basename(), false);
+//			return $object->set_is_loaded(false);
 
 // Разные трактовки переменных в Markdown:
 //	* http://assemble.io/docs/Markdown.html

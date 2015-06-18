@@ -84,7 +84,10 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	if(!class_exists($class))
 		bors_throw("Class name '$class' not exists");
 
-	$id = call_user_func(array($class, 'id_prepare'), $id);
+//	$id = call_user_func(array($class, 'id_prepare'), $id);
+//	if(is_object($id))
+//		bors_throw('Непонятно, что делать с id_prepare у новых объектов, когда они возвращают объект');
+
 	$object = &object_new($class, $id);
 	$object->data = $data;
 	$object->changed_fields = $data;

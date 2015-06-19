@@ -1,5 +1,7 @@
 <?php
 
+use Tracy\Debugger;
+
 class bors_project extends bors_object
 {
 	function _title_def() { return config('project.title'); }
@@ -14,4 +16,57 @@ class bors_project extends bors_object
 	function object_data() { return array(); }
 	function config_class() { return NULL; }
 	function data_load() { return false; }
+
+	function __call($method, $params)
+	{
+		// Проверяем. Если мы ещё не проинициализированы, то ошибка. Например, вызов несуществуующего метода в загрузчике.
+		if(!defined('BORS_CORE'))
+			throw new Exception('Unknown method '.$method.' for '.get_class().' in uninitialized project.');
+
+		// Иначе обрабатываем как обычно.
+		return parent::__call($method, $params);
+	}
+
+	static function instance()
+	{
+		static $instance = NULL;
+		if(!$instance)
+		{
+			$caller = get_called_class();
+			$instance = new $caller(NULL);
+		}
+
+		return $instance;
+	}
+
+	function set_cfg($key, $value)
+	{
+		$GLOBALS['cms']['config'][$key] = $value;
+		return $this;
+	}
+
+	function debug()
+	{
+		if(class_exists('Tracy\\Debugger'))
+		{
+			Debugger::enable(Debugger::DEVELOPMENT);
+			Debugger::$strictMode = TRUE;
+		}
+
+		$this->set_cfg('mode.debug', true);
+//		config_set('debug_redirect_trace', true);
+
+		return $this;
+	}
+
+	function run()
+	{
+		if(!defined('COMPOSER_ROOT'))
+			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+
+		if(!defined('BORS_SITE'))
+			define('BORS_SITE', COMPOSER_ROOT);
+
+		bors::run();
+	}
 }

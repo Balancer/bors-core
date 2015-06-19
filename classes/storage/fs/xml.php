@@ -144,7 +144,8 @@ class storage_fs_xml extends base_null
 
 		mkpath(dirname($file), 0777);
 		@chmod(dirname($file), 0777);
-		@file_put_contents($file, $result);
+		bors_function_include('fs/file_put_contents_lock');
+		@file_put_contents_lock($file, $result);
 		@chmod($file, 0666);
 
 		return true;

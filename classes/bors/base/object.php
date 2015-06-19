@@ -912,7 +912,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		if(!($storage = $this->storage()))
 		{
-			debug_hidden_log('storage_error', 'Not defined storage engine for '.$this->class_name());
+			bors_debug::syslog('storage_error', 'Try to save data with not defined storage engine for '.$this->class_name().':'.
+				print_r($this->changed_fields, true)
+			);
+
 			return $this->set_attr('__store_entered', false);
 		}
 

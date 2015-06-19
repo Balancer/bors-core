@@ -912,7 +912,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		if(!($storage = $this->storage()))
 		{
-			debug_hidden_log('storage_error', 'Not defined storage engine for '.$this->class_name());
+			bors_debug::syslog('storage_error', 'Try to save data with not defined storage engine for '.$this->class_name().':'.
+				print_r($this->changed_fields, true)
+			);
+
 			return $this->set_attr('__store_entered', false);
 		}
 
@@ -1353,17 +1356,19 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return $this->__setc(url_parse($path));
 	}
 
+	// Всегда возвращает путь без последнего слова, независимо от того, оканчивается ли ссылка на '/'
 	function dir()
 	{
 		$data = $this->___path_data();
 
-		return preg_match('!^(.+)/$!', $data['local_path'], $m) ? $m[1] : dirname($data['local_path']);
+		return dirname(rtrim($data['local_path'], '/'));
 	}
 
+	// Всегда возвращает последнее слово из пути, независимо от того, оканчивается ли ссылка на '/'
 	function _basename()
 	{
 		$data = $this->___path_data();
-		return preg_match('!^(.+)/$!', $data['local_path'], $m) ? '' : basename($data['local_path']);
+		return basename(rtrim($data['local_path'], '/'));
 	}
 
 	function document_root()

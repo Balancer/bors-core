@@ -10,6 +10,10 @@ class bors_page_fs_markdown extends bors_page
 
 	function pre_show()
 	{
+		// Если путь не оканчивается на слеш, редиректим. Иначе могут быть проблемы с относительными путями.
+		if(bors()->request()->url_match('![^/]$!'))
+			return go($this->url().'/');
+
 		config_set('cache_disabled', true);
 		return parent::pre_show();
 	}

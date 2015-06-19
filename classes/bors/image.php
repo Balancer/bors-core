@@ -443,7 +443,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		);
 	}
 
-	function access_engine() { return config('access_public_class', 'access_base'); }
+	function _access_engine_def() { return config('access_public_class', 'access_base'); }
 
 	function bb_code($append = '')
 	{

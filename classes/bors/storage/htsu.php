@@ -235,8 +235,8 @@ class bors_storage_htsu extends bors_storage
 
 		if($config_class = $this->ext('config', '-'))
 		{
-			$object->set_attr('config_class', $config_class);
-			$object->_configure();
+			$object->set('config_class', $config_class);
+			$object->reconfigure();
 		}
 
 //		$this->hts = preg_replace_callback('/^#(template_data)_(\w+)\s+(.+)$/m', array(&$this, '_set_callback'), $this->hts);
@@ -285,6 +285,8 @@ class bors_storage_htsu extends bors_storage
 		$property = $matches[1];
 		$value    = trim($matches[2]);
 		call_user_func_array(array($this->obj, 'set'), array($property, $value, false));
+		if($property == 'config_class') // Hardcode :-/
+			$this->obj->reconfigure();
 		return '';
 	}
 

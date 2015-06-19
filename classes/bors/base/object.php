@@ -149,6 +149,12 @@ class base_object extends bors_object_simple
 	private $config;
 	private $___was_configured = false;
 
+	function reconfigure()
+	{
+		$this->___was_configured = false;
+		return $this->_configure();
+	}
+
 	function _configure()
 	{
 		if($this->___was_configured)

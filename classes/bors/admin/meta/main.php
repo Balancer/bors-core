@@ -105,7 +105,13 @@ class bors_admin_meta_main extends bors_admin_paginated
 		$admin_search_url = $this->page() > 1 ? false : $this->get('admin_search_url');
 		if($admin_search_url)
 		{
-			if($foo->admin_searchable_properties() != $foo->admin_searchable_title_properties())
+			$admin_class = $this->get('model_admin_class');
+			if($admin_class)
+				$admin_foo = bors_foo($admin_class);
+			else
+				$admin_foo = $foo;
+
+			if($admin_foo->admin_searchable_properties() != $admin_foo->admin_searchable_title_properties())
 				$search_where = array('t' => 'в заголовках', 'a' => 'всюду', '*default' => 't');
 			else
 				$search_where = NULL;

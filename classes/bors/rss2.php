@@ -4,15 +4,15 @@ use \Suin\RSSWriter\Feed;
 use \Suin\RSSWriter\Channel;
 use \Suin\RSSWriter\Item;
 
+if(!class_exists('\\Suin\\RSSWriter\\Feed'))
+	bors_throw("Not installed \Suin\RSSWriter. Try to use: <br/>\ncomposer require suin/php-rss-writer");
+
 class bors_rss2 extends bors_rss
 {
 	function render_engine() { return 'bors_rss2'; }
 
 	function render($rss)
 	{
-		if(!class_exists('\\Suin\\RSSWriter\\Feed'))
-			bors_throw("Use:<br/>\ncomposer require suin/php-rss-writer=*");
-
 //		$type = "ATOM1.0";
 		$type = "RSS2.0";
 

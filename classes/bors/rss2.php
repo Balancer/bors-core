@@ -75,7 +75,7 @@ class bors_rss2 extends bors_rss
 
 			if($e = $rss->item_enclosure($o))
 	 			$item->enclosure($e['url'], intval(@$e['size']), $e['type']);
-			elseif($image = $this->item_image($o))
+			elseif($image = $rss->item_image($o))
 			{
 				$thumb = $image->thumbnail('300x300');
 				// <link rel="enclosure" type="image/jpeg" href="image_url_here" />

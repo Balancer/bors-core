@@ -178,7 +178,7 @@ class bors_image_thumb extends bors_image
 
 		$img_data = getimagesize($file_thumb_r);
 
-		bors_debug::syslog('000-image-debug', "Size for ".$file_thumb_r." = ".print_r($img_data, true));
+//		bors_debug::syslog('000-image-debug', "Size for ".$file_thumb_r." = ".print_r($img_data, true));
 
 		if(empty($img_data[0]))
 			bors_debug::syslog('image-error', 'Cannot get image width for '.$file_thumb_r

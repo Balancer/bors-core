@@ -392,16 +392,17 @@ class base_page extends bors_object
 	}
 
 	// Данные общего («внешнего») шаблона
+	private $called = false;
 	function page_data()
 	{
 //		if($config = $this->config())
 //			$config->template_init();
 
-		static $called = false;
-		if($called)
+		if($this->called)
 			bors_debug::syslog('000-oops', "Second call for page_data, first was in ".$called);
 
-		$called = bors_debug::trace();
+		if(config('mode.debug') || rand(0,1000) == 0)
+			$this->called = bors_debug::trace();
 
 		if(empty($GLOBALS['cms']['templates']['data']))
 			return $this->page_data;

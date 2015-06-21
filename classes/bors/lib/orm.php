@@ -34,7 +34,10 @@ class bors_lib_orm
 			else // просто строка вида 'property' => 'field',
 				$field = array('name' => $field);
 
-			$field['sql_name'] = $field['name'];
+			if(strpos($f = $field['name'], '`') === false)
+				$field['sql_name'] = '`'.$f.'`';
+			else
+				$field['sql_name'] = $f;
 		}
 		else // Описание — массив параметров
 		{

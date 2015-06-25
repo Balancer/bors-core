@@ -40,6 +40,8 @@ function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 			$w = $value;
 		elseif(preg_match('!^\w+$!', $field_cond))
 			$w = $field_cond . '=\'' . addslashes($value) . '\'';
+		elseif(preg_match('!^`\w+`$!', $field_cond))
+			$w = $field_cond . '=\'' . addslashes($value) . '\'';
 		elseif(preg_match('!^int (\w+)$!', $field_cond, $m))
 			$w = $m[1] . '=' . $value;
 		elseif(preg_match('!^raw (\w+)$!', $field_cond, $m))
@@ -85,7 +87,19 @@ function mysql_order_compile($order_list, $class_name = false)
 
 function mysql_limits_compile(&$args)
 {
-	if($limit = popval($args, '*limit'))
+	$limit = intval(popval($args, '*limit'));
+	if(!$limit)
+		$limit = intval(popval($args, 'limit'));
+
+	$page = intval(popval($args, '*page'));
+	if(!$page)
+		$page = intval(popval($args, 'page'));
+
+	$per_page = intval(popval($args, '*per_page'));
+	if(!$per_page)
+		$per_page = intval(popval($args, 'per_page'));
+
+	if($limit)
 	{
 		if(is_array($limit))
 			return "LIMIT ".intval($limit[0]).", ".intval($limit[1]);
@@ -93,14 +107,9 @@ function mysql_limits_compile(&$args)
 			return "LIMIT ".intval($limit);
 	}
 
-	if(!empty($args['limit']))
-		return "LIMIT {$args['limit']}";
-
-	if(empty($args['page']) && empty($args['per_page']))
+	if(!$page && !$per_page)
 		return "";
 
-	$page = intval(@$args['page']);
-	$per_page = @$args['per_page'];
 	$start = (max($page,1)-1)*intval($per_page);
 
 	return 'LIMIT '.$start.','.$per_page;
@@ -198,6 +207,9 @@ function mysql_args_compile($args, $class=NULL)
 	else
 		$set = '';
 
+	// Вынесено в начало, что при парсинге не было конфликтов с именами полей, типа page или limit.
+	$limit = mysql_limits_compile($args);
+
 	$join = array();
 
 	foreach(array('inner', 'left') as $join_type)
@@ -227,10 +239,6 @@ function mysql_args_compile($args, $class=NULL)
 
 	$join = join(' ', $join);
 
-	$limit = mysql_limits_compile($args);
-	unset($args['limit']);
-	unset($args['page']);
-	unset($args['per_page']);
 
 	$order = popval($args, '*raw_order');
 	if(!$order && !empty($args['order']))

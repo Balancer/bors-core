@@ -27,7 +27,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$table = $object->table_name();
 		$fields = popval($where, '*fields');
-//		if(config('is_developer')) { bors_use('debug/print_dd'); echo "<b>Load: {$object->class_name()}</b><br/>"; print_dd($where); print_dd(bors_lib_orm::main_fields($object)); }
+
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
 			$field_name = $f['name'];
@@ -51,7 +51,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 				$x .= " AS `{$f['property']}`";
 				if(array_key_exists($f['property'], $where))
 				{
-					$where[$field_name] = $where[$f['property']];
+					$where[$f['sql_name']] = $where[$f['property']];
 					unset($where[$f['property']]);
 				}
 			}

@@ -86,6 +86,6 @@ bors_objects_loaders_yaml::register();
 if(preg_match('/airbase\.ru/', @$_SERVER['HTTP_HOST']))
 {
 	bors_url_map(array(
-		'.* => bors_page_fs_htsu(url)', //TODO: снести нафиг после конвертации старых hts Авиабазы
+		'.* => bors_page_fs_htsu(url)', //TODO: снести нафиг после конвертации старых hts Авиабазы и АвиаПорта
 	));
 }

@@ -65,12 +65,12 @@ class bors_ext_mail extends bors_empty
 
 		require_once("engines/smarty/assign.php");
 		//  'xfile:aviaport/mail.txt'
-		if($tpl = config('mail.template.txt'))
+		if($tpl = $mail->get('text_template', config('mail.template.txt')))
 			$text = template_assign_data($tpl, array('body' => $text, 'user' => $user));
 
 		if($html)
 		{
-			if($tpl = config('mail.template.html')) // , 'xfile:aviaport/mail.html'
+			if($tpl = $mail->get('html_template', config('mail.template.html'))) // , 'xfile:aviaport/mail.html'
 				$html = template_assign_data($tpl, array_merge(array(
 					'body' => $html,
 					'user' => $user,

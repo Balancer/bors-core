@@ -399,7 +399,7 @@ class base_page extends bors_object
 //			$config->template_init();
 
 		if($this->called)
-			bors_debug::syslog('000-oops', "Second call for page_data, first was in ".$called);
+			bors_debug::syslog('000-oops', "Second call for page_data, first was in ".$this->called);
 
 		if(config('mode.debug') || rand(0,1000) == 0)
 			$this->called = bors_debug::trace();

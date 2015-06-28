@@ -183,15 +183,22 @@ if(empty($GLOBALS['cms']) || empty($GLOBALS['cms']['config']))
 	$GLOBALS['cms']['config'] = array();
 
 function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $value; }
-function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
 
-// Не максировать через @!
-function config($key, $def = NULL)
+if(!function_exists('config_set'))
 {
-	if(array_key_exists($key, $GLOBALS['cms']['config']))
-		return  $GLOBALS['cms']['config'][$key];
+	function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
+}
 
-	return $def;
+if(!function_exists('config'))
+{
+	// Не максировать через @!
+	function config($key, $def = NULL)
+	{
+		if(array_key_exists($key, $GLOBALS['cms']['config']))
+			return  $GLOBALS['cms']['config'][$key];
+
+		return $def;
+	}
 }
 
 function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }

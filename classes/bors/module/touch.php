@@ -34,7 +34,7 @@ $(".module-touch").each(function(){
 el=$(this)
 modules.push(el.data())
 })
-$.getScript("/_bors/js/touch?modules="+JSON.stringify(modules)).fail(function(jq,status,ex){console.log(status+": "+ex)})
+$.getScript("/_bors/js/touch?modules="+JSON.stringify(modules)+"&rnd="+Math.random()).fail(function(jq,status,ex){console.log(status+": "+ex)})
 ');
 	}
 }

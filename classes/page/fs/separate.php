@@ -37,7 +37,7 @@ class page_fs_separate extends base_page
 
 	function children_ex($url, $base, $pfx)
 	{
-		$ch = new Cache();
+		$ch = new bors_cache();
 		if($ch->get('page-fs-separate-children-cache', "$url:$base:$pfx"))
 			return $ch->last();
 

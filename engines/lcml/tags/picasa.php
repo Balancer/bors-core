@@ -13,7 +13,7 @@ function lp_picasa($id, $params)
 		$url = "http://picasaweb.google.com/lh/photo/{$id}?feat=directlink";
 		$cache_status_save = config('cache_disabled');
 		config_set('cache_disabled', false);
-		$ch = new Cache;
+		$ch = new bors_cache(NULL);
 		if($ch->get('lcml-tags-picasa', 'page-v2-'.$url))
 		{
 			$content = $ch->last();

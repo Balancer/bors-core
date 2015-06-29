@@ -66,7 +66,7 @@ function geoip_info($ip)
 	if(!function_exists('geoip_country_code_by_name'))
 		require_once(BORS_3RD_PARTY."/geoip/geoipcity.inc");
 
-//	$ch = new Cache();
+//	$ch = new bors_cache();
 //	if($ch->get("users-geoip-info", $ip))
 //		0;//return $ch->last();
 

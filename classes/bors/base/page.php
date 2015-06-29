@@ -178,7 +178,7 @@ class base_page extends bors_object
 		if(!$this->cache_life_time())
 			return $this->cacheable_body();
 
-		$ch = new Cache();
+		$ch = new bors_cache();
 
 		$drop_cache = $this->cache_life_time() || !empty($_GET['drop_cache']);
 
@@ -284,7 +284,7 @@ class base_page extends bors_object
 		if(!$text)
 			return;
 
-		$ch = (class_exists('Cache') && !config('lcml_cache_disable')) ? new Cache() : NULL;
+		$ch = (class_exists('bors_cache') && !config('lcml_cache_disable')) ? new bors_cache() : NULL;
 		if($ch && $ch->get('base_object-lcml', $text) && 0)
 			return $ch->last();
 

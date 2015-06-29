@@ -26,9 +26,9 @@
 
     function lcml_urls_title($url, $snip = false, $line = NULL)
     {
-        if(class_exists('Cache') && !config('lcml_cache_disable_full'))
+        if(class_exists('bors_cache') && !config('lcml_cache_disable_full'))
         {
-            $cache = new Cache();
+            $cache = new bors_cache();
             if($cache->get('url_titles-v4-'.$snip, $url))
                 return $cache->last();
             else

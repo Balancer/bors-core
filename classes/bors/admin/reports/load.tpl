@@ -42,7 +42,7 @@
 <tbody>
 {foreach from=$max_cpu_by_classes item="x"}
 <tr><td>{$x.class_name}</td>
-	<td><a href="{$x.uri}">{$x.uri}</a></td>
+	<td><a href="{$x.uri}">{$x.uri|wordwrap:80:" ":true}</a></td>
 	<td>{$x.referer|host_link}</td>
 	<td>{$x.cnt}</td>
 	<td>{$x.su|round:2}</td>

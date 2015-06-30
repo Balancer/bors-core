@@ -15,7 +15,7 @@
 		}
 
 		$data = url_parse($url);
-		$external = @$data['local'] ? '' : ' class="external"';
+		$external = @$data['local'] ? '' : ' class="external foo-a2"';
 		$blacklist = $external;
 		if($wl = config('seo_domains_whitelist_regexp', @$_SERVER['HTTP_HOST']))
 			if(preg_match('!'.$wl.'!', $data['host']))

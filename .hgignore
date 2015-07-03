@@ -1,3 +1,4 @@
 syntax: glob
+.idea
 tools/setup-host.php
 tools/config-host.php

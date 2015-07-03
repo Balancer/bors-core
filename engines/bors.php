@@ -114,6 +114,9 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	return $object;
 }
 
+/**
+ * @param bors_object $object
+ */
 function bors_object_new_instance_db(&$object)
 {
 	$tab = $object->table_name();
@@ -134,15 +137,23 @@ function bors_object_new_instance_db(&$object)
 	$object->changed_fields = array();
 }
 
-function bors_db_fields_init($obj)
+/**
+ * @param bors_object $object
+ */
+function bors_db_fields_init($object)
 {
-	foreach($obj->fields() as $db => $tables)
+	foreach($object->fields() as $db => $tables)
 		foreach($tables as $tables => $fields)
 			foreach($fields as $property => $db_field)
-				$obj->data[is_numeric($property) ? $db_field : $property] = NULL;
+				$object->data[is_numeric($property) ? $db_field : $property] = NULL;
 }
 
+/** @var bors_global $GLOBALS */
 $GLOBALS['bors_global'] = NULL;
+
+/**
+ * @return bors_global
+ */
 function bors()
 {
 	if(is_null(@$GLOBALS['bors_global']))
@@ -330,9 +341,13 @@ function bors_throw($message)
 }
 
 /**
-	Возвращает результат применения метода get() к объекту, если он существует.
-	$def = NULL - в противном случае.
-*/
+ * Возвращает результат применения метода get() к объекту, если он существует.
+ * $def = NULL - в противном случае.
+ * @param bors_object $object
+ * @param string $property
+ * @param mixed|null $def
+ * @return mixed|null
+ */
 function object_property($object, $property, $def = NULL)
 {
 	if(is_object($object))
@@ -346,7 +361,8 @@ function object_property($object, $property, $def = NULL)
 //				echo debug_trace();
 //				echo "\$x = \$object->{$property};";
 				eval("\$x = \$object->{$property};");
-				return $x;
+                /** @var mixed $x */
+                return $x;
 			}
 		}
 		catch(Exception $e)
@@ -367,8 +383,11 @@ function object_property_args($object, $property, $args = array(), $def = NULL)
 }
 
 /**
-	Возвращает истину, если классы объектов и их ID совпадают.
-*/
+ * Возвращает истину, если классы объектов и их ID совпадают.
+ * @param bors_object $object1
+ * @param bors_object $object2
+ * @return bool
+ */
 function bors_eq($object1, $object2)
 {
 	return $object1->extends_class_name() == $object2->extends_class_name() && $object1->id() == $object2->id();

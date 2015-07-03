@@ -52,8 +52,6 @@ class bors_tools_delete extends bors_admin_page
 
 	function on_action_delete(&$data)
 	{
-//		echo '<xmp>'; var_dump($_POST, $_GET, $data); exit('</xmp>');
-
 		if(!empty($data['no']))
 			return go($this->ref(@$data['no_ref']));
 
@@ -80,6 +78,7 @@ class bors_tools_delete extends bors_admin_page
 			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_link());
 
 		$obj->delete(!config('skip_remove_cross'));
+
 		if($r = urldecode($_GET['ref']))
 			return go($r);
 

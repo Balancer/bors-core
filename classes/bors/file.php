@@ -79,7 +79,7 @@ class bors_file extends base_object_db
 
 	static function register($file, $data = array())
 	{
-		$class_name = self::called_class_name(NULL, popval($data, 'class_name'));
+		$class_name = get_called_class();
 
 		// Если файл с таким именем уже зарегистрирован — возвращаемся.
 		if($prev = bors_find_first($class_name, array(
@@ -108,7 +108,7 @@ class bors_file extends base_object_db
 
 	static function upload($file_data)
 	{
-		$class_name = self::called_class_name(NULL, popval($file_data, 'class_name'));
+		$class_name = get_called_class();
 
 		if(!file_exists($tmp_file = $file_data['tmp_name']))
 		{

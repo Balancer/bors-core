@@ -73,7 +73,7 @@ class bors_object extends base_object
 			if($render_class == 'self')
 				$render = $this;
 			elseif(!($render = bors_load($render_class)))
-				debug_exit("Can't load global render engine {$render_class} for object '{$object}'");
+				debug_exit("Can't load global render engine {$render_class} for object '{$this}'");
 
 			return $render->rendering($this);
 		}
@@ -145,20 +145,6 @@ class bors_object extends base_object
 			return $title;
 
 		return ec('[без имени]');
-	}
-
-	static function called_class_name($self, $class_name = NULL)
-	{
-		if(function_exists('get_called_class'))
-			return get_called_class();
-
-		if($self)
-			return $self->class_name();
-
-		if($class_name)
-			return $class_name;
-
-		bors_throw(ec('Не указано имя вызывающего класса и его невозможно определить в текущей версии PHP. Укажите имя класса принудительно в $data[\'class_name\']'));
 	}
 
 	function admin_additional_info() { return array(); }

@@ -8,29 +8,35 @@ require_once('bors/object_loader.php');
 require_once('inc/bors/cross.php');
 require_once('engines/smarty/global.php');
 
-function object_load($class, $object_id=NULL, $args=array())
+/**
+ * @param string|bors_object $class_name
+ * @param string|integer $object_id
+ * @param array $args
+ * @return mixed|null
+ */
+function object_load($class_name, $object_id=NULL, $args=array())
 {
-	if(is_object($class))
-		return $class;
+	if(is_object($class_name))
+		return $class_name;
 
 //	echo "object_load($class, $object_id, ".print_dl($args).")\n";
 
-	if(is_numeric($class))
-		$class = class_id_to_name($class);
+	if(is_numeric($class_name))
+		$class_name = class_id_to_name($class_name);
 
 	if(config('debug.trace_object_load'))
-		bors_debug::syslog('objects_load', "$class(".print_r($object_id, true).")", config('debug_trace_object_load_trace'));
+		bors_debug::syslog('objects_load', "$class_name(".print_r($object_id, true).")", config('debug_trace_object_load_trace'));
 
-	if(!$class)
-		return;
+	if(!$class_name)
+		return NULL;
 
 	//TODO: сделать отброс пробельных символов
 //	if(!is_object($object_id))
 //		$object_id = trim($object_id, "\n\r ");
 
-	if(is_null($object_id) && preg_match('/^(\w+)__(\w+)={0,}$/', $class, $m))
+	if(is_null($object_id) && preg_match('/^(\w+)__(\w+)={0,}$/', $class_name, $m))
 	{
-		$class = $m[1];
+		$class_name = $m[1];
 		$object_id = $m[2];
 		if(!is_numeric($m[2]))
 		{
@@ -42,27 +48,33 @@ function object_load($class, $object_id=NULL, $args=array())
 
 	if(config('debug_objects_create_counting_details'))
 	{
-		debug_count_inc("bors_load($class)");
+		debug_count_inc("bors_load($class_name)");
 //		if(preg_match('!matf.aviaport.ru/companies/\d+/edit!', $class))
 //			echo debug_trace();
 	}
 
-	if($object = class_load($class, $object_id, $args))
+	if($object = class_load($class_name, $object_id, $args))
 		return $object;
 
-	if($object = bors_objects_loaders_meta::object_load($class, $object_id))
+	if($object = bors_objects_loaders_meta::object_load($class_name, $object_id))
 		return $object;
 
 	return NULL;
 }
 
-function &object_new($class, $id = NULL)
+/**
+ * @param string $class_name
+ * @param integer|string $id
+ * @return bors_object
+ */
+function &object_new($class_name, $id = NULL)
 {
-    $obj = new $class($id);
+    /** @var bors_object $obj */
+    $obj = new $class_name($id);
 
 	if($id !== NULL)
 	{
-		$id = call_user_func(array($class, 'id_prepare'), $id);
+		$id = call_user_func(array($class_name, 'id_prepare'), $id);
 		$obj->set_id($id);
 	}
 
@@ -440,6 +452,10 @@ function bors_load_ex($class_name, $id, $attrs)
 	return $x;
 }
 
+/**
+ * @param string $uri
+ * @return mixed|null
+ */
 function bors_load_uri($uri)
 {
 	static $loaded = array();

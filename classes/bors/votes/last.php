@@ -17,7 +17,7 @@ class bors_votes_last extends balancer_board_page
 				'limit' => 30,
 		));
 */
-		foreach(objects_array('bors_votes_thumb', array(
+		foreach(bors_find_all('bors_votes_thumb', array(
 				'create_time>' => time() - 86400,
 				'order' => '-create_time',
 //				'limit' => 100,
@@ -27,20 +27,20 @@ class bors_votes_last extends balancer_board_page
 
 		$last = array_splice(array_values($last), 0, 30);
 
-		$best = objects_array('bors_votes_thumb', array(
+		$best = bors_find_all('bors_votes_thumb', array(
 				'group' => 'target_class_name,target_object_id',
 				'order' => 'SUM(score) DESC',
 				'limit' => 50,
 		));
 
-		$best_of_month = objects_array('bors_votes_thumb', array(
+		$best_of_month = bors_find_all('bors_votes_thumb', array(
 				'create_time>' => time()-86400*30,
 				'group' => 'target_class_name,target_object_id',
 				'order' => 'SUM(score) DESC',
 				'limit' => 50,
 		));
 
-		$differents = objects_array('bors_votes_thumb', array(
+		$differents = bors_find_all('bors_votes_thumb', array(
 				'create_time>' => time()-86400*30,
 				'group' => 'target_class_name,target_object_id',
 				'order' => 'SUM(ABS(score))/(SUM(score) + 1) DESC',
@@ -54,7 +54,7 @@ class bors_votes_last extends balancer_board_page
 
 		return array(
 			'last' => $last,
-			'total' => objects_count('bors_votes_thumb', array()),
+			'total' => bors_count('bors_votes_thumb', array()),
 			'best' => $best,
 			'best_of_month' => $best_of_month,
 			'differents' => $differents,

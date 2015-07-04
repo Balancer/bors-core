@@ -2,10 +2,15 @@
 
 require_once('inc/mysql.php');
 
-function objects_array($class, $args = array())
+/**
+ * @param string $class_name
+ * @param array $args
+ * @return mixed array
+ */
+function bors_find_all($class_name, $args = array())
 {
-	if(is_numeric($class))
-		$class = class_id_to_name($class);
+	if(is_numeric($class_name))
+		$class_name = class_id_to_name($class_name);
 
 	$cargs = array();
 
@@ -27,20 +32,21 @@ function objects_array($class, $args = array())
 		unset($args['*preload']);
 	}
 
-	if(!preg_match('/^\w+$/', $class))
+	if(!preg_match('/^\w+$/', $class_name))
 	{
-		debug_hidden_log('data-errors', "Incorrect class name {$class} objects_load by ".print_r($args, true));
+		debug_hidden_log('data-errors', "Incorrect class name {$class_name} objects_load by ".print_r($args, true));
 		return array();
 	}
 
-	if(!class_exists($class))
+	if(!class_exists($class_name))
 	{
-		bors_debug::syslog('class-name-error', "Not found classname '$class'. May be admin-class in link?");
+		bors_debug::syslog('class-name-error', "Not found classname '$class_name'. May be admin-class in link?");
 		return array();
 	}
 
-	$init = new $class(NULL);
-	$class_file = bors_class_loader::load($class);
+    /** @var bors_object $init */
+	$init = new $class_name(NULL);
+	$class_file = bors_class_loader::load($class_name);
 	$init->set_class_file($class_file);
 
 	if($s = $init->storage())
@@ -48,16 +54,16 @@ function objects_array($class, $args = array())
 		if(method_exists($s, 'load_array'))
 			$objects = $s->load_array($init, array_merge($cargs, $args));
 		else
-			$objects = $s->load($init, mysql_args_compile($args, $class), false, $cargs);
+			$objects = $s->load($init, mysql_args_compile($args, $class_name), false, $cargs);
 
 		if(config('debug_objects_create_counting_details'))
 		{
-			debug_count_inc("bors_find_all($class) calls");
-			debug_count_inc("bors_find_all($class) count", count($objects));
+			debug_count_inc("bors_find_all($class_name) calls");
+			debug_count_inc("bors_find_all($class_name) count", count($objects));
 		}
 
 		if(config('debug.trace_object_load'))
-			debug_hidden_log('objects_load', "all $class(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
+			debug_hidden_log('objects_load', "all $class_name(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
 
 		if(!empty($preload))
 		{
@@ -77,7 +83,7 @@ function objects_first($class, $args = array())
 {
 	if(empty($args['limit']))
 		$args['limit'] = 1;
-	$objs = objects_array($class, $args);
+	$objs = bors_find_all($class, $args);
 	if(config('debug_objects_create_counting_details'))
 		debug_count_inc("bors_find_first($class)");
 
@@ -87,21 +93,25 @@ function objects_first($class, $args = array())
 	return $objs ? $objs[0] : NULL;
 }
 
-function objects_count($class, $args = array())
+/**
+ * @param string|object $class_name
+ * @param array $args
+ * @return integer
+ * @throws Exception
+ */
+function bors_count($class_name, $args = array())
 {
-	if(is_numeric($class))
-		$class = class_id_to_name($class);
+	if(is_numeric($class_name))
+		$class_name = class_id_to_name($class_name);
 
-	if(is_object($class))
-		$init = $class;
-	else
-		$init = new $class(NULL);
+    //TODO: посмотреть, если нигде не используется вариант подсчёта для объектов, то выкинуть.
+    $init = is_object($class_name) ? $class_name : new $class_name(NULL);
 
 	$storage = $init->storage();
 	if(method_exists($storage, 'count'))
 		return $storage->count($init, $args);
 
-	$where = mysql_args_compile($args, $class);
+	$where = mysql_args_compile($args, $class_name);
 
 	$cargs = array();
 
@@ -109,7 +119,7 @@ function objects_count($class, $args = array())
 		$cargs['object_id'] = $args['object_id'];
 
 	if(!$storage)
-		bors_throw("Empty storage for ".$class);
+		bors_throw("Empty storage for ".$class_name);
 
 	return $storage->load($init, $where, true, $cargs);
 }

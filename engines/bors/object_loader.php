@@ -699,7 +699,7 @@ function bors_objects_targets_preload($objects, $target_class_field = 'target_cl
 
 	$targets = array();
 	foreach($ids as $target_class => $oids)
-		$targets[$target_class] = objects_array($target_class, array('id IN' => array_keys($oids), 'by_id' => !!$store_field));
+		$targets[$target_class] = bors_find_all($target_class, array('id IN' => array_keys($oids), 'by_id' => !!$store_field));
 
 	if($store_field)
 		foreach($objects as $x)

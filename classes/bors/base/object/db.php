@@ -104,7 +104,7 @@ class base_object_db extends bors_object
 		return parent::delete();
 	}
 
-	static function objects_array($where) { return objects_array($where); }
+	static function objects_array($where) { return bors_find_all($where); }
 	static function objects_first($where) { return objects_first($where); }
 
 	static function truncate($class_name)

@@ -102,7 +102,7 @@ class bors_synonym extends bors_object_db
 		if(array_key_exists('is_disabled', $params))
 			$where['is_disabled'] = $params['is_disabled'];
 
-		return objects_array($synonym_class_name, $where);
+		return bors_find_all($synonym_class_name, $where);
 	}
 
 	function check_data(&$data)

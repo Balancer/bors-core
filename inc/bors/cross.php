@@ -137,7 +137,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 		@$inits[$x['class_id']][$x['object_id']] = $x['object_id'];
 
 	foreach($inits as $class_id => $ids)
-		$objs[$class_id] = objects_array($class_id, array('id IN' => array_keys($ids), 'by_id' => true));
+		$objs[$class_id] = bors_find_all($class_id, array('id IN' => array_keys($ids), 'by_id' => true));
 
 	$object_iu = $object->internal_uri();
 	$result = array();

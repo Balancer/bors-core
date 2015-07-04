@@ -179,7 +179,7 @@ class base_object extends bors_object_simple
 			$this->config = bors_load($config_class, $this);
 
 			if(empty($this->config))
-				bors_throw("Can't load config class '{$config}' for object {$this->class_name()}({$this->id()})");
+				bors_throw("Can't load config class '{$config_class}' for object {$this->class_name()}({$this->id()})");
 
 			$this->config->target_configure();
 		}
@@ -1098,7 +1098,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		);
 	}
 
-	function storage()
+    /**
+     * @return bors_storage|null
+     */
+    function storage()
 	{
 		if($storage_class_name = $this->get('storage_engine', config('storage.default.class_name')))
 			return new $storage_class_name($this);

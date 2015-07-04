@@ -18,7 +18,7 @@ catch(Exception $e)
 
 $db->query('DELETE FROM bors_access_log WHERE access_time < UNIX_TIMESTAMP() - 600');
 
-foreach(objects_array('bors_access_log', array('was_counted' => 0)) as $x)
+foreach(bors_find_all('bors_access_log', array('was_counted' => 0)) as $x)
 {
 	if(!$x->is_bot() && ($target = $x->target()))
 	{

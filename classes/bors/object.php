@@ -652,7 +652,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($title===NULL)
 			$title = $this->title();
 
-		return '<a href="'.$this->url_ex($this->page()).$url_append.'"'.($append?' '.$append:'').">{$title}</a>"; 
+		return '<a href="'.$this->url_ex($this->page()).$url_append.'"'.($append?' '.$append:'').">{$title}</a>";
 	}
 
 	function titled_link_ex($params = array())
@@ -694,7 +694,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		$url = str_replace('%OBJECT_ID%', $this->id(), $url);
 
-		return '<a href="'.$url.defval($params, 'url_append')."\"{$popup}{$target}{$class}{$style}>{$title}</a>"; 
+		return '<a href="'.$url.defval($params, 'url_append')."\"{$popup}{$target}{$class}{$style}>{$title}</a>";
 	}
 	function titled_link_target($target) { return $this->titled_link_ex(array('target' => $target)); }
 
@@ -1155,7 +1155,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			$obj = $this;
 
 		if($obj->storage())
-			return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii(); 
+			return '/_bors/admin/edit-smart/?object='.$obj->internal_uri_ascii();
 
 		return NULL;
 	}
@@ -1240,7 +1240,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if(@preg_match("!^http://!", $this->id()))
 			return $this->id();
 
-		return  $this->class_name().'://'.$this->id().'/'; 
+		return  $this->class_name().'://'.$this->id().'/';
 	}
 
 	protected $_dbh = NULL;
@@ -1257,7 +1257,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	{
 		if($this->_dbh)
 		{
-			$this->_dbh->close(); 
+			$this->_dbh->close();
 			$this->_dbh = NULL;
 		}
 

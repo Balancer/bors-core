@@ -33,16 +33,11 @@ class base_page extends bors_object
 
 	function items_around_page() { return 10; }
 
-	function attr_preset()
-	{
-		return array_merge(parent::attr_preset(), array(
-			'cr_type'	=> '',
-			'body_engine' => 'bors_bodies_page',
-			'body_template_class' => 'bors_templates_smarty',
-			'visits' => 0,
-			'num_replies' => 0,
-		));
-	}
+	function _cr_type_def() { return ''; }
+	function _body_engine_def() { return 'bors_bodies_page'; }
+	function _body_template_class_def() { return 'bors_templates_smarty'; }
+	function _visits_def() { return 0; }
+	function _num_replies_def() { return 0; }
 
 	function is_reversed() { return false; }
 

@@ -11,13 +11,13 @@ function smarty_block_js_if($params, $content, &$smarty)
 	if($content == NULL) // Открытие формы
 	{
 		if(!empty($params['cond']))
-			base_object::add_template_data('smarty_block_js_if_cond', $params['cond']);
+			bors_object::add_template_data('smarty_block_js_if_cond', $params['cond']);
 
 		return;
 	}
 
 	echo "<script  type=\"text/javascript\"><!--\n";
-	echo "if(".base_object::template_data('smarty_block_js_if_cond')."){\n";
+	echo "if(".bors_object::template_data('smarty_block_js_if_cond')."){\n";
 	foreach(explode("\n", $content) as $s)
 		echo " document.writeln(\"".addslashes($s)."\")\n";
 	echo "}\n";

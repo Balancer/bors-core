@@ -1,7 +1,5 @@
 <?php
 
-use Tracy\Debugger;
-
 class bors_project extends bors_object
 {
 	static function instance()
@@ -75,11 +73,11 @@ class bors_project extends bors_object
 	{
 		if(class_exists('Tracy\\Debugger'))
 		{
-			Debugger::enable(Debugger::DEVELOPMENT);
-			Debugger::$strictMode = true;
+			Tracy\Debugger::enable(Tracy\Debugger::DEVELOPMENT);
+			Tracy\Debugger::$strictMode = true;
 		}
 
-		$this->set_cfg('mode.debug', true);
+		$this->setCfg('mode.debug', true);
 
 		// config_set('debug_redirect_trace', true);
 
@@ -134,6 +132,11 @@ class bors_project extends bors_object
 		bors::run();
 	}
 
+	/**
+	 * @param string $key
+	 * @param mixed  $value
+	 * @return $this
+	 */
 	function setCfg($key, $value)
 	{
 		$GLOBALS['cms']['config'][$key] = $value;

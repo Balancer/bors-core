@@ -105,7 +105,7 @@ class base_object_db extends bors_object
 	}
 
 	static function objects_array($where) { return bors_find_all($where); }
-	static function objects_first($where) { return objects_first($where); }
+	static function objects_first($where) { return bors_find_first($where); }
 
 	static function truncate($class_name)
 	{

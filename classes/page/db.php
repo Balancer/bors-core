@@ -34,7 +34,7 @@ class page_db extends base_page_db
 		{
 			$class_name = get_called_class();
 			$db = new driver_mysql(call_user_func(array($class_name, 'db_name')));
-			$object = objects_first($class_name, array('main_url' => $id));
+			$object = bors_find_first($class_name, array('main_url' => $id));
 			$db->close();
 			return $object;
 		}

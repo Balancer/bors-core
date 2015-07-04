@@ -107,7 +107,7 @@ class bors_synonym extends bors_object_db
 
 	function check_data(&$data)
 	{
-		if($obj = objects_first($this->extends_class_name(), array('title' => $data['title'], 'target_class_name' => $data['target_class_name'], 'target_object_id' => $data['target_object_id'])))
+		if($obj = bors_find_first($this->extends_class_name(), array('title' => $data['title'], 'target_class_name' => $data['target_class_name'], 'target_object_id' => $data['target_object_id'])))
 			return bors_message(ec('Такой синоним уже прописан у этого объекта'));
 
 		return parent::check_data($data);

@@ -37,7 +37,7 @@ class bors_keyword extends base_object_db
 	static function loader($words)
 	{
 		$keyword = common_keyword::normalize(trim($words));
-		$x = objects_first('common_keyword', array('keyword' => $keyword));
+		$x = bors_find_first('common_keyword', array('keyword' => $keyword));
 		if(!$x)
 		{
 			$x = object_new_instance('common_keyword', array(

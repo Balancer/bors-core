@@ -18,14 +18,14 @@ class bors_tools_ajax_validate extends base_page
 		switch($validateError)
 		{
 			case 'loginFree':
-				if(objects_first('aviaport_user', array('login' => $validateValue)))
+				if(bors_find_first('aviaport_user', array('login' => $validateValue)))
 					$arrayToJs[2] = "false";
 				else
 					$arrayToJs[2] = "true";
 				break;
 
 			case 'emailNotRegistered':
-				if(objects_first('aviaport_user', array('email' => $validateValue)))
+				if(bors_find_first('aviaport_user', array('email' => $validateValue)))
 					$arrayToJs[2] = "false";
 				else
 					$arrayToJs[2] = "true";

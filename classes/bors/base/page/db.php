@@ -118,7 +118,7 @@ class base_page_db extends bors_page
 
 	function compiled_source() { return bors_lcml::lcml($this->source(), array('container' => $this)); }
 	static function objects_array($where) { return bors_find_all($where); }
-	static function objects_first($where) { return objects_first($where); }
+	static function objects_first($where) { return bors_find_first($where); }
 
 //	function table_fields() { return $this->fields_map(); }
 }

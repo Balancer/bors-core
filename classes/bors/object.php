@@ -20,16 +20,16 @@ class bors_object extends bors_object_simple
 	var $data = array();
 	protected static $__auto_objects = array();
 
+//	При настройке проверить:
+//	— http://www.aviaport.ru/services/events/arrangement/
+// 	— http://admin.aviaport.ru/directory/aviafirms/31/
+//	function _title_def() { return $this->class_title().' '.$this->class_name(); }
+
     // В качестве заголовка объекта по умолчанию используется имя класса
 	function _title_def() { return $this->class_title().' '.$this->class_name(); }
 
 	function _url_engine_def() { return 'url_calling2'; }
 	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
-
-//	При настройке проверить:
-//	— http://www.aviaport.ru/services/events/arrangement/
-// 	— http://admin.aviaport.ru/directory/aviafirms/31/
-//	function _title_def() { return $this->class_title().' '.$this->class_name(); }
 
 	function _access_engine_def() { return NULL; }
 
@@ -982,7 +982,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 				if(preg_match('/^(\w+)$/', trim($class), $m))
 					$rel_obj = object_load($m[1], $this->$field());
 				elseif(preg_match('/^(\w+)\((\w+)\)$/', trim($class), $m))
-					$rel_obj = objects_first($m[1], array($m[2] => $this->$field()));
+					$rel_obj = bors_find_first($m[1], array($m[2] => $this->$field()));
 				else
 					exit("Unknown format: '$class'");
 

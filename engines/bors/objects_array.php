@@ -79,7 +79,7 @@ function bors_find_all($class_name, $args = array())
 	return array();
 }
 
-function objects_first($class, $args = array())
+function bors_find_first($class, $args = array())
 {
 	if(empty($args['limit']))
 		$args['limit'] = 1;

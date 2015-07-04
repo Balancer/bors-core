@@ -296,13 +296,13 @@ function bors_drop_global_caches()
 
 function bors_server_var($name, $default = NULL)
 {
-	$sv = objects_first('bors_var_db', array('name' => $name, 'order' => '-create_time'));
+	$sv = bors_find_first('bors_var_db', array('name' => $name, 'order' => '-create_time'));
 	return $sv ? $sv->value() : $default;
 }
 
 function bors_set_server_var($name, $value, $keep_alive = -1)
 {
-	$sv = objects_first('bors_var_db', array('name' => $name, 'order' => '-create_time'));
+	$sv = bors_find_first('bors_var_db', array('name' => $name, 'order' => '-create_time'));
 
 	if(!$sv)
 	{
@@ -450,8 +450,11 @@ function bors_load_uri($uri)
 	return $loaded[$uri] = object_load($uri);
 }
 
-function bors_find_first($class_name, $where) { return objects_first($class_name, $where); }
-
+/**
+ * @param string $class_name
+ * @param array $where
+ * @return bors_object array
+ */
 function bors_each($class_name, $where)
 {
 	$storage = bors_foo($class_name)->storage();
@@ -485,6 +488,11 @@ function bors_find($class_name)
 	return new bors_core_find($class_name);
 }
 
+/**
+ * @param $class_name
+ * @return bors_object
+ * @throws Exception
+ */
 function bors_foo($class_name)
 {
 	require_once('inc/functions/cache/global_key.php');

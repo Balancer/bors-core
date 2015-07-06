@@ -1,7 +1,5 @@
 <?php
 
-use Tracy\Debugger;
-
 class bors_project extends bors_object
 {
 	static function instance()
@@ -75,13 +73,40 @@ class bors_project extends bors_object
 	{
 		if(class_exists('Tracy\\Debugger'))
 		{
-			Debugger::enable(Debugger::DEVELOPMENT);
-			Debugger::$strictMode = true;
+			Tracy\Debugger::enable(Tracy\Debugger::DEVELOPMENT);
+			Tracy\Debugger::$strictMode = true;
 		}
 
-		$this->set_cfg('mode.debug', true);
+		$this->setCfg('mode.debug', true);
 
 		// config_set('debug_redirect_trace', true);
+
+		return $this;
+	}
+
+	function init()
+	{
+		if(!defined('COMPOSER_ROOT'))
+			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+
+		//TODO: Отказаться в будущем от использования define.
+		//TODO: иначе выходит несовместимость множественности проектов.
+		if(!defined('BORS_SITE'))
+		{
+			// Ищем каталог композера или старого формата классов уровнем
+			// выше, чем каталог класса проекта
+
+			$reflector = new ReflectionClass($this);
+			$class_file = $reflector->getFileName();
+
+			$bors_site = dirname($class_file);
+
+			while($bors_site && $bors_site != '/' && !file_exists("$bors_site/composer.json") && !file_exists("$bors_site/classes"))
+				$bors_site = dirname($bors_site);
+
+			if($bors_site > '/')
+				define('BORS_SITE', $bors_site);
+		}
 
 		return $this;
 	}
@@ -107,6 +132,11 @@ class bors_project extends bors_object
 		bors::run();
 	}
 
+	/**
+	 * @param string $key
+	 * @param mixed  $value
+	 * @return $this
+	 */
 	function setCfg($key, $value)
 	{
 		$GLOBALS['cms']['config'][$key] = $value;

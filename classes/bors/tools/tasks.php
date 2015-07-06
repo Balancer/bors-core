@@ -14,7 +14,7 @@ class bors_tools_tasks extends bors_object_db
 
 	static function execute_task()
 	{
-		$task = objects_first('bors_tools_tasks', array('target_class_id<>0 AND working_class_id<>0', 'order'=>'-priority, execute_time'));
+		$task = bors_find_first('bors_tools_tasks', array('target_class_id<>0 AND working_class_id<>0', 'order'=>'-priority, execute_time'));
 
 		if(!$task)
 			return false;

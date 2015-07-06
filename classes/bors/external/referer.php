@@ -62,7 +62,7 @@ class bors_external_referer
 			// Это вход из поисковой системы
 			$data['query'] = $q;
 
-			$search = objects_first('bors_referer_search', $data);
+			$search = bors_find_first('bors_referer_search', $data);
 			if(!$search)
 			{
 				$search = object_new_instance('bors_referer_search', $data);
@@ -102,7 +102,7 @@ class bors_external_referer
 
 			$data['referer_normalized_url'] = $norm_referer;
 
-			$ref_obj = objects_first('bors_referer_link', $data);
+			$ref_obj = bors_find_first('bors_referer_link', $data);
 			if(!$ref_obj)
 			{
 				$ref_obj = object_new_instance('bors_referer_link', $data);

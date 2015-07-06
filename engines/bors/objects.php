@@ -9,7 +9,7 @@
 
 function bors_object_title_autoinc($class_name, $title)
 {
-	if($obj = objects_first($class_name, array('title' => $title)))
+	if($obj = bors_find_first($class_name, array('title' => $title)))
 		return $obj;
 
 	return object_new_instance($class_name, array('title' => $title));

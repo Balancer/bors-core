@@ -324,7 +324,7 @@ class bors_link extends bors_object_db
 		$where['from_id'] = $object->id();
 		$where[] = '(type_id IS NULL OR type_id<>4)';
 
-		return objects_count('bors_link', $where);
+		return bors_count('bors_link', $where);
 	}
 
 	static function drop_auto($object)

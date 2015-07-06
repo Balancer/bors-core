@@ -72,6 +72,10 @@ function class_names_to_ids($class_names)
 	return $class_ids;
 }
 
+/**
+ * @param integer $class_id
+ * @return string
+ */
 function class_id_to_name($class_id)
 {
 	$loaded = bors_class_names_load();

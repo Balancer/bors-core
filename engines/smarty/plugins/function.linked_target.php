@@ -43,7 +43,7 @@ function smarty_function_linked_target($params, &$smarty)
 		if($th)
 			echo "</td></tr>\n";
 
-		$ts = base_object::template_data('form_linked_targets');
+		$ts = bors_object::template_data('form_linked_targets');
 		$ts[] = $name;
-		base_object::add_template_data('form_linked_targets', $ts);
+		bors_object::add_template_data('form_linked_targets', $ts);
 }

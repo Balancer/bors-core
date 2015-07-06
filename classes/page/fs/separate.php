@@ -8,13 +8,8 @@ class page_fs_separate extends base_page
 
 	function cache_static()		{ return config('page_fs_separate_cache_static'); }
 
-	function attr_preset()
-	{
-		return array_merge(parent::attr_preset(), array(
-			'body_engine'	=> 'body_source',
-			'render_engine'	=> config('render_engine', 'render_page'),
-		));
-	}
+	function _body_engine_def() { return 'body_source'; }
+	function _render_engine_def() { return config('render_engine', 'render_page'); }
 
 //	var $_parents;
 //	function parents() { return $this->_parents ? $this->_parents : parent::parents(); }

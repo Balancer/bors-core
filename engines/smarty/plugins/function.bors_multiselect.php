@@ -46,9 +46,9 @@ function smarty_function_bors_multiselect($params, &$smarty)
 
 	$out .= "</select>";
 
-	$vcbs = base_object::template_data('form_checkboxes_list');
+	$vcbs = bors_object::template_data('form_checkboxes_list');
 	$vcbs[] = $name;
-	base_object::add_template_data('form_checkboxes_list', $vcbs);
+	bors_object::add_template_data('form_checkboxes_list', $vcbs);
 
 	return $out;
 }

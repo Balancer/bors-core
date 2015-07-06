@@ -52,7 +52,7 @@ class bors_user_favorite extends base_object_db
 		if(is_object($where))
 		{
 			$target = $where;
-			return objects_first('bors_user_favorite', array(
+			return bors_find_first('bors_user_favorite', array(
 				'user_class_name' => $user->class_name(),
 				'user_id' => $user->id(),
 				'target_class_name' => $target->class_name(),

@@ -37,7 +37,7 @@ class bors_keyword extends base_object_db
 	static function loader($words)
 	{
 		$keyword = common_keyword::normalize(trim($words));
-		$x = objects_first('common_keyword', array('keyword' => $keyword));
+		$x = bors_find_first('common_keyword', array('keyword' => $keyword));
 		if(!$x)
 		{
 			$x = object_new_instance('common_keyword', array(
@@ -113,7 +113,7 @@ class bors_keyword extends base_object_db
 
 //			echo ">>>$tag -> {$kw->title()}\n";
 
-			$kwbs = objects_array('common_keyword_bind', array(
+			$kwbs = bors_find_all('common_keyword_bind', array(
 				'keyword_id' => $kw->id(),
 				'group' => 'target_forum_id',
 				'order' => 'count(*) DESC',
@@ -146,7 +146,7 @@ class bors_keyword extends base_object_db
 			return 0;
 
 		$syn = object_load('common_keyword', $this->synonym_to_id());
-		foreach(objects_array('common_keyword_bind', array('keyword_id' => $this->id())) as $bind)
+		foreach(bors_find_all('common_keyword_bind', array('keyword_id' => $this->id())) as $bind)
 		{
 			$obj = $bind->target();
 //			echo "{$obj->debug_title()}: change {$this->title()} to {$syn->title()}\n";
@@ -155,8 +155,8 @@ class bors_keyword extends base_object_db
 		}
 
 		bors()->changed_save();
-		$this->set_targets_count(objects_count('common_keyword_bind', array('keyword_id' => $this->id())));
-		$count = $syn->set_targets_count(objects_count('common_keyword_bind', array('keyword_id' => $syn->id())));
+		$this->set_targets_count(bors_count('common_keyword_bind', array('keyword_id' => $this->id())));
+		$count = $syn->set_targets_count(bors_count('common_keyword_bind', array('keyword_id' => $syn->id())));
 
 		return $count;
 	}

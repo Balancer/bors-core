@@ -521,6 +521,7 @@ function bors_foo($class_name)
 		bors_throw("Unknown class $class_name in bors_foo");
 
 	$object = new $class_name(NULL);
-	$object->_configure();
+	if(method_exists($object, '_configure'))
+		$object->_configure();
 	return set_global_key('___foos', $class_name, $object);
 }

@@ -2,6 +2,8 @@
 
 class bors_project extends bors_object
 {
+	var $inited = false;
+
 	static function instance()
 	{
 		static $instance = NULL;
@@ -86,6 +88,9 @@ class bors_project extends bors_object
 
 	function init()
 	{
+		if($this->inited)
+			return $this;
+
 		if(!defined('COMPOSER_ROOT'))
 			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(dirname(__DIR__))))));
 
@@ -108,6 +113,22 @@ class bors_project extends bors_object
 				define('BORS_SITE', $bors_site);
 		}
 
+		if(method_exists($this, 'project_name'))
+			$project_name = $this->project_name();
+		elseif(property_exists($this, 'project_name'))
+			$project_name = $this->project_name;
+		else
+			$project_name = NULL;
+
+		//TODO: Отказаться в будущем от использования define.
+		//TODO: иначе выходит несовместимость множественности проектов.
+		if(!defined('BORS_HOST')
+			&& $project_name
+			&& file_exists($bors_host = COMPOSER_ROOT."/$project_name")
+		)
+			define('BORS_HOST', $bors_host);
+
+		$this->inited = true;
 		return $this;
 	}
 
@@ -123,8 +144,8 @@ class bors_project extends bors_object
 
 	function run()
 	{
-		if(!defined('COMPOSER_ROOT'))
-			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+		if(!$this->inited)
+			$this->init();
 
 		if(!defined('BORS_SITE'))
 			define('BORS_SITE', COMPOSER_ROOT);

@@ -5,7 +5,6 @@ class bors_forms_dropdown extends bors_forms_element
 	function html()
 	{
 		include_once('inc/bors/lists.php');
-
 		$this->make_data();
 
 		$params = $this->params();

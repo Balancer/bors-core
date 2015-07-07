@@ -255,7 +255,7 @@ class bors_admin_engine extends bors_object
 		{
 			//FIXME: подключить проверку доступа
 			if($obj->url() && $obj->access()->can_edit())
-				$res .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\"><img src=\"/_bors/i16/edit.png\" width=\"16\" height=\"16\" alt=\"View\" title=\"".htmlspecialchars($popup)."\" style=\"vertical-align:middle\" /></a>";
+				$res .= "&nbsp;<a rel=\"nofollow\" href=\"{$obj->admin()->edit_url()}\"><img src=\"/_bors/i16/edit.png\" width=\"16\" height=\"16\" alt=\"View\" title=\"".htmlspecialchars($popup)."\" style=\"vertical-align:middle\" /></a>";
 		}
 		catch(Exception $e) { }
 

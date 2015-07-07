@@ -206,6 +206,7 @@ class bors_object_db extends base_object_db
 		}
 
 		self::$__parsed_fields[$this->class_name()] = $fields;
+
 		return $fields;
 	}
 

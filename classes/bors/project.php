@@ -43,6 +43,8 @@ class bors_project extends bors_object
 	{
 	}
 
+	function object_type() { return 'project'; }
+
 	function object_data()
 	{
 		return array();

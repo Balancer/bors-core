@@ -60,6 +60,9 @@ class bors_global extends bors_object_simple
      */
     function set_main_object($object)
 	{
+		if($object && $object->get('object_type') == 'project')
+			return $object;
+
 		if($this->__main_object && $object)
 		{
 			debug_hidden_log('__arch_error', "Set new main object '{$object->debug_title()}' with extsts '{$this->__main_object->debug_title()}'");

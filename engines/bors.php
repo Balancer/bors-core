@@ -348,7 +348,7 @@ function bors_throw($message)
 		exit('Error. See in BORS logs');
 	}
 
-	bors_debug::syslog('__exceptions-unknown', $message);
+	bors_debug::sepalog('exceptions-unknown', $message);
 	throw new Exception($message);
 }
 

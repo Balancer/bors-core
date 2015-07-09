@@ -114,7 +114,7 @@ class driver_mysql extends DataBase implements Iterator
 
     public function rewind()
     {
-		if(!$this->each_result)
+		if(!@$this->each_result)
 			return false;
 
 		@mysql_data_seek($this->each_result, 0);
@@ -122,7 +122,7 @@ class driver_mysql extends DataBase implements Iterator
         return $this->fetch();
     }
 
-    public function valid() { return $this->row != false; }
+    public function valid() { return @$this->row != false; }
 
 	function estimated_count($table)
 	{

@@ -6,7 +6,7 @@ class bors_lib_exception extends bors_object
 	{
 		$trace = debug_trace(0, false, -1, $e->getTrace());
 		$message = $e->getMessage();
-		debug_hidden_log('exception', "$message\n\n$trace", true, array('dont_show_user' => true));
+		bors_debug::sepalog('exception', $message, array('trace' => $trace, 'dont_show_user' => true));
 
 		try
 		{

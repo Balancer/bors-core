@@ -12,6 +12,25 @@ class bors_debug
 		return debug_hidden_log($type, $message, $trace, $args);
 	}
 
+	static function sepalog($type, $message = NULL, $params = array())
+	{
+		$dir = config('debug_hidden_log_dir').'/errors';
+		if(!is_dir($dir))
+		{
+			mkdir($dir);
+			chmod($dir, 0777);
+		}
+
+		if(!file_exists($dir))
+			return;
+
+		$trace = defval($params, 'trace');
+
+		$args['append'] = "stack:\n==============\n".debug_trace(0, false);
+
+		bors_debug::syslog('errors/'.date('c').'-'.$type, $message."\n\ntrace=$trace", -1, $args);
+	}
+
 	static function log($category, $message = NULL, $level = 'info', $trace = true)
 	{
 		static $enter = false;

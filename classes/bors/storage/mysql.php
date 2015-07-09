@@ -627,6 +627,12 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
     public function rewind()
     {
+    	if(!$this->dbi)
+    	{
+    		bors_debug::syslog("db-error", "empty dbi");
+    		bors_throw('empty dbi');
+    	}
+
 		$this->data = $this->dbi->rewind();
 		return $this->__init_object();
     }

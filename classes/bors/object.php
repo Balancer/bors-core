@@ -377,4 +377,11 @@ class bors_object extends base_object
 	 }
 
 	function uuid_hash() { return md5($this->class_name().':'.$this->id()); }
+
+	function titled_link_for_igo()
+	{
+		$title = $this->title_in_container();
+
+		return "<a href=\"{$this->url_for_igo()}\">{$title}</a>";
+	}
 }

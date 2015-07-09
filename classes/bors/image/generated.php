@@ -117,7 +117,8 @@ function set_last_editor_id($v, $dbup = true) { return $this->set('last_editor_i
 				$description = $g->description();
 			}
 
-			file_put_contents($g->file_path(), $image);
+			bors_function_include('fs/file_put_contents_lock');
+			file_put_contents_lock($g->file_path(), $image);
 		}
 
 

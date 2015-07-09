@@ -55,6 +55,7 @@ class bors_request extends bors_object
 		return $url;
 	}
 
+	function remote_ip() { return @$_SERVER['REMOTE_ADDR']; }
 	function referer() { return defval($_GET, 'ref', @$_SERVER['HTTP_REFERER']); }
 
 	function is_accept_image() { return preg_match('!^image/!', @$_SERVER['HTTP_ACCEPT']); }

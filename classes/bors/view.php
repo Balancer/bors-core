@@ -143,11 +143,19 @@ class bors_view extends bors_page
 				continue;
 
 			$value = $target->get($args['property']);
-//			var_dump($args, $value);
+//			echo '<xmp>'; var_dump($idx, $args, $value); echo '</xmp>';
 			if($args['type'] == 'image') // http://ucrm.wrk.ru/persons/4/
 			{
-//				var_dump($value);
-				if($image = bors_load('bors_image', $value))
+				if(preg_match('/^(\w+)_id$/', $args['name'], $m))
+					$image = $target->get($m[1]);
+
+				if(!$image && !empty($args['class']))
+					$image = bors_load($args['class'], $value);
+
+				if(!$image)
+					$image = bors_load('bors_image', $value);
+
+				if($image)
 					array_unshift($out, $image->thumbnail('200x')->html(array('append' => 'class="float-right" hspace="10"')));
 
 				continue;

@@ -205,7 +205,7 @@ class bors_mail extends bors_page
 
 //		print_r($body); print_r($headers); exit();
 
-		$mail = &Mail::factory(config('mail_transport', 'mail'), config('mail_transport_parameters', NULL));
+		$mail = @Mail::factory(config('mail_transport', 'mail'), config('mail_transport_parameters', NULL));
 		$mail->send($this->to, $headers, $body);
 //		echo "to=$to, body=$body"; var_dump($hdrs); exit();
 

@@ -38,8 +38,8 @@
             return $this->last_hmd;
         }
 
-		function instance()
+		static function instance()
 		{
-			return new Cache();
+			return new bors_cache();
 		}
     }

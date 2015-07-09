@@ -40,9 +40,9 @@ function smarty_function_input_file($params, &$smarty)
 		if(!empty($$p))
 			echo " $p=\"{$$p}\"";
 	echo " /><br/>\n";
-	$fls = base_object::template_data('form_file_vars');
+	$fls = bors_object::template_data('form_file_vars');
 	$fls[] = "{$name}={$file_class_name}({$file_id_field})";
-	base_object::add_template_data('form_file_vars', $fls);
+	bors_object::add_template_data('form_file_vars', $fls);
 
 	echo "<input type=\"hidden\" name=\"{$name}___upload_dir\" value=\"".defval($params, 'upload_dir', config('upload_dir').'/files')."\"/>\n";
 	echo "<input type=\"hidden\" name=\"{$name}___no_subdirs\" value=\"".defval($params, 'no_subdirs', config('no_subdirs'))."\"/>\n";

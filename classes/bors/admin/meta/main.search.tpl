@@ -17,7 +17,9 @@
 <legend>Поиск:</legend>
 <center>
 	<label>Искать:</label> <input type="text" name="q" size="40" value="{$query|htmlspecialchars}" />
-	{bors_radio delim=' ' name="w" value=$w list="array('t' => 'в заголовках', 'a' => 'всюду', '*default' => 't');"}
+{if $search_where}
+	{bors_radio delim=' ' name="w" value=$w list=$search_where}
+{/if}
 	<input type="submit" class="search-submit" value="Искать" />
 </center>
 </fieldset>

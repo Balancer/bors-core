@@ -9,9 +9,6 @@ class bors_forms_saver extends bors_object_simple
 		if(!empty($data['time_vars']))
 			bors_lib_time::parse_form($data);
 
-//		if(config('is_developer')) { echo "On input {$form_object->debug_title()}:"; print_dd($data); print_dd($files); bors_exit(); }
-//		echo "Data:"; print_dd($data);
-
 		// Переводим строковые 'NULL' для *_id в реальный NULL
 		foreach($data as $key => $value)
 			if(preg_match('/_id/', $key) && $value == 'NULL')

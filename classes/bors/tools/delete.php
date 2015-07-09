@@ -12,8 +12,7 @@ class bors_tools_delete extends bors_admin_page
 		if(!empty($_GET['edit_class']))
 			return array($_GET['edit_class']);
 
-		$obj_admin = $this->object()->admin_url();
-		return $obj_admin ? array($obj_admin) : array($this->object()->internal_uri());
+		return array($this->object()->admin_url());
 	}
 
 	function title() { return $this->object()->class_title() . ec(': подтверждение удаления'); }
@@ -51,10 +50,8 @@ class bors_tools_delete extends bors_admin_page
 		return false;
 	}
 
-	function on_action_delete($data)
+	function on_action_delete(&$data)
 	{
-//		echo '<xmp>'; var_dump($_POST, $_GET, $data); exit('</xmp>');
-
 		if(!empty($data['no']))
 			return go($this->ref(@$data['no_ref']));
 
@@ -81,6 +78,7 @@ class bors_tools_delete extends bors_admin_page
 			return bors_message(ec('Недостаточно прав для удаления ').$obj->class_title_rp().' '.$obj->titled_link());
 
 		$obj->delete(!config('skip_remove_cross'));
+
 		if($r = urldecode($_GET['ref']))
 			return go($r);
 

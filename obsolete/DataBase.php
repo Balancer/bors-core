@@ -411,9 +411,9 @@ class DataBase
 	{
 		include_once("classes/Cache.php");
 		$ch = NULL;
-		if($cached !== false && class_exists('Cache'))
+		if($cached !== false && class_exists('bors_cache'))
 		{
-			$ch = new Cache();
+			$ch = new bors_cache();
 			if($ch->get("DataBaseQuery:{$this->db_name}-v2", $query))
 				return $ch->last();
 		}

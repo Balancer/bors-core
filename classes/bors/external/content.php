@@ -17,7 +17,7 @@ class bors_external_content extends base_object_db
 
 	static function load($url)
 	{
-		$x = objects_first('bors_external_content', array('www' => $url));
+		$x = bors_find_first('bors_external_content', array('www' => $url));
 		if($x)
 		{
 //			print_d($x->content_raw());

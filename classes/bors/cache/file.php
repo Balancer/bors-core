@@ -36,7 +36,8 @@ class bors_cache_file extends cache_base
 		$file = $cache_dir.'/'.$this->last_hmd;
 		$expire = time() + $time_to_expire;
 		mkpath($cache_dir);
-		file_put_contents($file, serialize(array($expire, $value)));
+		bors_function_include('fs/file_put_contents_lock');
+		file_put_contents_Lock($file, serialize(array($expire, $value)));
 		touch($file, $expire);
 
 		debug_count_inc('file_cache_set');

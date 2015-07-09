@@ -51,66 +51,36 @@ class bors_storage_htsu extends bors_storage
 			$rel = preg_replace("!/$ut(/|$)!", '', $rel);
 		}
 
-		if($base && file_exists($file = "{$dir}/{$base}.{$ext}"))
+		if(file_exists($file = "{$dir}/{$base}.{$ext}"))
 			return $file;
 
-		if($base && file_exists($file = "{$dir}/{$base}/main.{$ext}"))
+		if(file_exists($file = "{$dir}/{$base}/main.{$ext}"))
 			return $file;
 
-		if($base && file_exists($file = "{$dir}/{$base}/index.{$ext}"))
+		if(file_exists($file = "{$dir}/{$base}/index.{$ext}"))
 			return $file;
 
 //		if($base && file_exists($file = "{$dir}/{$base}"))
 //			return $file;
-
-		if(!$base && file_exists($file = "{$dir}/index.{$ext}"))
-			return $file;
-
-		if(!$base && file_exists($file = "{$dir}.{$ext}"))
-			return $file;
 
 		if($object->host() && $object->host() == bors()->server()->host())
 		{
 			foreach(bors_dirs() as $d)
 			{
 //				echo "Find in $d as rel=$rel, base=$base, ext=$ext; {$d}/webroot/{$rel}.{$ext}<br/>\n";
-				if($base && file_exists($file = secure_path("{$d}/webroot/{$rel}/{$base}.{$ext}")))
+				if(file_exists($file = secure_path("{$d}/webroot/{$rel}/{$base}.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/webroot/{$rel}.{$ext}")))
+				if(file_exists($file = secure_path("{$d}/webroot/{$rel}/{$base}/main.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/webroot/{$rel}/index.{$ext}")))
+				if(file_exists($file = secure_path("{$d}/webroot/{$rel}/{$base}/index.{$ext}")))
 					return $file;
 
-				if(!$base && file_exists($file = secure_path("{$d}/webroot/{$rel}/main.{$ext}")))
+				if(file_exists($file = secure_path("{$d}/data/webroot/{$rel}/{$base}.{$ext}")))
 					return $file;
 
-				if($base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}/{$base}.{$ext}")))
-					return $file;
-
-				if(!$base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}.{$ext}")))
-					return $file;
-
-				if(!$base && file_exists($file = secure_path("{$d}/data/webroot/{$rel}/index.{$ext}")))
-					return $file;
-
-				if($base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/{$base}.{$ext}")))
-					return $file;
-
-				if(!$base && file_exists($file = secure_path("{$d}/data/fs/{$rel}.{$ext}")))
-					return $file;
-
-				if(!$base  && file_exists($file = secure_path("{$d}/data/fs/{$rel}/main.{$ext}")))
-					return $file;
-
-				if(!$base && file_exists($file = secure_path("{$d}/data/fs/{$rel}/index.{$ext}")))
-					return $file;
-
-				if(!$base && file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}.{$ext}")))
-					return $file;
-
-				if(!$base && file_exists($file = secure_path("{$d}/data/fs-hts/{$rel}/index.{$ext}")))
+				if(file_exists($file = secure_path("{$d}/data/fs/{$rel}/{$base}.{$ext}")))
 					return $file;
 			}
 		}
@@ -235,8 +205,8 @@ class bors_storage_htsu extends bors_storage
 
 		if($config_class = $this->ext('config', '-'))
 		{
-			$object->set_attr('config_class', $config_class);
-			$object->_configure();
+			$object->set('config_class', $config_class);
+			$object->reconfigure();
 		}
 
 //		$this->hts = preg_replace_callback('/^#(template_data)_(\w+)\s+(.+)$/m', array(&$this, '_set_callback'), $this->hts);
@@ -285,6 +255,8 @@ class bors_storage_htsu extends bors_storage
 		$property = $matches[1];
 		$value    = trim($matches[2]);
 		call_user_func_array(array($this->obj, 'set'), array($property, $value, false));
+		if($property == 'config_class') // Hardcode :-/
+			$this->obj->reconfigure();
 		return '';
 	}
 
@@ -302,7 +274,7 @@ class bors_storage_htsu extends bors_storage
 
 	function save($object)
 	{
-		bors_throw("Try to save index.hts:<br/>\n".print_dd($object->data, true));
+		bors_debug::syslog('storage-error', "Try to save index.hts:<br/>\n".print_dd($object->data, true));
 	}
 
 	static function each($class_name, $where)

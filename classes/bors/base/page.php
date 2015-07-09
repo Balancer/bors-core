@@ -33,16 +33,11 @@ class base_page extends bors_object
 
 	function items_around_page() { return 10; }
 
-	function attr_preset()
-	{
-		return array_merge(parent::attr_preset(), array(
-			'cr_type'	=> '',
-			'body_engine' => 'bors_bodies_page',
-			'body_template_class' => 'bors_templates_smarty',
-			'visits' => 0,
-			'num_replies' => 0,
-		));
-	}
+	function _cr_type_def() { return ''; }
+	function _body_engine_def() { return 'bors_bodies_page'; }
+	function _body_template_class_def() { return 'bors_templates_smarty'; }
+	function _visits_def() { return 0; }
+	function _num_replies_def() { return 0; }
 
 	function is_reversed() { return false; }
 
@@ -178,7 +173,7 @@ class base_page extends bors_object
 		if(!$this->cache_life_time())
 			return $this->cacheable_body();
 
-		$ch = new Cache();
+		$ch = new bors_cache();
 
 		$drop_cache = $this->cache_life_time() || !empty($_GET['drop_cache']);
 
@@ -284,7 +279,7 @@ class base_page extends bors_object
 		if(!$text)
 			return;
 
-		$ch = (class_exists('Cache') && !config('lcml_cache_disable')) ? new Cache() : NULL;
+		$ch = (class_exists('bors_cache') && !config('lcml_cache_disable')) ? new bors_cache() : NULL;
 		if($ch && $ch->get('base_object-lcml', $text) && 0)
 			return $ch->last();
 
@@ -392,16 +387,17 @@ class base_page extends bors_object
 	}
 
 	// Данные общего («внешнего») шаблона
+	private $called = false;
 	function page_data()
 	{
 //		if($config = $this->config())
 //			$config->template_init();
 
-		static $called = false;
-		if($called)
-			bors_debug::syslog('000-oops', "Second call for page_data, first was in ".$called);
+		if($this->called)
+			bors_debug::syslog('000-oops', "Second call for page_data, first was in ".$this->called);
 
-		$called = bors_debug::trace();
+		if(config('mode.debug') || rand(0,1000) == 0)
+			$this->called = bors_debug::trace();
 
 		if(empty($GLOBALS['cms']['templates']['data']))
 			return $this->page_data;

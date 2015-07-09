@@ -51,7 +51,6 @@ $map = array(
 	'.* => auto_object_php(url)',
 	'.* => bors_page_fs_bbh(url)',
 	'.* => bors_page_fs_markdown(url)',
-	'.* => bors_page_fs_htsu(url)', //TODO: снести нафиг после конвертации старых hts Авиабазы
 	'.* => page_fs_separate(url)',
 
 //	Заглушки для удобства.
@@ -82,3 +81,11 @@ if(config('obsolete.use_mysql_smart'))
 	$map[] = '.* => base_page_hts(url)';
 
 bors_objects_loaders_yaml::register();
+
+// Хардкод из-за legacy. Под снос.
+if(preg_match('/airbase\.ru/', @$_SERVER['HTTP_HOST']))
+{
+	bors_url_map(array(
+		'.* => bors_page_fs_htsu(url)', //TODO: снести нафиг после конвертации старых hts Авиабазы и АвиаПорта
+	));
+}

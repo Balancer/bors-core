@@ -4,6 +4,8 @@
 
 class base_rss extends base_page
 {
+	function theme_class() { return NULL; } // Иначе у темы более высокий приоритет.
+
 	function render_engine() { return 'bors_rss'; }
 	function output_charset() { return 'utf-8'; }
 

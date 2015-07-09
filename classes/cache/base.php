@@ -28,7 +28,7 @@ class cache_base
 
 	function last_cache_id() { return $this->last_hmd; }
 
-	function instance() { return new Cache(); }
+	function instance() { return new bors_cache(); }
 
 	static function get_or_set($type, $key, $function, $ttl)
 	{

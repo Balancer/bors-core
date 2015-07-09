@@ -57,7 +57,7 @@ class bors_object_simple extends bors_object_empty
 				$post_function = $m[2];
 			}
 			else
-				$post_function = false;
+				$post_function = NULL;
 
 			try
 			{
@@ -91,8 +91,9 @@ class bors_object_simple extends bors_object_empty
 				if(!$ok)
 					eval("\$result = \$this->$name;");
 
+                /** @var string|null $post_function */
 				if($post_function)
-					$result = $post_function($result);
+                    $result = $post_function($result);
 			}
 			catch(Exception $e)
 			{
@@ -298,12 +299,7 @@ class bors_object_simple extends bors_object_empty
 		return false;
 	}
 
-	function attr_preset()
-	{
-		return array_merge(parent::attr_preset(), array(
-			'body_engine'	=> '',
-		));
-	}
+	function _body_engine_def() { return ''; }
 
 	function storage_engine() { return ''; }
 	function is_loaded() { return true; }

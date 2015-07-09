@@ -84,10 +84,13 @@ class bors_log_monolog
 				if(function_exists('gethostname'))
 					$record['context']['host'] = gethostname();
 
-				if(bors()->user())
-					$record['context']['user'] = bors()->user()->get('title');
-				if(bors()->user_id())
-					$record['context']['user_id'] = bors()->user_id();
+				if(function_exists('bors'))
+				{
+					if(bors()->user())
+						$record['context']['user'] = bors()->user()->get('title');
+					if(bors()->user_id())
+						$record['context']['user_id'] = bors()->user_id();
+				}
 
 				if($trace)
 				{

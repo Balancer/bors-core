@@ -239,7 +239,7 @@ class bors_lcml extends bors_object
 			&& empty($params['nocache'])
 		)
 		{
-			$cache = new Cache();
+			$cache = new bors_cache();
 			if($cache->get('lcml-cache-v'.config('lcml.cache_tag'), $text))
 			{
 				bors_debug::timing_stop('lcml_parse');

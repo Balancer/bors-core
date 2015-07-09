@@ -63,7 +63,7 @@ class blib_urls
 	static function check_external($url)
 	{
 		$url_data = url_parse($url);
-		return empty($url_data['local']) ? ' class="external"' : '';
+		return empty($url_data['local']) ? ' class="external foo-a5"' : '';
 	}
 
 	static function replace_query($url, $param_name, $value=NULL)

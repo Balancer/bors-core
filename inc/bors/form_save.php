@@ -12,6 +12,9 @@ function bors_form_save(&$obj)
 		if($_GET['act'] == 'skip_all')
 			return false;
 
+		if(!empty($_GET['object']))
+			$obj = bors_load_uri($_GET['object']);
+
 		if(method_exists($obj, 'action_target'))
 			$obj = $obj->action_target();
 
@@ -34,8 +37,8 @@ function bors_form_save(&$obj)
 				object class = ".get_class($obj).",<br/>
 				access class = ".get_class($obj->access()).",<br/>
 				access method = can_action(".$_GET['act'].");<br/>
-".bors_debug::trace(0, false)."
-			</div>
+<pre>".bors_debug::trace(0, false)."
+			</pre></div>
 		</div>
 	</div>
 </div>

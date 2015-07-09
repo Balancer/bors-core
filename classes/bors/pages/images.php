@@ -28,7 +28,7 @@ class bors_pages_images extends bors_page
 		foreach($files as $full_file_name)
 		{
 			$file = basename($full_file_name);
-			$img = objects_first('bors_image', array('full_file_name' => $full_file_name));
+			$img = bors_find_first('bors_image', array('full_file_name' => $full_file_name));
 			if(!$img)
 				$img = aviaport_image::register_file($full_file_name);
 

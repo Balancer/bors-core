@@ -54,38 +54,54 @@ class bors_global extends bors_object_simple
 		return ($user = $this->user()) ? $user->title() : NULL;
 	}
 
-	function set_main_object($obj)
+    /**
+     * @param bors_object $object
+     * @return bors_object
+     */
+    function set_main_object($object)
 	{
-		if($this->__main_object && $obj)
+		if($object && $object->get('object_type') == 'project')
+			return $object;
+
+		if($this->__main_object && $object)
 		{
-			debug_hidden_log('__arch_error', "Set new main object '{$obj->debug_title()}' with extsts '{$this->__main_object->debug_title()}'");
+			debug_hidden_log('__arch_error', "Set new main object '{$object->debug_title()}' with extsts '{$this->__main_object->debug_title()}'");
 			if(config('is_developer'))
 			{
-				echo "Set main object {$obj}";
+				echo "Set main object {$object}";
 				echo debug_trace();
 			}
 			return $this->__main_object;
 		}
 
-		return $this->__main_object = $obj;
+		return $this->__main_object = $object;
 	}
 
-	function main_object() { return $this->__main_object; }
+    /**
+     * @return bors_object
+     */
+    function main_object() { return $this->__main_object; }
 
 	private $changed_objects = array();
 
-	function add_changed_object($obj)
+    /**
+     * @param bors_object $object
+     */
+    function add_changed_object($object)
 	{
 //		echo "Add {$obj->debug_title()}<Br/>"; echo debug_trace();
-		$this->changed_objects[$obj->internal_uri_ascii()] = $obj;
+		$this->changed_objects[$object->internal_uri_ascii()] = $object;
 	}
 
-	function drop_changed_object($obj)
+    /**
+     * @param bors_object|mixed $object
+     */
+    function drop_changed_object($object)
 	{
-		if(is_object($obj))
-			unset($this->changed_objects[$obj->internal_uri()]);
+		if(is_object($object))
+			unset($this->changed_objects[$object->internal_uri()]);
 		else
-			unset($this->changed_objects[$obj]);
+			unset($this->changed_objects[$object]);
 	}
 
 	function have_changed_objects() { return !empty($this->changed_objects); }
@@ -94,7 +110,10 @@ class bors_global extends bors_object_simple
 	function drop_all_caches() { bors_object_caches_drop(); }
 	function memory_usage() { return round(memory_get_usage()/1048576)."/".round(memory_get_peak_usage()/1048576)."MB"; }
 
-	function changed_save()
+    /**
+     *
+     */
+    function changed_save()
 	{
 		static $entered = false;
 		if($entered)
@@ -106,7 +125,8 @@ class bors_global extends bors_object_simple
 		{
 			foreach($this->changed_objects as $name => $x)
 			{
-				$obj = $x;
+                /** @var bors_object $obj */
+                $obj = $x;
 				if(!$obj->id() || empty($obj->changed_fields))
 					continue;
 
@@ -130,26 +150,54 @@ class bors_global extends bors_object_simple
 		$entered = false;
 	}
 
-	function real_uri($uri)
+    /**
+     * @param string $uri
+     * @return string
+     */
+    function real_uri($uri)
 	{
-		if(!preg_match("!^([\w/]+)://(.*[^/])(/?)$!", $uri, $m))
+		if(!preg_match('!^([\w/]+)://(.*[^/])(/?)$!', $uri, $m))
 			return "";
-		if($m[1] == 'http')
+
+        if($m[1] == 'http')
 			return $uri;
 
-		$cls = class_load($m[1], $m[2].(preg_match("!^\d+$!", $m[2]) ? '' : '/'));
+		$obj = bors_load($m[1], $m[2].(preg_match('!^\d+$!', $m[2]) ? '' : '/'));
 
-		if(method_exists($cls, 'url'))
-			return $cls->url();
+		if(method_exists($obj, 'url'))
+			return $obj->url();
 		else
 			return $uri;
 	}
 
-	function referer() { return empty($_GET['ref']) ? @$_SERVER['HTTP_REFERER'] : $_GET['ref']; }
+    function referer()
+    {
+        return empty($_GET['ref']) ? @$_SERVER['HTTP_REFERER'] : $_GET['ref'];
+    }
 
-	function client() { return $this->__havec('client') ? $this->__lastc() : $this->__setc(object_load('bors_client')); }
-	function server() { return $this->__havec('server') ? $this->__lastc() : $this->__setc(object_load('bors_server')); }
-	function request(){ return $this->__havec('request')? $this->__lastc() : $this->__setc(object_load('bors_request')); }
+    /**
+     * @return bors_client
+     */
+    function client()
+    {
+        return $this->__havec('client') ? $this->__lastc() : $this->__setc(object_load('bors_client'));
+    }
+
+    /**
+     * @return bors_server
+     */
+    function server()
+    {
+        return $this->__havec('server') ? $this->__lastc() : $this->__setc(object_load('bors_server'));
+    }
+
+    /**
+     * @return bors_request
+     */
+    function request()
+    {
+        return $this->__havec('request') ? $this->__lastc() : $this->__setc(object_load('bors_request'));
+    }
 
 	function do_task($task_class, $data = array())
 	{

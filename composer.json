@@ -23,7 +23,7 @@
 
 	"require": {
 		"php": ">=5.3",
-		"balancer/blib-morfology-ru": "@dev",
+		"balancer/blib-morfology-ru": "dev-master",
 		"intervention/image": "*",
 		"monolog/monolog": "*",
 		"rediska/rediska": "*",

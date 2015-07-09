@@ -4,6 +4,9 @@ class bors_forms_radio extends bors_forms_element
 {
 	function html()
 	{
+		include_once('inc/bors/lists.php');
+		$this->make_data();
+
 		$params = $this->params();
 
 		if(!empty($params['property']))
@@ -49,8 +52,11 @@ class bors_forms_radio extends bors_forms_element
 			}
 			else
 			{
-				require_once(BORS_CORE.'/inc/bors/lists.php');
-				eval('$list='.$list);
+				if($list)
+				{
+					require_once(BORS_CORE.'/inc/bors/lists.php');
+					eval('$list='.$list);
+				}
 			}
 		}
 
@@ -109,6 +115,7 @@ class bors_forms_radio extends bors_forms_element
 
 		$colorpos = 0;
 		$labels_html = array();
+
 		foreach($list as $id => $iname)
 		{
 			$style = array();
@@ -139,5 +146,48 @@ class bors_forms_radio extends bors_forms_element
 			$html .= "</td></tr>\n";
 
 		return $html;
+	}
+
+	function make_data()
+	{
+		$data = $this->params();
+		$form = $this->form();
+
+		if(array_key_exists('list', $data))
+		{
+			// Ничего не делаем, массив уже в данных.
+		}
+		elseif(array_key_exists('named_list', $data))
+		{
+			if(preg_match('/^(\w+):(\w+)$/', $data['named_list'], $m))
+			{
+				$list_class_name = $m[1];
+				$id = $m[2];
+			}
+			else
+			{
+				$list_class_name = $data['named_list'];
+				$id = NULL;
+			}
+
+			$list = new $list_class_name($id);	//TODO: статический вызов тут не прокатит, пока не появится повсеместный PHP-5.3.3.
+			$data['list'] = $list->named_list();
+		}
+		else
+		{
+			$list_filter = popval($data, 'where', popval($data, 'list_filter', array()));
+			if(is_string($list_filter))
+				eval("\$list_filter = $list_filter;");
+
+			// $data['main_class'] — http://admin.aviaport.wrk.ru/job/cabinets/236/
+			$data['list'] = base_list::make(defval($data, 'main_class', $class), $list_filter, $data);
+		}
+
+		// Смешанная проверка для тестирования на http://ucrm.wrk.ru/admin/persons/9/
+		if(is_array($data['list']) && ($data['is_int'] = defval($data, 'is_int', true)))
+			foreach($data['list'] as $k => $v)
+				$data['is_int'] &= !$k || is_numeric($k);
+
+		$this->set_params($data);
 	}
 }

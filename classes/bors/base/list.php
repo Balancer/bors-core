@@ -5,7 +5,8 @@ class base_list extends bors_object_simple
 	function id_to_name($id)
 	{
 		$list = $this->named_list();
-		return $list[$id];
+
+		return empty($list[$id]) ? NULL : $list[$id];
 	}
 
 	function id_to_name_s($id)

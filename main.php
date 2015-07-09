@@ -191,6 +191,9 @@ if(config('mode.debug'))
 else
 	$res = bors::try_show_uri($uri);
 
+/** @var bors_object $object */
+$object = config('__main_object');
+
 if(config('debug.execute_trace'))
 	debug_execute_trace("process done. Return type is ".gettype($res)."; Next — changed save");
 

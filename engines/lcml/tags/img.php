@@ -242,7 +242,7 @@ function lt_img($params)
 				$image_size = @getimagesize($file);
 			}
 
-//			if(config('is_developer')) { echo '<xmp>'; var_dump($params['url'], $file, $image_size); }
+//			if(config('is_developer')) { echo '<xmp>'; var_dump($params['url'], $file, $image_size, $store_url, $path); exit(); }
 
 			if(file_exists($file) && filesize($file)>0 && $image_size)
 			{
@@ -267,6 +267,12 @@ function lt_img($params)
 				}
 
 				$db->update('images', array('id' => $id), array('local_path' => $data['local_path']));
+			}
+			elseif(file_exists($file) && filesize($file)>0)
+			{
+				$remote = $uri;
+				$uri = "$store_url/$path";
+				$data['local'] = true;
 			}
 		}
 
@@ -304,8 +310,6 @@ function lt_img($params)
 			else
 				$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", "$store_url/$path");
 
-//			if(config('is_developer')) { echo '<xmp>'; var_dump($file, $uri, $img_ico_uri, $data, $params); exit(); }
-
 			if(preg_match('!\.[^/+]$!', $uri))
 				$img_page_uri = preg_replace("!^(http://.+?)(\.[^\.]+)$!", "$1.htm", $uri);
 			else
@@ -327,7 +331,7 @@ function lt_img($params)
 				$have_href = false;
 			}
 
-//			if(config('is_developer')) { var_dump(defval($params, 'href'), defval($params, 'use_cache'), $uri, $href, $have_href); exit(); }
+//			if(config('is_developer')) { var_dump($img_ico_uri, defval($params, 'href'), defval($params, 'use_cache'), $uri, $href, $have_href); exit(); }
 			if(!$have_href)
 				$href = $uri;
 
@@ -367,7 +371,10 @@ function lt_img($params)
 			}
 
 			if(!intval($width) || !intval($height))
+			{
+//				if(config('is_developer')) { echo '<xmp>'; var_dump($file, $uri, $img_ico_uri, $data, $params); exit(); }
 				return sprintf($err_box, "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get <a href=\"{$img_ico_uri}\">icon's</a> size]");
+			}
 
 			//TODO: придумать, как обойти хардкод имени класса картинки
 			if($image = bors_image::register_file($file))

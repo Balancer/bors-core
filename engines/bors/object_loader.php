@@ -121,7 +121,7 @@ function class_internal_uri_load($uri)
 		$id = $m[2];
 
 	$page = NULL;
-	if(preg_match("!^(.+),(\d+)$!", $id, $m))
+	if(preg_match('!^(.+),(\d+)$!', $id, $m))
 	{
 		$id = $m[1];
 		$page = $m[2];
@@ -130,18 +130,24 @@ function class_internal_uri_load($uri)
 	return object_init($class_name, $id, array('page'=>$page));
 }
 
+/**
+ * @param string $class
+ * @param string|integer $id
+ * @param array $args
+ * @return mixed|null
+ */
 function class_load($class, $id = NULL, $args=array())
 {
-	if(preg_match("!^\w+$!", $class))
+	if(preg_match('!^\w+$!', $class))
 		return object_init($class, $id, $args);
 
 	if(preg_match("!^/!", $class) && bors()->server()->host())
 		$class = 'http://'.bors()->server()->host().$class;
 
-	if(!is_object($id) && preg_match("!^(\d+)/$!", $id, $m))
+	if(!is_object($id) && preg_match('!^(\d+)/$!', $id, $m))
 		$id = $m[1];
 
-	if(preg_match("!^(\w+)://.+!", $class, $m))
+	if(preg_match('!^(\w+)://.+!', $class, $m))
 	{
 		if(preg_match("!^http://!", $class))
 		{
@@ -699,7 +705,7 @@ function bors_objects_targets_preload($objects, $target_class_field = 'target_cl
 
 	$targets = array();
 	foreach($ids as $target_class => $oids)
-		$targets[$target_class] = objects_array($target_class, array('id IN' => array_keys($oids), 'by_id' => !!$store_field));
+		$targets[$target_class] = bors_find_all($target_class, array('id IN' => array_keys($oids), 'by_id' => !!$store_field));
 
 	if($store_field)
 		foreach($objects as $x)

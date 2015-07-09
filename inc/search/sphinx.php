@@ -209,7 +209,7 @@ function bors_search_sphinx_find_links($object, $delete_old = false, $is_auto = 
 
 	foreach($names as $name => $is_exactly)
 	{
-		$ch = new Cache();
+		$ch = new bors_cache();
 
 		$objects = bors_search_sphinx($name, array(
 			'indexes' => 'news,news_delta,digest,digest_delta',

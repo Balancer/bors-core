@@ -41,6 +41,7 @@ class bors
 		if($object = bors_load_uri($uri))
 		{
 			config_set('__main_object_load', false);
+			config_set('__main_object', $object);
 
 			// Если это редирект
 			if(!is_object($object))

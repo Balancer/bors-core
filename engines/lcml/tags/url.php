@@ -4,7 +4,7 @@ function lp_url($text, $params)
 {
 	extract($params);
 	$url_data = url_parse($url);
-	$external = !empty($url_data['local']) || empty($url_data['host']) ? '' : ' class="external"';
+	$external = !empty($url_data['local']) || empty($url_data['host']) ? '' : ' class="external foo-a1"';
 
    	if(!empty($url_data['host']) && ($skip_domains = config('lcml.urls.skip_domains')))
    	{
@@ -41,7 +41,7 @@ function lt_url($params)
 		$url = @$GLOBALS['main_uri'].$url;
 
 	$url_data = url_parse($url);
-	$external = @$url_data['local'] ? '' : ' class="external"';
+	$external = @$url_data['local'] ? '' : ' class="external foo-a4"';
 
 	if($hts &&
 		!$hts->get_data($url, 'create_time')

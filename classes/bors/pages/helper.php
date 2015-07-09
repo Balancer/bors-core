@@ -70,6 +70,9 @@ class bors_pages_helper
 	{
 		if(is_numeric($property))
 		{
+			if(!$view->model_class())
+				bors_throw('Undefined model class for '.$view->class_name());
+
 			$property = $title;
 			$x = bors_lib_orm::parse_property($view->model_class(), $property);
 			$title = defval($x, 'title', $property);

@@ -31,6 +31,6 @@ class bors_admin_links_main extends bors_admin_page
 		), $cond);
 	}
 
-	function total_items() { return objects_count('bors_link', $this->where(array())); }
+	function total_items() { return bors_count('bors_link', $this->where(array())); }
 	function items_around_page() { return 20; }
 }

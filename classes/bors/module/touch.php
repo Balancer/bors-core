@@ -14,6 +14,9 @@ class bors_module_touch
 		extract($params);
 
 		$x = bors_load_ex($class, NULL, $params);
+		if(!$x)
+			bors_throw("Can't load class '$class'");
+
 		$x->set('is_static', true);
 		$uri = $x->internal_uri_ascii();
 		echo "<div id=\"bors_touch_".md5($uri)."\" class=\"module-touch\"";
@@ -31,7 +34,7 @@ $(".module-touch").each(function(){
 el=$(this)
 modules.push(el.data())
 })
-$.getScript("/_bors/js/touch?modules="+JSON.stringify(modules)).fail(function(jq,status,ex){console.log(status+": "+ex)})
+$.getScript("/_bors/js/touch?modules="+JSON.stringify(modules)+"&rnd="+Math.random()).fail(function(jq,status,ex){console.log(status+": "+ex)})
 ');
 	}
 }

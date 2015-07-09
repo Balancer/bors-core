@@ -1,7 +1,6 @@
 <?php
 
-bors_function_include('natural/bors_plural');
-require_once('inc/bors/cross.php');
+// require_once('inc/bors/cross.php');
 
 class base_object_db extends bors_object
 {
@@ -36,8 +35,6 @@ class base_object_db extends bors_object
 			);
 		}
 
-		bors_use('natural/bors_plural');
-
 		return array(
 			$this->db_name() => array(
 				$this->table_name() => $this->table_fields()
@@ -45,7 +42,7 @@ class base_object_db extends bors_object
 		);
 	}
 
-	function _table_name_def() { return bors_plural($this->class_name()); }
+	function _table_name_def() { return blib_grammar::plural($this->class_name()); }
 
 	function new_instance() { bors_object_new_instance_db($this); }
 
@@ -107,8 +104,8 @@ class base_object_db extends bors_object
 		return parent::delete();
 	}
 
-	static function objects_array($where) { return objects_array($where); }
-	static function objects_first($where) { return objects_first($where); }
+	static function objects_array($where) { return bors_find_all($where); }
+	static function objects_first($where) { return bors_find_first($where); }
 
 	static function truncate($class_name)
 	{

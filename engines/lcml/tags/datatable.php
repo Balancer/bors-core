@@ -76,7 +76,7 @@
 
 		$out .= "</table>";
 
-		$ch = new Cache();
+		$ch = new bors_cache();
 		foreach($objs as $o)
 		{
 			$ch->get('datatable-using', rand(), "dbuse://".addslashes($o)."/");

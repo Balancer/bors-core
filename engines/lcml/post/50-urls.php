@@ -26,9 +26,9 @@
 
     function lcml_urls_title($url, $snip = false, $line = NULL)
     {
-        if(class_exists('Cache') && !config('lcml_cache_disable_full'))
+        if(class_exists('bors_cache') && !config('lcml_cache_disable_full'))
         {
-            $cache = new Cache();
+            $cache = new bors_cache();
             if($cache->get('url_titles-v4-'.$snip, $url))
                 return $cache->last();
             else
@@ -40,6 +40,14 @@
 
     function lcml_urls_title_nocache($url, $snip=false, $line = NULL)
     {
+    	$url_data = parse_url($url);
+    	if(!empty($url_data['host']) && ($skip_domains = config('lcml.urls.skip_domains')))
+    	{
+			$host = str_replace('www.', '', $url_data['host']);
+			if(in_array($host, $skip_domains))
+				return $url;
+		}
+
 		static $parsed = array();
 		if(!empty($parsed[$url][$snip][$line]))
 			return $url;
@@ -67,7 +75,7 @@
 		}
 
 		$url_data = url_parse($pure_url);
-		$external = @$url_data['local'] ? '' : ' class="external"';
+		$external = @$url_data['local'] ? '' : ' class="external foo-a3"';
 
 		if(bors_exec_time() < config('lcml.timeout', 30))
 		{

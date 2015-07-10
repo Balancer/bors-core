@@ -388,7 +388,7 @@ class bors_storage_pdo extends bors_storage implements Iterator
 					$fields[$id_field] = $new_id;
 				}
 
-//				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
+//				bors_debug::syslog("inserts", "insert $table_name, ".print_r($fields, true));
 
 				$object->storage()->storage_create();
 
@@ -414,7 +414,7 @@ class bors_storage_pdo extends bors_storage implements Iterator
 					if(!$new_id && ($idf = $object->id_field()))
 						$new_id = $object->get($idf);
 					if(!$new_id && !$object->ignore_on_new_instance())
-						debug_hidden_log('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
+						bors_debug::syslog('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
 				}
 			}
 		}
@@ -515,6 +515,7 @@ class bors_storage_pdo extends bors_storage implements Iterator
 		$db_driver_name = $this->_db_driver_name();
 		$db = new $db_driver_name($this->pdo_dsn($db_name));
 		$db->exec($query);
+//		$db->close();
 	}
 
 	static function drop_table($class_name)
@@ -554,11 +555,11 @@ class bors_storage_pdo extends bors_storage implements Iterator
 			return $exists_map[$table];
 
 		$db = $this->db();
-		//FIXME: осторожно! Нужно придумать универсальный способ pdo-escape для имён, не значений!
 
+		//FIXME: осторожно! Нужно придумать универсальный способ pdo-escape для имён, не значений!
 		try
 		{
-			$db->get("SELECT 1 FROM $table");
+			$db->get("SELECT 1 FROM $table LIMIT 1");
 			$exists_map[$table] = true;
 		}
 		catch(Exception $e)

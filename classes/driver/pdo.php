@@ -20,7 +20,7 @@ class driver_pdo implements Iterator
 
 	static function dsn($db_name)
 	{
-		// Что-то типа sqlite:/path/to/db.sqlite — имя БД уже содержит DNS
+		// Если что-то типа sqlite:/path/to/db.sqlite, то имя БД уже содержит DSN
 		if(preg_match('/^\w+:/', $db_name))
 			return $db_name;
 
@@ -114,7 +114,8 @@ class driver_pdo implements Iterator
 
 		$err = $this->connection->errorInfo();
 		if($err[0] != "00000")
-			return bors_throw("PDO error on query «{$query}»: ".print_r($err, true));
+			// Can't use bors_throw() because need silently catch in callers.
+			throw new Exception("PDO error on query «{$query}»: ".print_r($err, true));
 
 		$ics = config('internal_charset');
 		$dcs = configh('pdo_access', $this->database, 'charset');
@@ -159,7 +160,11 @@ class driver_pdo implements Iterator
 		return $result;
 	}
 
-	function close() { }
+	function close()
+	{
+		if($this->connection)
+			$this->connection = NULL;
+	}
 
 	// Прочитать одну строку или одно значение
 	function select($table, $fields, $where)
@@ -307,4 +312,6 @@ class driver_pdo implements Iterator
     public function current() { bors_throw('Not implemented'); }
     public function key() { bors_throw('Not implemented'); }
     public function valid() { return bors_throw('Not implemented'); }
+
+	public function set_skip_one_error() { $this->skip_errors++; }
 }

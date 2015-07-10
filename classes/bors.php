@@ -5,7 +5,7 @@ class bors
 	static function init()
 	{
 		if(!defined('BORS_CORE'))
-			define('BORS_CORE', dirname(dirname(__FILE__)));
+			define('BORS_CORE', dirname(__DIR__));
 
 		require_once(BORS_CORE.'/init.php');
 	}

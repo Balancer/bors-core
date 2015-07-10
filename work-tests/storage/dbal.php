@@ -3,7 +3,7 @@
 require_once('../config.php');
 
 config_seth('dbal', 'DBAL_TEST', 'driver', 'pdo_sqlite');
-config_seth('dbal', 'DBAL_TEST', 'path', dirname(__FILE__).'/dbal-test.sqlite');
+config_seth('dbal', 'DBAL_TEST', 'path', __DIR__.'/dbal-test.sqlite');
 
 config_seth('dbal', 'DBAL_TEST_MYSQL', 'driver', 'pdo_mysql');
 config_seth('dbal', 'DBAL_TEST_MYSQL', 'dbname', 'BORS-UNITTEST');

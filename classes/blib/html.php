@@ -62,6 +62,6 @@ class blib_html
 
 		$suite->assertEquals('<blockquote><div>Бывший министр</div></blockquote>', blib_html::close_tags('<blockquote><div>Бывший министр'));
 
-		$suite->assertEquals(file_get_contents(dirname(__FILE__).'/html.unittest.out.text'), blib_html::close_tags(file_get_contents(dirname(__FILE__).'/html.unittest.data.text')));
+		$suite->assertEquals(file_get_contents(__DIR__.'/html.unittest.out.text'), blib_html::close_tags(file_get_contents(__DIR__.'/html.unittest.data.text')));
 	}
 }

@@ -9,7 +9,7 @@ if(empty($GLOBALS['stat']['start_microtime']))
 */
 
 if(!defined('BORS_CORE'))
-	define('BORS_CORE', dirname(__FILE__));
+	define('BORS_CORE', __DIR__);
 
 if(!defined('BORS_EXT'))
 	define('BORS_EXT', dirname(BORS_CORE).'/bors-ext');
@@ -133,7 +133,7 @@ foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 	if(file_exists($file = "{$base_dir}/config-pre.php"))
 		include_once($file);
 
-require_once(dirname(__FILE__).'/config.php');
+require_once(__DIR__.'/config.php');
 
 if(!config('system.session.skip'))
 {

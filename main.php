@@ -7,7 +7,7 @@ if(function_exists('xhprof_enable'))
 	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 
 // Инициализация фреймворка
-require_once(dirname(__FILE__).'/init.php');
+require_once(__DIR__.'/init.php');
 
 // Если в запрашиваемом URL присутствуют параметры - переносим их в строку запроса
 // такая проблема всплывает на некоторых web-серверах.

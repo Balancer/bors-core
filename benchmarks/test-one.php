@@ -1,6 +1,6 @@
 <?php
 
-define('BORS_LOCAL', dirname(__FILE__));
+define('BORS_LOCAL', __DIR__);
 require '../tools/config.php';
 
 $start = microtime(true);

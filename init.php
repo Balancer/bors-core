@@ -64,7 +64,7 @@ foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 	if(file_exists($file = "{$base_dir}/config-pre.php"))
 		include_once($file);
 
-$dir = dirname(__FILE__);
+$dir = __DIR__;
 bors_config_ini($dir.'/config.ini');
 require_once($dir.'/config.php');
 

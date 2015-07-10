@@ -110,7 +110,7 @@ function save_cached_object($object, $delete = false, $use_memcache = true)
 
 function class_internal_uri_load($uri)
 {
-	if(!preg_match("!^(\w+)://(.*)$!", $uri, $m))
+	if(!preg_match('!^(\w+)://(.*)$!', $uri, $m))
 		return NULL;
 
 	$class_name = $m[1];
@@ -280,7 +280,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 			foreach($GLOBALS['bors_url_submap_map'] as $pair)
 			{
 				if(!preg_match('!^(.*)\s*=>\s*(.+)$!', $pair, $m))
-					exit(ec("Ошибка формата bors_url_submap [$map_file]: '{$pair}'"));
+					exit(ec("Ошибка формата bors_url_submap [$map_file_new]: '{$pair}'"));
 
 				$m[1] = trim($m[1]);
 				if(preg_match('!^\(/(.+)$!', $m[1], $mfoo))
@@ -476,18 +476,18 @@ function class_load_by_vhosts_url($url)
 
 				$page = $args;
 			}
-			if(preg_match("!^(.+)\((\d+|NULL),(\d+)\)$!", $class_path, $m))	
+			if(preg_match('!^(.+)\((\d+|NULL),(\d+)\)$!', $class_path, $m))
 			{
 				$class_path = $m[1];
 				$id = $match[$m[2]+1];
 				$page = @$match[$m[3]+1];
 			}
-			elseif(preg_match("!^(.+)\((\d+)\)$!", $class_path, $class_match))	
+			elseif(preg_match('!^(.+)\((\d+)\)$!', $class_path, $class_match))
 			{
 				$class_path = $class_match[1];
 				$id = $match[$class_match[2]+1];
 			}
-			elseif(preg_match("!^(.+)\((url)\)$!", $class_path, $class_match))	
+			elseif(preg_match('!^(.+)\((url)\)$!', $class_path, $class_match))
 			{
 				$class_path = $class_match[1];
 				$id = $url;
@@ -697,10 +697,18 @@ function bors_objects_preload(&$objects, $field, $preload_class, $store_field = 
 	return $targets;
 }
 
+/**
+ * @param bors_object array  $objects
+ * @param string $target_class_field
+ * @param string $target_id_field
+ * @param string $store_field
+ * @return array bors_object
+ */
 function bors_objects_targets_preload($objects, $target_class_field = 'target_class_name', $target_id_field = 'target_object_id', $store_field = 'target')
 {
 	$ids = array();
-	foreach($objects as $x)
+    /** @var bors_object $x */
+    foreach($objects as $x)
 		@$ids[$x->$target_class_field()][$x->$target_id_field()] = true;
 
 	$targets = array();

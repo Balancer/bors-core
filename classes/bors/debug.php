@@ -26,7 +26,7 @@ class bors_debug
 
 		$trace = defval($params, 'trace');
 
-		$args['append'] = "stack:\n==============\n".debug_trace(0, false);
+		$args['append'] = "stack:\n==============\n".bors_debug::trace(0, false);
 
 		bors_debug::syslog('errors/'.date('c').'-'.$type, $message."\n\ntrace=$trace", -1, $args);
 	}

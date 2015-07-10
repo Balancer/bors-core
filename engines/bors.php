@@ -340,6 +340,8 @@ function bors_stop_bots()
 
 function bors_throw($message)
 {
+	static $level = 0;
+
 	@header('HTTP/1.1 500 Internal Server Error');
 
 	if(config('exceptions.kill_on_throw'))
@@ -348,7 +350,9 @@ function bors_throw($message)
 		exit('Error. See in BORS logs');
 	}
 
-	bors_debug::sepalog('exceptions-unknown', $message);
+	if($level++ < 1)
+		bors_debug::sepalog('exceptions-unknown', $message);
+
 	throw new Exception($message);
 }
 

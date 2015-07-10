@@ -20,7 +20,17 @@ class bors_log_monolog
 
 	// (400): Runtime errors that do not require immediate action but
 	//        should typically be logged and monitored.
-	function error($msg, $section = 'bors', $trace = false, $extra = array()) { $this->logger($section, Logger::ERROR, $trace)->addError($msg, $extra); }
+	function error($msg, $section = 'bors', $trace = false, $extra = array())
+	{
+		try
+		{
+			$this->logger($section, Logger::ERROR, $trace)->addError($msg, $extra);
+		}
+		catch(Exception $e)
+		{
+			echo "Exception while error logging\n";
+		}
+	}
 
 	// (300): Exceptional occurrences that are not errors.
 	//        Examples: Use of deprecated APIs, poor use of an API,

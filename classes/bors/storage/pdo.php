@@ -290,7 +290,9 @@ class bors_storage_pdo extends bors_storage implements Iterator
 
     public function rewind()
     {
-		$this->data = $this->dbi->rewind();
+		if(!empty($this->dbi))
+			$this->data = $this->dbi->rewind();
+
 		return $this->__init_object();
     }
 
@@ -300,6 +302,8 @@ class bors_storage_pdo extends bors_storage implements Iterator
 	{
 		$data = $this->data;
 		$class_name = $this->__class_name;
+		if(!class_exists($class_name))
+			bors_throw("Can't find class name '$class_name'");
 		$object = new $class_name($data['id']);
 //		$object->set_id($data['id']);
 		$object->data = $data;

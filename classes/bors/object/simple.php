@@ -301,7 +301,7 @@ class bors_object_simple extends bors_object_empty
 
 	function _body_engine_def() { return ''; }
 
-	function storage_engine() { return ''; }
+	function _storage_engine_def() { return ''; }
 	function is_loaded() { return true; }
 	function internal_uri() { return get_class($this).'://'.$this->id(); }
 	function cache_clean() { }

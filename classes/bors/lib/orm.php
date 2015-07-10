@@ -13,7 +13,13 @@ class bors_lib_orm
 		'end_date' => 'Дата окончания',
 	);
 
-	static function field($property, &$field = NULL)
+    /**
+     * @param string $property
+     * @param string|null $field
+     * @return array|null
+     * @throws Exception
+     */
+    static function field($property, &$field = NULL)
 	{
 		// Если это запись вида array('id', 'title', ...);
 		if(is_numeric($property) && !is_null($field))
@@ -109,7 +115,7 @@ class bors_lib_orm
 			elseif(preg_match('/^\w+$/', $property))
 				$field['type'] = 'string';
 			else
-				bors_throw(ec('Неизвестное поле ').$property);
+				throw new Exception(ec('Неизвестное поле ').$property);
 		}
 
 		if(in_array($property, array('id', 'create_time', 'create_ts', 'modify_time', 'modify_ts', 'owner_id', 'last_editor_id', 'last_editor_ua', 'last_editor_ip')))
@@ -147,7 +153,12 @@ class bors_lib_orm
   		bors_throw(ec('Неизвестное поле ').$property);
 	}
 
-	static function all_fields($object, $only_editable = true)
+    /**
+     * @param bors_object $object
+     * @param bool $only_editable
+     * @return array|bool
+     */
+    static function all_fields($object, $only_editable = true)
 	{
 		//TODO: добавить touch в storage, чтобы при добавлении поля в автоматические классы и кеш перечитывался. Также с брос кеша класса добавить.
 		$cache_name = 'class_'.($only_editable ? 'editable' : 'all').'_fields';
@@ -163,6 +174,7 @@ class bors_lib_orm
 		$auto_objects_map = array();
 
 		$fields_array = array();
+
 		foreach($object->get('fields', array()) as $db => $tables)
 		{
 			foreach($tables as $table => $fields)
@@ -356,7 +368,12 @@ class bors_lib_orm
 		return NULL;
 	}
 
-	static function parse_property($class_name, $property)
+    /**
+     * @param string $class_name
+     * @param string $property
+     * @return array|null
+     */
+    static function parse_property($class_name, $property)
 	{
 		$object = bors_foo($class_name);
 //		$class_file = bors_class_loader::load($class_name);
@@ -372,7 +389,7 @@ class bors_lib_orm
 	static function db_name($class_name)
 	{
 		$foo = new $class_name(NULL);
-		$class_file = bors_class_loader::load($class_name);
+		$class_file = bors_class_loader::load_file($class_name);
 		$foo->set_class_file($class_file);
 		return object_property($foo, 'db_name');
 	}
@@ -380,7 +397,7 @@ class bors_lib_orm
 	static function table_name($class_name)
 	{
 		$foo = new $class_name(NULL);
-		$class_file = bors_class_loader::load($class_name);
+		$class_file = bors_class_loader::load_file($class_name);
 		$foo->set_class_file($class_file);
 		return object_property($foo, 'table_name');
 	}

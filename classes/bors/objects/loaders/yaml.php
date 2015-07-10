@@ -2,7 +2,7 @@
 
 class bors_objects_loaders_yaml extends bors_objects_loaders_meta
 {
-	static function load($class_name, $object_id)
+	static function load_class($class_name, $object_id)
 	{
 		if(!preg_match('/^\w+$/', $class_name))
 			return NULL;

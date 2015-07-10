@@ -979,9 +979,9 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		{
 			foreach($rels as $field => $class)
 			{
-				if(preg_match('/^(\w+)$/', trim($class), $m))
+				if(preg_match('/^([\\\\\w]+)$/', trim($class), $m))
 					$rel_obj = object_load($m[1], $this->$field());
-				elseif(preg_match('/^(\w+)\((\w+)\)$/', trim($class), $m))
+				elseif(preg_match('/^([\\\\\w]+)\((\w+)\)$/', trim($class), $m))
 					$rel_obj = bors_find_first($m[1], array($m[2] => $this->$field()));
 				else
 					exit("Unknown format: '$class'");
@@ -1193,7 +1193,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	 */
 	function url() { return $this->url_ex($this->page()); }
 
-	function url_ex($args)
+    /**
+     * @param integer|string|array $args
+     * @return string
+     * @throws Exception
+     */
+    function url_ex($args)
 	{
 		if(is_object($args))
 			$page = popval($args, 'page');
@@ -1917,7 +1922,11 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		}
 	}
 
-	static function load($id)
+    /**
+     * @param int|string $id
+     * @return bors_object|b2_null
+     */
+    static function load($id)
 	{
 		$object = bors_load(get_called_class(), $id);
 

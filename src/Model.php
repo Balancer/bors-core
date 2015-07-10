@@ -7,9 +7,15 @@ class Model extends Object
 	function _item_name() { return @array_pop(explode('_', $this->class_name())); }
 	function _item_name_m() { return \blib_grammar::plural($this->_item_name()); }
 
+	function _fields_def()
+	{
+		return array($this->db_name() => array($this->table_name() => $this->table_fields()));
+	}
+
 	function _table_name_def()
 	{
 		$class_name = $this->class_name();
+		// Выбираем последнее слово имени класса в роли имени таблицы по умолчанию.
 		if(preg_match('/.+?([a-zA-Z]\w+)$/i', $class_name, $m))
 			return \blib_grammar::plural(bors_lower($m[1]));
 
@@ -53,5 +59,10 @@ class Model extends Object
 		$this->changed_fields = array();
 
 		return $this;
+	}
+
+	static function create($data)
+	{
+		return bors_new(get_called_class(), $data);
 	}
 }

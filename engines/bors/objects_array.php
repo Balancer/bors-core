@@ -32,9 +32,9 @@ function bors_find_all($class_name, $args = array())
 		unset($args['*preload']);
 	}
 
-	if(!preg_match('/^\w+$/', $class_name))
+	if(!preg_match('/^[\\\\\w]+$/', $class_name))
 	{
-		debug_hidden_log('data-errors', "Incorrect class name {$class_name} objects_load by ".print_r($args, true));
+		bors_debug::syslog('data-errors', "Incorrect class name {$class_name} objects_load by ".print_r($args, true));
 		return array();
 	}
 
@@ -46,7 +46,7 @@ function bors_find_all($class_name, $args = array())
 
     /** @var bors_object $init */
 	$init = new $class_name(NULL);
-	$class_file = bors_class_loader::load($class_name);
+	$class_file = bors_class_loader::load_file($class_name);
 	$init->set_class_file($class_file);
 
 	if($s = $init->storage())
@@ -63,7 +63,7 @@ function bors_find_all($class_name, $args = array())
 		}
 
 		if(config('debug.trace_object_load'))
-			debug_hidden_log('objects_load', "all $class_name(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
+			bors_debug::syslog('objects_load', "all $class_name(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
 
 		if(!empty($preload))
 		{
@@ -75,20 +75,28 @@ function bors_find_all($class_name, $args = array())
 		return $objects;
 	}
 
-	debug_hidden_log('__fatal_objects_error', 'Try to load objects array without storage: '.$init);
+	bors_debug::syslog('__fatal_objects_error', 'Try to load objects array without storage: '.$init);
 	return array();
 }
 
-function bors_find_first($class, $args = array())
+/**
+ * Ищет первый подходящий по запросу объект.
+ * @param string $class_name
+ * @param array $args
+ * @return bors_object|null
+ */
+function bors_find_first($class_name, $args = array())
 {
 	if(empty($args['limit']))
 		$args['limit'] = 1;
-	$objs = bors_find_all($class, $args);
-	if(config('debug_objects_create_counting_details'))
-		debug_count_inc("bors_find_first($class)");
+	
+    $objs = bors_find_all($class_name, $args);
+	
+    if(config('debug_objects_create_counting_details'))
+		debug_count_inc("bors_find_first($class_name)");
 
 	if(config('debug.trace_object_load'))
-		debug_hidden_log('objects_load', "first $class(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
+		bors_debug::syslog('objects_load', "first $class_name(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
 
 	return $objs ? $objs[0] : NULL;
 }

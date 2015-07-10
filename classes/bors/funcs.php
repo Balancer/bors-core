@@ -25,7 +25,7 @@ class bors_funcs
 	}
 }
 
-function class_include($class_name, &$args = array()) { return bors_class_loader::load($class_name, $args); }
+function class_include($class_name, &$args = array()) { return bors_class_loader::load_file($class_name, $args); }
 
 function mkpath($strPath, $mode=0777)
 {

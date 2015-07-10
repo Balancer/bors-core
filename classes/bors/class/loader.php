@@ -46,7 +46,7 @@ class bors_class_loader
 		return NULL;
 	}
 
-	static function load($class_name, &$args = array())
+	static function load_file($class_name, &$args = array())
 	{
 		if(is_object($class_name))
 		{
@@ -54,7 +54,7 @@ class bors_class_loader
 			$class_name = $class_name->class_name();
 		}
 
-		if(!preg_match('/^\w{2,}$/', $class_name)
+		if(!preg_match('/^[\\\\\w]{2,}$/', $class_name)
 			|| preg_match('/^Smarty_Resource_Custom/', $class_name) // Чтобы не мусорило логи
 		)
 			return false;

@@ -63,7 +63,7 @@ class base_page_paged extends bors_page
 
 			foreach($preload as $property => $class_name)
 			{
-				if(preg_match('/^(\w+)\((\w+)\)$/', $class_name, $m))
+				if(preg_match('/^([\\\\\w]+)\((\w+)\)$/', $class_name, $m))
 				{
 					$class_name = $m[1];
 					$id_property = $m[2];

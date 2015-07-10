@@ -42,7 +42,7 @@ class bors_template
 
 			while($parent)
 			{
-				if(file_exists($file = dirname(bors_class_loader::load($parent)).'/'.$template_name))
+				if(file_exists($file = dirname(bors_class_loader::load_file($parent)).'/'.$template_name))
 					return 'xfile:'.$file;
 
 				$parent = get_parent_class($parent);

@@ -53,7 +53,7 @@ class bors_module extends bors_page
 
 	static function mod_html($class_name, $args = NULL)
 	{
-		if(preg_match('/^(\w+)::(\w+)$/', $class_name, $m))
+		if(preg_match('/^([\\\\\w]+)::(\w+)$/', $class_name, $m))
 		{
 			$class_name = $m[1];
 			$func = $m[2];

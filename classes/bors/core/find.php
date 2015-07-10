@@ -45,7 +45,7 @@ class bors_core_find
 			$this->_where['*limit'] = array(($limit1-1)*$limit2, $limit2);
 
 		$init = new $this->_class_name(NULL);
-		$class_file = bors_class_loader::load($this->_class_name);
+		$class_file = bors_class_loader::load_file($this->_class_name);
 		$init->set_class_file($class_file);
 
 		$s = $init->storage();
@@ -197,7 +197,7 @@ class bors_core_find
 	{
 		// Тест на http://www.aviaport.ru/job/ внизу модуль «Новости по теме»
 		// Ещё — на http://www.aviaport.ru/ajax/top-announces?first=1&last=3
-		return preg_replace_callback('/^(\w+)(?![\.\w\(])/', array($this, '_first_parse_callback'), $s);
+		return preg_replace_callback('/^([\\\\\w]+)(?![\.\w\(])/', array($this, '_first_parse_callback'), $s);
 	}
 
 	private function _first_parse_callback($m)

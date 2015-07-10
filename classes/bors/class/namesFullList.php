@@ -12,7 +12,7 @@ class bors_class_namesFullList extends base_list
 				continue;
 
 			$class_name = $x->name();
-			if(!preg_match('/^\w+$/', $class_name) || !class_include($class_name))
+			if(!preg_match('/^[\\\\\w]+$/', $class_name) || !class_include($class_name))
 				continue;
 
 			$class = new $class_name;

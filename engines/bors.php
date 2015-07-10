@@ -19,7 +19,7 @@ function object_load($class_name, $object_id=NULL, $args=array())
 	if(is_object($class_name))
 		return $class_name;
 
-//	echo "object_load($class, $object_id, ".print_dl($args).")\n";
+	// echo "object_load($class_name, $object_id, ".print_r($args, true).")\n";
 
 	if(is_numeric($class_name))
 		$class_name = class_id_to_name($class_name);
@@ -34,7 +34,7 @@ function object_load($class_name, $object_id=NULL, $args=array())
 //	if(!is_object($object_id))
 //		$object_id = trim($object_id, "\n\r ");
 
-	if(is_null($object_id) && preg_match('/^(\w+)__(\w+)={0,}$/', $class_name, $m))
+	if(is_null($object_id) && preg_match('/^([\\\\\w]+)__(\w+)={0,}$/', $class_name, $m))
 	{
 		$class_name = $m[1];
 		$object_id = $m[2];
@@ -409,12 +409,21 @@ function bors_eq($object1, $object2)
 	return $object1->extends_class_name() == $object2->extends_class_name() && $object1->id() == $object2->id();
 }
 
+/**
+ * Находит и возвращает объект по заданному классу и ID.
+ * @param string $class_name
+ * @param int|string|null $id
+ * @return bors_object|null
+ * @throws Exception
+ */
 function bors_load($class_name, $id = NULL)
 {
 	$object = object_load($class_name, $id);
-	if(!$object && config('orm.is_strict') && !class_include($class_name))
+
+    if(!$object && config('orm.is_strict') && !class_include($class_name))
 		bors_throw("Not found class '{$class_name}' for load with id='{$id}'");
-	return $object;
+
+    return $object;
 }
 
 function bors_load_ex($class_name, $id, $attrs)

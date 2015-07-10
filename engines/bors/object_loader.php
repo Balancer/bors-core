@@ -11,6 +11,13 @@ function bors_object_caches_drop()
 //	unset($GLOBALS['bors_search_get_word_id_cache']);
 }
 
+/**
+ * @param string $class_name
+ * @param int|string|null $id
+ * @param $args
+ * @param int $found
+ * @return bors_object|null
+ */
 function &load_cached_object($class_name, $id, $args, &$found=0)
 {
 	if(is_object($class_name))
@@ -138,8 +145,8 @@ function class_internal_uri_load($uri)
  */
 function class_load($class, $id = NULL, $args=array())
 {
-	if(preg_match('!^\w+$!', $class))
-		return object_init($class, $id, $args);
+	if(preg_match('!^[\\\\\w]+$!', $class))
+        return object_init($class, $id, $args);
 
 	if(preg_match("!^/!", $class) && bors()->server()->host())
 		$class = 'http://'.bors()->server()->host().$class;
@@ -147,7 +154,7 @@ function class_load($class, $id = NULL, $args=array())
 	if(!is_object($id) && preg_match('!^(\d+)/$!', $id, $m))
 		$id = $m[1];
 
-	if(preg_match('!^(\w+)://.+!', $class, $m))
+	if(preg_match('!^([\\\\\w]+)://.+!', $class, $m))
 	{
 		if(preg_match("!^http://!", $class))
 		{
@@ -540,6 +547,13 @@ function class_load_by_vhosts_url($url)
 	return NULL;
 }
 
+/**
+ * @param string $class_name
+ * @param int|string|null $object_id
+ * @param array $args
+ * @return bors_object|null
+ * @throws Exception
+ */
 function object_init($class_name, $object_id, $args = array())
 {
 //	echo "object_init($class_name, $object_id, ".print_r($args, true).")<br/>\n";
@@ -552,7 +566,7 @@ function object_init($class_name, $object_id, $args = array())
 	if($object_id === 'NULL')
 		$object_id = NULL;
 
-	if(!($class_file = bors_class_loader::load($class_name, $args)))
+	if(!($class_file = bors_class_loader::load_file($class_name, $args)))
 	{
 		if(config('throw_exception_on_class_not_found'))
 			return bors_throw("Class '$class_name' not found");

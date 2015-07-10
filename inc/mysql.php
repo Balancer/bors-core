@@ -199,6 +199,9 @@ function mysql_args_compile($args, $class=NULL)
 		unset($args['*class_name']);
 	}
 
+	// Нужно только для ORM.
+	unset($args['*by_id']);
+
 	if(!empty($args['*set']))
 	{
 		$set = $args['*set'];

@@ -18,7 +18,7 @@ class bors_objects_loaders_meta
 	{
 //		echo "Find $class_name ($object_id)<Br/>\n";
 		foreach(self::$class_loaders as $class_loader)
-			if($object = call_user_func(array($class_loader, 'load'), $class_name, $object_id))
+			if($object = call_user_func(array($class_loader, 'load_class'), $class_name, $object_id))
 				return $object;
 
 		return NULL;

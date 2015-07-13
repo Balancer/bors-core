@@ -21,5 +21,3 @@ function get_ip_nick()
 }
 
 require_once('obsolete/users/'.config('user_engine_old', 'test').'.php');
-
-// $GLOBALS['me'] = new User();

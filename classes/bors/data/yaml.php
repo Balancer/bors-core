@@ -16,7 +16,7 @@ class bors_data_yaml extends bors_data_meta
 
 		extract($data);
 
-		$data = self::parse($data);
+		$data = self::parse($content);
 
 		return array(
 			'data' => $data,

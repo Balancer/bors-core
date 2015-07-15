@@ -65,14 +65,14 @@ class bors_image_thumb extends bors_image
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_is_loaded(true);
 
-		$this->set_height(1); // трассировка
+		$this->set_height(-1); // трассировка
 
 		$this->original = bors_load($this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
 			return $this->set_is_loaded(false);
 
-		$this->set_height(2); // трассировка
+		$this->set_height(-2); // трассировка
 
 		// Тут было $this->original->file_name()
 		// Не ошибка ли? Если возвращать, то проверить WWW.aviaport_pictures на предмет соответствий
@@ -82,7 +82,7 @@ class bors_image_thumb extends bors_image
 
 //		$this->delete();
 
-		$this->set_height(3); // трассировка
+		$this->set_height(-3); // трассировка
 
 		if($original_path = $this->original->relative_path())
 			$new_path = secure_path('/cache/'.$original_path.'/'.$this->geometry);
@@ -112,7 +112,7 @@ class bors_image_thumb extends bors_image
 		if(!preg_match('!/cache.*/\d*x\d*!', $new_url))
 			bors_throw('Incorrect new url '.$new_url.' for '.$this->id().'; original url='.$original_url);
 
-		$this->set_height(4); // трассировка
+		$this->set_height(-4); // трассировка
 
 		$this->set_full_url($new_url, $caching);
 
@@ -131,14 +131,14 @@ class bors_image_thumb extends bors_image
 			bors_throw('Unknown local for "'.$new_url.'" thumb: '.print_r($oud, true)
 				.'; file_name_with_path='.$this->file_name_with_path());
 
-		$this->set_height(5); // трассировка
+		$this->set_height(-5); // трассировка
 
 		$file_thumb = $oud['local_path'];
 
 		if(!preg_match('!/cache.*/\d*x\d*!', $file_thumb))
 			bors_throw('Incorrect thumb file '.$file_thumb.' for '.print_r($oud, true));
 
-		$this->set_height(6); // трассировка
+		$this->set_height(-6); // трассировка
 
 		$abs = false;
 
@@ -163,16 +163,17 @@ class bors_image_thumb extends bors_image
 		if(!$this->original->file_name() || !$fsize_orig)
 			return;
 
-		$this->set_height(7); // трассировка
+		$this->set_height(-7); // трассировка
 
 		mkpath($this->image_dir(), 0777);
 
 		if(!$this->thumb_create($abs))
 			return $this->set_is_loaded(false);
 
-		$this->set_height(8); // трассировка
+		$this->set_height(-8); // трассировка
 
 //		bors_debug::syslog('000-image-debug', "Get thumb size for ".$file_thumb_r);
+
 		if(!file_exists($file_thumb_r))
 			bors_debug::syslog('image-error', 'Image file not exists: ' . $file_thumb_r .'; image_dir='.$this->image_dir());
 

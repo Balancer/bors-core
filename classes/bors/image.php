@@ -77,7 +77,18 @@ function set_width($w, $dbup=true)
 }
 
 function height() { return @$this->data['height']; }
-function set_height($v, $dbup=true) { return $this->set('height', $v, $dbup); }
+
+function set_height($h, $dbup=true)
+{
+	if($h<0)
+		return $h; // Отладочную величину не записываем.
+
+	if(!$h)
+		bors_debug::syslog('image-error', "Set height=0 for ".$this->debug_title());
+
+	return $this->set('height', $h, $dbup);
+}
+
 function size() { return @$this->data['size']; }
 function set_size($v, $dbup=true) { return $this->set('size', $v, $dbup); }
 function extension() { return @$this->data['extension']; }

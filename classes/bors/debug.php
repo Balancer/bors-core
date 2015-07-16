@@ -98,7 +98,7 @@ class bors_debug
 
 	static function trace($skip = 0, $html = NULL, $level = -1, $traceArr = NULL)
 	{
-		$MAXSTRLEN = 128;
+		$MAXSTRLEN = 1000;
 
 		if(is_null($html))
 			$html = 0 && !bors_debug::in_console();

@@ -179,10 +179,11 @@ class bors_lib_orm
 		{
 			foreach($tables as $table => $fields)
 			{
-				foreach($fields as $property => $field)
+				foreach($fields as $property => $field_name)
 				{
-					if($field != '*no_defaults')
+					if($field_name != '*no_defaults')
 					{
+						$field = $field_name;
 						$field = array_merge(array(
 							'db' => $db,
 							'table' => $table,

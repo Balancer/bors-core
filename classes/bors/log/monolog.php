@@ -22,6 +22,12 @@ class bors_log_monolog
 	//        should typically be logged and monitored.
 	function error($msg, $section = 'bors', $trace = false, $extra = array())
 	{
+		static $entered = false;
+		if($entered)
+			throw new Exception('Reentered logger with '.$msg.' in section '.$section);
+
+		$entered = true;
+
 		try
 		{
 			$this->logger($section, Logger::ERROR, $trace)->addError($msg, $extra);
@@ -30,6 +36,8 @@ class bors_log_monolog
 		{
 			echo "Exception while error logging\n";
 		}
+
+		$entered = false;
 	}
 
 	// (300): Exceptional occurrences that are not errors.
@@ -50,6 +58,12 @@ class bors_log_monolog
 
 	function logger($name, $level, $trace = false)
 	{
+		static $entered = false;
+		if($entered)
+			throw new Exception('Reentered logger');
+
+		$entered = true;
+
 		$trace = (bool) $trace;
 		if(empty(self::$loggers[$name][$trace]))
 		{
@@ -110,6 +124,7 @@ class bors_log_monolog
 					$record['context']['POST'] = @$_POST;
 				}
 
+				$entered = false;
 			    return $record;
 			});
 
@@ -123,6 +138,7 @@ class bors_log_monolog
 			self::$loggers[$name][$trace] = $log;
 		}
 
+		$entered = false;
 		return self::$loggers[$name][$trace];
 	}
 

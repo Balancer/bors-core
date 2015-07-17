@@ -1,10 +1,13 @@
 <?php
 
+//TODO: отрефакторить на тему ec без инициализации.
+if(!function_exists('ec')) { function ec($s) { return $s; } }
+
 class blib_month
 {
 	static function name($month_number)
 	{
-		bors_function_include('time/month_name');
+		require_once __DIR__.'/../../inc/functions/time/month_name.php';
 		return month_name($month_number);
 	}
 

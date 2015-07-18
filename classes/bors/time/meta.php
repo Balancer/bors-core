@@ -69,4 +69,15 @@ class bors_time_meta extends bors_property
 
 		return NULL;
 	}
+
+	function fmt($format)
+	{
+		if($this->is_null)
+			return '';
+
+		if($ts = $this->timestamp())
+			return date($format, $ts);
+
+		return NULL;
+	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-class Array2XML
+class Array2XMLXW
 {
     private $writer;
     private $version = '1.0';

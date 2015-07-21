@@ -117,12 +117,14 @@ class bors_object_db extends base_object_db
 				if(preg_match("/COMMENT '(.+?)'/", $s, $mm))
 				{
 					$title = $mm[1];
+					// Если оканчивается на '[*]' — то это обязательное поле.
 					if(preg_match('/^(.+?)\s*\[\*\]\s*$/', $title, $mm))
 					{
 						$title = $mm[1];
 						$is_req = true;
 					}
 
+					// Если '(.)' — радиокнопка
 					if(preg_match('/^(.+?)\s*\(\.\)\s*$/', $title, $mm))
 					{
 						$title = $mm[1];
@@ -196,7 +198,7 @@ class bors_object_db extends base_object_db
 			}
 		}
 
-//		var_dump($fields);
+//		echo '<xmp>'; var_dump($fields); echo '</xmp>';
 //		var_dump($this->__auto_objects);
 
 		foreach($this->get('table_fields_append', array()) as $field => $name)

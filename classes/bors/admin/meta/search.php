@@ -69,7 +69,9 @@ class bors_admin_meta_search extends bors_admin_meta_main
 
 		$where = parent::where();
 
-		$q = "'%".addslashes(trim(urldecode($_GET['q'])))."%'";
+		$q = trim(urldecode($_GET['q']));
+		if(!is_numeric($q))
+			$q = "'%".addslashes($q)."%'";
 
 		$any = @$_GET['w'] == 'a';
 

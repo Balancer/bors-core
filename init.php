@@ -60,7 +60,7 @@ if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['
 
 bors_funcs::noop();
 
-foreach(array(BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
+foreach(array(COMPOSER_ROOT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
 	if(file_exists($file = "{$base_dir}/config-pre.php"))
 		include_once($file);
 
@@ -110,7 +110,7 @@ bors_function_include('locale/ec');
 
 spl_autoload_register('class_include');
 
-foreach(array(BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $dir)
+foreach(array(COMPOSER_ROOT, BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $dir)
 {
 	if(file_exists($dir.'/config.ini'))
 		bors_config_ini($dir.'/config.ini');

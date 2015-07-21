@@ -392,14 +392,12 @@ class bors_tools_search_result extends bors_tools_search
 				unset($_GET[$key]);
 	}
 
-	function url() { return $this->url_ex($this->default_page()); }
-
 	function url_ex($page = NULL)
 	{
 		if(!$page)
 			$page = $this->args('page');
 
-		return $this->called_url().$this->gets(array(
+		return preg_replace('/^(.+?)\?.+$/', '$1', $this->called_url()).$this->gets(array(
 			'q' => $this->q(),
 			'f' => $this->f(),
 			's' => $this->s(),

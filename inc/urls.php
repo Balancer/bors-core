@@ -279,6 +279,14 @@ function url_remove_params($url)
 
 function url_clean_params($url)
 {
+	// Если двойная строка запросов, то явный баг
+	if(preg_match('/^(.+?)\?.+(\?.+)$/', $url, $m))
+	{
+		bors::log()->warning('url-incorrect', "Incorrect url (multiple parameters) for clean: ".$url);
+//		var_dump($m);
+		$url = $m[1].$m[2];
+	}
+
 	@list($url, $params) = @explode('?', $url);
 	if(!$params)
 		return $url;

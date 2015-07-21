@@ -13,7 +13,7 @@ class blib_month
 
 	static function name_g($month_number)
 	{
-		bors_function_include('time/month_name_rp');
+		require_once __DIR__.'/../../inc/functions/time/month_name_rp.php';
 		return month_name_rp($month_number);
 	}
 

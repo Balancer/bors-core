@@ -7,6 +7,9 @@
 	http://habrahabr.ru/post/165107/
 */
 
+// Подключаем функции.
+bors_funcs::noop();
+
 class blib_string extends blib_object
 {
 	function __construct($init_value = NULL)

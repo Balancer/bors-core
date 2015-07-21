@@ -42,7 +42,7 @@ class bors_message extends bors_object
 			$message .= "<p><a href=\"{$link_url}\" class=\"btn btn-primary\">{$link_text}</a></p>";
 
 		if($si = @$params['sysinfo'])
-			$message .= twitter_bootstrap::collapsed(ec('Служебная информация'), $si.bors_debug::trace(0, false));
+			$message .= twitter_bootstrap::collapsed(ec('Служебная информация'), '<xmp>'.$si.bors_debug::trace(0, false).'</xmp>');
 
 		echo twitter_bootstrap::raw_message(array(
 			'this' => bors_load('bors_pages_fake', array(

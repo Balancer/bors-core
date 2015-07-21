@@ -29,6 +29,11 @@ class bors_forms_saver extends bors_object_simple
 				return bors_throw(ec("Не получается создать объект для сохранения ")."{$data['class_name']}({$data['object_id']})");
 		}
 
+		// Класс прав доступа формы имеет более высокий приоритет, чем объекта.
+		$access = $form ? $form->get('access') : NULL;
+		if(!$access)
+			$access = $object ? $object->get('access') : NULL;
+
 		if(!$object)
 		{
 			$object = $form;
@@ -49,14 +54,15 @@ class bors_forms_saver extends bors_object_simple
 		}
 
 		// Проверяем доступ
-		if(!$object->access())
-			return bors_message(ec("Не заданы режимы доступа класса ").get_class($object)."; access_engine=".$object->access_engine());
+		if(!$access)
+			return bors_message("Не заданы режимы доступа классов '".get_class($form)."' (access_engine=".$form->access_engine().")
+				 и ".get_class($object)." (access_engine=".$object->access_engine().")");
 
-		if(!$object->access()->can_action(@$data['act'], $data))
+		if(!$access->can_action(@$data['act'], $data))
 			return bors_message::error(ec("Извините, у Вас недостаточно прав доступа для проведения операций с этим ресурсом"),
 				array(
 					'sysinfo' => "class = ".get_class($object).",<br/>\naccess class = ".($object->access_engine())
-						."/".get_class($object->access()).", method = can_action(".@$data['act'].")",
+						."/".get_class($access).", method = can_action(".@$data['act'].")",
 				)
 			);
 

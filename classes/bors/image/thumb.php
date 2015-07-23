@@ -128,7 +128,7 @@ class bors_image_thumb extends bors_image
 		$new_url = str_replace('forums.testing.airbase.ru', 'forums.balancer.ru', $new_url);
 		$oud = url_parse($new_url);
 		if(!$oud['local'] || !$oud['local_path'])
-			bors_throw('Unknown local for "'.$new_url.'" thumb: '.print_r($oud, true)
+			throw new Exception('Unknown local for "'.$new_url.'" thumb: '.print_r($oud, true)
 				.'; file_name_with_path='.$this->file_name_with_path());
 
 		$this->set_height(-5); // трассировка

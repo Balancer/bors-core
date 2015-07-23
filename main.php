@@ -412,7 +412,7 @@ if(config('404_page_url'))
 }
 
 if(config('404_show', true))
-	echo ec("Page '$uri' not found\n<!--\nBORS_SITE=".BORS_SITE."\nBORS_CORE=".BORS_CORE."\n-->");
+	echo ec("Page '$uri' not found at ".gethostname()."\n<!--\nBORS_SITE=".BORS_SITE."\nBORS_CORE=".BORS_CORE."\n-->");
 
 function bors_main_error_503($logfile = NULL, $message = 'error 503', $trace = false)
 {

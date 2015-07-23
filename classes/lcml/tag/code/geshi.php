@@ -3,7 +3,7 @@
 if(!config('geshi.include'))
 	return;
 
-include_once(config('geshi.include'));
+//include_once(config('geshi.include'));
 
 class lcml_tag_code_geshi extends bors_object_simple
 {

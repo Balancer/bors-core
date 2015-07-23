@@ -1396,17 +1396,25 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	}
 
 	// Всегда возвращает путь без последнего слова, независимо от того, оканчивается ли ссылка на '/'
+	// Для корневого элемента возвращает doc_root;
 	function dir()
 	{
 		$data = $this->___path_data();
 
+		if($data['local_path'] == $data['root'].'/')
+			return rtrim($data['local_path'], '/');
+
 		return dirname(rtrim($data['local_path'], '/'));
 	}
 
-	// Всегда возвращает последнее слово из пути, независимо от того, оканчивается ли ссылка на '/'
+	// Всегда возвращает последнее слово из пути, независимо от того, оканчивается ли ссылка на '/'.
+	// Для корневого пути возвращает пустую строку.
 	function _basename()
 	{
 		$data = $this->___path_data();
+		if($data['local_path'] == $data['root'].'/')
+			return '';
+
 		return basename(rtrim($data['local_path'], '/'));
 	}
 

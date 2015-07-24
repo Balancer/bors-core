@@ -170,7 +170,7 @@ function lt_img($params)
 			{
 				//TODO: Придумать, что сделать с этим хардкодом.
 				$thumbnails = bors_find_all('bors_image_thumb', array(
-					"full_file_name LIKE '%/".addslashes(basename($file))."'",
+					'file_name' => basename($file),
 				));
 
 				if($thumbnails)

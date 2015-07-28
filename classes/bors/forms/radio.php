@@ -130,9 +130,17 @@ class bors_forms_radio extends bors_forms_element
 			else
 				$style = "";
 
-			$labels_html[] = "<label{$label_css}{$style}><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$tag_params />&nbsp;$iname</label>$delim";
+			$comment = "";
+			if(!empty($comments_in_title))
+			{
+				if(preg_match('!^(.+)\s+\((.+)\)$!', $iname, $m))
+				{
+					$iname = $m[1];
+					$comment = "<br/><small style=\"color:#999;padding-left: 16px;\">{$m[2]}</small>";
+				}
+			}
 
-
+			$labels_html[] = "<label{$label_css}{$style}><input type=\"radio\" name=\"{$object}".addslashes($name).($is_array ? '[]' : '')."\" value=\"$id\"".($id == $current ? " checked=\"checked\"" : "")."$tag_params />&nbsp;$iname$comment</label>$delim";
 		}
 
 		$labels_html = join("\n", $labels_html);

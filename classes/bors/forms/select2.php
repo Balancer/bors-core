@@ -36,7 +36,7 @@ class bors_forms_select2 extends bors_forms_element
 		if($value)
 		{
 			$value_title = object_property(bors_load($class_name, $value), 'title');
-			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '{$value}', text: \"$value_title\" })");
+			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '".addslashes($value)."', text: \"".addslashes($value_title)."\" })");
 		}
 //		else
 //			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '', text: '' })");

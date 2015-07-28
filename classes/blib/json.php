@@ -28,7 +28,7 @@ class blib_json
 			return array($input, $funcs);
 
 		$input_json = str_replace('\/', '/', json_encode($input));
-		foreach($funcs as $key=>$value)
+		foreach($funcs as $key => $value)
 				$input_json = str_replace('"'.$key.'"', $value, $input_json);
 
 		return $input_json;

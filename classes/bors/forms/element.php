@@ -53,6 +53,32 @@ class bors_forms_element
 
 	function property_name() { return $this->params['name']; }
 
+	function label()
+	{
+		$params = $this->params();
+
+		$label = defval($params, 'label');
+		if(!$label)
+			$label = defval($params, 'th'); // legacy
+
+		if($label == 'def')
+		{
+			$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
+			$label = $x['title'];
+		}
+
+		return $label;
+	}
+
+	// Возвращаем заголовок поля в виде табличного блока, если нужно
+	function label_html()
+	{
+		if($label = $this->label())
+			return "<tr><th>{$label}</th><td>";
+
+		return '';
+	}
+
 	function css()
 	{
 		if($css = defval($this->params, 'css'))

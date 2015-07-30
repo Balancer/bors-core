@@ -25,9 +25,8 @@ class bors_forms_image extends bors_forms_element
 
 		$html = '';
 
-		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($th = defval($params, 'th'))
-			$html .=  "<tr><th>{$th}</th><td>";
+		// Если нужно, добавляем заголовок поля
+		$html .= $this->label_html();
 
 		if($obj && ($image = $obj->get($image_name_field)))
 		{

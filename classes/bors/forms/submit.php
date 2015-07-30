@@ -15,8 +15,7 @@ class bors_forms_submit extends bors_forms_element
 
 		$html = "";
 
-		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($label = defval($params, 'label', defval($params, 'th')))
+		if($label = $this->label())
 			$value = $label;
 
 		if(empty($value))

@@ -63,17 +63,8 @@ class bors_forms_input extends bors_forms_element
 			$td_colspan = "";
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$label}</th><td>...code...</td></tr>
-		if($label = defval($params, 'label', defval($params, 'th')))
+		if($label = $this->label())
 		{
-			if($label == 'def')
-			{
-//				var_dump($form);
-//				var_dump($form->attr('class_name'));
-				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
-//				var_dump($x);
-				$label = $x['title'];
-			}
-
 			$label = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $label);
 
 			$result .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$label}</th><td{$td_colspan}>";

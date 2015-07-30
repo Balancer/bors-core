@@ -30,12 +30,12 @@ class bors_forms_combobox extends bors_forms_element
 		if(in_array($name, explode(',', session_var('error_fields'))))
 			$css_classes[] = "error";
 
-		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($th = defval($params, 'th'))
-		{
-			$html .= "<tr><th>{$th}</th><td>";
+		// Если нужно, добавляем заголовок поля
+		$html .= $this->label_html();
+
+		// Если отдельный блок, то на всю ширину.
+		if($html->label())
 			$css_style[] = "width: 99%";
-		}
 
 		if(!empty($fixed))
 			$html .= "<label><input type=\"radio\" name=\"_{$name}\" style=\"float: left\" value=\"\" />&nbsp;</label>";

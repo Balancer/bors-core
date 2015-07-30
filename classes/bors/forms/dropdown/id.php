@@ -29,15 +29,10 @@ class bors_forms_dropdown_id extends bors_forms_dropdown
 		$class = join(' ', $class);
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$label}</th><td>...code...</td></tr>
-		if($label = defval($params, 'label', defval($params, 'th')))
+		if($this->label())
 		{
-			if($label == 'def')
-			{
-				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
-				$label = $x['title'];
-			}
 
-			$html .= "<tr><th>{$label}</th><td>";
+			$html .= $this->label_html();
 			if(empty($style))
 				$style = "width: 99%";
 		}

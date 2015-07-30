@@ -44,16 +44,8 @@ class bors_forms_select2 extends bors_forms_element
 		$html = bors_forms_helper::element_html($input, $params);
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$label}</th><td>...code...</td></tr>
-		if($label = defval($params, 'label', defval($params, 'th')))
-		{
-			if($label == 'def')
-			{
-				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
-				$label = $x['title'];
-			}
-
+		if($label = $this->label())
 			$html = "<tr><th>{$label}</th><td>$html</td></tr>";
-		}
 
 		return $html;
 	}

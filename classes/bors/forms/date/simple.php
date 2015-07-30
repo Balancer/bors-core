@@ -20,12 +20,12 @@ class bors_forms_date_simple extends bors_forms_element
 
 		$html = '';
 
-		if($th = defval($params, 'label', defval($params, 'th')))
-		{
-			$html .= "<tr><th>{$th}</th><td>";
-			if(empty($style))
-				$style = "width: 99%";
-		}
+		// Если нужно, добавляем заголовок поля
+		$html .= $this->label_html();
+
+		// Если отдельный блок, то на всю ширину.
+		if($html->label() && empty($style))
+			$style = "width: 99%";
 
 		$date = $value;
 

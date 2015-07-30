@@ -87,9 +87,8 @@ class bors_forms_date_mixed extends bors_forms_element
 		else
 			$shown = explode(',', $params['show_only']);
 
-		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($th = defval($params, 'th'))
-			$html .="<tr><th>{$th}</th><td>";
+		// Если нужно, добавляем заголовок поля
+		$html .= $this->label_html();
 
 		if($can_drop && empty($value))
 			$type = ' disabled="disabled"';

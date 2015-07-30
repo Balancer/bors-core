@@ -105,13 +105,12 @@ class bors_forms_radio extends bors_forms_element
 
 		$html = '';
 
-		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($th = defval($params, 'th'))
-		{
-			$html .= "<tr><th>{$th}</th><td>";
-			if(empty($style))
-				$style = "width: 99%";
-		}
+		// Если нужно, добавляем заголовок поля
+		$html .= $this->label_html();
+
+		// Если отдельный блок, то на всю ширину.
+		if($html->label() && empty($style))
+			$style = "width: 99%";
 
 		$colorpos = 0;
 		$labels_html = array();

@@ -38,21 +38,11 @@ class bors_forms_textarea extends bors_forms_element
 
 		$html = '';
 
-		// Если указано, то это заголовок строки таблицы: <tr><th>{$th}</th><td>...code...</td></tr>
-		if($th = defval($params, 'label', defval($params, 'th')))
-		{
-			if($th == 'def')
-			{
-				$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
-				$th = $x['title'];
-				if(empty($type))
-					$type = $x['type'];
-			}
+		// Если нужно, добавляем заголовок поля
+		$html .= $this->label_html();
 
-			$html .= "<tr><th>{$th}</th><td>";
-			if(empty($style))
-				$style = "width: 99%";
-		}
+		if($this->label() && empty($style))
+			$style = "width: 99%";
 
 		if(@$type == 'bbcode')
 		{

@@ -109,7 +109,7 @@ class bors_forms_radio extends bors_forms_element
 		$html .= $this->label_html();
 
 		// Если отдельный блок, то на всю ширину.
-		if($html->label() && empty($style))
+		if($this->label() && empty($style))
 			$style = "width: 99%";
 
 		$colorpos = 0;

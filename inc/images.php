@@ -15,6 +15,12 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 
 	// http://intervention.olivervogel.net/image
 
+	if(!preg_match('/image/', $mime = mime_content_type($file_in)))
+	{
+		config_set('bors-image-lasterror', "[20] Thumbnail make error.\n".$file_in." not image, but ".$mime);
+		return false;
+	}
+
 	try
 	{
 		Image::configure(array('driver' => 'imagick'));

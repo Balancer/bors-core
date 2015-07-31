@@ -200,10 +200,15 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		debug_timing_start('image_recalculate');
 		$start = microtime(true);
 
+		// Иначе, если попадается не картинка, случаются, порой, странные ошибки.
+		// Может, из-за экранирования getimagesize ниже.
+		if(!preg_match('/image/', $mime = mime_content_type($this->file_name_with_path())))
+			return $this->set_is_loaded(false);
+
 		// Почему-то стояла сперва проверка не через файл, а через URL.
 		// Если будет глючить — вернуть с объяснением. Иначе тормозит.
 
-		bors_debug::syslog('000-image-debug', "Get image size [1] for ".$this->file_name_with_path());
+//		bors_debug::syslog('000-image-debug', "Get image size [1] for ".$this->file_name_with_path());
 
 		$x = @getimagesize($this->file_name_with_path());
 		if(!$x)

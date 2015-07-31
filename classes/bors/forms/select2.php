@@ -41,7 +41,8 @@ class bors_forms_select2 extends bors_forms_element
 //		else
 //			jquery::on_ready("$('#{$element_id}').select2(\"data\", { id: '', text: '' })");
 
-		$html = bors_forms_helper::element_html($input, $params);
+		$html = $input;
+//		$html = bors_forms_helper::element_html($input, $params);
 
 		// Если указано, то это заголовок строки таблицы: <tr><th>{$label}</th><td>...code...</td></tr>
 		if($label = $this->label())

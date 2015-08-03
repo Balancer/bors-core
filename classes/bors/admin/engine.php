@@ -249,7 +249,7 @@ class bors_admin_engine extends bors_object
 
 		$res = "<a rel=\"nofollow\" href=\"{$obj->url()}\">{$title}</a>";
 
-		$popup = config('titles.imaged_direct_titled_link.popup', ec('Посмотреть на сайте'));
+		$popup = config('titles.imaged_direct_titled_link.popup', ec('Изменить'));
 
 		try
 		{

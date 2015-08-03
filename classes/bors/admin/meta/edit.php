@@ -23,14 +23,14 @@ class bors_admin_meta_edit extends bors_admin_page
 	function pre_show()
 	{
 		if($this->id() && !$this->target())
-			return bors_throw("Can't load editor: have id ({$this->id()}) but have not target");
+			return bors_throw("Can't load editor: have id ({$this->id()}) but have not target {$this->model_class()}");
 
 		return parent::pre_show();
 	}
 
 	function target()
 	{
-		if(!class_include($this->model_class()))
+		if(!class_exists($this->model_class()))
 			return NULL;
 //			bors_throw("Can't find main class '{$this->model_class()}'");
 

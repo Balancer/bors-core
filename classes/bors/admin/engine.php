@@ -171,7 +171,7 @@ class bors_admin_engine extends bors_object
 		if($obj->access()->can_edit())
 			$res = "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$title}</a>";
 		else
-			$res = "{$title}";
+			$res = "{$title}<!-- {$obj->access()->debug_title()} of {$obj->debug_title()} -->";
 
 		try
 		{

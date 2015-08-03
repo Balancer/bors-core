@@ -116,4 +116,16 @@ class bors
 
 		return $res;
 	}
+
+	static function find_webroot($relative_path)
+	{
+		if(file_exists($f = BORS_SITE.'/webroot'.$relative_path))
+			return $f;
+
+		foreach(bors_dirs() as $dir)
+			if(file_exists($f = $dir.'/webroot'.$relative_path))
+				return $f;
+
+		return NULL;
+	}
 }

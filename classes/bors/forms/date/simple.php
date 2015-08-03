@@ -24,7 +24,7 @@ class bors_forms_date_simple extends bors_forms_element
 		$html .= $this->label_html();
 
 		// Если отдельный блок, то на всю ширину.
-		if($html->label() && empty($style))
+		if($this->label() && empty($style))
 			$style = "width: 99%";
 
 		$date = $value;

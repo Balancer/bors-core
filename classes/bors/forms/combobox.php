@@ -34,7 +34,7 @@ class bors_forms_combobox extends bors_forms_element
 		$html .= $this->label_html();
 
 		// Если отдельный блок, то на всю ширину.
-		if($html->label())
+		if($this->label())
 			$css_style[] = "width: 99%";
 
 		if(!empty($fixed))

@@ -56,6 +56,13 @@ class bors_log_monolog
 
 	static $loggers = array();
 
+	/**
+	 * @param string    $name
+	 * @param integer   $level
+	 * @param bool		$trace
+	 * @return Logger
+	 * @throws Exception
+	 */
 	function logger($name, $level, $trace = false)
 	{
 		static $entered = false;

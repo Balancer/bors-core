@@ -63,7 +63,7 @@ class bors_forms_element
 
 		if($label == 'def')
 		{
-			$x = bors_lib_orm::parse_property($form->attr('class_name'), $name);
+			$x = bors_lib_orm::parse_property($this->form()->attr('class_name'), $name);
 			$label = $x['title'];
 		}
 

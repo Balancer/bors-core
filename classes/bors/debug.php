@@ -17,8 +17,8 @@ class bors_debug
 		$dir = config('debug_hidden_log_dir').'/errors';
 		if(!is_dir($dir))
 		{
-			mkdir($dir);
-			chmod($dir, 0777);
+			@mkdir($dir);
+			@chmod($dir, 0777);
 		}
 
 		if(!file_exists($dir))

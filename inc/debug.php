@@ -183,8 +183,8 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 	$dir = config('debug_hidden_log_dir').'/errors';
 	if(!is_dir($dir))
 	{
-		mkdir($dir);
-		chmod($dir, 0777);
+		@mkdir($dir);
+		@chmod($dir, 0777);
 	}
 
 	if(!file_exists($dir))

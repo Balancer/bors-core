@@ -53,7 +53,7 @@ class bors_forms_checkbox extends bors_forms_element
 		if($label)
 			$html .= "{$delim}{$label}</label>{$br}";
 
-		if($th)
+		if($form->get('has_form_table'))
 			$html .=  "</td></tr>\n";
 
 		$html .= "\n";

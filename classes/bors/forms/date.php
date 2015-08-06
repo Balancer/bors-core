@@ -184,7 +184,7 @@ $('input[name=\"{$name}_is_null\"]').change(function() {
 
 		$form->append_attr('time_vars', $name);
 
-		if($th)
+		if($form->get('has_form_table'))
 			$html .="</td></tr>\n";
 
 		return $html;

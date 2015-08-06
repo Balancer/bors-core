@@ -63,7 +63,7 @@ class bors_forms_element
 
 		if($label == 'def')
 		{
-			$x = bors_lib_orm::parse_property($this->form()->attr('class_name'), $name);
+			$x = bors_lib_orm::parse_property($this->form()->attr('class_name'), $params['name']);
 			$label = $x['title'];
 		}
 
@@ -73,7 +73,9 @@ class bors_forms_element
 	// Возвращаем заголовок поля в виде табличного блока, если нужно
 	function label_html()
 	{
-		if($label = $this->label())
+		$label = $this->label();
+
+		if($label && $this->form()->get('has_form_table'))
 			return "<tr><th>{$label}</th><td>";
 
 		return '';

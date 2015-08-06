@@ -151,7 +151,7 @@ class bors_forms_combobox extends bors_forms_element
 		else
 			$html .= "\n";
 
-		if($th)
+		if($form->get('has_form_table'))
 			$html .= "</td></tr>\n";
 
 		if(!empty($per_page))

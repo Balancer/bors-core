@@ -65,7 +65,7 @@ class bors_forms_date_simple extends bors_forms_element
 			jquery::on_ready("$('input[name=\"$name\"]').everyTime(1000, function(i) { if($('input[name=\"time_on_post\"]').attr('checked')) $(this).val($.strftime('%d.%m.%Y %H:%M".($seconds ? ':%S' : '')."'))})");
 		}
 
-		if($th)
+		if($form->get('has_form_table'))
 			$html .=  "</td></tr>";
 
 		$html .= "\n";

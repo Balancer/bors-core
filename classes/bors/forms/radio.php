@@ -149,7 +149,7 @@ class bors_forms_radio extends bors_forms_element
 
 		$html .= $labels_html;
 
-		if($th)
+		if($form->get('has_form_table'))
 			$html .= "</td></tr>\n";
 
 		return $html;

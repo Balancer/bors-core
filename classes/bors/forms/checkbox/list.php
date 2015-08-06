@@ -162,7 +162,7 @@ class bors_forms_checkbox_list extends bors_forms_element
 
 		$form->append_attr('checkboxes_list', $name);
 
-		if($th)
+		if($form->get('has_form_table'))
 			$html .= "</td></tr>\n";
 
 		return $html;

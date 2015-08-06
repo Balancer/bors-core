@@ -73,7 +73,7 @@ class bors_forms_textarea extends bors_forms_element
 		if($append)
 			$html .= "<br/>".$append;
 
-		if($th)
+		if($form->get('has_form_table'))
 			$html .= "</td></tr>\n";
 
 		return $html;

@@ -65,7 +65,7 @@ $("form").submit(function(){
 
 		$form->append_attr('file_vars', $name);
 
-		if($th)
+		if($form->get('has_form_table'))
 			$result .=  "</td></tr>\n";
 
 		return $html;

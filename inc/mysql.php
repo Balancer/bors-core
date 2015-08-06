@@ -242,7 +242,6 @@ function mysql_args_compile($args, $class=NULL)
 
 	$join = join(' ', $join);
 
-
 	$order = popval($args, '*raw_order');
 	if(!$order && !empty($args['order']))
 	{

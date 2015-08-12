@@ -535,7 +535,19 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	}
 
 	/** Истинный заголовок объекта. Метод или параметр объекта. */
-	function title_true() { return method_exists($this, 'title') ? $this->title() : empty($this->data['title']) ? NULL : $this->data['title']; }
+	function title_true()
+	{
+		if(method_exists($this, 'title'))
+			return $this->title();
+
+		if(!empty($this->attr['title']))
+			return $this->attr['title'];
+
+		if(!empty($this->data['title']))
+			return $this->data['title'];
+
+		return NULL;
+	}
 
 	function set_title($new_title, $db_up=true)
 	{
@@ -1799,11 +1811,16 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function link_time1() { return NULL; }
 	function link_time2() { return NULL; }
 
-//	function __toString() { return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : ''); }
 	function __toString()
 	{
-		if($tt = $this->title_true())
-			return $this->class_title().ec(' «').$tt.ec('»').(is_numeric($this->id()) ? "({$this->id()})" : '');
+		try
+		{
+			if($tt = $this->title_true())
+				return $this->class_title().ec(' «').$tt.ec('»').(is_numeric($this->id()) ? "({$this->id()})" : '');
+		}
+		catch(Exception $e)
+		{
+		}
 
 		return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : '');
 	}

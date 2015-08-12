@@ -581,7 +581,7 @@ class bors_form extends bors_object
 				$html .= "<tr><th>Метки</th><td>";
 //				require_once('function.checkbox.php');
 				foreach($labels as $name => $data)
-					$html .= $this->element_html('checkbox', $data);
+					$html .= $this->element_html('checkbox', array_merge($data, ['no_tab' => true]));
 				$html .= "</td></tr>\n";
 			}
 /*

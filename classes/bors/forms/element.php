@@ -70,12 +70,19 @@ class bors_forms_element
 		return $label;
 	}
 
+	function use_tab()
+	{
+		$params = $this->params();
+
+		return $this->form()->get('has_form_table') && empty($params['no_tab']);
+	}
+
 	// Возвращаем заголовок поля в виде табличного блока, если нужно
 	function label_html()
 	{
 		$label = $this->label();
 
-		if($label && $this->form()->get('has_form_table'))
+		if($label && $this->use_tab())
 			return "<tr><th>{$label}</th><td>";
 
 		return '';

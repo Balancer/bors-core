@@ -1197,8 +1197,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	/**
 	 * Возвращает ссылку на текущий объект для использования на сайте.
-	 * @param  $page - опциональный параметр номера страницы при многостраничной разбивке объекта при выводе
-	 * @return Строка со ссылкой
+	 * @return string Строка со ссылкой
 	 */
 	function url() { return $this->url_ex($this->page()); }
 

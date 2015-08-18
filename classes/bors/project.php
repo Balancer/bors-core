@@ -144,6 +144,12 @@ class bors_project extends bors_object
 		return $this->setCfg($key, $value);
 	}
 
+	function config_host($file)
+	{
+		$GLOBALS['bors']['config']['config_hosts'][] = $file;
+		return $this;
+	}
+
 	function run()
 	{
 		if(!$this->inited)

@@ -135,13 +135,12 @@ if(!config('cache.stash.pool') && class_exists('Stash\Pool'))
 		{
 			$servers = array();
 			foreach(config('redis.servers') as $s)
-				$servers[] = [$s['host'], $s['port']];
-
+				$servers[] = array($s['host'], $s['port']);
 		}
 		else
 			$servers = array(array('server' => '127.0.0.1', 'port' => 6379, 'ttl' => 86400));
 
-		$driver->setOptions(['servers' => $servers]);
+		$driver->setOptions(array('servers' => $servers));
 
 		try
 		{

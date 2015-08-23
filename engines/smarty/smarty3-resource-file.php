@@ -4,7 +4,7 @@
 
     function smarty_resource_file_get_template($tpl_name, &$tpl_source, $smarty)
     {
-//		if(config('is_developer')) echo "engines/smarty3: load template $tpl_name<br/>\n";
+//		echo "engines/smarty3: load template $tpl_name<br/>\n";
         // do database call here to fetch your template,
         // populating $tpl_source
 		if(file_exists($tpl_name))
@@ -42,6 +42,7 @@
 
     function smarty_resource_file_get_timestamp($tpl_name, &$tpl_timestamp, $smarty)
     {
+//		echo "engines/smarty3: load template $tpl_name<br/>\n";
     	static $cache;
     	if(!empty($cache[$tpl_name]))
 			return ($tpl_timestamp = $cache[$tpl_name]) > 0;

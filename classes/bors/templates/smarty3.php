@@ -26,7 +26,7 @@ class bors_templates_smarty3 extends bors_template
 			bors_throw("Can't find Smarty. Please do \"composer require 'smarty/smarty=!=3.1.17'\"");
 
 		$smarty = new Smarty();
-//		require('classes/bors/templates/smarty3-register.php');
+//		require(__DIR__.'/smarty3-register.php');
 		$smarty->registerResource('xfile', new bors_templates_smarty_resources_file($smarty));
 
 		$smarty->compile_dir = config('cache_dir').'/smarty3-templates_c/';

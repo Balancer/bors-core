@@ -19,6 +19,7 @@ class bors_templates_smarty_resources_file extends Smarty_Resource_Custom
   */
 	public function fetch($tpl_name, &$tpl_source, &$mtime)
 	{
+//		echo "Fetch $tpl_name<br/>\n";
 		if(file_exists($tpl_name))
 		{
 			$tpl_source	= ec(file_get_contents($tpl_name));
@@ -80,6 +81,8 @@ class bors_templates_smarty_resources_file extends Smarty_Resource_Custom
   */
 	protected function fetchTimestamp($tpl_name)
 	{
+//		echo "Fetch TS for $tpl_name<br/>\n";
+
 		static $cache;
 		if(!empty($cache[$tpl_name]))
 			return $cache[$tpl_name];

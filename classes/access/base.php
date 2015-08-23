@@ -9,7 +9,7 @@ class access_base extends bors_object
 	function can_edit() { return false; }
 	function can_new() { return $this->can_edit(); }
 
-	function can_action()
+	function can_action($action, $data)
 	{
 		$me = bors()->user();
 		if(!$me)

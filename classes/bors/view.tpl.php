@@ -2,7 +2,7 @@
 
 $html = "";
 
-if($view->get('show_edit_link') && $target->access()->can_action())
+if($view->get('show_edit_link') && $target->access()->can_action(NULL,NULL))
 	$html .= "<div class=\"right\">{$target->admin()->imaged_titled_link('Редактировать')}</div>";
 
 $html .= "<div class=\"yellow_box\"><ul class=\"none\">";

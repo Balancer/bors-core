@@ -30,7 +30,7 @@ class bors
 		require_once(BORS_CORE.'/main.php');
 	}
 
-	static function show_uri($uri)
+	static function show_uri($uri, $method = 'GET')
 	{
 		$res = false;
 
@@ -38,7 +38,25 @@ class bors
 			debug_execute_trace("bors_load_uri('$uri');");
 
 		config_set('__main_object_load', true); // костыли, ну и фиг с ними. Боком нигде не должно вылезти.
-		if($object = bors_load_uri($uri))
+
+		$uri_info = parse_url($uri);
+
+		$object = NULL;
+
+		foreach(\B2\Project::$routers as $domain => $routers)
+		{
+			foreach($routers as $router)
+			{
+				$object = $router->dispatch($uri_info['path'], $method);
+				if($object)
+					break;
+			}
+		}
+
+		if(!$object)
+			$object = bors_load_uri($uri);
+
+		if($object)
 		{
 			config_set('__main_object_load', false);
 			config_set('__main_object', $object);

@@ -82,6 +82,12 @@ class bors_forms_date extends bors_forms_element
 		if(!is_numeric($year_max))
 			$year_max = date("Y", strtotime($year_max));
 
+		if(empty($day_begin))
+			$day_begin = 1;
+
+		if(empty($day_end))
+			$day_end = 31;
+
 		if(empty($params['show_only']))
 			$shown = array('y','m','d','h','i','s');
 		else
@@ -100,7 +106,7 @@ class bors_forms_date extends bors_forms_element
 			$html .="<select name=\"{$name}_day\"$type>\n";
 			if($is_fuzzy || !$day)
 				$html .="<option value=\"0\">--</option>\n";
-			for($i = 1; $i<=31; $i++)
+			for($i = $day_begin; $i<=$day_end; $i++)
 				$html .="<option".($i==$day?' selected="true"':'').">$i</option>"; //  value=\"$i\"
 			$html .="</select>\n";
 

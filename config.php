@@ -85,4 +85,5 @@ config_set('cache.webroot_url', "/cache");
 config_set('sites_store_path', $_SERVER['DOCUMENT_ROOT'].'/sites');
 config_set('sites_store_url', 'http://'.@$_SERVER['HTTP_HOST'].'/sites');
 
-@include_once(BORS_3RD_PARTY.'/config.php');
+if(file_exists($c = BORS_3RD_PARTY.'/config.php'))
+	require_once($c);

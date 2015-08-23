@@ -119,6 +119,10 @@ foreach(array(COMPOSER_ROOT, BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BO
 		include_once($dir.'/config.php');
 }
 
+if(!empty($GLOBALS['bors']['config']['config_hosts']))
+	foreach($GLOBALS['bors']['config']['config_hosts'] as $config_file)
+		require_once($config_file);
+
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0750);
 

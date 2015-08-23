@@ -5,7 +5,7 @@
 class bors_users_tools_favorites extends base_page
 {
 	function access() { return $this; }
-	function can_action($action) { return in_array($action, array('add', 'remove')); }
+	function can_action($action, $data) { return in_array($action, array('add', 'remove')); }
 	function can_read() { return true; }
 
 	var $can_action_method_get = true;

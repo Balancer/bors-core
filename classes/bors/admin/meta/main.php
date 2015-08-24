@@ -59,6 +59,8 @@ class bors_admin_meta_main extends bors_admin_paginated
 			if(!$foo->get('skip_auto_admin_new'))
 				$new_link_title = ec('Добавить ').$foo->class_title_vp();
 
+		$new_link_url = $this->get('new_link_url', 'new/');
+
 		$fields = $this->get('item_fields');
 
 		if(!$fields)
@@ -120,6 +122,7 @@ class bors_admin_meta_main extends bors_admin_paginated
 		return array_merge(parent::body_data(), $data, array(
 			'query' => bors()->request()->data('q'),
 			'new_link_title' => $new_link_title,
+			'new_link_url' => $new_link_url,
 			'item_fields' => $parsed_fields,
 			'admin_search_url' => $admin_search_url,
 			'search_where' => @$search_where,

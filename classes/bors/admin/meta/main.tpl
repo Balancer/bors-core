@@ -3,7 +3,7 @@
 {if $new_link_title}
 	{if not $bootstrap}
 <ul>
-<li><a href="new/">{$new_link_title}</a></li>
+<li><a href="{$new_link_url}">{$new_link_title}</a></li>
 </ul>
 	{/if}
 {/if}

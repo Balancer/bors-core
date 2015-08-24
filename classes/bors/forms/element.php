@@ -31,6 +31,8 @@ class bors_forms_element
 				$value = preg_match('!^\w+$!', $name) ? (isset($value)?$value : ($object?$object->$name():NULL)) : '';
 			elseif($form->attr('is_calling') && ($calling_object = $form->attr('calling_object')))
 				$value = $calling_object->get($name);
+			elseif($get_value = bors()->request()->data('new_form_'.$name))
+				$value = $get_value;
 			else
 				$value = NULL;
 		}

@@ -36,7 +36,7 @@ class Router extends Object
 				// ... call $handler with $vars
 //				r($vars);
 				$object = bors_load_ex($handler, @$vars['id'], $vars);
-				$object->set_parents(array(dirname(rtrim($uri, '/'))));
+				$object->set_parents(array(dirname(rtrim($uri, '/')).'/'));
 				return $object;
 				break;
 		}

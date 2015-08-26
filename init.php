@@ -216,6 +216,11 @@ function bors_init()
 
 	require_once('classes/Cache.php');
 
+	// Порядок загрузки, до инициализации или после, ещё не определён.
+	// Пока грузим после инициализации, но это не принципиально.
+	if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
+		require_once $f;
+
 	if(config('debug.execute_trace'))
 		debug_execute_trace('bors_init() done.');
 }

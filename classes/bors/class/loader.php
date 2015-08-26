@@ -137,6 +137,19 @@ class bors_class_loader
 			$class_file = $m[2];
 		}
 
+		foreach(bors::$composer_class_dirs as $dir)
+		{
+			if(file_exists($file_name = "{$dir}/{$class_path}{$class_file}.php"))
+				return self::load_and_cache($class_name, $file_name);
+
+			if(file_exists($file_name = "{$dir}/{$class_path}{$class_file}.yaml"))
+			{
+				bors_class_loader_yaml::load_from_file($class_name, $file_name);
+				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
+				return $file_name;
+			}
+		}
+
 		foreach(bors_dirs() as $dir)
 		{
 			if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.php"))

@@ -141,20 +141,6 @@ function bors_dirs($skip_config = false, $host = NULL)
 		foreach($GLOBALS['bors_data']['projects'] as $project_name => $x)
 			$data[] = $x['project_path'];
 
-	if(defined('COMPOSER_ROOT'))
-	{
-		$lock = json_decode(file_get_contents(COMPOSER_ROOT . '/composer.lock'), true);
-
-		foreach($lock['packages'] as $package)
-		{
-			$extra = empty($package['extra']) ? NULL : $package['extra'];
-				$path = COMPOSER_ROOT . '/vendor/' . $package['name'];
-
-			if(!empty($extra['bors-classes']) || !empty($extra['bors-templates']))
-				$data[] = $path;
-		}
-	}
-
 	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
 }
 

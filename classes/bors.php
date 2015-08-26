@@ -2,6 +2,9 @@
 
 class bors
 {
+	static $composer_class_dirs = array();
+	static $composer_template_dirs = array();
+
 	static function init()
 	{
 		if(!defined('BORS_CORE'))

@@ -253,11 +253,14 @@ if(config('access_log'))
 
 	if(!empty($access_log_mem_name))
 	{
-		bors_var::fast_set($access_log_mem_name, array($session_user_load_summary + $operation_time, time()));
+		bors_var::fast_set($access_log_mem_name, array($session_user_load_summary + $operation_time, time()), 600);
 //		if(config('is_debug'))
 //			debug_hidden_log('00-system_overload_set', $session_user_load_summary + $operation_time, 0);
 	}
 }
+
+//echo count(session_var('test'));
+//set_session_var('test', print_r($_SERVER, true));
 
 if(config('debug.execute_trace'))
 	debug_execute_trace("process done. Check work time...");

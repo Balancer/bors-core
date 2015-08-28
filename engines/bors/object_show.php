@@ -40,7 +40,7 @@
 			if((!empty($_GET['act']) || !empty($_GET['subaction'])))
 			{
 				// Если запрос картинки, то это вызов subaction через img src, т.е. грубый XSS
-				if(bors()->request()->is_accept_image())
+				if(bors()->request()->is_accept_image() && !$obj->get('can_post_accept_image'))
 				{
 					bors_debug::syslog('hack-attempt', "Try to hack by img src for ".$obj->debug_title());
 					header("Content-type: " . image_type_to_mime_type(IMAGETYPE_GIF));
@@ -48,7 +48,7 @@
 				}
 
 				// Если запрашивается не страница, а не пойми чего, то тоже считаем за хак.
-				if(!bors()->request()->is_accept_text())
+				if(!bors()->request()->is_accept_text() && !$obj->get('can_post_accept_image'))
 				{
 					bors_debug::syslog('hack-attempt', "Try to hack by call as not page for ".$obj->debug_title());
 					return get_class($obj) . ": request error: act not page";

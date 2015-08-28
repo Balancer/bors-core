@@ -1401,7 +1401,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	{
 		$data = $this->___path_data();
 
-		if($data['local_path'] == $data['root'].'/')
+		if($data['local_path'] == @$data['root'].'/')
 			return rtrim($data['local_path'], '/');
 
 		return dirname(rtrim($data['local_path'], '/'));
@@ -1412,7 +1412,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function _basename()
 	{
 		$data = $this->___path_data();
-		if($data['local_path'] == $data['root'].'/')
+		if($data['local_path'] == @$data['root'].'/')
 			return '';
 
 		return basename(rtrim($data['local_path'], '/'));

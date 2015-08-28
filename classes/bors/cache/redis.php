@@ -33,7 +33,7 @@ class bors_cache_redis extends bors_cache_base
 		$_rediska = new Rediska($options);
 	}
 
-	function check($type, $idx, $default = NULL)
+	function check($type, $key, $default = NULL)
 	{
 		if(config('cache_disabled'))
 		{

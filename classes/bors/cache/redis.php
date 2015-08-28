@@ -43,7 +43,7 @@ class bors_cache_redis extends bors_cache_base
 
 		$this->type = $type;
 		$this->key  = $key;
-		$this->hmd  = $type.':'.(preg_match('/^[\w\.\-]+$/', $key) ? $key : md5($key));
+		$this->hmd  = $type.':'.(preg_match('/^[\w\.\-:]+$/', $key) ? $key : md5($key));
 
 		$key = new Rediska_Key($this->hmd);
 
@@ -79,7 +79,7 @@ class bors_cache_redis extends bors_cache_base
 
 		$this->type = $type;
 		$this->key  = $key;
-		$this->hmd  = $type.':'.(preg_match('/^[\w\.\-]+$/', $key) ? $key : md5($key));
+		$this->hmd  = $type.':'.(preg_match('/^[\w\.\-:]+$/', $key) ? $key : md5($key));
 
 		debug_count_inc('redis_debug. Get for '.$this->hmd);
 

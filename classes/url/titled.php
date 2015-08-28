@@ -48,12 +48,13 @@ class url_titled extends url_base
 			$bors_url_titled_cache[$obj->internal_uri()] = array($prefix, $prefix_lp, $suffix);
 		}
 
-		$lp = $obj->total_pages() == $page;
-		$uri = $lp ? $prefix_lp : $prefix;
+		$is_last_page = $obj->total_pages() == $page;
+		$uri = $is_last_page ? $prefix_lp : $prefix;
 
 		if($page && $page != 1 && $page != -1)
 			$uri .= ",$page";
 
-		return $uri . $suffix . ($lp ? '.'.$obj->modify_time()%10000 : '') . ".html";
+//		return $uri . $suffix . ($is_last_page ? '.'.$obj->modify_time()%10000 : '') . ".html";
+		return $uri . $suffix . ".html";
 	}
 }

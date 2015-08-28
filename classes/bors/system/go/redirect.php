@@ -7,7 +7,12 @@ class bors_system_go_redirect extends bors_object
 	function pre_show()
 	{
 		if($object = $this->object())
-			return go($object->url_in_container(), true);
+		{
+			if(method_exists($object, 'url_in_topic'))
+				return go($object->url_in_topic(NULL, true), true);
+			else
+				return go($object->url_in_container(), true);
+		}
 
 		return false; // bors_message("Can't find object {$this->id()}");
 	}

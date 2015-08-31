@@ -30,6 +30,7 @@ class bors_system_sitemap_map extends bors_xml
 				if($url=$x->url_ex($p))
 				{
 					$url = $x->url_ex($p);
+
 					if(preg_match('!https?://([^/]+)/!', $url, $m) && $m[1] != $_SERVER['HTTP_HOST'])
 						continue;
 

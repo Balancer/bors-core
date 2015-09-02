@@ -96,6 +96,9 @@ class bors_project extends bors_object
 		if(!defined('COMPOSER_ROOT'))
 			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(dirname(__DIR__))))));
 
+		if(!defined('BORS_CORE'))
+			define('BORS_CORE', COMPOSER_ROOT.'/vendor/balancer/bors-core');
+
 		//TODO: Отказаться в будущем от использования define.
 		//TODO: иначе выходит несовместимость множественности проектов.
 		if(!defined('BORS_SITE'))

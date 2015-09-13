@@ -38,7 +38,7 @@ if(!defined('BORS_LOCAL'))
 	define('BORS_LOCAL', BORS_ROOT.'bors-local');
 
 if(!defined('BORS_HOST'))
-	define('BORS_HOST', BORS_ROOT.'bors-host');
+	define('BORS_HOST', COMPOSER_ROOT);
 
 if(!defined('BORS_SITE'))
 	define('BORS_SITE', dirname(@$_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'bors-site');

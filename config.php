@@ -65,13 +65,16 @@ if(!config('cache_dir'))
 	$cache_dirs_parts = array();
 	if(empty($_SERVER['HTTP_HOST']))
 		$cache_dirs_parts[] = 'cli';
-	else
+	elseif(!preg_match('/^\d+\.\d+\.\d+\.\d+$/', $_SERVER['HTTP_HOST'])) // Если это доменное имя
 		$cache_dirs_parts[] = str_replace(':', '=', strtolower($_SERVER['HTTP_HOST']));
+	elseif($_SERVER['HTTP_HOST'] != gethostbyname(gethostname()))
+		$cache_dirs_parts[] = 'unknown';
 
 	$cache_dirs_parts[] = config('project.name');
 
 	if(!empty($_SERVER['USER']))
 		$cache_dirs_parts[] = strtolower($_SERVER['USER']);
+
 	$cache_dirs_parts[] = config('internal_charset');
 	$cache_dirs_parts[] = config('output_charset');
 

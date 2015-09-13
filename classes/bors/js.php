@@ -22,10 +22,4 @@ class bors_js extends bors_page
 			'smarty_auto_literal' => true,
 		));
 	}
-
-//	function direct_content()
-//	{
-//		return $this->content();
-//
-//	}
 }

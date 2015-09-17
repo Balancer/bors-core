@@ -192,16 +192,20 @@ class bors_form extends bors_object
 		$html .= ">\n";
 
 		if($object)
+		{
 			$object_fields = bors_lib_orm::fields($object);
+			$object_fields = array_merge($object_fields, $object->get('append_properties', []));
+		}
 		else
 		{
 			if($class_name)
 				$object_fields = bors_lib_orm::fields(bors_foo($class_name));
 			else
 				$object_fields = array();
-		}
 
-//		PC::dump(bors_lib_orm::all_fields(bors_foo($class_name)), $class_name);
+			$foo = bors_foo($class_name);
+			$object_fields = array_merge($object_fields, $foo->get('append_properties', []));
+		}
 
 		if(array_key_exists('label', $params))
 			$th = defval_ne($params, 'label', '-');
@@ -213,7 +217,9 @@ class bors_form extends bors_object
 		$table_css_class = defval($params, 'table_css_class', $this->templater()->form_table_css());
 
 		if($fields == 'auto')
-			$fields = array_keys(array_filter($object_fields, create_function('$x', 'return defval($x, "is_admin_editable", false) || defval($x, "is_editable", true);')));
+			$fields = array_keys(array_filter($object_fields, function($x) {
+				return defval($x, "is_admin_editable", false) || defval($x, "is_editable", true);
+			}));
 
 		if($th || !empty($fields))
 		{

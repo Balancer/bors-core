@@ -53,8 +53,8 @@ class bors_forms_image extends bors_forms_element
 		$html .=  "<input type=\"hidden\" name=\"{$image_name_field}___upload_dir\" value=\"".defval($params, 'upload_dir', config('upload_dir').'/images')."\"/>\n";
 		$html .=  "<input type=\"hidden\" name=\"{$image_name_field}___no_subdirs\" value=\"".defval($params, 'no_subdirs', config('no_subdirs'))."\"/>\n";
 
-		if($form->get('has_form_table'))
-			$html .=  "</td></tr>\n";
+//		if($form->get('has_form_table'))
+//			$html .=  "</td></tr>\n";
 
 		return $html;
 	}

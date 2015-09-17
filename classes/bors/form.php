@@ -199,12 +199,14 @@ class bors_form extends bors_object
 		else
 		{
 			if($class_name)
+			{
 				$object_fields = bors_lib_orm::fields(bors_foo($class_name));
+				$foo = bors_foo($class_name);
+				$object_fields = array_merge($object_fields, $foo->get('append_properties', []));
+			}
 			else
-				$object_fields = array();
+				$object_fields = [];
 
-			$foo = bors_foo($class_name);
-			$object_fields = array_merge($object_fields, $foo->get('append_properties', []));
 		}
 
 		if(array_key_exists('label', $params))

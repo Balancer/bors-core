@@ -440,6 +440,27 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		}
 	}
 
+	function set_data($prop, $value)
+	{
+		// Установка данных для бэкенда.
+		if(!is_array($value)
+			&& !is_object($value)
+			&& strcmp(empty($this->data[$prop]) ? NULL : $this->data[$prop], $value))
+		{
+			if(config('mutex_lock_enable'))
+				$this->__mutex_lock();
+
+			// Запоминаем первоначальное значение переменной.
+			if(empty($this->changed_fields) || !array_key_exists($prop, $this->changed_fields))
+				$this->changed_fields[$prop] = empty($this->data[$prop]) ? NULL : $this->data[$prop];
+
+			bors()->add_changed_object($this);
+		}
+
+		return $this->data[$prop] = $value;
+	}
+
+	//TODO: переписать на использование set_data; в будущем реализовать вызов set_XXX() методов, если они есть. Предварительно проверив по проектам. И/или реализовать альтернативный метод, а этот — отслеживать как устаревший до полной замены.
 	function set($prop, $value, $db_update=true)
 	{
 		// Строго проверяем, наш ли это метод. Или присоединённого объекта. Или — ошибка

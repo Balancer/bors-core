@@ -148,6 +148,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 	static function tr_array(&$data, $tabs)
 	{
 		$res = array();
+		$idx = 0;
 		foreach($data as $key => $val)
 		{
 			$s = str_repeat("\t", $tabs);
@@ -157,7 +158,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 			}
 			else
 			{
-				if(is_numeric($key))
+				if(($idx++ == $key) && is_numeric($key))
 					$s .= "'".addslashes($val)."',";
 				else
 					$s .= "'".addslashes($key)."' => '".addslashes($val)."',";

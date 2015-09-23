@@ -26,6 +26,14 @@ class bors_time_meta extends bors_property
 		return bors_lib_time::short($this->timestamp(), $def);
 	}
 
+	function short_ny($def = '')
+	{
+		if($this->is_null)
+			return $def;
+
+		return bors_lib_time::short_ny($this->timestamp(), $def);
+	}
+
 	function full_hdate()
 	{
 		if($this->is_null)

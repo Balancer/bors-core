@@ -107,7 +107,7 @@ function lt_img($params)
 			$file = $data['local_path'];;
 			$store_url  = 'http://www.balancer.ru';
 			$store_path = str_replace($path, '', $data['local_path']);
-//			if(config('is_developer')) r($path, $file, $data, $store_path);
+//			if(config('is_developer')) ~r($path, $file, $data, $store_path);
 		}
 		else
 		{
@@ -123,7 +123,7 @@ function lt_img($params)
 
 		if(!$data['local'] || !file_exists($file))
 		{
-			$path = "{$data['host']}{$data['path']}";
+//			$path = "{$data['host']}{$data['path']}";
 
 			if(preg_match("!/$!",$path))
 				$path .= "index";
@@ -131,8 +131,11 @@ function lt_img($params)
 			if(!empty($data['query']))
 				$path .= '/='.str_replace('&','/', $data['query']);
 
-			$file = "$store_path/$path";
-			if(!file_exists($file) || filesize($file)==0)
+			$file = "$store_path$path";
+
+//			if(config('is_developer')) ~r($store_path, $path, $file);
+
+			if((!file_exists($file) || filesize($file)==0) && !preg_match('!/_cg/!', $file))
 			{
 				$c1 = bors_substr($data['host'],0,1);
 				$c2 = bors_substr($data['host'],1,1);
@@ -148,8 +151,8 @@ function lt_img($params)
 				$file = "$store_path/$path";
 			}
 
-			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
-			if(!file_exists($file) || filesize($file)==0 || !($image_size = @getimagesize($file)))
+//			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
+			if((!file_exists($file) || filesize($file)==0 || !($image_size = @getimagesize($file))) && !preg_match('!/_cg/!', $file))
 			{
 				$path = web_import_image::storage_place_rel($params['url']);
 				// Тестировать http://www.balancer.ru/g/p3576581
@@ -158,13 +161,14 @@ function lt_img($params)
 
 				if(!$path)
 					return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[incorrect image]</small>";
+
 				$file = "$store_path/$path";
 			}
 
-			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
+//			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
 			$image_size = @getimagesize($file);
 
-//			if(config('is_developer')) { echo '<xmp>'; var_dump($params['url'], $file, $image_size); }
+//			if(config('is_developer')) { ~r($params['url'], $file, $image_size); }
 
 			if($path && file_exists($file) && !$image_size)
 			{
@@ -180,7 +184,7 @@ function lt_img($params)
 				unlink($file);
 			}
 
-			if(!file_exists($file) || filesize($file)==0 || !$image_size)
+			if((!file_exists($file) || filesize($file)==0 || !$image_size) && !preg_match('!/_cg/!', $file))
 			{
 				$path = web_import_image::storage_place_rel($params['url']);
 				if(!$path)
@@ -238,7 +242,7 @@ function lt_img($params)
 
 			if(!$image_size)
 			{
-				bors_debug::syslog('000-image-debug', "Get image size for ".$file);
+//				bors_debug::syslog('000-image-debug', "Get image size for ".$file);
 				$image_size = @getimagesize($file);
 			}
 
@@ -288,7 +292,7 @@ function lt_img($params)
 			{
 //				if(config('is_developer')) { var_dump($file, $data); exit(); }
 				debug_hidden_log('error_lcml_tag_img', "Incorrect image {$params['url']}");
-				return lcml_urls_title($params['url']).'<small> [image link error]</small>';
+				return sprintf($err_box, lcml_urls_title($params['url']).'<small> [image link error]</small>');
 			}
 
 			if(preg_match('/\.gif$/i', $params['url']))

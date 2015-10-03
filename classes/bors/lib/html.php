@@ -86,7 +86,8 @@ class bors_lib_html
 
 	static function decode($text)
 	{
-		while(preg_match('/&\w+;/', $text))
+		$loops = 0;
+		while(preg_match('/&\w+;/', $text) && $loops++<10)
 			$text = html_entity_decode($text, ENT_COMPAT | ENT_HTML401, 'UTF-8');
 
 		$text = preg_replace_callback("/(&#[0-9a-fx]+;)/", function($m)

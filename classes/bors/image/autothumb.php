@@ -68,6 +68,7 @@ class bors_image_autothumb extends bors_object
 				$img->set_full_url($u);
 		}
 
+		$img->set_attr('force_thumbnail', true);
 		return $img->thumbnail($this->geo);
 	}
 
@@ -97,6 +98,7 @@ class bors_image_autothumb extends bors_object
 				$img->set_full_url("http://{$ud['host']}$u");
 		}
 
+		$img->set_attr('force_thumbnail', true);
 		$thumb = $img->thumbnail($this->geo);
 
 		if(config('bors.version_show'))

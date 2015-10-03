@@ -492,6 +492,9 @@ function bors_each($class_name, $where)
 
 function bors_new($class_name, $data = array())
 {
+	if(!class_exists($class_name))
+		throw new Exception("Неизвестный класс ".$class_name);
+
 	if(is_null($data))
 		return object_new($class_name); // Пустой объект
 

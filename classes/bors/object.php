@@ -440,6 +440,27 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		}
 	}
 
+	function set_data($prop, $value)
+	{
+		// Установка данных для бэкенда.
+		if(!is_array($value)
+			&& !is_object($value)
+			&& strcmp(empty($this->data[$prop]) ? NULL : $this->data[$prop], $value))
+		{
+			if(config('mutex_lock_enable'))
+				$this->__mutex_lock();
+
+			// Запоминаем первоначальное значение переменной.
+			if(empty($this->changed_fields) || !array_key_exists($prop, $this->changed_fields))
+				$this->changed_fields[$prop] = empty($this->data[$prop]) ? NULL : $this->data[$prop];
+
+			bors()->add_changed_object($this);
+		}
+
+		return $this->data[$prop] = $value;
+	}
+
+	//TODO: переписать на использование set_data; в будущем реализовать вызов set_XXX() методов, если они есть. Предварительно проверив по проектам. И/или реализовать альтернативный метод, а этот — отслеживать как устаревший до полной замены.
 	function set($prop, $value, $db_update=true)
 	{
 		// Строго проверяем, наш ли это метод. Или присоединённого объекта. Или — ошибка
@@ -1678,7 +1699,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$stash_item = NULL;
 		if($this->id() && !is_object($this->id()) && $this->modify_time() && ($pool = config('cache.stash.pool')))
 		{
-			$stash_item = $pool->getItem('dog-pill-protect/'.$this->internal_uri_ascii().'/'.$this->page().'/'.$this->modify_time());
+			$stash_item = $pool->getItem('dog-pill-protect:'.$this->internal_uri_ascii().':'.$this->page().':'.$this->modify_time());
 
 			$content = $stash_item->get(Stash\Invalidation::SLEEP, 300, 100);
 
@@ -1688,7 +1709,6 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			$stash_item->lock();
 			$this->hcom("stash locked");
 		}
-
 
 		if(0 && $use_static
 			&& !$fs
@@ -2147,67 +2167,6 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		return $finder;
 	}
-
-	// Возвращает список ID файлов sitemap со списком объектов классов.
-	// Например, список номеров страниц или список дат.
-	static function sitemap_ids()
-	{
-		$first = bors_find_first(get_called_class(), array('order' => 'modify_time'));
-		$last = bors_find_first(get_called_class(), array('order' => '-modify_time'));
-
-		if(!$first)
-			return array();
-
-		$first = $first->modify_time();
-		if(!$last)
-			$last = time();
-		else
-			$last = $last->modify_time();
-
-
-		$ids = array();
-		for($year = date('Y', $first); $year <= date('Y', $last); $year++)
-			for($month = 1; $month<=12; $month++)
-				$ids[] = sprintf('%04d-%02d', $year, $month);
-
-		return $ids;
-
-	}
-
-	// Возвращает список объектов по ID sitemap-класса. Например, по номеру страницы или по дате
-	static function sitemap_index($sitemap_id)
-	{
-		$start = strtotime($sitemap_id . '-01 00:00:00');
-
-		if(!$start)
-			return array();
-
-		$days = date('t', $start);
-		$stop  = strtotime($sitemap_id . sprintf('-%02d', $days).' 23:59:59') + 1;
-
-		return bors_each(get_called_class(), array(
-			"modify_time BETWEEN $start AND $stop",
-			'order' => '-modify_time',
-		));
-	}
-
-	// Возвращает последний изменённый объект среди объектов соответствующих
-	// определённому sitemap-файлу по его ID.
-	static function sitemap_last_modified($sitemap_id)
-	{
-		// В данном случае у нас гвоздями прибито ID = новостной день
-
-		$start = strtotime($sitemap_id . '-01 00:00:00');
-		$days = date('t', $start);
-		$stop  = strtotime($sitemap_id . sprintf('-%02d', $days).' 23:59:59') + 1;
-
-		$last_news = bors_find_first(get_called_class(), array(
-			'order' => '-modify_time',
-			"modify_time BETWEEN $start AND $stop",
-		));
-
-		return $last_news;
-	 }
 
 	function uuid_hash() { return md5($this->class_name().':'.$this->id()); }
 

@@ -380,7 +380,7 @@ if(config('404_logging'))
 	$info[] = "user place = ".bors()->client()->place();
 	bors_log::info(join("\n", $info), $fname_404);
 
-	@file_put_contents($file = config('debug_hidden_log_dir')."/{$fname_404}.log", "$uri <= ".@$_SERVER['HTTP_REFERER'] 
+	@file_put_contents($file = config('debug_hidden_log_dir')."/{$fname_404}.log", "[".date('r')."] $uri <= ".@$_SERVER['HTTP_REFERER'] 
 		. " ; IP=".@$_SERVER['REMOTE_ADDR']
 		. "; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);

@@ -165,20 +165,36 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 	function thumbnail_class() { return 'bors_image_thumb'; }
 	function thumbnail($geometry)
 	{
+		// Если геометрия тамбнейла позволяет рассчитать размеры и ссылку без предварительной генерации,
+		// то и не делаем её, генерация будет потом осуществляться на лету, при запросе.
+
+		if(!$this->attr('force_thumbnail') && preg_match('/.+\(up,crop\)/', $geometry))
+		{
+			$thumb = bors_load_ex(bors_image_thumbnails_byurl::class, NULL, [
+				'origin_url' => $this->url(),
+				'geometry' => $geometry,
+			]);
+
+			if($thumb)
+				return $thumb;
+
+			bors_debug::syslog('image-thumbnail-byurl', "Can't load thumbnail for '{$this->url()}' with geo '$geometry'");
+		}
+
 		$class = $this->thumbnail_class();
 		//FIXME: хардкод
 		if(preg_match('/^b2_/', $class))
 		{
-			return bors_load_ex($class, NULL, array(
+			return bors_load_ex($class, NULL, [
 				'image_class_name' => $this->class_name(),
 				'image_id' => $this->id(),
 				'geometry' => $geometry,
-			));
+			]);
 		}
 
-		return bors_load_ex($class, $this->id().','.$geometry, array(
+		return bors_load_ex($class, $this->id().','.$geometry, [
 			'image_class_name' => $this->class_name(),
-		));
+		]);
 	}
 
 	function data_load()

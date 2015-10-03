@@ -250,9 +250,12 @@ class DataBase
 
 		if(!$ignore_error)
 		{
-			$err_msg_header = config('error_message_header');
+//			$err_msg_header = config('error_message_header');
 
-			throw new Exception($err_msg_header.ec("<br/>Ошибка MySQL: ").mysql_error($this->dbh)
+			throw new Exception("Ошибка MySQL: ".mysql_error($this->dbh)."<br/>\n"
+//				.$err_msg_header
+//				.ec("<br/>")
+//				.mysql_error($this->dbh)
 				.(config('site.is_dev') ?
 					"<pre style=\"color: blue\">DB={$this->db_name}\nquery={$query}</pre>" :
 					"<!-- DB={$this->db_name}\nquery={$query} -->"

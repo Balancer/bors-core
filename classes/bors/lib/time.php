@@ -124,12 +124,32 @@ class bors_lib_time
 			return $def;
 
 		global $now;
+		if(empty($now))
+			$now = time();
+
 		$time = intval($time);
 
-		if(abs($now - $time) < 86400 && strftime("%d", $time) == strftime("%d", $now))
+		if(abs($now - $time) < 86400/* && strftime("%d", $time) == strftime("%d", $now)*/)
 			return strftime("%H:%M", $time);
 		else
 			return strftime("%d.%m.%Y", $time);
+	}
+
+	static function short_ny($time, $def = '')
+	{
+		if(!$time)
+			return $def;
+
+		global $now;
+		if(empty($now))
+			$now = time();
+
+		$time = intval($time);
+
+		if(abs($now - $time) < 86400/* && strftime("%d", $time) == strftime("%d", $now)*/)
+			return strftime("%H:%M", $time);
+		else
+			return strftime("%d.%m", $time);
 	}
 
 	static function smart_interval($interval, $parts = 2)

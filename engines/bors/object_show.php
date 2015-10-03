@@ -14,6 +14,9 @@
 			return false;
 		}
 
+		// Чтобы при повторных вызовах вне одноразового HTTP-запроса данные не накапливались.
+		unset($GLOBALS['cms']['templates']);
+
 		$page = $obj->set_page($obj->arg('page'));
 
 		@header("Status: 200 OK");
@@ -31,6 +34,7 @@
 		{
 			if(config('debug_header_trace'))
 				@header('X-Bors-show-has-preparsed: Yes');
+
 			return true;
 		}
 
@@ -202,6 +206,9 @@ function bors_object_create($obj, $page = NULL)
 {
 	if(!$obj)
 		return NULL;
+
+	// Чтобы при повторных вызовах вне одноразового HTTP-запроса данные не накапливались.
+	unset($GLOBALS['cms']['templates']);
 
 	$page = $obj->set_page($page ?: $obj->args('page'));
 

@@ -159,7 +159,7 @@ class cache_static extends bors_object_db
 //			bors_debug::syslog('__cache_file_register', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache=".($cache?'yes':'no'));
 
 		$expire_time = time() + ($ttl === false ? $object->cache_static() : $ttl);
-//		bors_debug::syslog('00time', date('r', $expire_time));
+//		bors_debug::syslog('00time', "o={$object->debug_title()}; ttl=$ttl, cs=".$object->cache_static()."; mt=".date("r", $object->modify_time())."; expired=".date('r', $expire_time));
 
 		if(config('cache_database'))
 		{

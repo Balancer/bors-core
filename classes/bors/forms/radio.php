@@ -149,8 +149,10 @@ class bors_forms_radio extends bors_forms_element
 
 		$html .= $labels_html;
 
-		if($form->get('has_form_table'))
-			$html .= "</td></tr>\n";
+//		http://admin.aviaport.ru/news/359785/
+//		if($form->get('has_form_table'))
+//		if($this->label() && $this->use_tab())
+//			$html .= "</td></tr>\n";
 
 		return $html;
 	}

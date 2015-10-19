@@ -1,7 +1,7 @@
 <?php
 
-bors_function_include('cache/global_key');
-bors_function_include('cache/set_global_key');
+bors_transitional::function_include('cache/global_key');
+bors_transitional::function_include('cache/set_global_key');
 
 class bors_lib_orm
 {

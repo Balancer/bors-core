@@ -6,6 +6,8 @@
 	Без бэкенда.
 */
 
+require_once BORS_CORE.'/inc/system.php';
+
 class bors_object_simple extends bors_object_empty
 {
 	var $___id;

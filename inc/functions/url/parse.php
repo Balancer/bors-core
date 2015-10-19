@@ -17,7 +17,7 @@ function url_parse($url)
 
 	$host = $data['host'].(empty($data['port']) ? '' : ':'.$data['port']);
 
-	require_once('engines/bors/vhosts_loader.php');
+	require_once BORS_CORE.'/engines/bors/vhosts_loader.php';
 	$vhost_data = bors_vhost_data($host);
 	if(empty($vhost_data) && $host == bors()->server()->host())
 		$vhost_data = array(

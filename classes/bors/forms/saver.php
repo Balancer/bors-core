@@ -62,7 +62,7 @@ class bors_forms_saver extends bors_object_simple
 			return bors_message::error(ec("Извините, у Вас недостаточно прав доступа для проведения операций с этим ресурсом"),
 				array(
 					'sysinfo' => "class = ".get_class($object).",<br/>\naccess class = ".($object->access_engine())
-						."/".get_class($access).", method = can_action(".@$data['act'].")",
+						."/".get_class($access).",<br/>\nmethod = can_action(".@$data['act'].")",
 				)
 			);
 

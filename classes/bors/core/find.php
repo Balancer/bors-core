@@ -28,6 +28,7 @@ class bors_core_find
 	function page($page, $items_per_page)
 	{
 		$this->_where['*limit'] = array(($page-1)*$items_per_page, $items_per_page);
+		return $this;
 	}
 
 	// Найти все объекты, соответствующие заданным критериям

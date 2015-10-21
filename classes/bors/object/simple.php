@@ -6,7 +6,7 @@
 	Без бэкенда.
 */
 
-require_once BORS_CORE.'/inc/system.php';
+require_once __DIR__.'/../../../inc/system.php';
 
 class bors_object_simple extends bors_object_empty
 {

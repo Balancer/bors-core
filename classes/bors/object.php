@@ -1,6 +1,6 @@
 <?php
 
-require_once BORS_CORE.'/inc/functions/url/parse.php';
+require_once __DIR__.'/../../inc/functions/url/parse.php';
 
 class bors_object extends bors_object_simple
 {

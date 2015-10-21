@@ -87,9 +87,9 @@ function mysql_order_compile($order_list, $class_name = false)
 
 function mysql_limits_compile(&$args)
 {
-	$limit = intval(popval($args, '*limit'));
+	$limit = popval($args, '*limit');
 	if(!$limit)
-		$limit = intval(popval($args, 'limit'));
+		$limit = popval($args, 'limit');
 
 	$page = intval(popval($args, '*page'));
 	if(!$page)

@@ -10,7 +10,7 @@ class bors
 		if(!defined('BORS_CORE'))
 			define('BORS_CORE', dirname(__DIR__));
 
-		require_once(BORS_CORE.'/init.php');
+		require_once(__DIR__.'/../init.php');
 	}
 
 	static function log()
@@ -30,7 +30,7 @@ class bors
 	static function run()
 	{
 		self::init();
-		require_once(BORS_CORE.'/main.php');
+		require_once(__DIR__.'/../main.php');
 	}
 
 	static function show_uri($uri, $method = 'GET')

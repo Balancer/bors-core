@@ -227,7 +227,7 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 				}
 	}
 
-	$caller_default_template = BORS_CORE.'/templates/'.$module_relative_path;
+	$caller_default_template = __DIR__.'/../../templates/'.$module_relative_path;
 
 	$smarty->template_dir = $caller_path;
 	if(!empty($data['template_dir']) && $data['template_dir'] != 'caller')

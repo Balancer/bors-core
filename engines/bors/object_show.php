@@ -48,7 +48,7 @@
 				{
 					bors_debug::syslog('hack-attempt', "Try to hack by img src for ".$obj->debug_title());
 					header("Content-type: " . image_type_to_mime_type(IMAGETYPE_GIF));
-					return file_get_contents(BORS_CORE.'/htdocs/_bors/images/hacker.gif');
+					return file_get_contents(__DIR__.'/../../htdocs/_bors/images/hacker.gif');
 				}
 
 				// Если запрашивается не страница, а не пойми чего, то тоже считаем за хак.

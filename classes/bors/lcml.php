@@ -2,8 +2,8 @@
 
 define('MAX_EXECUTE_S', 0.5);
 
-require_once(BORS_CORE.'/engines/lcml/main.php');
-require_once(BORS_CORE.'/engines/lcml/tags.php');
+require_once(__DIR__.'/../../engines/lcml/main.php');
+require_once(__DIR__.'/../../engines/lcml/tags.php');
 
 class bors_lcml extends bors_object
 {
@@ -262,7 +262,14 @@ class bors_lcml extends bors_object
 		}
 
 		if($this->_params['level'] == 1)
-			$this->output_type = popval($params, 'output_type', 'html');
+		{
+			if(!empty($params['output_type']))
+				$this->output_type = $params['output_type'];
+			elseif(!empty($this->_params['output_type']))
+				$this->output_type = $this->_params['output_type'];
+			else
+				$this->output_type = 'html';
+		}
 
 		$mask = str_repeat('.', bors_strlen($text));
 
@@ -379,7 +386,8 @@ class bors_lcml extends bors_object
 			if(!empty($GLOBALS['bors.composer.class_loader']))
 			{
 				$map = $GLOBALS['bors.composer.class_loader']->getClassMap();
-				$lcml_parsers = array_filter(array_keys($map), function($class_name) use ($type) {
+				$lcml_parsers = array_filter(array_keys($map), function($class_name) use ($type)
+				{
 					return preg_match('/^lcml_parser_'.$type.'_/', $class_name);
 				});
 
@@ -395,7 +403,10 @@ class bors_lcml extends bors_object
 		}
 
 		foreach($parser_classes[$type] as $foo => $parser)
+		{
+			$parser->set_lcml($this);
 			$text = $parser->parse($text);
+		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
 			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type parsers execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
@@ -481,17 +492,17 @@ class bors_lcml extends bors_object
 		$suite->assertRegexp('#<strong>Сайт расходящихся тропок: <a.+href="http://balancer.ru".*>balancer.ru</a></strong>#', lcml($code));
 
 		$code = '[url=http://yandex.ru/yandsearch?text="оранжевые+зомби"]оранжевых зомби[/url]';
-		$suite->assertRegexp('#<a rel="nofollow" href="http://yandex.ru/yandsearch\?text=&quot;оранжевые\+зомби&quot;" class="external">оранжевых зомби</a>#', lcml($code));
+		$suite->assertRegexp('#<a rel="nofollow" href="http://yandex.ru/yandsearch\?text=&quot;оранжевые\+зомби&quot;" class="external[^"]*">оранжевых зомби</a>#', lcml($code));
 
 		// Обработка пайпов
 		$code = '[url=http://www.n2yo.com/?s=25544|38348]Реалтаймовый мониторинг положения Dragin и МКС[/url]';
-		$suite->assertRegexp('#<a rel="nofollow" href="http://www.n2yo.com/?s=25544|38348" class="external">Реалтаймовый мониторинг положения Dragin и МКС</a>#', lcml($code));
+		$suite->assertRegexp('#<a rel="nofollow" href="http://www.n2yo.com/?s=25544|38348" class="external[^"]*">Реалтаймовый мониторинг положения Dragin и МКС</a>#', lcml($code));
 
 		$code = '[http://www.ru|WWW.RU]';
-		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external">WWW.RU</a>#', lcml($code));
+		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external[^"]*">WWW.RU</a>#', lcml($code));
 
 		$code = '[http://www.ru WWW.RU]';
-		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external">WWW.RU</a>#', lcml($code));
+		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external[^"]*">WWW.RU</a>#', lcml($code));
 
 		$code = '[/test/|Ещё тест]';
 		$suite->assertRegexp('#<a.*href="/test/".*>Ещё тест</a>#', lcml($code));

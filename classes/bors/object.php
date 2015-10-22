@@ -1277,15 +1277,6 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return  $this->class_name().'://'.$this->id().'/';
 	}
 
-	protected $_dbh = NULL;
-	function db($database_name = NULL)
-	{
-		if($this->_dbh === NULL)
-			$this->_dbh = new driver_mysql($database_name ? $database_name : $this->get('db_name', config('main_bors_db')));
-
-		return $this->_dbh;
-	}
-
 	//TODO: разобраться с сериализацией приватных данных
 	public function __sleep()
 	{

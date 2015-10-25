@@ -129,7 +129,7 @@ function bors_dirs($skip_config = false, $host = NULL)
 			$data[] = BORS_LOCAL;
 	}
 
-	if(is_dir(BORS_EXT))
+	if(defined('BORS_EXT') && is_dir(BORS_EXT))
 		$data[] = BORS_EXT;
 
 	$data[] = BORS_CORE;

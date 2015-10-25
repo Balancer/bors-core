@@ -19,7 +19,7 @@ function bors_vhost_data($host, $key = NULL, $def = NULL)
 	return $data;
 }
 
-require_once("inc/filesystem.php");
+require_once BORS_CORE.'/inc/filesystem.php';
 
 function bors_url_submap($map)
 {

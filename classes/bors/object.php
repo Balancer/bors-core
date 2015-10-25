@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../../inc/functions/url/parse.php';
+
 class bors_object extends bors_object_simple
 {
 	// Общая структура имён
@@ -1979,6 +1981,9 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function renderer()
 	{
 		$renderer_class = $this->get('theme_class');
+
+//		if(!$renderer_class)
+//			$renderer_class = object_property($this->project(), 'default_theme_class');
 
 		if(!$renderer_class)
 			$renderer_class = $this->get('renderer_class');

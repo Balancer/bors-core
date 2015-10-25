@@ -3,6 +3,11 @@
 	// Возвращает false при ошибке показа объекта
 	// true - если была какая-то отработка и требуется прекратить дальнейшую работу.
 	// Иначе - строку с результатом для вывода.
+/**
+ * @param $obj bors_object
+ * @return bool|string
+ * @throws Exception
+ */
 	function bors_object_show($obj)
 	{
 		if(!$obj)
@@ -79,7 +84,7 @@
 
 		$access_object = $obj->access();
 		if(!$access_object)
-			bors_throw("Can't load access_engine ({$obj->access_engine()}?) for class {$obj->debug_title()}");
+			throw new Exception("Can't load access_engine (".($obj->access_engine()?$obj->access_engine():"empty access_engine").") for class {$obj->debug_title()}");
 
 		if(!$access_object->can_read())
 		{

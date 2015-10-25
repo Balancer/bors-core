@@ -1,6 +1,6 @@
 <?php
 
-require_once('engines/lcml/main.php');
+require_once __DIR__.'/../../../engines/lcml/main.php';
 
 class bors_bodies_page extends base_null
 {

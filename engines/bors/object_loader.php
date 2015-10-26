@@ -1,10 +1,9 @@
 <?php
 
-require_once BORS_CORE.'/inc/funcs.php';
 spl_autoload_register('class_include');
 
-bors_transitional::function_include('debug/count_inc');
-bors_transitional::function_include('debug/log_var');
+require_once __DIR__.'/../../inc/functions/debug/count_inc.php';
+require_once __DIR__.'/../../inc/functions/debug/log_var.php';
 
 function bors_object_caches_drop()
 {

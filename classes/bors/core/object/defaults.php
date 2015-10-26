@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../../../../engines/bors.php'; // for object_property
+
 class bors_core_object_defaults
 {
 	// airbase_common_forum => airbase

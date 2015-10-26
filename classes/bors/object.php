@@ -1282,7 +1282,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	//TODO: разобраться с сериализацией приватных данных
 	public function __sleep()
 	{
-		if($this->_dbh)
+		if(!empty($this->_dbh))
 		{
 			$this->_dbh->close();
 			$this->_dbh = NULL;

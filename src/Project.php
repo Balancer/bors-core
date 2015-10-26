@@ -16,10 +16,10 @@ class Project extends \bors_project
 
 	function route_view($request)
 	{
-//		return NULL;
+		return NULL;
 
 		require_once(__DIR__.'/../inc/funcs.php');
-		$x = new Page(NULL);
+		$x = Page::factory();
 //		$x->set_attr('headers', []);//['Content-Type' => 'text/plain']);
 		$x->set_attr('content', '<html><head><title>Test</title></head><body>Hello world</body></html>');
 		return $x;

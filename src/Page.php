@@ -4,7 +4,7 @@ namespace B2;
 
 class Page extends View
 {
-	use Smart;
+//	use Smart;
 
 	function response()
 	{

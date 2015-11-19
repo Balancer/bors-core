@@ -310,6 +310,9 @@ class bors_form extends bors_object
 			{
 				$section_name = $x['section'];
 				$data = $x['data'];
+				if(!$data)
+					$data = [];
+
 				$property_name = $x['property'];
 
 				if($have_sections && $last_section != $section_name)
@@ -322,6 +325,11 @@ class bors_form extends bors_object
 					foreach($object_fields as $f)
 						if($f['name'] == $property_name)
 							$data = $f;
+
+				$property_name = defval($data, 'property', defval($data, 'name', $property_name));
+
+				if($append = @$edit_properties_append[$property_name])
+					$data = array_merge($data, $append);
 
 				if(!defval($data, 'is_editable', true)  && !defval($data, 'is_admin_editable', false))
 					continue;
@@ -362,11 +370,6 @@ class bors_form extends bors_object
 
 					$class = $data['list'];
 				}
-
-				$property_name = defval($data, 'property', defval($data, 'name', $property_name));
-
-				if($append = @$edit_properties_append[$property_name])
-					$data = array_merge($data, $append);
 
 				if(!$title)
 					$title = $property_name;

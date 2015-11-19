@@ -44,7 +44,7 @@ class Router extends Object
 		return NULL;
 	}
 
-	static function factory()
+	static function factory($foo=NULL)
 	{
 		$class_name = get_called_class();
 		$router = new $class_name(NULL);

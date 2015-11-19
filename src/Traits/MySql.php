@@ -13,7 +13,7 @@ trait MySql
 			if(!$database_name)
 				 $database_name = config('main_bors_db');
 
-			$this->_dbh = new driver_mysql($database_name);
+			$this->_dbh = new \driver_mysql($database_name);
 		}
 
 		return $this->_dbh;

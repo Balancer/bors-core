@@ -22,8 +22,12 @@ class bors_forms_element
 		if($val = bors_global::gvar('override_form_values.'.$name))
 			return $val;
 
+		if(!$object && $form->model_class() && ($new_val = bors_foo($form->model_class())->get($name."_new")))
+			return $new_val;
+
 		$def  = defval($params, 'def');
 		$value = defval($params, $param_name);
+
 
 		if(!array_key_exists($param_name, $params))
 		{

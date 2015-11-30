@@ -92,8 +92,7 @@ $includes = array(
 if(defined('BORS_APPEND'))
 	$includes = array_merge($includes, explode(' ', BORS_APPEND));
 
-if(defined('COMPOSER_ROOT'))
-	$includes[] = COMPOSER_ROOT;
+$includes[] = COMPOSER_ROOT;
 
 if(defined('INCLUDES_APPEND'))
 	$includes = array_merge($includes, explode(' ', INCLUDES_APPEND));
@@ -122,6 +121,9 @@ foreach(array(COMPOSER_ROOT, BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BO
 if(!empty($GLOBALS['bors']['config']['config_hosts']))
 	foreach($GLOBALS['bors']['config']['config_hosts'] as $config_file)
 		require_once($config_file);
+
+if(file_exists($f = COMPOSER_ROOT.'/config-host.php'))
+	require_once($f);
 
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0750);

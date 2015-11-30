@@ -130,12 +130,15 @@ class cache_static extends bors_object_db
 	{
 		$object_id = $object->id();
 
-		$file = $object->static_file();
+		$file = realpath($object->static_file());
 		if(!$file) // TODO: отловить
+		{
+			bors_debug::syslog('static-file-notice', "empty static_file() for ".$object->debug_title());
 			return;
+		}
 
 		if(preg_match('/,new/', $file))
-			bors_debug::syslog('000-error-page-is-new', $object->debug_title());
+			bors_debug::syslog('static-file-logic-error', "New page for ".$object->debug_title());
 
 		//TODO: отловить кеш-запись постов при добавлении нового сообщения. (class_id = 1)
 		bors()->changed_save();
@@ -160,6 +163,34 @@ class cache_static extends bors_object_db
 
 		$expire_time = time() + ($ttl === false ? $object->cache_static() : $ttl);
 //		bors_debug::syslog('00time', "o={$object->debug_title()}; ttl=$ttl, cs=".$object->cache_static()."; mt=".date("r", $object->modify_time())."; expired=".date('r', $expire_time));
+
+		if(($ic=config('internal_charset')) != ($oc=config('output_charset')))
+			$content = iconv($ic, $oc.'//translit', $content);
+
+		mkpath($dir = dirname($file), 0777);
+
+		if(is_writable($dir))
+		{
+			bors_function_include('fs/file_put_contents_lock');
+			file_put_contents_lock($file, $content);
+			if(is_file($file))
+			{
+				// Скрываем, т.к. файл может не принадлежать нашему пользователю.
+				@chmod($file, 0666);
+
+				if(!($mt = $object->modify_time()))
+					$mt = time();
+
+				@touch($file, $mt, $expire_time);
+			}
+		}
+
+		if(!file_exists($file) || !is_file($file))
+			bors_debug::sylog('filesystem', "Can't create static file.\n
+	object: {$object}\n
+	file: {$file} (fe=".file_exists($file)
+		.';isf='.is_file($file)
+		.';isw='.is_writable($dir).")");
 
 		if(config('cache_database'))
 		{
@@ -214,31 +245,5 @@ class cache_static extends bors_object_db
 //			$object->set_was_cleaned(false);
 		}
 
-		if(($ic=config('internal_charset')) != ($oc=config('output_charset')))
-			$content = iconv($ic, $oc.'//translit', $content);
-
-		mkpath($dir = dirname($file), 0777);
-
-		if(is_writable($dir))
-		{
-			bors_function_include('fs/file_put_contents_lock');
-			file_put_contents_lock($file, $content);
-			if(is_file($file))
-			{
-				chmod($file, 0666);
-
-				if(!($mt = $object->modify_time()))
-					$mt = time();
-
-				touch($file, $mt, $expire_time);
-			}
-		}
-
-		if(!file_exists($file) || !is_file($file))
-			debug_hidden_log('filesystem', "Can't create static file.\n
-	object: {$object}\n
-	file: {$file} (fe=".file_exists($file)
-		.';isf='.is_file($file)
-		.';isw='.is_writable($dir).")");
 	}
 }

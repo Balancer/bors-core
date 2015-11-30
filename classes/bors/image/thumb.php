@@ -176,7 +176,7 @@ class bors_image_thumb extends bors_image
 
 		if(!file_exists($file_thumb_r))
 		{
-			bors_debug::syslog('image-error', 'Image file not exists: ' . $file_thumb_r .'; image_dir='.$this->image_dir());
+//			bors_debug::syslog('image-error', 'Image file not exists: ' . $file_thumb_r .'; image_dir='.$this->image_dir());
 			return $this->set_is_loaded(false);
 		}
 

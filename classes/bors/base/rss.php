@@ -134,7 +134,7 @@ class base_rss extends base_page
 		}
 
 		$html = $object->rss_body();
-		if(!$strip || strlen($html) <= $strip)
+		if(!$strip || bors_strlen($html) <= $strip)
 			return $html;
 
 		include_once("inc/texts.php");

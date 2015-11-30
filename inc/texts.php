@@ -38,9 +38,12 @@ require_once('strings.php');
 			if(bors_strlen($text) > $len)
 			{
 				$text = bors_substr($text, 0, $len-bors_strlen($more_text));
-				$space_pos = strrpos($text, ' ');
+				$space_pos = bors_strrpos($text, ' ');
 				if($space_pos !== false)
-					$text = substr($text, 0, $space_pos);
+					$text = bors_substr($text, 0, $space_pos);
+
+				$text = bors_close_tags($text);
+
 				$text .= $more_text;
 			}
 
@@ -65,13 +68,14 @@ require_once('strings.php');
 				if(!$in_tag &&  bors_strlen($res)>=$len)
 					$do_flag=0;
 			}
+
+			$res = bors_close_tags($res);
+
 			$text = $res . $more_text;
 		}
 
 		if(config('is_test'))
 			echo $text, PHP_EOL, PHP_EOL;
-
-		$text = bors_close_tags($text);
 
 		return $text;
 	}

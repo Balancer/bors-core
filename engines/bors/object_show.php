@@ -63,7 +63,7 @@
 				if(!bors()->request()->is_post() && !$obj->get('can_action_method_get'))
 				{
 					bors_debug::syslog('hack-attempt', "Try to hack by call get method for ".$obj->debug_title());
-					return get_class($obj) . ": request error: act get";
+					return get_class($obj) . ": request error: act get (need can_action_method_get=true)";
 				}
 			}
 

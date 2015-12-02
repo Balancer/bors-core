@@ -183,7 +183,7 @@ class bors_admin_engine extends bors_object
 		return $res.$del;
 	}
 
-	function imaged_titled_link_ex($params)
+	function imaged_titled_link_ex($params=[])
 	{
 		if(is_array($params))
 			$mode = popval($params, 'mode');
@@ -228,6 +228,9 @@ class bors_admin_engine extends bors_object
 		if(stripos($mode, 'd') !== false && $obj->access()->can_delete())
 			$html .= '&nbsp;' . $this->imaged_delete_link('');
 
+		if(stripos($mode, 'u') !== false && $obj->access()->can_action())
+			$html .= '&nbsp;' . $this->imaged_action_link('unlink', $params);
+
 		if(!empty($params['actions']))
 		{
 			require_once('inc/images.php');
@@ -238,8 +241,16 @@ class bors_admin_engine extends bors_object
 		return $html;
 	}
 
-	function imaged_direct_titled_link($title = NULL)
+	function imaged_direct_titled_link($params=[])
 	{
+		if(!is_array($params))
+		{
+			$title = $params;
+			$params = [];
+		}
+		else
+			$title = popval($params, 'title');
+
 		$obj = $this->real_object();
 		if(is_null($title))
 			$title = $obj->title();
@@ -267,6 +278,17 @@ class bors_admin_engine extends bors_object
 		require_once('inc/images.php');
 		$url = $this->object()->urls($type);
 		return bors_icon($image, array('url' => $url, 'title' => $title));
+	}
+
+	function imaged_action_link($action, $params=[])
+	{
+		require_once('inc/images.php');
+
+		$url = defval($params, 'url');
+		if(!$url)
+			$url = $this->admin_object()->url().'?act='.htmlspecialchars($action);
+
+		return bors_icon(defval($params, 'image', $action), ['url' => $url, 'title' => defval($params, 'title')]);
 	}
 
 	function titled_link($title = NULL)

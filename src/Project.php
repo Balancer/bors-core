@@ -40,13 +40,18 @@ class Project extends \bors_project
 //		r($request->query()->uri());
 //		r((string)$request->uri());
 
-		$request = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
-//		$request = \Slim\Http\Request::createFromEnvironment(new \Slim\Http\Environment($_SERVER));
+		$view = NULL;
 
-//		r((string)$request->getUri());
-//		r((string)$request->getMethod());
+		if(class_exists('\\Zend\\Diactoros\\ServerRequestFactory'))
+		{
+			$request = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
+//			$request = \Slim\Http\Request::createFromEnvironment(new \Slim\Http\Environment($_SERVER));
 
-		$view = $this->route_view($request);
+//			r((string)$request->getUri());
+//			r((string)$request->getMethod());
+
+			$view = $this->route_view($request);
+		}
 
 		if($view)
 		{

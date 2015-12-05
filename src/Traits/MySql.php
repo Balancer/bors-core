@@ -36,7 +36,7 @@ trait MySql
 
 	function table_fields() { return array('id'); }
 
-	static $id_fields_cache = array();
+//	static $id_fields_cache = array();
 	function id_field()
 	{
 		$class_name = $this->class_name();
@@ -46,7 +46,7 @@ trait MySql
 		if(method_exists($this, 'table_fields') && $this->storage_engine() != 'storage_db_mysql_smart')
 		{
 			// Новый формат
-			foreach(bors_lib_orm::main_fields($this) as $f)
+			foreach(\bors_lib_orm::main_fields($this) as $f)
 			{
 				if($f['property'] == 'id')
 				{
@@ -116,7 +116,7 @@ trait MySql
 				$this->{'set_'.$name}(array(), $db_up);
 	}
 
-	var $___args = array();
+//	var $___args = array();
 	function set_args($args) { return $this->___args = $args; }
 	function _set_arg($name, $value) { return $this->___args[$name] = $value; }
 	function args($name=false, $def = NULL) { return $name ? $this->arg($name, $def) : $this->___args; }
@@ -197,15 +197,15 @@ trait MySql
 
 	function set_class_file($file_name)
 	{
-		bors_class_loader::$class_files[$this->class_name()] = $file_name;
-		bors_class_loader::$class_file_mtimes[$this->class_name()] = filemtime($file_name);
+		\bors_class_loader::$class_files[$this->class_name()] = $file_name;
+		\bors_class_loader::$class_file_mtimes[$this->class_name()] = filemtime($file_name);
 		return $file_name;
 	}
 
-	function class_file() { return bors_class_loader::file($this->class_name()); }
-	function class_filemtime() { return @bors_class_loader::$class_file_mtimes[$this->class_name()]; }
+	function class_file() { return \bors_class_loader::file($this->class_name()); }
+	function class_filemtime() { return @\bors_class_loader::$class_file_mtimes[$this->class_name()]; }
 
-	function real_class_file() { return @bors_class_loader::$class_files[$this->class_name()]; }
+	function real_class_file() { return @\bors_class_loader::$class_files[$this->class_name()]; }
 	function class_dir() { return dirname($this->class_file()); }
 
 	function pre_set(&$data)
@@ -434,7 +434,7 @@ trait MySql
 		{
 			$stash_item = $pool->getItem('dog-pill-protect:'.$this->internal_uri_ascii().':'.$this->page().':'.$this->modify_time());
 
-			$content = $stash_item->get(Stash\Invalidation::SLEEP, 300, 100);
+			$content = $stash_item->get(\Stash\Invalidation::SLEEP, 300, 100);
 
 			if(!$stash_item->isMiss())
 				return $content;
@@ -481,17 +481,17 @@ trait MySql
 
 		if(empty($content) && $use_static)
 		{
-			cache_static::drop($this);
+			\cache_static::drop($this);
 			return '';
 		}
 
 //		echo "cs=$use_static, recreate=$recreate";
 //		if($use_static || $recreate)
 		if($use_static)
-			cache_static::save_object($this, $content);
+			\cache_static::save_object($this, $content);
 
 		if(config('use_memcached_objects') || $recreate)
-			bors_objects_helper::cache_registers($this);
+			\bors_objects_helper::cache_registers($this);
 
 		return $output_content;
 	}
@@ -616,7 +616,7 @@ trait MySql
 		foreach($keywords as $kw)
 		{
 			$kw = trim($kw);
-			if(common_keyword::compare_eq($kw, $keyword))
+			if(\common_keyword::compare_eq($kw, $keyword))
 				return;
 		}
 
@@ -631,7 +631,7 @@ trait MySql
 		foreach($this->keywords() as $kw)
 		{
 			$kw = trim($kw);
-			if(!common_keyword::compare_eq($kw, $keyword))
+			if(!\common_keyword::compare_eq($kw, $keyword))
 				$keywords[] = $kw;
 		}
 
@@ -803,7 +803,7 @@ trait MySql
 		return join(' ', array_unique($properties));
 	}
 
-	function _section_name_def() { return bors_core_object_defaults::section_name($this); }
+	function _section_name_def() { return \bors_core_object_defaults::section_name($this); }
 	function _is_changes_logging_def() { return false; }
 
 	function call($method_name)
@@ -855,7 +855,7 @@ trait MySql
 		return config('cache_dir').'/classes/'.str_replace('_', '/', get_class($this));
 	}
 
-	static $__cache_data = array();
+//	static $__cache_data = array();
 	function class_cache_data($name = NULL, $setter = NULL)
 	{
 		if(empty(self::$__cache_data[$this->class_name()]))
@@ -883,7 +883,7 @@ trait MySql
 
 	function set_class_cache_data($name, $value)
 	{
-		return bors_class_loader::set_class_cache_data($this->class_name(), $this->class_file(), $name, $value);
+		return \bors_class_loader::set_class_cache_data($this->class_name(), $this->class_file(), $name, $value);
 	}
 
 	function property_info($property_name)
@@ -898,7 +898,7 @@ trait MySql
 	static function find($where = array())
 	{
 		$class_name = get_called_class();
-		$finder = new b2_core_find($class_name);
+		$finder = new \b2_core_find($class_name);
 
 		if($where)
 			$finder->where($where);

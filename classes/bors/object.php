@@ -45,6 +45,9 @@ class bors_object extends bors_object_simple
 	private $__match;
 	function set_match($match) { return $this->__match = $match; }
 
+	function is_null() { return false; }
+	function is_not_null() { return true; }
+
 	function parents()
 	{
 		if($ps = $this->get_data('parents'))

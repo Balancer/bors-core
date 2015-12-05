@@ -20,7 +20,7 @@
 		}
 
 		// Чтобы при повторных вызовах вне одноразового HTTP-запроса данные не накапливались.
-		unset($GLOBALS['cms']['templates']);
+//		unset($GLOBALS['cms']['templates']);
 
 		$page = $obj->set_page($obj->arg('page'));
 

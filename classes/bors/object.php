@@ -1978,6 +1978,11 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return $object;
 	}
 
+    static function create($data)
+	{
+		return bors_new(get_called_class(), $data);
+	}
+
 	function renderer()
 	{
 		$renderer_class = $this->get('theme_class');

@@ -17,6 +17,7 @@ class blib_object
 
 	// Значение отсутствует
 	function is_null() { return is_null($this->_value); }
+	function is_not_null() { return !is_null($this->_value); }
 
 	// Значение есть и не пустое
 	function is_value() { return !empty($this->_value); }

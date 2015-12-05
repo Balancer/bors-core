@@ -4,6 +4,7 @@ class blib_null extends blib_object
 {
 	function is_empty() { return true; }
 	function is_null()  { return true; }
+	function is_not_null()  { return false; }
 	function is_value() { return false; }
 	function is_array() { return false; }
 

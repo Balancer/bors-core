@@ -56,7 +56,13 @@ class url_titled extends url_base
 		if($page && $page != 1 && $page != -1)
 			$uri .= ",$page";
 
-//		return $uri . $suffix . ($is_last_page ? '.'.$obj->modify_time()%10000 : '') . ".html";
-		return $uri . $suffix . ".html";
+		$is_last_page = ($page == $obj->total_pages());// && defval($args, 'force', true); // defval($args, 'is_last_page', false);
+
+		$url = $uri . $suffix . ($is_last_page ? '.'.($is_last_page > 1 ? $is_last_page : $obj->modify_time())%10000 : '') . ".html";
+
+//		if(config('is_developer') && is_array($args)) { echo '?'; var_dump($args, $is_last_page, $url); exit(); }
+
+		return $url;
+//		return $uri . $suffix . ".html";
 	}
 }

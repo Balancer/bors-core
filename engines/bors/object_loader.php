@@ -326,6 +326,8 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	else
 		$args['page'] = $page;
 
+	$args['_load_url'] = $url;
+
 	$obj = object_init($check_class, $id, $args);
 //	if(config('is_developer')) echo "object_init($check_class, $id, $args) = ".print_dd($obj)."<br/>\n";
 	if(!$obj)

@@ -62,6 +62,19 @@ class bors_tools_search_result extends bors_tools_search
 //	function parents() { return $this->q() ? array('/tools/search.bas?q=') : array('/tools/'); }
 	function can_cached() { return false; }
 
+/*
+	function _configure()
+	{
+//		var_dump($this->args('request'), $_GET, $_SERVER['REQUEST_URI'], $this->arg('_load_url'));
+		if($r = $this->args('request'))
+		{
+			parse_str($r, $_GET);
+			var_dump($_GET);
+		}
+
+		return parent::_configure();
+	}
+*/
 	private $_data = false;
 	function pre_show()
 	{
@@ -185,8 +198,26 @@ class bors_tools_search_result extends bors_tools_search
 		if($this->t())
 			$cl->SetFilter('topic_id', array(intval($this->t())));
 
-		$date1 = strtotime($this->y1().'-'.$this->m1().'-'.$this->d1().' 00:00:00');
-		$date2 = strtotime($this->y2().'-'.$this->m2().'-'.$this->d2().' 23:59:59');
+		if(!($d1 = $this->d1()))
+			$d1 = 1;
+
+		if(!($m1 = $this->m1()))
+			$m1 = 1;
+
+		if(!($y1 = $this->y1()))
+			$y1 = 1970;
+
+		if(!($d2 = $this->d2()))
+			$d2 = 31;
+
+		if(!($m2 = $this->m2()))
+			$m2 = 12;
+
+		if(!($y2 = $this->y2()))
+			$y2 = date('Y');
+
+		$date1 = strtotime($y1.'-'.$m1.'-'.$d1.' 00:00:00');
+		$date2 = strtotime($y2.'-'.$m2.'-'.$d2.' 23:59:59');
 
 		if($date1 || $date2)
 		{
@@ -207,6 +238,7 @@ class bors_tools_search_result extends bors_tools_search
 				$time_begin = strtotime("$y-01-01 00:00:00");
 				$time_end   = strtotime("$y-12-31 23:59:59");
 			}*/
+
 			$cl->SetFilterRange('create_time', $date1, $date2);
 		}
 

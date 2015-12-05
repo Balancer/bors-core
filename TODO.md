@@ -1,5 +1,10 @@
 # Сделать:
 
+## 02.11.2015
+
+[ ] LCML: Реализовать обработку HTML-вставок кода vesti.ru: http://www.balancer.ru/g/p3996199
+[ ] LCML/img: перевести использование картинки Твиттер на :large — http://www.balancer.ru/g/p3997914
+
 ## 27.03.2015
 
 [ ] Задействовать в генерации PHP-кода http://libraries.io/packagist/nette%2Fphp-generator

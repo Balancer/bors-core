@@ -43,6 +43,8 @@ class bors
 
 	static function show_uri($uri, $method = 'GET')
 	{
+//		unset($GLOBALS['cms']['templates']);
+
 		$res = false;
 
 		if(config('debug.execute_trace'))

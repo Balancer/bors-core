@@ -77,6 +77,8 @@
 		$url_data = url_parse($pure_url);
 		$external = @$url_data['local'] ? '' : ' class="external foo-a3"';
 
+//		if(config('is_developer')) echo bors_debug::trace();
+
 		if(bors_exec_time() < config('lcml.timeout', 30))
 		{
 			if(config('lcml_balancer'))
@@ -112,13 +114,11 @@
 		$blacklist = $external;
 		if(preg_match('!'.config('seo_domains_whitelist_regexp', @$_SERVER['HTTP_HOST']).'!', $url_data['host']))
 			$blacklist = false;
-
 		if(preg_match("!/[^/]+\.[^/]+$!", $pure_url) 
 				&& !preg_match("!\.(html|htm|phtml|shtml|jsp|pl|php|php4|php5|cgi)$!i", $pure_url)
 				&& !preg_match("!^http://[^/]+/?$!i", $pure_url)
 		)
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
-
 
 		if(!function_exists('curl_init') || bors_exec_time() > config('lcml.timeout', 30))
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";

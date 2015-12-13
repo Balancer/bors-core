@@ -128,7 +128,17 @@
 		{
 			if(config('debug_header_trace'))
 				@header('X-Bors-show-pre-show: Yes');
+
 			return true;
+		}
+
+		if(is_object($processed)
+				&& method_exists($processed, 'sendHeaders')
+				&& method_exists($processed, 'getContent')
+			)
+		{
+			$processed->sendHeaders();
+			return bors_message($processed->getContent());
 		}
 
 		$modify_time = max($obj->modify_time(), $obj->get('compile_time'));

@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Response;
+
 function bors_message($text, $params=array())
 {
 	template_nocache();
@@ -10,6 +12,12 @@ function bors_message($text, $params=array())
 
 	@header('Content-Type: text/html; charset='.$ocs);
 	@header('Content-Language: '.config('page_lang', 'ru'));
+
+	if($status = defval($params, 'http_status'))
+	{
+		$resp = new Response($text, $status);
+		$resp->sendHeaders();
+	}
 
 	$redir = defval($params, 'go', defval($params, 'redirect', false));
 	$title = defval($params, 'title', ec('Ошибка!'));

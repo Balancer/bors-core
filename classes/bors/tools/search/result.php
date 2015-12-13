@@ -319,8 +319,8 @@ class bors_tools_search_result extends bors_tools_search
 					$cid = @$x['attrs']['class_id'];
 					if($cid == 1)
 						$cid = 87;
-					if($cid == 2)
-						$cid = 89;
+					if($cid == 89)
+						$cid = 2;
 					if($cid == 15)
 						$cid = 179;
 				}

@@ -34,7 +34,7 @@ class bors_lcml_parser_typo extends bors_lcml_parser
 	{
 		$code = 'Оркестр <<Боян>>';
 		$suite->assertRegexp('#Оркестр &laquo;Боян&raquo;#', lcml($code));
-		$suite->assertRegexp('#Оркестр «Боян»#', lcml($code, array('output_type' => 'text')));
+		$suite->assertRegexp('#Оркестр «Боян»#', lcml($code, ['output_type' => 'text']));
 
 		$code = 'Знание -- сила!';
 		$suite->assertRegexp('#Знание &mdash; сила!#', lcml($code));
@@ -43,6 +43,6 @@ class bors_lcml_parser_typo extends bors_lcml_parser
 		$suite->assertRegexp('#Точность &plusmn; километр.#', lcml($code));
 		$code = '50 грамм (+/-10)';
 		$suite->assertRegexp('#50 грамм \(&plusmn;10\)#', lcml($code));
-		$suite->assertRegexp('#50 грамм \(±10\)#', lcml($code, array('output_type' => 'text')));
+		$suite->assertRegexp('#50 грамм \(±10\)#', lcml($code, ['output_type' => 'text']));
 	}
 }

@@ -38,7 +38,7 @@ class bors_page_db extends base_page_db
 		$tpl = bors_lib_page::body_template($this);
 
 		if(!$tpl)
-			$tpl = 'xfile:'.BORS_CORE.'/classes/bors/base/page.html';
+			$tpl = 'xfile:'.realpath(__DIR__.'/../../../classes/bors/base/page.html');
 
 		return $tpl;
 	}

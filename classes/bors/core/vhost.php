@@ -25,7 +25,7 @@ class bors_core_vhost
 			include($file);
 		elseif(file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
 			include($file);
-		elseif(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
+		elseif(file_exists($file = realpath(__DIR__.'/../../../vhosts/'.$host.'/handlers/bors_map.php')))
 			include($file);
 
 		$map2 = $map;

@@ -10,7 +10,13 @@ class bors
 		if(!defined('BORS_CORE'))
 			define('BORS_CORE', dirname(__DIR__));
 
-		require_once(BORS_CORE.'/init.php');
+		require_once(__DIR__.'/../init.php');
+	}
+
+	static function load($class_name, $object_id)
+	{
+		require_once BORS_CORE.'/engines/bors.php';
+		return bors_load($class_name, $object_id);
 	}
 
 	static function log()
@@ -20,6 +26,8 @@ class bors
 
 	function route_view($url = NULL, $host = NULL, $port = NULL)
 	{
+		require_once(BORS_CORE.'/engines/bors.php');
+
 		if(!$url)
 			$url = $_SERVER['REQUEST_URI'];
 
@@ -30,11 +38,13 @@ class bors
 	static function run()
 	{
 		self::init();
-		require_once(BORS_CORE.'/main.php');
+		require_once(__DIR__.'/../main.php');
 	}
 
 	static function show_uri($uri, $method = 'GET')
 	{
+//		unset($GLOBALS['cms']['templates']);
+
 		$res = false;
 
 		if(config('debug.execute_trace'))

@@ -5,7 +5,7 @@ class bors_image_thumbnails_byurl extends bors_object
 	function data_load()
 	{
 		$geometry = $this->arg('geometry');
-//		var_dump($geometry);
+//		var_dump($geometry, $this->arg('origin_url'));
 
 		if(preg_match('!^(\d*)x(\d*)$!', $geometry, $m))
 		{
@@ -25,7 +25,7 @@ class bors_image_thumbnails_byurl extends bors_object
 		if(!$this->opts())
 			return $this->set_is_loaded(false);
 
-		if(!preg_match('!^(http://[^/]+)(/.+?)([^/]+\.(jpe?g|png|gif))$i!', $this->arg('origin_url')))
+		if(!preg_match('!^(http://[^/]+)(/.+?)([^/]+\.(jpe?g|png|gif))$!i', $this->arg('origin_url')))
 			return $this->set_is_loaded(false);
 
 		return $this->set_is_loaded(true);
@@ -46,14 +46,15 @@ class bors_image_thumbnails_byurl extends bors_object
 
 	function html($args = array()) { return $this->html_code(@$args['append']); }
 
-	function html_code($append = "", $use_alt_title=true)
+	function url()
 	{
 		$origin_url = $this->arg('origin_url');
-
 		$thumb_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->arg('geometry').'/$3', $origin_url);
+		return $thumb_url;
+	}
 
-//		var_dump($thumb_url);
-
-		return "<img src=\"{$thumb_url}\" ".$this->wxh($use_alt_title)." $append />";
+	function html_code($append = "", $use_alt_title=true)
+	{
+		return "<img src=\"{$this->url()}\" ".$this->wxh($use_alt_title)." $append />";
 	}
 }

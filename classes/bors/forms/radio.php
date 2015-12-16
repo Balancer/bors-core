@@ -54,7 +54,7 @@ class bors_forms_radio extends bors_forms_element
 			{
 				if($list)
 				{
-					require_once(BORS_CORE.'/inc/bors/lists.php');
+					require_once(__DIR__.'/../../../inc/bors/lists.php');
 					eval('$list='.$list);
 				}
 			}

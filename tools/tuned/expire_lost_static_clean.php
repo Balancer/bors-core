@@ -1,7 +1,7 @@
 <?php
 
 require_once('../config.php');
-require_once(BORS_CORE.'/config.php');
+require_once(__DIR__.'/../..//config.php');
 require_once('inc/filesystem.php');
 
 define('WORK_DIR', '/var/www/www.aviaport.ru/htdocs');

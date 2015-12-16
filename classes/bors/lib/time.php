@@ -218,16 +218,17 @@ class bors_lib_time
 
 	static function __unit_test($suite)
 	{
-		$data = array(
+		$data = [
 			'begin_time_day' => 9,
 			'begin_time_month' => 4,
 			'begin_time_year' => 2015,
 			'begin_time_hour' => 04,
 			'begin_time_minute' => 15,
+			'begin_time_timezone' => 'Europe/Moscow',
 			'time_vars' => 'begin_time',
-		);
+		];
 
 		self::parse_form($data);
-		$suite->assertEqualsArray(array('begin_time' => 1428542100), $data);
+		$suite->assertEquals(['begin_time' => 1428542100], $data);
 	}
 }

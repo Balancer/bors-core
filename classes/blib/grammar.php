@@ -29,7 +29,7 @@ class blib_grammar
 
 	static function plural($string)
 	{
-		bors_function_include('natural/bors_plural');
+		bors_transitional::function_include('natural/bors_plural');
 		return bors_plural($string);
 	}
 

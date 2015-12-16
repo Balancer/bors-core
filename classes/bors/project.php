@@ -4,6 +4,9 @@ class bors_project extends bors_object
 {
 	var $inited = false;
 
+	/**
+	 * @return bors_project
+     */
 	static function instance()
 	{
 		static $instance = NULL;
@@ -88,6 +91,9 @@ class bors_project extends bors_object
 		return $this;
 	}
 
+	/**
+	 * @return $this
+     */
 	function init()
 	{
 		if($this->inited)
@@ -153,6 +159,9 @@ class bors_project extends bors_object
 		return $this;
 	}
 
+	/**
+	 * Main routing process run
+     */
 	function run()
 	{
 		if(!$this->inited)

@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../../../engines/bors.php';
+
 // Автоопределялка параметров из описаний таблиц БД
 
 class bors_object_db extends base_object_db
@@ -283,5 +285,10 @@ class bors_object_db extends base_object_db
 		}
 
 		return NULL;
+	}
+
+	static function create($data)
+	{
+		return bors_new(get_called_class(), $data);
 	}
 }

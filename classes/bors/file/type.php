@@ -83,7 +83,7 @@ class bors_file_type extends bors_list
 		if(!$type)
 			$type = bors_lower($this->name());
 
-		if(file_exists(BORS_CORE.'/shared'.($f = "/i16/file-types/$type.png")))
+		if(file_exists(__DIR__.'/../../../shared'.($f = "/i16/file-types/$type.png")))
 			return bors_image_file::load('/_bors'.$f);
 
 		switch($this->name())
@@ -100,7 +100,7 @@ class bors_file_type extends bors_list
 		if(!$type)
 			$type = bors_lower($this->name());
 
-		if(file_exists(BORS_CORE."/shared/i16/file-types/$type.png"))
+		if(file_exists(__DIR__.'/../../../shared/i16/file-types/$type.png'))
 			return "file-{$type}";
 
 		if(file_exists(BORS_EXT."/htdocs/_bors-ext/i16/file-types/$type.png"))

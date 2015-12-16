@@ -33,7 +33,7 @@ function geoip_flag($ip, $fun = false, $must_be=false, $time = NULL)
 	{
 		$alt[] = $city;
 		// С 21.03.2014 Крым — российский
-		if(preg_match('/Sevastopol|Simferopol|Znamenka/', $city) && $time > 1395345600)
+		if(preg_match('/Sevastopol|Simferopol|Znamenka/', $city) && (!$time || $time > 1395345600))
 		{
 			$alt[0] = 'Russian Federation';
 			$country_code = 'RU';

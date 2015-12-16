@@ -19,7 +19,15 @@ function lp_html_iframe($inner, $params)
 
 	$params['src'] = html_entity_decode(@$params['src']);
 
-	return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling style marginheight marginwidth src webkitAllowFullScreen mozallowfullscreen allowfullscreen')." sandbox>$inner</iframe>";
+	$iframes_whitelist = preg_split('/[^\w\.\-]+/', config('security.irames.whitelist', 'coub.com,vk.com,player.vgtrk.com'));
+
+	$url_info = parse_url($params['src']);
+	if(!in_array($url_info['host'], $iframes_whitelist))
+		$sandbox = " sandbox";
+	else
+		$sandbox = "";
+
+	return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling style marginheight marginwidth src webkitAllowFullScreen mozallowfullscreen allowfullscreen')."{$sandbox}>$inner</iframe>";
 }
 
 /*

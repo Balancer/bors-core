@@ -2,8 +2,8 @@
 
 spl_autoload_register('class_include');
 
-bors_function_include('debug/count_inc');
-bors_function_include('debug/log_var');
+require_once __DIR__.'/../../inc/functions/debug/count_inc.php';
+require_once __DIR__.'/../../inc/functions/debug/log_var.php';
 
 function bors_object_caches_drop()
 {
@@ -325,6 +325,8 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 		$args = array_merge($args, $page);
 	else
 		$args['page'] = $page;
+
+	$args['_load_url'] = $url;
 
 	$obj = object_init($check_class, $id, $args);
 //	if(config('is_developer')) echo "object_init($check_class, $id, $args) = ".print_dd($obj)."<br/>\n";

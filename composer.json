@@ -22,7 +22,7 @@
 	"minimum-stability": "dev",
 
 	"require": {
-		"php": ">=5.3",
+		"php": ">=5.5",
 		"balancer/blib-morfology-ru": "dev-master",
 		"intervention/image": "*",
 		"monolog/monolog": "*",
@@ -31,7 +31,8 @@
 		"easybook/geshi": "*",
 		"anahkiasen/html-object": "*",
 		"michelf/php-markdown": "*",
-		"nikic/fast-route": "*"
+		"nikic/fast-route": "*",
+		"symfony/http-kernel": "*"
 	},
 
 	"suggest": {

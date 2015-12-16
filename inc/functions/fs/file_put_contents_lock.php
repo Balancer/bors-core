@@ -15,5 +15,5 @@ function file_put_contents_lock($file, $content, $mode = 0664)
     fclose($fh);
 
 	if(file_exists($file))
-		chmod($file, $mode);
+		@chmod($file, $mode);
 }

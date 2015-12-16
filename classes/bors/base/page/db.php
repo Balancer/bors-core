@@ -2,6 +2,8 @@
 
 class base_page_db extends bors_page
 {
+	use \B2\Traits\MySql;
+
 	function can_be_empty() { return false; }
 	function can_cached() { return true; } //TODO: пока не разберусь, откуда глюки сохранения memcache
 

@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../../inc/functions/url/parse.php';
+
 class bors_object extends bors_object_simple
 {
 	// Общая структура имён
@@ -42,6 +44,9 @@ class bors_object extends bors_object_simple
 
 	private $__match;
 	function set_match($match) { return $this->__match = $match; }
+
+	function is_null() { return false; }
+	function is_not_null() { return true; }
 
 	function parents()
 	{
@@ -1277,19 +1282,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return  $this->class_name().'://'.$this->id().'/';
 	}
 
-	protected $_dbh = NULL;
-	function db($database_name = NULL)
-	{
-		if($this->_dbh === NULL)
-			$this->_dbh = new driver_mysql($database_name ? $database_name : $this->get('db_name', config('main_bors_db')));
-
-		return $this->_dbh;
-	}
-
 	//TODO: разобраться с сериализацией приватных данных
 	public function __sleep()
 	{
-		if($this->_dbh)
+		if(!empty($this->_dbh))
 		{
 			$this->_dbh->close();
 			$this->_dbh = NULL;
@@ -1670,8 +1666,16 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 //			echo "<!-- $msg -->\n";
 	}
 
+	function _headers_def()
+	{
+		return [];
+	}
+
 	function content()
 	{
+		if(!empty($this->attr['content']))
+			return $this->attr['content'];
+
 		$recreate = $this->get('recreate_on_content') || $this->get('cache_static_recreate');
 
 		$use_static = config('cache_static')
@@ -1977,9 +1981,17 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return $object;
 	}
 
+    static function create($data)
+	{
+		return bors_new(get_called_class(), $data);
+	}
+
 	function renderer()
 	{
 		$renderer_class = $this->get('theme_class');
+
+//		if(!$renderer_class)
+//			$renderer_class = object_property($this->project(), 'default_theme_class');
 
 		if(!$renderer_class)
 			$renderer_class = $this->get('renderer_class');

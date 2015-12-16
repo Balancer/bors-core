@@ -1,6 +1,6 @@
 <?php
 
-require_once('inc/mysql.php');
+require_once __DIR__.'/../../inc/mysql.php';
 
 /**
  * @param string $class_name

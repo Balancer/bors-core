@@ -170,7 +170,7 @@ function lt_img($params)
 
 //			if(config('is_developer')) { ~r($params['url'], $file, $image_size); }
 
-			if($path && file_exists($file) && !$image_size)
+			if($path && file_exists($file))
 			{
 				//TODO: Придумать, что сделать с этим хардкодом.
 				$thumbnails = bors_find_all('bors_image_thumb', array(

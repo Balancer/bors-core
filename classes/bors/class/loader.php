@@ -166,7 +166,7 @@ class bors_class_loader
 			}
 		}
 
-		if(file_exists($file_name = BORS_CORE."/classes/inc/$class_name.php"))
+		if(file_exists($file_name = realpath(__DIR__.'/../../../classes/inc/$class_name.php')))
 			return self::load_and_cache($class_name, $file_name);
 
 

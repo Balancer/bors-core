@@ -14,6 +14,9 @@ class bors_tools_ajax_setkeywords extends base_page
 		if(!$keyword)
 			return true;
 
+		if(preg_match('/^новост/iu', $keyword) && !bors()->user()->get('is_coordinator'))
+			return true;
+
 		$obj = object_load(@$_GET['object']);
 		if(!$obj)
 			return true;

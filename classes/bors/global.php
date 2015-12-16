@@ -7,6 +7,9 @@ class bors_global extends bors_object_simple
 	var $__user = false; // Именно false, т.к. NULL - вполне допустимое значение.
 	var $__main_object = NULL;
 
+	/**
+	 * @return bors_user|null
+     */
 	function user()
 	{
 		if($this->__user === false)

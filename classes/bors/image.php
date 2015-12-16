@@ -350,7 +350,11 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 		$data = url_parse($file);
 
-		if($exists_check && $img2 = bors_find_first($class_name, array('full_file_name' => $data['local_path'])))
+		if($exists_check && $img2 = bors_find_first($class_name, [
+//				'CONVERT(`full_file_name` USING utf8mb4)=' => $data['local_path']
+//				'CONVERT(`full_file_name` USING utf8mb4)=' => $data['local_path']
+				'full_file_name' => iconv('utf-8', 'utf-8//ignore', $data['local_path']),
+			]))
 			return $ch->set($img2, rand(3600, 86400));
 
 		$img->set_original_filename(basename($file), $new_instance);

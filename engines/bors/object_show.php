@@ -3,6 +3,11 @@
 	// Возвращает false при ошибке показа объекта
 	// true - если была какая-то отработка и требуется прекратить дальнейшую работу.
 	// Иначе - строку с результатом для вывода.
+/**
+ * @param $obj bors_object
+ * @return bool|string
+ * @throws Exception
+ */
 	function bors_object_show($obj)
 	{
 		if(!$obj)
@@ -15,7 +20,7 @@
 		}
 
 		// Чтобы при повторных вызовах вне одноразового HTTP-запроса данные не накапливались.
-		unset($GLOBALS['cms']['templates']);
+//		unset($GLOBALS['cms']['templates']);
 
 		$page = $obj->set_page($obj->arg('page'));
 
@@ -48,7 +53,7 @@
 				{
 					bors_debug::syslog('hack-attempt', "Try to hack by img src for ".$obj->debug_title());
 					header("Content-type: " . image_type_to_mime_type(IMAGETYPE_GIF));
-					return file_get_contents(BORS_CORE.'/htdocs/_bors/images/hacker.gif');
+					return file_get_contents(__DIR__.'/../../htdocs/_bors/images/hacker.gif');
 				}
 
 				// Если запрашивается не страница, а не пойми чего, то тоже считаем за хак.
@@ -79,7 +84,7 @@
 
 		$access_object = $obj->access();
 		if(!$access_object)
-			bors_throw("Can't load access_engine ({$obj->access_engine()}?) for class {$obj->debug_title()}");
+			throw new Exception("Can't load access_engine (".($obj->access_engine()?$obj->access_engine():"empty access_engine").") for class {$obj->debug_title()}");
 
 		if(!$access_object->can_read())
 		{
@@ -123,7 +128,17 @@
 		{
 			if(config('debug_header_trace'))
 				@header('X-Bors-show-pre-show: Yes');
+
 			return true;
+		}
+
+		if(is_object($processed)
+				&& method_exists($processed, 'sendHeaders')
+				&& method_exists($processed, 'getContent')
+			)
+		{
+			$processed->sendHeaders();
+			return bors_message($processed->getContent());
 		}
 
 		$modify_time = max($obj->modify_time(), $obj->get('compile_time'));

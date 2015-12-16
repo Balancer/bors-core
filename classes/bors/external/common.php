@@ -4,6 +4,8 @@ class bors_external_common extends bors_object
 {
 	static function content_extract($url, $params = array())
 	{
+//		if(config('is_developer')) echo "Extract $url\n";
+
 		if(!is_array($params))
 			$limit = $params; // Раньше второй параметр был длиной
 		else
@@ -49,7 +51,7 @@ class bors_external_common extends bors_object
 		if(!$img)
 			$img = @$meta['image_src'];
 
-//		if(config('is_developer') && preg_match('/nasa/', $url)) { ~r($meta); }
+//		if(config('is_developer')) { var_dump($meta); }
 
 		// Яндекс.Видео — такое Яндекс.Видео...
 		// http://balancer.ru/g/p2728087 для http://video.yandex.ru/users/cnewstv/view/3/
@@ -328,6 +330,8 @@ class bors_external_common extends bors_object
 			$bbshort = iconv('utf-8', 'utf-8//translit', $bbshort);
 
 			$bbshort = trim(bors_close_tags(bors_close_bbtags(blib_obscene::mask($bbshort, true))));
+
+//			if(config('is_developer')) { var_dump($title, $description, $bbshort); echo bors_debug::trace(); }
 
 			return compact('tags', 'title', 'bbshort');
 		}

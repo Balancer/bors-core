@@ -29,7 +29,7 @@ class bors_templates_smarty3 extends bors_template
 //		require(__DIR__.'/smarty3-register.php');
 		$smarty->registerResource('xfile', new bors_templates_smarty_resources_file($smarty));
 
-		$smarty->compile_dir = config('cache_dir').'/smarty3-templates_c/';
+		$smarty->setCompileDir(config('cache_dir').'/smarty3-templates_c/');
 		//TODO: придумать, как сделать разрешение для отдельных шаблонов.
 		//		Хотя ниже есть вариант через данные шаблона.
 		$smarty->auto_literal = true;
@@ -38,14 +38,14 @@ class bors_templates_smarty3 extends bors_template
 //		$smarty->escape_html = true;
 //		$smarty->escape_html = true; // config('smarty3.autoescape', true);
 
-		$smarty->cache_dir = config('cache_dir').'/smarty3-cache/';
+		$smarty->setCacheDir(config('cache_dir').'/smarty3-cache/');
 
-		if(!file_exists($smarty->compile_dir))
-			mkpath($smarty->compile_dir, 0777);
-		if(!file_exists($smarty->compile_dir))
-			throw new Exception("Can't create templates cache dir: ".$smarty->compile_dir);
-		if(!file_exists($smarty->cache_dir))
-			mkpath($smarty->cache_dir, 0777);
+		if(!file_exists($smarty->getCompileDir()))
+			mkpath($smarty->getCompileDir(), 0777);
+		if(!file_exists($smarty->getCompileDir()))
+			throw new Exception("Can't create templates cache dir: ".$smarty->getCompileDir().' in config("cache_dir")='.config('cache_dir'));
+		if(!file_exists($smarty->getCacheDir()))
+			mkpath($smarty->getCacheDir(), 0777);
 
 //		$plugins_dir = array(BORS_3RD_PARTY.'/'.dirname(config('smarty.include')).'/plugins');
 		$plugins_dir = array(COMPOSER_ROOT.'/vendor/smarty/smarty/libs/plugins');

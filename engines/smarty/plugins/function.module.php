@@ -11,7 +11,7 @@ function smarty_function_module($params, &$smarty)
 		}
 
 		if(empty($params['view']))
-			$params['view'] = $smarty->getVariable('this')->value;
+			$params['view'] = $smarty->getTemplateVars('this')->value;
 
 /*
 		if(empty($object))

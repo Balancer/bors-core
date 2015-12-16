@@ -134,6 +134,12 @@ class bors_page extends base_page
 						$this->attr['body_template_class'] = 'bors_templaters_php';
 						return;
 					}
+					if(file_exists($bt = $base.'md'))
+					{
+						$this->attr['body_template'] = $bt;
+						$this->attr['body_template_class'] = 'bors_templaters_markdown';
+						return;
+					}
 					if(file_exists($bt = $base.'tpl'))
 					{
 						$this->attr['body_template'] = $bt;

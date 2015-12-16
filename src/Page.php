@@ -2,7 +2,7 @@
 
 namespace B2;
 
-class Page extends View
+class Page extends \bors_page
 {
 //	use Smart;
 

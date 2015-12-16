@@ -7,6 +7,6 @@ class Mail extends Page
 	function send($email)
 	{
 		$body = $this->body();
-		echo $body;
+		var_dump($body);
 	}
 }

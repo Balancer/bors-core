@@ -265,7 +265,8 @@ trait MySql
 
 	function on_new_instance(&$data)
 	{
-		$this->__update_relations();
+		if(method_exists($this, '__update_relations'))
+			$this->__update_relations();
 	}
 
 	function static_get_cache() { return false; }
@@ -504,16 +505,16 @@ trait MySql
 	function object_title_dp() { return strip_tags(bors_lower($this->class_title_dp()).ec(' «').$this->title().ec('»')); }
 	function object_titled_dp_link() { return $this->class_title_dp().ec(' «').$this->titled_link().ec('»'); }
 
-	function cross_ids($to_class) { return bors_link::object_ids($this, $to_class); }
-	function cross_objs($to_class = NULL) { return bors_link::objects($this, $to_class); }
-	function cross_links($params = array()) { return bors_link::links($this, $params); }
-	function cross_objects($to_class = NULL) { return bors_link::objects($this, $to_class); }
-	function add_cross($class, $id, $order = 0) { return bors_link::link($this->extends_class_id(), $this->id(), $class, $id, array('sort_order' => $order)); }
-	function add_cross_object($object, $order = 0) { return bors_link::link_objects($this, $object, array('sort_order' => $order)); }
+	function cross_ids($to_class) { return \bors_link::object_ids($this, $to_class); }
+	function cross_objs($to_class = NULL) { return \bors_link::objects($this, $to_class); }
+	function cross_links($params = array()) { return \bors_link::links($this, $params); }
+	function cross_objects($to_class = NULL) { return \bors_link::objects($this, $to_class); }
+	function add_cross($class, $id, $order = 0) { return \bors_link::link($this->extends_class_id(), $this->id(), $class, $id, array('sort_order' => $order)); }
+	function add_cross_object($object, $order = 0) { return \bors_link::link_objects($this, $object, array('sort_order' => $order)); }
 
-	function cross_remove_object($obj) { bors_link::drop_target($this, $obj); }
+	function cross_remove_object($obj) { \bors_link::drop_target($this, $obj); }
 
-	function add_link_to($target, $params = array()) { bors_link::link_object_to($this, $target, $params); }
+	function add_link_to($target, $params = array()) { \bors_link::link_object_to($this, $target, $params); }
 
 	function on_action_link(&$data)
 	{
@@ -778,7 +779,7 @@ trait MySql
 	{
 		$properties = array();
 		$title_properties = array();
-		foreach(bors_lib_orm::fields($this) as $x)
+		foreach(\bors_lib_orm::fields($this) as $x)
 			if(!empty($x['is_admin_searchable']))
 				if(empty($x['is_title']))
 					$properties[] = $x['property'];

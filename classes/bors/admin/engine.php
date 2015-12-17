@@ -228,7 +228,7 @@ class bors_admin_engine extends bors_object
 		if(stripos($mode, 'd') !== false && $obj->access()->can_delete())
 			$html .= '&nbsp;' . $this->imaged_delete_link('');
 
-		if(stripos($mode, 'u') !== false && $obj->access()->can_action())
+		if(stripos($mode, 'u') !== false && $obj->access()->can_action(NULL,NULL))
 			$html .= '&nbsp;' . $this->imaged_action_link('unlink', $params);
 
 		if(!empty($params['actions']))

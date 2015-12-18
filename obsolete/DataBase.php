@@ -644,7 +644,7 @@ class DataBase
 		return mysql_insert_id($this->dbh);
 	}
 
-	static function factory($db = NULL) { return new DataBase($db); }
+	static function factory($db) { return new DataBase($db); }
 
 	function close()
 	{

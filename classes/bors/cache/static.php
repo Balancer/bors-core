@@ -130,7 +130,7 @@ class cache_static extends bors_object_db
 	{
 		$object_id = $object->id();
 
-		$file = realpath($object->static_file());
+		$file = $object->static_file();
 		if(!$file) // TODO: отловить
 		{
 			bors_debug::syslog('static-file-notice', "empty static_file() for ".$object->debug_title());

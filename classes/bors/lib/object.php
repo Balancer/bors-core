@@ -11,7 +11,7 @@ class bors_lib_object
 		$parent = $object->parent();
 		if(!$parent)
 		{
-			debug_hidden_log('errors-structure', "Can't load parent '{$parent_id}' for {$object}");
+			bors_debug::syslog('errors-structure', "Can't load parent '{$parent_id}' for {$object}");
 			return '';
 		}
 

@@ -101,12 +101,17 @@ class base_page_paged extends bors_page
 		)));
 		echo '</xmp>';
 */
-		$this->_items = bors_find_all($class_name, $this->_where(array(
+
+		$conds = [
 			'page' => $this->page(),
 			'per_page' => $this->items_per_page(),
-			'order' => $this->order(),
 			'by_id' => true,
-		)));
+		];
+
+		if($o = $this->order())
+			$conds['order'] = $o;
+
+		$this->_items = bors_find_all($class_name, $this->_where($conds));
 
 		if($this->is_reversed())
 			$this->_items = array_reverse($this->_items, true);

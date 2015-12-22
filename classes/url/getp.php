@@ -32,6 +32,8 @@ class url_getp extends url_base
 
 				if(is_array($v))
 					$v = join(',', array_map('urlencode', $v));
+				elseif(is_object($v))
+					$v = $v->internal_uri_ascii();
 				else
 					$v = urlencode($v);
 

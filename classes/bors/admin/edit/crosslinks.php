@@ -19,10 +19,11 @@ class bors_admin_edit_crosslinks extends bors_admin_edit
 	function admin_object() { return $this->object(); }
 	function real_object() { return $this->object(); }
 
-	function parents() { return array(empty($_GET['edit_class']) ? $this->real_object()->admin_url() : $_GET['edit_class']); }
+	function parents() { return array(empty($_GET['edit_class']) ? object_property($this->real_object, 'admin_url') : $_GET['edit_class']); }
 
 	function page() { return max(1, @$_GET['p']); }
-	function url_use_keys() { return 'p,object'; }
+	function edit_class() { return @$_GET['edit_class']; }
+	function url_use_keys() { return 'p,object,real_object,edit_class'; }
 	function items_per_page() { return 50; }
 	function total_items() { return bors_link::links_count($this->object()); }
 

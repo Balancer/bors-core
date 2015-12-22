@@ -34,7 +34,7 @@
 {/form}
 <br />
 
-{if not $object->get('skip_auto_search_links')}
+{if $object && not $object->get('skip_auto_search_links')}
 {form act="search"}
 <input type="submit" value="Автоматический пересчёт и поиск связей"
 	onClick="return content_load('#crosslinks', '/get/crosslinks.bas', {ldelim} obj : '{$object_uri}' {rdelim} )"

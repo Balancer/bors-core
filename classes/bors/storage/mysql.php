@@ -989,6 +989,14 @@ array(2) {
 				$condition = "{$m[2]} BETWEEN ".$bf($m[3])." AND ".$bf($m[4]);
 		}
 
+		if(preg_match("/^(UNIX_TIMESTAMP)\((.+?)\)\s*(>|>=|<|<=|=)\s*'?(\d+)'?$/i", trim($condition), $m))
+		{
+			if($bf = @$_php_back_functions[bors_upper($m[1])])
+				$condition = "{$m[2]} {$m[3]} ".$bf($m[4]);
+		}
+
+//		if(config('is_developer') && preg_match('/Date/', $condition)) { var_dump($condition); exit(); }
+
 		return $condition;
 	}
 }

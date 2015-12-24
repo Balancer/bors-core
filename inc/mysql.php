@@ -103,6 +103,8 @@ function mysql_limits_compile(&$args)
 	{
 		if(is_array($limit))
 			return "LIMIT ".intval($limit[0]).", ".intval($limit[1]);
+		elseif(preg_match('/^(\d+)\s*,\s*(\d+)$/', trim($limit), $m))
+			return "LIMIT {$m[1]}, {$m[2]}";
 		else
 			return "LIMIT ".intval($limit);
 	}

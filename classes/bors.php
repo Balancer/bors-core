@@ -46,6 +46,12 @@ class bors
 
 		$object = NULL;
 
+		if(array_key_exists('nc', $_GET))
+		{
+			@unlink($_SERVER['DOCUMENT_ROOT'].$uri_info['path']);
+			@unlink($_SERVER['DOCUMENT_ROOT'].'/cache-static'.$uri_info['path']);
+		}
+
 		foreach(\B2\Project::$routers as $domain => $routers)
 		{
 			foreach($routers as $router)

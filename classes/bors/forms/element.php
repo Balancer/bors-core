@@ -26,8 +26,13 @@ class bors_forms_element
 		if($model_class == 'NULL')
 			$model_class = NULL;
 
-		if(!$object && $model_class && ($new_val = bors_foo($model_class)->get($name."_new")))
-			return $new_val;
+		if(!$object && $model_class && preg_match('/^\w+$/', $name))
+		{
+			$obj = bors_foo($model_class);
+			$new_val = $obj->get($name."_new");
+			if($new_val)
+				return $new_val;
+		}
 
 		$def  = defval($params, 'def');
 		$value = defval($params, $param_name);

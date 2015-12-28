@@ -34,8 +34,14 @@ class bors_object_simple extends bors_object_empty
 		static $get_lock = array();
 		$lock_name = get_class($this).'/'.serialize($this->id()).'.'.$name;
 
-		if(!$name || !empty($get_lock[$lock_name]))
-//		if(!$name)
+
+		if(!preg_match('/^\w+$/', $name))
+		{
+			bors_debug::syslog('error-get-property-name', "Incorrect property name '$name' for ".$this->debug_title());
+			return NULL;
+		}
+
+		if(!empty($get_lock[$lock_name]))
 			return NULL;
 
 		$get_lock[$lock_name] = true;

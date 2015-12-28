@@ -1008,7 +1008,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$this->set_attr('__store_entered', false);
 	}
 
-	private function __update_relations()
+	function __update_relations()
 	{
 		if(($rels = $this->_relations()))
 		{

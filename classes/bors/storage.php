@@ -1,6 +1,6 @@
 <?php
 
-class bors_storage extends base_null
+class bors_storage extends bors_object_simple
 {
 	var $__table_name;
 	var $__db_name;

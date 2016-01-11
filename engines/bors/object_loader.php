@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__.'/../../inc/funcs.php';
 spl_autoload_register('class_include');
 
 require_once __DIR__.'/../../inc/functions/debug/count_inc.php';
@@ -605,7 +606,7 @@ function object_init($class_name, $object_id, $args = array())
 
 		// Ловим так fatal error
 		if(!class_exists($class_name))
-			bors_throw("Class '$class_name' not found");
+			throw new Exception("Class '$class_name' not found");
 
 		$obj = new $class_name($object_id);
 

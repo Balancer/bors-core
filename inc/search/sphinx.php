@@ -195,7 +195,7 @@ function bors_search_sphinx_find_links($object, $delete_old = false, $is_auto = 
 	$verbose = 0;
 
 	$names = array();
-	foreach($object->get('all_names') as $name)
+	foreach($object->get('all_names', []) as $name)
 		$names[$name] = false;
 
 	if(empty($names))

@@ -28,10 +28,27 @@ class bors_forms_image extends bors_forms_element
 		// Если нужно, добавляем заголовок поля
 		$html .= $this->label_html();
 
-		if($obj && ($image = $obj->get($image_name_field)))
+		if($obj)
 		{
-			$html .=  "<a href=\"{$image->admin()->url()}\">".$image->thumbnail(defval_ne($params, 'geo', '200x'))->html_code()."</a><br/>\n";
-			$html .=  "<input type=\"checkbox\" name=\"file_{$image_name_field}_delete_do\" />&nbsp;".ec('Удалить изображение')."<br/>\n";
+			$image = $obj->get($image_name_field);
+			if(!is_object($image) || !$image->get('object_type') == 'image')
+				$image = NULL;
+
+			if(!$image && $obj->get('object_type') == 'image')
+				$image = $obj;
+
+			$thumb = NULL;
+
+			if(is_object($image))
+				$thumb = $image->thumbnail(defval_ne($params, 'geo', '200x'));
+
+			if($thumb && is_object($thumb))
+			{
+				$html .=  "<a href=\"{$image->admin()->url()}\">".$thumb->html_code()."</a><br/>\n";
+				$html .=  "<input type=\"checkbox\" name=\"file_{$image_name_field}_delete_do\" />&nbsp;".ec('Удалить изображение')."<br/>\n";
+			}
+			else
+				$html = "Ошибка создания превью для изображения {$image->debug_title()}";
 		}
 		else
 		{

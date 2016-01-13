@@ -4,6 +4,8 @@ class bors_image extends bors_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
 
+	function object_type() { return 'image'; }
+
 	function db_name() { return config('bors_core_db'); }
 	function table_name() { return config('images_table', 'bors_images'); }
 

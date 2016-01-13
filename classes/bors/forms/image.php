@@ -27,6 +27,7 @@ class bors_forms_image extends bors_forms_element
 
 		// Если нужно, добавляем заголовок поля
 		$html .= $this->label_html();
+		$image = NULL;
 
 		if($obj)
 		{
@@ -47,13 +48,12 @@ class bors_forms_image extends bors_forms_element
 				$html .=  "<a href=\"{$image->admin()->url()}\">".$thumb->html_code()."</a><br/>\n";
 				$html .=  "<input type=\"checkbox\" name=\"file_{$image_name_field}_delete_do\" />&nbsp;".ec('Удалить изображение')."<br/>\n";
 			}
-			else
-				$html = "Ошибка создания превью для изображения {$image->debug_title()}";
+			elseif($image)
+					$html = "Ошибка создания превью для изображения {$image->debug_title()}";
 		}
-		else
-		{
+
+		if(!$image)
 			$html .=  "<img src=\"/_bors/i/image-placeholder-200x150.png\" /><br/>\n";
-		}
 
 		$html .=  "<input type=\"file\" name=\"{$image_name_field}\"";
 		foreach(explode(' ', 'class style') as $p)

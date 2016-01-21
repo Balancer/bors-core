@@ -647,10 +647,10 @@ class bors_form extends bors_object
 		if(empty($this->_params['go']))
 			$this->_params['go'] = $go2;
 
-		foreach(explode(' ', 'go class_name form_class_name') as $name)
+		foreach(explode(' ', 'go class_name form_class_name form_object_id') as $name)
 			$$name = $this->attr($name);
 
-		foreach(explode(' ', 'form_class_name class_name object_id uri ref act inframe subaction') as $name)
+		foreach(explode(' ', 'form_class_name form_object_id class_name object_id uri ref act inframe subaction') as $name)
 			$html .= $this->hidden_attr($name);
 
 		foreach(explode(' ', 'time_vars file_vars linked_targets override_fields saver_prepare_classes') as $name)

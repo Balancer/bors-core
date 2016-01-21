@@ -55,6 +55,11 @@ class bors_request extends bors_object
 		return $url;
 	}
 
+	function query_string()
+	{
+		return http_build_query($_GET);
+	}
+
 	function remote_ip() { return @$_SERVER['REMOTE_ADDR']; }
 	function referer() { return defval($_GET, 'ref', @$_SERVER['HTTP_REFERER']); }
 

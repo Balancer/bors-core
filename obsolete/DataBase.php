@@ -242,7 +242,7 @@ class DataBase
 		{
 			$this->last_query_time = microtime(true);
 
-			if(preg_match("!^SELECT!", $query))
+			if(preg_match("!^SELECT!i", $query) && is_resource($this->result))
 				return mysql_num_rows($this->result);
 			else
 				return $this->result;

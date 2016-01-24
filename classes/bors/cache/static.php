@@ -186,7 +186,7 @@ class cache_static extends bors_object_db
 		}
 
 		if(!file_exists($file) || !is_file($file))
-			bors_debug::sylog('filesystem', "Can't create static file.\n
+			bors_debug::syslog('warning-filesystem', "Can't create static file.\n
 	object: {$object}\n
 	file: {$file} (fe=".file_exists($file)
 		.';isf='.is_file($file)

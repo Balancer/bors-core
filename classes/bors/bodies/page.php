@@ -16,6 +16,7 @@ class bors_bodies_page extends base_null
 
 		$object->body_data_fill();
 
+		// 'create_time description id modify_time nav_name title'
 		foreach(explode(' ', $object->template_local_vars()) as $var)
 			$data[$var] = $object->$var();
 

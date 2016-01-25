@@ -231,7 +231,13 @@ class base_page extends bors_object
 		return $result;
 	}
 
-	function compiled_source() { return bors_lcml::lcml($this->source(), array('container' => $this)); }
+	function compiled_source()
+	{
+		return bors_lcml::lcml($this->source(), array_merge(
+			['container' => $this],
+			$this->get('body_lcml_params', [])
+		));
+	}
 
 	function _queries() { return array(); }
 
@@ -285,12 +291,13 @@ class base_page extends bors_object
 
 		$save_lcml_tags_enabled = config('lcml_tags_enabled');
 		config_set('lcml_tags_enabled', $this->lcml_tags_enabled());
-		$text = bors_lcml::lcml($text,
-			array(
+
+		$text = bors_lcml::lcml($text, array_merge([
 				'cr_type' => $this->cr_type(),
 				'sharp_not_comment' => $this->sharp_not_comment(),
 				'html_disable' => $this->html_disable(),
-		));
+		], $this->get('body_lcml_params', [])));
+
 		config_set('lcml_tags_enabled', $save_lcml_tags_enabled);
 
 		if($ch)

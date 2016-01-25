@@ -70,6 +70,14 @@ class bors_lcml extends bors_object
 	function p($key, $def = NULL) { return empty($this->_params[$key]) ? $def : $this->_params[$key]; }
 	function set_p($key, $value) { $this->_params[$key] = $value; return $this; }
 
+	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->_params : defval($this->_params, $key, $def); }
+
+	function set_params($params)
+	{
+		$this->_params = array_merge($this->_params, $params);
+		return $this;
+	}
+
 	private static function memcache()
 	{
 		static $mch = NULL;
@@ -175,8 +183,6 @@ class bors_lcml extends bors_object
 
 
 	private $params;
-	function set_params($params) { $this->_params = $params; }
-	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->_params : defval($this->_params, $key, $def); }
 
 	function is_tag_enabled($tag_name, $default_enabled = true)
 	{
@@ -558,9 +564,12 @@ class bors_lcml extends bors_object
 			$lcs = array();
 
 		if(empty($lcs[$class_name]))
-			$lcs[$class_name] = new $class_name($params);
-
-		$lc = $lcs[$class_name];
+			$lc = $lcs[$class_name] = new $class_name($params);
+		else
+		{
+			$lc = $lcs[$class_name];
+			$lc->set_params($params);
+		}
 
 		$lc->set_p('prepare', popval($params, 'prepare'));
 		$save_tags = $lc->p('only_tags');

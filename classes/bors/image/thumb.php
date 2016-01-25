@@ -67,20 +67,27 @@ class bors_image_thumb extends bors_image
 
 		$this->set_height(-1); // трассировка
 
-		$this->original = bors_load($this->arg('image_class_name', $this->image_class()), $id);
+		if($o = $this->arg('original_image'))
+			$this->original = $o;
+		else
+			$this->original = bors_load($image_class = $this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
+		{
+			bors_debug::syslog('error-thumbnail-load', "Can't load original image {$image_class}($id)");
 			return $this->set_is_loaded(false);
+		}
 
 		$this->set_height(-2); // трассировка
 
 		// Тут было $this->original->file_name()
 		// Не ошибка ли? Если возвращать, то проверить WWW.aviaport_pictures на предмет соответствий
 		// Было сделано update aviaport_pictures set original_filename = file_name where original_filename = '';
+
+
 		if(!preg_match('/\.(jpe?g|gif|png)$/i', $this->original->file_name()))
 			return $this->set_is_loaded(false);
 
-//		$this->delete();
 
 		$this->set_height(-3); // трассировка
 
@@ -101,8 +108,6 @@ class bors_image_thumb extends bors_image
 
 		// Заворачиваем адреса с уже кешем в оригинальные.
 		$original_url = preg_replace("!^(.*?)cache/(.+)/\d*x\d*/([^/]+?)$!", "$1$2/$3", $original_url);
-
-//		if(config('is_debug')) var_dump('o', $original_url);
 
 		if($original_url[0] == '/')
 			$new_url = '/cache'.preg_replace('!^(/.+?)([^/]+)$!', '${1}'.$this->geometry.'/$2', $original_url);

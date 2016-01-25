@@ -191,11 +191,13 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 				'image_class_name' => $this->class_name(),
 				'image_id' => $this->id(),
 				'geometry' => $geometry,
+				'original_image' => $this,
 			]);
 		}
 
 		return bors_load_ex($class, $this->id().','.$geometry, [
 			'image_class_name' => $this->class_name(),
+			'original_image' => $this,
 		]);
 	}
 

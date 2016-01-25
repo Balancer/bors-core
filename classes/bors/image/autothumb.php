@@ -115,7 +115,7 @@ class bors_image_autothumb extends bors_object
 
 		require_once('inc/bors/bors_images.php');
 		$msg = ec("Ошибка изображения {$thumb->class_name()}({$thumb->id()}):\n").config('bors-image-lasterror');
-		debug_hidden_log('image-thumb-error', "geo={$this->geo}, img={$img}; $msg");
+		bors_debug::syslog('image-thumb-error', "geo={$this->geo}, img={$img}; $msg");
 		bors_image_message($msg, array(
 			'print' => true,
 			'width' => $width ? $width : 640,

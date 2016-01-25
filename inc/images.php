@@ -15,21 +15,36 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 
 	// http://intervention.olivervogel.net/image
 
-	if(!preg_match('/image/', $mime = mime_content_type($file_in)))
+	if(!preg_match('/image|octet/', $mime = mime_content_type($file_in)))
 	{
-		config_set('bors-image-lasterror', "[20] Thumbnail make error.\n".$file_in." not image, but ".$mime);
+		config_set('bors-image-lasterror', "[20] Thumbnail make error.\n".$file_in."\nnot image, but ".$mime);
 		return false;
+	}
+
+
+	// If it WebP - convert to temporary jpeg:
+	if(preg_match('/octet/', $mime))
+	{
+		$tmpfile = tempnam(config('cache_dir'), 'webp-convert-').'.png';
+
+		$cmd = ['dwebp'];
+		$cmd[] = escapeshellcmd($file_in);
+		$cmd[] = "-o ".escapeshellcmd($tmpfile);
+        system(join(' ', $cmd));
+
+		$file_in = $tmpfile;
 	}
 
 	try
 	{
-		Image::configure(array('driver' => 'imagick'));
+		Image::configure(['driver' => config('image.intervention_driver', 'imagick')]);
 		$img = Image::make($file_in);
 	}
 	catch(Exception $e)
 	{
 		bors_debug::syslog('image-scale-exception', blib_exception::factory($e));
 		config_set('bors-image-lasterror', "[22] Thumbnail make exception\nImage:\n".$file_in."\nException:\n".$e->getMessage());
+		@unlink($tmpfile);
 		return false;
 	}
 
@@ -39,6 +54,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 	if(!$opts && $width == $origin_width && $height == $origin_height)
 	{
 		copy($file_in, $file_out);
+		@unlink($tmpfile);
 		return false;
 	}
 
@@ -98,9 +114,10 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 	else
 		$img->save($file_out, 85);
 
+	@unlink($tmpfile);
 	return false;
 
-	bors_debug::syslog('000-image-debug', "Get image size for ".$file_in);
+	bors_debug::syslog('001-image-debug', "Get image size for ".$file_in);
 	$data = getimagesize($file_in);
 
 	if(!$data || !$data[0])

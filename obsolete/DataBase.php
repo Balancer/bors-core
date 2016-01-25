@@ -258,7 +258,7 @@ class DataBase
 //				.mysql_error($this->dbh)
 				.(config('site.is_dev') ?
 					"<pre style=\"color: blue\">DB={$this->db_name}\nquery={$query}</pre>" :
-					"<!-- DB={$this->db_name}\nquery={$query} -->"
+					"<!-- DB={$this->db_name}\nquery={$query}\ntrace=\n".bors_debug::trace(0, false)." -->"
 				)
 			);
 		}

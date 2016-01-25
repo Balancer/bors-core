@@ -181,7 +181,8 @@ function lt_img($params)
 					foreach($thumbnails as $t)
 						$t->delete();
 
-				unlink($file);
+				if(file_exists($file))
+					unlink($file);
 			}
 
 			if((!file_exists($file) || filesize($file)==0 || !$image_size) && !preg_match('!/_cg/!', $file))

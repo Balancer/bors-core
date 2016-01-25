@@ -271,14 +271,15 @@ class DataBase
 
 	function free()
 	{
-		mysql_free_result($this->result);
+		if(is_resource($this->result))
+			mysql_free_result($this->result);
 	}
 
 	protected $__current_value;
 
 	function fetch()
 	{
-		if(!$this->result)
+		if(!$this->result || !is_resource($this->result))
 			return $this->__current_value = false;
 
 		if(!($row = mysql_fetch_assoc($this->result)))

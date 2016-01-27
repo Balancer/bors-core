@@ -331,7 +331,10 @@ class bors_form extends bors_object
 				if($append = @$edit_properties_append[$property_name])
 					$data = array_merge($data, $append);
 
-				if(!defval($data, 'is_editable', true)  && !defval($data, 'is_admin_editable', false))
+				if(!defval($data, 'is_editable', true)
+						&& !defval($data, 'is_admin_editable', false)
+//						&& !defval($data, 'is_viewable', false)
+					)
 					continue;
 
 				$type = $data['type'];

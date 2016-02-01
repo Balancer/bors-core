@@ -51,7 +51,7 @@ class bors_view extends bors_page
 		if(class_include($main_class_up))
 			return $main_class_up;
 
-		bors_throw(ec('Не определён главный класс (model_class()) для представления ').$this->class_name());
+		throw new Exception(ec('Не определён главный класс (model_class()) для представления ').$this->class_name());
 	}
 
 	function item_name()

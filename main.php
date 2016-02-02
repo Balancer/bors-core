@@ -331,7 +331,7 @@ if(function_exists('xhprof_enable') && $time >= config('debug.profile_min', 1.0)
 {
 	$xhprof_data = xhprof_disable();
 
-	$XHPROF_ROOT = COMPOSER_ROOT."/vendor/facebook/xhprof";
+	$XHPROF_ROOT = COMPOSER_ROOT."/vendor/lox/xhprof";
 	if(file_exists($XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php"))
 	{
 		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";

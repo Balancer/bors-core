@@ -43,7 +43,7 @@ class bors_data_yaml extends bors_data_meta
 //			require_once config('symphony.components_path', '/usr/share/php/SymfonyComponents').'/YAML/sfYamlParser.php';
 //			Перенесено в Composer
 			if(!class_exists('Symfony\Component\Yaml\Yaml'))
-				bors_throw("Can't find yaml extension or Symfony\Component\Yaml. Go to composer directory at BORS_CORE level and execute composer require symfony/yaml=*");
+				throw new Exception("Can't find yaml extension or Symfony\Component\Yaml.\nGo to composer directory at BORS_CORE level and execute\ncomposer require symfony/yaml=*");
 
 			try {
 				$data = Symfony\Component\Yaml\Yaml::parse($string);
@@ -51,7 +51,7 @@ class bors_data_yaml extends bors_data_meta
 			{
 				$data = NULL;
 				if(!$ignore_errors)
-					bors_throw("Yaml parse error for string:<xmp>{$string}</xmp>;".blib_exception::factory($e)->message());
+					throw new Exception("Yaml parse error for string:<xmp>{$string}</xmp>;".blib_exception::factory($e)->message());
 			}
 		}
 

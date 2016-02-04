@@ -879,7 +879,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return false;
 	}
 
-	function set_fields($array, $db_update_flag=true, $fields_list = NULL, $check_values = false)
+	function set_fields(&$array, $db_update_flag=true, $fields_list = NULL, $check_values = false)
 	{
 		if(!empty($array['time_vars']))
 			bors_lib_time::parse_form($array);

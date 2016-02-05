@@ -188,13 +188,17 @@ function get_browser_info($user_agent, $log_unknown = true)
 		$browser='Chromium';
 		$bv = $m[1];
 	}
+	elseif(preg_match('!(Opera| OPR/(\d))!', $user_agent, $m))
+	{
+		$browser='Opera';
+		if(!empty($m[2]))
+			$bv = $m[2];
+	}
 	elseif(preg_match('!KHTML, like Gecko.*Chrome/(\S+)!', $user_agent, $m))
 	{
 		$browser='Google Chrome';
 		$bv = $m[1];
 	}
-	elseif(preg_match('!Opera!', $user_agent))
-		$browser='Opera';
 	elseif(preg_match('!Konqueror!', $user_agent))
 		$browser='Konqueror';
 	elseif(preg_match('!w3m!', $user_agent))

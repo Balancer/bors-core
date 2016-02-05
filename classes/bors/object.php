@@ -1175,6 +1175,9 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function access()
 	{
 		$access = $this->access_engine();
+
+//		var_dump($access, get_class($this));
+
 		if(!$access)
 			$access = config('access_default');
 //			bors_throw(ec('Не задан режим доступа к ').$this->object_titled_dp_link());

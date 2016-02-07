@@ -38,6 +38,11 @@ function geoip_flag($ip, $fun = false, $must_be=false, $time = NULL)
 			$alt[0] = 'Russian Federation';
 			$country_code = 'RU';
 		}
+		if(preg_match('/Севастополь|Симферополь|Знаменка/', $city) && (!$time || $time > 1395345600))
+		{
+			$alt[0] = 'Российская Федерация';
+			$country_code = 'RU';
+		}
 	}
 
 	$file = bors_lower($country_code).".gif";

@@ -117,6 +117,9 @@ class bors_forms_radio extends bors_forms_element
 
 		foreach($list as $id => $iname)
 		{
+			if(!$iname)
+				continue;
+
 			$style = array();
 			if($color = @$colorize[$colorpos++])
 				$style[] = "color: $color";

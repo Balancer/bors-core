@@ -72,7 +72,14 @@ function geoip_info($ip)
 	{
 		$reader = new \GeoIp2\Database\Reader(BORS_EXT.'/data/geolite2/GeoLite2-City.mmdb');
 
-		$record = $reader->city($ip);
+		try
+		{
+			$record = $reader->city($ip);
+		}
+		catch(Exception $e)
+		{
+			return array('','','', NULL);
+		}
 
 		//print($record->country->isoCode . "\n"); // 'US', 'RU'
 		$country_code = $record->country->isoCode;

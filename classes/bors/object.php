@@ -117,7 +117,8 @@ class bors_object extends bors_object_simple
 		return $this->__setc($child_objects);
 	}
 
-	function rss_body()
+	// параметры реально не используются, нужны для избегания E_STRICT
+	function rss_body($foo_object=NULL, $foo_strip=0)
 	{
 		//TODO: Этот config пока используется только на лентах топиков:
 		//TODO: http://www.wrk.ru/society/2014/08/topic-89787-rss.xml

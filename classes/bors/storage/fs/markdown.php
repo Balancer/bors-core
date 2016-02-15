@@ -58,6 +58,10 @@ class bors_storage_fs_markdown extends bors_storage
 
 		if(preg_match("/^---\n(.+?)\n---\n(.+)$/s", $content, $m))
 		{
+			// Hard test:
+			if(!class_exists('Symfony\Component\Yaml\Yaml'))
+				throw new Exception("Can't find yaml extension or Symfony\Component\Yaml.\nGo to composer directory at BORS_CORE level and execute\ncomposer require symfony/yaml=*");
+
 			$content = $m[2];
 			try
 			{
@@ -65,7 +69,7 @@ class bors_storage_fs_markdown extends bors_storage
 			}
 			catch(Exception $e)
 			{
-				bors_debug::syslog('yaml-parse-error', "Error in $file: " . blib_exception::factory($e)->message());
+				bors_debug::syslog('error-yaml-parse', "Error in $file: " . blib_exception::factory($e)->message());
 				return $object->set_is_loaded(false);
 			}
 

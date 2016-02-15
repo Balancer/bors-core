@@ -2,14 +2,94 @@
 
 class bors_debug
 {
-	static function syslog($type, $message, $trace = true, $args = array())
+	static function syslog($type, $message = NULL, $trace = true, $args = array())
 	{
-		bors_function_include('debug/hidden_log');
+		static $out_idx = 0;
+
+		if(!($out_dir = config('debug_hidden_log_dir')))
+			return;
+
+		bors_debug::timing_start('hidden_log');
+
+		if(!$message)
+		{
+			$message = $type;
+			$type = 'info/common';
+		}
 
 		if(preg_match('/error/', $type))
 			bors::log()->error($message, $type, $trace, $args);
 
-		return debug_hidden_log($type, $message, $trace, $args);
+		if(preg_match('/^(error|warning|notice|info|debug)-(.+)$/', $type, $m))
+		{
+			$type = $m[1].'s/'.date('Ymd-His-'.sprintf('%03d', $out_idx++)).'-'.$m[2];
+		}
+
+		if($trace && empty($args['dont_show_user']) && class_exists('bors_class_loader', false) && function_exists('bors'))
+			$user = bors()->user();
+		else
+			$user = NULL;
+
+		if(popval($args, 'notime'))
+			$out = '';
+		else
+			$out = strftime('%Y-%m-%d %H:%M:%S: ');
+
+		$out .= $message . "\n";
+
+		if($trace !== false)
+		{
+			require_once('inc/locales.php');
+
+			if($trace === true)
+				$trace_out = bors_debug::trace(0, false);
+			elseif($trace >= 1)
+				$trace_out = bors_debug::trace(0, false, $trace);
+			else
+				$trace_out = '';
+
+			if(!empty($_GET))
+				$data = "_GET=".print_r($_GET, true)."\n";
+			else
+				$data = "";
+
+			if(!empty($_POST))
+				$data .= "_POST=".print_r($_POST, true)."\n";
+
+			$out .= "\tmain_url: ".@$GLOBALS['main_uri']."\n";
+
+			foreach(array('HTTP_HOST', 'REQUEST_URI', 'QUERY_STRING', 'HTTP_REFERER', 'REMOTE_ADDR', 'HTTP_USER_AGENT', 'HTTP_ACCEPT', 'REQUEST_METHOD') as $name)
+				if(!empty($_SERVER[$name]))
+					$out .= "\t{$name}: ".$_SERVER[$name]."\n";
+
+			$out .= (@$user ? "\tuser: ".dc($user->title()) . ' [' .bors()->user_id()."]\n": '')
+				. $data
+				. $trace_out
+				. "\n-------------------------------------------------------------------\n\n";
+		}
+
+		if(!empty($args['append']))
+			$out .= "\n".$args['append'];
+
+		$file = "{$out_dir}/{$type}.log";
+
+		if(!is_dir($dir = dirname($file)))
+		{
+			mkpath($dir);
+			@chmod($dir, 0777);
+		}
+
+		file_put_contents($file, $out, FILE_APPEND);
+		@chmod($file, 0666);
+
+		bors_debug::timing_stop('hidden_log');
+	}
+
+	static function exception_log($log, $message, Exception $e)
+	{
+		bors_debug::syslog($log, $message.':'.$e->getMessage()
+			."\n----------------------\nTrace:\n".bors_lib_exception::catch_trace($e)
+			."\n----------------------\n");
 	}
 
 	static function sepalog($type, $message = NULL, $params = array())

@@ -26,7 +26,7 @@ class bors_global extends bors_object_simple
 				if(!config('user_class_skip'))
 				{
 					bors_function_include('debug/hidden_log');
-					debug_hidden_log('__critical', 'Not defined user_class', true, array('dont_show_user' => true));
+					bors_debug::syslog('warning-users', 'Not defined user_class', true, ['dont_show_user' => true]);
     			}
 
 				return NULL;

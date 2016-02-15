@@ -29,7 +29,7 @@ function smarty_function_module($params, &$smarty)
 		if(!$obj)
 		{
 			$obj = bors_load_ex('module_'.$class, $id, $params);
-			bors_debug::syslog('obsolete', "Try to load module_{$class}");
+			bors_debug::syslog('notice-obsolete', "Try to load class 'module_{$class}' by '$class'. Now need to use full real class name.");
 		}
 
 		if(!$obj)

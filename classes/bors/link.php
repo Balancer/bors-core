@@ -390,10 +390,10 @@ class bors_link extends bors_object_db
 			return;
 
 		if($to_id)
-			$dbh->delete(self::table_name(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class AND to_id=$to_id)
+			$dbh->delete(bors_foo(get_called_class())->table_name(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class AND to_id=$to_id)
 				OR (to_class=$from_class AND to_id=$from_id AND from_class=$to_class AND from_id=$to_id))"));
 		else
-			$dbh->delete(self::table_name(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class)
+			$dbh->delete(bors_foo(get_called_class())->table_name(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class)
 				OR (to_class=$from_class AND to_id=$from_id AND from_class=$to_class))"));
 	}
 

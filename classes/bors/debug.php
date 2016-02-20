@@ -58,9 +58,12 @@ class bors_debug
 
 			$out .= "\tmain_url: ".@$GLOBALS['main_uri']."\n";
 
-			foreach(array('HTTP_HOST', 'REQUEST_URI', 'QUERY_STRING', 'HTTP_REFERER', 'REMOTE_ADDR', 'HTTP_USER_AGENT', 'HTTP_ACCEPT', 'REQUEST_METHOD') as $name)
+			foreach(['HTTP_HOST', 'REQUEST_URI', 'QUERY_STRING', 'HTTP_REFERER', 'REMOTE_ADDR', 'HTTP_USER_AGENT', 'HTTP_ACCEPT', 'REQUEST_METHOD'] as $name)
 				if(!empty($_SERVER[$name]))
 					$out .= "\t{$name}: ".$_SERVER[$name]."\n";
+
+			if(!empty($GLOBALS['stat']['start_microtime']))
+				$out .= "\twork time: ".(microtime(true) - $GLOBALS['stat']['start_microtime'])." us\n";
 
 			$out .= (@$user ? "\tuser: ".dc($user->title()) . ' [' .bors()->user_id()."]\n": '')
 				. $data

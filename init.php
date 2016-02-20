@@ -142,18 +142,18 @@ if(!config('cache.stash.pool') && class_exists('Stash\Pool'))
 				$servers = [];
 				foreach(config('redis.servers') as $s)
 					$servers[] = [$s['host'], $s['port']];
-				}
-				else
+			}
+			else
 				$servers = [['server' => '127.0.0.1', 'port' => 6379, 'ttl' => 86400]];
 
-				$driver = new Stash\Driver\Redis($servers);
+			$driver = new Stash\Driver\Redis(['servers' => $servers]);
 
-				$pool = new Stash\Pool($driver);
-				$pool->getItem('foo')->get();
+			$pool = new Stash\Pool($driver);
+			$pool->getItem('foo')->get();
 		}
 		catch(Exception $e)
 		{
-			bors_debug::exception_log('warning-cache', "Can't load Stash Redis cache", $e);
+			bors_debug::exception_log('warning-cache', "Can't load Stash Redis cache with config ".print_r(['servers' => $servers], true), $e);
 			$pool = NULL; 
 		}
 	}

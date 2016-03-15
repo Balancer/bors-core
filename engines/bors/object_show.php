@@ -92,13 +92,13 @@
 
 			if(bors()->user())
 			{
-				$msg = ec("Извините, ").bors()->user()->title()
-					.ec(", у Вас нет доступа к ресурсу «")
-					.$obj->title()
-					."» [<a href=\"/users/do-logout\">выйти</a>]";
+				$msg  = _('Извините, %s, у Вас нет доступа к ресурсу «%s»');
+
+				$msg = sprintf($msg, bors()->user()->title(), $obj->title())
+					.' [<a href=\"/users/do-logout\">'._('выйти').'</a>]';
 			}
 			else
-				$msg = ec("Извините, гость, у Вас нет доступа к этому ресурсу");
+				$msg = _("Извините, гость, у Вас нет доступа к этому ресурсу");
 
 			if($access_object->get('login_redirect') && !bors()->user())
 				return go('/_bors/login?ref='.$obj->url());

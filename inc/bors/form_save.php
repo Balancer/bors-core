@@ -24,12 +24,16 @@ function bors_form_save($obj)
 		if(!$obj->access()->can_action($_GET['act'], $_GET))
 		{
 //			jquery::load();
-			$message = ec("<div class=\"alert alert-error\">Извините, у Вас недостаточный уровень доступа для операций с этим ресурсом ({$obj->titled_link()} -> {$obj->access()} -> can_action())</div>
+
+			$sorry = _("Извините, у Вас недостаточный уровень доступа для операций с этим ресурсом");
+			$info  = _("Служебная информация");
+
+			$message = "<div class=\"alert alert-error\">{$sorry} ({$obj->titled_link()} -> {$obj->access()} -> can_action())</div>
 <div class=\"accordion\" id=\"sysinfoacc\">
 	<div class=\"accordion-group\">
 		<div class=\"accordion-heading\">
 			<a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#sysinfoacc\" href=\"#sysinfodata\">
-				Служебная информация
+				$info
 			</a>
 		</div>
 		<div id=\"sysinfodata\" class=\"accordion-body collapse\">
@@ -42,7 +46,7 @@ function bors_form_save($obj)
 		</div>
 	</div>
 </div>
-");
+";
 
 			echo twitter_bootstrap::raw_message(array(
 				'this' => bors_load('bors_pages_fake', array(

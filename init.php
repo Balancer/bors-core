@@ -107,6 +107,12 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEP
 
 bors_function_include('locale/ec');
 
+// Our replace for gettext if it not installed
+if(!function_exists('_'))
+{
+	function _($text) { return ec($text); }
+}
+
 spl_autoload_register('class_include');
 
 foreach(array(COMPOSER_ROOT, BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $dir)

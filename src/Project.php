@@ -16,6 +16,7 @@ class Project extends \bors_project
 
 	function route_view($request)
 	{
+//		r($request);
 		return NULL;
 
 		require_once(__DIR__.'/../inc/funcs.php');
@@ -42,6 +43,7 @@ class Project extends \bors_project
 
 		$view = NULL;
 
+		// composer: zendframework/zend-diactoros
 		if(class_exists('\\Zend\\Diactoros\\ServerRequestFactory'))
 		{
 			$request = \Zend\Diactoros\ServerRequestFactory::fromGlobals();

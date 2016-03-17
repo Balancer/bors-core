@@ -33,7 +33,7 @@ class bors_transitional
 
 		$defined[$req_name] = true;
 
-		return require_once(BORS_CORE.'/inc/functions/'.$req_name.'.php');
+		return require_once(__DIR__.'/../../inc/functions/'.$req_name.'.php');
 	}
 }
 

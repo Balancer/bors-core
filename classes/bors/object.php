@@ -176,6 +176,11 @@ class bors_object extends bors_object_simple
 
 	function _configure()
 	{
+		return $this->configure();
+	}
+
+	function configure()
+	{
 		if($this->___was_configured)
 			return true;
 
@@ -406,7 +411,7 @@ class bors_object extends bors_object_simple
 		{
 			$trace = debug_backtrace();
 			$trace = array_shift($trace);
-			bors_throw("__call[".__LINE__."]:
+			throw new Exception("__call[".__LINE__."]:
 undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>
 defined at {$this->class_file()}<br/>
 class_filemtime=".date('r', $this->class_filemtime())."<br/>

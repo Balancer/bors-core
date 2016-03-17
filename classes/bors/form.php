@@ -715,6 +715,25 @@ class bors_form extends bors_object
 		return $element->html();
 	}
 
+	function element_html_by_field_type($field_type, $params = array())
+	{
+		switch($field_type)
+		{
+			case 'string':
+				$element_name = 'input';
+				break;
+			case 'bbcode':
+				$element_name = 'textarea';
+				break;
+			default:
+				$element_name = $field_type;
+		}
+
+		$element = $this->element($element_name);
+		$element->set_params($params);
+		return $element->html();
+	}
+
 	function element_html_smart($params = array())
 	{
 		$field_type = defval($params, 'type');

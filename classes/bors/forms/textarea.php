@@ -41,9 +41,6 @@ class bors_forms_textarea extends bors_forms_element
 		// Если нужно, добавляем заголовок поля
 		$html .= $this->label_html();
 
-		if($this->label() && empty($style))
-			$style = "width: 99%";
-
 		static $tmp_id = 0;
 
 		if(!empty($limit))

@@ -61,27 +61,7 @@ if(!config('project.name'))
 
 // После установки кодировок -- использует internal_charset
 if(!config('cache_dir'))
-{
-	$cache_dirs_parts = array();
-	if(empty($_SERVER['HTTP_HOST']))
-		$cache_dirs_parts[] = 'cli';
-	elseif(!preg_match('/^\d+\.\d+\.\d+\.\d+$/', $_SERVER['HTTP_HOST'])) // Если это доменное имя
-		$cache_dirs_parts[] = str_replace(':', '=', strtolower($_SERVER['HTTP_HOST']));
-	elseif($_SERVER['HTTP_HOST'] != gethostbyname(gethostname()))
-		$cache_dirs_parts[] = 'unknown';
-
-	$cache_dirs_parts[] = config('project.name');
-
-	if(!empty($_SERVER['USER']))
-		$cache_dirs_parts[] = strtolower($_SERVER['USER']);
-
-	$cache_dirs_parts[] = config('internal_charset');
-	$cache_dirs_parts[] = config('output_charset');
-
-//	var_dump($cache_dirs_parts);
-
-	config_set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', array_filter($cache_dirs_parts)));
-}
+	config_set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', bors::cache_namespace()));
 
 config_set('cache.webroot_dir', $_SERVER['DOCUMENT_ROOT'].'/cache');
 config_set('cache.webroot_url', "/cache");

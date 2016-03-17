@@ -19,12 +19,7 @@ class bors_cache_redis extends bors_cache_base
 			return;
 
 		$options = array(
-			'namespace' => 'BORS_Cache3:',
-//			'name'      => 'bors_cache',
-//			'serializerAdapter' => 'json',
-//			'servers' => array(
-//				'server1' => array('host' => '127.0.0.1', 'port' => 6379)
-//			)
+			'namespace' => 'BORS_Cache.'.join('.', bors::cache_namespace(false)).':',
 		);
 
 		if($cfg_srv = config('redis.servers'))
@@ -55,7 +50,7 @@ class bors_cache_redis extends bors_cache_base
 		{
 //			var_dump($e->getMessage());
 			debug_count_inc('redis_unserialize_exception');
-			debug_hidden_log('redis_exception', $e->getMessage());
+			bors_debug::syslog('redis_exception', $e->getMessage());
 			$this->last = $default;
 		}
 
@@ -91,7 +86,7 @@ class bors_cache_redis extends bors_cache_base
 		catch(Exception $e)
 		{
 			debug_count_inc('redis_unserialize_exception');
-			debug_hidden_log('redis_exception', $e->getMessage());
+			bors_debug::syslog('redis_exception', $e->getMessage());
 			$this->last = NULL;
 		}
 
@@ -119,12 +114,14 @@ class bors_cache_redis extends bors_cache_base
 			$key = new Rediska_Key($this->hmd);
 			$key->setValue($value);
 			$key->expire($ttl);
+			debug_count_inc('redis_cache_store');
 		}
 		catch(Exception $e)
 		{
+			bors_debug::exception_log('warning-cache', "Can't set rediska cache", $e);
+			debug_count_inc('redis_cache_exception');
 		}
 
-		debug_count_inc('redis_cache_store');
 
 		return $this->last = $value;
 	}

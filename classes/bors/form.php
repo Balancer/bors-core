@@ -219,9 +219,15 @@ class bors_form extends bors_object
 		$table_css_class = defval($params, 'table_css_class', $this->templater()->form_table_css());
 
 		if($fields == 'auto')
-			$fields = array_keys(array_filter($object_fields, function($x) {
-				return defval($x, "is_admin_editable", false) || defval($x, "is_editable", true);
-			}));
+		{
+			$fields = $calling_object->get('form_fields');
+			if(!$fields)
+			{
+				$fields = array_keys(array_filter($object_fields, function($x) {
+					return defval($x, "is_admin_editable", false) || defval($x, "is_editable", true);
+				}));
+			}
+		}
 
 		if($th || !empty($fields))
 		{
@@ -315,7 +321,7 @@ class bors_form extends bors_object
 
 				$property_name = $x['property'];
 
-				if($have_sections && $last_section != $section_name)
+				if($have_sections && $last_section != $section_name && $section_name!='-')
 					$html .= "<tr><th class=\"subcaption\" colspan=\"2\">".($section_name?$section_name:'&nbsp;')."</th></tr>\n";
 
 				$last_section = $section_name;

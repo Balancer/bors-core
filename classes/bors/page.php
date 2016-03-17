@@ -172,6 +172,14 @@ class bors_page extends base_page
 								$this->attr['body_template'] = $base.$test_ext;
 								$this->attr['body_template_class'] = 'bors_templates_lcmltpl';
 								continue;
+							default:
+								$class_name = 'bors_templates_'.str_replace('.', '', $test_ext);
+								if(!class_exists($class_name))
+									continue;
+
+								$this->attr['body_template'] = $base.$test_ext;
+								$this->attr['body_template_class'] = $class_name;
+								continue;
 						}
 					}
 

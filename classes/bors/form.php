@@ -692,8 +692,12 @@ class bors_form extends bors_object
 
 	function element($element_name)
 	{
-		$element_name = 'bors_forms_'.$element_name;
-		$element = new $element_name;
+		if(class_exists($element_name))
+			$class_name = $element_name;
+		elseif(!class_exists($class_name = 'bors_forms_'.$element_name))
+			throw new Exception(_("Can't find form element class '$element_name'"));
+
+		$element = new $class_name;
 		$element->set_form($this);
 		return $element;
 	}

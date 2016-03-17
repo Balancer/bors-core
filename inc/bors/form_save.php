@@ -344,12 +344,15 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 		$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));
 
-	if(!$object->id() && !(method_exists($object, 'skip_save') && $object->skip_save())) //TODO: костыль для bors_admin_image_append
+	if($data['form_class_name'] != $data['class_name'])
 	{
-		if($x = $object->empty_id_handler())
-			return $x;
-		else
-			return bors_throw(ec('Пустой id нового объекта ').$object->class_name().ec('. Возможно нужно использовать function replace_on_new_instance() { return true; }'));
+		if(!$object->id() && !(method_exists($object, 'skip_save') && $object->skip_save())) //TODO: костыль для bors_admin_image_append
+		{
+			if($x = $object->empty_id_handler())
+				return $x;
+			else
+				return bors_throw(ec('Пустой id нового объекта ').$object->class_name().ec('. Возможно нужно использовать function replace_on_new_instance() { return true; }'));
+		}
 	}
 
 //	echo "Final id: {$object->id()}<br />";

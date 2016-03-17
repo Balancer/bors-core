@@ -6,6 +6,8 @@
 
 class bors_forms_templates_bootstrap extends bors_forms_templates_default
 {
+	function layout_type() { return 'bootstrap'; }
+
 	function _form_table_css_def() { return 'table'; }
 	function _form_table_left_th_css_def() { return 'span4'; }
 

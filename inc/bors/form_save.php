@@ -24,12 +24,16 @@ function bors_form_save($obj)
 		if(!$obj->access()->can_action($_GET['act'], $_GET))
 		{
 //			jquery::load();
-			$message = ec("<div class=\"alert alert-error\">Извините, у Вас недостаточный уровень доступа для операций с этим ресурсом ({$obj->titled_link()} -> {$obj->access()} -> can_action())</div>
+
+			$sorry = _("Извините, у Вас недостаточный уровень доступа для операций с этим ресурсом");
+			$info  = _("Служебная информация");
+
+			$message = "<div class=\"alert alert-error\">{$sorry} ({$obj->titled_link()} -> {$obj->access()} -> can_action())</div>
 <div class=\"accordion\" id=\"sysinfoacc\">
 	<div class=\"accordion-group\">
 		<div class=\"accordion-heading\">
 			<a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#sysinfoacc\" href=\"#sysinfodata\">
-				Служебная информация
+				$info
 			</a>
 		</div>
 		<div id=\"sysinfodata\" class=\"accordion-body collapse\">
@@ -42,7 +46,7 @@ function bors_form_save($obj)
 		</div>
 	</div>
 </div>
-");
+";
 
 			echo twitter_bootstrap::raw_message(array(
 				'this' => bors_load('bors_pages_fake', array(
@@ -344,12 +348,15 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	if(!empty($data['bind_to']) && preg_match('!^(\w+)://(\d+)!', $data['bind_to'], $m))
 		$object->add_cross($m[1], $m[2], intval(@$data['bind_order']));
 
-	if(!$object->id() && !(method_exists($object, 'skip_save') && $object->skip_save())) //TODO: костыль для bors_admin_image_append
+	if($data['form_class_name'] != $data['class_name'])
 	{
-		if($x = $object->empty_id_handler())
-			return $x;
-		else
-			return bors_throw(ec('Пустой id нового объекта ').$object->class_name().ec('. Возможно нужно использовать function replace_on_new_instance() { return true; }'));
+		if(!$object->id() && !(method_exists($object, 'skip_save') && $object->skip_save())) //TODO: костыль для bors_admin_image_append
+		{
+			if($x = $object->empty_id_handler())
+				return $x;
+			else
+				return bors_throw(ec('Пустой id нового объекта ').$object->class_name().ec('. Возможно нужно использовать function replace_on_new_instance() { return true; }'));
+		}
 	}
 
 //	echo "Final id: {$object->id()}<br />";

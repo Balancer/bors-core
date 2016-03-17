@@ -38,6 +38,11 @@ function geoip_flag($ip, $fun = false, $must_be=false, $time = NULL)
 			$alt[0] = 'Russian Federation';
 			$country_code = 'RU';
 		}
+		if(preg_match('/Севастополь|Симферополь|Знаменка/', $city) && (!$time || $time > 1395345600))
+		{
+			$alt[0] = 'Российская Федерация';
+			$country_code = 'RU';
+		}
 	}
 
 	$file = bors_lower($country_code).".gif";
@@ -62,6 +67,44 @@ function geoip_info($ip)
 {
 	if(!$ip)
 		return array('','','', NULL);
+
+	if(class_exists('\\GeoIp2\\Database\\Reader') && file_exists(BORS_EXT.'/data/geolite2/GeoLite2-City.mmdb'))
+	{
+		$reader = new \GeoIp2\Database\Reader(BORS_EXT.'/data/geolite2/GeoLite2-City.mmdb');
+
+		try
+		{
+			$record = $reader->city($ip);
+		}
+		catch(Exception $e)
+		{
+			return array('','','', NULL);
+		}
+
+		//print($record->country->isoCode . "\n"); // 'US', 'RU'
+		$country_code = $record->country->isoCode;
+
+		// print($record->country->name . "\n"); // 'United States', 'Russia'
+		$country_name = empty($record->country->names['ru']) ? $record->country->name : $record->country->names['ru'];
+
+		//var_dump($record->country->names); // '美国', 'ru' => 'Россия'
+
+		//print($record->mostSpecificSubdivision->name . "\n"); // 'Minnesota', 'Moscow'
+		//print($record->mostSpecificSubdivision->isoCode . "\n"); // 'MN', 'MOW'
+
+		//print($record->city->name . "\n"); // 'Minneapolis', 'Moscow'
+		$city_name = empty($record->city->names['ru']) ? $record->city->name : $record->city->names['ru'];
+		//var_dump($record->city->names); // 'ru' => 'Москва'
+
+		//print($record->postal->code . "\n"); // '55455', ''
+
+		//print($record->location->latitude . "\n"); // 44.9733; 55,7522
+		//print($record->location->longitude . "\n"); // -93.2323; 37,6156
+
+		$city_object = NULL;
+
+		return [$country_code, $country_name, $city_name, $city_object];
+	}
 
 	if(!function_exists('geoip_country_code_by_name'))
 		require_once(BORS_3RD_PARTY."/geoip/geoipcity.inc");

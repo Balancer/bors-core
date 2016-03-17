@@ -184,4 +184,12 @@ class bors_project extends bors_object
 
 		return $this;
 	}
+
+	function cfg($key, $default = NULL)
+	{
+		if(array_key_exists($key, $GLOBALS['cms']['config']))
+			return  $GLOBALS['cms']['config'][$key];
+
+		return $default;
+	}
 }

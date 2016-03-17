@@ -107,6 +107,12 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEP
 
 bors_function_include('locale/ec');
 
+// Our replace for gettext if it not installed
+if(!function_exists('_'))
+{
+	function _($text) { return ec($text); }
+}
+
 spl_autoload_register('class_include');
 
 foreach(array(COMPOSER_ROOT, BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $dir)
@@ -135,24 +141,27 @@ if(!config('cache.stash.pool') && class_exists('Stash\Pool'))
 
 	if(class_exists('Redis', false))
 	{
-		$driver = new Stash\Driver\Redis();
-
-		if(config('redis.servers'))
-		{
-			$servers = array();
-			foreach(config('redis.servers') as $s)
-				$servers[] = array($s['host'], $s['port']);
-		}
-		else
-			$servers = array(array('server' => '127.0.0.1', 'port' => 6379, 'ttl' => 86400));
-
-		$driver->setOptions(array('servers' => $servers));
-
 		try
 		{
+			if(config('redis.servers'))
+			{
+				$servers = [];
+				foreach(config('redis.servers') as $s)
+					$servers[] = [$s['host'], $s['port']];
+			}
+			else
+				$servers = [['server' => '127.0.0.1', 'port' => 6379, 'ttl' => 86400]];
+
+			$driver = new Stash\Driver\Redis(['servers' => $servers]);
+
 			$pool = new Stash\Pool($driver);
 			$pool->getItem('foo')->get();
-		} catch(Exception $e) { $pool = NULL; }
+		}
+		catch(Exception $e)
+		{
+			bors_debug::exception_log('warning-cache', "Can't load Stash Redis cache with config ".print_r(['servers' => $servers], true), $e);
+			$pool = NULL; 
+		}
 	}
 
 	//TODO: elseif() { ... } — добавить другие варианты Stash-драйверов

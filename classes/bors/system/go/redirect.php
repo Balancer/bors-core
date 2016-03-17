@@ -1,6 +1,6 @@
 <?php
 
-class bors_system_go_redirect extends bors_object
+class bors_system_go_redirect extends bors_page
 {
 	function title() { return object_property($this->object(), 'title'); }
 
@@ -8,6 +8,20 @@ class bors_system_go_redirect extends bors_object
 	{
 		if($object = $this->object())
 		{
+			if(bors()->user() && $object->class_name() == 'balancer_board_post')
+			{
+				$unvisited = $object->topic()->find_first_unvisited_post(bors()->user());
+				if($unvisited && $unvisited->create_time() < $object->create_time())
+				{
+					$this->set_attr('old_url', $unvisited->url_in_container());
+					$this->set_attr('old_title', $unvisited->title());
+					$this->set_attr('direct_url', $object->url_in_container());
+					$this->set_attr('direct_title', $object->title());
+
+					return parent::pre_show();
+				}
+			}
+
 			if(method_exists($object, 'url_in_topic'))
 				return go($object->url_in_topic(NULL, true), true);
 			else

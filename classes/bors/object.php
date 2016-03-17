@@ -117,7 +117,8 @@ class bors_object extends bors_object_simple
 		return $this->__setc($child_objects);
 	}
 
-	function rss_body()
+	// параметры реально не используются, нужны для избегания E_STRICT
+	function rss_body($foo_object=NULL, $foo_strip=0)
 	{
 		//TODO: Этот config пока используется только на лентах топиков:
 		//TODO: http://www.wrk.ru/society/2014/08/topic-89787-rss.xml
@@ -884,7 +885,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return false;
 	}
 
-	function set_fields($array, $db_update_flag=true, $fields_list = NULL, $check_values = false)
+	function set_fields(&$array, $db_update_flag=true, $fields_list = NULL, $check_values = false)
 	{
 		if(!empty($array['time_vars']))
 			bors_lib_time::parse_form($array);
@@ -1180,6 +1181,9 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function access()
 	{
 		$access = $this->access_engine();
+
+//		var_dump($access, get_class($this));
+
 		if(!$access)
 			$access = config('access_default');
 //			bors_throw(ec('Не задан режим доступа к ').$this->object_titled_dp_link());

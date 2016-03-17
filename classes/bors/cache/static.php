@@ -167,11 +167,12 @@ class cache_static extends bors_object_db
 		if(($ic=config('internal_charset')) != ($oc=config('output_charset')))
 			$content = iconv($ic, $oc.'//translit', $content);
 
+		bors_function_include('fs/file_put_contents_lock');
+
 		mkpath($dir = dirname($file), 0777);
 
 		if(is_writable($dir))
 		{
-			bors_function_include('fs/file_put_contents_lock');
 			file_put_contents_lock($file, $content);
 			if(is_file($file))
 			{
@@ -186,7 +187,7 @@ class cache_static extends bors_object_db
 		}
 
 		if(!file_exists($file) || !is_file($file))
-			bors_debug::sylog('filesystem', "Can't create static file.\n
+			bors_debug::syslog('warning-filesystem', "Can't create static file.\n
 	object: {$object}\n
 	file: {$file} (fe=".file_exists($file)
 		.';isf='.is_file($file)

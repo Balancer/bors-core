@@ -165,4 +165,29 @@ class bors
 
 		return NULL;
 	}
+
+	// BORS process namespace
+	static function cache_namespace($user_perms = true)
+	{
+		$ns_parts = array();
+		if(empty($_SERVER['HTTP_HOST']))
+			$ns_parts[] = 'cli';
+		elseif(!preg_match('/^\d+\.\d+\.\d+\.\d+$/', $_SERVER['HTTP_HOST'])) // Если это доменное имя
+			$ns_parts[] = str_replace(':', '=', strtolower($_SERVER['HTTP_HOST']));
+		elseif($_SERVER['HTTP_HOST'] != gethostbyname(gethostname()))
+			$ns_parts[] = 'unknown';
+
+		$ns_parts[] = config('project.name');
+
+		if($user_perms && !empty($_SERVER['USER']))
+			$ns_parts[] = strtolower($_SERVER['USER']);
+
+		if(($cs = config('internal_charset')) != 'utf-8')
+			$ns_parts[] = 'i'.$cs;
+
+		if(($cs = config('output_charset')) != 'utf-8')
+			$ns_parts[] = 'o'.$cs;
+
+		return array_filter($ns_parts);
+	}
 }

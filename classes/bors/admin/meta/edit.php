@@ -23,7 +23,7 @@ class bors_admin_meta_edit extends bors_admin_page
 	function pre_show()
 	{
 		if($this->id() && !$this->target())
-			return bors_throw("Can't load editor: have id ({$this->id()}) but have not target {$this->model_class()}");
+			throw new Exception("Can't load {$this->model_class()}({$this->id()})");
 
 		return parent::pre_show();
 	}

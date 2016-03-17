@@ -242,7 +242,7 @@ class DataBase
 		{
 			$this->last_query_time = microtime(true);
 
-			if(preg_match("!^SELECT!", $query))
+			if(preg_match("!^SELECT!i", $query) && is_resource($this->result))
 				return mysql_num_rows($this->result);
 			else
 				return $this->result;
@@ -258,7 +258,7 @@ class DataBase
 //				.mysql_error($this->dbh)
 				.(config('site.is_dev') ?
 					"<pre style=\"color: blue\">DB={$this->db_name}\nquery={$query}</pre>" :
-					"<!-- DB={$this->db_name}\nquery={$query} -->"
+					"<!-- DB={$this->db_name}\nquery={$query}\ntrace=\n".bors_debug::trace(0, false)." -->"
 				)
 			);
 		}
@@ -271,14 +271,15 @@ class DataBase
 
 	function free()
 	{
-		mysql_free_result($this->result);
+		if(is_resource($this->result))
+			mysql_free_result($this->result);
 	}
 
 	protected $__current_value;
 
 	function fetch()
 	{
-		if(!$this->result)
+		if(!$this->result || !is_resource($this->result))
 			return $this->__current_value = false;
 
 		if(!($row = mysql_fetch_assoc($this->result)))

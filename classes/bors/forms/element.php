@@ -6,6 +6,7 @@ class bors_forms_element
 	function set_params($params) { return $this->params = $params; }
 	function set_form($form) { return $this->form = $form; }
 	function params() { return $this->params; }
+	function param($name, $default=NULL) { return array_key_exists($name, $this->params) ? $this->params[$name] : $default; }
 	function form() { return $this->form; }
 	function is_form_element() { return true; }
 	function is_hidden() { return false; }
@@ -136,5 +137,21 @@ class bors_forms_element
 			return $lc;
 
 		return NULL;
+	}
+
+
+	function html()
+	{
+		$params = $this->params();
+
+		if(!empty($params['class']))
+		{
+			$class_name = $params['class'];
+			// To avoid infinity cycle if html method not defined
+			unset($params['class']);
+			return $this->form()->element_html($class_name, $params);
+		}
+
+		throw new Exception(sprintf(_("Not defined method 'html' for element '%s'"), get_class($this)));
 	}
 }

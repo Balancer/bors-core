@@ -319,7 +319,7 @@ if(config('debug.timing') && is_string($res))
 	$deb .= "-->\n";
 
 	if(config('is_developer'))
-		debug_hidden_log('debug_timing', $deb, false);
+		bors_debug::syslog('debug/timing', $deb, false);
 
 	$res = str_ireplace('</body>', $deb.'</body>', $res);
 }

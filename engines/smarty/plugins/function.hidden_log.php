@@ -2,5 +2,5 @@
 
 function smarty_function_hidden_log($params, &$smarty)
 {
-	debug_hidden_log($params['type'], $params['message']);
+	bors_debug::syslog($params['type'], $params['message']);
 }

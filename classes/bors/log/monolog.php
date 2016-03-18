@@ -154,9 +154,11 @@ class bors_log_monolog
 		static $instance = NULL;
 
 		if(!$instance)
-			$instance = new bors_log_monolog;
+		{
+			$class = get_called_class();
+			$instance = new $class;
+		}
 
 		return $instance;
 	}
-
 }

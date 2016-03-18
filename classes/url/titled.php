@@ -45,11 +45,11 @@ class url_titled extends url_base
 		}
 
 		if($obj->total_pages() == $page)
-			$prefix = $obj->base_url().strftime("%Y/%m/", $obj->modify_time());
+			$prefix = $obj->base_url($page).strftime("%Y/%m/", $obj->modify_time());
 		elseif(method_exists($obj, 'page_modify_time'))
-			$prefix = $obj->base_url().strftime("%Y/%m/", $obj->page_modify_time($page));
+			$prefix = $obj->base_url($page).strftime("%Y/%m/", $obj->page_modify_time($page));
 		else
-			$prefix = $obj->base_url().strftime("%Y/%m/", $obj->create_time());
+			$prefix = $obj->base_url($page).strftime("%Y/%m/", $obj->create_time());
 
 		$uri = $prefix . $infix;
 

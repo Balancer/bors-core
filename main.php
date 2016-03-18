@@ -425,7 +425,7 @@ function bors_main_error_503($logfile = NULL, $message = 'error 503', $trace = f
 	header('Retry-After: 600');
 
 	if($logfile)
-		debug_hidden_log($logfile, $message, $trace);
+		bors_debug::syslog($logfile, $message, $trace);
 
 	if($url = config('503.url'))
 		readfile($url);

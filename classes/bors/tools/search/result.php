@@ -92,8 +92,8 @@ class bors_tools_search_result extends bors_tools_search
 		if(!$this->q())
 			return false;
 
-		$host = "localhost";
-		$port = 3312;
+		$host = config('search.sphinx.host', 'localhost');
+		$port = config('search.sphinx.port', 3312);
 //echo $this->w();
 
 		$weights = NULL;

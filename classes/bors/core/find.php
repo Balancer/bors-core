@@ -77,6 +77,31 @@ class bors_core_find
 		return $objects;
 	}
 
+	function each()
+	{
+		bors_function_include('debug/timing_start');
+		debug_timing_start('bors_find::each()');
+
+		$class_name = $this->_class_name;
+		$s = bors_foo($class_name)->storage();
+
+		$this->_where['*by_id'] = true;
+
+		$objects = $s->each($class_name, $this->_where);
+
+		config_set('debug.trace_queries', NULL);
+
+		debug_timing_stop('bors_find::each()');
+
+		if(config('debug_objects_create_counting_details'))
+		{
+			debug_count_inc($this->_class_name.': bors_find::each()_calls');
+			debug_count_inc($this->_class_name.': bors_find::each()_total', count($objects));
+		}
+
+		return $objects;
+	}
+
 	function count()
 	{
 		//TODO: сделать игнор в sql-драйвере

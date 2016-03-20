@@ -327,24 +327,27 @@ if(config('debug.timing') && is_string($res))
 if(!empty($GLOBALS['bors_profiling']['mysql-queries']) && count($GLOBALS['bors_profiling']['mysql-queries']) > 30)
 	bors_debug::syslog('profiling-mysql', "Too many queries: ".print_r($GLOBALS['bors_profiling']['mysql-queries'], true));
 
-if(function_exists('xhprof_enable') && $time >= config('debug.profile_min', 1.0))
+if($time >= config('debug.profile_min', 3.0))
 {
-	$xhprof_data = xhprof_disable();
-
-	$XHPROF_ROOT = COMPOSER_ROOT."/vendor/lox/xhprof";
-	if(file_exists($XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php"))
+	if(function_exists('xhprof_enable'))
 	{
-		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
-		include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
-	}
+		$xhprof_data = xhprof_disable();
 
-	if(class_exists('XHProfRuns_Default'))
-	{
-		$xhprof_runs = new XHProfRuns_Default();
-		$run_id = $xhprof_runs->save_run($xhprof_data, urlencode(preg_replace('!\W+!', '-', preg_replace("!^\w+://!", '', $uri))));
-	}
+		$XHPROF_ROOT = COMPOSER_ROOT."/vendor/lox/xhprof";
+		if(file_exists($XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php"))
+		{
+			include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
+			include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+		}
 
-//	echo "http://localhost/xhprof/xhprof_html/index.php?run={$run_id}&source=xhprof_testing\n";
+		if(class_exists('XHProfRuns_Default'))
+		{
+			$xhprof_runs = new XHProfRuns_Default();
+			$run_id = $xhprof_runs->save_run($xhprof_data, urlencode(preg_replace('!\W+!', '-', preg_replace("!^\w+://!", '', $uri))));
+		}
+
+//		echo "http://localhost/xhprof/xhprof_html/index.php?run={$run_id}&source=xhprof_testing\n";
+	}
 }
 
 // Если объект всё, что нужно нарисовал сам, то больше нам делать нечего. Выход.

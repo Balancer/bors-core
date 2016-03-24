@@ -24,4 +24,12 @@ class bors_forms_helper
 
 		return $element;
 	}
+
+	static function use_validator()
+	{
+		jquery::css('/_bors-3rd/bower_components/validationEngine/css/validationEngine.jquery.css');
+		jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/languages/jquery.validationEngine-ru.js');
+		jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/jquery.validationEngine.js');
+		jquery::on_ready("jQuery('#{$dom_form_id}').validationEngine()");
+	}
 }

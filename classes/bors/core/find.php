@@ -35,7 +35,7 @@ class bors_core_find
 	function all($limit1=NULL, $limit2=NULL)
 	{
 		bors_function_include('debug/timing_start');
-		debug_timing_start('bors_find::all()');
+		bors_debug::timing_start('bors_find::all()');
 
 		$args = func_get_args();
 		if(count($args) == 1)
@@ -57,7 +57,7 @@ class bors_core_find
 
 		config_set('debug.trace_queries', NULL);
 
-		debug_timing_stop('bors_find::all()');
+		bors_debug::timing_stop('bors_find::all()');
 
 		if(config('debug_objects_create_counting_details'))
 		{
@@ -67,11 +67,11 @@ class bors_core_find
 
 		if($this->_preload)
 		{
-			debug_timing_start('bors_find::all()_preload');
+			bors_debug::timing_start('bors_find::all()_preload');
 			foreach($preload as $x)
 				if(preg_match('/^(\w+)\((\w+)\)$/', $x, $m))
 					bors_objects_preload($objects, $m[2], $m[1]);
-			debug_timing_stop('bors_find::all()_preload');
+			bors_debug::timing_stop('bors_find::all()_preload');
 		}
 
 		return $objects;

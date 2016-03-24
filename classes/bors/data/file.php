@@ -25,6 +25,7 @@ class bors_data_file extends bors_object
 	// Сейчас - только markdown. Нужно сделать позже автоопределение:
 	//		1. По расширению
 	//		2. По контенту
+	// FIXME: несовместимый с StorageMethods формат. Найти использование и заменить.
 	static function load($file, $markup = NULL)
 	{
 		$text = self::read($file, '/data');

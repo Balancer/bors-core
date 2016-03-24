@@ -22,6 +22,7 @@ class bors_objects_version extends base_object_db
 
 	function replace_on_new_instance() { return true; }
 
+	//FIXME: Несовместимый со StorageMethods формат параметров. Найти использование и заменить.
 	static function load($class_name, $object_id, $version)
 	{
 		static $cache = array();

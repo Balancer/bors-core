@@ -4,6 +4,8 @@ require_once __DIR__.'/../../inc/functions/url/parse.php';
 
 class bors_object extends bors_object_simple
 {
+	use B2\StorageMethods;
+
 	// Общая структура имён
 	// show() - показывает объект, с кешированием и прочим.
 	// action() - обрабатывает результаты работы форм.

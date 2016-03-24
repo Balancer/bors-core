@@ -12,7 +12,6 @@ class bors_forms_input extends bors_forms_element
 		$form = $this->form();
 
 		extract($params);
-		$maxlength = defval($params, 'maxlength', 255);
 
 		$object = $form->object();
 		$value = $this->value();
@@ -46,11 +45,7 @@ class bors_forms_input extends bors_forms_element
 				$class[] = 'validate['.$ajax_validator.']';
 		}
 
-		if(!empty($validation))
-			$html5_data['validation'] = $validation;
-
-		if(!empty($validation_length))
-			$html5_data['validation-length'] = $validation_length;
+		bors_forms_helper::validation_check($params, $html5_data);
 
 //		class="validate[required,custom[noSpecialCaracters],length[5,20]]"
 		$versioning = object_property($object, 'versioning_properties', []);
@@ -97,7 +92,11 @@ class bors_forms_input extends bors_forms_element
 
 		$html .= "<input type=\"{$type}\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
 
-		foreach(explode(' ', 'class id maxlength size style placeholder') as $p)
+		foreach(['class', 'id', 'size', 'style', 'placeholder'] as $p)
+			if(!empty($$p))
+				$html .=  " $p=\"{$$p}\"";
+
+		foreach(['maxlength'] as $p)
 			if(!empty($$p))
 				$html .=  " $p=\"{$$p}\"";
 

@@ -97,8 +97,14 @@ class bors_forms_input extends bors_forms_element
 				$html .=  " $p=\"{$$p}\"";
 
 		foreach(['maxlength'] as $p)
-			if(!empty($$p))
-				$html .=  " $p=\"{$$p}\"";
+		{
+			if(empty($params[$p]))
+				continue;
+
+			$v = $params[$p];
+			if($v != '-')
+				$html .=  " $p=\"".htmlspecialchars($v)."\"";
+		}
 
 		foreach($html5_data as $key => $val)
 			$html .= " data-$key=\"".htmlspecialchars($val)."\"";

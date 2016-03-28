@@ -2,6 +2,8 @@
 
 class driver_mysql extends driver_pdo implements Iterator
 {
+	var $charset = NULL;
+
 	function reconnect()
 	{
 		$this->close();
@@ -13,22 +15,18 @@ class driver_mysql extends driver_pdo implements Iterator
 		$login    = config_mysql('login', $db_name);
 		$password = config_mysql('password', $db_name);
 
-		$this->connection = new PDO("mysql:dbname=$db_name;host=$server;charset=utf8", $login, $password);
+		$this->connection = new PDO("mysql:dbname=$db_name;host=$server;charset=utf8mb4", $login, $password);
 
-		if($c = config('mysql_set_character_set'))
+		if($c = config('mysql_set_character_set', 'utf8mb4'))
 		{
 			bors_debug::timing_start('mysql_set_character_set');
 			$this->query("SET CHARACTER SET '$c'");
 			bors_debug::timing_stop('mysql_set_character_set');
 		}
 
-		$this->query("SET CHARACTER SET 'utf8'");
-		$this->query("SET NAMES 'utf8'");
-
-		if(($c = config('mysql_set_names_charset')) && $this->charset != $c)
+		if(($c = config('mysql_set_names_charset', 'utf8mb4')) && $this->charset != $c)
 		{
 			bors_debug::timing_start('mysql_set_names');
-			mysql_set_charset($c, $this->dbh);
 			$this->query("SET NAMES '$c'");
 			$this->charset = $c;
 			bors_debug::timing_stop('mysql_set_names');
@@ -107,6 +105,24 @@ class driver_mysql extends driver_pdo implements Iterator
 			$union[] = "SELECT {$x[1]} FROM {$x[0]} ".mysql_args_compile($x[2], @$x[3]);
 
 		return $this->get_array(join(" UNION ", $union), false, false);
+	}
+
+	function insert($table, $fields, $ignore_error = false)
+	{
+		if(!empty($fields['*DELAYED']))
+		{
+			unset($fields['*DELAYED']);
+			$DELAYED="DELAYED ";
+		}
+		else
+			$DELAYED="";
+
+		$this->query("INSERT {$DELAYED}INTO $table ".$this->make_string_values($fields), $ignore_error);
+	}
+
+	function insert_ignore($table, $fields)
+	{
+		$this->query("INSERT IGNORE $table ".$this->make_string_values($fields));
 	}
 
 	function update($table, $where, $fields)

@@ -16,8 +16,67 @@ class Project extends \bors_project
 
 	function route_view($request)
 	{
-//		r($request);
-		return NULL;
+		// (string)->getUri() -> full uri with scheme://host/path/...
+		// ->getUri()->getPath() = string
+		$path = $request->getUri()->getPath();
+
+		$camel_path = join("\\", array_map('ucfirst', explode('/', rtrim($path, '/'))));
+
+		$camel_path = join('', array_map('ucfirst', explode('-', $camel_path)));
+
+//		r($camel_path);
+
+		$reflection = new \ReflectionClass($this);
+		$namespace = $reflection->getNamespaceName();
+		$base_class =  $namespace . $camel_path;
+
+//		r($namespace);
+
+		$view = NULL;
+
+		if(class_exists($base_class))
+		{
+//			$view = $base_class::load(NULL);
+			$view = new $base_class(NULL); // Now simple direct load.
+			$view->b2_configure();
+			if($view->get('route') == 'auto')
+				return $view;
+		}
+
+		$namespace .= "\\";
+
+		$prefixes = $GLOBALS['B2_COMPOSER']->getPrefixesPsr4();
+		if(!empty($prefixes[$namespace]))
+		{
+			foreach($prefixes[$namespace] as $class_path)
+			{
+				$test_path = $class_path.str_replace("\\", '/', $camel_path);
+
+				foreach(glob($test_path.'.*') as $file)
+				{
+					if(preg_match('!^.+/(\w+\.md.tpl)$!', $file))
+					{
+						$view = new \bors_page_fs_markdown($file);
+						$view->b2_configure();
+						$view->storage()->load($view);
+					}
+				}
+
+				foreach(glob($test_path.'/Main.*') as $file)
+				{
+					if(preg_match('!^.+/(\w+\.md.tpl)$!', $file))
+					{
+						$view = new \bors_page_fs_markdown($file);
+						$view->b2_configure();
+						$view->storage()->load($view);
+					}
+				}
+			}
+		}
+
+//		r($namespace, $GLOBALS['B2_COMPOSER']->getPrefixesPsr4(), $view);
+
+		return $view;
 
 		require_once(__DIR__.'/../inc/funcs.php');
 		$x = Page::factory();
@@ -58,7 +117,7 @@ class Project extends \bors_project
 		if($view)
 		{
 			$response = $view->response();
-
+//			r($response, $view);
 			if($response)
 			{
 				$app = new \Slim\App;

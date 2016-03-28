@@ -1,6 +1,9 @@
 <?php
 
+bors::init_new();
+
 require_once __DIR__.'/../../inc/functions/url/parse.php';
+require_once __DIR__.'/../../inc/funcs.php';
 
 class bors_object extends bors_object_simple
 {
@@ -177,7 +180,9 @@ class bors_object extends bors_object_simple
 		return $this->_configure();
 	}
 
-	function _configure()
+	function _configure() { return $this->b2_configure(); }
+
+	function b2_configure()
 	{
 		return $this->configure();
 	}
@@ -2012,6 +2017,9 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		if($renderer_class == 'self')
 			return $this;
+
+		if(!$renderer_class || $renderer_class == 'bors_renderers_page')
+			$renderer_class = config('default_theme_class', 'bors_renderers_page');
 
 		if(!$renderer_class)
 			return NULL;

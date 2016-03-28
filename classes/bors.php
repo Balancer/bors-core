@@ -1,5 +1,10 @@
 <?php
 
+if(empty($GLOBALS['stat']['start_microtime']))
+	$GLOBALS['stat']['start_microtime'] = microtime(true);
+
+require_once __DIR__.'/../inc/funcs.php';
+
 class bors
 {
 	static $composer_class_dirs = array();
@@ -11,6 +16,30 @@ class bors
 			define('BORS_CORE', dirname(__DIR__));
 
 		require_once(__DIR__.'/../init.php');
+	}
+
+	static function init_new()
+	{
+		if(!empty($GLOBALS['b2_data']['inited_new']))
+			return;
+
+		$GLOBALS['b2_data']['inited_new'] = true;
+
+		bors_transitional::init();
+
+		if(!defined('BORS_CORE'))
+			define('BORS_CORE', dirname(__DIR__));
+
+		if(!defined('COMPOSER_ROOT'))
+			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(__DIR__)))));
+
+		if(!ini_get('default_charset'))
+			ini_set('default_charset', 'UTF-8');
+
+		$GLOBALS['now'] = time();
+
+		if(!config('cache_dir'))
+			config_set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', bors::cache_namespace()));
 	}
 
 	static function load($class_name, $object_id)

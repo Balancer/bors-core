@@ -43,7 +43,11 @@ class bors_storage_fs_markdown extends bors_storage
 
 	function load($object)
 	{
-		$file = $this->__find($object);
+		if(file_exists($object->id()))
+			$file = $object->id();
+		else
+			$file = $this->__find($object);
+
 		if(!$file)
 			return $object->set_is_loaded(false);
 
@@ -78,7 +82,8 @@ class bors_storage_fs_markdown extends bors_storage
 						'create_time',
 						'strtotime'
 					),
-					'Config' => 'config_class'
+					'Config' => 'config_class',
+					'Theme' => 'theme_class',
 			) as $md => $field)
 			{
 				if(!empty($data[$md]))

@@ -47,7 +47,7 @@ class Common extends \B2\Object
 		{
 			if(!($class_file = @$class_files[$class_name]))
 			{
-				$reflector = new ReflectionClass($class_name);
+				$reflector = new \ReflectionClass($class_name);
 				$class_file = $reflector->getFileName();
 			}
 

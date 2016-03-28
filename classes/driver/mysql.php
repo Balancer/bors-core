@@ -1,14 +1,44 @@
 <?php
 
-require_once('inc/mysql.php');
-require_once('obsolete/DataBase.php');
-
-class driver_mysql extends DataBase implements Iterator
+class driver_mysql extends driver_pdo implements Iterator
 {
-	function connection() { return $this->dbh; }
+	function reconnect()
+	{
+		$this->close();
 
-	static function one($db) { return new driver_mysql($db); }
-	static function factory($db) { return new driver_mysql($db); }
+		$db_name = $this->database;
+
+		$real_db  = config_mysql('db_real', $db_name);
+		$server   = config_mysql('server', $db_name);
+		$login    = config_mysql('login', $db_name);
+		$password = config_mysql('password', $db_name);
+
+		$this->connection = new PDO("mysql:dbname=$db_name;host=$server;charset=utf8", $login, $password);
+
+		if($c = config('mysql_set_character_set'))
+		{
+			bors_debug::timing_start('mysql_set_character_set');
+			$this->query("SET CHARACTER SET '$c'");
+			bors_debug::timing_stop('mysql_set_character_set');
+		}
+
+		$this->query("SET CHARACTER SET 'utf8'");
+		$this->query("SET NAMES 'utf8'");
+
+		if(($c = config('mysql_set_names_charset')) && $this->charset != $c)
+		{
+			bors_debug::timing_start('mysql_set_names');
+			mysql_set_charset($c, $this->dbh);
+			$this->query("SET NAMES '$c'");
+			$this->charset = $c;
+			bors_debug::timing_stop('mysql_set_names');
+		}
+	}
+
+	function connection() { return $this->connection; }
+
+	static function one($db)     { $class = get_called_class(); return new $class($db); }
+	static function factory($db) { $class = get_called_class(); return new $class($db); }
 
 	private $where;
 	private $table;
@@ -34,7 +64,11 @@ class driver_mysql extends DataBase implements Iterator
 			unset($where_map['table']);
 		}
 
-		return $this->get("SELECT $field FROM $table ".mysql_args_compile($where_map, $class_name));
+		$row = $this->get("SELECT $field FROM $table ".mysql_args_compile($where_map, $class_name));
+		if(count($row) == 2)
+			$row = $row[0];
+
+		return $row;
 	}
 
 	function delete($table, $where)

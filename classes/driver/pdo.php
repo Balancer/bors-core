@@ -1,8 +1,5 @@
 <?php
 
-bors_function_include('debug/timing_start');
-bors_function_include('debug/timing_stop');
-
 class driver_pdo implements Iterator
 {
 	protected $connection = NULL;
@@ -15,7 +12,7 @@ class driver_pdo implements Iterator
 	{
 		$this->database = $database;
 
-		$this->_reconnect();
+		$this->reconnect();
 	}
 
 	static function dsn($db_name)
@@ -32,9 +29,9 @@ class driver_pdo implements Iterator
 			';host='.configh('pdo_access', $db_name, 'host', '127.0.0.1').';';
 	}
 
-	protected function _reconnect()
+	protected function reconnect()
 	{
-		debug_timing_start('pdo_connect');
+		bors_debug::timing_start('pdo_connect');
 
 		$this->connection = new PDO(
 			self::dsn($this->database),
@@ -42,16 +39,16 @@ class driver_pdo implements Iterator
 			configh('pdo_access', $this->database, 'password')
 		);
 
-		debug_timing_stop('pdo_connect');
+		bors_debug::timing_stop('pdo_connect');
 	}
 
 	function connection() { return $this->connection; }
 
 	function query($query)
 	{
-		debug_timing_start('pdo_query');
+		bors_debug::timing_start('pdo_query');
 		$result = $this->connection->query($query);
-		debug_timing_stop('pdo_query');
+		bors_debug::timing_stop('pdo_query');
 
 		$err = $this->connection->errorInfo();
 		if($err[0] != "00000")
@@ -62,9 +59,9 @@ class driver_pdo implements Iterator
 
 	function exec($query)
 	{
-		debug_timing_start('pdo_exec');
+		bors_debug::timing_start('pdo_exec');
 		$result = $this->connection->exec($query);
-		debug_timing_stop('pdo_exec');
+		bors_debug::timing_stop('pdo_exec');
 
 		$err = $this->connection->errorInfo();
 		if($err[0] != "00000")
@@ -85,7 +82,7 @@ class driver_pdo implements Iterator
 
 	function fetch()
 	{
-		debug_timing_start('pdo_fetch');
+		bors_debug::timing_start('pdo_fetch');
 		$assoc = $this->result->fetch(PDO::FETCH_ASSOC);
 		$ics = config('internal_charset');
 		$dcs = configh('pdo_access', $this->database, 'charset');
@@ -97,7 +94,7 @@ class driver_pdo implements Iterator
 				$assoc[$k] = iconv($dcs, $ics, $v);
 		}
 
-		debug_timing_stop('pdo_fetch');
+		bors_debug::timing_stop('pdo_fetch');
 		return $assoc;
 	}
 

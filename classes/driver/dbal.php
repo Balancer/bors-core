@@ -28,10 +28,10 @@ class driver_dbal
 	function __construct($dbname, $create_db = false)
 	{
 		$this->dbname = $dbname;
-		$this->_reconnect($create_db);
+		$this->reconnect($create_db);
 	}
 
-	private function _reconnect($create_db = false)
+	private function reconnect($create_db = false)
 	{
 		debug_timing_start('dbal_connect');
 

@@ -5,14 +5,14 @@
 	Например, bors_time.
 */
 
-class bors_property extends bors_object_simple
+class bors_property extends bors_object
 {
 	protected $_value		= NULL;
 	protected $_is_set		= false;
 	protected $_need_store	= false;
 
 	function val() { return $this->_value; }
-	function set($value, $need_store = true)
+	function set($value, $need_store = true, $foo=NULL)
 	{
 		$this->_value		= $value;
 		$this->_is_set		= true;

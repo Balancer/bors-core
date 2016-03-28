@@ -14,7 +14,7 @@ class driver_pdo_sqlite extends driver_pdo
 		return 'sqlite:'.$db_name;
 	}
 
-	protected function _reconnect()
+	protected function reconnect()
 	{
 		$dir = dirname(preg_replace('/^sqlite\d*:/', '', $this->database));
 		if(!file_exists($dir))

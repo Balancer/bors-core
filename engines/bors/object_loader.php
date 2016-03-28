@@ -1,7 +1,8 @@
 <?php
 
 require_once __DIR__.'/../../inc/funcs.php';
-spl_autoload_register('class_include');
+if(function_exists('class_include'))
+	spl_autoload_register('class_include');
 
 require_once __DIR__.'/../../inc/functions/debug/count_inc.php';
 require_once __DIR__.'/../../inc/functions/debug/log_var.php';

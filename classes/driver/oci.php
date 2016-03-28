@@ -11,7 +11,7 @@ class driver_oci implements Iterator
 	private $database = NULL;
 	private $statement = NULL;
 
-	private function _reconnect()
+	private function reconnect()
 	{
 		if($envs = configh('oci_access', $this->database, 'env'))
 			foreach($envs as $e)
@@ -49,7 +49,7 @@ class driver_oci implements Iterator
 
 		$this->database = $database;
 
-		$this->_reconnect();
+		$this->reconnect();
 	}
 
 	function query($query)

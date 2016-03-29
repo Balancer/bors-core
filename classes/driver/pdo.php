@@ -33,11 +33,8 @@ class driver_pdo implements Iterator
 	{
 		bors_debug::timing_start('pdo_connect');
 
-		$this->connection = new PDO(
-			self::dsn($this->database),
-			configh('pdo_access', $this->database, 'user'),
-			configh('pdo_access', $this->database, 'password')
-		);
+		$dsn = self::dsn($this->database);
+		$this->connection = new PDO($dsn, configh('pdo_access', $this->database, 'user'), configh('pdo_access', $this->database, 'password'));
 
 		bors_debug::timing_stop('pdo_connect');
 	}

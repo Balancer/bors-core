@@ -2,36 +2,10 @@
 
 // Обновлённая версия старой LCML разметки.
 
-require_once(__DIR__.'/../../engines/lcml/tags.php');
-require_once(__DIR__.'/../../engines/lcml/funcs.php');
+require_once __DIR__.'/../../engines/lcml/tags.php';
+require_once __DIR__.'/../../engines/lcml/funcs.php';
 
-function lcml($text, $params = array())
-{
-	$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
-
-	global $lcs;
-	if(!$lcs)
-		$lcs = array();
-
-	if(empty($lcs[$class_name]))
-		$lcs[$class_name] = new $class_name($params);
-
-	$lc = $lcs[$class_name];
-
-	$lc->set_p('prepare', popval($params, 'prepare'));
-	$save_tags = $lc->p('only_tags');
-
-	if(!empty($params['only_tags']))
-		$lc->set_p('only_tags', $params['only_tags']);
-
-	if($lc->p('level') == 0)
-		$lc->set_params($params);
-
-	$res = $lc->parse($text);
-	$lc->set_p('only_tags', $save_tags);
-
-	return $res;
-}
+function lcml($text, $params = []) { return bors_lcml::lcml($text, $params); }
 
 function lcml_h($string)
 {

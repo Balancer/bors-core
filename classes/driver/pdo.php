@@ -33,11 +33,21 @@ class driver_pdo implements Iterator
 	{
 		bors_debug::timing_start('pdo_connect');
 
-		$this->connection = new PDO(
-			self::dsn($this->database),
-			configh('pdo_access', $this->database, 'user'),
-			configh('pdo_access', $this->database, 'password')
-		);
+		$dsn = self::dsn($this->database);
+
+		try
+		{
+			$this->connection = new PDO($dsn, configh('pdo_access', $this->database, 'user'), configh('pdo_access', $this->database, 'password'));
+		}
+		catch(Exception $e)
+		{
+			$msg = "PDO exception with $dsn: ".$e->getMessage();
+
+			if(preg_match('/^(\w+):.+/', $dsn, $m) && preg_match('/could not find driver/', $e->getMessage()))
+				$msg .= ". You need to install php-{$m[1]} driver?";
+
+			throw new Exception($msg);
+		}
 
 		bors_debug::timing_stop('pdo_connect');
 	}

@@ -14,7 +14,9 @@ class bors_lcml_parser_typo extends bors_lcml_parser
 	{
 		$text = str_replace('<<', '&laquo;', $text);
 		$text = str_replace('>>', '&raquo;', $text);
-		$text = str_replace(' -- ', ' &mdash; ', $text);
+		$text = str_replace('&lt;&lt;', '&laquo;', $text);
+		$text = str_replace('&gt;&gt;', '&raquo;', $text);
+		$text = str_replace(' -- ', '&nbsp;&mdash; ', $text);
 		$text = preg_replace("!(\s|^|\()\+/?-([^\-])!is", "$1&plusmn;$2", $text);
 
 		return $text;
@@ -24,7 +26,9 @@ class bors_lcml_parser_typo extends bors_lcml_parser
 	{
 		$text = str_replace('<<', '«', $text);
 		$text = str_replace('>>', '»', $text);
-		$text = str_replace(' -- ', ' — ', $text);
+		$text = str_replace('&lt;&lt;', '«', $text);
+		$text = str_replace('&gt;&gt;', '»', $text);
+		$text = str_replace(' -- ', ' — ', $text);
 		$text = preg_replace("!(\s|^|\()\+/?-!is", "$1±", $text);
 
 		return $text;
@@ -37,7 +41,8 @@ class bors_lcml_parser_typo extends bors_lcml_parser
 		$suite->assertRegexp('#Оркестр «Боян»#', lcml($code, ['output_type' => 'text']));
 
 		$code = 'Знание -- сила!';
-		$suite->assertRegexp('#Знание &mdash; сила!#', lcml($code));
+		$suite->assertRegexp('#Знание&nbsp;&mdash; сила!#', lcml($code));
+		$suite->assertRegexp('#Знание — сила!#', lcml($code, ['output_type' => 'text']));
 
 		$code = 'Точность +/- километр.';
 		$suite->assertRegexp('#Точность &plusmn; километр.#', lcml($code));

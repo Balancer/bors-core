@@ -1,5 +1,8 @@
 <?php
 
+if(!function_exists('curl_init'))
+	throw new Exception('You have not installed the php-curl extension');
+
 class blib_http_abstract
 {
 	static function get($url, $raw = false, $max_length = false)

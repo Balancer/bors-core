@@ -773,7 +773,7 @@ class bors_form extends bors_object
 			$view = bors()->main_object();
 
 		if(!$view)
-			bors_throw("Undefined form view");
+			throw new Exception("Undefined form view");
 
 		$tpl_name = $view->layout()->forms_template_class();
 		$form_template = bors_load($tpl_name, NULL);

@@ -6,8 +6,10 @@ namespace B2\Layout\Common;
 	Параметры для форм по умолчанию
 */
 
-class Form extends \B2\Object
+class Form extends \B2\Obj
 {
+	function layout_type() { return 'html'; }
+
 	// Если w100p, то распирает формы, типа http://www.balancer.ru/admin/forum/post/3033292/move-tree
 	function _input_css_def() { return 'wa'; }
 	function _input_css_error_def() { return 'error'; }

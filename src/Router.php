@@ -2,7 +2,7 @@
 
 namespace B2;
 
-class Router extends Object
+class Router extends Obj
 {
 	private $dispatcher;
 

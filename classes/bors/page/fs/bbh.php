@@ -1,6 +1,6 @@
 <?php
 
-bors_function_include('text/truncate');
+bors_transitional::function_include('text/truncate');
 
 class bors_page_fs_bbh extends base_page
 {

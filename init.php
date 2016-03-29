@@ -3,8 +3,10 @@
 if(empty($GLOBALS['stat']['start_microtime']))
 	$GLOBALS['stat']['start_microtime'] = microtime(true);
 
-if(!ini_get('default_charset'))
-	ini_set('default_charset', 'UTF-8');
+//if(!empty($GLOBALS['b2_data']['inited_new']))
+//{
+//	throw new Exception("Load old init from new B2");
+//}
 
 /*
 	Инициализация всех систем фреймворка.
@@ -30,6 +32,8 @@ if(!defined('COMPOSER_INCLUDED'))
 	$GLOBALS['bors.composer.class_loader'] = require $cr;
 	define('COMPOSER_INCLUDED', true);
 }
+
+bors::init_new();
 
 if(!defined('BORS_EXT'))
 	define('BORS_EXT', BORS_ROOT.'bors-ext');
@@ -366,11 +370,7 @@ function bors_route($map)
 	}
 }
 
-function bors_url_map($map_array)
-{
-	global $bors_map;
-	$bors_map = array_merge($bors_map, $map_array);
-}
+bors_transitional::init();
 
 function bors_vhost_routes($host, $routes)
 {

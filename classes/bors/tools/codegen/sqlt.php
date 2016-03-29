@@ -255,7 +255,7 @@ class bors_tools_codegen_sqlt extends bors_object
 
 		global $self;
 		$self = $this;
-		$tpl = file_get_contents('sqlt-class.tpl.php');
+		$tpl = file_get_contents('sqlt-class.tpl.nophp');
 		$tpl = preg_replace_callback('/%(\w+)%/', create_function('$m', 'global $self; return method_exists($self, $m[1]) ? $self->$m[1]() : $self->$m[1];'), $tpl);
 
 		return $tpl;

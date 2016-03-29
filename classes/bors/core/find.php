@@ -34,10 +34,11 @@ class bors_core_find
 	// Найти все объекты, соответствующие заданным критериям
 	function all($limit1=NULL, $limit2=NULL)
 	{
+		$args = func_get_args();
+
 		bors_function_include('debug/timing_start');
 		bors_debug::timing_start('bors_find::all()');
 
-		$args = func_get_args();
 		if(count($args) == 1)
 			// Формат all($limit)
 			$this->_where['*limit'] = $limit1;
@@ -282,6 +283,8 @@ class bors_core_find
 
 	function where_parse_set($param, $value, $value2 = NULL)
 	{
+		$num_args = count(func_get_args());
+
 		$param = $this->first_parse($param);
 		$param = $this->stack_parse($param);
 		$param = $this->class_parse($param);
@@ -314,7 +317,7 @@ class bors_core_find
 		{
 			$param = "$param '%".addslashes($value)."%'";
 		}
-		elseif(count(func_get_args()) == 2)
+		elseif($num_args == 2)
 		{
 			if(preg_match('/[\w`]$/', $param))
 				$param .= " = ";

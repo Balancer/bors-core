@@ -40,7 +40,7 @@ class bors_forms_radio extends bors_forms_element
 				if($m[1] == 'this')
 					$list = $obj->$list();
 				else
-					$list = object_load($m[1])->$m[2]();
+					$list = call_user_func([bors_foo($m[1]), $m[2]]);
 			}
 			elseif(preg_match("!^\w+$!", $list))
 			{

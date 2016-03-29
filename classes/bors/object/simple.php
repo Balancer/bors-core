@@ -243,7 +243,7 @@ class bors_object_simple extends bors_object_empty
 			$auto_objs = $this->auto_objects();
 			if(!empty($auto_objs[$name]))
 				if(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$name], $m))
-					return $this->attr[$name] = object_load($m[1], $this->$m[2]());
+					return $this->attr[$name] = bors_load($m[1], call_user_func([$this, $m[2]]));
 		}
 
 		// Автоматические целевые объекты (имя класса задаётся)
@@ -252,7 +252,7 @@ class bors_object_simple extends bors_object_empty
 			$auto_targs = $this->auto_targets();
 			if(!empty($auto_targs[$name]))
 				if(preg_match('/^(\w+)\((\w+)\)$/', $auto_targs[$name], $m))
-					return $this->attr[$name] = object_load($this->$m[1](), $this->$m[2]());
+					return $this->attr[$name] = bors_load(call_user_func([$this, $m[1]]), call_user_func([$this, $m[2]]));
 		}
 
 		// Проверяем одноимённые переменные (var $title = 'Files')

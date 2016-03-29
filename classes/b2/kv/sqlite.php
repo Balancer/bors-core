@@ -29,8 +29,7 @@ class b2_kv_sqlite extends b2_kv_meta
 	function set($section, $name, $value)
 	{
 		$kv = b2_kv_sqlite::instance();
-		$
 	}
 
-	function get($section, $name)
+//	function get($section, $name)
 }

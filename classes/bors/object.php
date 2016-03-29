@@ -382,11 +382,16 @@ class bors_object extends bors_object_simple
 		// Автоматические целевые объекты (имя класса задаётся)
 		$auto_targs = $this->auto_targets();
 		if(!empty($auto_targs[$method]))
+		{
 			if(preg_match('/^(\w+)\((\w+)\)$/', $auto_targs[$method], $m))
+			{
+				$target = object_load(call_user_func([$this, $m[1]]), call_user_func([$this, $m[2]]));
 				if(config('orm.auto.cache_attr_skip'))
-					return object_load($this->$m[1](), $this->$m[2]());
-				else
-					return $this->attr[$method] = object_load($this->$m[1](), $this->$m[2]());
+					return $target;
+
+				return $this->attr[$method] = $target;
+			}
+		}
 
 		$name = $method;
 

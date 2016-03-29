@@ -167,7 +167,7 @@ class driver_mysql extends driver_pdo implements Iterator
 		if(!@$this->each_result)
 			return false;
 
-		@mysql_data_seek($this->each_result, 0);
+//		@mysql_data_seek($this->each_result, 0);
 
         return $this->fetch();
     }
@@ -179,6 +179,4 @@ class driver_mysql extends driver_pdo implements Iterator
 		$x = $this->get("SHOW TABLE STATUS LIKE '".addslashes($table)."'");
 		return $x['Rows'];
 	}
-
-	function escape($string) { return mysql_real_escape_string($string, $this->dbh); }
 }

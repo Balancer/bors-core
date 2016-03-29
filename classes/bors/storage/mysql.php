@@ -886,7 +886,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			return $exists[$table];
 
 		$db = $this->db();
-		return $exists[$table] = count($db->get_array("SHOW TABLES LIKE '".$db->escape($table)."'")) > 0;
+		return $exists[$table] = count($db->get_array("SHOW TABLES LIKE '".addslashes($table)."'")) > 0;
 	}
 
 	function storage_create()

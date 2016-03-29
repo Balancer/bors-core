@@ -6,7 +6,7 @@ namespace B2\Theme;
 	Класс, выполняющий основные функции подготовки к выводу темы
 */
 
-class Common extends \B2\Object
+class Common extends \B2\Obj
 {
 	var $__page_data = array();
 

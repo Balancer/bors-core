@@ -2,7 +2,7 @@
 
 namespace B2;
 
-class Model extends Object
+class Model extends Obj
 {
 	function _item_name() { return @array_pop(explode('_', $this->class_name())); }
 	function _item_name_m() { return \blib_grammar::plural($this->_item_name()); }
@@ -24,7 +24,7 @@ class Model extends Object
 
 	private $storage = NULL;
 
-	// Храним тут, а не в Object, простому объекту бэкенд данных не нужен.
+	// Храним тут, а не в Obj, простому объекту бэкенд данных не нужен.
     function storage()
 	{
 		if($this->storage)

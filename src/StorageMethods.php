@@ -16,7 +16,7 @@ trait StorageMethods
 		$object = bors_load(get_called_class(), $id);
 
 		if(!$object)
-			$object = new Null(NULL);
+			$object = new Nil(NULL);
 
 		return $object;
 	}

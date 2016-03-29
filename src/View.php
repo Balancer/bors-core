@@ -2,6 +2,6 @@
 
 namespace B2;
 
-class View extends Object
+class View extends Obj
 {
 }

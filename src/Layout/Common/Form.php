@@ -6,7 +6,7 @@ namespace B2\Layout\Common;
 	Параметры для форм по умолчанию
 */
 
-class Form extends \B2\Object
+class Form extends \B2\Obj
 {
 	function layout_type() { return 'html'; }
 

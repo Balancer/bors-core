@@ -2,7 +2,7 @@
 
 namespace B2;
 
-class Object extends \bors_object
+class Obj extends \bors_object
 {
 	static function factory($id=NULL)
 	{

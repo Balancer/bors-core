@@ -2,7 +2,7 @@
 
 namespace B2;
 
-class Null extends Object
+class Nil extends Obj
 {
 	function __call($method, $params)
 	{
@@ -20,7 +20,7 @@ class Null extends Object
 
 	static function __unit_test($suite)
 	{
-		$null = Null::factory();
+		$null = Nil::factory();
 		$suite->assertNotNull($null->foo());
 		$suite->assertNotNull($null->foo);
 		$suite->assertTrue($null->isNull());

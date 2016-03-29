@@ -555,16 +555,18 @@ class bors_lcml extends bors_object
 		return microtime(true) - $this->start_time > $time;
 	}
 
-	static function lcml($text, $params = array())
+	static function lcml($text, $params = [])
 	{
 		$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
 
-		global $lcs;
+		static $lcs;
 		if(!$lcs)
-			$lcs = array();
+			$lcs = [];
 
 		if(empty($lcs[$class_name]))
+		{
 			$lc = $lcs[$class_name] = new $class_name($params);
+		}
 		else
 		{
 			$lc = $lcs[$class_name];
@@ -585,6 +587,10 @@ class bors_lcml extends bors_object
 		// Зачистим всё не-UTF-8 на всякий случай, а то пролезает, порой, всякое...
 		if(function_exists('mb_convert_encoding'))
 			$html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
+
+		// Cleanup for remove side effects after internal class modifications.
+		if($lc->p('level') < 1)
+			unset($lcs[$class_name]);
 
 		return $html;
 	}

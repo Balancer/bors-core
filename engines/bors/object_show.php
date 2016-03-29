@@ -113,7 +113,7 @@
 				class_file = ".(method_exists($access_object, 'class_file') ? $access_object->class_file() : 'none')."
 				object.config = ".object_property($obj->config(), 'debug_title')."
 
-".debug_trace(0, false, 0)."
+".bors_debug::trace(0, false, 0)."
 			-->", array('template' => object_property($obj, 'template'))) : true;
 		}
 

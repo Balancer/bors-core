@@ -176,6 +176,34 @@ function configh($section, $hash, $key, $def = NULL)
 		: $def;
 }
 
+function nospace($str) { return str_replace(' ', '', $str); }
+
+function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
+{
+	if(preg_match('/^(\w+)=>([\w\-]+)$/', nospace($db), $m))
+	{
+		$db = $m[1];
+		$db_real = $m[2];
+	}
+	else
+		$db_real = $db;
+
+	$conn = config('__database_connections', array());
+	$conn[$db] = array(
+		'host'	  => $host,
+		'database'  => $db_real,
+		'username'  => $login,
+		'password'  => $password,
+	);
+
+	config_set('__database_connections', $conn);
+
+	$GLOBALS["_bors_conf_mysql_{$db}_db_real"] = $db_real;
+	$GLOBALS["_bors_conf_mysql_{$db}_login"]   = $login;
+	$GLOBALS["_bors_conf_mysql_{$db}_password"]= $password;
+	$GLOBALS["_bors_conf_mysql_{$db}_server"]  = $host;
+}
+
 if(function_exists('mb_strtolower') && strtolower(ini_get('default_charset')) == 'utf-8')
 {
 	// Фиг его знает, с чего PHP без этого перестал работать в консоли

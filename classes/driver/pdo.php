@@ -6,7 +6,7 @@ class driver_pdo implements Iterator
 	protected $database = NULL;
 	private $statement = NULL;
 
-	static function factory($db) { return new driver_pdo($db); }
+	static function factory($db) { $class = get_called_class(); return new $class($db); }
 
 	function __construct($database = NULL)
 	{

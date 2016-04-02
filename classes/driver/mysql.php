@@ -15,7 +15,20 @@ class driver_mysql extends driver_pdo implements Iterator
 		$login    = config_mysql('login', $db_name);
 		$password = config_mysql('password', $db_name);
 
-		$this->connection = new PDO("mysql:dbname=$db_name;host=$server;charset=utf8mb4", $login, $password);
+		$dsn = "mysql:dbname=$db_name;host=$server;charset=utf8mb4";
+		try
+		{
+			$this->connection = new PDO($dsn, $login, $password);
+		}
+		catch(Exception $e)
+		{
+			$msg = "PDO exception with $dsn: ".$e->getMessage();
+
+			if(preg_match('/^(\w+):.+/', $dsn, $m) && preg_match('/could not find driver/', $e->getMessage()))
+				$msg .= ". You need to install php-{$m[1]} driver?";
+
+			throw new Exception($msg);
+		}
 
 		if($c = config('mysql_set_character_set', 'utf8mb4'))
 		{

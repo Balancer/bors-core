@@ -2,9 +2,194 @@
 
 namespace B2;
 
-class Project extends \bors_project
+class Project extends Obj
 {
-	static $routers = array();
+	static $routers = [];
+	var $inited = false;
+	var $router = NULL;
+
+	/**
+	 * @return bors_project
+     */
+	static function instance()
+	{
+		static $instance = NULL;
+		if(!$instance)
+		{
+			$caller = get_called_class();
+			$instance = new $caller(NULL);
+			$instance->router = new \B2\Router($instance);
+		}
+
+		return $instance;
+	}
+
+	function router() { return $this->router; }
+
+	function _title_def()
+	{
+		return config('project.title');
+	}
+
+	function _nav_name_def()
+	{
+		return config('project.nav_name');
+	}
+
+	function _url_def()
+	{
+		return '/';
+	}
+
+	// Файлы проектов грузятся раньше конфигурации объектов и потому сами не конфигурируются.
+	// Иначе получается бесконечная рекурсия.
+
+	function _class_prefix_def()
+	{
+		return \bors_core_object_defaults::project_name($this);
+	}
+
+	function _configure()
+	{
+	}
+
+	function object_type() { return 'project'; }
+
+	function object_data()
+	{
+		return array();
+	}
+
+	function config_class()
+	{
+		return NULL;
+	}
+
+	function data_load()
+	{
+		return false;
+	}
+
+	function __call($method, $params)
+	{
+		// Проверяем. Если мы ещё не проинициализированы, то ошибка. Например, вызов несуществуующего метода в загрузчике.
+		if(!defined('BORS_CORE'))
+			throw new \Exception('Unknown method ' . $method . ' for ' . get_class() . ' in uninitialized project.');
+
+		// Иначе обрабатываем как обычно.
+		return parent::__call($method, $params);
+	}
+
+	/**
+	 * @return $this
+	 */
+	function debug()
+	{
+		if(class_exists('Tracy\\Debugger'))
+		{
+			\Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT);
+			\Tracy\Debugger::$strictMode = true;
+		}
+
+		$this->setCfg('mode.debug', true);
+
+		// config_set('debug_redirect_trace', true);
+
+		return $this;
+	}
+
+	/**
+	 * @return $this
+     */
+	function init()
+	{
+		if($this->inited)
+			return $this;
+
+		if(!defined('COMPOSER_ROOT'))
+			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+
+		if(!defined('BORS_CORE'))
+			define('BORS_CORE', COMPOSER_ROOT.'/vendor/balancer/bors-core');
+
+		//TODO: Отказаться в будущем от использования define.
+		//TODO: иначе выходит несовместимость множественности проектов.
+		if(!defined('BORS_SITE'))
+		{
+			// Ищем каталог композера или старого формата классов уровнем
+			// выше, чем каталог класса проекта
+
+			$reflector = new \ReflectionClass($this);
+			$class_file = $reflector->getFileName();
+
+			$bors_site = dirname($class_file);
+
+			while($bors_site && $bors_site != '/' && !file_exists("$bors_site/composer.json") && !file_exists("$bors_site/classes"))
+				$bors_site = dirname($bors_site);
+
+			if($bors_site > '/')
+				define('BORS_SITE', $bors_site);
+		}
+
+		if(method_exists($this, 'project_name'))
+			$project_name = $this->project_name();
+		elseif(property_exists($this, 'project_name'))
+			$project_name = $this->project_name;
+		else
+			$project_name = NULL;
+
+		//TODO: Отказаться в будущем от использования define.
+		//TODO: иначе выходит несовместимость множественности проектов.
+		if(!defined('BORS_HOST')
+			&& $project_name
+			&& file_exists($bors_host = COMPOSER_ROOT."/$project_name")
+		)
+			define('BORS_HOST', $bors_host);
+
+		if(file_exists($cfg = COMPOSER_ROOT.'/config-host.php'))
+			require_once($cfg);
+
+		$this->router()->init();
+
+		$this->inited = true;
+		return $this;
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed  $value
+	 * @return $this
+	 */
+	function set_cfg($key, $value)
+	{
+		return $this->setCfg($key, $value);
+	}
+
+	function config_host($file)
+	{
+		$GLOBALS['bors']['config']['config_hosts'][] = $file;
+		return $this;
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed  $value
+	 * @return $this
+	 */
+	function setCfg($key, $value)
+	{
+		$GLOBALS['cms']['config'][$key] = $value;
+
+		return $this;
+	}
+
+	function cfg($key, $default = NULL)
+	{
+		if(array_key_exists($key, $GLOBALS['cms']['config']))
+			return  $GLOBALS['cms']['config'][$key];
+
+		return $default;
+	}
 
 	function regRouter($router_class, $base_url = '', $domain = '')
 	{
@@ -85,8 +270,19 @@ class Project extends \bors_project
 		return $x;
 	}
 
+	/**
+	 * Main routing process run
+     */
+
 	function run()
 	{
+		if(!$this->inited)
+			$this->init();
+
+		if(!defined('BORS_SITE'))
+			define('BORS_SITE', COMPOSER_ROOT);
+
+
 		// Пробуем искать по-новому
 		// ...
 		// https://github.com/phpixie/http
@@ -127,6 +323,6 @@ class Project extends \bors_project
 		}
 
 		// Если ничего не нашли, то запускаем старый движок.
-		return parent::run();
+		return \bors::run();
 	}
 }

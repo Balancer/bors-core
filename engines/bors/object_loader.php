@@ -691,20 +691,20 @@ function object_init($class_name, $object_id, $args = array())
 	return $obj;
 }
 
-function bors_objects_preload(&$objects, $field, $preload_class, $store_field = NULL, $strict = false)
+function bors_objects_preload($objects, $field, $preload_class, $store_field = NULL, $strict = false)
 {
 	if(!$objects)
-		return array();
+		return [];
 
-	$ids = array();
+	$ids = [];
 	foreach($objects as $x)
 		if($x)
 			$ids[$x->$field()] = 1;
 
 	if(!array_keys($ids))
-		return array();
+		return [];
 
-	$targets = bors_find_all($preload_class, array('id IN' => array_keys($ids), 'by_id' => (bool)$store_field));
+	$targets = bors_find_all($preload_class, ['id IN' => array_keys($ids), 'by_id' => (bool)$store_field]);
 
 	if($store_field)
 		foreach($objects as $x)

@@ -357,6 +357,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			list($select, $where, $post_functions) = self::__query_data_prepare($object, $where);
 		}
 
+		if(empty($db_name))
+			throw new Exception("Not defined database to load $class_name");
+
 		$dbh = new driver_mysql($db_name);
 
 		// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')

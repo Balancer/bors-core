@@ -5,6 +5,33 @@ namespace B2;
 class Router extends Obj
 {
 	private $dispatcher;
+	private $project;
+
+	function __construct($project)
+	{
+		$this->project = $project;
+	}
+
+	function init()
+	{
+		$namespace = preg_replace('/\\\\\w+$/', '', get_class($this->project));
+		$routes = $namespace . '\\Routes';
+		if(class_exists($routes))
+		{
+			global $bors_data;
+
+			$routes = call_user_func([$routes, 'routes']);
+			if(empty($bors_data['vhosts'][$this->base_url()]['bors_map']))
+				$bors_data['vhosts'][$this->base_url()]['bors_map'] = [];
+
+			$bors_data['vhosts'][$this->base_url()]['bors_map'] = array_merge($bors_data['vhosts'][$this->base_url()]['bors_map'], $routes);
+		}
+	}
+
+	function base_url()
+	{
+		return $GLOBALS['b2.route.base'][get_class($this->project)];
+	}
 
 	function routes_init($base_url, $domain = NULL)
 	{

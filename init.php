@@ -437,34 +437,6 @@ function bors_include($file, $warn = false, $once = false)
 	echo $message;
 }
 
-function nospace($str) { return str_replace(' ', '', $str); }
-
-function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
-{
-	if(preg_match('/^(\w+)=>([\w\-]+)$/', nospace($db), $m))
-	{
-		$db = $m[1];
-		$db_real = $m[2];
-	}
-	else
-		$db_real = $db;
-
-	$conn = config('__database_connections', array());
-	$conn[$db] = array(
-		'host'	  => $host,
-		'database'  => $db_real,
-		'username'  => $login,
-		'password'  => $password,
-	);
-
-	config_set('__database_connections', $conn);
-
-	$GLOBALS["_bors_conf_mysql_{$db}_db_real"] = $db_real;
-	$GLOBALS["_bors_conf_mysql_{$db}_login"]   = $login;
-	$GLOBALS["_bors_conf_mysql_{$db}_password"]= $password;
-	$GLOBALS["_bors_conf_mysql_{$db}_server"]  = $host;
-}
-
 function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }
 
 function bors_function_include($req_name)

@@ -1,5 +1,7 @@
 <?php
 
+require_once BORS_CORE.'/inc/texts.php';
+
 class bors_templates_smarty3 extends bors_template
 {
 	function render_body($object)
@@ -23,10 +25,9 @@ class bors_templates_smarty3 extends bors_template
 	static function factory()
 	{
 		if(!class_exists('Smarty'))
-			bors_throw("Can't find Smarty. Please do \"composer require 'smarty/smarty=!=3.1.17'\"");
+			throw new Exception(_("Can't find Smarty. Please do \"composer require 'smarty/smarty=@stable'\""));
 
 		$smarty = new Smarty();
-//		require(__DIR__.'/smarty3-register.php');
 		$smarty->registerResource('xfile', new bors_templates_smarty_resources_file($smarty));
 
 		$smarty->setCompileDir(config('cache_dir').'/smarty3-templates_c/');
@@ -49,8 +50,11 @@ class bors_templates_smarty3 extends bors_template
 
 		$plugin_dirs = bors::$composer_smarty_plugin_dirs;
 		array_unshift($plugin_dirs, COMPOSER_ROOT.'/vendor/smarty/smarty/libs/plugins');
-
 		$smarty->setPluginsDir($plugin_dirs);
+
+		$template_dirs = bors::$composer_template_dirs;
+		array_unshift($plugin_dirs, COMPOSER_ROOT.'/vendor/smarty/smarty/libs/plugins');
+		$smarty->setTemplateDir($template_dirs);
 
 		$smarty->compile_check = true;
 
@@ -106,6 +110,7 @@ class bors_templates_smarty3 extends bors_template
 			$dir_names = array();
 		array_unshift($dir_names, $dirname);
 		array_unshift($dir_names, $caller_path);
+
 		$smarty->assign("template_dirnames", $dir_names);
 
 		$smarty->assign('me', bors()->user());
@@ -115,8 +120,6 @@ class bors_templates_smarty3 extends bors_template
 		if(!$smarty->templateExists($template))
 			$template = self::find_template($template, @$data['this']);
 
-//		$smarty->debugging = true;
-
 		if(config('debug.execute_trace'))
 			debug_execute_trace("smarty3->fetch()");
 
@@ -125,6 +128,7 @@ class bors_templates_smarty3 extends bors_template
 		$dir_names = $smarty->getTemplateVars('template_dirnames');
 		array_shift($dir_names);
 		array_shift($dir_names);
+
 		$smarty->assign("template_dirnames", $dir_names);
 		return $result;
 	}

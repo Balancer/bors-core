@@ -19,7 +19,6 @@ class bors_templates_smarty_resources_file extends Smarty_Resource_Custom
   */
 	public function fetch($tpl_name, &$tpl_source, &$mtime)
 	{
-//		echo "Fetch $tpl_name<br/>\n";
 		if(file_exists($tpl_name))
 		{
 			$tpl_source	= ec(file_get_contents($tpl_name));
@@ -40,7 +39,7 @@ class bors_templates_smarty_resources_file extends Smarty_Resource_Custom
 			}
 		}
 
-		foreach($this->smarty->template_dir as $d)
+		foreach($this->smarty->getTemplateDir() as $d)
 		{
 			if(file_exists($fn = "$d/$tpl_name"))
 			{

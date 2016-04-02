@@ -8,6 +8,7 @@ require_once __DIR__.'/../inc/funcs.php';
 class bors
 {
 	static $composer_class_dirs = [];
+	static $composer_route_maps = [];
 	static $composer_template_dirs = [];
 	static $composer_smarty_plugin_dirs = [];
 

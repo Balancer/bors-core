@@ -50,6 +50,7 @@
 
     "extra": {
         "bors-classes": "classes",
-        "bors-templates": "templates"
+        "bors-templates": "templates",
+        "bors-smarty-plugins": "engines/smarty/plugins"
     }
 }

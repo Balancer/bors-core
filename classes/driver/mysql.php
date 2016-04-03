@@ -15,7 +15,7 @@ class driver_mysql extends driver_pdo implements Iterator
 		$login    = config_mysql('login', $db_name);
 		$password = config_mysql('password', $db_name);
 
-		$dsn = "mysql:dbname=$db_name;host=$server;charset=utf8mb4";
+		$dsn = "mysql:dbname=$real_db;host=$server;charset=utf8mb4";
 		try
 		{
 			$this->connection = new PDO($dsn, $login, $password);

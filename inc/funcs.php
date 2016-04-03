@@ -176,8 +176,6 @@ function configh($section, $hash, $key, $def = NULL)
 		: $def;
 }
 
-function nospace($str) { return str_replace(' ', '', $str); }
-
 function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 {
 	if(preg_match('/^(\w+)=>([\w\-]+)$/', nospace($db), $m))
@@ -203,6 +201,8 @@ function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 	$GLOBALS["_bors_conf_mysql_{$db}_password"]= $password;
 	$GLOBALS["_bors_conf_mysql_{$db}_server"]  = $host;
 }
+
+function nospace($str) { return str_replace(' ', '', $str); }
 
 if(function_exists('mb_strtolower') && strtolower(ini_get('default_charset')) == 'utf-8')
 {

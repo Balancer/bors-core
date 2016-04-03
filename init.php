@@ -437,6 +437,8 @@ function bors_include($file, $warn = false, $once = false)
 	echo $message;
 }
 
+function nospace($str) { return str_replace(' ', '', $str); }
+
 function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }
 
 function bors_function_include($req_name)

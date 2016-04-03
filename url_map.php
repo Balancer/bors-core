@@ -29,10 +29,11 @@ $map = array(
 	'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
 //	'(.*)\?edit => bors_admin_edit_page(1)',
-	'(.*)\?edit => bors_admin_edit_smart(1)',
-	'(.*)\?prop  => bors_admin_property(1)',
+	'(.*)\?cdrop => bors_admin_tools_clean(1)',
+	'(.*)\?nc   => bors_admin_tools_clean(1)',
 	'(.*)\?new  => bors_admin_append_child(1)',
-	'(.*)\?cdrop  => bors_admin_tools_clean(1)',
+	'(.*)\?edit => bors_admin_edit_smart(1)',
+	'(.*)\?prop => bors_admin_property(1)',
 
 	'(/_bors/)igo\?o=(.+) => bors_system_go_internal(2)',
 	'(/_bors/)ugo\?u=(.+) => bors_system_go_url(2)',

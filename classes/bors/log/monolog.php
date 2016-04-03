@@ -105,10 +105,11 @@ class bors_log_monolog
 					break;
 			}
 
-
+/*
 			if($level >= Logger::ERROR && config('log.hipchat_v1_room_id'))
 				// ($token, $room, $name = 'Monolog', $notify = false, $level = Logger::CRITICAL, $bubble = true, $useSSL = true, $format = 'text', $host = 'api.hipchat.com')
 				$log->pushHandler(new HipChatHandler(config('log.hipchat_v1_room_token'), config('log.hipchat_v1_room_id'), substr($name, 0, 15), true, $level));
+*/
 
 			$log->pushProcessor(function ($record) use($trace) {
 

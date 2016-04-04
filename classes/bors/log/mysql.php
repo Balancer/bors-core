@@ -32,7 +32,7 @@ class bors_log_mysql extends base_object_db
 		}
 
 		if(!bors()->user())
-			debug_hidden_log('bors_log', 'Empty owner!');
+			bors_debug::syslog('bors_log', 'Empty owner!');
 
 		$data['owner_ip'] = bors()->client()->ip();
 		$data['action_url'] = bors()->request()->url();

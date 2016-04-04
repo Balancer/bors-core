@@ -8,10 +8,10 @@ class bors_object_db2 extends bors_object
 	private static $__parsed_fields = array();
 
 	function _project_name() { return array_shift(explode('_', $this->class_name())); }
-	function _access_name() { return bors_plural(array_pop(explode('_', $this->class_name()))); }
+	function _access_name() { return \blib_grammar::plural(array_pop(explode('_', $this->class_name()))); }
 
 	function _item_name() { return array_pop(explode('_', $this->class_name())); }
-	function _item_name_m() { return bors_plural($this->_item_name()); }
+	function _item_name_m() { return \blib_grammar::plural($this->_item_name()); }
 
 	function _fields_def()
 	{
@@ -20,7 +20,7 @@ class bors_object_db2 extends bors_object
 
 	// По умолчанию в качестве имени таблицы используется последее
 	// слово имени класса во множественном числе.
-	function _table_name_def() { return bors_plural(preg_replace('!^.*_(\w+)$!', '$1', $this->class_name())); }
+	function _table_name_def() { return \blib_grammar::plural(preg_replace('!^.*_(\w+)$!', '$1', $this->class_name())); }
 
 	function _table_fields_def()
 	{

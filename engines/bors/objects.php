@@ -25,7 +25,7 @@ function bors_title_to_autoinc_id(&$data, $name_field, $id_field, $class_name)
 		$x = bors_object_title_autoinc($class_name, $data[$name_field]);
 		if(!$x)
 		{
-			debug_hidden_log('new-record-error', "bors_title_to_autoinc_id(".print_r($data,true).", $name_field, $id_field, $class_name)");
+			bors_debug::syslog('new-record-error', "bors_title_to_autoinc_id(".print_r($data,true).", $name_field, $id_field, $class_name)");
 			return bors_message(ec('Ошибка создания новой записи'));
 		}
 

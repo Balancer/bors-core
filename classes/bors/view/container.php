@@ -101,13 +101,13 @@ class bors_view_container extends bors_view
 		return $count;
 	}
 
-//	function template_local_vars() { return parent::template_local_vars().' '.bors_plural($this->nested_name()); }
+//	function template_local_vars() { return parent::template_local_vars().' '.\blib_grammar::plural($this->nested_name()); }
 	function body_data()
 	{
 		$items = $this->items();
 
 		return array_merge(parent::body_data(), array(
-			bors_plural($this->nested_name()) => $items
+			\blib_grammar::plural($this->nested_name()) => $items
 		));
 	}
 

@@ -507,12 +507,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();
 
-//			if(config('is_developer')) echo debug_trace();
+//			if(config('is_developer')) echo bors_debug::trace();
 
 			//TODO: продумать систему контроля типов.
 			//FIXME: чёрт, тут нельзя вызывать всяких user, пока в них лезут ошибки типов. Исправить и проверить все основные проекты.
 //			if(@$this->data[$prop] == $value && @$this->data[$prop] !== NULL && $value !== NULL)
-//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$prop]).'; new type: '.gettype($value));
+//				bors_debug::syslog('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$prop]).'; new type: '.gettype($value));
 
 			// Запоминаем первоначальное значение переменной.
 			if(empty($this->changed_fields) || !array_key_exists($prop, $this->changed_fields))
@@ -674,7 +674,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if(($data = $this->body_data()))
 		{
 			if(!is_array($data)) //TODO: снести после отлавливания
-				debug_hidden_log('__data_error', 'Not array local_data: '.print_r($data, true).' for '.$this->debug_title_dc());
+				bors_debug::syslog('__data_error', 'Not array local_data: '.print_r($data, true).' for '.$this->debug_title_dc());
 			else
 				foreach($data as $key => $value)
 					$this->add_local_template_data($key, $value);
@@ -996,7 +996,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$was_modified = array_key_exists('modify_time', $this->changed_fields);
 
 //		if($was_modified)
-//			debug_hidden_log('00-modified', $this->debug_title().print_r($this->changed_fields, true));
+//			bors_debug::syslog('00-modified', $this->debug_title().print_r($this->changed_fields, true));
 
 		if($this->get('is_changes_logging'))
 			bors_objects_changelog::add($this);
@@ -1288,7 +1288,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($limit && strlen($uri) > $limit)
 		{
 			if(!$ignore_oversize)
-				debug_hidden_log('need-attention', 'too long ascii uri for '.$this->internal_uri());
+				bors_debug::syslog('need-attention', 'too long ascii uri for '.$this->internal_uri());
 			$uri = substr($uri, 0, $limit);
 		}
 
@@ -1300,7 +1300,13 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if(@preg_match("!^http://!", $this->id()))
 			return $this->id();
 
-		return  $this->class_name().'://'.$this->id().'/';
+		$id = $this->id();
+		if(is_array($id))
+			$id = serialize($id);
+		elseif(is_object($id))
+			$id = $id->internal_uri();
+
+		return  $this->class_name().'://'.$id.'/';
 	}
 
 	//TODO: разобраться с сериализацией приватных данных
@@ -1425,7 +1431,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		$this->set_visits(intval($this->visits()) + intval($inc), true);
 //		echo "set visit";
-//		echo debug_trace();
+//		echo bors_debug::trace();
 		$this->set_last_visit_time($time, true);
 	}
 
@@ -2124,7 +2130,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	{
 		$class_name = $this->class_name();
 		$class_name = preg_replace('/_(main|edit|view)$/', '', $class_name);
-		$module_class = bors_plural($class_name).'_modules_'.$module_name;
+		$module_class = \blib_grammar::plural($class_name).'_modules_'.$module_name;
 		set_def($attrs, 'model', $this);
 		$mod = bors_load_ex($module_class, $this, $attrs);
 		if(!$mod)

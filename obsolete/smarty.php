@@ -1,6 +1,6 @@
 <?php
 
-debug_hidden_log('__obsolete_catch', "Call obsolete code smarty.php");
+bors_debug::syslog('__obsolete_catch', "Call obsolete code smarty.php");
 return;
 
 require_once(config('smarty_path').'/Smarty.class.php');

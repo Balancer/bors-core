@@ -33,7 +33,7 @@ class blib_http_abstract
 		$x = self::get_ex($url, array('is_raw' => $raw));
 
 		bors_function_include('debug/timing_stop');
-		debug_timing_stop('bors_lib_url: get_cached('.$url.')');
+		bors_debug::timing_stop('bors_lib_url: get_cached('.$url.')');
 
 		$content = $x['content'];
 

@@ -80,8 +80,8 @@ class bors_external_link extends base_object_db
 		debug_timing_start('http-get[classes/bors/external/link.php]: '.$url);
 		debug_timing_start('http-get-total');
 		$data = curl_exec($ch);
-		debug_timing_stop('http-get-total');
-		debug_timing_stop('http-get[classes/bors/external/link.php]: '.$url);
+		bors_debug::timing_stop('http-get-total');
+		bors_debug::timing_stop('http-get[classes/bors/external/link.php]: '.$url);
 
 //		print_r($data);
 

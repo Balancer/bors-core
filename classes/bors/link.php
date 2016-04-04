@@ -250,7 +250,7 @@ class bors_link extends bors_object_db
 		$links = bors_link::links($object, $params);
 
 //		print_dd($links);
-//		echo debug_trace();
+//		echo bors_debug::trace();
 
 		foreach($links as $link)
 			$objs[$link->target_class_id()][$link->target_object_id()] = true;
@@ -311,7 +311,7 @@ class bors_link extends bors_object_db
 	{
 		if(!$object)
 		{
-			debug_hidden_log('links-error', "Try links count for empty object");
+			bors_debug::syslog('links-error', "Try links count for empty object");
 			return 0;
 		}
 

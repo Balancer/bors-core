@@ -7,7 +7,7 @@ require_once(BORS_CORE.'/config.php');
 
 $table = 'bors_class_names';
 
-$dbh = new DataBase('BORS');
+$dbh = new driver_mysql('BORS');
 
 $dbh->query("SELECT * FROM $table");
 

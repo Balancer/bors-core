@@ -686,7 +686,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					$fields[$id_field] = $new_id;
 				}
 
-//				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
+//				bors_debug::syslog("inserts", "insert $table_name, ".print_r($fields, true));
 
 				$object->storage()->storage_create();
 
@@ -715,7 +715,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					if(!$new_id && ($idf = $object->id_field()) && preg_match('/^\w+$/', $idf))
 						$new_id = $object->get($idf);
 					if(!$new_id && !$object->ignore_on_new_instance() && preg_match('/^\w+$/', $idf))
-						debug_hidden_log('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
+						bors_debug::syslog('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
 				}
 			}
 		}

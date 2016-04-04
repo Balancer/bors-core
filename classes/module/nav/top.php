@@ -45,7 +45,7 @@ class module_nav_top extends bors_module
 
 			if($parent == 'http:///')
 			{
-				debug_hidden_log('internal-errors', "Incorrect parent url for '{$obj}': $parent");
+				bors_debug::syslog('internal-errors', "Incorrect parent url for '{$obj}': $parent");
 				continue;
 			}
 

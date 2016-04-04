@@ -123,7 +123,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 	if(!$data || !$data[0])
 	{
 		config_set('bors-image-lasterror', ec('Не могу определить размеры изображения'));
-		debug_hidden_log('image-error', "Can't get width for image {$file_in}\n(tr resize to {$file_out}($width, $height, $opts);\nWxH = ".@$data[0].'x'.@$data[1]);
+		bors_debug::syslog('image-error', "Can't get width for image {$file_in}\n(tr resize to {$file_out}($width, $height, $opts);\nWxH = ".@$data[0].'x'.@$data[1]);
 		return false;
 	}
 
@@ -135,7 +135,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 		config_set('bors-image-lasterror', ec('Слишком большой (').($data[0].'x'.$data[1].'='.sprintf('%.1f',$data[0]*$data[1]/1024/1024)).ec("Мпкс) файл.
 Предел для генерации превью ").config('images_resize_max_width')."x".config('images_resize_max_height').ec("
 или ").sprintf('%.1f',config('images_resize_max_area')/1024/1024).ec('Мпкс'));
-		debug_hidden_log('image-error', "Image {$file_in} too big to resize to 
+		bors_debug::syslog('image-error', "Image {$file_in} too big to resize to 
 {$file_out}
 geo = ($width, $height, $opts)
 Source WxH= ".$data[0].'x'.$data[1].'='.($data[0]*$data[1])."

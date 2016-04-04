@@ -38,7 +38,7 @@ class body_php extends base_null
 		$result = ob_get_contents();
 		ob_end_clean();
 
-		debug_timing_stop('body_php_body-'.$object->class_name());
+		bors_debug::timing_stop('body_php_body-'.$object->class_name());
 		return $result;
 	}
 }

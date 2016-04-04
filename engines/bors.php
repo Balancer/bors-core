@@ -50,7 +50,7 @@ function object_load($class_name, $object_id=NULL, $args=array())
 	{
 		debug_count_inc("bors_load($class_name)");
 //		if(preg_match('!matf.aviaport.ru/companies/\d+/edit!', $class))
-//			echo debug_trace();
+//			echo bors_debug::trace();
 	}
 
 	if($object = class_load($class_name, $object_id, $args))
@@ -198,7 +198,7 @@ function bors_exit_handler($message = '')
 
 	if(!empty($GLOBALS['bors_data']['classes_cache_content_updated']))
 	{
-		debug_hidden_log('test', "write cache", false);
+		bors_debug::syslog('test', "write cache", false);
 		file_put_contents_lock(config('cache_dir') . '/classes.php', $GLOBALS['bors_data']['classes_cache_content']);
 	}
 
@@ -281,7 +281,7 @@ function bors_exit_handler($message = '')
 		@mkdir($dir);
 		@chmod($dir, 0777);
 		if(file_exists($dir))
-			debug_hidden_log('mysql-trace/'.date('c').'-'.rand(0,999999), "URL={$_SERVER['REQUEST_URI']}\n".print_r(@$GLOBALS['debug_mysql_trace'], true));
+			bors_debug::syslog('mysql-trace/'.date('c').'-'.rand(0,999999), "URL={$_SERVER['REQUEST_URI']}\n".print_r(@$GLOBALS['debug_mysql_trace'], true));
 	}
 
 	if(!empty($GLOBALS['debugbar_renderer']))
@@ -377,7 +377,7 @@ function object_property($object, $property, $def = NULL)
 				return $object->get($property, $def);
 			else
 			{
-//				echo debug_trace();
+//				echo bors_debug::trace();
 //				echo "\$x = \$object->{$property};";
 				eval("\$x = \$object->{$property};");
                 /** @var mixed $x */

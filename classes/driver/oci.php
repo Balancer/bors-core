@@ -31,7 +31,7 @@ class driver_oci implements Iterator
 			configh('oci_access', $this->database, 'db'),
 			configh('oci_access', $this->database, 'oci_charset')
 		);
-		debug_timing_stop('oci_connect');
+		bors_debug::timing_stop('oci_connect');
 
 		if(!$this->connection)
 		{
@@ -56,7 +56,7 @@ class driver_oci implements Iterator
 	{
 		debug_timing_start('oci_query');
 		$this->statement = oci_parse($this->connection, $query);
-		debug_timing_stop('oci_query');
+		bors_debug::timing_stop('oci_query');
 
 		$this->execute();
 	}
@@ -74,14 +74,14 @@ class driver_oci implements Iterator
 //			print_d($error);
 			bors_throw('oci_execute error: '.print_r($error, true));
 		}
-		debug_timing_stop('oci_execute');
+		bors_debug::timing_stop('oci_execute');
 	}
 
 	function fetch()
 	{
 		debug_timing_start('oci_fetch');
 		$row = oci_fetch_assoc($this->statement);
-		debug_timing_stop('oci_fetch');
+		bors_debug::timing_stop('oci_fetch');
 
 		$ics = config('internal_charset');
 		$dcs = configh('oci_access', $this->database, 'charset');

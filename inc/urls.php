@@ -210,8 +210,8 @@ function curl_redir_exec($ch,$debug="")
 	debug_timing_start('http-get[inc/urls.php]: '.$url);
 	debug_timing_start('http-get-total');
     $data = curl_exec($ch);
-	debug_timing_stop('http-get-total');
-	debug_timing_stop('http-get[inc/urls.php]: '.$url);
+	bors_debug::timing_stop('http-get-total');
+	bors_debug::timing_stop('http-get[inc/urls.php]: '.$url);
 
     $debbbb = $data;
 

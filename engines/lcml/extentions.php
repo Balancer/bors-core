@@ -45,7 +45,7 @@
 
 		if(($mask_len = strlen($mask)) != ($txt_len = bors_strlen($txt)))
 		{
-			debug_hidden_log('lcml-error', "mask length ($mask_len) != text length ($txt_len) for text '$txt'");
+			bors_debug::syslog('lcml-error', "mask length ($mask_len) != text length ($txt_len) for text '$txt'");
 			return lcml_functions_do($functions, $txt);
 		}
 

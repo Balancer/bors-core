@@ -103,7 +103,7 @@ function save_cached_object($object, $delete = false, $use_memcache = true)
 			debug_count_inc('memcached stores');
 			if(!array_pop($memcache->getExtendedStats()))
 			{
-				debug_hidden_log('__memcache_errors', "Store error for $object");
+				bors_debug::syslog('__memcache_errors', "Store error for $object");
 				debug_count_inc('memcached store fails');
 			}
 			else
@@ -412,7 +412,7 @@ function class_load_by_vhosts_url($url)
 
 	if(!$data || empty($data['host']))
 	{
-		debug_hidden_log('class-loader-errors', ec("Error. Try to load class for incorrect URL format: ").$url);
+		bors_debug::syslog('class-loader-errors', ec("Error. Try to load class for incorrect URL format: ").$url);
 		return NULL;
 	}
 
@@ -561,7 +561,7 @@ function class_load_by_vhosts_url($url)
 function object_init($class_name, $object_id, $args = array())
 {
 //	echo "object_init($class_name, $object_id, ".print_r($args, true).")<br/>\n";
-//	if(config('is_developer')) debug_hidden_log('debug', "Try to load $class_name($object_id)");
+//	if(config('is_developer')) bors_debug::syslog('debug', "Try to load $class_name($object_id)");
 	// В этом методе нельзя использовать debug_test()!!!
 
 	$obj = NULL;

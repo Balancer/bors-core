@@ -165,7 +165,7 @@ class bors_debug
 
 		if(empty($current['start']))
 		{
-//			bors_debug::syslog('__debug_error', ec("Вызов неактивированной функции debug_timing_stop('$section')."));
+//			bors_debug::syslog('__debug_error', ec("Вызов неактивированной функции bors_debug::timing_stop('$section')."));
 			return;
 		}
 

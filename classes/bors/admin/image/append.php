@@ -41,7 +41,7 @@ class bors_admin_image_append extends bors_object
 					$err = ec("размер изображения {$idata[0]}x{$idata[1]} при лимите {$maxw}x{$maxh}");
 
 				add_session_message(ec('Ошибка загрузки изображения: ').$err, array('type' => 'error'));
-				debug_hidden_log('image-upload-error', "Image upload error: if(!".print_r($idata, true)." || !{$idata[0]} || {$idata[0]} > ".config('image_upload_max_width', 2048).	" || {$idata[1]} > ".config('image_upload_max_height', 2048).')');
+				bors_debug::syslog('image-upload-error', "Image upload error: if(!".print_r($idata, true)." || !{$idata[0]} || {$idata[0]} > ".config('image_upload_max_width', 2048).	" || {$idata[1]} > ".config('image_upload_max_height', 2048).')');
 				return;
 			}
 

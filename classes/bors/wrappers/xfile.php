@@ -13,7 +13,7 @@ class bors_wrappers_xfile
 
 		$path = preg_replace('!^xfile:////!', '', $path); // Убираем самодеятельность Smarty3.
 
-//		echo debug_trace();
+//		echo bors_debug::trace();
 //		exit("$path<Br/>\n");
 		$path = preg_replace('!^xfile://!', '', $path);
 

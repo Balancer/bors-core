@@ -279,7 +279,7 @@ function get_browser_info($user_agent, $log_unknown = true)
 	}
 
 	if(!$is_bot && (!$browser or !$os) && $log_unknown)
-		debug_hidden_log('user_agents', "Unknown user agent '{$user_agent}'");
+		bors_debug::syslog('user_agents', "Unknown user agent '{$user_agent}'");
 
 	if(!$browser_name)
 		$browser_name = $browser;
@@ -357,7 +357,7 @@ function bors_browser_images($ua, $ip = NULL)
 	if(empty($info))
 	{
 		$info[] = "<img src=\"/_bors/i/unknown-16.png\" class=\"i16\" alt=\"Unknown\"/>";
-		debug_hidden_log('append_data', "Unknown user agent $ua - $ip [browser=$browser; bver=$bver; os=$os; osver=$osver]");
+		bors_debug::syslog('append_data', "Unknown user agent $ua - $ip [browser=$browser; bver=$bver; os=$os; osver=$osver]");
 	}
 
 	return "<span title=\"$title\">".join('', $info)."</span>";

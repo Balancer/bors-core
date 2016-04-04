@@ -112,7 +112,7 @@ class bors_file extends base_object_db
 
 		if(!file_exists($tmp_file = $file_data['tmp_name']))
 		{
-			debug_hidden_log('file-error', 'Upload not existens file '.$tmp_file);
+			bors_debug::syslog('file-error', 'Upload not existens file '.$tmp_file);
 			bors_throw("Can't load file {$file_data['name']}: File not exists<br/>");
 		}
 

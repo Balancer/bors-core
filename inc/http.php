@@ -107,7 +107,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 	if($data === false)
 	{
 //		echo '<small><i>[1] Curl '.$url.' error: ' . curl_error($ch) . '</i></small><br/>';
-//		echo debug_trace();
+//		echo bors_debug::trace();
 //		if(config('is_developer')) { var_dump($data); exit(); }
 		return NULL;
 	}
@@ -138,8 +138,8 @@ function http_get_content($url, $raw = false, $max_length = false)
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
 	curl_close($ch);
-	debug_timing_stop('http-get-total');
-	debug_timing_stop('http-get: '.$url);
+	bors_debug::timing_stop('http-get-total');
+	bors_debug::timing_stop('http-get: '.$url);
 
 	if($raw)
 		return $data;
@@ -157,7 +157,7 @@ function http_get_content($url, $raw = false, $max_length = false)
         $charset = '';
 
 	if(preg_match('/JFIF/', $data))
-		debug_hidden_log('jpeg-not-raw', $url);
+		bors_debug::syslog('jpeg-not-raw', $url);
 
 	if(empty($charset))
 	{
@@ -228,7 +228,7 @@ function http_get_ex($url, $raw = true)
 	if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация
 		$timeout = 90;
 
-//	if(config('is_debug')) { echo "url='$url'\n\n"; echo debug_trace(); }
+//	if(config('is_debug')) { echo "url='$url'\n\n"; echo bors_debug::trace(); }
 
 	if(preg_match('!^(https?://)([^/]*[^\w\-][^/]*)/!', $url))
 		$url = blib_idna::encode_uri($url);
@@ -264,7 +264,7 @@ function http_get_ex($url, $raw = true)
 		$err_str = curl_error($ch);
 //		if(config('is_developer')) { var_dump($url, $pure_url, $raw, $data, $err_str); exit(); }
 //		echo '[2] Curl error: ' . $err_str;
-		debug_hidden_log('curl-error', "Curl error: ".$err_str);
+		bors_debug::syslog('curl-error', "Curl error: ".$err_str);
 		return '';
 	}
 

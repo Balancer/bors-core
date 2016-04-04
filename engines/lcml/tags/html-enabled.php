@@ -70,7 +70,7 @@ function lp_form($inner, $params)
 {
 	if(!preg_match('!^http://(aeterna\.ru)!', @$params['action']))
 	{
-		debug_hidden_log('lcml-need-attention', "Need check form action {$params['action']}");
+		bors_debug::syslog('lcml-need-attention', "Need check form action {$params['action']}");
 		return ec('Публикация форм неизвестных ресурсов запрещена. Администратору отправлена заявка на проверку этого ресурса.');
 	}
 

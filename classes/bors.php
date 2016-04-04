@@ -156,9 +156,9 @@ class bors
 			bors_function_include('debug/trace');
 			bors_function_include('debug/hidden_log');
 //			var_dump($e->getTrace());
-			$trace = debug_trace(0, false, -1, $e->getTrace());
+			$trace = bors_debug::trace(0, false, -1, $e->getTrace());
 			$message = $e->getMessage();
-			debug_hidden_log('exception', "$message\n\n$trace", true, array('dont_show_user' => true));
+			bors_debug::syslog('exception', "$message\n\n$trace", true, array('dont_show_user' => true));
 			try
 			{
 				bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")

@@ -23,7 +23,7 @@ class driver_pdo_sqlite extends driver_pdo
 		debug_timing_start('pdo_sqlite_connect');
 
 		$this->connection = new PDO(self::dsn($this->database));
-		debug_timing_stop('pdo_sqlite_connect');
+		bors_debug::timing_stop('pdo_sqlite_connect');
 	}
 
 	static function save_sql_function($type)

@@ -92,7 +92,7 @@ class bors_core_find
 
 		config_set('debug.trace_queries', NULL);
 
-		debug_timing_stop('bors_find::each()');
+		bors_debug::timing_stop('bors_find::each()');
 
 		if(config('debug_objects_create_counting_details'))
 		{

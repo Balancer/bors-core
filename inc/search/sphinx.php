@@ -126,7 +126,7 @@ function bors_search_sphinx($query, $params = array())
 				}
 			}
 			else
-				debug_hidden_log('search_warning', "Unknown object {$x['attrs']['class_id']}({$x['attrs']['object_id']}) in query {$query}($indexes)");
+				bors_debug::syslog('search_warning', "Unknown object {$x['attrs']['class_id']}({$x['attrs']['object_id']}) in query {$query}($indexes)");
 		}
 
 		if(defval($params, 'only_objects'))

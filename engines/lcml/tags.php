@@ -412,7 +412,7 @@ function next_open_brace($txt, $pos)
 		$params['notitle'] = true;
 //		$params['page'] = $GLOBALS['lcml'][''];
 //		if(config('is_developer')) var_dump(preg_split("![\s\n\t]+!",$in));
-//		if(config('is_developer')) echo debug_trace();
+//		if(config('is_developer')) echo bors_debug::trace();
 		foreach(preg_split("![\s\n\t]+!",$in) as $param)
 		{
 			if(preg_match("!^\d+x\d+$!",$param)) { $params['size']=$param; continue;}
@@ -555,7 +555,7 @@ function make_enabled_params($params, $names_list, $skip_list = '')
 					$att[] = "params['$key']='".str_replace('&amp;', '&', $value)."'\n";
 
 		if($att)
-			debug_hidden_log('lcml-need-attention', "Unknown parameters: ".join(' ', $att));
+			bors_debug::syslog('lcml-need-attention', "Unknown parameters: ".join(' ', $att));
 	}
 
 	return join(' ', $res);

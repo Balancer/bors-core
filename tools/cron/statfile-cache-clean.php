@@ -58,18 +58,18 @@ try
 //				echo "\t\tok\n";
 			}
 			else
-//				debug_hidden_log('static-cache', "Can't load recreateable object {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
+//				bors_debug::syslog('static-cache', "Can't load recreateable object {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
 			echo "Recreated";
 
 		}
 		else
 		{
-//			debug_hidden_log('static-clean-unlink3', "{$x->id()}", false);
+//			bors_debug::syslog('static-clean-unlink3', "{$x->id()}", false);
 			@unlink($x->id());
 
 			if(file_exists($x->id()))
 			{
-				debug_hidden_log('static-cache-error', "Can't delete file {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
+				bors_debug::syslog('static-cache-error', "Can't delete file {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
 				echo "Can't delete";
 			}
 			else
@@ -88,7 +88,7 @@ try
 }
 catch(Exception $e)
 {
-	debug_hidden_log('static-clean-exception', "Exception: ".bors_lib_exception::catch_trace($e));
+	bors_debug::syslog('static-clean-exception', "Exception: ".bors_lib_exception::catch_trace($e));
 }
 
 bors_thread_unlock('statfile-cache-clean');

@@ -213,11 +213,11 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		if(!$this->file_name())
 		{
 			//TODO: логи забиваются страшно. Непонятно…
-//			debug_hidden_log("image-data-error", "empty file_name() on recalculate image url='{$this->url()}', this={$this}, data=".print_r($this->data, true));
+//			bors_debug::syslog("image-data-error", "empty file_name() on recalculate image url='{$this->url()}', this={$this}, data=".print_r($this->data, true));
 			return;
 		}
 
-		debug_timing_start('image_recalculate');
+		bors_debug::timing_start('image_recalculate');
 		$start = microtime(true);
 
 		// Иначе, если попадается не картинка, случаются, порой, странные ошибки.
@@ -250,35 +250,35 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 			}
 			catch(Exception $e) { }
 		}
-		debug_timing_stop('image_recalculate');
+		bors_debug::timing_stop('image_recalculate');
 		if(($dura = (microtime(true) - $start)) > 0.5)
-			debug_hidden_log("recalculate", "time = $dura, url = {$this->url()}, this={$this->debug_title()}, data=".print_r($this->data, true));
+			bors_debug::syslog("recalculate", "time = $dura, url = {$this->url()}, this={$this->debug_title()}, data=".print_r($this->data, true));
 	}
 
 	function upload($data, $dir = NULL)
 	{
 		if(!file_exists($file = $data['tmp_name']))
 		{
-			debug_hidden_log('image-error', 'Upload not existens file '.$file);
+			bors_debug::syslog('image-error', 'Upload not existens file '.$file);
 			debug_exit("Can't load image {$data['name']}: Uploaded tmp file not exists<br/>");
 		}
 
 		bors_debug::syslog('000-image-debug', "Get image size [4] for ".$file);
 		if(!($x = @getimagesize($file)))
 		{
-			debug_hidden_log('image-error', 'Can not get image sizes for '.$file);
+			bors_debug::syslog('image-error', 'Can not get image sizes for '.$file);
 			debug_exit("Can't load image {$data['name']}: Incorrect image<br/>");
 		}
 
 		if(!$x[0] || !$x[1] || !preg_match('/^image/', $x['mime']))
 		{
-			debug_hidden_log('image-error', 'Got wrong image sizes for '.$file);
+			bors_debug::syslog('image-error', 'Got wrong image sizes for '.$file);
 			debug_exit("Can't load image {$data['name']}: Wrong file format<br/>");
 		}
 
 		if(!$this->id())
 		{
-//			debug_hidden_log('new-instance-errors', 'empty image id, try to create new by store');
+//			bors_debug::syslog('new-instance-errors', 'empty image id, try to create new by store');
 			$this->new_instance();
 		}
 
@@ -309,7 +309,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 				$ext = 'gif';
 				break;
 			default:
-				debug_hidden_log('image-upload-error', "Unknown mime: {$data['mime']}");
+				bors_debug::syslog('image-upload-error', "Unknown mime: {$data['mime']}");
 				return NULL;
 		}
 

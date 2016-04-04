@@ -15,7 +15,7 @@
 
 		if(!is_object($obj))
 		{
-			debug_hidden_log('__error_non_object', "Non object ".$obj);
+			bors_debug::syslog('__error_non_object', "Non object ".$obj);
 			return false;
 		}
 
@@ -175,7 +175,7 @@
 			if(empty($GLOBALS['main_uri']))
 				$GLOBALS['main_uri'] = preg_replace('!:\d+/!', '/', $obj->url());
 			else
-				debug_hidden_log('___222', "main uri already set to '{$GLOBALS['main_uri']}' while try set to '{$obj->url()}'");
+				bors_debug::syslog('___222', "main uri already set to '{$GLOBALS['main_uri']}' while try set to '{$obj->url()}'");
 
 			if(config('debug.execute_trace'))
 				debug_execute_trace("{$obj->debug_title_short()}->content()");

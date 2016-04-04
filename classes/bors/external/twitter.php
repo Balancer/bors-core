@@ -19,7 +19,7 @@ class bors_external_twitter extends bors_object
 
 		if(!is_object($user))
 		{
-			debug_hidden_log('__objects_error', 'Not object user '.$user);
+			bors_debug::syslog('__objects_error', 'Not object user '.$user);
 			return;
 		}
 
@@ -54,7 +54,7 @@ class bors_external_twitter extends bors_object
 			catch (Services_Twitter_Exception $e)
 			{
 //				echo $e->getMessage();
-				debug_hidden_log('twitter', 'Exception :'.$e);
+				bors_debug::syslog('twitter', 'Exception :'.$e);
 			}
 		}
 	}

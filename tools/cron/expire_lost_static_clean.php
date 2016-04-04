@@ -48,5 +48,5 @@ function do_clean($file)
 	@rmdir(dirname(dirname($file)));
 	@rmdir(dirname(dirname(dirname($file))));
 	if(file_exists($file))
-		debug_hidden_log('static-clean-error', "Can't remove {$file}", false);
+		bors_debug::syslog('static-clean-error', "Can't remove {$file}", false);
 }

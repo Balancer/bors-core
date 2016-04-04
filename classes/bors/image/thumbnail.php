@@ -114,7 +114,7 @@ class bors_image_thumbnail extends bors_image
 
 		$file_orig_r = $file_orig;
 		if(!($fsize_orig = @filesize($file_orig_r)))
-			debug_hidden_log('invalid-image', "Image '$file_orig_r' size zero");
+			bors_debug::syslog('invalid-image', "Image '$file_orig_r' size zero");
 
 		if(!$this->original->file_name() || !$fsize_orig)
 			return;
@@ -135,7 +135,7 @@ class bors_image_thumbnail extends bors_image
 		bors_debug::syslog('000-image-debug', "Get thumbnail size for ".$file_thumb_r);
 		$img_data = @getimagesize($file_thumb_r);
 		if(empty($img_data[0]))
-			debug_hidden_log('image-error', 'Cannot get image width');
+			bors_debug::syslog('image-error', 'Cannot get image width');
 
 		$this->set_width($img_data[0], $caching);
 		$this->set_height($img_data[1], $caching);

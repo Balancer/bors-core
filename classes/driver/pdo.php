@@ -134,6 +134,9 @@ class driver_pdo implements Iterator
 				$row[$k] = iconv($dcs, $ics, $v);
 		}
 
+		if($row && count(array_keys($row)) == 2)
+			$row = array_pop($row);
+
 		return $row;
 	}
 
@@ -151,17 +154,14 @@ class driver_pdo implements Iterator
 			throw new Exception("PDO error on query «{$query}»: ".print_r($err, true));
 
 		while($assoc = $res->fetch(PDO::FETCH_ASSOC))
-		{
-			if($ics == $dcs)
-				$result[] = $assoc;
-			else
-			{
-				$row = array();
-				foreach($assoc as $key => $value)
-					$row[$key] = iconv($dcs, $icsi, $value);
-				$result[] = $row;
-			}
+			$result[] = $assoc;
 
+		if(!empty($result[0]) && count(array_keys($result[0])) == 1)
+		{
+			$result_extracted = [];
+			foreach($result as $r)
+				$result_extracted[] = array_pop($r);
+			return $result_extracted;
 		}
 
 		return $result;

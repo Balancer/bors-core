@@ -224,7 +224,7 @@ class bors_forms_saver extends bors_object_simple
 
 				if(!method_exists($object, $method_name = "upload_{$f}_file") && !method_exists($object, $method_name = "upload_file"))
 				{
-					debug_hidden_log('errors.forms.files', $msg = "Undefined upload method '$method_name' for {$object}");
+					bors_debug::syslog('errors.forms.files', $msg = "Undefined upload method '$method_name' for {$object}");
 					bors_exit($msg);
 				}
 
@@ -248,7 +248,7 @@ class bors_forms_saver extends bors_object_simple
 			}
 			else
 			{
-				debug_hidden_log('errors.forms.files', $msg = "Unknown file var format: '$f' for {$object}");
+				bors_debug::syslog('errors.forms.files', $msg = "Unknown file var format: '$f' for {$object}");
 				bors_throw($msg);
 			}
 
@@ -291,7 +291,7 @@ class bors_forms_saver extends bors_object_simple
 			$file_data = @$files[$file_name];
 			if(!$file_data)
 			{
-				debug_hidden_log('errors_form', "Empty file data for {$f}");
+				bors_debug::syslog('errors_form', "Empty file data for {$f}");
 				bors_exit("Empty file data for {$f}");
 			}
 

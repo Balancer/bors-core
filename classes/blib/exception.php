@@ -19,7 +19,7 @@ class blib_exception
 	function html_short()
 	{
 		bors_function_include('debug/trace');
-		$trace = debug_trace(0, false, -1, $this->exception->getTrace());
+		$trace = bors_debug::trace(0, false, -1, $this->exception->getTrace());
 		$message = $this->exception->getMessage();
 		return "$message<!--\n$trace\n-->";
 	}
@@ -27,7 +27,7 @@ class blib_exception
 	function __toString()
 	{
 		bors_function_include('debug/trace');
-		$trace = debug_trace(0, false, -1, $this->exception->getTrace());
+		$trace = bors_debug::trace(0, false, -1, $this->exception->getTrace());
 		$message = $this->exception->getMessage();
 		return "$message:\n$trace";
 	}

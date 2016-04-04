@@ -58,7 +58,7 @@ function im_client_image($client_name)
 			return 'http://s.wrk.ru/i16/im/gtalk.gif';
 	}
 
-	debug_hidden_log('append_data', "Unknown IM type $name for $client_id (of $type)");
+	bors_debug::syslog('append_data', "Unknown IM type $name for $client_id (of $type)");
 	return NULL;
 }
 

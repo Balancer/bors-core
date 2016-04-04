@@ -32,8 +32,7 @@ class bors_object_simple extends bors_object_empty
 	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
 		static $get_lock = array();
-		$lock_name = get_class($this).'/'.serialize($this->id()).'.'.$name;
-
+		$lock_name = $this->internal_uri().'.'.$name;
 
 		// Начинается только с символов, т.к. дальше может быть xxxx()->yyy()
 		if(!preg_match('/^\w+[\(\)\->\|]*/', $name))
@@ -372,7 +371,7 @@ class bors_object_simple extends bors_object_empty
 		if(array_key_exists($attr, $this->attr))
 			return $this->attr[$attr];
 
-		debug_hidden_log('__need-to-rewrite-ugly-code', 'load-attr: '.$attr);
+		bors_debug::syslog('__need-to-rewrite-ugly-code', 'load-attr: '.$attr);
 		return $this->attr[$attr] = $init;
 	}
 
@@ -384,7 +383,7 @@ class bors_object_simple extends bors_object_empty
 		if($name == 'title' && $value == 'p1990_dealers_admin_files')
 		{
 			echo "Set $name to $value<br/>";
-			echo debug_trace();
+			echo bors_debug::trace();
 		}
 		return $this->$name = $value;
 	}

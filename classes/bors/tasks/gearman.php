@@ -11,6 +11,6 @@ class bors_tasks_gearman
 
 		$client->doBackground('bors.task', serialize(array('worker_class_name' => $worker_class_name, 'worker_data' => $object)));
 		bors_function_include('debug/hidden_log');
-		debug_hidden_log('__tasks', "Add $worker_class_name($object)", false);
+		bors_debug::syslog('__tasks', "Add $worker_class_name($object)", false);
 	}
 }

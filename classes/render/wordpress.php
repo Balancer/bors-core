@@ -8,7 +8,7 @@ class render_wordpress extends base_null
 
 		if(!$object->is_loaded() && !$object->can_be_empty())
 		{
-			debug_timing_stop('render_global_wordpress');
+			bors_debug::timing_stop('render_global_wordpress');
 			return false;
 		}
 
@@ -19,7 +19,7 @@ class render_wordpress extends base_null
 
 		if(!file_exists($tpl_file))
 		{
-			debug_timing_stop('render_global_wordpress');
+			bors_debug::timing_stop('render_global_wordpress');
 			return false;
 		}
 
@@ -37,7 +37,7 @@ class render_wordpress extends base_null
 		$result = ob_get_contents();
 		ob_end_clean();
 
-		debug_timing_stop('render_global_wordpress');
+		bors_debug::timing_stop('render_global_wordpress');
 		return $result;
 	}
 }

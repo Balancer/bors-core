@@ -18,7 +18,7 @@ function lsp_acdsee($inner_text)
 
 		if(!preg_match('/^(\S+) \s+ (\d)+ \s+ (\w+) \s+ (\w+) \s+ (\w+) \s+ (.+)$/x', $s, $m))
 		{
-			debug_hidden_log('lcml-error', "#acdsee: incorrect string '{$s}'");
+			bors_debug::syslog('lcml-error', "#acdsee: incorrect string '{$s}'");
 			continue;
 		}
 			
@@ -35,7 +35,7 @@ function lsp_acdsee($inner_text)
 		$data = airbase_image_data($file, $url);
 		if(!$data['local'] || !file_exists($data['local_path']))
 		{
-			debug_hidden_log('lcml-error', "#acdsee: file {$file} not exists in '{$s}'");
+			bors_debug::syslog('lcml-error', "#acdsee: file {$file} not exists in '{$s}'");
 			continue;
 		}
 

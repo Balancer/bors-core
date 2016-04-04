@@ -124,7 +124,7 @@ class bors_external_livejournal extends bors_object
 		$result = $client->send($msg);
 		if ($result->faultCode() != 0)
 		{
-			debug_hidden_log('error_blog', 'Ошибка добавления в ЖЖ: ' . $result->faultString());
+			bors_debug::syslog('error_blog', 'Ошибка добавления в ЖЖ: ' . $result->faultString());
 			return;
 		}
 

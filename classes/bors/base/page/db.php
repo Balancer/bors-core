@@ -77,7 +77,7 @@ class base_page_db extends bors_page
 	}
 
 	function _db_name_def() { return config('main_bors_db'); }
-	function _table_name_def() { return bors_plural($this->class_name()); }
+	function _table_name_def() { return \blib_grammar::plural($this->class_name()); }
 
 	function main_id_field()
 	{

@@ -3,6 +3,7 @@
 class driver_mysql extends driver_pdo implements Iterator
 {
 	var $charset = NULL;
+	static $connections = [];
 
 	function reconnect()
 	{
@@ -11,6 +12,10 @@ class driver_mysql extends driver_pdo implements Iterator
 		$db_name = $this->database;
 
 		$real_db  = config_mysql('db_real', $db_name);
+
+		if(!empty(self::$connections[$real_db]))
+			return $this->connection = self::$connections[$real_db];
+
 		$server   = config_mysql('server', $db_name);
 		$login    = config_mysql('login', $db_name);
 		$password = config_mysql('password', $db_name);
@@ -44,6 +49,8 @@ class driver_mysql extends driver_pdo implements Iterator
 			$this->charset = $c;
 			bors_debug::timing_stop('mysql_set_names');
 		}
+
+		self::$connections[$real_db] = $this->connection;
 	}
 
 	function connection() { return $this->connection; }
@@ -91,7 +98,7 @@ class driver_mysql extends driver_pdo implements Iterator
 	function select_array($table, $field, $where_map, $class = NULL)
 	{
 		if(!is_array($where_map))
-			echo debug_trace();
+			echo bors_debug::trace();
 
 		if(!empty($where_map['table']))
 		{
@@ -136,6 +143,11 @@ class driver_mysql extends driver_pdo implements Iterator
 	function insert_ignore($table, $fields)
 	{
 		$this->query("INSERT IGNORE $table ".$this->make_string_values($fields));
+	}
+
+	function replace($table, $fields)
+	{
+		$this->query("REPLACE $table ".$this->make_string_values($fields));
 	}
 
 	function update($table, $where, $fields)
@@ -191,5 +203,20 @@ class driver_mysql extends driver_pdo implements Iterator
 	{
 		$x = $this->get("SHOW TABLE STATUS LIKE '".addslashes($table)."'");
 		return $x['Rows'];
+	}
+
+	//TODO: Change 'where' to array-type
+	function store($table, $where, $fields, $append=false)
+	{
+		if(!$append)
+			$n = $this->get("SELECT COUNT(*) FROM `".addslashes($table)."` WHERE $where");
+
+		if(!$append && $n>0)
+			$res = $this->query("UPDATE `".addslashes($table)."` ".$this->make_string_set($fields)." WHERE $where");
+		else
+			$res = $this->query("REPLACE INTO `".addslashes($table)."` ".$this->make_string_values($fields));
+
+		if($res === false)
+			throw new Exception("Invalid query: " . mysql_error($this->dbh) ." ");
 	}
 }

@@ -138,7 +138,7 @@ class base_page_paged extends bors_page
 		catch(Exception $e)
 		{
 			$msg = bors_lib_exception::catch_trace($e);
-			debug_hidden_log('paginated_items_count_exception', $msg);
+			bors_debug::syslog('paginated_items_count_exception', $msg);
 
 			var_dump(get_class($this), $this->where(), $this->get('inner_join_filter'));
 			print_dd($msg);
@@ -159,7 +159,7 @@ class base_page_paged extends bors_page
 		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
 	}
 
-	function items_name() { return bors_plural($this->item_name()); }
+	function items_name() { return \blib_grammar::plural($this->item_name()); }
 
 	function body_data()
 	{
@@ -180,7 +180,7 @@ class base_page_paged extends bors_page
 	//TODO: надо думать.
 	function __xcall($method, $params)
 	{
-		if($method == bors_plural($this->item_name()))
+		if($method == \blib_grammar::plural($this->item_name()))
 			return $this->items();
 
 		return parent::__call($method, $params);

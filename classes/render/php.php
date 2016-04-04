@@ -10,7 +10,7 @@ class render_php extends base_null
 
 		if(!$object->is_loaded() && !$object->can_be_empty())
 		{
-			debug_timing_stop('render_global_php');
+			bors_debug::timing_stop('render_global_php');
 			return false;
 		}
 
@@ -33,7 +33,7 @@ class render_php extends base_null
 
 		if(!$tpl_file)
 		{
-			debug_timing_stop('render_global_php');
+			bors_debug::timing_stop('render_global_php');
 			return false;
 		}
 
@@ -47,7 +47,7 @@ class render_php extends base_null
 		$result = ob_get_contents();
 		ob_end_clean();
 
-		debug_timing_stop('render_global_php');
+		bors_debug::timing_stop('render_global_php');
 		return $result;
 	}
 }

@@ -127,7 +127,7 @@ class b2
 		if(config('debug_trace_object_load'))
 		{
 			bors_function_include('debug/hidden_log');
-			debug_hidden_log('objects_load', "$class_name($id)", config('debug_trace_object_load_trace'));
+			bors_debug::syslog('objects_load', "$class_name($id)", config('debug_trace_object_load_trace'));
 		}
 
 		if(!$class_name)

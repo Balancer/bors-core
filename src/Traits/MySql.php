@@ -141,7 +141,7 @@ trait MySql
 
 		$this->set_visits(intval($this->visits()) + intval($inc), true);
 //		echo "set visit";
-//		echo debug_trace();
+//		echo bors_debug::trace();
 		$this->set_last_visit_time($time, true);
 	}
 
@@ -827,7 +827,7 @@ trait MySql
 	{
 		$class_name = $this->class_name();
 		$class_name = preg_replace('/_(main|edit|view)$/', '', $class_name);
-		$module_class = bors_plural($class_name).'_modules_'.$module_name;
+		$module_class = \blib_grammar::plural($class_name).'_modules_'.$module_name;
 		set_def($attrs, 'model', $this);
 		$mod = bors_load_ex($module_class, $this, $attrs);
 		if(!$mod)

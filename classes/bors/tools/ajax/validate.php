@@ -4,7 +4,7 @@ class bors_tools_ajax_validate extends base_page
 {
 	function pre_show()
 	{
-//		debug_hidden_log('test', print_r($_POST, true));
+//		bors_debug::syslog('test', print_r($_POST, true));
 		/* RECEIVE VALUE */
 		$validateValue = $_POST['validateValue'];
 		$validateId = $_POST['validateId'];

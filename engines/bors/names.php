@@ -35,7 +35,7 @@ function class_name_to_id($object)
 
 	if(strlen($class_name) > 64)
 	{
-		debug_hidden_log('class-loader-errors', "Too long class name: '$class_name'");
+		bors_debug::syslog('class-loader-errors', "Too long class name: '$class_name'");
 		bors_exit("Too long class name: '$class_name'");
 	}
 
@@ -82,6 +82,6 @@ function class_id_to_name($class_id)
 	if($class_name = @$loaded[0][$class_id])
 		return $class_name;
 
-	debug_hidden_log('class-loader-errors', "Unknown class ID: '$class_id'");
+	bors_debug::syslog('class-loader-errors', "Unknown class ID: '$class_id'");
 	return NULL;
 }

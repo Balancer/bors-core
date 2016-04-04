@@ -82,5 +82,5 @@ class bors_body_data_paginated extends bors_object
 		return preg_replace('/^.+_(.+?)$/', '$1', $this->object()->paginated_class());
 	}
 
-	function items_name() { return bors_plural($this->item_name()); }
+	function items_name() { return \blib_grammar::plural($this->item_name()); }
 }

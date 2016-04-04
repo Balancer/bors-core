@@ -284,7 +284,7 @@ class bors_lcml extends bors_object
 		$text = lcml_tags($t0 = $text, $mask, $this);
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) tags execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
+			bors_debug::syslog('warning_lcml', "Too long ({$long}s) tags execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		if($this->p('only_tags'))
 		{
@@ -415,7 +415,7 @@ class bors_lcml extends bors_object
 		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type parsers execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
+			bors_debug::syslog('warning_lcml', "Too long ({$long}s) $type parsers execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		return $text;
 	}
@@ -564,17 +564,15 @@ class bors_lcml extends bors_object
 			$lcs = [];
 
 		if(empty($lcs[$class_name]))
-		{
 			$lc = $lcs[$class_name] = new $class_name($params);
-		}
 		else
-		{
 			$lc = $lcs[$class_name];
-			$lc->set_params($params);
-		}
 
 		$lc->set_p('prepare', popval($params, 'prepare'));
 		$save_tags = $lc->p('only_tags');
+
+		$lc->set_params($params);
+
 		if(!empty($params['only_tags']))
 			$lc->set_p('only_tags', $params['only_tags']);
 

@@ -37,11 +37,11 @@ function do_clean($file)
 	if($t+600 > $GLOBALS['now'])
 		return;
 
-//	debug_hidden_log('static-clean-unlink4', "{$m[1]}: {$file}", false);
+//	bors_debug::syslog('static-clean-unlink4', "{$m[1]}: {$file}", false);
 	@unlink($file);
 	@rmdir(dirname($file));
 	@rmdir(dirname(dirname($file)));
 	@rmdir(dirname(dirname(dirname($file))));
 	if(file_exists($file))
-		debug_hidden_log('static-clean', "Can't remove {$file}", false);
+		bors_debug::syslog('static-clean', "Can't remove {$file}", false);
 }

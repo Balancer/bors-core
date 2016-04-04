@@ -20,7 +20,7 @@ function bors_message($text, $params=array())
 	}
 
 	$redir = defval($params, 'go', defval($params, 'redirect', false));
-	$title = defval($params, 'title', ec('Ошибка!'));
+	$title = defval($params, 'title', ec('Ошибка! [2]'));
 	$nav_name = defval($params, 'nav_name', $title);
 	$timeout = defval($params, 'timeout', -1);
 	$hidden_log = defval($params, 'hidden_log');
@@ -52,7 +52,7 @@ function bors_message($text, $params=array())
 		$link_url = defval($params, 'link_url', $redir);
 	}
 
-	$is_error = preg_match('/ошибк/i', bors_lower($title));
+	$is_error = preg_match('/шибк/i', bors_lower($title));
 
 	if($redir === true)
 	{
@@ -73,7 +73,7 @@ function bors_message($text, $params=array())
 		$data['this'] = object_load('bors_page', NULL);
 
 	bors_function_include('debug/trace');
-	$data['debug_trace'] = debug_trace(0, false);
+	$data['debug_trace'] = bors_debug::trace(0, false);
 
 	$body_template = "xfile:messages.html";
 	if(!empty($params['choises']))
@@ -106,7 +106,6 @@ function bors_message($text, $params=array())
 	}
 
 	$body = bors_templates_smarty::fetch($body_template, $data);
-
 	// Если возникла какая-то ошибка рендеринга, выводим исходный текст.
 	if(!$body)
 		$body = $text;
@@ -172,7 +171,7 @@ function bors_message($text, $params=array())
 
 		try
 		{
-			$message = bors_templates_smarty::fetch($template, $data);
+			$message = NULL; // bors_templates_smarty::fetch($template, $data);
 		}
 		catch(Exception $e)
 		{
@@ -194,7 +193,7 @@ function bors_message($text, $params=array())
 		echo $message;
 
 	if($hidden_log)
-		debug_hidden_log($hidden_log, "message: $text");
+		bors_debug::syslog($hidden_log, "message: $text");
 
 	if($redir && $timeout >= 0)
 		return go($redir, false, $timeout);
@@ -216,7 +215,7 @@ function bors_message_tpl($message_template, $obj, $params)
 	require_once('engines/smarty/assign.php');
 
 	$redir = defval($params, 'redirect', false);
-	$title = defval($params, 'title', ec('Ошибка!'));
+	$title = defval($params, 'title', ec('Ошибка! [3]'));
 	$timeout = defval($params, 'timeout', -1);
 	$page_template = defval($params, 'template', config('default_template'));
 

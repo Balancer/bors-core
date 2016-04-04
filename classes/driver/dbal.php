@@ -54,7 +54,7 @@ class driver_dbal
 			$sm->createDatabase($connectionParams['dbname']);
 		}
 
-		debug_timing_stop('dbal_connect');
+		bors_debug::timing_stop('dbal_connect');
 	}
 
 	function connection() { return $this->connection; }
@@ -69,7 +69,7 @@ class driver_dbal
 //		$this->prepare($query);
 //		$this->execute();
 		$this->connection->executeQuery($query);
-		debug_timing_stop('dbal_query');
+		bors_debug::timing_stop('dbal_query');
 	}
 
 	function fetch()
@@ -87,7 +87,7 @@ class driver_dbal
 				$row[$k] = iconv($dcs, $ics, $v);
 		}
 
-		debug_timing_stop('dbal_fetch');
+		bors_debug::timing_stop('dbal_fetch');
 		return $row;
 	}
 

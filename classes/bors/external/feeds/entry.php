@@ -229,7 +229,7 @@ class bors_external_feeds_entry extends base_object_db
 				$pub_date = $this->create_time();
 
 			if(!$pub_date)
-				debug_hidden_log('error_rss_translation', "No pubdate for ".$this->debug_title());
+				bors_debug::syslog('error_rss_translation', "No pubdate for ".$this->debug_title());
 
 			$post->set_create_time($pub_date, true);
 			$post->topic()->recalculate();
@@ -244,7 +244,7 @@ class bors_external_feeds_entry extends base_object_db
 			else
 			{
 				echo " *** Error: Can't load blog {$post->id()}\n";
-				debug_hidden_log('feeds_translate', " *** Error: Can't load blog {$post->id()}");
+				bors_debug::syslog('feeds_translate', " *** Error: Can't load blog {$post->id()}");
 			}
 //			$blog->store();
 

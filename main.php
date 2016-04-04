@@ -154,7 +154,7 @@ if(config('access_log')
 }
 
 //if($is_bot || $is_crawler)
-//	debug_hidden_log('system_overload_test', "$is_bot/$is_crawler, lavg=$load_avg, total=$session_user_load_summary, bot_overload=$bot_overload");
+//	bors_debug::syslog('system_overload_test', "$is_bot/$is_crawler, lavg=$load_avg, total=$session_user_load_summary, bot_overload=$bot_overload");
 
 // Если кодировка вывода в браузер не та же, что внутренняя - то перекодируем
 // все входные данные во внутреннюю кодировку
@@ -255,7 +255,7 @@ if(config('access_log'))
 	{
 		bors_var::fast_set($access_log_mem_name, array($session_user_load_summary + $operation_time, time()), 600);
 //		if(config('is_debug'))
-//			debug_hidden_log('00-system_overload_set', $session_user_load_summary + $operation_time, 0);
+//			bors_debug::syslog('00-system_overload_set', $session_user_load_summary + $operation_time, 0);
 	}
 }
 

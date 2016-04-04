@@ -24,7 +24,7 @@ class bors_pages_helper
 
 			if($parent == 'http:///')
 			{
-				debug_hidden_log('internal-errors', "Incorrect parent url for '{$obj}': $parent");
+				bors_debug::syslog('internal-errors', "Incorrect parent url for '{$obj}': $parent");
 				continue;
 			}
 

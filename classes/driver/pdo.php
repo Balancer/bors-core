@@ -54,17 +54,31 @@ class driver_pdo implements Iterator
 
 	function connection() { return $this->connection; }
 
-	function query($query)
+	function query($query, $ignore_error = false)
 	{
 		bors_debug::timing_start('pdo_query');
-		$result = $this->connection->query($query);
+		try
+		{
+			$result = $this->connection->query($query);
+		}
+		catch(Exception $e)
+		{
+			if($ignore_error)
+				return $this->result = NULL;
+
+			throw new Exception("PDO query exception for [".$query."]:".$e->getException());
+		}
+
 		bors_debug::timing_stop('pdo_query');
 
 		$err = $this->connection->errorInfo();
-		if($err[0] != "00000")
-			return bors_throw("PDO error on query «{$query}»: ".print_r($err, true));
+		if($err[0] == "00000")
+			return $this->result = $result;
 
-		return $this->result = $result;
+		if($ignore_error)
+				return $this->result = NULL;
+
+		throw new Exception("PDO error on query [{$query}]: ".print_r($err, true));
 	}
 
 	function exec($query)

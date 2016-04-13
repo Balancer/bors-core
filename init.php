@@ -41,9 +41,6 @@ if(!defined('BORS_EXT'))
 if(!defined('BORS_LOCAL'))
 	define('BORS_LOCAL', BORS_ROOT.'bors-local');
 
-if(!defined('BORS_HOST'))
-	define('BORS_HOST', COMPOSER_ROOT);
-
 if(!defined('BORS_SITE'))
 	define('BORS_SITE', dirname(@$_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'bors-site');
 
@@ -269,64 +266,6 @@ if(file_exists(BORS_HOST.'/config-post.php'))
 	системы автокеширования функций
 	=================================================
 */
-
-function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
-{
-	$host = preg_replace('/^www\./', '', $host);
-
-	global $bors_data;
-
-	if(empty($documents_root))
-		$documents_root = '/var/www/'.$host.'/htdocs';
-
-	if(empty($bors_host))
-	{
-		$bors_host = dirname($documents_root).'/bors-host';
-		$bors_site = dirname($documents_root).'/bors-site';
-	}
-	else
-		$bors_site = $bors_host;
-
-	$map = array();
-
-	if(file_exists($file = BORS_HOST.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		require_once($file);
-	elseif(file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		require_once($file);
-	elseif(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		require_once($file);
-
-	$map2 = $map;
-
-	if(file_exists($file = $bors_site.'/handlers/bors_map.php'))
-		require_once($file);
-
-	if(file_exists($file = $bors_site.'/bors_map.php'))
-		require_once($file);
-
-	if(file_exists($file = $bors_site.'/url_map.php'))
-		require_once($file);
-
-	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
-		require_once($file);
-
-	if(empty($bors_data['vhosts'][$host]['bors_map']))
-		$prev = array();
-	else
-		$prev = $bors_data['vhosts'][$host]['bors_map'];
-
-	$bors_map = array_merge($prev, $map2, $map);
-
-	if(!empty($bors_data['vhosts'][$host]['bors_map']))
-		$bors_map = array_merge($bors_data['vhosts'][$host]['bors_map'], $bors_map);
-
-	$bors_data['vhosts'][$host] = array(
-		'bors_map' => $bors_map,
-		'bors_local' => $bors_host,
-		'bors_site' => $bors_site,
-		'document_root' => $documents_root,
-	);
-}
 
 function register_project($project_name, $project_path)
 {

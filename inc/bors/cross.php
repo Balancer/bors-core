@@ -24,12 +24,12 @@ function bors_get_cross_ids($object, $to_class = '', $dbh = NULL)
 	$result = array();
 	$dbh->query("SELECT to_class, to_id FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} ORDER BY `sort_order`, to_id");
 
-	while($row = $dbh->fetch_row())
+	while($row = $dbh->fetch())
 		$result[] = $to_class ? $row['to_id'] : array($row['to_class'], $row['to_id']);
 
 	$dbh->query("SELECT from_class, from_id FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} ORDER BY `sort_order`, from_id");
 
-	while($row = $dbh->fetch_row())
+	while($row = $dbh->fetch())
 		$result[] = $to_class ? $row['from_id'] : array($row['from_class'], $row['from_id']);
 
 	return $result;

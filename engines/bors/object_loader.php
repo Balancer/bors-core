@@ -280,9 +280,6 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 				}
 			}
 
-//			if(!$found)
-//				bors_throw(ec('Для ссылки ').$url.(' отсутствует файл блока расширений карты привязок "').$map_file_new.'"');
-
 			if(empty($GLOBALS['bors_url_submap_map']))
 				return NULL;
 
@@ -379,7 +376,7 @@ function class_load_by_local_url($url, $args)
 	$is_query = !empty($url_data['query']);
 	$host_helper = "!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)";
 
-//	if(config('is_developer')) r($GLOBALS['bors_map']);
+//	var_dump($GLOBALS['bors_map']);
 
 	foreach($GLOBALS['bors_map'] as $pair)
 	{

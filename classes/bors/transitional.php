@@ -42,6 +42,10 @@ if(!function_exists('bors_url_map'))
 	function bors_url_map($map_array)
 	{
 		global $bors_map;
+
+		if(empty($bors_map))
+			$bors_map = [];
+
 		$bors_map = array_merge($bors_map, $map_array);
 	}
 }

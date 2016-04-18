@@ -149,7 +149,8 @@ class Project extends Obj
 		if(file_exists($cfg = COMPOSER_ROOT.'/config-host.php'))
 			require_once($cfg);
 
-		$this->router()->init();
+		if($this->router())
+			$this->router()->init();
 
 		$this->inited = true;
 		return $this;

@@ -95,7 +95,6 @@ class bors_forms_saver extends bors_object_simple
 
 //		echo "Data ="; print_dd($data); echo "<b style='color:red'>Cahnged fields =</b>"; var_dump($object->changed_fields); echo "has changed = "; var_dump($object->has_changed()); exit();
 
-		$was_new = false;
 
 		// Создаём новый объект, если это требуется
 		if(!$object->id() && !$use_form)
@@ -104,6 +103,8 @@ class bors_forms_saver extends bors_object_simple
 			$object->on_new_instance($data);
 			$was_new = true;
 		}
+		else
+			$was_new = false;
 
 		if($file_vars)
 			self::load_files($object, $data, $files, $file_vars);
@@ -138,6 +139,11 @@ class bors_forms_saver extends bors_object_simple
 			$hash = 'bors_v'.config('memcached_tag').'_'.$this->class_name().'://'.$this->id();
 			$memcache_instance->set($hash, serialize($this), 0, 0);
 		}
+
+		if($was_new)
+			$object->b2_post_new($data);
+		else
+			$object->b2_post_update($data);
 
 		$go = defval($data, 'go', $go);
 

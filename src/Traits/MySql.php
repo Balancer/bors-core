@@ -269,6 +269,19 @@ trait MySql
 			$this->__update_relations();
 	}
 
+	// Calling already with new ID.
+	function b2_post_new(&$data)
+	{
+		if(method_exists($this, '__update_relations'))
+			$this->__update_relations();
+	}
+
+	function b2_post_update(&$data)
+	{
+		if(method_exists($this, '__update_relations'))
+			$this->__update_relations();
+	}
+
 	function static_get_cache() { return false; }
 
 	function change_time($exactly = false)

@@ -1558,6 +1558,16 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$this->__update_relations();
 	}
 
+	function b2_post_new(&$data)
+	{
+		$this->__update_relations();
+	}
+
+	function b2_post_update(&$data)
+	{
+		$this->__update_relations();
+	}
+
 	function static_get_cache() { return false; }
 
 	function change_time($exactly = false)

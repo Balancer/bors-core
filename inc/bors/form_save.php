@@ -337,7 +337,10 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 	{
 		$object->new_instance($data);
 		$object->on_new_instance($data);
+		$was_new = true;
 	}
+	else
+		$was_new = false;
 
 	if(method_exists($object, 'post_save'))
 		$object->post_save($data);
@@ -368,6 +371,11 @@ function bors_form_save_object($class_name, $id, &$data, $first, $last)
 
 //	echo session_message(array('type' => 'success'));
 //	exit( '?');
+
+	if($was_new)
+		$object->b2_post_new($data);
+	else
+		$object->b2_post_update($data);
 
 	return $object;
 }

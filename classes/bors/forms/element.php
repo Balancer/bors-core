@@ -97,8 +97,13 @@ class bors_forms_element
 	{
 		$label = $this->label();
 
+		$comment = defval($this->params, 'comment');
+
+		if($comment)
+			$comment = "<br/><small>$comment</small>";
+
 		if($label && $this->use_tab())
-			return "<tr><th>{$label}</th><td>";
+			return "<tr><th>{$label}{$comment}</th><td>";
 
 		return '';
 	}

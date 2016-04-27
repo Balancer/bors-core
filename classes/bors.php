@@ -18,6 +18,9 @@ class bors
 		if(!defined('BORS_CORE'))
 			define('BORS_CORE', dirname(__DIR__));
 
+		if(!defined('COMPOSER_ROOT'))
+			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(__DIR__)))));
+
 		// Грузим вначале, т.к. там прописаны рабочие каталоги и т.п.
 		if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
 			require_once $f;

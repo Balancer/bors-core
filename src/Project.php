@@ -224,6 +224,7 @@ class Project extends Obj
 		{
 //			$view = $base_class::load(NULL);
 			$view = new $base_class(NULL); // Now simple direct load.
+			$view->set_attr('parents', [dirname($path).'/']);
 			$view->b2_configure();
 			if($view->get('route') == 'auto')
 				return $view;
@@ -231,7 +232,7 @@ class Project extends Obj
 
 		$namespace .= "\\";
 
-		$prefixes = $GLOBALS['B2_COMPOSER']->getPrefixesPsr4();
+		$prefixes = empty($GLOBALS['B2_COMPOSER']) ? NULL : $GLOBALS['B2_COMPOSER']->getPrefixesPsr4();
 		if(!empty($prefixes[$namespace]))
 		{
 			foreach($prefixes[$namespace] as $class_path)
@@ -243,6 +244,7 @@ class Project extends Obj
 					if(preg_match('!^.+/(\w+\.md.tpl)$!', $file))
 					{
 						$view = new \bors_page_fs_markdown($file);
+						$view->set_attr('parents', [dirname($path).'/']);
 						$view->b2_configure();
 						$view->storage()->load($view);
 					}
@@ -253,6 +255,7 @@ class Project extends Obj
 					if(preg_match('!^.+/(\w+\.md.tpl)$!', $file))
 					{
 						$view = new \bors_page_fs_markdown($file);
+						$view->set_attr('parents', [dirname($path).'/']);
 						$view->b2_configure();
 						$view->storage()->load($view);
 					}
@@ -313,10 +316,15 @@ class Project extends Obj
 
 		if($view)
 		{
+			$ret = $view->pre_show();
+			if($ret)
+				return $ret;
+
 			$response = $view->response();
 //			r($response, $view);
 			if($response)
 			{
+				// composer: slim/slim>3
 				$app = new \Slim\App;
 				$app->respond($response);
 				return;

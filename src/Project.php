@@ -216,19 +216,51 @@ class Project extends Obj
 		$namespace = $reflection->getNamespaceName();
 		$base_class =  $namespace . $camel_path;
 
-//		r($namespace);
-
-		$view = NULL;
+//		r($namespace, $base_class);
 
 		if(class_exists($base_class))
 		{
 //			$view = $base_class::load(NULL);
 			$view = new $base_class(NULL); // Now simple direct load.
-			$view->set_attr('parents', [dirname($path).'/']);
-			$view->b2_configure();
 			if($view->get('route') == 'auto')
+			{
+				$view->set_attr('parents', [dirname($path).'/']);
+				$view->b2_configure();
+				bors()->set_main_object($view);
 				return $view;
+			}
 		}
+
+		if(class_exists($cn = $base_class.'\\Main'))
+		{
+			$view = new $cn(NULL); // Now simple direct load.
+			if($view->get('route') == 'auto')
+			{
+				$view->set_attr('parents', [dirname($path).'/']);
+				$view->b2_configure();
+				bors()->set_main_object($view);
+				return $view;
+			}
+		}
+
+		if(preg_match('/\\\\(\d+)$/', $base_class, $m))
+		{
+			$object_id = $m[1];
+			$check_class_name = preg_replace('/\\\\(\d+)$/', '\\Edit', $base_class);
+			if(class_exists($check_class_name))
+			{
+				$view = bors_load($check_class_name, $object_id);
+				if($view->get('route') == 'auto')
+				{
+					$view->set_attr('parents', [dirname($path).'/']);
+					$view->b2_configure();
+					bors()->set_main_object($view);
+					return $view;
+				}
+			}
+		}
+
+		$view = NULL;
 
 		$namespace .= "\\";
 

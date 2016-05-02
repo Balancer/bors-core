@@ -39,7 +39,7 @@ class bors_storage_csv extends bors_storage
 		if(!is_object($class_name_or_foo_object))
 		{
 			$obj = new $class_name(NULL);
-			$obj->_configure();
+			$obj->b2_configure();
 		}
 		else
 		{
@@ -60,7 +60,7 @@ class bors_storage_csv extends bors_storage
 			$result[] = $obj;
 
 			$obj = new $class_name(NULL);
-			$obj->_configure();
+			$obj->b2_configure();
 		}
 
 		return $result;

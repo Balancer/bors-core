@@ -114,7 +114,7 @@ function bors_message($text, $params=array())
 
 	$page_class_name = defval($params, 'page_class_name', 'bors_page');
 	$page = new $page_class_name(NULL);
-	$page->_configure();
+	$page->b2_configure();
 	try { $page->template_data_fill(); }
 	catch(Exception $e) { }
 	$page->set_fields($data, false);

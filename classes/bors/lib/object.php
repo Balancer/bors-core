@@ -69,7 +69,7 @@ class bors_lib_object
 				return $default;
 		}
 
-		$foo->_configure();
+		$foo->b2_configure();
 		return $foo->get($name, $default);
 	}
 

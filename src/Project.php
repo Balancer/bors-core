@@ -7,11 +7,12 @@ class Project extends Obj
 	static $routers = [];
 	var $inited = false;
 	var $router = NULL;
+	var $apps = [];
 
 	/**
 	 * @return bors_project
      */
-	static function instance()
+	static function instance($host = '', $path = '/')
 	{
 		static $instance = NULL;
 		if(!$instance)
@@ -19,6 +20,10 @@ class Project extends Obj
 			$caller = get_called_class();
 			$instance = new $caller(NULL);
 			$instance->router = new \B2\Router($instance);
+			$instance->set_base_proto($host ? 'http://' : '');
+			$instance->set_base_host($host);
+			$instance->set_base_path($path);
+			$instance->set_base_url(($host ? 'http://' : '') . $host . $path);
 		}
 
 		return $instance;
@@ -38,7 +43,7 @@ class Project extends Obj
 
 	function _url_def()
 	{
-		return '/';
+		return $this->base_url();
 	}
 
 	// Файлы проектов грузятся раньше конфигурации объектов и потому сами не конфигурируются.
@@ -49,7 +54,7 @@ class Project extends Obj
 		return \bors_core_object_defaults::project_name($this);
 	}
 
-	function _configure()
+	function b2_configure()
 	{
 	}
 
@@ -202,21 +207,17 @@ class Project extends Obj
 
 	function route_view($request)
 	{
-		// (string)->getUri() -> full uri with scheme://host/path/...
-		// ->getUri()->getPath() = string
+		// (string)$request->getUri() -> full uri with scheme://host/path/...
+		// $request->getUri()->getPath() = string
 		$path = $request->getUri()->getPath();
 
 		$camel_path = join("\\", array_map('ucfirst', explode('/', rtrim($path, '/'))));
 
 		$camel_path = join('', array_map('ucfirst', explode('-', $camel_path)));
 
-//		r($camel_path);
-
 		$reflection = new \ReflectionClass($this);
 		$namespace = $reflection->getNamespaceName();
 		$base_class =  $namespace . $camel_path;
-
-//		r($namespace, $base_class);
 
 		if(class_exists($base_class))
 		{
@@ -304,6 +305,12 @@ class Project extends Obj
 //		$x->set_attr('headers', []);//['Content-Type' => 'text/plain']);
 		$x->set_attr('content', '<html><head><title>Test</title></head><body>Hello world</body></html>');
 		return $x;
+	}
+
+	function register_app($app_class, $base_url)
+	{
+		$this->apps[] = $app_class::instance($base_url);
+		return $this;
 	}
 
 	/**

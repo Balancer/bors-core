@@ -307,7 +307,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$object->data = $data;
 
 		if($must_be_configured)
-			$object->_configure();
+			$object->b2_configure();
 
 		if(!empty($post_functions))
 			self::post_functions_do($object, $post_functions);
@@ -407,7 +407,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			}
 
 			if($must_be_configured)
-				$object->_configure();
+				$object->b2_configure();
 
 			$object->set_is_loaded(true);
 

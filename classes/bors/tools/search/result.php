@@ -62,19 +62,6 @@ class bors_tools_search_result extends bors_tools_search
 //	function parents() { return $this->q() ? array('/tools/search.bas?q=') : array('/tools/'); }
 	function can_cached() { return false; }
 
-/*
-	function _configure()
-	{
-//		var_dump($this->args('request'), $_GET, $_SERVER['REQUEST_URI'], $this->arg('_load_url'));
-		if($r = $this->args('request'))
-		{
-			parse_str($r, $_GET);
-			var_dump($_GET);
-		}
-
-		return parent::_configure();
-	}
-*/
 	private $_data = false;
 	function pre_show()
 	{

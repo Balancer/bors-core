@@ -177,17 +177,13 @@ class bors_object extends bors_object_simple
 	function reconfigure()
 	{
 		$this->___was_configured = false;
-		return $this->_configure();
+		return $this->b2_configure();
 	}
 
+	//FIXME: legacy
 	function _configure() { return $this->b2_configure(); }
 
 	function b2_configure()
-	{
-		return $this->configure();
-	}
-
-	function configure()
 	{
 		if($this->___was_configured)
 			return true;

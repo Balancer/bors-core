@@ -163,6 +163,7 @@ function class_load($class, $id = NULL, $args=array())
 			// Фиксим некорректные ссылки с форумов, например, оканчивающиеся на «.html,»
 			$class = preg_replace('/[\.,\)\]!\?…"\']+$/', '', $class);
 
+			// Remove #anchor from url.
 			if(preg_match('!^(.+)#(.+)$!', $class, $m))
 				$class = $m[1];
 
@@ -640,7 +641,7 @@ function object_init($class_name, $object_id, $args = array())
 		$obj->set_called_url($called_url);
 	}
 
-	if(($new_obj = $obj->_configure()) && is_object($new_obj))
+	if(($new_obj = $obj->b2_configure()) && is_object($new_obj))
 		$obj = $new_obj;
 
 	$loaded = $obj->is_loaded();

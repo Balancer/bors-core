@@ -12,6 +12,10 @@ class bors
 	static $composer_template_dirs = [];
 	static $composer_smarty_plugin_dirs = [];
 	static $composer_autoroute_prefixes = [];
+	static $package_apps = [];
+	static $package_path = [];
+	static $package_names = [];
+	static $package_app_path = [];
 
 	static function init()
 	{
@@ -111,6 +115,7 @@ class bors
 			@unlink($_SERVER['DOCUMENT_ROOT'].'/cache-static'.$uri_info['path']);
 		}
 
+/*
 		foreach(\B2\Project::$routers as $domain => $routers)
 		{
 			foreach($routers as $router)
@@ -120,6 +125,7 @@ class bors
 					break;
 			}
 		}
+*/
 
 		if(!$object)
 			$object = bors_load_uri($uri);

@@ -4,7 +4,7 @@ namespace B2;
 
 class Project extends Obj
 {
-	static $routers = [];
+	var $routers = [];
 	var $inited = false;
 	var $router = NULL;
 	var $apps = [];
@@ -30,6 +30,17 @@ class Project extends Obj
 	}
 
 	function router() { return $this->router; }
+
+	function router_instance()
+	{
+		if(empty($this->routers[$router_class]))
+		{
+			$router = new $router_class($this);
+			$this->routers[$router_class] = $router;
+		}
+
+		return $this->routers[$router_class];
+	}
 
 	function _title_def()
 	{
@@ -195,14 +206,6 @@ class Project extends Obj
 			return  $GLOBALS['cms']['config'][$key];
 
 		return $default;
-	}
-
-	function regRouter($router_class, $base_url = '', $domain = '')
-	{
-		$router = call_user_func(array($router_class, 'factory'));
-		$router->routes_init($base_url, $domain);
-		self::$routers[$domain][] = $router;
-		return $this;
 	}
 
 	function route_view($request)

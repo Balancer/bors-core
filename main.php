@@ -53,7 +53,7 @@ if(
 
 // Скажем, кто мы такие. Какой версии.
 if(config('bors.version_show'))
-	header('X-Bors-version: ' .config('bors.version_show'));
+	@header('X-Bors-version: ' .config('bors.version_show'));
 
 // А такого не должно быть. Если лоадер вызывается непосредственно, нужно
 // разбираться, что это за фигня. Соответственно - в лог.
@@ -167,7 +167,7 @@ require_once('engines/bors/vhosts_loader.php');
 $uri = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 
 if(config('bors.version_show'))
-	header("X-request-url: $uri");
+	@header("X-request-url: $uri");
 
 if($_SERVER['QUERY_STRING'] == 'del')
 {

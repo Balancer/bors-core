@@ -19,11 +19,15 @@ class UrlMap
 		if($instance)
 			return $instance;
 
-		$instance = call_user_func(get_called_class());
-
-		$instance->app = $app;
+		$class_name = get_called_class();
+		$instance = new $class_name($app);
 
 		return $instance;
+	}
+
+	function init()
+	{
+		$this->map_load();
 	}
 
 	function map_load()
@@ -31,11 +35,10 @@ class UrlMap
 		global $bors_data;
 
 		$app_class = $this->app->class_name();
-		r($app_class);
-		$path = @bors::$package_app_path[$app_class];
+		$path = @\bors::$package_app_path[$app_class];
 		if($path && file_exists($path.'/url_map.php'))
 		{
-			$GLOBALS['b2']['side']['app'] = $this->app;
+			$GLOBALS['b2']['side']['router'] = $this;
 			$map = [];
 			require_once $path.'/url_map.php';
 			if(!empty($map))
@@ -46,5 +49,30 @@ class UrlMap
 	function map_register($route_map)
 	{
 		$this->route_map = array_merge($this->route_map, $route_map);
+	}
+
+	function dispatch($request)
+	{
+		// $request in PSR-7
+		// (string)$request->getUri() -> full uri with scheme://host/path/...
+		// $request->getUri()->getPath() = string
+
+		$path = $request->getUri()->getPath();
+		foreach($this->route_map as $s)
+		{
+			if(!preg_match('/^(\S+)\s+=>\s+(.+)$/', $s, $m))
+				throw new Exception(_("Incorred route format for UrlMap: ".$s));
+
+			$pattern    = str_replace('!', '\!', $m[1]);
+			$class_name = $m[2];
+
+			if(!preg_match('!^'.$pattern.'$!', $path, $m))
+				continue;
+
+			if(preg_match('/^\w+$/', $class_name))
+				return \bors::load($class_name, NULL);
+
+			throw new Exception(_("Unknown route class name format for UrlMap: ".$class_name));
+		}
 	}
 }

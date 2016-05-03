@@ -31,12 +31,13 @@ class App extends Obj
 
 	function router() { return $this->router; }
 
-	function router_instance()
+	function router_instance($router_class)
 	{
 		if(empty($this->routers[$router_class]))
 		{
-			$router = new $router_class($this);
+			$router = call_user_func([$router_class, 'instance'], $this);
 			$this->routers[$router_class] = $router;
+			$router->init();
 		}
 
 		return $this->routers[$router_class];
@@ -213,6 +214,14 @@ class App extends Obj
 		// (string)$request->getUri() -> full uri with scheme://host/path/...
 		// $request->getUri()->getPath() = string
 		$path = $request->getUri()->getPath();
+
+		$router_classes = @\bors::$app_routers[$this->class_name()];
+		foreach($router_classes as $rc)
+		{
+			$router = $this->router_instance($rc);
+			if($view = $router->dispatch($request))
+				return $view;
+		}
 
 		$camel_path = join("\\", array_map('ucfirst', explode('/', rtrim($path, '/'))));
 

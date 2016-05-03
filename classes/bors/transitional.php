@@ -41,9 +41,9 @@ if(!function_exists('bors_url_map'))
 {
 	function bors_url_map($map_array)
 	{
-		if($app = @$GLOBALS['b2']['side']['app'])
+		if($router = @$GLOBALS['b2']['side']['router'])
 		{
-			$app->router('\\B2\\Router\\UrlMap')->map_register($map_array);
+			$router->map_register($map_array);
 			return;
 		}
 

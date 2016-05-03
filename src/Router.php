@@ -5,16 +5,16 @@ namespace B2;
 class Router extends Obj
 {
 	private $dispatcher;
-	private $project;
+	private $app;
 
-	function __construct($project)
+	function __construct($app)
 	{
-		$this->project = $project;
+		$this->app = $app;
 	}
 
 	function init()
 	{
-		$namespace = preg_replace('/\\\\\w+$/', '', get_class($this->project));
+		$namespace = preg_replace('/\\\\\w+$/', '', get_class($this->app));
 		$routes = $namespace . '\\Routes';
 		if(class_exists($routes))
 		{
@@ -30,7 +30,7 @@ class Router extends Obj
 
 	function base_url()
 	{
-		return $GLOBALS['b2.route.base'][get_class($this->project)];
+		return $GLOBALS['b2.route.base'][get_class($this->app)];
 	}
 
 	function routes_init($base_url, $domain = NULL)

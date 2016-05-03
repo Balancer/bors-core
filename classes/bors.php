@@ -146,7 +146,7 @@ class bors
 			}
 
 			if(config('bors.version_show'))
-				header('X-bors-object: '.$object->internal_uri());
+				@header('X-bors-object: '.$object->internal_uri());
 
 			// Новый метод вывода, полностью на самом объекте
 			if(method_exists($object, 'show'))

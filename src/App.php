@@ -15,6 +15,7 @@ class App extends Obj
 	static function instance($host = '', $path = '/')
 	{
 		static $instance = NULL;
+
 		if(!$instance)
 		{
 			$caller = get_called_class();
@@ -25,6 +26,9 @@ class App extends Obj
 			$instance->set_base_path($path);
 			$instance->set_base_url(($host ? 'http://' : '') . $host . $path);
 		}
+
+		if(empty($GLOBALS['B2']['main_app']))
+			$GLOBALS['B2']['main_app'] = $instance;
 
 		return $instance;
 	}
@@ -386,5 +390,16 @@ class App extends Obj
 
 		// Если ничего не нашли, то запускаем старый движок.
 		return \bors::run();
+	}
+
+	function bors_init()
+	{
+		\bors::init();
+		return $this;
+	}
+
+	function package_path()
+	{
+		return \bors::$package_app_path[get_class($this)];
 	}
 }

@@ -119,7 +119,17 @@ if(!function_exists('_'))
 
 spl_autoload_register('class_include');
 
-foreach(array(COMPOSER_ROOT, BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $dir)
+$dirs = [BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE];
+
+foreach(bors::$package_app_path as $path)
+	$dirs[] = $path;
+
+if(!empty($GLOBALS['B2']['main_app']))
+	$dirs[] = $GLOBALS['B2']['main_app']->package_path();
+
+$dirs[] = COMPOSER_ROOT;
+
+foreach(array_reverse(array_unique(array_reverse($dirs))) as $dir)
 {
 	if(file_exists($dir.'/config.ini'))
 		bors_config_ini($dir.'/config.ini');

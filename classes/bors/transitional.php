@@ -11,6 +11,7 @@ class bors_transitional
 			define('BORS_CORE', COMPOSER_ROOT.'/vendor/balancer/bors-core');
 
 		require_once __DIR__.'/../../inc/functions/locale/ec.php';
+		require_once __DIR__.'/../../engines/bors.php';
 	}
 
 	static function function_include($req_name)
@@ -53,5 +54,71 @@ if(!function_exists('bors_url_map'))
 			$bors_map = [];
 
 		$bors_map = array_merge($bors_map, $map_array);
+	}
+}
+
+function bors_use($uses)
+{
+	static $uses_active = array();
+	foreach(explode(',', $uses) as $u)
+	{
+		$u = trim($u);
+
+		if(in_array($u, $uses_active))
+			continue;
+
+		$uses_active[] = $u;
+
+		if(preg_match('/\.css$/', $u))
+		{
+			if(preg_match('/^pre:(.+)$/', $u, $m))
+				template_css($m[1], true);
+			else
+				template_css($u);
+
+			continue;
+		}
+
+		if(preg_match('/\.js$/', $u))
+		{
+			// template_js_include()
+			require_once('engines/smarty/global.php');
+			if(preg_match('/^pre:(.+)$/', $u, $m))
+				template_js_include($m[1], true);
+			else
+				template_js_include($u);
+
+			continue;
+		}
+
+		if(preg_match('/^\w+$/', $u))
+		{
+			if(function_exists($f = "bors_use_{$u}"))
+			{
+				call_user_func($f);
+				continue;
+			}
+
+//			На будущее.
+//			if(file_exists($file = BORS_CORE.DIRECTORY_SEPARATOR.'uses'.DIRECTORY_SEPARATOR.$u.'.php'))
+//			{
+//				require_once($file);
+//				continue;
+//			}
+
+			if(preg_match('/^(\w+?)_(\w+)$/', $u, $m))
+			{
+				bors_function_include("{$m[1]}/{$m[2]}");
+				continue;
+			}
+		}
+
+		if(preg_match('!^(\w+/\w+)$!', $u))
+		{
+			bors_function_include($u);
+			continue;
+		}
+
+		bors_throw("Unknown bors_use('$u')");
 	}
 }

@@ -275,54 +275,7 @@ if($time > config('timing_limit'))
 	@chmod($file, 0666);
 }
 
-// Если показываем отладочную инфу, то описываем её в конец выводимой страницы комментарием.
-if(config('debug.timing') && is_string($res))
-{
-	$deb = "<!--\n=== debug-info ===\n"
-		."BORS_CORE = ".BORS_CORE."\n"
-		."log_dir = ".config('debug_hidden_log_dir')."\n"
-		."created = ".date('r')."\n";
-
-	if($object = bors()->main_object())
-	{
-		foreach(explode(' ', 'class_name class_file template body_template') as $var)
-			if($val = @$object->get($var))
-				$deb .= "$var = $val\n";
-
-		if($cs = $object->cache_static())
-			$deb .= "cache static expire = ". date('r', time()+$cs)."\n";
-	}
-
-	if(config('is_developer'))
-	{
-		$deb .= "\n=== config ===\n"
-			. "cache_database = ".config('cache_database')."\n";
-	}
-
-	bors_function_include('debug/vars_info');
-	bors_function_include('debug/count');
-	bors_function_include('debug/count_info_all');
-	bors_function_include('debug/timing_info_all');
-
-	if($deb_vars = debug_vars_info())
-	{
-		$deb .= "\n=== debug vars: ===\n";
-		$deb .= $deb_vars;
-	}
-
-	$deb .= "\n=== debug counting: ===\n";
-	$deb .= debug_count_info_all();
-
-	$deb .= "\n=== debug timing: ===\n";
-	$deb .= debug_timing_info_all();
-	$deb .= "Total time: $time sec.\n";
-	$deb .= "-->\n";
-
-	if(config('is_developer'))
-		bors_debug::syslog('debug/timing', $deb, false);
-
-	$res = str_ireplace('</body>', $deb.'</body>', $res);
-}
+bors_debug::append_info($res);
 
 if(!empty($GLOBALS['bors_profiling']['mysql-queries']) && count($GLOBALS['bors_profiling']['mysql-queries']) > 30)
 	bors_debug::syslog('profiling-mysql', "Too many queries: ".print_r($GLOBALS['bors_profiling']['mysql-queries'], true));

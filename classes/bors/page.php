@@ -79,6 +79,8 @@ class bors_page extends base_page
 
 		$content = $this->content();
 
+		\bors_debug::append_info($content, $this);
+
 		if(!$content)
 			return NULL;
 

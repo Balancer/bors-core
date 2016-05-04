@@ -333,4 +333,64 @@ class bors_debug
 
 		return $report;
 	}
+
+	// Если показываем отладочную инфу, то описываем её в конец выводимой страницы комментарием.
+	static function append_info(&$res, $app=NULL)
+	{
+		if(!config('debug.timing') || !is_string($res) || !preg_match('!</body>!i', $res))
+			return;
+
+		$deb = "<!--\n=== debug-info ===\n"
+			."BORS_CORE = ".BORS_CORE."\n"
+			."log dir = ".config('debug_hidden_log_dir')."\n"
+			."log created = ".date('r')."\n";
+
+		if($app)
+			$object = $app;
+		else
+			$object = bors()->main_object();
+
+		if($object)
+		{
+			foreach(explode(' ', 'class_name class_file template body_template') as $var)
+				if($val = @$object->get($var))
+					$deb .= "$var = $val\n";
+
+			if($cs = $object->cache_static())
+				$deb .= "cache static expire = ". date('r', time()+$cs)."\n";
+		}
+
+		if(config('is_developer'))
+		{
+			$deb .= "\n=== config ===\n"
+				. "cache_database = ".config('cache_database')."\n";
+		}
+
+		bors_function_include('debug/vars_info');
+		bors_function_include('debug/count');
+		bors_function_include('debug/count_info_all');
+		bors_function_include('debug/timing_info_all');
+
+		if($deb_vars = debug_vars_info())
+		{
+			$deb .= "\n=== debug vars: ===\n";
+			$deb .= $deb_vars;
+		}
+
+		$deb .= "\n=== debug counting: ===\n";
+		$deb .= debug_count_info_all();
+
+		// Общее время работы
+		$time = microtime(true) - $GLOBALS['stat']['start_microtime'];
+
+		$deb .= "\n=== debug timing: ===\n";
+		$deb .= debug_timing_info_all();
+		$deb .= "Total time: $time sec.\n";
+		$deb .= "-->\n";
+
+		if(config('is_developer'))
+			bors_debug::syslog('debug/timing', $deb, false);
+
+		$res = str_ireplace('</body>', $deb.'</body>', $res);
+	}
 }

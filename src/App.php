@@ -111,6 +111,7 @@ class App extends Obj
 		$this->setCfg('mode.debug', true);
 
 		// config_set('debug_redirect_trace', true);
+		config_set('debug.timing', true);
 
 		return $this;
 	}
@@ -368,6 +369,7 @@ class App extends Obj
 		if($view)
 		{
 			$ret = $view->pre_show();
+
 			if($ret)
 				return $ret;
 

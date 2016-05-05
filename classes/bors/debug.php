@@ -39,7 +39,7 @@ class bors_debug
 
 		if($trace !== false)
 		{
-			require_once('inc/locales.php');
+			require_once(BORS_CORE.'/inc/locales.php');
 
 			if($trace === true)
 				$trace_out = bors_debug::trace(0, false);

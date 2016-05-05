@@ -75,7 +75,8 @@ class UrlMap
 			if(preg_match('/^\w+\((\d+)\)$/', $class_name, $m))
 				return \bors::load($class_name, $url_match[$m[1]]);
 
-			throw new \Exception(_("Unknown route class name format for UrlMap").": [{$s}]");
+			\bors_debug::syslog('warning-url-map', _("Unknown route class name format for UrlMap").": [{$s}]");
+//			throw new \Exception(_("Unknown route class name format for UrlMap").": [{$s}]");
 		}
 	}
 }

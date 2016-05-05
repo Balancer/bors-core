@@ -66,13 +66,16 @@ class UrlMap
 			$pattern    = str_replace('!', '\!', $m[1]);
 			$class_name = $m[2];
 
-			if(!preg_match('!^'.$pattern.'$!', $path, $m))
+			if(!preg_match('!^'.$pattern.'$!', $path, $url_match))
 				continue;
 
 			if(preg_match('/^\w+$/', $class_name))
 				return \bors::load($class_name, NULL);
 
-			throw new Exception(_("Unknown route class name format for UrlMap: ".$class_name));
+			if(preg_match('/^\w+\((\d+)\)$/', $class_name, $m))
+				return \bors::load($class_name, $url_match[$m[1]]);
+
+			throw new \Exception(_("Unknown route class name format for UrlMap").": [{$s}]");
 		}
 	}
 }

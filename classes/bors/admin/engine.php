@@ -180,7 +180,7 @@ class bors_admin_engine extends bors_object
 		}
 		catch(Exception $e) { }
 
-		return $res.$del;
+		return $res;
 	}
 
 	function imaged_titled_link_ex($params=[])

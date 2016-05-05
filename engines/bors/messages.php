@@ -20,7 +20,7 @@ function bors_message($text, $params=array())
 	}
 
 	$redir = defval($params, 'go', defval($params, 'redirect', false));
-	$title = defval($params, 'title', ec('Ошибка! [2]'));
+	$title = defval($params, 'title', ec('Ошибка'));
 	$nav_name = defval($params, 'nav_name', $title);
 	$timeout = defval($params, 'timeout', -1);
 	$hidden_log = defval($params, 'hidden_log');
@@ -114,7 +114,7 @@ function bors_message($text, $params=array())
 
 	$page_class_name = defval($params, 'page_class_name', 'bors_page');
 	$page = new $page_class_name(NULL);
-	$page->_configure();
+	$page->b2_configure();
 	try { $page->template_data_fill(); }
 	catch(Exception $e) { }
 	$page->set_fields($data, false);
@@ -132,6 +132,8 @@ function bors_message($text, $params=array())
 
 	$page->set_fields($data, false);
 
+	$page->set_attr('theme_class', defval($params, 'theme_class'));
+
 	if($is_error)
 		$data['skip_nav'] = true;
 
@@ -144,13 +146,20 @@ function bors_message($text, $params=array())
 	if($data['success_message'] || $data['notice_message'] || $data['error_message'])
 		config_set('skip_cache_static', true);
 
+	$theme_class = defval($params, 'theme_class');
 	$template = defval($params, 'template');
 
-	if(!$template && class_exists('bors_themes_bootstrap3'))
+	if(($theme_class && class_exists($theme_class)) || (!$template && class_exists($theme_class = 'bors_themes_bootstrap3')))
 	{
 		$page->set_parents(array('/'));
-		$page->set_body('<hr/><div style="font-size: 24px">'.$page->body().'</div><hr/>');
-		$renderer = bors_load('bors_themes_bootstrap3', $page);
+
+		if($is_error)
+			$class = "alert alert-danger";
+		else
+			$class = "alert alert-warning";
+
+		$page->set_body('<div class="'.$class.'" style="font-size: 24px">'.$page->body().'</div><hr/>');
+		$renderer = bors_load($theme_class, $page);
 //		if($layout_class = $renderer->get('layout_class'))
 //			$page->set_attr('layout_class', $layout_class);
 

@@ -177,17 +177,13 @@ class bors_object extends bors_object_simple
 	function reconfigure()
 	{
 		$this->___was_configured = false;
-		return $this->_configure();
+		return $this->b2_configure();
 	}
 
+	//FIXME: legacy
 	function _configure() { return $this->b2_configure(); }
 
 	function b2_configure()
-	{
-		return $this->configure();
-	}
-
-	function configure()
 	{
 		if($this->___was_configured)
 			return true;
@@ -567,6 +563,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			return $this->data['modify_time'];
 
 		return NULL;
+	}
+
+	function b2_message($text, $params = [])
+	{
+		$params['theme_class'] = $this->theme_class();
+		return bors_message($text, $params);
 	}
 
 	function set_modify_time($unix_time, $db_update = true) { return $this->set('modify_time', $unix_time, $db_update); }
@@ -1554,6 +1556,16 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function post_save(&$data) { }
 
 	function on_new_instance(&$data)
+	{
+		$this->__update_relations();
+	}
+
+	function b2_post_new(&$data)
+	{
+		$this->__update_relations();
+	}
+
+	function b2_post_update(&$data)
 	{
 		$this->__update_relations();
 	}

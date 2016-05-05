@@ -23,16 +23,18 @@
 
 	"require": {
 		"php": ">=5.5",
+		"anahkiasen/html-object": "*",
 		"balancer/blib-morfology-ru": "dev-master",
+		"easybook/geshi": "*",
 		"intervention/image": "*",
+		"nikic/fast-route": "*",
+		"michelf/php-markdown": "*",
 		"monolog/monolog": "*",
 		"rediska/rediska": "*",
+		"slim/slim": ">3",
 		"smarty/smarty": "*",
-		"easybook/geshi": "*",
-		"anahkiasen/html-object": "*",
-		"michelf/php-markdown": "*",
-		"nikic/fast-route": "*",
-		"symfony/http-kernel": "*"
+		"symfony/http-kernel": "*",
+		"zendframework/zend-diactoros": "*"
 	},
 
 	"suggest": {

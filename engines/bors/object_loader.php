@@ -163,6 +163,7 @@ function class_load($class, $id = NULL, $args=array())
 			// Фиксим некорректные ссылки с форумов, например, оканчивающиеся на «.html,»
 			$class = preg_replace('/[\.,\)\]!\?…"\']+$/', '', $class);
 
+			// Remove #anchor from url.
 			if(preg_match('!^(.+)#(.+)$!', $class, $m))
 				$class = $m[1];
 
@@ -280,9 +281,6 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 				}
 			}
 
-//			if(!$found)
-//				bors_throw(ec('Для ссылки ').$url.(' отсутствует файл блока расширений карты привязок "').$map_file_new.'"');
-
 			if(empty($GLOBALS['bors_url_submap_map']))
 				return NULL;
 
@@ -379,7 +377,7 @@ function class_load_by_local_url($url, $args)
 	$is_query = !empty($url_data['query']);
 	$host_helper = "!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)";
 
-//	if(config('is_developer')) r($GLOBALS['bors_map']);
+//	var_dump($GLOBALS['bors_map']);
 
 	foreach($GLOBALS['bors_map'] as $pair)
 	{
@@ -643,7 +641,7 @@ function object_init($class_name, $object_id, $args = array())
 		$obj->set_called_url($called_url);
 	}
 
-	if(($new_obj = $obj->_configure()) && is_object($new_obj))
+	if(($new_obj = $obj->b2_configure()) && is_object($new_obj))
 		$obj = $new_obj;
 
 	$loaded = $obj->is_loaded();

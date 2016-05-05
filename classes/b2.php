@@ -87,7 +87,7 @@ class b2
 			}
 		}
 
-		$object->_configure();
+		$object->b2_configure();
 
 		$is_loaded = $object->is_loaded();
 

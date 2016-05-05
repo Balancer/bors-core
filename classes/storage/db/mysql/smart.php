@@ -287,7 +287,7 @@ class storage_db_mysql_smart extends base_null
 //					$object->set($name, "$value", false, true);
 
 					if($must_be_configured)
-						$object->_configure();
+						$object->b2_configure();
 
 					$was_loaded = true;
 				}

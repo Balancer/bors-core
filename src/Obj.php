@@ -8,7 +8,7 @@ class Obj extends \bors_object
 	{
 		$called_class_name = get_called_class();
 		$object = new $called_class_name($id);
-		$object->_configure();
+		$object->b2_configure();
 		return $object;
 	}
 }

@@ -1,11 +1,14 @@
 {$this->layout()->mod('pagination')}
 
-<table class="btab w100p">
+<table class="btab w100p table table-bordered table-striped table-hover table-heading table-datatable">
+<thead>
 <tr>
 	<th>ID</th>
 	<th>объект</th>
 	<th>дата модификации</th>
 </tr>
+</thead>
+<tbody>
 {foreach from=$items item="x"}
 <tr>
 	<td>{$x->id()}</td>
@@ -13,6 +16,7 @@
 	<td>{$x->modify_time()|date:'d.m.Y H:i'}</td>
 </tr>
 {/foreach}
+</tbody>
 </table>
 
 {$this->layout()->mod('pagination')}

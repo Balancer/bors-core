@@ -140,8 +140,9 @@ class base_page_paged extends bors_page
 			$msg = bors_lib_exception::catch_trace($e);
 			bors_debug::syslog('paginated_items_count_exception', $msg);
 
-			var_dump(get_class($this), $this->where(), $this->get('inner_join_filter'));
-			print_dd($msg);
+			throw new Exception($e->getMessage()."; class=".get_class($this)
+				."; where=".print_r($this->where(), true)
+				."inner_join_filter=".print_r($this->get('inner_join_filter'), true));
 
 			$count = 0;
 		}

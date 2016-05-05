@@ -78,7 +78,7 @@ function &object_new($class_name, $id = NULL)
 		$obj->set_id($id);
 	}
 
-	$obj->_configure();
+	$obj->b2_configure();
 
 	return $obj;
 }
@@ -121,7 +121,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	$object->set_attr('__replace_on_new_instance', $replace);
 
 	$object->new_instance();
-	$object->_configure();
+	$object->b2_configure();
 	$object->set_is_loaded(true);
 	return $object;
 }
@@ -540,7 +540,7 @@ function bors_foo($class_name)
 		bors_throw("Unknown class $class_name in bors_foo");
 
 	$object = new $class_name(NULL);
-	if(method_exists($object, '_configure'))
-		$object->_configure();
+	if(method_exists($object, 'b2_configure'))
+		$object->b2_configure();
 	return set_global_key('___foos', $class_name, $object);
 }

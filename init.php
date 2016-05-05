@@ -116,7 +116,17 @@ if(!function_exists('_'))
 
 spl_autoload_register('class_include');
 
-foreach(array(COMPOSER_ROOT, BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $dir)
+$dirs = [BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE];
+
+foreach(bors::$package_app_path as $path)
+	$dirs[] = $path;
+
+if(!empty($GLOBALS['B2']['main_app']))
+	$dirs[] = $GLOBALS['B2']['main_app']->package_path();
+
+$dirs[] = COMPOSER_ROOT;
+
+foreach(array_reverse(array_unique(array_reverse($dirs))) as $dir)
 {
 	if(file_exists($dir.'/config.ini'))
 		bors_config_ini($dir.'/config.ini');
@@ -227,11 +237,6 @@ function bors_init()
 	require_once(BORS_CORE.'/engines/bors/object_show.php');
 
 	require_once('classes/Cache.php');
-
-	// Порядок загрузки, до инициализации или после, ещё не определён.
-	// Пока грузим после инициализации, но это не принципиально.
-	if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
-		require_once $f;
 
 	if(config('debug.execute_trace'))
 		debug_execute_trace('bors_init() done.');
@@ -419,72 +424,6 @@ function bors_config_ini($file)
 		else
 			foreach($data as $key => $value)
 				$GLOBALS['cms']['config'][$section_name.'.'.$key] = $value;
-	}
-}
-
-function bors_use($uses)
-{
-	static $uses_active = array();
-	foreach(explode(',', $uses) as $u)
-	{
-		$u = trim($u);
-
-		if(in_array($u, $uses_active))
-			continue;
-
-		$uses_active[] = $u;
-
-		if(preg_match('/\.css$/', $u))
-		{
-			if(preg_match('/^pre:(.+)$/', $u, $m))
-				template_css($m[1], true);
-			else
-				template_css($u);
-
-			continue;
-		}
-
-		if(preg_match('/\.js$/', $u))
-		{
-			// template_js_include()
-			require_once('engines/smarty/global.php');
-			if(preg_match('/^pre:(.+)$/', $u, $m))
-				template_js_include($m[1], true);
-			else
-				template_js_include($u);
-
-			continue;
-		}
-
-		if(preg_match('/^\w+$/', $u))
-		{
-			if(function_exists($f = "bors_use_{$u}"))
-			{
-				call_user_func($f);
-				continue;
-			}
-
-//			На будущее.
-//			if(file_exists($file = BORS_CORE.DIRECTORY_SEPARATOR.'uses'.DIRECTORY_SEPARATOR.$u.'.php'))
-//			{
-//				require_once($file);
-//				continue;
-//			}
-
-			if(preg_match('/^(\w+?)_(\w+)$/', $u, $m))
-			{
-				bors_function_include("{$m[1]}/{$m[2]}");
-				continue;
-			}
-		}
-
-		if(preg_match('!^(\w+/\w+)$!', $u))
-		{
-			bors_function_include($u);
-			continue;
-		}
-
-		bors_throw("Unknown bors_use('$u')");
 	}
 }
 

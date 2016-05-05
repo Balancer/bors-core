@@ -11,11 +11,27 @@ class bors
 	static $composer_route_maps = [];
 	static $composer_template_dirs = [];
 	static $composer_smarty_plugin_dirs = [];
+	static $composer_autoroute_prefixes = [];
+	static $package_apps = [];
+	static $package_path = [];
+	static $package_names = [];
+	static $package_app_path = [];
+	static $app_routers = [];
 
 	static function init()
 	{
 		if(!defined('BORS_CORE'))
 			define('BORS_CORE', dirname(__DIR__));
+
+		if(!defined('COMPOSER_ROOT'))
+			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(__DIR__)))));
+
+		// Грузим вначале, т.к. там прописаны рабочие каталоги и т.п.
+		if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
+			require_once $f;
+
+		foreach(bors::$composer_route_maps as $map)
+			require_once($map);
 
 		require_once(__DIR__.'/../init.php');
 	}
@@ -45,6 +61,13 @@ class bors
 
 		if(!config('cache_dir'))
 			config_set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', bors::cache_namespace()));
+
+		// Грузим вначале, т.к. там прописаны рабочие каталоги и т.п.
+		if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
+			require_once $f;
+
+		foreach(bors::$composer_route_maps as $map)
+			require_once($map);
 	}
 
 	static function load($class_name, $object_id)
@@ -96,6 +119,7 @@ class bors
 			@unlink($_SERVER['DOCUMENT_ROOT'].'/cache-static'.$uri_info['path']);
 		}
 
+/*
 		foreach(\B2\Project::$routers as $domain => $routers)
 		{
 			foreach($routers as $router)
@@ -105,6 +129,7 @@ class bors
 					break;
 			}
 		}
+*/
 
 		if(!$object)
 			$object = bors_load_uri($uri);
@@ -124,7 +149,7 @@ class bors
 			}
 
 			if(config('bors.version_show'))
-				header('X-bors-object: '.$object->internal_uri());
+				@header('X-bors-object: '.$object->internal_uri());
 
 			// Новый метод вывода, полностью на самом объекте
 			if(method_exists($object, 'show'))

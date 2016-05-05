@@ -138,16 +138,6 @@ class driver_pdo implements Iterator
 			// Can't use bors_throw() because need silently catch in callers.
 			throw new Exception("PDO error on query «{$query}»: ".print_r($err, true));
 
-		$ics = config('internal_charset');
-		$dcs = configh('pdo_access', $this->database, 'charset');
-
-		if($row && $ics != $dcs)
-		{
-			$ics .= '//IGNORE';
-			foreach($row as $k => $v)
-				$row[$k] = iconv($dcs, $ics, $v);
-		}
-
 		if($row && count(array_keys($row)) == 2)
 			$row = array_pop($row);
 

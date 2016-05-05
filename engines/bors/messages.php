@@ -20,7 +20,7 @@ function bors_message($text, $params=array())
 	}
 
 	$redir = defval($params, 'go', defval($params, 'redirect', false));
-	$title = defval($params, 'title', ec('Ошибка! [2]'));
+	$title = defval($params, 'title', ec('Ошибка'));
 	$nav_name = defval($params, 'nav_name', $title);
 	$timeout = defval($params, 'timeout', -1);
 	$hidden_log = defval($params, 'hidden_log');

@@ -100,10 +100,21 @@
 			else
 				$msg = _("Извините, гость, у Вас нет доступа к этому ресурсу");
 
-			if($access_object->get('login_redirect') && !bors()->user())
-				return go('/_bors/login?ref='.$obj->url());
+			if(($url = $access_object->get('login_redirect')) && !bors()->user())
+			{
+				if($url === true)
+					$url = '/_bors/login/';
 
-			return empty($GLOBALS['cms']['error_show']) ? bors_message($msg . "
+				return go($url.'?ref='.$obj->url());
+			}
+
+			if(!empty($GLOBALS['cms']['error_show']))
+				return true;
+
+			if(!empty($obj->attr('access_error_message')))
+				$msg = $obj->attr('access_error_message');
+
+			return $obj->b2_message($msg . "
 				<!--
 				object to read = '{$obj->debug_title()}'
 				object to read file = '{$obj->get('class_file')}'
@@ -114,7 +125,10 @@
 				object.config = ".object_property($obj->config(), 'debug_title')."
 
 ".bors_debug::trace(0, false, 0)."
-			-->", array('template' => object_property($obj, 'template'))) : true;
+			-->", [
+				'template' => object_property($obj, 'template'),
+				'title'   => $obj->attr('access_error_title', _('Ошибка доступа')),
+			]);
 		}
 
 		if(config('debug.execute_trace'))

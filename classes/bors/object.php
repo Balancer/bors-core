@@ -565,6 +565,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return NULL;
 	}
 
+	function b2_message($text, $params = [])
+	{
+		$params['theme_class'] = $this->theme_class();
+		return bors_message($text, $params);
+	}
+
 	function set_modify_time($unix_time, $db_update = true) { return $this->set('modify_time', $unix_time, $db_update); }
 	function modify_time()
 	{

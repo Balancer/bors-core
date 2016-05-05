@@ -2,7 +2,19 @@
 
 class bors_admin_users_login extends bors_page
 {
-	function title() { return ec('Аутентификация'); }
+	function _browser_title_def() { return ec('Аутентификация'); }
+	function _page_title_def() { return ' '; }
+
+	function _b2_no_breadcrumb_def() { return true; }
+
+	function _theme_class_def()
+	{
+		$ref_obj = bors_load_uri($this->referer);
+		if($ref_obj && ($tpl = $ref_obj->get('theme_class')))
+			return $tpl;
+
+		return parent::theme_class();
+	}
 
 	function _template_def()
 	{

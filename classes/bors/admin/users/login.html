@@ -1,19 +1,64 @@
+<style>
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #eee;
+}
+
+.form-signin {
+  max-width: 430px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+</style>
+
+<div class="container">
 {if $this->error}
 <dl>
 <dd>Ошибка: {$this->error}</dd>
 </dl>
 {else}
 {if not $me}
-<h2>Представьтесь, пожалуйста:</h2>
-<form action="/_bors/users/do-login.bas" method="post">
-<table class="btab">
-<tr><th class="right">Имя пользователя:</th><td><input name="login" value="" /></td></tr>
-<tr><th class="right">Пароль:</th><td><input type="password" name="password" value="" /></td></tr>
-<tr><th colSpan="2"><input type="submit" value="Вход"></th></tr>
+<form action="/_bors/users/do-login.bas" method="post" class="form-signin">
+<h2 class="form-signin-heading">Представьтесь,&nbsp;пожалуйста:</h2>
+<table class="btab" cellspacing="4" width="100%">
+<tr><th class="right">Имя&nbsp;пользователя:&nbsp;</th><td><input name="login" value="" class="form-control" required autofocus /></td></tr>
+<tr><th class="right">Пароль:</th><td><input type="password" name="password" value="" class="form-control" required /></td></tr>
+<tr><th colSpan="2"><br/><input type="submit" value="Вход" class="btn btn-lg btn-primary btn-block"></th></tr>
 </table>
-<input type="hidden" name="ref" value="{$ref|htmlspecialchars}" />
+<input type="hidden" name="ref" value="{$ref|htmlspecialchars}"/>
 </form>
 {else}
 Здравствуйте, <b>{$me->title()}</b>! [<a href="/_bors/users/do-logout.bas">выход</a>]
 {/if}
 {/if}
+</div>

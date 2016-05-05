@@ -347,7 +347,6 @@ class App extends Obj
 		if(!defined('BORS_SITE'))
 			define('BORS_SITE', COMPOSER_ROOT);
 
-
 		// Пробуем искать по-новому
 		// ...
 		// https://github.com/phpixie/http

@@ -16,7 +16,7 @@ catch(Exception $e)
 	exit();
 }
 
-$db->query('DELETE FROM bors_access_log WHERE access_time < UNIX_TIMESTAMP() - 600');
+$db->query('DELETE LOW_PRIORITY FROM bors_access_log WHERE access_time < '.(time() - 600));
 
 foreach(bors_find_all('bors_access_log', array('was_counted' => 0)) as $x)
 {

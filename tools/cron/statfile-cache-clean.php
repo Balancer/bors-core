@@ -5,7 +5,6 @@ $start = time();
 require_once('../config.php');
 require_once(__DIR__.'/../../init.php');
 
-require_once('obsolete/DataBase.php');
 require_once('inc/processes.php');
 
 bors_function_include('debug/execute_trace');

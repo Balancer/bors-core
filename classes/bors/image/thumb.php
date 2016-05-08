@@ -85,9 +85,10 @@ class bors_image_thumb extends bors_image
 		// Было сделано update aviaport_pictures set original_filename = file_name where original_filename = '';
 
 
-		if(!preg_match('/\.(jpe?g|gif|png)$/i', $this->original->file_name()))
-			return $this->set_is_loaded(false);
+//		echo 'debug:'.$this->original->file_name(); exit();
 
+//		if(!preg_match('/\.(jpe?g|gif|png)$/i', $this->original->file_name()))
+//			return $this->set_is_loaded(false);
 
 		$this->set_height(-3); // трассировка
 

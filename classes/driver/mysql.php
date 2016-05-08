@@ -92,7 +92,12 @@ class driver_mysql extends driver_pdo implements Iterator
 	function delete($table, $where)
 	{
 //		echo "DELETE FROM `".addslashes($table)."` ".mysql_where_compile($where)."<br/>\n";
-		$this->query("DELETE FROM `".addslashes($table)."` ".mysql_args_compile($where));
+		$prio = popval($where, '*priority');
+		if($prio == 'low')
+			$prio = " LOW_PRIORITY";
+		else
+			$prio = "";
+		$this->query("DELETE{$prio} FROM `".addslashes($table)."` ".mysql_args_compile($where));
 	}
 
 	function select_array($table, $field, $where_map, $class = NULL)

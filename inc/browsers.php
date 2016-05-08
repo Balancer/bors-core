@@ -129,6 +129,11 @@ function get_browser_info($user_agent, $log_unknown = true)
 			$os = 'Windows';
 			$ov = 'XP Tablet PC Edition 2005';
 		}
+		elseif(preg_match('!Windows NT 10!', $user_agent))
+		{
+			$os = 'Windows';
+			$ov = '10';
+		}
 		elseif(preg_match('!Windows NT 6\.3!', $user_agent))
 		{
 			$os = 'Windows';

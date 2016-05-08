@@ -507,8 +507,36 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		));
 
 		if($thumbnails)
+		{
 			foreach($thumbnails as $t)
+			{
+				if(class_exists('cloudflare_api') && ($api_key=config('cloudflare.api_key') && ($email=config('cloudflare.email'))))
+				{
+					$url = $t->url();
+//					echo "$url<br/>\n";
+					$ud = parse_url($url);
+					$cf = new cloudflare_api($email, $api_key);
+					$response = $cf->zone_file_purge($ud['host'], $url);
+				}
+
 				$t->delete();
+			}
+		}
+		else
+		{
+			// Хардкодная очистка предполагаемого превью 640x640.
+			if(class_exists('cloudflare_api') && ($api_key=config('cloudflare.api_key')) && ($email=config('cloudflare.email')))
+			{
+				$t = $this->thumbnail('640x640');
+				$url = $t->url();
+//				echo "hadcoded: $url<br/>\n";
+				$ud = parse_url($url);
+				$cf = new cloudflare_api($email, $api_key);
+				$response = $cf->zone_file_purge($z=preg_replace('/^.*?(\w+\.\w+)$/', '$1', $ud['host']), $url);
+				$response = $cf->zone_file_purge('sites.wrk.ru', str_replace($ud['host'], 'sites.wrk.ru', $url));
+//				var_dump($api_key, $email, $z, $response);
+			}
+		}
 	}
 
 	function hash_grayscale()

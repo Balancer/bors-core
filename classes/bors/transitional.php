@@ -5,13 +5,13 @@ class bors_transitional
 	static function init()
 	{
 		if(!defined('COMPOSER_ROOT'))
-			define('BORS_CORE', realpath(__DIR__.'/../../'));
+			define('COMPOSER_ROOT', realpath(__DIR__.'/../../../../../'));
 
 		if(!defined('BORS_CORE'))
 			define('BORS_CORE', COMPOSER_ROOT.'/vendor/balancer/bors-core');
 
-		require_once __DIR__.'/../../inc/functions/locale/ec.php';
-		require_once __DIR__.'/../../engines/bors.php';
+		require_once BORS_CORE.'/inc/functions/locale/ec.php';
+		require_once BORS_CORE.'/engines/bors.php';
 	}
 
 	static function function_include($req_name)

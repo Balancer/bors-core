@@ -51,6 +51,9 @@ class bors
 		if(!defined('COMPOSER_ROOT'))
 			define('COMPOSER_ROOT', dirname(dirname(dirname(dirname(__DIR__)))));
 
+		if(!defined('BORS_HOST'))
+			define('BORS_HOST', COMPOSER_ROOT);
+
 		if(!ini_get('default_charset'))
 			ini_set('default_charset', 'UTF-8');
 

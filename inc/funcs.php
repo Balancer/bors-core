@@ -22,6 +22,65 @@ function mkpath($strPath, $mode=0777)
 	return $err;
 }
 
+
+function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
+{
+	$host = preg_replace('/^www\./', '', $host);
+
+	global $bors_data;
+
+	if(empty($documents_root))
+		$documents_root = '/var/www/'.$host.'/htdocs';
+
+	if(empty($bors_host))
+	{
+		$bors_host = dirname($documents_root).'/bors-host';
+		$bors_site = dirname($documents_root).'/bors-site';
+	}
+	else
+		$bors_site = $bors_host;
+
+	$map = array();
+
+	if(file_exists($file = BORS_HOST.'/vhosts/'.$host.'/handlers/bors_map.php'))
+		require_once($file);
+	elseif(file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
+		require_once($file);
+	elseif(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
+		require_once($file);
+
+	$map2 = $map;
+
+	if(file_exists($file = $bors_site.'/handlers/bors_map.php'))
+		require_once($file);
+
+	if(file_exists($file = $bors_site.'/bors_map.php'))
+		require_once($file);
+
+	if(file_exists($file = $bors_site.'/url_map.php'))
+		require_once($file);
+
+	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
+		require_once($file);
+
+	if(empty($bors_data['vhosts'][$host]['bors_map']))
+		$prev = array();
+	else
+		$prev = $bors_data['vhosts'][$host]['bors_map'];
+
+	$bors_map = array_merge($prev, $map2, $map);
+
+	if(!empty($bors_data['vhosts'][$host]['bors_map']))
+		$bors_map = array_merge($bors_data['vhosts'][$host]['bors_map'], $bors_map);
+
+	$bors_data['vhosts'][$host] = array(
+		'bors_map' => $bors_map,
+		'bors_local' => $bors_host,
+		'bors_site' => $bors_site,
+		'document_root' => $documents_root,
+	);
+}
+
 /**
  * Извлекает поле $name из массива $data, если оно есть.
  * В противном случае возвращает $default.

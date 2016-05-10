@@ -6,6 +6,7 @@ class UrlMap
 {
 	var $app;
 	var $route_map = [];
+	var $request;
 
 	function __construct($app)
 	{
@@ -53,6 +54,8 @@ class UrlMap
 
 	function dispatch($request)
 	{
+		$this->request = $request;
+
 		// $request in PSR-7
 		// (string)$request->getUri() -> full uri with scheme://host/path/...
 		// $request->getUri()->getPath() = string
@@ -70,13 +73,21 @@ class UrlMap
 				continue;
 
 			if(preg_match('/^\w+$/', $class_name))
-				return \bors::load($class_name, NULL);
+				return $this->init_view(\bors::load($class_name, NULL));
 
 			if(preg_match('/^\w+\((\d+)\)$/', $class_name, $m))
-				return \bors::load($class_name, $url_match[$m[1]]);
+				return $this->init_view(\bors::load($class_name, $url_match[$m[1]]));
 
 			\bors_debug::syslog('warning-url-map', _("Unknown route class name format for UrlMap").": [{$s}]");
 //			throw new \Exception(_("Unknown route class name format for UrlMap").": [{$s}]");
 		}
+
+		return NULL;
+	}
+
+	function init_view($view)
+	{
+		$view->set_request($this->request);
+		return $view;
 	}
 }

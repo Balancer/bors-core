@@ -233,90 +233,13 @@ class App extends Obj
 				return $view;
 		}
 
-		$camel_path = join("\\", array_map('ucfirst', explode('/', rtrim($path, '/'))));
+		$router = $this->router_instance('B2\\Router\\AutoPhp');
+		if($view = $router->dispatch($request))
+			return $view;
 
-		$camel_path = join('', array_map('ucfirst', explode('-', $camel_path)));
-
-		$reflection = new \ReflectionClass($this);
-		$namespace = $reflection->getNamespaceName();
-		$base_class =  $namespace . $camel_path;
-
-		if(class_exists($base_class))
-		{
-//			$view = $base_class::load(NULL);
-			$view = new $base_class(NULL); // Now simple direct load.
-			if($view->get('route') == 'auto')
-			{
-				$view->set_attr('parents', [dirname($path).'/']);
-				$view->b2_configure();
-				bors()->set_main_object($view);
-				return $view;
-			}
-		}
-
-		if(class_exists($cn = $base_class.'\\Main'))
-		{
-			$view = new $cn(NULL); // Now simple direct load.
-			if($view->get('route') == 'auto')
-			{
-				$view->set_attr('parents', [dirname($path).'/']);
-				$view->b2_configure();
-				bors()->set_main_object($view);
-				return $view;
-			}
-		}
-
-		if(preg_match('/\\\\(\d+)$/', $base_class, $m))
-		{
-			$object_id = $m[1];
-			$check_class_name = preg_replace('/\\\\(\d+)$/', '\\Edit', $base_class);
-			if(class_exists($check_class_name))
-			{
-				$view = bors_load($check_class_name, $object_id);
-				if($view->get('route') == 'auto')
-				{
-					$view->set_attr('parents', [dirname($path).'/']);
-					$view->b2_configure();
-					bors()->set_main_object($view);
-					return $view;
-				}
-			}
-		}
-
-		$view = NULL;
-
-		$namespace .= "\\";
-
-		$prefixes = empty($GLOBALS['B2_COMPOSER']) ? NULL : $GLOBALS['B2_COMPOSER']->getPrefixesPsr4();
-		if(!empty($prefixes[$namespace]))
-		{
-			foreach($prefixes[$namespace] as $class_path)
-			{
-				$test_path = $class_path.str_replace("\\", '/', $camel_path);
-
-				foreach(glob($test_path.'.*') as $file)
-				{
-					if(preg_match('!^.+/(\w+\.md.tpl)$!', $file))
-					{
-						$view = new \bors_page_fs_markdown($file);
-						$view->set_attr('parents', [dirname($path).'/']);
-						$view->b2_configure();
-						$view->storage()->load($view);
-					}
-				}
-
-				foreach(glob($test_path.'/Main.*') as $file)
-				{
-					if(preg_match('!^.+/(\w+\.md.tpl)$!', $file))
-					{
-						$view = new \bors_page_fs_markdown($file);
-						$view->set_attr('parents', [dirname($path).'/']);
-						$view->b2_configure();
-						$view->storage()->load($view);
-					}
-				}
-			}
-		}
+		$router = $this->router_instance('B2\\Router\\AutoMarkdown');
+		if($view = $router->dispatch($request))
+			return $view;
 
 //		r($namespace, $GLOBALS['B2_COMPOSER']->getPrefixesPsr4(), $view);
 

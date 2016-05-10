@@ -36,7 +36,7 @@ class bors_core_find
 	{
 		$args = func_get_args();
 
-		bors_function_include('debug/timing_start');
+		require_once BORS_CORE.'/inc/functions/debug/timing_start.php';
 		bors_debug::timing_start('bors_find::all()');
 
 		if(count($args) == 1)

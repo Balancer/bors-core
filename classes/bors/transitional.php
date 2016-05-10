@@ -122,3 +122,5 @@ function bors_use($uses)
 		bors_throw("Unknown bors_use('$u')");
 	}
 }
+
+function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }

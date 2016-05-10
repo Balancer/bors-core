@@ -24,8 +24,11 @@ if(!config('main_bors_db'))
 if(!config('main_bors_db'))
 	config_set('main_bors_db', 'BORS');
 
-config_set('bors_local_db', 'BORS');
-config_set('bors_logs_db', 'BORS_LOGS');
+if(!config('bors_local_db'))
+	config_set('bors_local_db', 'BORS');
+
+if(!config('bors_logs_db'))
+	config_set('bors_logs_db', 'BORS_LOGS');
 
 config_set('bors.version_show', false);
 

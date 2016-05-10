@@ -381,8 +381,6 @@ function bors_include($file, $warn = false, $once = false)
 	echo $message;
 }
 
-function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }
-
 function bors_function_include($req_name)
 {
 	static $defined = array();

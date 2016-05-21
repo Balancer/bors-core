@@ -27,7 +27,7 @@ class driver_mysql extends driver_pdo implements Iterator
 		}
 		catch(Exception $e)
 		{
-			$msg = "PDO exception with $dsn: ".$e->getMessage();
+			$msg = "PDO DB='$db_name' exception with $dsn: ".$e->getMessage();
 
 			if(preg_match('/^(\w+):.+/', $dsn, $m) && preg_match('/could not find driver/', $e->getMessage()))
 				$msg .= ". You need to install php-{$m[1]} driver?";

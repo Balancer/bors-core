@@ -1,6 +1,6 @@
 <?php
 
-require_once('inc/bors/lists.php');
+require_once BORS_CORE.'/inc/bors/lists.php';
 
 // Класс-заглушка (временная), так как пока модули по сути - обычные страницы.
 class bors_module extends bors_page
@@ -11,16 +11,18 @@ class bors_module extends bors_page
 
 	function html()
 	{
-		if($ttl = $this->get('body_cache_ttl'))
+		if($ttl = $this->get('body_cache_ttl') && class_exists('bors_cache'))
 		{
 			$ch = new bors_cache();
 			$timestamp = max(filemtime($this->class_file()), filemtime($this->body_template_file()));
 			if($ch->get('bors_module_cache', $this->internal_uri_ascii().'/'.$timestamp.'/'.serialize($this->args())))
 				return $ch->last();
 		}
+		else
+			$ch = NULL;
 
 		$html = $this->html_code();
-		if($ttl)
+		if($ttl && $ch)
 			$ch->set($html, $ttl);
 
 		return $html;

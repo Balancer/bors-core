@@ -1,6 +1,6 @@
 <?php
 
-bors_function_include('debug/in_console');
+require_once BORS_CORE.'/inc/functions/debug/in_console.php';
 
 function debug_pre($text)
 {

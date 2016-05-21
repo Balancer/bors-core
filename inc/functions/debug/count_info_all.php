@@ -1,6 +1,6 @@
 <?php
 
-bors_function_include('debug/count_inc');
+require_once BORS_CORE.'/inc/functions/debug/count_inc.php';
 
 function debug_count_info_all()
 {

@@ -366,10 +366,10 @@ class bors_debug
 				. "cache_database = ".config('cache_database')."\n";
 		}
 
-		bors_function_include('debug/vars_info');
-		bors_function_include('debug/count');
-		bors_function_include('debug/count_info_all');
-		bors_function_include('debug/timing_info_all');
+		require_once BORS_CORE.'/inc/functions/debug/vars_info.php';
+		require_once BORS_CORE.'/inc/functions/debug/count.php';
+		require_once BORS_CORE.'/inc/functions/debug/count_info_all.php';
+		require_once BORS_CORE.'/inc/functions/debug/timing_info_all.php';
 
 		if($deb_vars = debug_vars_info())
 		{

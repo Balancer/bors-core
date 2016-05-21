@@ -93,7 +93,7 @@ class base_page extends bors_object
 		if($text === NULL)
 			$text = ec('Страницы:');
 
-		include_once('inc/design/page_split.php');
+		require_once BORS_CORE.'/inc/design/page_split.php';
 
 		if(!$around_page)
 			$around_page = $this->items_around_page();

@@ -226,11 +226,14 @@ class App extends Obj
 		$path = $request->getUri()->getPath();
 
 		$router_classes = @\bors::$app_routers[$this->class_name()];
-		foreach($router_classes as $rc)
+		if($router_classes)
 		{
-			$router = $this->router_instance($rc);
-			if($view = $router->dispatch($request))
-				return $view;
+			foreach($router_classes as $rc)
+			{
+				$router = $this->router_instance($rc);
+				if($view = $router->dispatch($request))
+					return $view;
+			}
 		}
 
 		$router = $this->router_instance('B2\\Router\\AutoPhp');

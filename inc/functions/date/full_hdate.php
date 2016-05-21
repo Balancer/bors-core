@@ -1,6 +1,6 @@
 <?php
 
-bors_function_include('time/month_name_rp');
+require_once BORS_CORE.'/inc/functions/time/month_name_rp.php';
 
 function full_hdate($date, $show_year = true)
 {

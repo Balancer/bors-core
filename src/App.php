@@ -288,8 +288,11 @@ class App extends Obj
 
 		$view = NULL;
 
+		if($this->cfg('view.preset'))
+			$view = $this->cfg('view.preset');
+
 		// composer: zendframework/zend-diactoros
-		if(class_exists('\\Zend\\Diactoros\\ServerRequestFactory'))
+		if(!$view && class_exists('\\Zend\\Diactoros\\ServerRequestFactory'))
 		{
 			$request = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
 //			$request = \Slim\Http\Request::createFromEnvironment(new \Slim\Http\Environment($_SERVER));

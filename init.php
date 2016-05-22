@@ -118,8 +118,8 @@ spl_autoload_register('class_include');
 
 $dirs = [BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE];
 
-foreach(bors::$package_app_path as $path)
-	$dirs[] = $path;
+// foreach(bors::$package_app_path as $path)
+//	$dirs[] = $path;
 
 if(!empty($GLOBALS['B2']['main_app']))
 	$dirs[] = $GLOBALS['B2']['main_app']->package_path();

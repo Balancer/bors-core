@@ -359,10 +359,11 @@ function lt_img($params)
 				// Для совместимости старый код. Вдруг где-то не сработает?
 				// Дёргаем превьюшку, чтобы могла сгенерироваться.
 				// Кстати, ошибка может быть и от перегрузки.
+
 				blib_http::get($img_ico_uri, true, 200000); // До 200кб
 
 				bors_debug::syslog('000-image-debug', "Get image size for ".$img_ico_uri);
-				if(file_exists($img_ico_uri))
+				if(blib_http::exists($img_ico_uri))
 					list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
 
 				if(!intval(@$width) || !intval(@$height))
@@ -372,7 +373,7 @@ function lt_img($params)
 					blib_http::get($img_ico_uri, true, 1000000); // До 1Мб
 
 					bors_debug::syslog('000-image-debug', "Get image size for ".$img_ico_uri);
-					if(file_exists($img_ico_uri))
+					if(blib_http::exists($img_ico_uri))
 						list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
 				}
 			}
@@ -380,6 +381,7 @@ function lt_img($params)
 			if(!intval(@$width) || !intval(@$height))
 			{
 //				if(config('is_developer')) { echo '<xmp>'; var_dump($file, $uri, $img_ico_uri, $data, $params); exit(); }
+				bors_debug::syslog('warning-image-error', "Can't get image icon size.\n\timg={$params['url']}\n\turl={$params['url']}\n\ticon={$img_ico_uri}");
 				return sprintf($err_box, "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get <a href=\"{$img_ico_uri}\">icon's</a> size]");
 			}
 

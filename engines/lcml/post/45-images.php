@@ -14,13 +14,15 @@ function lcml_images($txt, $lcml)
 	while(preg_match("!\[([https?://\w\.\-\+%_/:&\?=#]+\.(jpg|jpeg|gif|png|sjpg))([^\]]*)\]!i", $txt, $m) && $n-->0)
 		$txt = str_replace($m[0], $lcml->parse("[img \"{$m[1]}\" noflow {$m[3]}]"), $txt);
 
-	while(preg_match("!^[\s￼ ]*(https?://\S+\.(jpg|png|gif|jpeg|sjpg))\s*$!im", $txt, $m)
+	while(preg_match("!^[\s￼ ]*(https?://[^\s\?]+\.(jpg|png|gif|jpeg|sjpg))\s*$!im", $txt, $m)
 			&& !$lcml->is_timeout(LCML_IMG_TIMEOUT)
 	)
 	{
-		$image_url = $m[1];
-		$ud = parse_url($image_url);
-		$txt = str_replace($m[0], lt_img(array(
+		try
+		{
+			$image_url = $m[1];
+			$ud = parse_url($image_url);
+			$txt = str_replace($m[0], lt_img([
 				'orig' => $image_url,
 				'url' => $image_url,
 				'align' => 'left',
@@ -30,7 +32,12 @@ function lcml_images($txt, $lcml)
 				'self' => $lcml->p('self'),
 				'description' => "<a href=\"{$image_url}\" rel=\"nofollow\">".basename($image_url)."</a> @ <a href=\"http://{$ud['host']}\" rel=\"nofollow\">{$ud['host']}</a> [<a href=\"%IMAGE_PAGE_URL%\">кеш</a>]",
 				'border' => true,
-			)), $txt);
+			]), $txt);
+		}
+		catch(Exception $e)
+		{
+			bors_debug::syslog('error-lcml', sprintf(_("Image '%s' single tag error: "), $image_url).$e->getMessage());
+		}
 	}
 
 	$n=50;

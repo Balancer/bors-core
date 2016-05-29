@@ -15,12 +15,13 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 
 	// http://intervention.olivervogel.net/image
 
-	if(!preg_match('/image|octet/', $mime = mime_content_type($file_in)))
+	$mime = mime_content_type($file_in);
+
+	if(!preg_match('/image|octet/', $mime))
 	{
 		config_set('bors-image-lasterror', "[20] Thumbnail make error.\n".$file_in."\nnot image, but ".$mime);
 		return false;
 	}
-
 
 	// If it WebP - convert to temporary jpeg:
 	if(preg_match('/octet/', $mime))
@@ -33,6 +34,40 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
         system(join(' ', $cmd));
 
 		$file_in = $tmpfile;
+	}
+
+	$data = @getimagesize($file_in);
+
+	if(!$data || !$data[0])
+	{
+		config_set('bors-image-lasterror', ec('Не могу определить размеры изображения'));
+		bors_debug::syslog('image-error', "Can't get size for image {$file_in}\n(tr resize to {$file_out}($width, $height, $opts);\nWxH = ".@$data[0].'x'.@$data[1]);
+		return false;
+	}
+
+	if(($data[0] > config('images_resize_max_width')
+		|| $data[1] > config('images_resize_max_height')
+		|| $data[0]*$data[1] > config('images_resize_max_area')
+	))
+	{
+		$err_msg_ru = 'Слишком большой ('
+			.($data[0].'x'.$data[1].'='.sprintf('%.1f',$data[0]*$data[1]/1024/1024))."Мпкс) файл.\n"
+			."Предел для генерации превью ".config('images_resize_max_width')."x".config('images_resize_max_height')."\n"
+			."или ".sprintf('%.1f',config('images_resize_max_area')/1024/1024).'Мпкс';
+
+
+		config_set('bors-image-lasterror', $err_msg_ru);
+
+		$err_msg = "Image {$file_in} too big to resize to \n"
+			."{$file_out}\n"
+			."geo = ($width, $height, $opts)\n"
+			."Source WxH= ".$data[0].'x'.$data[1].'='.($data[0]*$data[1])."\n"
+			."Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."=".config('images_resize_max_area');
+
+		bors_debug::syslog('error-image', $err_msg);
+//		bors_image_resize_error_return(config('bors-image-lasterror'), $file_out, $width, $height);
+
+		return false;
 	}
 
 	try
@@ -118,33 +153,6 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 	return false;
 
 	bors_debug::syslog('001-image-debug', "Get image size for ".$file_in);
-	$data = getimagesize($file_in);
-
-	if(!$data || !$data[0])
-	{
-		config_set('bors-image-lasterror', ec('Не могу определить размеры изображения'));
-		bors_debug::syslog('image-error', "Can't get width for image {$file_in}\n(tr resize to {$file_out}($width, $height, $opts);\nWxH = ".@$data[0].'x'.@$data[1]);
-		return false;
-	}
-
-	if(($data[0] > config('images_resize_max_width')
-		|| $data[1] > config('images_resize_max_height')
-		|| $data[0]*$data[1] > config('images_resize_max_area')
-	) && (filesize($file_in) > config('images_resize_filesize_enabled')))
-	{
-		config_set('bors-image-lasterror', ec('Слишком большой (').($data[0].'x'.$data[1].'='.sprintf('%.1f',$data[0]*$data[1]/1024/1024)).ec("Мпкс) файл.
-Предел для генерации превью ").config('images_resize_max_width')."x".config('images_resize_max_height').ec("
-или ").sprintf('%.1f',config('images_resize_max_area')/1024/1024).ec('Мпкс'));
-		bors_debug::syslog('image-error', "Image {$file_in} too big to resize to 
-{$file_out}
-geo = ($width, $height, $opts)
-Source WxH= ".$data[0].'x'.$data[1].'='.($data[0]*$data[1])."
-Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."=".config('images_resize_max_area')
-);
-		bors_image_resize_error_return(config('bors-image-lasterror'), $file_out, $width, $height);
-
-		return false;
-	}
 
 	$img = Image_Transform::factory(config('image_transform_engine'));
 

@@ -53,7 +53,7 @@ if(
 
 // Скажем, кто мы такие. Какой версии.
 if(config('bors.version_show'))
-	@header('X-Bors-version: ' .config('bors.version_show'));
+	header('X-Bors-version: ' .config('bors.version_show').':'.str_replace('/var/www/', '', COMPOSER_ROOT).':'.str_replace('/var/www/', '', BORS_CORE));
 
 // А такого не должно быть. Если лоадер вызывается непосредственно, нужно
 // разбираться, что это за фигня. Соответственно - в лог.
@@ -212,12 +212,13 @@ if(config('debug.execute_trace'))
 /**********************************************************************************************************/
 
 // Записываем, если нужно, кто получал объект и сколько ушло времени на его получение.
-if(config('access_log'))
+
+$operation_time = microtime(true) - $GLOBALS['stat']['start_microtime'];
+
+if(config('access_log') && $operation_time > config('access_log.min_time', 0))
 {
 	if(config('debug.execute_trace'))
 		debug_execute_trace("Access log begin");
-
-	$operation_time = microtime(true) - $GLOBALS['stat']['start_microtime'];
 
 	$data = array(
 		'user_ip' => $_SERVER['REMOTE_ADDR'],

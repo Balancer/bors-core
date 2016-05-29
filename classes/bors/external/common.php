@@ -14,7 +14,7 @@ class bors_external_common extends bors_object
 		$original_url = defval($params, 'original_url', $url);
 
 		if(preg_match(config('urls.skip_load_ext_regexp'), $url))
-			return array('bbshort' => "[img url=\"$url\" 468x468]", 'tags' => array());
+			return array('bbshort' => "[img url=\"$url\" 468x468]", 'tags' => []);
 
 		$more = false;
 
@@ -50,8 +50,6 @@ class bors_external_common extends bors_object
 
 		if(!$img)
 			$img = @$meta['image_src'];
-
-//		if(config('is_developer')) { var_dump($meta); }
 
 		// Яндекс.Видео — такое Яндекс.Видео...
 		// http://balancer.ru/g/p2728087 для http://video.yandex.ru/users/cnewstv/view/3/
@@ -107,7 +105,6 @@ class bors_external_common extends bors_object
 			if(!preg_match('!^image/(png|jpeg|gif)!', $x['content_type']))
 			{
 				bors_debug::syslog('dev-snip-no-image', "$img: ".print_r($x, true));
-//				if(config('is_developer')) { var_dump($x); exit(); }
 				$img = NULL;
 			}
 		}
@@ -136,6 +133,7 @@ class bors_external_common extends bors_object
 
 			$id = blib_string::base64_encode2($url);
 
+/*
 			$img = "http://www.balancer.ru/_cg/_st/{$host_parts[0]}/{$host_parts[1][0]}/{$host_parts[1]}/{$id}-400x300.png";
 			// Дёрнем, чтобы сгенерировалось
 			$x = blib_http::get_bin($img, array('timeout' => 10));
@@ -145,10 +143,24 @@ class bors_external_common extends bors_object
 				var_dump($url, $id, $host_parts, "http://www.balancer.ru/_cg/_st/{$host_parts[0]}/{$host_parts[1][0]}/{$host_parts[1]}/{$id}-400x300.png", $x);
 				exit();
 			}
-		}
+*/
+			$thumb_url = "http://200x150.st.cg.a0z.ru/".base64_encode($url).".jpg";
+			$img = "<div class=\"rs_box_nd float_left mtop8\" style=\"width:200px; height:150px;\">"
+				."<img src=\"{$thumb_url}\" width=\"200\" height=\"150\" alt=\"\" class=\"main\"></div>";
 
-		if($img)
-			$img = "[img={$img} 200x200 left flow nohref resize]";
+		}
+		elseif($img)
+		{
+			$data = parse_url($img);
+			$dom_parts = explode('.', $data['host']);
+			$dom1 = array_pop($dom_parts);
+			$dom2 = array_pop($dom_parts);
+			$thumb_url = "http://200x150.$dom1.ic.a0z.ru/".$dom2[0].'/'.base64_encode($img).".jpg";
+
+//			$img = "[img={$img} 200x200 left flow nohref resize]";
+			$img = "<div class=\"rs_box_nd float_left mtop8\" style=\"width:200px; height:150px;\">"
+				."<img src=\"{$thumb_url}\" width=\"200\" height=\"150\" alt=\"\" class=\"main\"></div>";
+		}
 
 /*
 		if(!$img && config('is_developer'))
@@ -188,8 +200,6 @@ class bors_external_common extends bors_object
 				$dom->loadHTML('<?xml encoding="UTF-8">'.$html);
 //				$dom->loadHTML($html);
 				$xpath = new DOMXPath($dom);
-
-//				if(config('is_developer')) { var_dump($query); print_dd($html); print_dd($dom->saveHTML()); }
 
 				foreach($xpath->query('//comment()') as $comment)
 				    $comment->parentNode->removeChild($comment);
@@ -330,8 +340,6 @@ class bors_external_common extends bors_object
 			$bbshort = iconv('utf-8', 'utf-8//translit', $bbshort);
 
 			$bbshort = trim(bors_close_tags(bors_close_bbtags(blib_obscene::mask($bbshort, true))));
-
-//			if(config('is_developer')) { var_dump($title, $description, $bbshort); echo bors_debug::trace(); }
 
 			return compact('tags', 'title', 'bbshort');
 		}

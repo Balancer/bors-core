@@ -27,7 +27,10 @@
     function lcml_pure_urls($txt)
     {
 		if(config('is_debug'))
+		{
 			file_put_contents('/tmp/111.txt', $txt);
+			@chmod('/tmp/111.txt', 0666);
+		}
 
 		if(!empty($GLOBALS['lcml']['params']['noautouri']))
 			return $txt;

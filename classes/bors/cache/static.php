@@ -11,7 +11,6 @@ class cache_static extends bors_object_db
 	{
 		return array(
 			'id' => 'file',
-			'object_uri' => 'uri',
 			'original_uri',
 			'last_compile',
 			'expire_time',
@@ -20,7 +19,7 @@ class cache_static extends bors_object_db
 			'target_id' => 'object_id',
 			'target_page',
 			'recreate',
-			'bors_site',
+//			'bors_site',
 		);
 	}
 
@@ -35,15 +34,12 @@ class cache_static extends bors_object_db
 		if($this->original_uri())
 			$x = bors_load_uri($this->original_uri());
 
-		if(!$x && $this->object_uri())
-			$x = bors_load_uri($this->object_uri());
-
 		if(!$x)
 		{
 			if($x = bors_load($this->target_class_name(), $this->target_id()))
 				$x->set_page($this->target_page());
 			else
-				echo "Can't load {$this->original_uri()} nor {$this->object_uri()} nor {$this->target_class_name()}({$this->target_id()})\n";
+				echo "Can't load {$this->original_uri()} nor {$this->target_class_name()}({$this->target_id()})\n";
 		}
 
 		return $x;
@@ -206,9 +202,6 @@ class cache_static extends bors_object_db
 				$cache->set_expire_time($expire_time, true);
 				$cache->set_recreate($object->cache_static_recreate(), true);
 
-				if($object_uri)
-					$cache->set('object_uri', $object_uri, true);
-
 				if($original_uri)
 					$cache->set('original_uri', $original_uri, true);
 
@@ -218,7 +211,6 @@ class cache_static extends bors_object_db
 			{
 				$cache = bors_new('cache_static', array(
 					'id' => $file,
-					'object_uri' => $object_uri,
 					'original_uri' => $original_uri,
 					'target_class_name' => $object->class_name(),
 					'target_class_id' => $object->class_id(),
@@ -227,10 +219,10 @@ class cache_static extends bors_object_db
 					'last_compile' => time(),
 					'expire_time' => $expire_time,
 					'recreate' => $object->cache_static_recreate(),
-					'bors_site' => BORS_SITE,
+//					'bors_site' => BORS_SITE,
 				));
 
-				config_set('debug_mysql_queries_log', false);
+//				config_set('debug_mysql_queries_log', false);
 
 //				if($object->class_name() == 'balancer_board_topic' || $object->class_name() == 'forum_topic')
 //					bors_debug::syslog('__cache_file_register2', "file=".$file."\nobject=".$object->debug_title()."\npage=".$object->page()."\ncache_id=".$cache->id()."\ncache_page=".$cache->target_page());

@@ -8,7 +8,8 @@ class blib_http_abstract
 	static function get($url, $raw = false, $max_length = false)
 	{
 		require_once('inc/http.php');
-		return http_get_content($url, $raw, $max_length);
+		$get = self::get_ex($url, ['is_raw' => $raw, 'max_length' => $max_length]);
+		return $get['content'];
 	}
 
 	// Работает с объектами не более одного мегабайта. Можно настроить новым параметром max_length
@@ -110,8 +111,6 @@ class blib_http_abstract
 	{
 		$original_url = $url;
 
-//		if(config('is_developer')) { var_dump($url, $curl_options); exit(); }
-
 		$ch = curl_init($url);
 		curl_setopt_array($ch, array(
 			CURLOPT_TIMEOUT => defval($curl_options, 'timeout', 15),
@@ -201,7 +200,7 @@ class blib_http_abstract
 		return $url;
 	}
 
-	static function get_ex($url, $params = array())
+	static function get_ex($url, $params = [])
 	{
 		$raw = popval($params, 'is_raw');
 
@@ -241,6 +240,31 @@ class blib_http_abstract
 		if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация
 			$timeout *= 2;
 
+		$max_download = config('curl.max_download');
+		if(!$max_download)
+		{
+			$max_download = trim(ini_get('memory_limit'));
+			$last = strtolower($max_download[strlen($max_download)-1]);
+			switch($last)
+			{
+				// The 'G' modifier is available since PHP 5.1.0
+				case 'g':
+					$max_download *= 1024;
+				case 'm':
+					$max_download *= 1024;
+				case 'k':
+					$max_download *= 1024;
+			}
+
+			$max_download = $max_download / 4;
+
+			if($max_download <= 0)
+				$max_download = 1024*1024;
+		}
+
+		global $data;
+		$data = '';
+
 		$curl_options = array(
 			CURLOPT_TIMEOUT => $timeout,
 			CURLOPT_FOLLOWLOCATION => true,
@@ -258,6 +282,30 @@ class blib_http_abstract
 			CURLOPT_COOKIESESSION => true,
 			CURLOPT_COOKIEJAR => blib_files::tmp('cookie-jar-3'),
 			CURLOPT_COOKIEFILE => blib_files::tmp('cookie-file-3'),
+
+			CURLOPT_PROGRESSFUNCTION => function($resource, $download_size = 0, $downloaded = 0, $upload_size = 0, $uploaded = 0) use ($url, $max_download) {
+				//	CURLOPT_WRITEFUNCTION is good for this but CURLOPT_PROGRESSFUNCTION is the best.
+				// If $downloaded exceeds size, returning non-0 breaks the connection!
+				if($downloaded > $max_download)
+				{
+					bors_debug::syslog('warning-curl', "Break curl '$url' progress download with size=".$downloaded);
+					return 1;
+				}
+
+				return 0;
+			},
+			CURLOPT_WRITEFUNCTION => function($handle, $chunk) use ($url, $max_download) {
+				global $data;
+				$data .= $chunk;
+
+				if(strlen($data) > $max_download)
+				{
+					bors_debug::syslog('warning-curl', "Break curl '$url' write download with size=".strlen($data)." and max_download=".$max_download);
+					return 0;
+				}
+				else
+					return strlen($chunk);
+			},
 		);
 
 		if($opt = defval($params, 'FRESH_CONNECT'))
@@ -279,7 +327,9 @@ class blib_http_abstract
 
 		$start_time = time();
 
-		$data = curl_exec($ch);
+		$result = curl_exec($ch);
+		if($result !== true)
+			$data = $result;
 
 		if(strlen($data) <  2000 && preg_match('/document.cookie=.*(__DDOS_COOKIE|_ddn_intercept_2_)=(\w+);/', $data, $m) && preg_match('/window.location.reload\(true\)/', $data))
 		{
@@ -291,7 +341,7 @@ class blib_http_abstract
 
 		$time = time() - $start_time;
 		if($time > 5 || @$info['size_download'] > 1000000)
-			bors_debug::syslog('curl-warnings', "Too long or too big download for $original_url; time=$time; info=".print_r($info, true));
+			bors_debug::syslog('warning-curl', "Too long or too big download for $original_url; time=$time; info=".print_r($info, true));
 
 //		if(preg_match('/balancer\.ru|airbase\.ru/', $original_url))
 //			bors_debug::syslog('curl-warnings', "Try to load $original_url");
@@ -327,9 +377,6 @@ array (size=22)
 		if(!empty($curl_options[CURLOPT_FILE]))
 			fclose($curl_options[CURLOPT_FILE]);
 
-//		if(config('is_developer'))
-//			var_dump($info);
-
 		if($data === false)
 		{
 			//TODO: оформить хорошо. Например, отправить отложенную задачу по пересчёту
@@ -340,7 +387,7 @@ array (size=22)
 			if($save_file)
 				@unlink($save_file);
 
-			bors_debug::syslog('curl-error', "Curl ($url) error: ".$err_str);
+			bors_debug::syslog('error-curl-', "Curl ($url) error: ".$err_str);
 			return array('content' => NULL, 'content_type' => NULL, 'error' => $err_str);
 		}
 
@@ -410,6 +457,21 @@ array (size=22)
 		curl_close($ch);
 
 		return array('content' => $data, 'content_type' => $content_type, 'error' => false);
+	}
+
+	static function exists($url)
+	{
+		$timeout = 15; //timeout seconds
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		// don't download content
+		curl_setopt($ch, CURLOPT_NOBODY, 1);
+		curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt ($ch, CURLOPT_TIMEOUT, $timeout);
+
+		return (curl_exec($ch)!==FALSE);
 	}
 
 	static function __dev()

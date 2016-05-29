@@ -56,6 +56,7 @@ class driver_pdo implements Iterator
 
 	function query($query, $ignore_error = false)
 	{
+		$start = time();
 		bors_debug::timing_start('pdo_query');
 		try
 		{
@@ -70,6 +71,10 @@ class driver_pdo implements Iterator
 		}
 
 		bors_debug::timing_stop('pdo_query');
+		$time = time() - $start;
+
+		if($time > 3)
+			bors_debug::syslog('warning-mysql-slow-query', "DB={$this->database}; time=$time; query=".$query);
 
 		$err = $this->connection->errorInfo();
 		if($err[0] == "00000")

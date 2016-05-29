@@ -4,6 +4,14 @@ class bors_system_go_redirect extends bors_page
 {
 	function title() { return object_property($this->object(), 'title'); }
 
+	static function go($object)
+	{
+		if(method_exists($object, 'url_in_topic'))
+			return go($object->url_in_topic(NULL, true), true);
+
+		return go($object->url_in_container(), true);
+	}
+
 	function pre_show()
 	{
 		if($object = $this->object())
@@ -12,6 +20,16 @@ class bors_system_go_redirect extends bors_page
 			{
 				$this->set_attr('direct_url',   $object->url_in_container());
 				$this->set_attr('direct_title', $object->title());
+
+				$answer = $object->answer_to();
+
+				if($answer)
+				{
+					// Если сообщение, на которое мы отвечаем — предыдущее, то сразу переходим на наше.
+					$prev = balancer_board_post::find(['topic_id' => $object->topic()->id(), 'id<' => $object->id(), 'order' => '-id'])->first();
+					if($answer->id() == $prev->id())
+						return self::go($object);
+				}
 
 				$unvisited = $object->topic()->find_first_unvisited_post(bors()->user());
 
@@ -22,8 +40,7 @@ class bors_system_go_redirect extends bors_page
 				}
 
 				if($object->owner_id() == bors()->user_id()
-					&& ($answer = $object->answer_to())
-					&& $answer->topic_page() != $object->topic_page()
+					&& $answer && $answer->topic_page() != $object->topic_page()
 					)
 				{
 

@@ -15,6 +15,8 @@ class bors_admin_reports_load extends bors_admin_page
 
 		return array(
 			'total_time' => $dbh->select('bors_access_log', 'SUM(operation_time)', array()),
+			'total_count' => $dbh->select('bors_access_log', 'COUNT(*)', array()),
+			'average_time' => $dbh->select('bors_access_log', 'SUM(operation_time)/COUNT(*)', array()),
 			'period' => $period,
 
 			'max_cpu_by_user' => $dbh->select_array('bors_access_log',

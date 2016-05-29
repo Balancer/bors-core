@@ -238,7 +238,7 @@ function bors_exit_handler($message = '')
 		errno={$error['type']}
 		errstr={$error['message']}
 		errfile={$error['file']}
-		errline={$error['line']}", -1, array('append' => "stack\n=====\n".debug_trace(0, false)));
+		errline={$error['line']}", -1, ['append' => "stack\n=====\n".debug_trace(0, false)."\n\n_SERVER=".print_r($_SERVER, true)]);
 			}
 
 		}

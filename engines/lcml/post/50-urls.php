@@ -3,7 +3,7 @@
 // URLs processing
 // Global vars: none
 //
-// (c) Balancer 2003-2010
+// (c) Balancer 2003
 // 07.06.04 0.1.2 исправлена обработка ссылок, "упирающихся" в тег, например, <li> http://www.ru/<li>
 // 08.06.04 0.1.3 если сервер теперь не возвращает кодировку, считается, что она - Windows-1251
 // 28.06.04 0.1.4 исправления выделения ссылок, заканчивающихся [, |, ] и т.п.
@@ -79,7 +79,7 @@
 
 //		if(config('is_developer')) echo bors_debug::trace();
 
-		if(bors_exec_time() < config('lcml.timeout', 30))
+		if(config('lcml.timeout') < 0 || bors_exec_time() < config('lcml.timeout', 30))
 		{
 			if(config('lcml_balancer'))
 			{
@@ -104,8 +104,12 @@
 			if(!$in_box_entered && $snip && class_exists('airbase_external_link'))
 			{
 				$link = airbase_external_link::find_or_register($original_url);
+
 				$in_box_entered = true;
-				$html = lcml($link->bbshort());
+				$bbcode = $link->bbshort();
+
+				$html = lcml($bbcode);
+
 				$in_box_entered = false;
 				return $html;
 			}
@@ -120,7 +124,7 @@
 		)
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
-		if(!function_exists('curl_init') || bors_exec_time() > config('lcml.timeout', 30))
+		if(!function_exists('curl_init') || (config('lcml.timeout') >=0 && bors_exec_time() > config('lcml.timeout', 30)))
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
 		$data = bors_lib_http::get($url);

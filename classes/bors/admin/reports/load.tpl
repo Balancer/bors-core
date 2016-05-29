@@ -1,5 +1,7 @@
 <ul>
 <li>Общая загрузка: {$total_time|round} за {$period} сек. ({math equation="1.0*x/y" x=$total_time y=$period assign="r"}{$r|round:2}:1)</li>
+<li>Всего обращений: {$total_count}</li>
+<li>Средняя длительность работы скрипта: {$average_time|round:3} сек.</li>
 </ul>
 
 <h2>Загрузка по пользователям</h2>
@@ -36,6 +38,7 @@
 	<th>referer</th>
 	<th>всего обращений</th>
 	<th>потрачено секунд</th>
+	<th>среднее время</th>
 	<th>%</th>
 </tr>
 </thead>
@@ -46,6 +49,7 @@
 	<td>{$x.referer|host_link}</td>
 	<td>{$x.cnt}</td>
 	<td>{$x.su|round:2}</td>
+	<td>{($x.su/$x.cnt)|round:3}</td>
 	<td>{math equation="time / total * 100" time=$x.su total=$total_time assign="perc"}{$perc|round:2}</td>
 </tr>
 {/foreach}

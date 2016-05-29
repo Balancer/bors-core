@@ -177,14 +177,15 @@ class bors_class_loader
 			return false;
 
 		$data = bors_vhost_data($args['host']);
-		if(file_exists($file_name = "{$data['bors_site']}/classes/{$class_path}{$class_file}.php"))
+//		echo '<xmp>'; var_dump($data); echo '</xmp>';
+		if($data && !empty($data['bors_site']) && file_exists($file_name = "{$data['bors_site']}/classes/{$class_path}{$class_file}.php"))
 		{
 			self::load_and_cache($class_name, $file_name);
 			$args['need_check_to_public_load'] = true;
 			return $file_name;
 		}
 
-		if(file_exists($file_name = "{$data['bors_site']}/classes/bors/{$class_path}{$class_file}.php"))
+		if($data && !empty($data['bors_site']) && file_exists($file_name = "{$data['bors_site']}/classes/bors/{$class_path}{$class_file}.php"))
 		{
 			self::load_and_cache($class_name, $file_name);
 			$args['need_check_to_public_load'] = true;

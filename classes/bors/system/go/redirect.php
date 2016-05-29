@@ -2,6 +2,9 @@
 
 class bors_system_go_redirect extends bors_page
 {
+	function access() { return $this; }
+	function can_read() { return true; }
+
 	function title() { return object_property($this->object(), 'title'); }
 
 	static function go($object)

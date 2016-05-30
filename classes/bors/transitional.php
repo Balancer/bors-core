@@ -82,7 +82,7 @@ function bors_use($uses)
 		if(preg_match('/\.js$/', $u))
 		{
 			// template_js_include()
-			require_once('engines/smarty/global.php');
+			require_once BORS_CORE.'/engines/smarty/global.php';
 			if(preg_match('/^pre:(.+)$/', $u, $m))
 				template_js_include($m[1], true);
 			else

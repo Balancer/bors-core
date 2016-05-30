@@ -2,7 +2,7 @@
 
 // 	Основной класс.
 
-require_once('inc/images.php');
+require_once BORS_CORE.'/inc/images.php';
 
 class bors_image_thumb extends bors_image
 {

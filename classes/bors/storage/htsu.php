@@ -3,7 +3,7 @@
 // Для тестов.
 // Пример .hts — http://www.aviaport.ru/pages/2012/save-il-14/
 
-bors_function_include('debug/log_var');
+require_once BORS_CORE.'/inc/functions/debug/log_var.php';
 
 class bors_storage_htsu extends bors_storage
 {

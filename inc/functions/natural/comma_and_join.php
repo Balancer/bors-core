@@ -5,7 +5,7 @@
 
 function comma_and_join($words, $delimiter = ', ')
 {
-	bors_function_include('locale/ec');
+	require_once __DIR__.'/../locale/ec.php';
 
 	$last = array_pop($words);
 	if(empty($words))

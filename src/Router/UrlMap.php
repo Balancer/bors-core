@@ -72,13 +72,19 @@ class UrlMap
 			if(!preg_match('!^'.$pattern.'$!', $path, $url_match))
 				continue;
 
-			if(preg_match('/^\w+$/', $class_name))
-				return $this->init_view(\bors::load($class_name, NULL));
+			if(preg_match('/^\w+$/', $class_name)
+					&& ($view = \bors::load($class_name, NULL)))
+				return $this->init_view($view);
 
-			if(preg_match('/^\w+\((\d+)\)$/', $class_name, $m))
-				return $this->init_view(\bors::load($class_name, $url_match[$m[1]]));
+			if(preg_match('/^(\w+)\((\d+)\)$/', $class_name, $m)
+					&& ($view = \bors::load($m[1], $url_match[$m[2]])))
+				return $this->init_view($view);
 
-			\bors_debug::syslog('warning-url-map', _("Unknown route class name format for UrlMap").": [{$s}]");
+			if(preg_match('/^(\w+)\(url\)$/', $class_name, $m)
+					&& ($view = \bors::load($m[1], (string)$request->getUri())))
+				return $this->init_view($view);
+
+//			\bors_debug::syslog('warning-url-map', _("Unknown route class name format for UrlMap").": [{$s}]");
 //			throw new \Exception(_("Unknown route class name format for UrlMap").": [{$s}]");
 		}
 
@@ -88,6 +94,7 @@ class UrlMap
 	function init_view($view)
 	{
 		$view->set_request($this->request);
+
 		return $view;
 	}
 }

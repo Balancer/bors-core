@@ -139,6 +139,8 @@ class App extends Obj
 		if(!defined('BORS_CORE'))
 			define('BORS_CORE', COMPOSER_ROOT.'/vendor/balancer/bors-core');
 
+		require_once BORS_CORE.'/config.php';
+
 		//TODO: Отказаться в будущем от использования define.
 		//TODO: иначе выходит несовместимость множественности проектов.
 		if(!defined('BORS_SITE'))

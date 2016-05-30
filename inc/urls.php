@@ -1,6 +1,6 @@
 <?php
 
-require_once("inc/translit.php");
+require_once BORS_CORE.'/inc/translit.php';
 
 function url_truncate($url, $max_length)
 {
@@ -64,7 +64,7 @@ function url_truncate($url, $max_length)
 	return join('/', $left).($right ? '/.../'.join('/',$right) : '/...');
 }
 
-bors_function_include('url/parse');
+require_once BORS_CORE.'/inc/functions/url/parse.php';
 
     function translite_uri($uri)
     {

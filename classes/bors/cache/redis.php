@@ -118,10 +118,11 @@ class bors_cache_redis extends bors_cache_base
 		}
 		catch(Exception $e)
 		{
-			bors_debug::exception_log('warning-cache', "Can't set rediska cache", $e);
+			if(rand(0,1000) == 0)
+				bors_debug::exception_log('warning-cache', "Can't set rediska cache", $e);
+
 			debug_count_inc('redis_cache_exception');
 		}
-
 
 		return $this->last = $value;
 	}

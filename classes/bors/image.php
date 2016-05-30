@@ -184,6 +184,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		}
 
 		$class = $this->thumbnail_class();
+
 		//FIXME: хардкод
 		if(preg_match('/^b2_/', $class))
 		{

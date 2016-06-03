@@ -128,7 +128,7 @@ if(config('access_log')
 
 	if($user_overload || $bot_overload)
 	{
-		if(!$session_user_load_summary)
+		if(empty($session_user_load_summary))
 		{
 			$dbh = new driver_mysql(config('bors_local_db'));
 			if($is_bot)
@@ -224,7 +224,7 @@ if(config('access_log') && $operation_time > config('access_log.min_time', 0))
 		'user_ip' => $_SERVER['REMOTE_ADDR'],
 		'user_id' => bors()->user_id(),
 		'server_uri' => $uri,
-		'referer' => empty($_SERVER['HTTP_REFERER']) ? NULL : $_SERVER['HTTP_REFERER'],
+		'referrer' => empty($_SERVER['HTTP_REFERER']) ? NULL : $_SERVER['HTTP_REFERER'],
 		'access_time' => round($GLOBALS['stat']['start_microtime']),
 		'operation_time' =>  str_replace(',', '.', $operation_time),
 		'user_agent' => @$_SERVER['HTTP_USER_AGENT'],
@@ -254,7 +254,7 @@ if(config('access_log') && $operation_time > config('access_log.min_time', 0))
 
 	if(!empty($access_log_mem_name))
 	{
-		bors_var::fast_set($access_log_mem_name, array($session_user_load_summary + $operation_time, time()), 600);
+		bors_var::fast_set($access_log_mem_name, [$session_user_load_summary + $operation_time, time()], 600);
 //		if(config('is_debug'))
 //			bors_debug::syslog('00-system_overload_set', $session_user_load_summary + $operation_time, 0);
 	}
@@ -306,13 +306,13 @@ if($time >= config('debug.profile_min', 3.0))
 
 // Если объект всё, что нужно нарисовал сам, то больше нам делать нечего. Выход.
 if($res === true || $res == 1)
-	return;
+	return true;
 
 // Если объект вернул строку, то рисуем её и выходим.
 if($res)
 {
 	echo $res;
-	return;
+	return true;
 }
 
 // Если дошли до сюда, то мы ничего не нашли. Дальше - обработка 404-й ошибки.
@@ -322,22 +322,22 @@ if(config('404_logging'))
 	if(!empty($_SERVER['HTTP_REFERER']) && strpos($uri, 'files/') === false)
 	{
 		if(preg_match('/aviaport/', $_SERVER['HTTP_REFERER']))
-			$fname_404 = '404-internal';
+			$filename_404 = '404-internal';
 		else
-			$fname_404 = '404-external';
+			$filename_404 = '404-external';
 	}
 	else
-		$fname_404 = '404-other';
+		$filename_404 = '404-other';
 
 	$info = array("url = $uri");
-	if($referer = @$_SERVER['HTTP_REFERER'])
-		$info[] = "referer = $referer";
+	if($referrer = @$_SERVER['HTTP_REFERER'])
+		$info[] = "referrer = $referrer";
 	$info[] = "user ip = ".bors()->client()->ip();
 	$info[] = "user agent = ".bors()->client()->agent();
 	$info[] = "user place = ".bors()->client()->place();
-	bors_log::info(join("\n", $info), $fname_404);
+	bors_log::info(join("\n", $info), $filename_404);
 
-	@file_put_contents($file = config('debug_hidden_log_dir')."/{$fname_404}.log", "[".date('r')."] $uri <= ".@$_SERVER['HTTP_REFERER'] 
+	@file_put_contents($file = config('debug_hidden_log_dir')."/{$filename_404}.log", "[".date('r')."] $uri <= ".@$_SERVER['HTTP_REFERER']
 		. " ; IP=".@$_SERVER['REMOTE_ADDR']
 		. "; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
@@ -359,7 +359,7 @@ if($cn = config('404.class_name'))
 	if($res)
 	{
 		echo $res;
-		return;
+		return true;
 	}
 }
 
@@ -373,6 +373,8 @@ if(config('404_page_url'))
 
 if(config('404_show', true))
 	echo ec("Page '$uri' not found at ".gethostname()."\n<!--\nBORS_SITE=".BORS_SITE."\nBORS_CORE=".BORS_CORE."\n-->");
+
+return false;
 
 function bors_main_error_503($logfile = NULL, $message = 'error 503', $trace = false)
 {

@@ -5,13 +5,15 @@ namespace B2;
 class App extends Obj
 {
 	var $routers = [];
-	var $inited = false;
+	var $is_initialized = false;
 	var $router = NULL;
 	var $apps = [];
 
 	/**
-	 * @return bors_project
-     */
+	 * @param string $host
+	 * @param string $path
+	 * @return App
+	 */
 	static function instance($host = '', $path = '/')
 	{
 		static $instance = NULL;
@@ -33,7 +35,13 @@ class App extends Obj
 		return $instance;
 	}
 
-	function router() { return $this->router; }
+	/**
+	 * @return \B2\Router
+     */
+	function router()
+	{
+		return $this->router;
+	}
 
 	function router_instance($router_class)
 	{
@@ -57,11 +65,18 @@ class App extends Obj
 		return config('project.nav_name');
 	}
 
+	/**
+	 * @return string
+     */
 	function _url_def()
 	{
 		return $this->base_url();
 	}
 
+	/**
+	 * @param $foo
+	 * @return string
+     */
 	function _url_ex_def($foo)
 	{
 		return $this->url();
@@ -130,7 +145,7 @@ class App extends Obj
      */
 	function init()
 	{
-		if($this->inited)
+		if($this->is_initialized)
 			return $this;
 
 		if(!defined('COMPOSER_ROOT'))
@@ -166,6 +181,7 @@ class App extends Obj
 		if(method_exists($this, 'project_name'))
 			$project_name = $this->project_name();
 		elseif(property_exists($this, 'project_name'))
+			/** @var string $project_name */
 			$project_name = $this->project_name;
 		else
 			$project_name = NULL;
@@ -178,13 +194,13 @@ class App extends Obj
 		)
 			define('BORS_HOST', $bors_host);
 
-		if(file_exists($cfg = COMPOSER_ROOT.'/config-host.php'))
-			require_once($cfg);
+		if(file_exists(COMPOSER_ROOT.'/config-host.php'))
+			require_once COMPOSER_ROOT.'/config-host.php';
 
 		if($this->router())
 			$this->router()->init();
 
-		$this->inited = true;
+		$this->is_initialized = true;
 		return $this;
 	}
 
@@ -272,7 +288,7 @@ class App extends Obj
 
 	function run()
 	{
-		if(!$this->inited)
+		if(!$this->is_initialized)
 			$this->init();
 
 		if(!defined('BORS_SITE'))

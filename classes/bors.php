@@ -92,9 +92,15 @@ class bors
 	static function run()
 	{
 		self::init();
-		require_once(__DIR__.'/../main.php');
+		return require_once __DIR__.'/../main.php';
 	}
 
+	/**
+	 * @param string $uri
+	 * @param string $method
+	 * @return bool|string
+	 * @throws Exception
+	 */
 	static function show_uri($uri, $method = 'GET')
 	{
 //		unset($GLOBALS['cms']['templates']);

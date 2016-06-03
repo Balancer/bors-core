@@ -72,7 +72,7 @@
 				}
 			}
 
-			require_once('inc/bors/form_save.php');
+			require_once BORS_CORE.'/inc/bors/form_save.php';
 			$processed = bors_form_save($obj);
 			if($processed === true)
 			{

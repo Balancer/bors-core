@@ -377,7 +377,7 @@ function class_load_by_local_url($url, $args)
 	$is_query = !empty($url_data['query']);
 	$host_helper = "!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)";
 
-//	var_dump($GLOBALS['bors_map']);
+//	if(config('is_debug')) { echo '<xmp>'; var_dump("check_url/data", $check_url, $url_data); echo '</xmp>'; }
 
 	foreach($GLOBALS['bors_map'] as $pair)
 	{
@@ -392,7 +392,11 @@ function class_load_by_local_url($url, $args)
 		else
 			$test_url = $check_url;
 
-//		if(config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for '.$test_url.'<br/>'.$check_url."<Br/>$url_pattern, class_path=$class_path<br/>";
+//		if(config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for test_url='.$test_url.'<br/>check_url='.$check_url."<Br/>url_pattern=$url_pattern, class_path=$class_path<br/>";
+
+		if(preg_match('!/composer/vendor/!', $check_url))
+			throw new \Exception("Incorrect check url: ". $check_url);
+
 		if(preg_match($host_helper.$url_pattern.'$!i', $test_url, $match))
 		{
 			if(($obj = try_object_load_by_map($url, $url_data, $test_url, $class_path, $match, $url_pattern, 1)))

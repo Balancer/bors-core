@@ -17,7 +17,7 @@ function lp_code($txt, $params)
 		}
 	}
 
-	require_once COMPOSER_ROOT.'/vendor/bors-ext/funcs/modules/colorer.php';
+	require_once COMPOSER_ROOT.'/vendor/balancer/bors-ext/funcs/modules/colorer.php';
 
 	$txt = str_replace("lcml_save_left_bracket", "[", $txt);
 	$txt = str_replace("lcml_save_lt", "<", $txt);

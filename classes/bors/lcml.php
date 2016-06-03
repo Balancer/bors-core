@@ -596,7 +596,7 @@ class bors_lcml extends bors_object
 	static function bbh($string, $params = array())
 	{
 		// Fatal error: Call to undefined function lcml_tag_disabled() in /var/www/bors/bors-core/engines/lcml/pre/50-auto_images.php on line 5
-		require_once('engines/lcml/main.php');
+		require_once BORS_CORE.'/engines/lcml/main.php';
 
 		$se = config('lcml_tags_enabled');
 		$sd = config('lcml_tags_disabled');

@@ -79,7 +79,7 @@
 
 //		if(config('is_developer')) echo bors_debug::trace();
 
-		if(config('lcml.timeout') < 0 || bors_exec_time() < config('lcml.timeout', 30))
+		if(config('lcml.timeout') < 0 || bors_debug::exec_time() < config('lcml.timeout', 30))
 		{
 			if(config('lcml_balancer'))
 			{
@@ -124,7 +124,7 @@
 		)
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
-		if(!function_exists('curl_init') || (config('lcml.timeout') >=0 && bors_exec_time() > config('lcml.timeout', 30)))
+		if(!function_exists('curl_init') || (config('lcml.timeout') >=0 && bors_debug::exec_time() > config('lcml.timeout', 30)))
 			return "<a ".($blacklist ? 'rel="nofollow" ' : '')."href=\"{$original_url}\"$external>".lcml_strip_url($original_url)."</a>";
 
 		$data = bors_lib_http::get($url);

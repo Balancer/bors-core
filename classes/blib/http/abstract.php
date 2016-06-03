@@ -7,7 +7,7 @@ class blib_http_abstract
 {
 	static function get($url, $raw = false, $max_length = false)
 	{
-		require_once('inc/http.php');
+		require_once BORS_CORE.'/inc/http.php';
 		$get = self::get_ex($url, ['is_raw' => $raw, 'max_length' => $max_length]);
 		return $get['content'];
 	}
@@ -222,7 +222,8 @@ class blib_http_abstract
 			$query = $m[2];
 		}
 
-		if(preg_match(config('urls.skip_load_ext_regexp'), $pure_url) && empty($params['blobs_enabled']))
+		$re = config('urls.skip_load_ext_regexp');
+		if($re && preg_match($re, $pure_url) && empty($params['blobs_enabled']))
 			return array('content' => NULL, 'content_type' => NULL, 'error' => true);
 
 		$charset = popval($params, 'charset');

@@ -393,4 +393,9 @@ class bors_debug
 
 		$res = str_ireplace('</body>', $deb.'</body>', $res);
 	}
+
+	static function exec_time()
+	{
+		return microtime(true) - $GLOBALS['stat']['start_microtime'];
+	}
 }

@@ -32,7 +32,7 @@ if(!config('bors_logs_db'))
 
 config_set('bors.version_show', false);
 
-config_set('storage_db_sqlite_main', BORS_SITE.'/data/main.sqlite');
+config_set('storage_db_sqlite_main', COMPOSER_ROOT.'/data/main.sqlite');
 
 config_set('lcml_sharp_markup', false);
 // config_set('temporary_file_contents', @file_get_contents(__DIR__.'/resources/temporary.html'));
@@ -63,7 +63,7 @@ if(!config('locale'))
 
 config_set('3rdp_xmlrpc_path', 'xmlrpc-2.2.2');
 
-if(!config('project.name'))
+if(!config('project.name') && defined('BORS_SITE'))
 	config_set('project.name', strtolower(basename(dirname(BORS_SITE))));
 
 // После установки кодировок -- использует internal_charset

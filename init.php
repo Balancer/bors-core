@@ -132,7 +132,7 @@ foreach(array_reverse(array_unique(array_reverse($dirs))) as $dir)
 		bors_config_ini($dir.'/config.ini');
 
 	if(file_exists($dir.'/config.php'))
-		include_once($dir.'/config.php');
+		require_once($dir.'/config.php');
 }
 
 if(!empty($GLOBALS['bors']['config']['config_hosts']))

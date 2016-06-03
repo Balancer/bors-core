@@ -141,6 +141,9 @@ class App extends Obj
 
 		require_once BORS_CORE.'/config.php';
 
+		if(file_exists(COMPOSER_ROOT.'/config.php'))
+			require_once COMPOSER_ROOT.'/config.php';
+
 		//TODO: Отказаться в будущем от использования define.
 		//TODO: иначе выходит несовместимость множественности проектов.
 		if(!defined('BORS_SITE'))

@@ -9,12 +9,15 @@ function lp_code($txt, $params)
 
 	foreach(explode(' ', config('lcml.code.engines_order')) as $code_engine_class_name)
 	{
-		$highliter = object_load($code_engine_class_name);
-		if($res = $highliter->render($txt, $params))
-			return save_format($res);
+		if($code_engine_class_name)
+		{
+			$highliter = object_load($code_engine_class_name);
+			if($res = $highliter->render($txt, $params))
+				return save_format($res);
+		}
 	}
 
-	include_once("funcs/modules/colorer.php");
+	require_once COMPOSER_ROOT.'/vendor/bors-ext/funcs/modules/colorer.php';
 
 	$txt = str_replace("lcml_save_left_bracket", "[", $txt);
 	$txt = str_replace("lcml_save_lt", "<", $txt);
@@ -33,7 +36,7 @@ function lp_code($txt, $params)
         $txt=explode("\n", $txt);
         foreach($txt as $s)
             $s=" $s";
-        
+
 		$txt=join("\n",$txt);
 
 //		$txt = str_replace("\n", "<br />---save_cr---", $txt);
@@ -45,10 +48,10 @@ function lp_code($txt, $params)
             $txt.="<div class=\"code_type\">code, type '<b>{$m[2]}</b>'</div>";
 
 		$txt .= "</div>";
-        
+
 //        $txt = preg_replace("!( {2,})!em","str_repeat('&nbsp;',strlen('$1'))", $txt);
 		$txt = preg_replace("!^ !m","&nbsp;",$txt);
 		$txt = preg_replace("! {2}!","&nbsp; ",$txt);
-		
+
 		return save_format($txt);
 }

@@ -257,24 +257,6 @@ function bors_exit_handler($message = '')
 		}
 	}
 
-	if(config('debug.show_variables'))
-	{
-		bors_use('debug_count_info_all');
-		bors_use('debug_timing_info_all');
-		bors_use('debug_vars_info');
-
-		$deb = '';
-
-		if($s = debug_vars_info())
-			$deb = "\n=== debug vars info: ===\n$s";
-		if($s = debug_count_info_all())
-			$deb .= "\n=== debug counting: ===\n$s";
-		if($s = debug_timing_info_all())
-			$deb .= "\n=== debug timing: ===\n$s";
-
-		echo "<xmp>\n".$deb."\n</xmp>\n";
-	}
-
 	if(config('debug_mysql_trace'))
 	{
 		$dir = config('debug_hidden_log_dir').'/mysql-trace';

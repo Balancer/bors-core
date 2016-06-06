@@ -331,8 +331,8 @@ class App extends Obj
 			if($ret)
 				return $ret;
 
+//			r($view);
 			$response = $view->response();
-//			r($response, $view);
 			if($response)
 			{
 				// composer: slim/slim>3
@@ -354,6 +354,6 @@ class App extends Obj
 
 	function package_path()
 	{
-		return \bors::$package_app_path[get_class($this)];
+		return @\bors::$package_app_path[get_class($this)];
 	}
 }

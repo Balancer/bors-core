@@ -25,7 +25,8 @@ class bors_votes_last extends balancer_board_page
 			if(empty($last[$idx = $vote->target_class_name().'-'.$vote->target_object_id()]))
 				$last[$idx] = $vote;
 
-		$last = array_splice(array_values($last), 0, 30);
+		$last = array_values($last);
+		$last = array_splice($last, 0, 30);
 
 		$best = bors_find_all('bors_votes_thumb', array(
 				'group' => 'target_class_name,target_object_id',

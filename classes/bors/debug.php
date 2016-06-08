@@ -82,7 +82,7 @@ class bors_debug
 			@chmod($dir, 0777);
 		}
 
-		file_put_contents($file, $out, FILE_APPEND);
+		@file_put_contents($file, $out, FILE_APPEND);
 		@chmod($file, 0666);
 
 		bors_debug::timing_stop('hidden_log');

@@ -160,7 +160,11 @@ class driver_pdo implements Iterator
 
 		$err = $this->connection->errorInfo();
 		if($err[0] != "00000")
-			throw new Exception("PDO error on query «{$query}»: ".print_r($err, true));
+		{
+			$msg = "PDO error\n".print_r($err, true)."\non query [{$query}]";
+			bors_debug::syslog('error-pdo', $msg);
+			throw new Exception($msg);
+		}
 
 		while($assoc = $res->fetch(PDO::FETCH_ASSOC))
 			$result[] = $assoc;

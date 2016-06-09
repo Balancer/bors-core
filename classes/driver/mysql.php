@@ -13,8 +13,8 @@ class driver_mysql extends driver_pdo implements Iterator
 
 		$real_db  = config_mysql('db_real', $db_name);
 
-		if(!empty(self::$connections[$real_db]))
-			return $this->connection = self::$connections[$real_db];
+		if(!empty(self::$connections[$real_db]) && self::$connections[$real_db]['expire'] > time())
+			return $this->connection = self::$connections[$real_db]['connection'];
 
 		$server   = config_mysql('server', $db_name);
 		$login    = config_mysql('login', $db_name);
@@ -50,7 +50,12 @@ class driver_mysql extends driver_pdo implements Iterator
 			bors_debug::timing_stop('mysql_set_names');
 		}
 
-		self::$connections[$real_db] = $this->connection;
+		self::$connections[$real_db] = [
+			'connection' => $this->connection,
+			'expire' => time() + 10,
+		];
+
+		return $this->connection;
 	}
 
 	function connection() { return $this->connection; }

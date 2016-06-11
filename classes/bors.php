@@ -244,11 +244,14 @@ class bors
 		if($user_perms && !empty($_SERVER['USER']))
 			$ns_parts[] = strtolower($_SERVER['USER']);
 
-		if(($cs = config('internal_charset')) != 'utf-8')
+		if(($cs = config('internal_charset')) && $cs != 'utf-8')
 			$ns_parts[] = 'i'.$cs;
 
-		if(($cs = config('output_charset')) != 'utf-8')
+		if(($cs = config('output_charset')) && $cs != 'utf-8')
 			$ns_parts[] = 'o'.$cs;
+
+		if(!empty($_SERVER['BORS_INSTANCE']))
+			$ns_parts[] = $_SERVER['BORS_INSTANCE'];
 
 		return array_filter($ns_parts);
 	}

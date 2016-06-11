@@ -339,27 +339,6 @@ trait MySql
 
     function index_file() { return 'index.html'; }
 
-	function static_file()
-	{
-		$path = $this->url_ex($this->args('page'));
-		$data = url_parse($path);
-
-		$file = @$data['local_path'];
-		if(preg_match('!/$!', $file))
-			$file .= $this->index_file();
-
-		$rel_file = @$data['path'];
-		if(preg_match('!/$!', $rel_file))
-			$rel_file .= $this->index_file();
-
-		if($r = $this->get('cache_static_root'))
-			$file = $r.$rel_file;
-		elseif($r = config('cache_static.root'))
-			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $r, $file);
-
-		return $file;
-	}
-
 	function use_temporary_static_file() { return true; }
 
 	function internal_charset() { return config('internal_charset', 'utf-8'); }
@@ -719,7 +698,7 @@ trait MySql
 		$object = bors_load(get_called_class(), $id);
 
 		if(!$object)
-			$object = new b2_null(NULL);
+			$object = new \b2_null(NULL);
 
 		return $object;
 	}

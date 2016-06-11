@@ -1125,7 +1125,8 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		$this->set_was_cleaned(true);
 
-		if($this->cache_static() > 0 && $this->cache_static_can_be_dropped())
+//		echo '-'.$this->cache_static().'/'.$this->cache_static_can_be_dropped();
+		if(/*$this->cache_static() > 0 && */ $this->cache_static_can_be_dropped())
 			cache_static::drop($this);
 
 		// Чистка memcache и Cache.
@@ -1634,6 +1635,11 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$data = url_parse($path);
 
 		$file = @$data['local_path'];
+
+
+		if(!$file) // Hardcode
+			$file = $_SERVER['DOCUMENT_ROOT'].$data['path'];
+
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
 

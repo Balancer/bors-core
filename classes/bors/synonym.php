@@ -41,6 +41,8 @@ class bors_synonym extends bors_object_db
 
 	static function add_object($x1, $x2 = array(), $params = array())
 	{
+		require_once BORS_CORE.'/inc/texts.php';
+
 		if(is_object($x1))
 		{
 			$object = $x1;

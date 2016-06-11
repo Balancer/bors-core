@@ -119,6 +119,10 @@ class cache_static extends bors_object_db
 			else
 				bors_object_create($object, $page);
 		}
+		elseif(preg_match('!/cache-static/!', $object->static_file()))
+			@unlink($object->static_file());
+		else
+			bors_debug::syslog('error-fatal-static', "Non cache-static file: ".$object->static_file());
 	}
 
 	//TODO: можно делать static, если static будет у родителя. Или переименовать.

@@ -392,7 +392,7 @@ function class_load_by_local_url($url, $args)
 		else
 			$test_url = $check_url;
 
-//		if(config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for test_url='.$test_url.'<br/>check_url='.$check_url."<Br/>url_pattern=$url_pattern, class_path=$class_path<br/>";
+//		if(1||config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for test_url='.$test_url.'<br/>check_url='.$check_url."<Br/>url_pattern=$url_pattern, class_path=$class_path<br/>";
 
 		if(preg_match('!/composer/vendor/!', $check_url))
 			throw new \Exception("Incorrect check url: ". $check_url);

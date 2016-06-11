@@ -70,7 +70,7 @@ bors_config_ini($dir.'/config.ini');
 require_once($dir.'/config.php');
 
 $GLOBALS['bors_data']['vhost_handlers'] = array();
-$GLOBALS['bors_map'] = array();
+//$GLOBALS['bors_map'] = array();
 
 // Пока не убирать: Fatal error: Call to undefined function calling_function_name() in /var/www/bors/composer/vendor/balancer/bors-core/classes/bors/object/simple.php on line 288
 require_once('inc/system.php');

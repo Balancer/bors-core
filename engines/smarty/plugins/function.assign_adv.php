@@ -1,7 +1,7 @@
 <?php
 
-if(!defined('USE_C2'))
-	throw new Exception('Incorrect load C2');
+//if(!defined('USE_C2'))
+//	throw new Exception('Incorrect load C2');
 
 
 /*

@@ -30,9 +30,6 @@ class bors
 		if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
 			require_once $f;
 
-		foreach(bors::$composer_route_maps as $map)
-			require_once($map);
-
 		require_once(__DIR__.'/../init.php');
 	}
 
@@ -65,6 +62,14 @@ class bors
 		// Грузим вначале, т.к. там прописаны рабочие каталоги и т.п.
 		if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
 			require_once $f;
+
+		foreach(bors::$composer_route_maps as $map_file)
+		{
+			$map = NULL;
+			require_once($map_file);
+			if($map)
+				bors_url_map($map);
+		}
 	}
 
 	static function load($class_name, $object_id)

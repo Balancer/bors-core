@@ -556,20 +556,6 @@ trait MySql
 	function link_time1() { return NULL; }
 	function link_time2() { return NULL; }
 
-	function __toString()
-	{
-		try
-		{
-			if($tt = $this->title_true())
-				return $this->class_title().ec(' «').$tt.ec('»').(is_numeric($this->id()) ? "({$this->id()})" : '');
-		}
-		catch(Exception $e)
-		{
-		}
-
-		return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : '');
-	}
-
 	function _relations() { return array(); }
 
 	function print_properties() { print_d($this->data); }

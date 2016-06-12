@@ -1886,12 +1886,14 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		{
 			if($tt = $this->title_true())
 				return $this->class_title().ec(' «').$tt.ec('»').(is_numeric($this->id()) ? "({$this->id()})" : '');
+
+			return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : '');
 		}
 		catch(Exception $e)
 		{
 		}
 
-		return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : '');
+		return '__toString exception in '.get_class($this);
 	}
 
 	function _relations() { return array(); }

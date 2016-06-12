@@ -315,7 +315,18 @@ class bors_object_simple extends bors_object_empty
 	function cache_clean() { }
 
 	function auto_search_index() { return false; }
-	function __toString() { return $this->class_name().'://'.$this->id(); }
+	function __toString()
+	{
+		try
+		{
+			return $this->class_name().'://'.$this->id();
+		}
+		catch(Exception $e)
+		{
+		}
+
+		return '__toString exception in '.get_class($this);
+	}
 
 	function attr($attr, $def = NULL) { return array_key_exists($attr, $this->attr) ? $this->attr[$attr] : $def; }
 	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }

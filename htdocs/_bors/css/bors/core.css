@@ -19,3 +19,7 @@ ol.code {
 	border-right: 1px solid;
 	border-top: 1px solid;
 }
+
+.post-body img {
+	max-width: 100%;
+}

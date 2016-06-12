@@ -49,13 +49,16 @@ class auto_object_php extends bors_object
 
 		$class_path = str_replace('/', '_', trim($path, '/'));
 
-		if(!empty(bors::$composer_autoroute_prefixes))
-			$class_base = bors::$composer_autoroute_prefixes[0].'_'; //TODO: сделать мультизагрузку. Пока только одиночный класс.
+		if(!$class_base)
+		{
+			if($class_base = config('classes_auto_base', config('project.name')))
+				$class_base .= '_';
+		}
 
 		if(!$class_base)
 		{
-			if($class_base = config('classes_auto_base', config('project.name', 'auto_php')))
-				$class_base .= '_';
+			if(!empty(bors::$composer_autoroute_prefixes))
+				$class_base = bors::$composer_autoroute_prefixes[0].'_'; //TODO: сделать мультизагрузку. Пока только одиночный класс.
 		}
 
 		$is_auto = false;

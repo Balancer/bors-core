@@ -33,8 +33,6 @@ if(!defined('COMPOSER_INCLUDED'))
 	define('COMPOSER_INCLUDED', true);
 }
 
-bors::init_new();
-
 if(!defined('BORS_EXT'))
 	define('BORS_EXT', BORS_ROOT.'bors-ext');
 
@@ -59,9 +57,11 @@ if(!defined('BORS_3RD_PARTY'))
 if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_REAL_IP'];
 
+// Before configs — they may use bors_url_map and other.
+bors_transitional::init();
 bors_funcs::noop();
 
-foreach(array(COMPOSER_ROOT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
+foreach(array(COMPOSER_ROOT, BORS_LOCAL, BORS_SITE) as $base_dir)
 	if(file_exists($file = "{$base_dir}/config-pre.php"))
 		include_once($file);
 
@@ -80,7 +80,6 @@ $host = @$_SERVER['HTTP_HOST'];
 $vhost = '/vhosts/'.@$_SERVER['HTTP_HOST'];
 $includes = array(
 	BORS_SITE,
-	BORS_HOST,
 	BORS_LOCAL.$vhost,
 	BORS_LOCAL,
 	BORS_EXT,
@@ -116,7 +115,7 @@ if(!function_exists('_'))
 
 spl_autoload_register('class_include');
 
-$dirs = [BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE];
+$dirs = [BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_SITE];
 
 // foreach(bors::$package_app_path as $path)
 //	$dirs[] = $path;
@@ -196,6 +195,10 @@ else
 
 bors_function_include('time/date_format_mysqltime');
 $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
+
+// After configs. In url_map may be used config() data.
+bors::init_new();
+
 
 /**
  * Инициализация ядра системы

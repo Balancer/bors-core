@@ -4,6 +4,12 @@ class bors_transitional
 {
 	static function init()
 	{
+		static $inited = false;
+		if($inited)
+			return;
+
+		$inited = true;
+
 		if(!defined('COMPOSER_ROOT'))
 			define('COMPOSER_ROOT', realpath(__DIR__.'/../../../../../'));
 

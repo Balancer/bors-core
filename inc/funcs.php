@@ -42,9 +42,7 @@ function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
 
 	$map = array();
 
-	if(file_exists($file = BORS_HOST.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		require_once($file);
-	elseif(defined('BORS_LOCAL') && file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
+	if(defined('BORS_LOCAL') && file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
 		require_once($file);
 	elseif(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
 		require_once($file);

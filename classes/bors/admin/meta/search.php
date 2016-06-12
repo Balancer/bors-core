@@ -23,6 +23,18 @@ class bors_admin_meta_search extends bors_admin_meta_main
 		return parent::parents();
 	}
 
+	function pre_show()
+	{
+		if(is_numeric($this->q()) and $this->get('b2_search_id_prefer'))
+		{
+			$model = bors_load($this->main_admin_class(), $this->q());
+			if($model)
+				return go($model->admin_url());
+		}
+
+		return parent::pre_show();
+	}
+
 	function body_data()
 	{
 		$data = parent::body_data();

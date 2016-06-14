@@ -311,7 +311,13 @@ class bors_object_simple extends bors_object_empty
 
 	function _storage_engine_def() { return ''; }
 	function is_loaded() { return true; }
-	function internal_uri() { return get_class($this).'://'.$this->id(); }
+	function internal_uri()
+	{
+		return get_class($this).'://'
+		//TODO: instead serialize make method for recursive object id. Without using __toString() in configures with cacheng empty results in _title_def();
+			.((is_numeric($this->id())||is_string($this->id())) ? $this->id() : serialize($this->id()));
+	}
+
 	function cache_clean() { }
 
 	function auto_search_index() { return false; }

@@ -156,6 +156,9 @@ class App extends Obj
 
 		require_once BORS_CORE.'/config.php';
 
+		if(($p = @\bors::$package_app_path[get_class($this)]) && file_exists($p.'/config.php'))
+			require_once($p.'/config.php');
+
 		if(file_exists(COMPOSER_ROOT.'/config.php'))
 			require_once COMPOSER_ROOT.'/config.php';
 

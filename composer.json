@@ -56,6 +56,7 @@
 		"bors-smarty-plugins": "engines/smarty/plugins",
 
 		"component": {
+			"name": "_bors",
 			"scripts-disabled": [
 				"htdocs/js/bootstrap.js"
 			],

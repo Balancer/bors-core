@@ -14,7 +14,7 @@ class App extends Obj
 	 * @param string $path
 	 * @return App
 	 */
-	static function instance($host = '', $path = '/')
+	static function instance($path = '/', $host = '')
 	{
 		static $instance = NULL;
 

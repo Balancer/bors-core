@@ -50,9 +50,22 @@
 		}
 	},
 
-    "extra": {
-        "bors-classes": "classes",
-        "bors-templates": "templates",
-        "bors-smarty-plugins": "engines/smarty/plugins"
-    }
+	"extra": {
+		"bors-classes": "classes",
+		"bors-templates": "templates",
+		"bors-smarty-plugins": "engines/smarty/plugins",
+
+		"component": {
+			"scripts-disabled": [
+				"htdocs/js/bootstrap.js"
+			],
+			"styles": [
+				"htdocs/_bors/css/bors/*.css"
+			],
+			"files": [
+				"htdocs/_bors/images/*.*",
+				"htdocs/_bors/images/*/*.*"
+			]
+		}
+	}
 }

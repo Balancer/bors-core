@@ -351,18 +351,33 @@ function bors_throw($message)
  */
 function object_property($object, $property, $def = NULL)
 {
+	if(!$object)
+		return $def;
+
 	if(is_object($object))
 	{
 		try
 		{
+			// Direct call like object_property($topic, 'title');
 			if(preg_match('/^\w+$/', $property))
 				return $object->get($property, $def);
+			// Chain call like object_property($topic, 'time()->dmy()');
 			else
 			{
-//				echo bors_debug::trace();
-//				echo "\$x = \$object->{$property};";
-				eval("\$x = \$object->{$property};");
-                /** @var mixed $x */
+				$x = $object;
+				foreach(explode('->', $property) as $p)
+				{
+					if(preg_match('/^(\w+)\(\)$/', $p, $m))
+					{
+						if(!is_object($x))
+							return $def;
+
+						$x = $x->get($m[1], $def);
+					}
+					else
+						throw new \Exception("Unknown property format: '$property'");
+				}
+
                 return $x;
 			}
 		}

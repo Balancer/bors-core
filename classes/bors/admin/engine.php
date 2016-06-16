@@ -162,16 +162,17 @@ class bors_admin_engine extends bors_object
 	function imaged_titled_link($title = NULL)
 	{
 		$obj = $this->real_object();
+
 		if(is_null($title))
 			$title = $obj->title();
 
 		if(!$title)
 			$title = ec('[без имени]');
 
-		if($obj->access()->can_edit())
+		if(object_property($obj->access(), 'can_edit'))
 			$res = "<a rel=\"nofollow\" href=\"{$obj->admin()->url()}\">{$title}</a>";
 		else
-			$res = "{$title}<!-- {$obj->access()->debug_title()} of {$obj->debug_title()} -->";
+			$res = "{$title}<!-- ".object_property($obj->access(), 'debug_title', 'access is NULL')." of {$obj->debug_title()} -->";
 
 		try
 		{

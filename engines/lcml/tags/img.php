@@ -29,9 +29,6 @@ function lt_img($params)
 //	require_once('inc/airbase/images.php');
 //	$data = airbase_image_data($params['url'], $url);
 
-//	if(!$data['local'])
-//		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.
-
 	if(empty($params['size']))
 	{
 		$size = config('box_sizes', 640);
@@ -86,7 +83,7 @@ function lt_img($params)
 		if(preg_match('/\w{5,}$/', $data['path']))
 			$data['path'] .= '.jpg';
 
-//		if(config('is_debug') && preg_match('/kaban.*png/', $uri)) { echo '<xmp>', $uri,' '; var_dump($params); var_dump($data); exit(); }
+//		if(preg_match('/ogonok40.jpg/', $uri)) { echo '<xmp>', $uri,' '; var_dump($params); var_dump($data); exit(); }
 
 		$store_path = config('sites_store_path');
 		$store_url  = config('sites_store_url');
@@ -133,7 +130,7 @@ function lt_img($params)
 
 			$file = "$store_path$path";
 
-//			if(config('is_developer')) ~r($store_path, $path, $file);
+//			if(1||config('is_developer')) ~r($store_path, $path, $file);
 
 			if((!file_exists($file) || filesize($file)==0) && !preg_match('!/_cg/!', $file))
 			{
@@ -141,6 +138,23 @@ function lt_img($params)
 				$c2 = bors_substr($data['host'],1,1);
 				require_once('inc/urls.php');
 				$path = "$c1/$c2/{$data['host']}".translite_path($data['path']);
+
+				if(preg_match("!/$!",$path))
+					$path .= "index";
+
+				if(!empty($data['query']))
+					$path .= '/='.str_replace('&','/', $data['query']);
+
+				$file = "$store_path/$path";
+			}
+
+			if((!file_exists($file) || filesize($file)==0) && !preg_match('!/_cg/!', $file))
+			{
+				$h = preg_replace('/^www\./', '', $data['host']);
+				$c1 = bors_substr($h,0,1);
+				$c2 = bors_substr($h,1,1);
+				require_once('inc/urls.php');
+				$path = "$c1/$c2/$h".translite_path($data['path']);
 
 				if(preg_match("!/$!",$path))
 					$path .= "index";
@@ -181,8 +195,8 @@ function lt_img($params)
 					foreach($thumbnails as $t)
 						$t->delete();
 
-				if(file_exists($file))
-					unlink($file);
+//				if(file_exists($file))
+//					rename($file, "$file.bak");
 			}
 
 			if((!file_exists($file) || filesize($file)==0 || !$image_size) && !preg_match('!/_cg/!', $file))

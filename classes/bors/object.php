@@ -36,8 +36,8 @@ class bors_object extends bors_object_simple
     // В качестве заголовка объекта по умолчанию используется имя класса
 	function _title_def()
 	{
-		if(empty($this->data))
-			bors_debug::syslog('debug-title', "Empty data");
+//		if(empty($this->data))
+//			bors_debug::syslog('debug-title', "Empty data");
 		return $this->class_title().' '.$this->class_name();
 	}
 

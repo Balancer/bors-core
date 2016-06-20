@@ -1,6 +1,6 @@
 <?php
 
-bors_function_include('client/bors_bot_detect');
+require_once BORS_CORE.'/inc/functions/client/bors_bot_detect.php';
 
 function bors_client_analyze()
 {

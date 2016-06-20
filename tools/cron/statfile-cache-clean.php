@@ -2,10 +2,12 @@
 <?php
 $start = time();
 
-require_once('../config.php');
-require_once(__DIR__.'/../../init.php');
+require_once __DIR__.'/../config.php';
 
-require_once('inc/processes.php');
+if(!config('debug_hidden_log_dir') || !file_exists(config('debug_hidden_log_dir')))
+	exit("Empty hidden log dir: '".config('debug_hidden_log_dir')."'");
+
+require_once BORS_CORE.'/inc/processes.php';
 
 bors_function_include('debug/execute_trace');
 
@@ -13,8 +15,8 @@ bors_function_include('debug/execute_trace');
 
 // bors_thread_unlock('statfile-cache-clean');
 
-if(!bors_thread_lock('statfile-cache-clean', 600))
-	exit("Locked\n");
+//if(!bors_thread_lock('statfile-cache-clean', 600))
+//	exit("Locked\n");
 
 if(!config('cache_database'))
 {
@@ -24,18 +26,25 @@ if(!config('cache_database'))
 
 config_set('do_not_exit', true);
 
+
 try
 {
 	echo date("r\n");
 
 	// BETWEEN 0 AND NOW — чтобы не стирать -1.
 
-	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time(), 'order' => 'expire_time')) as $x)
+	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time(), 'order' => 'RAND()', 'limit' => 1000)) as $x)
 	{
 //		echo "{$x->original_uri()}, {$x->id()} [rcr={$x->recreate()}]: ";
 		echo "{$x->original_uri()} [rcr={$x->recreate()}]: ";
 
 		$obj = $x->target();
+
+		$_SERVER['DEBUG_STATCACHE_CLEAN'] = $x->debug_title();
+		unset($_SERVER['DEBUG_STATCACHE_CLEAN_TARGET']);
+
+		if($obj)
+			$_SERVER['DEBUG_STATCACHE_CLEAN_TARGET'] = $obj->debug_title();
 
 		if($x->recreate() && config('cache_static'))
 		{

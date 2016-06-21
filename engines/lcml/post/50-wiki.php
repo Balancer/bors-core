@@ -9,6 +9,9 @@
 
     function lcml_wiki_do($title, $text = NULL)
     {
+		bors_debug::syslog('warning-lcml-need-restore-functional', "Call for old disabled HTS-Wiki call: ".$text);
+		return $text;
+
         if(!$text)
             $text = $title;
 

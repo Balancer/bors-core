@@ -8,7 +8,13 @@ class bors_forms_select2 extends bors_forms_element
 
 		$element_id = defval($params, 'dom_id', md5(rand()));
 		$value = $this->value();
-		$class_name = $params['main_class'];
+
+		$class_name = @$params['class_name'];
+		if(empty($class_name))
+			$class_name = $params['main_class'];
+
+		if(empty($class_name))
+			throw new \Exception("Empty class_name for Select2");
 
 		$data = array(
 			'id' => $element_id,
@@ -22,16 +28,19 @@ class bors_forms_select2 extends bors_forms_element
 		// https://github.com/Anahkiasen/html-object
 		$input = HtmlObject\Input::hidden($this->property_name(), $value, $data);
 
-		$edit_params = defval($params, 'edit_params', array());
+		$edit_params = defval($params, 'edit_params', []);
 
-		jquery_select2::appear_ajax("'#{$element_id}'", $class_name, array_merge($edit_params, array(
+		$s2_params = [
 			'order' => defval($params, 'order', 'title'),
 			'title_field' => defval($params, 'title_field', 'title'),
 			'search_fields' => defval($params, 'search_fields', 'title'),
 			'where' => defval($params, 'where'),
 			'width' => $width,
 //			'dropdownAutoWidth' => true,
-		)));
+			'create_new' => defval($params, 'create_new', false),
+		];
+
+		jquery_select2::appear_ajax("'#{$element_id}'", $class_name, array_merge($edit_params, $s2_params));
 
 		if($value)
 		{

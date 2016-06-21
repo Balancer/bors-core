@@ -26,7 +26,7 @@ class bors_object extends bors_object_simple
 	//	bors_user - класс пользователя по умолчанию.
 
 	var $data = array();
-	protected static $__auto_objects = array();
+	protected static $__auto_objects = [];
 
 //	При настройке проверить:
 //	— http://www.aviaport.ru/services/events/arrangement/
@@ -58,6 +58,7 @@ class bors_object extends bors_object_simple
 
 	function is_null() { return false; }
 	function is_not_null() { return true; }
+	function exists() { return $this->can_be_empty() || $this->is_loaded(); }
 
 	function parents()
 	{
@@ -366,7 +367,21 @@ class bors_object extends bors_object_simple
 
 		if(!empty($auto_objs[$method]))
 		{
-			if(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$method], $m))
+			if(preg_match('/^(\w+)$/', $auto_objs[$method], $m))
+			{
+				$cn = $auto_objs[$method];
+				$property = $method.'_id';
+				if(config('orm.auto.cache_attr_skip'))
+					return bors_load($cn, $this->get($property));
+				else
+				{
+					$property_value = $this->get($property);
+					$value = bors_load($cn, $property_value);
+					self::$__auto_objects[$method] = compact('property', 'property_value', 'value');
+					return $value;
+				}
+			}
+			elseif(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$method], $m))
 			{
 				$property = $m[2];
 				if(config('orm.auto.cache_attr_skip'))

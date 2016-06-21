@@ -34,7 +34,7 @@ class bors_log_monolog
 		}
 		catch(Exception $e)
 		{
-			echo "Exception while error logging:\n<code><xmp>".$e->getMessage()."</xmp></code>";
+			echo "Exception while error logging:\n<code><xmp>".$e->getMessage()."</xmp></code>\nFirst error is:\n<xmp>$msg\nin".bors_debug::trace()."</xmp>";
 		}
 
 		$entered = false;

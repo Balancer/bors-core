@@ -133,7 +133,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 		mkpath(dirname($cached_class_file), 0750);
 		if(is_writable(dirname($cached_class_file)))
 		{
-			bors_function_include('fs/file_put_contents_lock');
+			require_once BORS_CORE.'/inc/functions/fs/file_put_contents_lock.php';
 			file_put_contents_lock($cached_class_file, "<?php\n\n".$class);
 			chmod($cached_class_file, 0640);
 		}

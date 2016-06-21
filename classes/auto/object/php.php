@@ -190,7 +190,7 @@ class auto_object_php extends bors_object
 			if(!$object->parents(true))
 				$object->set_parents(array(secure_path(dirname($path).'/')), false);
 
-			bors_function_include('debug/log_var');
+			require_once BORS_CORE.'/inc/functions/debug/log_var.php';
 			debug_log_var('target_class_file', $object->class_file());
 			debug_log_var('loader_class_file', $this->class_file());
 		}

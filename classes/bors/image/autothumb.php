@@ -9,6 +9,8 @@ class bors_image_autothumb extends bors_object
 	var $origin_path = NULL;
 	var $geo = NULL;
 
+	function _access_engine_def() { return bors_access_public::class; }
+
 	function __construct($thumb_path)
 	{
 		if(preg_match('/%D0/', $thumb_path))

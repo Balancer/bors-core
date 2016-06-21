@@ -1,6 +1,6 @@
 <?php
 
-include_once('funcs/images/fill.php');
+include_once COMPOSER_ROOT.'/vendor/balancer/airbase-bors/funcs/images/fill.php';
 
     function lsp_gallery($txt, $title) 
     { 

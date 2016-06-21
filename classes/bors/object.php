@@ -1655,7 +1655,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($r = $this->get('cache_static_root'))
 			$file = $r.$rel_file;
 		elseif($r = config('cache_static.root'))
-			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $r, $file);
+			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $_SERVER['DOCUMENT_ROOT'].'/cache-static', $file);
 
 		return $file;
 	}

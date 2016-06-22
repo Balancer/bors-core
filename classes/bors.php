@@ -11,6 +11,7 @@ class bors
 	static $composer_route_maps = [];
 	static $composer_template_dirs = [];
 	static $composer_smarty_plugin_dirs = [];
+	static $composer_webroots = [];
 	static $composer_autoroute_prefixes = [];
 	static $package_apps = [];
 	static $package_path = [];
@@ -223,6 +224,10 @@ class bors
 
 	static function find_webroot($relative_path)
 	{
+		foreach(bors::$composer_webroots as $dir)
+			if(file_exists($f = $dir.$relative_path))
+				return $f;
+
 		if(file_exists($f = BORS_SITE.'/webroot'.$relative_path))
 			return $f;
 

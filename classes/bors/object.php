@@ -34,12 +34,7 @@ class bors_object extends bors_object_simple
 //	function _title_def() { return $this->class_title().' '.$this->class_name(); }
 
     // В качестве заголовка объекта по умолчанию используется имя класса
-	function _title_def()
-	{
-//		if(empty($this->data))
-//			bors_debug::syslog('debug-title', "Empty data");
-		return $this->class_title().' '.$this->class_name();
-	}
+	function _title_def() { return $this->class_title().' '.$this->class_name(); }
 
 	function _url_engine_def() { return 'url_calling2'; }
 	function _config_class_def() { return bors_core_object_defaults::config_class($this); }
@@ -588,7 +583,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function b2_message($text, $params = [])
 	{
-		$params['theme_class'] = $this->theme_class();
+		$params['theme_class'] = $this->get('theme_class');
 		return bors_message($text, $params);
 	}
 

@@ -190,8 +190,7 @@ function class_load_by_url($url, $args)
 
 function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match, $url_pattern, $skip)
 {
-//	if(config('is_developer'))
-//		echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
+//	if(config('is_debug')) echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
 
 	debug_log_var('try_object_load_by_map.url_pattern', $url_pattern);
 	debug_log_var('try_object_load_by_map.check_class', $check_class);
@@ -329,7 +328,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	$args['_load_url'] = $url;
 
 	$obj = object_init($check_class, $id, $args);
-//	if(config('is_developer')) echo "object_init($check_class, $id, $args) = ".print_dd($obj)."<br/>\n";
+//	if(config('is_debug')) echo "object_init($check_class, $id, $args) = ".print_r($obj, true)."<br/>\n";
 	if(!$obj)
 		return NULL;
 
@@ -392,7 +391,7 @@ function class_load_by_local_url($url, $args)
 		else
 			$test_url = $check_url;
 
-//		if(1||config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for test_url='.$test_url.'<br/>check_url='.$check_url."<Br/>url_pattern=$url_pattern, class_path=$class_path<br/>";
+//		if(config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for test_url='.$test_url.'<br/>check_url='.$check_url."<Br/>url_pattern=$url_pattern, class_path=$class_path<br/>";
 
 		if(preg_match('!/composer/vendor/!', $check_url))
 			throw new \Exception("Incorrect check url: ". $check_url);
@@ -448,7 +447,7 @@ function class_load_by_vhosts_url($url)
 		else
 			$check_url = $url_noq;
 
-//		if(config('is_developer')) echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$ (q=$query)!<br />\n";
+//		if(config('is_debug')) echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$ (q=$query)!<br />\n";
 		if(preg_match('!^\s*http://!', $url_pattern))
 			$prefix = '';
 		else
@@ -456,7 +455,7 @@ function class_load_by_vhosts_url($url)
 
 		if(preg_match("!^{$prefix}{$url_pattern}$!i", $check_url, $match))
 		{
-//			if(config('is_developer')) echo "found $class_path as $pair / !^{$prefix}{$url_pattern}$! to $check_url in <pre>".print_r($host_data['bors_site'], true)."</pre><br />\n";
+//			if(config('is_debug')) echo "found $class_path as $pair / !^{$prefix}{$url_pattern}$! to $check_url in <pre>".print_r($host_data['bors_site'], true)."</pre><br />\n";
 
 			if(preg_match("!^redirect:(.+)$!", $class_path, $m))
 			{

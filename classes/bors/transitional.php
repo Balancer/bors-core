@@ -143,6 +143,9 @@ function bors_vhost_routes($host, $routes)
  */
 function bors_config_ini($file)
 {
+	if(!file_exists($file))
+		return false;
+
 	$ini_data = parse_ini_file($file, true);
 
 	if($ini_data === false)

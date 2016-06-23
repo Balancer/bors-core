@@ -15,8 +15,8 @@ bors_function_include('debug/execute_trace');
 
 // bors_thread_unlock('statfile-cache-clean');
 
-//if(!bors_thread_lock('statfile-cache-clean', 600))
-//	exit("Locked\n");
+if(!bors_thread_lock('statfile-cache-clean', 600))
+	exit("Locked\n");
 
 if(!config('cache_database'))
 {
@@ -33,7 +33,7 @@ try
 
 	// BETWEEN 0 AND NOW — чтобы не стирать -1.
 
-	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time(), 'order' => 'RAND()', 'limit' => 1000)) as $x)
+	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time(), 'order' => 'RAND()', 'limit' => 10000)) as $x)
 	{
 //		echo "{$x->original_uri()}, {$x->id()} [rcr={$x->recreate()}]: ";
 		echo "{$x->original_uri()} [rcr={$x->recreate()}]: ";

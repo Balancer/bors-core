@@ -16,6 +16,7 @@ class bors
 	static $package_apps = [];
 	static $package_path = [];
 	static $package_names = [];
+	static $package_route_maps = [];
 	static $package_app_path = [];
 	static $app_routers = [];
 

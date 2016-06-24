@@ -64,7 +64,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 			."Source WxH= ".$data[0].'x'.$data[1].'='.($data[0]*$data[1])."\n"
 			."Max=".config('images_resize_max_width')."x".config('images_resize_max_height')."=".config('images_resize_max_area');
 
-		bors_debug::syslog('error-image', $err_msg);
+		bors_debug::syslog('notice-image', $err_msg);
 //		bors_image_resize_error_return(config('bors-image-lasterror'), $file_out, $width, $height);
 
 		return false;

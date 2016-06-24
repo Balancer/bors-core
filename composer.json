@@ -23,6 +23,7 @@
 
 	"require": {
 		"php": ">=5.5",
+		"ext-mbstring": "*",
 		"anahkiasen/html-object": "*",
 		"balancer/blib-morfology-ru": "dev-master",
 		"easybook/geshi": "*",

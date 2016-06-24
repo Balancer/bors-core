@@ -130,3 +130,33 @@ function bors_use($uses)
 }
 
 function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }
+
+function bors_vhost_routes($host, $routes)
+{
+	global $bors_data;
+	$bors_data['vhosts'][$host]['bors_map'] = $routes;
+}
+
+/**
+ * @param string $file
+ * Загрузить .ini файл в параметры конфигурации.
+ */
+function bors_config_ini($file)
+{
+	if(!file_exists($file))
+		return false;
+
+	$ini_data = parse_ini_file($file, true);
+
+	if($ini_data === false)
+		bors_throw("'$file' parse error");
+
+	foreach($ini_data as $section_name => $data)
+	{
+		if($section_name == 'global' || $section_name == 'config')
+			$GLOBALS['cms']['config'] = array_merge($GLOBALS['cms']['config'], $data);
+		else
+			foreach($data as $key => $value)
+				$GLOBALS['cms']['config'][$section_name.'.'.$key] = $value;
+	}
+}

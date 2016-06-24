@@ -1,6 +1,6 @@
 <?php
 
-include_once('funcs/images/fill.php');
+include_once COMPOSER_ROOT.'/vendor/balancer/airbase-bors/funcs/images/fill.php';
 
     function lsp_gallery($txt, $title) 
     { 
@@ -8,9 +8,9 @@ include_once('funcs/images/fill.php');
         $out .= "<script charset=\"UTF-8\">begGallery('".addslashes($title)."')</script>\n";
         $out .= "<noscript><h2>$title</h2><ul></noscript>\n";
 
-        $hts = new DataBaseHTS;
+//        $hts = new DataBaseHTS;
 
-        $page = $hts->normalize_uri($GLOBALS['main_uri']);
+        $page = /* $hts->normalize_uri*/ ($GLOBALS['main_uri']);
 
         foreach(explode("\n", $txt) as $s)
         {
@@ -32,20 +32,20 @@ include_once('funcs/images/fill.php');
             }
             else
             {
-                $hts->nav_link($page, $img);
+//                $hts->nav_link($page, $img);
             }
 
-            foreach(explode(' ','description copyright author') as $p)
-                if(!$hts->get_data($img, $p))
-                    $hts->get_data($img, $p, $$p);
+//            foreach(explode(' ','description copyright author') as $p)
+  //              if(!$hts->get_data($img, $p))
+    //                $hts->get_data($img, $p, $$p);
 
             $admin_url = "http://airbase.ru/admin/img.phtml?img=$img";
             $img_admin = ""; // "<a href=\"$admin_url\" title=\"Управление картинкой\" onClick=\"window.open('$admin_url','_blank','scrollbars=yes,status=yes,toolbar=no,directories=no,width=600,height=400,resizable=yes'); return false;\"><img src=\"http://airbase.ru/admin/img/tools.gif\" width=\"16\" height=\"13\" border=\"0\" align=\"absmiddle\"></a>";
 
-			$w = $hts->get_data($img, 'width');
-            $h = $hts->get_data($img, 'height');
+//			$w = $hts->get_data($img, 'width');
+//            $h = $hts->get_data($img, 'height');
             $tt= array(1 => 'GIF', 2 => 'JPG', 3 => 'PNG', 4 => 'SWF', 5 => 'PSD', 6 => 'BMP', 7 => 'TIFF(intel byte order)', 8 => 'TIFF(motorola byte order)', 9 => 'JPC', 10 => 'JP2', 11 => 'JPX', 12 => 'JB2', 13 => 'SWC', 14 => 'IFF', 15 => 'WBMP', 16 => 'XBM');
-            $t = $hts->get_data($img, 'type');
+//            $t = $hts->get_data($img, 'type');
             if(!empty($tt[$t]))
                 $t = $tt[$t];
 
@@ -68,9 +68,9 @@ include_once('funcs/images/fill.php');
 			if(!$uri)
 			{
 				$uri = preg_replace("!\.(gif|jpe?g|png)$!i", ".htm", $img);
-				$idesc = "$img_admin $t {$w}x{$h} ".intval($hts->get_data($img, 'size')/1024+0.5)."K";
+//				$idesc = "$img_admin $t {$w}x{$h} ".intval($hts->get_data($img, 'size')/1024+0.5)."K";
 			}
-			
+
             $out .= "<script charset=\"UTF-8\">galItem(".
                 "'".addslashes($uri)."',".
                 "'".addslashes($description)."',".

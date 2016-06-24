@@ -34,6 +34,7 @@ function borsmaps_load()
 
 	foreach(bors_dirs(true) as $dir)
 	{
+//		echo "=$dir=<br/>";
 		$map = array();
 		if(file_exists($file = secure_path("{$dir}/url_map.php")))
 			require_once($file);

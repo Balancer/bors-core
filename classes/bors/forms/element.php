@@ -11,6 +11,8 @@ class bors_forms_element
 	function is_form_element() { return true; }
 	function is_hidden() { return false; }
 
+	function name() { return $this->param('name'); }
+
 	function value($param_name = 'value')
 	{
 		$form = $this->form;

@@ -25,4 +25,14 @@ class Nil extends Obj
 		$suite->assertNotNull($null->foo);
 		$suite->assertTrue($null->isNull());
 	}
+
+	// This NULL-object. Always return default.
+	function get($property_foo, $default = NULL)
+	{
+		// If need return NULL, then return blib_null
+		if(is_null($default))
+			$default = $this;
+
+		return $default;
+	}
 }

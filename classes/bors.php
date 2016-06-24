@@ -65,6 +65,14 @@ class bors
 		if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
 			require_once $f;
 
+		foreach(bors::$package_route_maps as $map_file)
+		{
+			$map = NULL;
+			require_once($map_file);
+			if($map)
+				bors_url_map($map);
+		}
+
 		foreach(bors::$composer_route_maps as $map_file)
 		{
 			$map = NULL;

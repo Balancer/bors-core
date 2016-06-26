@@ -2,6 +2,8 @@
 
 class bors_image_jpeg extends bors_object
 {
+	use \B2\Traits\View;
+
 	function can_be_empty() { return true; }
 
 	function render_engine() { return __CLASS__; }
@@ -21,27 +23,5 @@ class bors_image_jpeg extends bors_object
 		ob_end_clean();
 
 		return $image;
-	}
-
-	function response()
-	{
-		$response = new \Zend\Diactoros\Response();
-
-		$content = $this->content();
-
-		\bors_debug::append_info($content, $this);
-
-		if(!$content)
-			return NULL;
-
-		if($content === true)
-			return NULL;
-
-		foreach($this->headers() as $name => $value)
-			$response = $response->withHeader($name, $value);
-
-		$response->getBody()->write($content);
-
-		return $response;
 	}
 }

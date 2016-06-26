@@ -2,6 +2,8 @@
 
 class bors_image_gif extends bors_object
 {
+	use \B2\Traits\View;
+
 	function can_be_empty() { return true; }
 
 	function render_engine() { return 'bors_image_gif'; }

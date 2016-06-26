@@ -19,7 +19,7 @@ function lp_html_iframe($inner, $params)
 
 	$params['src'] = html_entity_decode(@$params['src']);
 
-	$iframes_whitelist = preg_split('/[^\w\.\-]+/', config('security.irames.whitelist', 'coub.com,vk.com,player.vgtrk.com'));
+	$iframes_whitelist = preg_split('/[^\w\.\-]+/', config('security.irames.whitelist', 'coub.com,vk.com,player.vgtrk.com,lentaru.media.eagleplatform.com'));
 
 	$url_info = parse_url($params['src']);
 	if(!in_array($url_info['host'], $iframes_whitelist))

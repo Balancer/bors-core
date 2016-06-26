@@ -9,6 +9,7 @@ require_once BORS_CORE.'/engines/bors.php';
 class bors_object extends bors_object_simple
 {
 	use B2\StorageMethods;
+	use B2\Traits\Singleton;
 
 	// Общая структура имён
 	// show() - показывает объект, с кешированием и прочим.

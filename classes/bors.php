@@ -166,6 +166,12 @@ class bors
 				return go($object);
 			}
 
+			if(class_exists(\Tracy\Debugger::class))
+			{
+				\Tracy\Debugger::barDump(['class_file' => $object->class_file()], $object->debug_title());
+//				\Tracy\Debugger::fireLog($object->class_file());
+			}
+
 			if(config('bors.version_show'))
 				@header('X-bors-object: '.$object->internal_uri());
 

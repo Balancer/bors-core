@@ -21,4 +21,6 @@ trait Page
 	{
 		return bors_load($this->get('theme_class'), NULL);
 	}
+
+	function _css_includes_def() { return \bors_page::template_data('css_list'); }
 }

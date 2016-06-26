@@ -148,7 +148,10 @@ function bors_message($text, $params=[])
 
 	$theme_class = defval($params, 'theme_class');
 	$template = defval($params, 'template');
-	var_dump(class_exists($theme_class = 'bors_themes_bootstrap3'));
+
+	if(!$template)
+		$template = config('default_message_template', config('default_template'));
+
 	if(($theme_class && class_exists($theme_class)) || (!$template && class_exists($theme_class = 'bors_themes_bootstrap3')))
 	{
 		$page->set_parents(array('/'));
@@ -171,9 +174,6 @@ function bors_message($text, $params=[])
 	{
 		if(!$template && defval($params, 'page_class_name'))
 			$template = $page->template();
-
-		if(!$template)
-			$template = config('default_message_template', config('default_template'));
 
 //		if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 //			$template = "xfile:$template";

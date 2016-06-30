@@ -101,7 +101,9 @@ class bors_tools_search_result extends bors_tools_search
 			case 'a':
 			case '1':
 			case 'na':
-				$index = "blog_titles,topic_descriptions,blog_keywords,blog_sources,blog_sources_delta,posts,posts_delta,livestreet_topics,posts_rt";
+				$index = "blog_titles,topic_descriptions,"
+					."blog_keywords,blog_sources,blog_sources_delta,"
+					."posts,posts_delta,livestreet_topics,posts_rt";
 				break;
 			case 'p': // В теле сообщений
 				$index = "posts,posts_delta,posts_rt";

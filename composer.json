@@ -23,6 +23,7 @@
 
 	"require": {
 		"php": ">=5.5",
+		"ext-mbstring": "*",
 		"anahkiasen/html-object": "*",
 		"balancer/blib-morfology-ru": "dev-master",
 		"easybook/geshi": "*",
@@ -50,9 +51,23 @@
 		}
 	},
 
-    "extra": {
-        "bors-classes": "classes",
-        "bors-templates": "templates",
-        "bors-smarty-plugins": "engines/smarty/plugins"
-    }
+	"extra": {
+		"bors-classes": "classes",
+		"bors-templates": "templates",
+		"bors-smarty-plugins": "engines/smarty/plugins",
+
+		"component": {
+			"name": "_bors",
+			"scripts-disabled": [
+				"htdocs/js/bootstrap.js"
+			],
+			"styles": [
+				"htdocs/_bors/css/bors/*.css"
+			],
+			"files": [
+				"htdocs/_bors/images/*.*",
+				"htdocs/_bors/images/*/*.*"
+			]
+		}
+	}
 }

@@ -2,7 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Response;
 
-function bors_message($text, $params=array())
+function bors_message($text, $params=[])
 {
 	template_nocache();
 	template_css('/_bors/css/messages.css');
@@ -149,6 +149,9 @@ function bors_message($text, $params=array())
 	$theme_class = defval($params, 'theme_class');
 	$template = defval($params, 'template');
 
+	if(!$template)
+		$template = config('default_message_template', config('default_template'));
+
 	if(($theme_class && class_exists($theme_class)) || (!$template && class_exists($theme_class = 'bors_themes_bootstrap3')))
 	{
 		$page->set_parents(array('/'));
@@ -172,15 +175,12 @@ function bors_message($text, $params=array())
 		if(!$template && defval($params, 'page_class_name'))
 			$template = $page->template();
 
-		if(!$template)
-			$template = config('default_message_template', config('default_template'));
-
 //		if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 //			$template = "xfile:$template";
 
 		try
 		{
-			$message = NULL; // bors_templates_smarty::fetch($template, $data);
+			$message = bors_templates_smarty::fetch($template, $data);
 		}
 		catch(Exception $e)
 		{

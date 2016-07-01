@@ -11,10 +11,12 @@ class bors
 	static $composer_route_maps = [];
 	static $composer_template_dirs = [];
 	static $composer_smarty_plugin_dirs = [];
+	static $composer_webroots = [];
 	static $composer_autoroute_prefixes = [];
 	static $package_apps = [];
 	static $package_path = [];
 	static $package_names = [];
+	static $package_route_maps = [];
 	static $package_app_path = [];
 	static $app_routers = [];
 
@@ -62,6 +64,14 @@ class bors
 		// Грузим вначале, т.к. там прописаны рабочие каталоги и т.п.
 		if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
 			require_once $f;
+
+		foreach(bors::$package_route_maps as $map_file)
+		{
+			$map = NULL;
+			require_once($map_file);
+			if($map)
+				bors_url_map($map);
+		}
 
 		foreach(bors::$composer_route_maps as $map_file)
 		{
@@ -156,6 +166,12 @@ class bors
 				return go($object);
 			}
 
+			if(class_exists(\Tracy\Debugger::class))
+			{
+				\Tracy\Debugger::barDump(['class_file' => $object->class_file()], $object->debug_title());
+//				\Tracy\Debugger::fireLog($object->class_file());
+			}
+
 			if(config('bors.version_show'))
 				@header('X-bors-object: '.$object->internal_uri());
 
@@ -223,6 +239,10 @@ class bors
 
 	static function find_webroot($relative_path)
 	{
+		foreach(bors::$composer_webroots as $dir)
+			if(file_exists($f = $dir.$relative_path))
+				return $f;
+
 		if(file_exists($f = BORS_SITE.'/webroot'.$relative_path))
 			return $f;
 

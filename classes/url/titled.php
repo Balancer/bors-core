@@ -27,7 +27,7 @@ class url_titled extends url_base
 		list($infix, $suffix) = @$bors_url_titled_cache[$obj->internal_uri()];
 		if(!$suffix)
 		{
-			require_once("inc/urls.php");
+			require_once BORS_CORE.'/inc/urls.php';
 
 			$uri_name = $obj->uri_name();
 			if(strlen($uri_name) > 3)

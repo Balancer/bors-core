@@ -49,6 +49,56 @@ class blib_json
 		}, json_encode($data));
 	}
 
+	static function file_update($file, $data, $mode = 0664)
+	{
+    	if(!$fh = fopen($file, 'a+'))
+			throw new Exception("Can't open write {$file}");
+
+	    if(!flock($fh, LOCK_EX))
+			throw new Exception("Can't lock write {$file}");
+
+		$fs = filesize($file);
+
+		fseek($fh, 0);
+		if($fs)
+			$json = fread($fh, $fs);
+		else
+			$json = "";
+
+//		echo "\n==============\nRead:\n$json\n==============";
+
+		if($json && is_array($old_data = json_decode($json, true)))
+			$data += $old_data;
+
+//		echo "\n==============\nMerged:\n".print_r($data, true)."\n==============";
+
+	    if(!ftruncate($fh, 0))
+			throw new Exception("Can't truncate write {$file}");
+
+	    fwrite($fh, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+    	fclose($fh);
+
+		clearstatcache(false, $file);
+
+		if(file_exists($file))
+			@chmod($file, $mode);
+
+//		echo "\n==============\nWrote:\n".file_get_contents($file)."\n==============";
+
+		return $data;
+	}
+
+	static function __dev()
+	{
+/*
+		var_dump(self::file_update('test.json', ['a' => 1, 'b' => 2, 'c' => 4]));
+		echo file_get_contents('test.json');
+		var_dump(self::file_update('test.json', ['c' => 3, 'd' => 4]));
+*/
+		self::file_update('test2.json', [12345 => ['html' => 'text 12345_2']]);
+		self::file_update('test2.json', [6789 => ['html' => 'text 6789']]);
+	}
+
 	static function __unit_test($suite)
 	{
 		$array = array(

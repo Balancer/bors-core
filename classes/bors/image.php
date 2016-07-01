@@ -172,6 +172,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 		if(!$this->attr('force_thumbnail') && preg_match('/.+\(up,crop\)/', $geometry))
 		{
+//			~r($this, $this->url());
 			$thumb = bors_load_ex(bors_image_thumbnails_byurl::class, NULL, [
 				'origin_url' => $this->url(),
 				'geometry' => $geometry,

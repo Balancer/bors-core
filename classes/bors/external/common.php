@@ -144,7 +144,7 @@ class bors_external_common extends bors_object
 				exit();
 			}
 */
-			$thumb_url = "http://200x150.st.cg.a0z.ru/".base64_encode($url).".jpg";
+			$thumb_url = "http://200x150.st.cg.a0z.ru/".base64_encode($url).'.jpg';
 			$img = "<div class=\"rs_box_nd float_left mtop8\" style=\"width:200px; height:150px;\">"
 				."<img src=\"{$thumb_url}\" width=\"200\" height=\"150\" alt=\"\" class=\"main\"></div>";
 
@@ -155,7 +155,7 @@ class bors_external_common extends bors_object
 			$dom_parts = explode('.', $data['host']);
 			$dom1 = array_pop($dom_parts);
 			$dom2 = array_pop($dom_parts);
-			$thumb_url = "http://200x150.$dom1.ic.a0z.ru/".$dom2[0].'/'.base64_encode($img).".jpg";
+			$thumb_url = "http://200x150.$dom1.ic.a0z.ru/".$dom2[0].'/'.base64_encode($img).'.'.blib_urls::ext_enabled($img, ['jpg', 'jpeg', 'jpe', 'png', 'gif'], 'jpg');
 
 //			$img = "[img={$img} 200x200 left flow nohref resize]";
 			$img = "<div class=\"rs_box_nd float_left mtop8\" style=\"width:200px; height:150px;\">"

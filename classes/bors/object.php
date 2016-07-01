@@ -9,6 +9,7 @@ require_once BORS_CORE.'/engines/bors.php';
 class bors_object extends bors_object_simple
 {
 	use B2\StorageMethods;
+	use B2\Traits\Singleton;
 
 	// Общая структура имён
 	// show() - показывает объект, с кешированием и прочим.
@@ -26,7 +27,7 @@ class bors_object extends bors_object_simple
 	//	bors_user - класс пользователя по умолчанию.
 
 	var $data = array();
-	protected static $__auto_objects = array();
+	protected static $__auto_objects = [];
 
 //	При настройке проверить:
 //	— http://www.aviaport.ru/services/events/arrangement/
@@ -53,6 +54,7 @@ class bors_object extends bors_object_simple
 
 	function is_null() { return false; }
 	function is_not_null() { return true; }
+	function exists() { return $this->can_be_empty() || $this->is_loaded(); }
 
 	function parents()
 	{
@@ -361,7 +363,21 @@ class bors_object extends bors_object_simple
 
 		if(!empty($auto_objs[$method]))
 		{
-			if(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$method], $m))
+			if(preg_match('/^(\w+)$/', $auto_objs[$method], $m))
+			{
+				$cn = $auto_objs[$method];
+				$property = $method.'_id';
+				if(config('orm.auto.cache_attr_skip'))
+					return bors_load($cn, $this->get($property));
+				else
+				{
+					$property_value = $this->get($property);
+					$value = bors_load($cn, $property_value);
+					self::$__auto_objects[$method] = compact('property', 'property_value', 'value');
+					return $value;
+				}
+			}
+			elseif(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$method], $m))
 			{
 				$property = $m[2];
 				if(config('orm.auto.cache_attr_skip'))
@@ -1198,10 +1214,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	{
 		$access = $this->access_engine();
 
-//		var_dump($access, get_class($this));
-
 		if(!$access)
 			$access = config('access_default');
+
+//		if(!$access)
 //			bors_throw(ec('Не задан режим доступа к ').$this->object_titled_dp_link());
 
 		return bors_load($access, $this);
@@ -1650,7 +1666,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($r = $this->get('cache_static_root'))
 			$file = $r.$rel_file;
 		elseif($r = config('cache_static.root'))
-			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $r, $file);
+			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $_SERVER['DOCUMENT_ROOT'].'/cache-static', $file);
 
 		return $file;
 	}

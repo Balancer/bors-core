@@ -90,8 +90,8 @@ class base_page extends bors_object
 		if($this->total_pages() < 2)
 			return '';
 
-		if($text === NULL)
-			$text = ec('Страницы:');
+//		if($text === NULL)
+//			$text = ec('Страницы:');
 
 		require_once BORS_CORE.'/inc/design/page_split.php';
 

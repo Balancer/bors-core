@@ -115,8 +115,8 @@ class bors_object_simple extends bors_object_empty
 		if(method_exists($this, $name) && !$skip_methods)
 		{
 			$value = NULL;
-			try { $value = $this->$name(); }
-			catch(Exception $e) { $value = NULL; }
+			try { $value = call_user_func([$this, $name]); }
+			catch(Exception $e) { $value = $default; }
 			unset($get_lock[$lock_name]);
 			return $value;
 		}

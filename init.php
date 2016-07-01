@@ -319,12 +319,6 @@ function bors_route($map)
 
 bors_transitional::init();
 
-function bors_vhost_routes($host, $routes)
-{
-	global $bors_data;
-	$bors_data['vhosts'][$host]['bors_map'] = $routes;
-}
-
 function set_bors_project($project_name)
 {
 	$GLOBALS['bors_current_project'] = $project_name;
@@ -405,27 +399,6 @@ function bors_function_include($req_name)
 	$defined[$req_name] = true;
 
 	return require_once(BORS_CORE.'/inc/functions/'.$req_name.'.php');
-}
-
-/**
- * @param string $file
- * Загрузить .ini файл в параметры конфигурации.
- */
-function bors_config_ini($file)
-{
-	$ini_data = parse_ini_file($file, true);
-
-	if($ini_data === false)
-		bors_throw("'$file' parse error");
-
-	foreach($ini_data as $section_name => $data)
-	{
-		if($section_name == 'global' || $section_name == 'config')
-			$GLOBALS['cms']['config'] = array_merge($GLOBALS['cms']['config'], $data);
-		else
-			foreach($data as $key => $value)
-				$GLOBALS['cms']['config'][$section_name.'.'.$key] = $value;
-	}
 }
 
 function bors_use_mysql()

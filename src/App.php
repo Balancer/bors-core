@@ -14,7 +14,7 @@ class App extends Obj
 	 * @param string $path
 	 * @return App
 	 */
-	static function instance($host = '', $path = '/')
+	static function instance($path = '/', $host = '')
 	{
 		static $instance = NULL;
 
@@ -155,6 +155,9 @@ class App extends Obj
 			define('BORS_CORE', COMPOSER_ROOT.'/vendor/balancer/bors-core');
 
 		require_once BORS_CORE.'/config.php';
+
+		if(($p = @\bors::$package_app_path[get_class($this)]) && file_exists($p.'/config.php'))
+			require_once($p.'/config.php');
 
 		if(file_exists(COMPOSER_ROOT.'/config.php'))
 			require_once COMPOSER_ROOT.'/config.php';

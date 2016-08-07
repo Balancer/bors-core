@@ -111,12 +111,17 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 			if(!empty($object->changed_fields) && array_key_exists($f['property'], $object->changed_fields))
 			{
+				// Читаем не по get(), а прямо $data, т.к. формат данных в бэкенде
+				// и используемых методах может быть разным. Например, в БД хранится comma-separated список,
+				// а методы get/set оперируют массивом.
+				$data = $object->data;
+				$value = @$data[$f['property']];
 				if($sql)
-					$update[$db_name][$table_name]["raw $field_name"] = $sql.'("'.addslashes($object->get($f['property'])).'")';
+					$update[$db_name][$table_name]["raw $field_name"] = $sql.'("'.addslashes($value).'")';
 				elseif(@$f['type'] == 'float')
-					$update[$db_name][$table_name]["float $field_name"] = $object->get($f['property']);
+					$update[$db_name][$table_name]["float $field_name"] = str_replace(',', '.', floatval($value));
 				else
-					$update[$db_name][$table_name][$field_name] = $object->get($f['property']);
+					$update[$db_name][$table_name][$field_name] = $value;
 			}
 		}
 
@@ -570,7 +575,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			$where = array($idf => $object->id());
 //		var_dump($where);
 		list($update, $where) = self::__update_data_prepare($object, $where);
-//		print_dd($update);
+//		var_dump($update);
 
 		$main_table = $object->table_name();
 
@@ -983,6 +988,14 @@ array(2) {
 			if($bf = @$_php_back_functions[bors_upper($m[1])])
 				$condition = "{$m[2]} BETWEEN ".$bf($m[3])." AND ".$bf($m[4]);
 		}
+
+		if(preg_match("/^(UNIX_TIMESTAMP)\((.+?)\)\s*(>|>=|<|<=|=)\s*'?(\d+)'?$/i", trim($condition), $m))
+		{
+			if($bf = @$_php_back_functions[bors_upper($m[1])])
+				$condition = "{$m[2]} {$m[3]} ".$bf($m[4]);
+		}
+
+//		if(config('is_developer') && preg_match('/Date/', $condition)) { var_dump($condition); exit(); }
 
 		return $condition;
 	}

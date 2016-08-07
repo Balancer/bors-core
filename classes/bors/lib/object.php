@@ -11,7 +11,7 @@ class bors_lib_object
 		$parent = $object->parent();
 		if(!$parent)
 		{
-			debug_hidden_log('errors-structure', "Can't load parent '{$parent_id}' for {$object}");
+			bors_debug::syslog('errors-structure', "Can't load parent '{$parent_id}' for {$object}");
 			return '';
 		}
 
@@ -69,13 +69,16 @@ class bors_lib_object
 				return $default;
 		}
 
-		$foo->_configure();
+		$foo->b2_configure();
 		return $foo->get($name, $default);
 	}
 
 	static function parent_lines($object, $level=0)
 	{
-		$parent_lines = array();
+		if($object->get('b2_no_breadcrumb'))
+			return [];
+
+		$parent_lines = [];
 
 		$current_line = array(
 			'url' => $object->url(),

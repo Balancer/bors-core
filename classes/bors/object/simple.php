@@ -6,6 +6,8 @@
 	Без бэкенда.
 */
 
+require_once __DIR__.'/../../../inc/system.php';
+
 class bors_object_simple extends bors_object_empty
 {
 	var $___id;
@@ -30,10 +32,16 @@ class bors_object_simple extends bors_object_empty
 	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
 		static $get_lock = array();
-		$lock_name = get_class($this).'/'.serialize($this->id()).'.'.$name;
+		$lock_name = $this->internal_uri().'.'.$name;
 
-		if(!$name || !empty($get_lock[$lock_name]))
-//		if(!$name)
+		// Начинается только с символов, т.к. дальше может быть xxxx()->yyy()
+		if(!preg_match('/^\w+[\(\)\->\|]*/', $name))
+		{
+			bors_debug::syslog('error-get-property-name', "Incorrect property name '$name' for ".$this->debug_title());
+			return NULL;
+		}
+
+		if(!empty($get_lock[$lock_name]))
 			return NULL;
 
 		$get_lock[$lock_name] = true;
@@ -107,8 +115,8 @@ class bors_object_simple extends bors_object_empty
 		if(method_exists($this, $name) && !$skip_methods)
 		{
 			$value = NULL;
-			try { $value = $this->$name(); }
-			catch(Exception $e) { $value = NULL; }
+			try { $value = call_user_func([$this, $name]); }
+			catch(Exception $e) { $value = $default; }
 			unset($get_lock[$lock_name]);
 			return $value;
 		}
@@ -234,7 +242,7 @@ class bors_object_simple extends bors_object_empty
 			$auto_objs = $this->auto_objects();
 			if(!empty($auto_objs[$name]))
 				if(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$name], $m))
-					return $this->attr[$name] = object_load($m[1], $this->$m[2]());
+					return $this->attr[$name] = bors_load($m[1], call_user_func([$this, $m[2]]));
 		}
 
 		// Автоматические целевые объекты (имя класса задаётся)
@@ -243,7 +251,7 @@ class bors_object_simple extends bors_object_empty
 			$auto_targs = $this->auto_targets();
 			if(!empty($auto_targs[$name]))
 				if(preg_match('/^(\w+)\((\w+)\)$/', $auto_targs[$name], $m))
-					return $this->attr[$name] = object_load($this->$m[1](), $this->$m[2]());
+					return $this->attr[$name] = bors_load(call_user_func([$this, $m[1]]), call_user_func([$this, $m[2]]));
 		}
 
 		// Проверяем одноимённые переменные (var $title = 'Files')
@@ -303,11 +311,28 @@ class bors_object_simple extends bors_object_empty
 
 	function _storage_engine_def() { return ''; }
 	function is_loaded() { return true; }
-	function internal_uri() { return get_class($this).'://'.$this->id(); }
+	function internal_uri()
+	{
+		return get_class($this).'://'
+		//TODO: instead serialize make method for recursive object id. Without using __toString() in configures with cacheng empty results in _title_def();
+			.((is_numeric($this->id())||is_string($this->id())) ? $this->id() : serialize($this->id()));
+	}
+
 	function cache_clean() { }
 
 	function auto_search_index() { return false; }
-	function __toString() { return $this->class_name().'://'.$this->id(); }
+	function __toString()
+	{
+		try
+		{
+			return $this->class_name().'://'.$this->id();
+		}
+		catch(Exception $e)
+		{
+		}
+
+		return '__toString exception in '.get_class($this);
+	}
 
 	function attr($attr, $def = NULL) { return array_key_exists($attr, $this->attr) ? $this->attr[$attr] : $def; }
 	function set_attr($attr, $value) { return $this->attr[$attr] = $value; }
@@ -363,7 +388,7 @@ class bors_object_simple extends bors_object_empty
 		if(array_key_exists($attr, $this->attr))
 			return $this->attr[$attr];
 
-		debug_hidden_log('__need-to-rewrite-ugly-code', 'load-attr: '.$attr);
+		bors_debug::syslog('__need-to-rewrite-ugly-code', 'load-attr: '.$attr);
 		return $this->attr[$attr] = $init;
 	}
 
@@ -375,7 +400,7 @@ class bors_object_simple extends bors_object_empty
 		if($name == 'title' && $value == 'p1990_dealers_admin_files')
 		{
 			echo "Set $name to $value<br/>";
-			echo debug_trace();
+			echo bors_debug::trace();
 		}
 		return $this->$name = $value;
 	}

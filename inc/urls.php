@@ -1,6 +1,6 @@
 <?php
 
-require_once("inc/translit.php");
+require_once BORS_CORE.'/inc/translit.php';
 
 function url_truncate($url, $max_length)
 {
@@ -64,7 +64,7 @@ function url_truncate($url, $max_length)
 	return join('/', $left).($right ? '/.../'.join('/',$right) : '/...');
 }
 
-bors_function_include('url/parse');
+require_once BORS_CORE.'/inc/functions/url/parse.php';
 
     function translite_uri($uri)
     {
@@ -210,8 +210,8 @@ function curl_redir_exec($ch,$debug="")
 	debug_timing_start('http-get[inc/urls.php]: '.$url);
 	debug_timing_start('http-get-total');
     $data = curl_exec($ch);
-	debug_timing_stop('http-get-total');
-	debug_timing_stop('http-get[inc/urls.php]: '.$url);
+	bors_debug::timing_stop('http-get-total');
+	bors_debug::timing_stop('http-get[inc/urls.php]: '.$url);
 
     $debbbb = $data;
 

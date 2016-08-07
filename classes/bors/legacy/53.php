@@ -21,7 +21,7 @@ class bors_legacy_53
 			return array();
 		}
 
-//		echo debug_trace();
+//		echo bors_debug::trace();
 		$foo = new $class_name(NULL);
 		$order = defval_ne($data, 'order', $foo->get('list_fields_sort', 'title'));
 

@@ -6,9 +6,12 @@ class bors_forms_element
 	function set_params($params) { return $this->params = $params; }
 	function set_form($form) { return $this->form = $form; }
 	function params() { return $this->params; }
+	function param($name, $default=NULL) { return array_key_exists($name, $this->params) ? $this->params[$name] : $default; }
 	function form() { return $this->form; }
 	function is_form_element() { return true; }
 	function is_hidden() { return false; }
+
+	function name() { return $this->param('name'); }
 
 	function value($param_name = 'value')
 	{
@@ -21,6 +24,18 @@ class bors_forms_element
 
 		if($val = bors_global::gvar('override_form_values.'.$name))
 			return $val;
+
+		$model_class = $form->model_class();
+		if($model_class == 'NULL')
+			$model_class = NULL;
+
+		if(!$object && $model_class && preg_match('/^\w+$/', $name))
+		{
+			$obj = bors_foo($model_class);
+			$new_val = $obj->get($name."_new");
+			if($new_val)
+				return $new_val;
+		}
 
 		$def  = defval($params, 'def');
 		$value = defval($params, $param_name);
@@ -84,8 +99,13 @@ class bors_forms_element
 	{
 		$label = $this->label();
 
+		$comment = defval($this->params, 'comment');
+
+		if($comment)
+			$comment = "<br/><small>$comment</small>";
+
 		if($label && $this->use_tab())
-			return "<tr><th>{$label}</th><td>";
+			return "<tr><th>{$label}{$comment}</th><td>";
 
 		return '';
 	}
@@ -124,5 +144,21 @@ class bors_forms_element
 			return $lc;
 
 		return NULL;
+	}
+
+
+	function html()
+	{
+		$params = $this->params();
+
+		if(!empty($params['class']))
+		{
+			$class_name = $params['class'];
+			// To avoid infinity cycle if html method not defined
+			unset($params['class']);
+			return $this->form()->element_html($class_name, $params);
+		}
+
+		throw new Exception(sprintf(_("Not defined method 'html' for element '%s'"), get_class($this)));
 	}
 }

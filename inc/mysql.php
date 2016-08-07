@@ -87,9 +87,9 @@ function mysql_order_compile($order_list, $class_name = false)
 
 function mysql_limits_compile(&$args)
 {
-	$limit = intval(popval($args, '*limit'));
+	$limit = popval($args, '*limit');
 	if(!$limit)
-		$limit = intval(popval($args, 'limit'));
+		$limit = popval($args, 'limit');
 
 	$page = intval(popval($args, '*page'));
 	if(!$page)
@@ -103,6 +103,8 @@ function mysql_limits_compile(&$args)
 	{
 		if(is_array($limit))
 			return "LIMIT ".intval($limit[0]).", ".intval($limit[1]);
+		elseif(preg_match('/^(\d+)\s*,\s*(\d+)$/', trim($limit), $m))
+			return "LIMIT {$m[1]}, {$m[2]}";
 		else
 			return "LIMIT ".intval($limit);
 	}

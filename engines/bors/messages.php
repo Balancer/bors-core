@@ -1,6 +1,8 @@
 <?php
 
-function bors_message($text, $params=array())
+use Symfony\Component\HttpFoundation\Response;
+
+function bors_message($text, $params=[])
 {
 	template_nocache();
 	template_css('/_bors/css/messages.css');
@@ -11,8 +13,14 @@ function bors_message($text, $params=array())
 	@header('Content-Type: text/html; charset='.$ocs);
 	@header('Content-Language: '.config('page_lang', 'ru'));
 
+	if($status = defval($params, 'http_status'))
+	{
+		$resp = new Response($text, $status);
+		$resp->sendHeaders();
+	}
+
 	$redir = defval($params, 'go', defval($params, 'redirect', false));
-	$title = defval($params, 'title', ec('Ошибка!'));
+	$title = defval($params, 'title', ec('Ошибка'));
 	$nav_name = defval($params, 'nav_name', $title);
 	$timeout = defval($params, 'timeout', -1);
 	$hidden_log = defval($params, 'hidden_log');
@@ -44,7 +52,7 @@ function bors_message($text, $params=array())
 		$link_url = defval($params, 'link_url', $redir);
 	}
 
-	$is_error = preg_match('/ошибк/i', bors_lower($title));
+	$is_error = preg_match('/шибк/i', bors_lower($title));
 
 	if($redir === true)
 	{
@@ -65,7 +73,7 @@ function bors_message($text, $params=array())
 		$data['this'] = object_load('bors_page', NULL);
 
 	bors_function_include('debug/trace');
-	$data['debug_trace'] = debug_trace(0, false);
+	$data['debug_trace'] = bors_debug::trace(0, false);
 
 	$body_template = "xfile:messages.html";
 	if(!empty($params['choises']))
@@ -98,7 +106,6 @@ function bors_message($text, $params=array())
 	}
 
 	$body = bors_templates_smarty::fetch($body_template, $data);
-
 	// Если возникла какая-то ошибка рендеринга, выводим исходный текст.
 	if(!$body)
 		$body = $text;
@@ -107,7 +114,7 @@ function bors_message($text, $params=array())
 
 	$page_class_name = defval($params, 'page_class_name', 'bors_page');
 	$page = new $page_class_name(NULL);
-	$page->_configure();
+	$page->b2_configure();
 	try { $page->template_data_fill(); }
 	catch(Exception $e) { }
 	$page->set_fields($data, false);
@@ -125,6 +132,8 @@ function bors_message($text, $params=array())
 
 	$page->set_fields($data, false);
 
+	$page->set_attr('theme_class', defval($params, 'theme_class'));
+
 	if($is_error)
 		$data['skip_nav'] = true;
 
@@ -137,13 +146,23 @@ function bors_message($text, $params=array())
 	if($data['success_message'] || $data['notice_message'] || $data['error_message'])
 		config_set('skip_cache_static', true);
 
+	$theme_class = defval($params, 'theme_class');
 	$template = defval($params, 'template');
 
-	if(!$template && class_exists('bors_themes_bootstrap3'))
+	if(!$template)
+		$template = config('default_message_template', config('default_template'));
+
+	if(($theme_class && class_exists($theme_class)) || (!$template && class_exists($theme_class = 'bors_themes_bootstrap3')))
 	{
 		$page->set_parents(array('/'));
-		$page->set_body('<hr/><div style="font-size: 24px">'.$page->body().'</div><hr/>');
-		$renderer = bors_load('bors_themes_bootstrap3', $page);
+
+		if($is_error)
+			$class = "alert alert-danger";
+		else
+			$class = "alert alert-warning";
+
+		$page->set_body('<div class="'.$class.'" style="font-size: 24px">'.$page->body().'</div><hr/>');
+		$renderer = bors_load($theme_class, $page);
 //		if($layout_class = $renderer->get('layout_class'))
 //			$page->set_attr('layout_class', $layout_class);
 
@@ -155,9 +174,6 @@ function bors_message($text, $params=array())
 	{
 		if(!$template && defval($params, 'page_class_name'))
 			$template = $page->template();
-
-		if(!$template)
-			$template = config('default_message_template', config('default_template'));
 
 //		if(!preg_match('/^xfile:/', $template) && !preg_match('/^bors:/', $template))
 //			$template = "xfile:$template";
@@ -186,7 +202,7 @@ function bors_message($text, $params=array())
 		echo $message;
 
 	if($hidden_log)
-		debug_hidden_log($hidden_log, "message: $text");
+		bors_debug::syslog($hidden_log, "message: $text");
 
 	if($redir && $timeout >= 0)
 		return go($redir, false, $timeout);
@@ -208,7 +224,7 @@ function bors_message_tpl($message_template, $obj, $params)
 	require_once('engines/smarty/assign.php');
 
 	$redir = defval($params, 'redirect', false);
-	$title = defval($params, 'title', ec('Ошибка!'));
+	$title = defval($params, 'title', ec('Ошибка! [3]'));
 	$timeout = defval($params, 'timeout', -1);
 	$page_template = defval($params, 'template', config('default_template'));
 

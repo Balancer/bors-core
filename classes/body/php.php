@@ -1,9 +1,9 @@
 <?php
 
-require_once('inc/bors/lists.php');
-require_once('inc/bors/modules.php');
-bors_function_include('debug/timing_start');
-bors_function_include('debug/timing_stop');
+require_once BORS_CORE.'/inc/bors/lists.php';
+require_once BORS_CORE.'/inc/bors/modules.php';
+require_once BORS_CORE.'/inc/functions/debug/timing_start.php';
+require_once BORS_CORE.'/inc/functions/debug/timing_stop.php';
 
 class body_php extends base_null
 {
@@ -38,7 +38,7 @@ class body_php extends base_null
 		$result = ob_get_contents();
 		ob_end_clean();
 
-		debug_timing_stop('body_php_body-'.$object->class_name());
+		bors_debug::timing_stop('body_php_body-'.$object->class_name());
 		return $result;
 	}
 }

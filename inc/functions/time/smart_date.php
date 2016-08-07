@@ -1,6 +1,6 @@
 <?php
 
-bors_function_include('date/is_today');
+require_once BORS_CORE.'/inc/functions/date/is_today.php';
 
 function smart_date($time, $human_readable = true, $def='', $always_show_time = false)
 {

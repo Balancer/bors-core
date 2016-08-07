@@ -6,7 +6,7 @@
 		@list($objs, $params) = @explode("\n\n", trim($text));
 		$objs = explode("\n", $objs);
 		
-		$db = new DataBase('AIRBASE');
+		$db = new driver_mysql('AIRBASE');
 		
 		if($params)
 			$params = explode("\n", $params);

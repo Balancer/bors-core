@@ -19,12 +19,7 @@ class bors_cache_redis extends bors_cache_base
 			return;
 
 		$options = array(
-			'namespace' => 'BORS_Cache2_',
-//			'name'      => 'bors_cache',
-//			'serializerAdapter' => 'json',
-//			'servers' => array(
-//				'server1' => array('host' => '127.0.0.1', 'port' => 6379)
-//			)
+			'namespace' => 'BORS_Cache.'.join('.', bors::cache_namespace(false)).':',
 		);
 
 		if($cfg_srv = config('redis.servers'))
@@ -33,15 +28,17 @@ class bors_cache_redis extends bors_cache_base
 		$_rediska = new Rediska($options);
 	}
 
-	function check($type, $idx, $default = NULL)
+	function check($type, $key, $default = NULL)
 	{
-		parent::check($type, $idx, $default);
-
 		if(config('cache_disabled'))
 		{
 			$this->last = $default;
 			return false;
 		}
+
+		$this->type = $type;
+		$this->key  = $key;
+		$this->hmd  = $type.':'.(preg_match('/^[\w\.\-:]+$/', $key) ? $key : md5($key));
 
 		$key = new Rediska_Key($this->hmd);
 
@@ -53,7 +50,7 @@ class bors_cache_redis extends bors_cache_base
 		{
 //			var_dump($e->getMessage());
 			debug_count_inc('redis_unserialize_exception');
-			debug_hidden_log('redis_exception', $e->getMessage());
+			bors_debug::syslog('redis_exception', $e->getMessage());
 			$this->last = $default;
 		}
 
@@ -72,10 +69,12 @@ class bors_cache_redis extends bors_cache_base
 	{
 		bors_function_include('debug/count_inc');
 
-		parent::get($type, $key, $default);
-
 		if(config('cache_disabled'))
 			return NULL;
+
+		$this->type = $type;
+		$this->key  = $key;
+		$this->hmd  = $type.':'.(preg_match('/^[\w\.\-:]+$/', $key) ? $key : md5($key));
 
 		debug_count_inc('redis_debug. Get for '.$this->hmd);
 
@@ -87,7 +86,7 @@ class bors_cache_redis extends bors_cache_base
 		catch(Exception $e)
 		{
 			debug_count_inc('redis_unserialize_exception');
-			debug_hidden_log('redis_exception', $e->getMessage());
+			bors_debug::syslog('redis_exception', $e->getMessage());
 			$this->last = NULL;
 		}
 
@@ -107,18 +106,23 @@ class bors_cache_redis extends bors_cache_base
 			return $this->last = $value;
 
 		debug_count_inc('redis_debug. Set for '.$this->hmd);
+//		if(preg_match('/GIF/', $value))
+//			bors_debug::syslog('debug-set-redis', "val=".print_r($value, true));
 
 		try
 		{
 			$key = new Rediska_Key($this->hmd);
 			$key->setValue($value);
 			$key->expire($ttl);
+			debug_count_inc('redis_cache_store');
 		}
 		catch(Exception $e)
 		{
-		}
+			if(rand(0,1000) == 0)
+				bors_debug::exception_log('warning-cache', "Can't set rediska cache", $e);
 
-		debug_count_inc('redis_cache_store');
+			debug_count_inc('redis_cache_exception');
+		}
 
 		return $this->last = $value;
 	}

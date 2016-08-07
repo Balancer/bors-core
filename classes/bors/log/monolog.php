@@ -34,7 +34,7 @@ class bors_log_monolog
 		}
 		catch(Exception $e)
 		{
-			echo "Exception while error logging\n";
+			echo "Exception while error logging:\n<code><xmp>".$e->getMessage()."</xmp></code>\nFirst error is:\n<xmp>$msg\nin".bors_debug::trace()."</xmp>";
 		}
 
 		$entered = false;
@@ -105,10 +105,11 @@ class bors_log_monolog
 					break;
 			}
 
-
+/*
 			if($level >= Logger::ERROR && config('log.hipchat_v1_room_id'))
 				// ($token, $room, $name = 'Monolog', $notify = false, $level = Logger::CRITICAL, $bubble = true, $useSSL = true, $format = 'text', $host = 'api.hipchat.com')
 				$log->pushHandler(new HipChatHandler(config('log.hipchat_v1_room_token'), config('log.hipchat_v1_room_id'), substr($name, 0, 15), true, $level));
+*/
 
 			$log->pushProcessor(function ($record) use($trace) {
 
@@ -154,9 +155,11 @@ class bors_log_monolog
 		static $instance = NULL;
 
 		if(!$instance)
-			$instance = new bors_log_monolog;
+		{
+			$class = get_called_class();
+			$instance = new $class;
+		}
 
 		return $instance;
 	}
-
 }

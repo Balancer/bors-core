@@ -1,6 +1,17 @@
 <?php
 
-require_once('inc/strings.php');
+require_once BORS_CORE.'/inc/strings.php';
+require_once BORS_CORE.'/inc/functions/date/format_mysql.php';
+require_once BORS_CORE.'/inc/functions/date/full_hdate.php';
+require_once BORS_CORE.'/inc/functions/date/is_today.php';
+require_once BORS_CORE.'/inc/functions/time/part_date.php';
+require_once BORS_CORE.'/inc/functions/date/today.php';
+require_once BORS_CORE.'/inc/functions/date/text_date.php';
+require_once BORS_CORE.'/inc/functions/date/yesterday.php';
+require_once BORS_CORE.'/inc/functions/time/date_format_mysqltime.php';
+require_once BORS_CORE.'/inc/functions/time/month_name.php';
+require_once BORS_CORE.'/inc/functions/time/month_name_rp.php';
+require_once BORS_CORE.'/inc/functions/time/smart_time.php';
 
 function full_time($time)
 {
@@ -12,8 +23,6 @@ function full_time($time)
 }
 
 function short_time($time, $def = '') { return bors_lib_time::short($time, $def); }
-
-bors_function_include('date/is_today');
 
 function news_time($time)
 {
@@ -40,8 +49,6 @@ function airbase_time($time)
 	return strftime("%Y-%m-%d",$time);
 }
 
-bors_function_include('time/smart_time');
-
 function news_short_time($time)
 {
 	if(is_today($time))
@@ -53,28 +60,17 @@ function news_short_time($time)
 	return strftime("%d.%m.%Y", $time);
 }
 
-bors_function_include('time/month_name');
-bors_function_include('time/month_name_rp');
-bors_function_include('date/text_date');
-
 $GLOBALS['day_names'] = explode(' ', 'Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье');
 
 function week_day_name($day_num) { return ec($GLOBALS['day_names'][$day_num-1]); }
 
-bors_function_include('date/full_hdate');
-bors_function_include('time/date_format_mysqltime');
-bors_function_include('date/format_mysql');
 
 function date_day_begin($time = 0) { return blib_time::day_begin($time); }
 function date_day_next($time)   { return strtotime(date('Y-m-d', $time).' +1 day');  }
 function date_month_next($time) { return strtotime(date('Y-m-d', $time).' +1 month');}
 function date_year_next($time)  { return strtotime(date('Y-m-d', $time).' +1 year'); }
 
-bors_function_include('date/today');
-bors_function_include('date/yesterday');
 function date_tomorrow ($time = 0) { return strtotime(date('Y-m-d', $time ? $time : time()).' +1 day'); }
-
-bors_function_include('time/part_date');
 
 function smart_interval($interval, $parts = 2) { return bors_lib_time::smart_interval($interval, $parts); }
 

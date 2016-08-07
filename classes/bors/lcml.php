@@ -2,8 +2,8 @@
 
 define('MAX_EXECUTE_S', 0.5);
 
-require_once(BORS_CORE.'/engines/lcml/main.php');
-require_once(BORS_CORE.'/engines/lcml/tags.php');
+require_once(__DIR__.'/../../engines/lcml/main.php');
+require_once(__DIR__.'/../../engines/lcml/tags.php');
 
 class bors_lcml extends bors_object
 {
@@ -69,6 +69,14 @@ class bors_lcml extends bors_object
 
 	function p($key, $def = NULL) { return empty($this->_params[$key]) ? $def : $this->_params[$key]; }
 	function set_p($key, $value) { $this->_params[$key] = $value; return $this; }
+
+	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->_params : defval($this->_params, $key, $def); }
+
+	function set_params($params)
+	{
+		$this->_params = array_merge($this->_params, $params);
+		return $this;
+	}
 
 	private static function memcache()
 	{
@@ -175,8 +183,6 @@ class bors_lcml extends bors_object
 
 
 	private $params;
-	function set_params($params) { $this->_params = $params; }
-	function params($key=NULL, $def = NULL) { return is_null($key) ? $this->_params : defval($this->_params, $key, $def); }
 
 	function is_tag_enabled($tag_name, $default_enabled = true)
 	{
@@ -262,7 +268,14 @@ class bors_lcml extends bors_object
 		}
 
 		if($this->_params['level'] == 1)
-			$this->output_type = popval($params, 'output_type', 'html');
+		{
+			if(!empty($params['output_type']))
+				$this->output_type = $params['output_type'];
+			elseif(!empty($this->_params['output_type']))
+				$this->output_type = $this->_params['output_type'];
+			else
+				$this->output_type = 'html';
+		}
 
 		$mask = str_repeat('.', bors_strlen($text));
 
@@ -271,7 +284,7 @@ class bors_lcml extends bors_object
 		$text = lcml_tags($t0 = $text, $mask, $this);
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) tags execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
+			bors_debug::syslog('warning_lcml', "Too long ({$long}s) tags execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		if($this->p('only_tags'))
 		{
@@ -379,7 +392,8 @@ class bors_lcml extends bors_object
 			if(!empty($GLOBALS['bors.composer.class_loader']))
 			{
 				$map = $GLOBALS['bors.composer.class_loader']->getClassMap();
-				$lcml_parsers = array_filter(array_keys($map), function($class_name) use ($type) {
+				$lcml_parsers = array_filter(array_keys($map), function($class_name) use ($type)
+				{
 					return preg_match('/^lcml_parser_'.$type.'_/', $class_name);
 				});
 
@@ -395,10 +409,13 @@ class bors_lcml extends bors_object
 		}
 
 		foreach($parser_classes[$type] as $foo => $parser)
+		{
+			$parser->set_lcml($this);
 			$text = $parser->parse($text);
+		}
 
 		if(($long = microtime(true) - $ts) > MAX_EXECUTE_S)
-			debug_hidden_log('warning_lcml', "Too long ({$long}s) $type parsers execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
+			bors_debug::syslog('warning_lcml', "Too long ({$long}s) $type parsers execute\nurl=".bors()->request()->url()."\ntext='$t0'", false);
 
 		return $text;
 	}
@@ -481,17 +498,17 @@ class bors_lcml extends bors_object
 		$suite->assertRegexp('#<strong>Сайт расходящихся тропок: <a.+href="http://balancer.ru".*>balancer.ru</a></strong>#', lcml($code));
 
 		$code = '[url=http://yandex.ru/yandsearch?text="оранжевые+зомби"]оранжевых зомби[/url]';
-		$suite->assertRegexp('#<a rel="nofollow" href="http://yandex.ru/yandsearch\?text=&quot;оранжевые\+зомби&quot;" class="external">оранжевых зомби</a>#', lcml($code));
+		$suite->assertRegexp('#<a rel="nofollow" href="http://yandex.ru/yandsearch\?text=&quot;оранжевые\+зомби&quot;" class="external[^"]*">оранжевых зомби</a>#', lcml($code));
 
 		// Обработка пайпов
 		$code = '[url=http://www.n2yo.com/?s=25544|38348]Реалтаймовый мониторинг положения Dragin и МКС[/url]';
-		$suite->assertRegexp('#<a rel="nofollow" href="http://www.n2yo.com/?s=25544|38348" class="external">Реалтаймовый мониторинг положения Dragin и МКС</a>#', lcml($code));
+		$suite->assertRegexp('#<a rel="nofollow" href="http://www.n2yo.com/?s=25544|38348" class="external[^"]*">Реалтаймовый мониторинг положения Dragin и МКС</a>#', lcml($code));
 
 		$code = '[http://www.ru|WWW.RU]';
-		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external">WWW.RU</a>#', lcml($code));
+		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external[^"]*">WWW.RU</a>#', lcml($code));
 
 		$code = '[http://www.ru WWW.RU]';
-		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external">WWW.RU</a>#', lcml($code));
+		$suite->assertRegexp('#<a rel="nofollow" href="http://www.ru" class="external[^"]*">WWW.RU</a>#', lcml($code));
 
 		$code = '[/test/|Ещё тест]';
 		$suite->assertRegexp('#<a.*href="/test/".*>Ещё тест</a>#', lcml($code));
@@ -538,21 +555,24 @@ class bors_lcml extends bors_object
 		return microtime(true) - $this->start_time > $time;
 	}
 
-	static function lcml($text, $params = array())
+	static function lcml($text, $params = [])
 	{
 		$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
 
-		global $lcs;
+		static $lcs;
 		if(!$lcs)
-			$lcs = array();
+			$lcs = [];
 
 		if(empty($lcs[$class_name]))
-			$lcs[$class_name] = new $class_name($params);
-
-		$lc = $lcs[$class_name];
+			$lc = $lcs[$class_name] = new $class_name($params);
+		else
+			$lc = $lcs[$class_name];
 
 		$lc->set_p('prepare', popval($params, 'prepare'));
 		$save_tags = $lc->p('only_tags');
+
+		$lc->set_params($params);
+
 		if(!empty($params['only_tags']))
 			$lc->set_p('only_tags', $params['only_tags']);
 
@@ -566,13 +586,17 @@ class bors_lcml extends bors_object
 		if(function_exists('mb_convert_encoding'))
 			$html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
+		// Cleanup for remove side effects after internal class modifications.
+		if($lc->p('level') < 1)
+			unset($lcs[$class_name]);
+
 		return $html;
 	}
 
 	static function bbh($string, $params = array())
 	{
 		// Fatal error: Call to undefined function lcml_tag_disabled() in /var/www/bors/bors-core/engines/lcml/pre/50-auto_images.php on line 5
-		require_once('engines/lcml/main.php');
+		require_once BORS_CORE.'/engines/lcml/main.php';
 
 		$se = config('lcml_tags_enabled');
 		$sd = config('lcml_tags_disabled');

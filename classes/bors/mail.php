@@ -13,6 +13,8 @@ class bors_mail extends bors_page
 	var $body_html = NULL;
 	var $charset = 'utf-8';
 
+	var $mail_template_data = [];
+
 	var $data		= array();
 
 	var $attaches	= array();
@@ -112,6 +114,15 @@ class bors_mail extends bors_page
 		return $this;
 	}
 
+	function images($images)
+	{
+		if($images)
+			foreach($images as $image)
+				$this->images[] = $image;
+
+		return $this;
+	}
+
 	function body_template($template_name, $data = array())
 	{
 		// mbfi/callback
@@ -119,6 +130,24 @@ class bors_mail extends bors_page
 		if(@$data['cr_type'] == 'save_cr')
 			$html = str_replace("\n", "<br/>\n", $html);
 		$this->html($html);
+		return $this;
+	}
+
+	function mail_template_data($data)
+	{
+		$this->mail_template_data = $data;
+		return $this;
+	}
+
+	function mail_template_html($template_name)
+	{
+		$this->mail_template_html = $template_name;
+		return $this;
+	}
+
+	function mail_template_text($template_name)
+	{
+		$this->mail_template_text = $template_name;
 		return $this;
 	}
 
@@ -136,14 +165,23 @@ class bors_mail extends bors_page
 
 	function send()
 	{
+		$text = @$this->text;
+		$html = @$this->body_html;
+
 		$tpl = preg_replace('/\.php$/', '.tpl', $this->class_file());
-		if(empty($this->body_html) && file_exists($tpl))
+		if(empty($body_html) && file_exists($tpl))
 		{
-			$this->body_html = call_user_func(array('bors_templates_smarty', 'fetch'), $tpl, $this->body_data());
+			$html = call_user_func(array('bors_templates_smarty', 'fetch'), $tpl, $this->body_data());
 
 			if(empty($this->subject))
 				$this->subject = $this->title();
 		}
+
+		if(!empty($this->mail_template_text))
+			$text = bors_templates_smarty::fetch($this->mail_template_text, array_merge(['body' => $text], $this->mail_template_data));
+
+		if(!empty($this->mail_template_html))
+			$html = bors_templates_smarty::fetch($this->mail_template_html, array_merge(['body' => $html], $this->mail_template_data));
 
 		// Перекодируем всё из системной кодировки в целевую.
 //		foreach(explode(' ', 'to subject text html from') as $x)
@@ -151,20 +189,25 @@ class bors_mail extends bors_page
 
 		$mime = new Mail_mime("\n");
 
-		$mime->setTXTBody(dc($this->text, $this->charset));
+		$mime->setTXTBody(dc($text, $this->charset));
 
 		// Должно быть до setHTMLBody!
 		foreach($this->images as $file)
-			$mime->addHTMLImage($file, 'image/jpeg');
-
-		if($this->body_html)
 		{
-			if(!preg_match('!<body!', $this->body_html))
-				$this->body_html = "<html><body>{$this->body_html}</body></html>";
+			if(preg_match('/\.png/', $file))
+				$mime->addHTMLImage($file, 'image/png');
+			else
+				$mime->addHTMLImage($file, 'image/jpeg');
+		}
 
-//		$this->body_html = preg_replace_callback('!<img[^>]+src="file://([^"]+)"!i', array());
+		if($html)
+		{
+			if(!preg_match('!<body!', $html))
+				$html = "<html><body>{$html}</body></html>";
 
-			$mime->setHTMLBody($this->body_html);
+//		$html = preg_replace_callback('!<img[^>]+src="file://([^"]+)"!i', array());
+
+			$mime->setHTMLBody($html);
 		}
 /*
 		if($this->attaches)

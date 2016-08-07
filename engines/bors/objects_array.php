@@ -1,6 +1,6 @@
 <?php
 
-require_once('inc/mysql.php');
+require_once __DIR__.'/../../inc/mysql.php';
 
 /**
  * @param string $class_name
@@ -89,9 +89,9 @@ function bors_find_first($class_name, $args = array())
 {
 	if(empty($args['limit']))
 		$args['limit'] = 1;
-	
+
     $objs = bors_find_all($class_name, $args);
-	
+
     if(config('debug_objects_create_counting_details'))
 		debug_count_inc("bors_find_first($class_name)");
 
@@ -127,7 +127,7 @@ function bors_count($class_name, $args = array())
 		$cargs['object_id'] = $args['object_id'];
 
 	if(!$storage)
-		bors_throw("Empty storage for ".$class_name);
+		throw new Exception("Empty storage for ".$class_name);
 
 	return $storage->load($init, $where, true, $cargs);
 }

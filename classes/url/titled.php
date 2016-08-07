@@ -24,12 +24,10 @@ class url_titled extends url_base
 		if($page === NULL)
 			$page = $obj->page();
 
-		@list($prefix, $prefix_lp, $suffix) = @$bors_url_titled_cache[$obj->internal_uri()];
-		if(!$prefix)
+		list($infix, $suffix) = @$bors_url_titled_cache[$obj->internal_uri()];
+		if(!$suffix)
 		{
-			require_once("inc/urls.php");
-			$prefix    = $obj->base_url().strftime("%Y/%m/", $obj->create_time());
-			$prefix_lp = $obj->base_url().strftime("%Y/%m/", $obj->modify_time());
+			require_once BORS_CORE.'/inc/urls.php';
 
 			$uri_name = $obj->uri_name();
 			if(strlen($uri_name) > 3)
@@ -37,23 +35,34 @@ class url_titled extends url_base
 
 			$infix = $uri_name.$obj->id();
 
-			$prefix .= $infix;
-			$prefix_lp .= $infix;
-
 			if(!($suffix = substr(translite_uri_simple($obj->title()), 0, 60)))
 				$suffix = '~';
 
 			$suffix = '--'.$suffix;
 
-			$bors_url_titled_cache[$obj->internal_uri()] = array($prefix, $prefix_lp, $suffix);
+
+			$bors_url_titled_cache[$obj->internal_uri()] = [$infix, $suffix];
 		}
 
-		$lp = $obj->total_pages() == $page;
-		$uri = $lp ? $prefix_lp : $prefix;
+		if($obj->total_pages() == $page)
+			$prefix = $obj->base_url($page).strftime("%Y/%m/", $obj->modify_time());
+		elseif(method_exists($obj, 'page_modify_time'))
+			$prefix = $obj->base_url($page).strftime("%Y/%m/", $obj->page_modify_time($page));
+		else
+			$prefix = $obj->base_url($page).strftime("%Y/%m/", $obj->create_time());
+
+		$uri = $prefix . $infix;
 
 		if($page && $page != 1 && $page != -1)
 			$uri .= ",$page";
 
-		return $uri . $suffix . ($lp ? '.'.$obj->modify_time()%10000 : '') . ".html";
+		$is_last_page = ($page == $obj->total_pages());// && defval($args, 'force', true); // defval($args, 'is_last_page', false);
+
+		$url = $uri . $suffix . ($is_last_page ? '.'.($is_last_page > 1 ? $is_last_page : $obj->modify_time())%10000 : '') . ".html";
+
+//		if(config('is_developer') && is_array($args)) { echo '?'; var_dump($args, $is_last_page, $url); exit(); }
+
+		return $url;
+//		return $uri . $suffix . ".html";
 	}
 }

@@ -4,7 +4,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 {
 	bors_function_include('debug/hidden_log');
 	// Пробуем заменить новым выводом. Но логгируем выводы для замены:
-	debug_hidden_log('obsolete-code', "Call template_assign_data");
+	bors_debug::syslog('obsolete-code', "Call template_assign_data");
 	return bors_templates_smarty::fetch($assign_template, $data);
 
 	bors_function_include('debug/timing_start');
@@ -25,7 +25,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 	$smarty->compile_id = defval($data, 'compile_id');
 	if(strlen($smarty->compile_id) > 128)
 	{
-		debug_hidden_log('need-attention', 'too long compile id: '.$smarty->compile_id);
+		bors_debug::syslog('need-attention', 'too long compile id: '.$smarty->compile_id);
 		$smarty->compile_id = substr($smarty->compile_id, 0, 128);
 	}
 
@@ -113,7 +113,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 
 		bors_function_include('debug/timing_start');
 		bors_function_include('debug/timing_stop');
-		debug_timing_stop('template_smarty_assign');
+		bors_debug::timing_stop('template_smarty_assign');
 		debug_timing_start('template_smarty_assign_fill');
 
 		if($obj = bors()->main_object())
@@ -138,7 +138,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 				$smarty->assign($var, $value);
 		}
 
-	debug_timing_stop('template_smarty_assign_fill');
+	bors_debug::timing_stop('template_smarty_assign_fill');
 	debug_timing_start('template_smarty_assign');
 
 	if(preg_match('!^/!', $template_uri))
@@ -152,11 +152,11 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 	if(!$caching)
 		$smarty->clear_cache($template_uri);
 
-	debug_timing_stop('template_smarty_assign');
+	bors_debug::timing_stop('template_smarty_assign');
 //	debug_timing_start('template_smarty_assign_fetch');
 	$smarty->assign($data);
 	$result = $smarty->fetch($template_uri);
-//	debug_timing_stop('template_smarty_assign_fetch');
+//	bors_debug::timing_stop('template_smarty_assign_fetch');
 	return $result;
 }
 
@@ -227,7 +227,7 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 				}
 	}
 
-	$caller_default_template = BORS_CORE.'/templates/'.$module_relative_path;
+	$caller_default_template = __DIR__.'/../../templates/'.$module_relative_path;
 
 	$smarty->template_dir = $caller_path;
 	if(!empty($data['template_dir']) && $data['template_dir'] != 'caller')

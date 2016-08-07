@@ -30,7 +30,10 @@ class bors_markup_markdown extends bors_object
 
 	static function title_text_extract($text)
 	{
-		if(preg_match('/^(.+?)\n={3,}\n(.*)$/s', $text, $m))
+		if(preg_match("/^# (.+?)\n(.*)$/s", $text, $m))
+			return array(trim($m[1]), trim($m[2]));
+
+		if(preg_match("/^(.+?)\n={3,}\n(.*)$/s", $text, $m))
 			return array(trim($m[1]), trim($m[2]));
 
 		return array(NULL, $text);

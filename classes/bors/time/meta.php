@@ -4,7 +4,18 @@ class bors_time_meta extends bors_property
 {
 	var $is_null = false;
 
-	static function factory($timestamp) { return new bors_time($timestamp); }
+	static function factory($time)
+	{
+		$class_name = get_called_class();
+		if(!is_numeric($time)) // Это дата в произвольном формате
+			$time = strtotime($time);
+
+		return new $class_name($time);
+	}
+
+	function is_active() { return $this->timestamp() >= time(); }
+	function is_future() { return $this->timestamp() > time(); }
+	function is_past()   { return $this->timestamp() < time(); }
 
 	function __toString()
 	{
@@ -24,6 +35,14 @@ class bors_time_meta extends bors_property
 			return $def;
 
 		return bors_lib_time::short($this->timestamp(), $def);
+	}
+
+	function short_ny($def = '')
+	{
+		if($this->is_null)
+			return $def;
+
+		return bors_lib_time::short_ny($this->timestamp(), $def);
 	}
 
 	function full_hdate()

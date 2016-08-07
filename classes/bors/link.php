@@ -84,16 +84,30 @@ class bors_link extends bors_object_db
 		$this->set_target_time2($target->link_time2(true));
 	}
 
+	function set_target_array(&$data, $target)
+	{
+		$data['target_class_id'] = $target->extends_class_id();
+		$data['target_object_id'] = $target->id();
+
+		$data['target_create_time'] = $target->create_time(true);
+		$data['target_modify_time'] = $target->modify_time(true);
+		$data['target_time1'] = $target->link_time1(true);
+		$data['target_time2'] = $target->link_time2(true);
+	}
+
 	function set_replace($bool) { $this->replace = $bool; }
 	function replace_on_new_instance() { return $this->replace; }
 
+	// Return updated status
 	static function link_objects($obj1, $obj2, $params = array())
 	{
 		if(!$obj1 || !$obj2)
-			return;
+			return false;
 
-		self::link_object_to($obj1, $obj2, $params);
-		self::link_object_to($obj2, $obj1, $params);
+		// Don't use expression. I's lazy and not works for thow argument if first true.
+		$up1 = self::link_object_to($obj1, $obj2, $params);
+		$up2 = self::link_object_to($obj2, $obj1, $params);
+		return $up1 || $up2;
 	}
 
 	static function link($class1, $id1, $class2, $id2, $params = array())
@@ -108,24 +122,48 @@ class bors_link extends bors_object_db
 			$obj2->set_parent_object($obj1);
 	}
 
-	static function link_object_to($from, $to, $params = array())
+	// Return updated status
+	static function link_object_to($from, $to, $params = [])
 	{
-		$link = object_new('bors_link');
-		$link->set_from($from);
-		$link->set_target($to);
-		$link->set_sort_order(defval($params, 'sort_order', 0));
+		$data = [
+			'from_class'=> $from->extends_class_id(),
+			'from_id'	=> $from->id(),
+			'to_class'	=> $to->extends_class_id(),
+			'to_id'		=> $to->id(),
+		];
+
+		$link = bors_find_first('bors_link', $data);
+		if($link)
+		{
+			$link->set_sort_order(defval($params, 'sort_order', 0));
+			foreach($params as $k => $v)
+				$link->set($k, $v, true);
+
+			$link->set_target($to);
+			$link->store();
+
+			return false;
+		}
 
 		if(empty($params['owner_id']))
 			$params['owner_id'] = bors()->user_id();
 
+		$data['sort_order'] = defval($params, 'sort_order', 0);
 		foreach($params as $k => $v)
-			$link->{"set_$k"}($v, true);
+			$data[$k] = $v;
 
-		$link->new_instance();
-		$link->store();
+		self::set_target_array($data, $to);
+
+		$link = bors_new('bors_link', $data);
 
 		if(method_exists($to, 'set_parent_object') && !$to->parent_object())
 			$to->set_parent_object($from);
+
+		echo "\nnew link {$from} => {$to}\n";
+
+		$link->store();
+
+		return true;
 	}
 
 	private static function _target_class_parse(&$params)
@@ -250,7 +288,7 @@ class bors_link extends bors_object_db
 		$links = bors_link::links($object, $params);
 
 //		print_dd($links);
-//		echo debug_trace();
+//		echo bors_debug::trace();
 
 		foreach($links as $link)
 			$objs[$link->target_class_id()][$link->target_object_id()] = true;
@@ -311,7 +349,7 @@ class bors_link extends bors_object_db
 	{
 		if(!$object)
 		{
-			debug_hidden_log('links-error', "Try links count for empty object");
+			bors_debug::syslog('links-error', "Try links count for empty object");
 			return 0;
 		}
 
@@ -332,7 +370,7 @@ class bors_link extends bors_object_db
 		$dbh = new driver_mysql(config('main_bors_db'));
 		$tc = $object->extends_class_id();
 		$ti = $object->id();
-		$dbh->delete(self::table_name(), array("owner_id < 0 AND ((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
+		$dbh->delete(self::table_name(), array("(owner_id < 0 OR `is_auto` = 1) AND ((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
 	}
 
 	static function drop_all($object)
@@ -390,10 +428,10 @@ class bors_link extends bors_object_db
 			return;
 
 		if($to_id)
-			$dbh->delete(self::table_name(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class AND to_id=$to_id)
+			$dbh->delete(bors_foo(get_called_class())->table_name(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class AND to_id=$to_id)
 				OR (to_class=$from_class AND to_id=$from_id AND from_class=$to_class AND from_id=$to_id))"));
 		else
-			$dbh->delete(self::table_name(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class)
+			$dbh->delete(bors_foo(get_called_class())->table_name(), array("((from_class=$from_class AND from_id=$from_id AND to_class=$to_class)
 				OR (to_class=$from_class AND to_id=$from_id AND from_class=$to_class))"));
 	}
 

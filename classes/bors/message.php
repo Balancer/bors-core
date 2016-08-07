@@ -6,7 +6,7 @@ class bors_message extends bors_object
 	{
 		$message = "<div class=\"alert alert-error\">{$text}</div>";
 		$redir = defval($params, 'go', defval($params, 'redirect', false));
-		$title = defval($params, 'title', ec('Ошибка!'));
+		$title = defval($params, 'title', ec('Ошибка! [1]'));
 		$nav_name = defval($params, 'nav_name', $title);
 		$timeout = defval($params, 'timeout', -1);
 		$hidden_log = defval($params, 'hidden_log');

@@ -6,6 +6,9 @@ class bors_admin_edit_synonyms extends bors_page
 {
 	function title() { return ($this->object() ? $this->object()->title() : '---').ec(': синонимы'); }
 	function nav_name() { return ec('синонимы'); }
+
+	var $can_action_method_get=true;
+
 	function object()
 	{
 		if($this->__havec('object') && ($obj = $this->__lastc()))

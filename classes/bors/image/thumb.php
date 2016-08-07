@@ -2,7 +2,7 @@
 
 // 	Основной класс.
 
-require_once('inc/images.php');
+require_once BORS_CORE.'/inc/images.php';
 
 class bors_image_thumb extends bors_image
 {
@@ -59,28 +59,43 @@ class bors_image_thumb extends bors_image
 			$this->geo_height = $m[4];
 			$this->geo_opts   = $m[5];
 		}
+		elseif(preg_match('!^(\d+),((\d*)x(\d*)([^/]+))$!', $this->id(), $m))
+		{
+			$id = $m[1];
+			$this->geometry   = $m[2];
+			$this->geo_width  = $m[3];
+			$this->geo_height = $m[4];
+			$this->geo_opts   = $m[5];
+		}
 		else
 			return $this->set_is_loaded(false);
+
+		@header('X-thumb-file-2: '.$this->file_name_with_path());
 
 		if($this->width() && file_exists($this->file_name_with_path()) && substr($this->file_name_with_path(),-1) != '/')
 			return $this->set_is_loaded(true);
 
 		$this->set_height(-1); // трассировка
 
-		$this->original = bors_load($this->arg('image_class_name', $this->image_class()), $id);
+		if($o = $this->arg('original_image'))
+			$this->original = $o;
+		else
+			$this->original = bors_load($image_class = $this->arg('image_class_name', $this->image_class()), $id);
 
 		if(!$this->original)
+		{
+			bors_debug::syslog('error-thumbnail-load', "Can't load original image {$image_class}($id)");
 			return $this->set_is_loaded(false);
+		}
 
 		$this->set_height(-2); // трассировка
 
 		// Тут было $this->original->file_name()
 		// Не ошибка ли? Если возвращать, то проверить WWW.aviaport_pictures на предмет соответствий
 		// Было сделано update aviaport_pictures set original_filename = file_name where original_filename = '';
-		if(!preg_match('/\.(jpe?g|gif|png)$/i', $this->original->file_name()))
-			return $this->set_is_loaded(false);
 
-//		$this->delete();
+//		if(!preg_match('/\.(jpe?g|gif|png)$/i', $this->original->file_name()))
+//			return $this->set_is_loaded(false);
 
 		$this->set_height(-3); // трассировка
 
@@ -101,8 +116,6 @@ class bors_image_thumb extends bors_image
 
 		// Заворачиваем адреса с уже кешем в оригинальные.
 		$original_url = preg_replace("!^(.*?)cache/(.+)/\d*x\d*/([^/]+?)$!", "$1$2/$3", $original_url);
-
-//		if(config('is_debug')) var_dump('o', $original_url);
 
 		if($original_url[0] == '/')
 			$new_url = '/cache'.preg_replace('!^(/.+?)([^/]+)$!', '${1}'.$this->geometry.'/$2', $original_url);
@@ -151,7 +164,7 @@ class bors_image_thumb extends bors_image
 
 		$file_orig_r = $file_orig;
 		if(!($fsize_orig = @filesize($file_orig_r)))
-			bors_debug::syslog('invalid-image', "Image '$file_orig_r' size zero");
+			bors_debug::syslog('error-invalid-image', "Image '$file_orig_r' size zero");
 
 		$file_thumb_r = $file_thumb;
 		//TODO: придумать обработку больших картинок.
@@ -172,20 +185,16 @@ class bors_image_thumb extends bors_image
 
 		$this->set_height(-8); // трассировка
 
-//		bors_debug::syslog('000-image-debug', "Get thumb size for ".$file_thumb_r);
-
 		if(!file_exists($file_thumb_r))
 		{
-			bors_debug::syslog('image-error', 'Image file not exists: ' . $file_thumb_r .'; image_dir='.$this->image_dir());
+//			bors_debug::syslog('image-error', 'Image file not exists: ' . $file_thumb_r .'; image_dir='.$this->image_dir());
 			return $this->set_is_loaded(false);
 		}
 
 		$img_data = getimagesize($file_thumb_r);
 
-//		bors_debug::syslog('000-image-debug', "Size for ".$file_thumb_r." = ".print_r($img_data, true));
-
 		if(empty($img_data[0]))
-			bors_debug::syslog('image-error', 'Cannot get image width for '.$file_thumb_r
+			bors_debug::syslog('error-image', 'Cannot get image width for '.$file_thumb_r
 				.'; image_dir='.$this->image_dir()
 			);
 

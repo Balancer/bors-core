@@ -40,7 +40,7 @@ class bors_forms_radio extends bors_forms_element
 				if($m[1] == 'this')
 					$list = $obj->$list();
 				else
-					$list = object_load($m[1])->$m[2]();
+					$list = call_user_func([bors_foo($m[1]), $m[2]]);
 			}
 			elseif(preg_match("!^\w+$!", $list))
 			{
@@ -54,7 +54,7 @@ class bors_forms_radio extends bors_forms_element
 			{
 				if($list)
 				{
-					require_once(BORS_CORE.'/inc/bors/lists.php');
+					require_once(__DIR__.'/../../../inc/bors/lists.php');
 					eval('$list='.$list);
 				}
 			}
@@ -117,6 +117,9 @@ class bors_forms_radio extends bors_forms_element
 
 		foreach($list as $id => $iname)
 		{
+			if(!$iname)
+				continue;
+
 			$style = array();
 			if($color = @$colorize[$colorpos++])
 				$style[] = "color: $color";
@@ -149,8 +152,10 @@ class bors_forms_radio extends bors_forms_element
 
 		$html .= $labels_html;
 
-		if($form->get('has_form_table'))
-			$html .= "</td></tr>\n";
+//		http://admin.aviaport.ru/news/359785/
+//		if($form->get('has_form_table'))
+//		if($this->label() && $this->use_tab())
+//			$html .= "</td></tr>\n";
 
 		return $html;
 	}

@@ -101,12 +101,17 @@ class base_page_paged extends bors_page
 		)));
 		echo '</xmp>';
 */
-		$this->_items = bors_find_all($class_name, $this->_where(array(
+
+		$conds = [
 			'page' => $this->page(),
 			'per_page' => $this->items_per_page(),
-			'order' => $this->order(),
 			'by_id' => true,
-		)));
+		];
+
+		if($o = $this->order())
+			$conds['order'] = $o;
+
+		$this->_items = bors_find_all($class_name, $this->_where($conds));
 
 		if($this->is_reversed())
 			$this->_items = array_reverse($this->_items, true);
@@ -133,10 +138,11 @@ class base_page_paged extends bors_page
 		catch(Exception $e)
 		{
 			$msg = bors_lib_exception::catch_trace($e);
-			debug_hidden_log('paginated_items_count_exception', $msg);
+			bors_debug::syslog('paginated_items_count_exception', $msg);
 
-			var_dump(get_class($this), $this->where(), $this->get('inner_join_filter'));
-			print_dd($msg);
+			throw new Exception($e->getMessage()."; class=".get_class($this)
+				."; where=".print_r($this->where(), true)
+				."inner_join_filter=".print_r($this->get('inner_join_filter'), true));
 
 			$count = 0;
 		}
@@ -154,7 +160,7 @@ class base_page_paged extends bors_page
 		return preg_replace('/^.+_(.+?)$/', '$1', $this->main_class());
 	}
 
-	function items_name() { return bors_plural($this->item_name()); }
+	function items_name() { return \blib_grammar::plural($this->item_name()); }
 
 	function body_data()
 	{
@@ -175,7 +181,7 @@ class base_page_paged extends bors_page
 	//TODO: надо думать.
 	function __xcall($method, $params)
 	{
-		if($method == bors_plural($this->item_name()))
+		if($method == \blib_grammar::plural($this->item_name()))
 			return $this->items();
 
 		return parent::__call($method, $params);

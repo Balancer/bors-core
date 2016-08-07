@@ -61,8 +61,8 @@ class bors_forms_saver extends bors_object_simple
 		if(!$access->can_action(@$data['act'], $data))
 			return bors_message::error(ec("Извините, у Вас недостаточно прав доступа для проведения операций с этим ресурсом"),
 				array(
-					'sysinfo' => "class = ".get_class($object).",<br/>\naccess class = ".($object->access_engine())
-						."/".get_class($access).", method = can_action(".@$data['act'].")",
+					'sysinfo' => "class = ".get_class($object).",<br/>\naccess = ".($access->class_name())
+						."<br/>\nmethod = can_action(".@$data['act'].")",
 				)
 			);
 
@@ -95,7 +95,6 @@ class bors_forms_saver extends bors_object_simple
 
 //		echo "Data ="; print_dd($data); echo "<b style='color:red'>Cahnged fields =</b>"; var_dump($object->changed_fields); echo "has changed = "; var_dump($object->has_changed()); exit();
 
-		$was_new = false;
 
 		// Создаём новый объект, если это требуется
 		if(!$object->id() && !$use_form)
@@ -104,6 +103,8 @@ class bors_forms_saver extends bors_object_simple
 			$object->on_new_instance($data);
 			$was_new = true;
 		}
+		else
+			$was_new = false;
 
 		if($file_vars)
 			self::load_files($object, $data, $files, $file_vars);
@@ -138,6 +139,11 @@ class bors_forms_saver extends bors_object_simple
 			$hash = 'bors_v'.config('memcached_tag').'_'.$this->class_name().'://'.$this->id();
 			$memcache_instance->set($hash, serialize($this), 0, 0);
 		}
+
+		if($was_new)
+			$object->b2_post_new($data);
+		else
+			$object->b2_post_update($data);
 
 		$go = defval($data, 'go', $go);
 
@@ -224,7 +230,7 @@ class bors_forms_saver extends bors_object_simple
 
 				if(!method_exists($object, $method_name = "upload_{$f}_file") && !method_exists($object, $method_name = "upload_file"))
 				{
-					debug_hidden_log('errors.forms.files', $msg = "Undefined upload method '$method_name' for {$object}");
+					bors_debug::syslog('errors.forms.files', $msg = "Undefined upload method '$method_name' for {$object}");
 					bors_exit($msg);
 				}
 
@@ -248,7 +254,7 @@ class bors_forms_saver extends bors_object_simple
 			}
 			else
 			{
-				debug_hidden_log('errors.forms.files', $msg = "Unknown file var format: '$f' for {$object}");
+				bors_debug::syslog('errors.forms.files', $msg = "Unknown file var format: '$f' for {$object}");
 				bors_throw($msg);
 			}
 
@@ -291,7 +297,7 @@ class bors_forms_saver extends bors_object_simple
 			$file_data = @$files[$file_name];
 			if(!$file_data)
 			{
-				debug_hidden_log('errors_form', "Empty file data for {$f}");
+				bors_debug::syslog('errors_form', "Empty file data for {$f}");
 				bors_exit("Empty file data for {$f}");
 			}
 

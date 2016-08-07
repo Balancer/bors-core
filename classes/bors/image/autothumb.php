@@ -9,6 +9,8 @@ class bors_image_autothumb extends bors_object
 	var $origin_path = NULL;
 	var $geo = NULL;
 
+	function _access_engine_def() { return bors_access_public::class; }
+
 	function __construct($thumb_path)
 	{
 		if(preg_match('/%D0/', $thumb_path))
@@ -16,16 +18,18 @@ class bors_image_autothumb extends bors_object
 
 		if(!preg_match('!^(/.*/)(\d*x\d*)/([^/]+)$!', $thumb_path, $m))
 			if(!preg_match('!^(/.*/)(\d*x\d*\([^)]+\))/([^/]+)$!', $thumb_path, $m))
-				return;
+				if(!preg_match('!^(/.*/)(\d*x\d*-[^/]+)/([^/]+)$!', $thumb_path, $m))
+					return;
 
 		// Если убиваем кеш, то стереть файл
 		if(array_key_exists('nc', $_GET) && file_exists($f = $_SERVER['DOCUMENT_ROOT'].'/cache'.$thumb_path))
 			unlink($f);
 
 		$origin_path = $m[1].$m[3];
-//		if(config('is_debug')) { echo '<xmp>', $_SERVER['DOCUMENT_ROOT'] . $origin_path, print_r($m, true), PHP_EOL; var_dump($thumb_path, $origin_path); exit(); }
+//		if(config('is_debug')) { echo '<xmp>', $_SERVER['DOCUMENT_ROOT'] . $origin_path, print_r($m, true), PHP_EOL; var_dump($thumb_path, $origin_path); var_dump($_SERVER); exit(); }
 		if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $origin_path))
 		{
+//			exit('n:'.$_SERVER['DOCUMENT_ROOT'] . $origin_path."; BC=".BORS_CORE);
 			// http://www.balancer.ru/sites/u/p/upload.wikimedia.org/wikipedia/commons/b/b0/_quote_Facing_the_Flag_quote__by_L%C3%A9on_Benett_34.jpg
 			if(!preg_match('/%/', $origin_path))
 				return;
@@ -36,7 +40,7 @@ class bors_image_autothumb extends bors_object
 		}
 
 		$this->geo = $m[2];
-//		if(config('is_debug')) { echo $_SERVER['DOCUMENT_ROOT'] . $origin_path, print_r($m, true), PHP_EOL; exit(); }
+//		if(config('is_debug')) { echo '<xmp>', $_SERVER['DOCUMENT_ROOT'] . $origin_path, print_r($m, true), PHP_EOL; exit(); }
 
 		parent::__construct($this->origin_path = $origin_path);
 	}
@@ -68,6 +72,7 @@ class bors_image_autothumb extends bors_object
 				$img->set_full_url($u);
 		}
 
+		$img->set_attr('force_thumbnail', true);
 		return $img->thumbnail($this->geo);
 	}
 
@@ -84,9 +89,7 @@ class bors_image_autothumb extends bors_object
 			header('X-original-image: '.$img->internal_uri());
 
 		if(!$img || !file_exists($img->file_name_with_path()))
-		{
 			$img = bors_image::register_file($this->origin_path);
-		}
 
 		if(preg_match('!^/!', $u = $img->url()))
 		{
@@ -97,6 +100,7 @@ class bors_image_autothumb extends bors_object
 				$img->set_full_url("http://{$ud['host']}$u");
 		}
 
+		$img->set_attr('force_thumbnail', true);
 		$thumb = $img->thumbnail($this->geo);
 
 		if(config('bors.version_show'))
@@ -113,7 +117,7 @@ class bors_image_autothumb extends bors_object
 
 		require_once('inc/bors/bors_images.php');
 		$msg = ec("Ошибка изображения {$thumb->class_name()}({$thumb->id()}):\n").config('bors-image-lasterror');
-		debug_hidden_log('image-thumb-error', "geo={$this->geo}, img={$img}; $msg");
+		bors_debug::syslog('image-thumb-error', "geo={$this->geo}, img={$img}; $msg");
 		bors_image_message($msg, array(
 			'print' => true,
 			'width' => $width ? $width : 640,

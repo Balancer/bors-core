@@ -62,9 +62,4 @@ class bors_image_file extends bors_object
 		$append = defval($args, 'append');
 		return "<img src=\"{$this->full_url()}\" {$this->wxh()} $append />";
 	}
-
-	static function load($path)
-	{
-		return bors_load(__CLASS__, $path);
-	}
 }

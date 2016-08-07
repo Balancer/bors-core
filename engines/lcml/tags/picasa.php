@@ -30,7 +30,7 @@ function lp_picasa($id, $params)
 			$thumb_url = $m[1];
 		else
 		{
-			debug_hidden_log('external_code', 'picasa: can not find image '.$url." in \n".$content);
+			bors_debug::syslog('external_code', 'picasa: can not find image '.$url." in \n".$content);
 			return "<a href=\"$url\">$url</a>";
 		}
 

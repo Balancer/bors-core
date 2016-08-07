@@ -12,12 +12,12 @@ class bors_forms_input extends bors_forms_element
 		$form = $this->form();
 
 		extract($params);
-		$maxlength = defval($params, 'maxlength', 255);
 
 		$object = $form->object();
 		$value = $this->value();
 
-		$class = array($this->css());
+		$class = [$this->css()];
+		$html5_data = [];
 
 		if(in_array($name, explode(',', session_var('error_fields'))))
 			$class[] = $this->css_error();
@@ -33,6 +33,8 @@ class bors_forms_input extends bors_forms_element
 		// Если у нас используется валидация данных формы
 		if($form->attr('ajax_validate'))
 		{
+			bors_debug::syslog('warning/obsolete', 'Use old `ajax_validate` property. Change it to `validation`');
+
 			if(empty($id))
 			{
 				static $input_id = 0;
@@ -43,8 +45,10 @@ class bors_forms_input extends bors_forms_element
 				$class[] = 'validate['.$ajax_validator.']';
 		}
 
+		bors_forms_helper::validation_check($params, $html5_data);
+
 //		class="validate[required,custom[noSpecialCaracters],length[5,20]]"
-		$versioning = object_property($object, 'versioning_properties', array());
+		$versioning = object_property($object, 'versioning_properties', []);
 
 		if(array_key_exists($name, $versioning))
 		{
@@ -55,7 +59,7 @@ class bors_forms_input extends bors_forms_element
 		else
 			$has_versioning = false;
 
-		$result = "";
+		$html = "";
 
 		if(@$td_colspan)
 			$td_colspan = " colspan=\"{$td_colspan}\"";
@@ -67,7 +71,7 @@ class bors_forms_input extends bors_forms_element
 		{
 			$label = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $label);
 
-			$result .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$label}</th><td{$td_colspan}>";
+			$html .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$label}</th><td{$td_colspan}>";
 			if(empty($style) && empty($css))
 				$style = "width: 99%";
 		}
@@ -86,24 +90,37 @@ class bors_forms_input extends bors_forms_element
 
 		$class = join(' ', $class);
 
-		$result .= "<input type=\"{$type}\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
+		$html .= "<input type=\"{$type}\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
 
-		foreach(explode(' ', 'class id maxlength size style placeholder') as $p)
+		foreach(['class', 'id', 'size', 'style', 'placeholder'] as $p)
 			if(!empty($$p))
-				$result .=  " $p=\"{$$p}\"";
+				$html .=  " $p=\"{$$p}\"";
 
-		$result .=  " />\n";
+		foreach(['maxlength'] as $p)
+		{
+			if(empty($params[$p]))
+				continue;
+
+			$v = $params[$p];
+			if($v != '-')
+				$html .=  " $p=\"".htmlspecialchars($v)."\"";
+		}
+
+		foreach($html5_data as $key => $val)
+			$html .= " data-$key=\"".htmlspecialchars($val)."\"";
+
+		$html .=  " />\n";
 
 		// mbfi/admin/settings
 		if(@$previous_value)
 			$previous = $previous_value;
 
 		if($has_versioning || $previous)
-			$result .=  "<br/><small>".ec("Предыдущее значение: ").$previous."</small>\n";
+			$html .=  "<br/><small>".ec("Предыдущее значение: ").$previous."</small>\n";
 
 		if($label)
-			$result .=  "</td></tr>\n";
+			$html .=  "</td></tr>\n";
 
-		return $result;
+		return $html;
 	}
 }

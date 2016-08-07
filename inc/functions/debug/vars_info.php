@@ -1,6 +1,6 @@
 <?php
 
-bors_function_include('debug/log_var');
+require_once BORS_CORE.'/inc/functions/debug/log_var.php';
 
 function debug_vars_info()
 {

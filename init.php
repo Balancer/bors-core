@@ -3,8 +3,10 @@
 if(empty($GLOBALS['stat']['start_microtime']))
 	$GLOBALS['stat']['start_microtime'] = microtime(true);
 
-if(!ini_get('default_charset'))
-	ini_set('default_charset', 'UTF-8');
+//if(!empty($GLOBALS['b2_data']['inited_new']))
+//{
+//	throw new Exception("Load old init from new B2");
+//}
 
 /*
 	Инициализация всех систем фреймворка.
@@ -37,9 +39,6 @@ if(!defined('BORS_EXT'))
 if(!defined('BORS_LOCAL'))
 	define('BORS_LOCAL', BORS_ROOT.'bors-local');
 
-if(!defined('BORS_HOST'))
-	define('BORS_HOST', BORS_ROOT.'bors-host');
-
 if(!defined('BORS_SITE'))
 	define('BORS_SITE', dirname(@$_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'bors-site');
 
@@ -58,9 +57,11 @@ if(!defined('BORS_3RD_PARTY'))
 if(!empty($_SERVER['HTTP_X_REAL_IP']) && @$_SERVER['REMOTE_ADDR'] == @$_SERVER['SERVER_ADDR'])
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_REAL_IP'];
 
+// Before configs — they may use bors_url_map and other.
+bors_transitional::init();
 bors_funcs::noop();
 
-foreach(array(COMPOSER_ROOT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $base_dir)
+foreach(array(COMPOSER_ROOT, BORS_LOCAL, BORS_SITE) as $base_dir)
 	if(file_exists($file = "{$base_dir}/config-pre.php"))
 		include_once($file);
 
@@ -69,7 +70,7 @@ bors_config_ini($dir.'/config.ini');
 require_once($dir.'/config.php');
 
 $GLOBALS['bors_data']['vhost_handlers'] = array();
-$GLOBALS['bors_map'] = array();
+//$GLOBALS['bors_map'] = array();
 
 // Пока не убирать: Fatal error: Call to undefined function calling_function_name() in /var/www/bors/composer/vendor/balancer/bors-core/classes/bors/object/simple.php on line 288
 require_once('inc/system.php');
@@ -79,7 +80,6 @@ $host = @$_SERVER['HTTP_HOST'];
 $vhost = '/vhosts/'.@$_SERVER['HTTP_HOST'];
 $includes = array(
 	BORS_SITE,
-	BORS_HOST,
 	BORS_LOCAL.$vhost,
 	BORS_LOCAL,
 	BORS_EXT,
@@ -92,8 +92,7 @@ $includes = array(
 if(defined('BORS_APPEND'))
 	$includes = array_merge($includes, explode(' ', BORS_APPEND));
 
-if(defined('COMPOSER_ROOT'))
-	$includes[] = COMPOSER_ROOT;
+$includes[] = COMPOSER_ROOT;
 
 if(defined('INCLUDES_APPEND'))
 	$includes = array_merge($includes, explode(' ', INCLUDES_APPEND));
@@ -108,20 +107,39 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEP
 
 bors_function_include('locale/ec');
 
+// Our replace for gettext if it not installed
+if(!function_exists('_'))
+{
+	function _($text) { return ec($text); }
+}
+
 spl_autoload_register('class_include');
 
-foreach(array(COMPOSER_ROOT, BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_HOST, BORS_SITE) as $dir)
+$dirs = [BORS_3RD_PARTY, BORS_EXT, BORS_LOCAL, BORS_SITE];
+
+// foreach(bors::$package_app_path as $path)
+//	$dirs[] = $path;
+
+if(!empty($GLOBALS['B2']['main_app']))
+	$dirs[] = $GLOBALS['B2']['main_app']->package_path();
+
+$dirs[] = COMPOSER_ROOT;
+
+foreach(array_reverse(array_unique(array_reverse($dirs))) as $dir)
 {
 	if(file_exists($dir.'/config.ini'))
 		bors_config_ini($dir.'/config.ini');
 
 	if(file_exists($dir.'/config.php'))
-		include_once($dir.'/config.php');
+		require_once($dir.'/config.php');
 }
 
 if(!empty($GLOBALS['bors']['config']['config_hosts']))
 	foreach($GLOBALS['bors']['config']['config_hosts'] as $config_file)
 		require_once($config_file);
+
+if(file_exists($f = COMPOSER_ROOT.'/config-host.php'))
+	require_once($f);
 
 if(!file_exists($d = config('cache_dir')));
 	mkpath($d, 0750);
@@ -133,24 +151,27 @@ if(!config('cache.stash.pool') && class_exists('Stash\Pool'))
 
 	if(class_exists('Redis', false))
 	{
-		$driver = new Stash\Driver\Redis();
-
-		if(config('redis.servers'))
-		{
-			$servers = array();
-			foreach(config('redis.servers') as $s)
-				$servers[] = array($s['host'], $s['port']);
-		}
-		else
-			$servers = array(array('server' => '127.0.0.1', 'port' => 6379, 'ttl' => 86400));
-
-		$driver->setOptions(array('servers' => $servers));
-
 		try
 		{
+			if(config('redis.servers'))
+			{
+				$servers = [];
+				foreach(config('redis.servers') as $s)
+					$servers[] = [$s['host'], $s['port']];
+			}
+			else
+				$servers = [['server' => '127.0.0.1', 'port' => 6379, 'ttl' => 86400]];
+
+			$driver = new Stash\Driver\Redis(['servers' => $servers]);
+
 			$pool = new Stash\Pool($driver);
 			$pool->getItem('foo')->get();
-		} catch(Exception $e) { $pool = NULL; }
+		}
+		catch(Exception $e)
+		{
+			bors_debug::exception_log('warning-cache', "Can't load Stash Redis cache with config ".print_r(['servers' => $servers], true), $e);
+			$pool = NULL; 
+		}
 	}
 
 	//TODO: elseif() { ... } — добавить другие варианты Stash-драйверов
@@ -174,6 +195,10 @@ else
 
 bors_function_include('time/date_format_mysqltime');
 $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
+
+// After configs. In url_map may be used config() data.
+bors::init_new();
+
 
 /**
  * Инициализация ядра системы
@@ -250,64 +275,6 @@ if(file_exists(BORS_HOST.'/config-post.php'))
 	=================================================
 */
 
-function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
-{
-	$host = preg_replace('/^www\./', '', $host);
-
-	global $bors_data;
-
-	if(empty($documents_root))
-		$documents_root = '/var/www/'.$host.'/htdocs';
-
-	if(empty($bors_host))
-	{
-		$bors_host = dirname($documents_root).'/bors-host';
-		$bors_site = dirname($documents_root).'/bors-site';
-	}
-	else
-		$bors_site = $bors_host;
-
-	$map = array();
-
-	if(file_exists($file = BORS_HOST.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		require_once($file);
-	elseif(file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		require_once($file);
-	elseif(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
-		require_once($file);
-
-	$map2 = $map;
-
-	if(file_exists($file = $bors_site.'/handlers/bors_map.php'))
-		require_once($file);
-
-	if(file_exists($file = $bors_site.'/bors_map.php'))
-		require_once($file);
-
-	if(file_exists($file = $bors_site.'/url_map.php'))
-		require_once($file);
-
-	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
-		require_once($file);
-
-	if(empty($bors_data['vhosts'][$host]['bors_map']))
-		$prev = array();
-	else
-		$prev = $bors_data['vhosts'][$host]['bors_map'];
-
-	$bors_map = array_merge($prev, $map2, $map);
-
-	if(!empty($bors_data['vhosts'][$host]['bors_map']))
-		$bors_map = array_merge($bors_data['vhosts'][$host]['bors_map'], $bors_map);
-
-	$bors_data['vhosts'][$host] = array(
-		'bors_map' => $bors_map,
-		'bors_local' => $bors_host,
-		'bors_site' => $bors_site,
-		'document_root' => $documents_root,
-	);
-}
-
 function register_project($project_name, $project_path)
 {
 	$GLOBALS['bors_data']['projects'][$project_name] = array(
@@ -350,17 +317,7 @@ function bors_route($map)
 	}
 }
 
-function bors_url_map($map_array)
-{
-	global $bors_map;
-	$bors_map = array_merge($bors_map, $map_array);
-}
-
-function bors_vhost_routes($host, $routes)
-{
-	global $bors_data;
-	$bors_data['vhosts'][$host]['bors_map'] = $routes;
-}
+bors_transitional::init();
 
 function set_bors_project($project_name)
 {
@@ -421,36 +378,6 @@ function bors_include($file, $warn = false, $once = false)
 	echo $message;
 }
 
-function nospace($str) { return str_replace(' ', '', $str); }
-
-function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
-{
-	if(preg_match('/^(\w+)=>([\w\-]+)$/', nospace($db), $m))
-	{
-		$db = $m[1];
-		$db_real = $m[2];
-	}
-	else
-		$db_real = $db;
-
-	$conn = config('__database_connections', array());
-	$conn[$db] = array(
-		'host'	  => $host,
-		'database'  => $db_real,
-		'username'  => $login,
-		'password'  => $password,
-	);
-
-	config_set('__database_connections', $conn);
-
-	$GLOBALS["_bors_conf_mysql_{$db}_db_real"] = $db_real;
-	$GLOBALS["_bors_conf_mysql_{$db}_login"]   = $login;
-	$GLOBALS["_bors_conf_mysql_{$db}_password"]= $password;
-	$GLOBALS["_bors_conf_mysql_{$db}_server"]  = $host;
-}
-
-function config_mysql($param_name, $db) { return @$GLOBALS["_bors_conf_mysql_{$db}_{$param_name}"]; }
-
 function bors_function_include($req_name)
 {
 	static $defined = array();
@@ -472,94 +399,6 @@ function bors_function_include($req_name)
 	$defined[$req_name] = true;
 
 	return require_once(BORS_CORE.'/inc/functions/'.$req_name.'.php');
-}
-
-/**
- * @param string $file
- * Загрузить .ini файл в параметры конфигурации.
- */
-function bors_config_ini($file)
-{
-	$ini_data = parse_ini_file($file, true);
-
-	if($ini_data === false)
-		bors_throw("'$file' parse error");
-
-	foreach($ini_data as $section_name => $data)
-	{
-		if($section_name == 'global' || $section_name == 'config')
-			$GLOBALS['cms']['config'] = array_merge($GLOBALS['cms']['config'], $data);
-		else
-			foreach($data as $key => $value)
-				$GLOBALS['cms']['config'][$section_name.'.'.$key] = $value;
-	}
-}
-
-function bors_use($uses)
-{
-	static $uses_active = array();
-	foreach(explode(',', $uses) as $u)
-	{
-		$u = trim($u);
-
-		if(in_array($u, $uses_active))
-			continue;
-
-		$uses_active[] = $u;
-
-		if(preg_match('/\.css$/', $u))
-		{
-			if(preg_match('/^pre:(.+)$/', $u, $m))
-				template_css($m[1], true);
-			else
-				template_css($u);
-
-			continue;
-		}
-
-		if(preg_match('/\.js$/', $u))
-		{
-			// template_js_include()
-			require_once('engines/smarty/global.php');
-
-			if(preg_match('/^pre:(.+)$/', $u, $m))
-				template_js_include($m[1], true);
-			else
-				template_js_include($u);
-
-			continue;
-		}
-
-		if(preg_match('/^\w+$/', $u))
-		{
-			if(function_exists($f = "bors_use_{$u}"))
-			{
-				call_user_func($f);
-				continue;
-			}
-
-//			На будущее.
-//			if(file_exists($file = BORS_CORE.DIRECTORY_SEPARATOR.'uses'.DIRECTORY_SEPARATOR.$u.'.php'))
-//			{
-//				require_once($file);
-//				continue;
-//			}
-
-			if(preg_match('/^(\w+?)_(\w+)$/', $u, $m))
-			{
-				bors_function_include("{$m[1]}/{$m[2]}");
-				continue;
-			}
-		}
-
-		if(preg_match('!^(\w+/\w+)$!', $u))
-		{
-			bors_function_include($u);
-			continue;
-		}
-
-		bors_throw("Unknown bors_use('$u')");
-	}
 }
 
 function bors_use_mysql()

@@ -136,7 +136,7 @@ class bors_form extends bors_object
 			jquery::css('/_bors-3rd/bower_components/validationEngine/css/validationEngine.jquery.css');
 			jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/languages/jquery.validationEngine-ru.js');
 			jquery::plugin('/_bors-3rd/bower_components/validationEngine/js/jquery.validationEngine.js');
-			jquery::on_ready("jQuery('#{$dom_form_id}').validationEngine()");
+//			jquery::on_ready("jQuery('#{$dom_form_id}').validationEngine()");
 
 			$this->set_attr('ajax_validate', $ajax_validate);
 		}
@@ -192,16 +192,22 @@ class bors_form extends bors_object
 		$html .= ">\n";
 
 		if($object)
+		{
 			$object_fields = bors_lib_orm::fields($object);
+			$object_fields = array_merge($object_fields, $object->get('append_properties', []));
+		}
 		else
 		{
 			if($class_name)
+			{
 				$object_fields = bors_lib_orm::fields(bors_foo($class_name));
+				$foo = bors_foo($class_name);
+				$object_fields = array_merge($object_fields, $foo->get('append_properties', []));
+			}
 			else
-				$object_fields = array();
-		}
+				$object_fields = [];
 
-//		PC::dump(bors_lib_orm::all_fields(bors_foo($class_name)), $class_name);
+		}
 
 		if(array_key_exists('label', $params))
 			$th = defval_ne($params, 'label', '-');
@@ -213,7 +219,15 @@ class bors_form extends bors_object
 		$table_css_class = defval($params, 'table_css_class', $this->templater()->form_table_css());
 
 		if($fields == 'auto')
-			$fields = array_keys(array_filter($object_fields, create_function('$x', 'return defval($x, "is_admin_editable", false) || defval($x, "is_editable", true);')));
+		{
+			$fields = $calling_object->get('form_fields');
+			if(!$fields)
+			{
+				$fields = array_keys(array_filter($object_fields, function($x) {
+					return defval($x, "is_admin_editable", false) || defval($x, "is_editable", true);
+				}));
+			}
+		}
 
 		if($th || !empty($fields))
 		{
@@ -302,9 +316,12 @@ class bors_form extends bors_object
 			{
 				$section_name = $x['section'];
 				$data = $x['data'];
+				if(!$data)
+					$data = [];
+
 				$property_name = $x['property'];
 
-				if($have_sections && $last_section != $section_name)
+				if($have_sections && $last_section != $section_name && $section_name!='-')
 					$html .= "<tr><th class=\"subcaption\" colspan=\"2\">".($section_name?$section_name:'&nbsp;')."</th></tr>\n";
 
 				$last_section = $section_name;
@@ -315,7 +332,15 @@ class bors_form extends bors_object
 						if($f['name'] == $property_name)
 							$data = $f;
 
-				if(!defval($data, 'is_editable', true)  && !defval($data, 'is_admin_editable', false))
+				$property_name = defval($data, 'property', defval($data, 'name', $property_name));
+
+				if($append = @$edit_properties_append[$property_name])
+					$data = array_merge($data, $append);
+
+				if(!defval($data, 'is_editable', true)
+						&& !defval($data, 'is_admin_editable', false)
+//						&& !defval($data, 'is_viewable', false)
+					)
 					continue;
 
 				$type = $data['type'];
@@ -354,11 +379,6 @@ class bors_form extends bors_object
 
 					$class = $data['list'];
 				}
-
-				$property_name = defval($data, 'property', defval($data, 'name', $property_name));
-
-				if($append = @$edit_properties_append[$property_name])
-					$data = array_merge($data, $append);
 
 				if(!$title)
 					$title = $property_name;
@@ -636,10 +656,10 @@ class bors_form extends bors_object
 		if(empty($this->_params['go']))
 			$this->_params['go'] = $go2;
 
-		foreach(explode(' ', 'go class_name form_class_name') as $name)
+		foreach(explode(' ', 'go class_name form_class_name form_object_id') as $name)
 			$$name = $this->attr($name);
 
-		foreach(explode(' ', 'form_class_name class_name object_id uri ref act inframe subaction') as $name)
+		foreach(explode(' ', 'form_class_name form_object_id class_name object_id uri ref act inframe subaction') as $name)
 			$html .= $this->hidden_attr($name);
 
 		foreach(explode(' ', 'time_vars file_vars linked_targets override_fields saver_prepare_classes') as $name)
@@ -678,14 +698,37 @@ class bors_form extends bors_object
 
 	function element($element_name)
 	{
-		$element_name = 'bors_forms_'.$element_name;
-		$element = new $element_name;
+		if(class_exists($element_name))
+			$class_name = $element_name;
+		elseif(!class_exists($class_name = 'bors_forms_'.$element_name))
+			throw new Exception(_("Can't find form element class '$element_name'"));
+
+		$element = new $class_name;
 		$element->set_form($this);
 		return $element;
 	}
 
 	function element_html($element_name, $params = array())
 	{
+		$element = $this->element($element_name);
+		$element->set_params($params);
+		return $element->html();
+	}
+
+	function element_html_by_field_type($field_type, $params = array())
+	{
+		switch($field_type)
+		{
+			case 'string':
+				$element_name = 'input';
+				break;
+			case 'bbcode':
+				$element_name = 'textarea';
+				break;
+			default:
+				$element_name = $field_type;
+		}
+
 		$element = $this->element($element_name);
 		$element->set_params($params);
 		return $element->html();
@@ -730,7 +773,7 @@ class bors_form extends bors_object
 			$view = bors()->main_object();
 
 		if(!$view)
-			bors_throw("Undefined form view");
+			throw new Exception("Undefined form view");
 
 		$tpl_name = $view->layout()->forms_template_class();
 		$form_template = bors_load($tpl_name, NULL);

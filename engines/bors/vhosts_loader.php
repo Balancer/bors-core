@@ -19,7 +19,7 @@ function bors_vhost_data($host, $key = NULL, $def = NULL)
 	return $data;
 }
 
-require_once("inc/filesystem.php");
+require_once BORS_CORE.'/inc/filesystem.php';
 
 function bors_url_submap($map)
 {
@@ -34,6 +34,7 @@ function borsmaps_load()
 
 	foreach(bors_dirs(true) as $dir)
 	{
+//		echo "=$dir=<br/>";
 		$map = array();
 		if(file_exists($file = secure_path("{$dir}/url_map.php")))
 			require_once($file);

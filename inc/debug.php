@@ -32,8 +32,8 @@ function debug_exit($message)
 		echo bors_close_tags($tmp);
 	}
 
-	echo debug_trace();
-	debug_hidden_log('debug_exit', $message);
+	echo bors_debug::trace();
+	bors_debug::syslog('debug_exit', $message);
 
 	if(bors()->main_object())
 		$message .= "<br/>\nmain_object->class_file=".bors()->main_object()->class_file();
@@ -61,7 +61,7 @@ function debug_exit($message)
 		$deb .= "-->\n";
 
 		if(config('is_developer'))
-			debug_hidden_log('debug_timing', $deb, false);
+			bors_debug::syslog('debug_timing', $deb, false);
 
 		echo str_replace("\n", "<br/>\n", $deb);
 	}
@@ -89,7 +89,7 @@ function debug_only_one_time($mark, $trace=true, $times = 1)
 	@$GLOBALS['debug']['onetime'][$mark]++;
 
 	if($trace)
-		echo debug_trace();
+		echo bors_debug::trace();
 }
 
 function echolog($message, $level=3)
@@ -143,7 +143,7 @@ function echolog($message, $level=3)
 		if($level==1)
 		{
 			echo "Backtrace error:<br/ >\n";
-			echo debug_trace();
+			echo bors_debug::trace();
 		}
 
 		if(empty($GLOBALS['echofile']))
@@ -191,7 +191,7 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 		return false;
 
 //	echo "$errstr ".$errfile.':'.$errline;
-	debug_hidden_log('errors/'.date('c'), "bors_system_error_handler:
+	bors_debug::syslog('errors/'.date('c'), "bors_system_error_handler:
 		errno=$errno
 		errstr=$errstr
 		errfile=$errfile

@@ -3,13 +3,15 @@
 bors_url_map(array(
 	'(/_bors/admin)(/.*) => include(bors_admin)',
 	'(/_bors/tools)(/.*) => include(bors_tools)',
+
+	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
+	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
+	'/cache(/.*/\d*x\d*-[^/]+/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
+	'/cache(/.*/\d+x\d+/[^/]+) => bors_image_autothumb(1)',
 ));
 
 // Устаревший формат. Требует переписывания на использование bors_url_map()
 $map = array(
-	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
-	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
-	'/cache(/.*/\d+x\d+/[^/]+) => bors_image_autothumb(1)',
 
 	'/do\-login/ => common_do_login',
 	'/users/do\-login => common_do_login',
@@ -29,20 +31,18 @@ $map = array(
 	'/admin/cross_unlink\?.* => bors_admin_cross_unlink',
 
 //	'(.*)\?edit => bors_admin_edit_page(1)',
+	'(.*)\?cdrop => bors_admin_tools_clean(1)',
 	'(.*)\?edit => bors_admin_edit_smart(1)',
-	'(.*)\?prop  => bors_admin_property(1)',
 	'(.*)\?new  => bors_admin_append_child(1)',
-	'(.*)\?cdrop  => bors_admin_tools_clean(1)',
+	'(.*)\?nc   => bors_admin_tools_clean(1)',
+	'(.*)\?prop => bors_admin_property(1)',
+	'(.*)\?recalc => bors_admin_tools_clean(1,1)',
 
 	'(/_bors/)igo\?o=(.+) => bors_system_go_internal(2)',
 	'(/_bors/)ugo\?u=(.+) => bors_system_go_url(2)',
 
 	'/_bors/js/touch\?(.+) => bors_system_js_touch(1)',
 
-	'/sitemap-index.xml => bors_system_sitemap_index',
-//	'/sitemap.xml => bors_system_sitemap_index',
-	'/sitemap-(\w+).xml => bors_system_sitemap_class(1)',
-	'/sitemap-(\w+)-(.+).xml => bors_system_sitemap_map(1,2)',
 	'/_bors/users/do\-login\.bas => bors_admin_users_login',
 	'/_bors/users/do\-logout\.bas => bors_admin_users_logout',
 

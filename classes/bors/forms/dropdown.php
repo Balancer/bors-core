@@ -74,18 +74,18 @@ class bors_forms_dropdown extends bors_forms_element
 			if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))
 			{
 				if($m[1] == 'this')
-					$list = $object->$m[2]();
+					$list = call_user_func([$object, $m[2]]);
 				else
-					$list = object_load($m[1])->$m[2]();
+					$list = call_user_func([bors_foo($m[1]), $m[2]]);
 			}
 			elseif(preg_match("!^(\w+)\->(\w+)\('(.+)'\)!", $list, $m))
 			{
 				if($m[1] == 'this')
-					$list = $object->$m[2]($m[3]);
+					$list = call_user_func([$object, $m[2]], $m[3]);
 				else
-					$list = object_load($m[1])->$m[2]($m[3]);
+					$list = call_user_func([bors_foo($m[1]), $m[2]], $m[3]);
 			}
-			elseif(preg_match("!^\w+$!", $list))
+			elseif(preg_match("!^[a-z]\w+$!", $list))
 			{
 				$list = new $list(@$args);
 				$list = $list->named_list();

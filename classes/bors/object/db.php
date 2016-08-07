@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../../../engines/bors.php';
+
 // Автоопределялка параметров из описаний таблиц БД
 
 class bors_object_db extends base_object_db
@@ -7,10 +9,10 @@ class bors_object_db extends base_object_db
 	private static $__parsed_fields = array();
 
 	function _project_name() { return @array_shift(explode('_', $this->class_name())); }
-	function _access_name() { return bors_plural(array_pop(explode('_', $this->class_name()))); }
+	function _access_name() { return \blib_grammar::plural(array_pop(explode('_', $this->class_name()))); }
 
 	function _item_name() { return @array_pop(explode('_', $this->class_name())); }
-	function _item_name_m() { return bors_plural($this->_item_name()); }
+	function _item_name_m() { return \blib_grammar::plural($this->_item_name()); }
 
 	function _url_engine_def() { return 'url_auto'; }
 
@@ -38,7 +40,7 @@ class bors_object_db extends base_object_db
 
 		$class_name = str_replace('_admin_', '_', $this->class_name());
 		if(preg_match('/^'.preg_quote($this->project_name(),'/').'_(\w+)$/i', $class_name, $m))
-			return $this->attr['table_name'] = bors_plural(blib_grammar::chunk_singular($m[1]));
+			return $this->attr['table_name'] = \blib_grammar::plural(blib_grammar::chunk_singular($m[1]));
 
 		return $this->attr['table_name'] = $this->_item_name_m();
 	}
@@ -263,7 +265,7 @@ class bors_object_db extends base_object_db
 		return $p;
 	}
 
-	function _view_class_def() { return bors_plural($this->class_name()).'_view'; }
+	function _view_class_def() { return \blib_grammar::plural($this->class_name()).'_view'; }
 	function _view_def() { return bors_load($this->view_class(), $this->id()); }
 
 	function __toString() { return (string) $this->get('title'); }
@@ -283,5 +285,10 @@ class bors_object_db extends base_object_db
 		}
 
 		return NULL;
+	}
+
+	static function create($data)
+	{
+		return bors_new(get_called_class(), $data);
 	}
 }

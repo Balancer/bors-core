@@ -1,9 +1,11 @@
 <?php
 
-spl_autoload_register('class_include');
+require_once __DIR__.'/../../inc/funcs.php';
+if(function_exists('class_include'))
+	spl_autoload_register('class_include');
 
-bors_function_include('debug/count_inc');
-bors_function_include('debug/log_var');
+require_once __DIR__.'/../../inc/functions/debug/count_inc.php';
+require_once __DIR__.'/../../inc/functions/debug/log_var.php';
 
 function bors_object_caches_drop()
 {
@@ -101,7 +103,7 @@ function save_cached_object($object, $delete = false, $use_memcache = true)
 			debug_count_inc('memcached stores');
 			if(!array_pop($memcache->getExtendedStats()))
 			{
-				debug_hidden_log('__memcache_errors', "Store error for $object");
+				bors_debug::syslog('__memcache_errors', "Store error for $object");
 				debug_count_inc('memcached store fails');
 			}
 			else
@@ -161,6 +163,7 @@ function class_load($class, $id = NULL, $args=array())
 			// Фиксим некорректные ссылки с форумов, например, оканчивающиеся на «.html,»
 			$class = preg_replace('/[\.,\)\]!\?…"\']+$/', '', $class);
 
+			// Remove #anchor from url.
 			if(preg_match('!^(.+)#(.+)$!', $class, $m))
 				$class = $m[1];
 
@@ -187,8 +190,7 @@ function class_load_by_url($url, $args)
 
 function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match, $url_pattern, $skip)
 {
-//	if(config('is_developer'))
-//		echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
+//	if(config('is_debug')) echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
 
 	debug_log_var('try_object_load_by_map.url_pattern', $url_pattern);
 	debug_log_var('try_object_load_by_map.check_class', $check_class);
@@ -278,9 +280,6 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 				}
 			}
 
-//			if(!$found)
-//				bors_throw(ec('Для ссылки ').$url.(' отсутствует файл блока расширений карты привязок "').$map_file_new.'"');
-
 			if(empty($GLOBALS['bors_url_submap_map']))
 				return NULL;
 
@@ -326,8 +325,10 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	else
 		$args['page'] = $page;
 
+	$args['_load_url'] = $url;
+
 	$obj = object_init($check_class, $id, $args);
-//	if(config('is_developer')) echo "object_init($check_class, $id, $args) = ".print_dd($obj)."<br/>\n";
+//	if(config('is_debug')) echo "object_init($check_class, $id, $args) = ".print_r($obj, true)."<br/>\n";
 	if(!$obj)
 		return NULL;
 
@@ -375,7 +376,7 @@ function class_load_by_local_url($url, $args)
 	$is_query = !empty($url_data['query']);
 	$host_helper = "!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)";
 
-//	if(config('is_developer')) r($GLOBALS['bors_map']);
+//	if(config('is_debug')) { echo '<xmp>'; var_dump("check_url/data", $check_url, $url_data); echo '</xmp>'; }
 
 	foreach($GLOBALS['bors_map'] as $pair)
 	{
@@ -390,7 +391,11 @@ function class_load_by_local_url($url, $args)
 		else
 			$test_url = $check_url;
 
-//		if(config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for '.$test_url.'<br/>'.$check_url."<Br/>$url_pattern, class_path=$class_path<br/>";
+//		if(config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for test_url='.$test_url.'<br/>check_url='.$check_url."<Br/>url_pattern=$url_pattern, class_path=$class_path<br/>";
+
+		if(preg_match('!/composer/vendor/!', $check_url))
+			throw new \Exception("Incorrect check url: ". $check_url);
+
 		if(preg_match($host_helper.$url_pattern.'$!i', $test_url, $match))
 		{
 			if(($obj = try_object_load_by_map($url, $url_data, $test_url, $class_path, $match, $url_pattern, 1)))
@@ -408,7 +413,7 @@ function class_load_by_vhosts_url($url)
 
 	if(!$data || empty($data['host']))
 	{
-		debug_hidden_log('class-loader-errors', ec("Error. Try to load class for incorrect URL format: ").$url);
+		bors_debug::syslog('class-loader-errors', ec("Error. Try to load class for incorrect URL format: ").$url);
 		return NULL;
 	}
 
@@ -442,7 +447,7 @@ function class_load_by_vhosts_url($url)
 		else
 			$check_url = $url_noq;
 
-//		if(config('is_developer')) echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$ (q=$query)!<br />\n";
+//		if(config('is_debug')) echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$ (q=$query)!<br />\n";
 		if(preg_match('!^\s*http://!', $url_pattern))
 			$prefix = '';
 		else
@@ -450,7 +455,7 @@ function class_load_by_vhosts_url($url)
 
 		if(preg_match("!^{$prefix}{$url_pattern}$!i", $check_url, $match))
 		{
-//			if(config('is_developer')) echo "found $class_path as $pair / !^{$prefix}{$url_pattern}$! to $check_url in <pre>".print_r($host_data['bors_site'], true)."</pre><br />\n";
+//			if(config('is_debug')) echo "found $class_path as $pair / !^{$prefix}{$url_pattern}$! to $check_url in <pre>".print_r($host_data['bors_site'], true)."</pre><br />\n";
 
 			if(preg_match("!^redirect:(.+)$!", $class_path, $m))
 			{
@@ -557,7 +562,7 @@ function class_load_by_vhosts_url($url)
 function object_init($class_name, $object_id, $args = array())
 {
 //	echo "object_init($class_name, $object_id, ".print_r($args, true).")<br/>\n";
-//	if(config('is_developer')) debug_hidden_log('debug', "Try to load $class_name($object_id)");
+//	if(config('is_developer')) bors_debug::syslog('debug', "Try to load $class_name($object_id)");
 	// В этом методе нельзя использовать debug_test()!!!
 
 	$obj = NULL;
@@ -603,7 +608,7 @@ function object_init($class_name, $object_id, $args = array())
 
 		// Ловим так fatal error
 		if(!class_exists($class_name))
-			bors_throw("Class '$class_name' not found");
+			throw new Exception("Class '$class_name' not found");
 
 		$obj = new $class_name($object_id);
 
@@ -639,7 +644,7 @@ function object_init($class_name, $object_id, $args = array())
 		$obj->set_called_url($called_url);
 	}
 
-	if(($new_obj = $obj->_configure()) && is_object($new_obj))
+	if(($new_obj = $obj->b2_configure()) && is_object($new_obj))
 		$obj = $new_obj;
 
 	$loaded = $obj->is_loaded();
@@ -687,20 +692,20 @@ function object_init($class_name, $object_id, $args = array())
 	return $obj;
 }
 
-function bors_objects_preload(&$objects, $field, $preload_class, $store_field = NULL, $strict = false)
+function bors_objects_preload($objects, $field, $preload_class, $store_field = NULL, $strict = false)
 {
 	if(!$objects)
-		return array();
+		return [];
 
-	$ids = array();
+	$ids = [];
 	foreach($objects as $x)
 		if($x)
 			$ids[$x->$field()] = 1;
 
 	if(!array_keys($ids))
-		return array();
+		return [];
 
-	$targets = bors_find_all($preload_class, array('id IN' => array_keys($ids), 'by_id' => (bool)$store_field));
+	$targets = bors_find_all($preload_class, ['id IN' => array_keys($ids), 'by_id' => (bool)$store_field]);
 
 	if($store_field)
 		foreach($objects as $x)

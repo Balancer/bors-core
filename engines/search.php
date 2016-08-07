@@ -5,7 +5,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 	if(!$object)
 		return $object;
 
-//	debug_hidden_log('blocked-code-errors', "Try to index $object");
+//	bors_debug::syslog('blocked-code-errors', "Try to index $object");
 //	echo('Try to reindex '.$object);
 //	return;
 

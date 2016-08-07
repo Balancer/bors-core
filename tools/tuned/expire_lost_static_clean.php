@@ -1,7 +1,7 @@
 <?php
 
 require_once('../config.php');
-require_once(BORS_CORE.'/config.php');
+require_once(__DIR__.'/../..//config.php');
 require_once('inc/filesystem.php');
 
 define('WORK_DIR', '/var/www/www.aviaport.ru/htdocs');
@@ -35,7 +35,7 @@ function do_clean($file)
 	if($t+600 > $GLOBALS['now'])
 		return;
 
-//	debug_hidden_log('static-clean1', "{$m[1]}: {$file}", false);
+//	bors_debug::syslog('static-clean1', "{$m[1]}: {$file}", false);
 	@unlink($file);
 	$dir = dirname($file);
 	do
@@ -44,5 +44,5 @@ function do_clean($file)
 		$dir = dirname($dir);
 	} while ($dir > '/');
 	if(file_exists($file))
-		debug_hidden_log('static-clean', "Can't remove {$file}", false);
+		bors_debug::syslog('static-clean', "Can't remove {$file}", false);
 }

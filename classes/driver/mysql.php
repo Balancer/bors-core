@@ -1,14 +1,67 @@
 <?php
 
-require_once('inc/mysql.php');
-require_once('obsolete/DataBase.php');
-
-class driver_mysql extends DataBase implements Iterator
+class driver_mysql extends driver_pdo implements Iterator
 {
-	function connection() { return $this->dbh; }
+	var $charset = NULL;
+	static $connections = [];
 
-	static function one($db) { return new driver_mysql($db); }
-	static function factory($db) { return new driver_mysql($db); }
+	function reconnect()
+	{
+		$this->close();
+
+		$db_name = $this->database;
+
+		$real_db  = config_mysql('db_real', $db_name);
+
+		if(!empty(self::$connections[$real_db]) && self::$connections[$real_db]['expire'] > time())
+			return $this->connection = self::$connections[$real_db]['connection'];
+
+		$server   = config_mysql('server', $db_name);
+		$login    = config_mysql('login', $db_name);
+		$password = config_mysql('password', $db_name);
+
+		$dsn = "mysql:dbname=$real_db;host=$server;charset=utf8mb4";
+		try
+		{
+			$this->connection = new PDO($dsn, $login, $password);
+		}
+		catch(Exception $e)
+		{
+			$msg = "PDO DB='$db_name' exception with $dsn: ".$e->getMessage();
+
+			if(preg_match('/^(\w+):.+/', $dsn, $m) && preg_match('/could not find driver/', $e->getMessage()))
+				$msg .= ". You need to install php-{$m[1]} driver?";
+
+			throw new Exception($msg);
+		}
+
+		if($c = config('mysql_set_character_set', 'utf8mb4'))
+		{
+			bors_debug::timing_start('mysql_set_character_set');
+			$this->query("SET CHARACTER SET '$c'");
+			bors_debug::timing_stop('mysql_set_character_set');
+		}
+
+		if(($c = config('mysql_set_names_charset', 'utf8mb4')) && $this->charset != $c)
+		{
+			bors_debug::timing_start('mysql_set_names');
+			$this->query("SET NAMES '$c'");
+			$this->charset = $c;
+			bors_debug::timing_stop('mysql_set_names');
+		}
+
+		self::$connections[$real_db] = [
+			'connection' => $this->connection,
+			'expire' => time() + 10,
+		];
+
+		return $this->connection;
+	}
+
+	function connection() { return $this->connection; }
+
+	static function one($db)     { $class = get_called_class(); return new $class($db); }
+	static function factory($db) { $class = get_called_class(); return new $class($db); }
 
 	private $where;
 	private $table;
@@ -34,19 +87,28 @@ class driver_mysql extends DataBase implements Iterator
 			unset($where_map['table']);
 		}
 
-		return $this->get("SELECT $field FROM $table ".mysql_args_compile($where_map, $class_name));
+		$row = $this->get("SELECT $field FROM $table ".mysql_args_compile($where_map, $class_name));
+		if(count($row) == 2)
+			$row = $row[0];
+
+		return $row;
 	}
 
 	function delete($table, $where)
 	{
 //		echo "DELETE FROM `".addslashes($table)."` ".mysql_where_compile($where)."<br/>\n";
-		$this->query("DELETE FROM `".addslashes($table)."` ".mysql_args_compile($where));
+		$prio = popval($where, '*priority');
+		if($prio == 'low')
+			$prio = " LOW_PRIORITY";
+		else
+			$prio = "";
+		$this->query("DELETE{$prio} FROM `".addslashes($table)."` ".mysql_args_compile($where));
 	}
 
 	function select_array($table, $field, $where_map, $class = NULL)
 	{
 		if(!is_array($where_map))
-			echo debug_trace();
+			echo bors_debug::trace();
 
 		if(!empty($where_map['table']))
 		{
@@ -73,6 +135,29 @@ class driver_mysql extends DataBase implements Iterator
 			$union[] = "SELECT {$x[1]} FROM {$x[0]} ".mysql_args_compile($x[2], @$x[3]);
 
 		return $this->get_array(join(" UNION ", $union), false, false);
+	}
+
+	function insert($table, $fields, $ignore_error = false)
+	{
+		if(!empty($fields['*DELAYED']))
+		{
+			unset($fields['*DELAYED']);
+			$DELAYED="DELAYED ";
+		}
+		else
+			$DELAYED="";
+
+		$this->query("INSERT {$DELAYED}INTO $table ".$this->make_string_values($fields), $ignore_error);
+	}
+
+	function insert_ignore($table, $fields)
+	{
+		$this->query("INSERT IGNORE $table ".$this->make_string_values($fields));
+	}
+
+	function replace($table, $fields)
+	{
+		$this->query("REPLACE $table ".$this->make_string_values($fields));
 	}
 
 	function update($table, $where, $fields)
@@ -117,7 +202,7 @@ class driver_mysql extends DataBase implements Iterator
 		if(!@$this->each_result)
 			return false;
 
-		@mysql_data_seek($this->each_result, 0);
+//		@mysql_data_seek($this->each_result, 0);
 
         return $this->fetch();
     }
@@ -130,5 +215,18 @@ class driver_mysql extends DataBase implements Iterator
 		return $x['Rows'];
 	}
 
-	function escape($string) { return mysql_real_escape_string($string, $this->dbh); }
+	//TODO: Change 'where' to array-type
+	function store($table, $where, $fields, $append=false)
+	{
+		if(!$append)
+			$n = $this->get("SELECT COUNT(*) FROM `".addslashes($table)."` WHERE $where");
+
+		if(!$append && $n>0)
+			$res = $this->query("UPDATE `".addslashes($table)."` ".$this->make_string_set($fields)." WHERE $where");
+		else
+			$res = $this->query("REPLACE INTO `".addslashes($table)."` ".$this->make_string_values($fields));
+
+		if($res === false)
+			throw new Exception("Invalid query: " . mysql_error($this->dbh) ." ");
+	}
 }

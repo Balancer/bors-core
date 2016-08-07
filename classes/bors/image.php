@@ -4,6 +4,8 @@ class bors_image extends bors_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }
 
+	function object_type() { return 'image'; }
+
 	function db_name() { return config('bors_core_db'); }
 	function table_name() { return config('images_table', 'bors_images'); }
 
@@ -165,20 +167,40 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 	function thumbnail_class() { return 'bors_image_thumb'; }
 	function thumbnail($geometry)
 	{
+		// Если геометрия тамбнейла позволяет рассчитать размеры и ссылку без предварительной генерации,
+		// то и не делаем её, генерация будет потом осуществляться на лету, при запросе.
+
+		if(!$this->attr('force_thumbnail') && preg_match('/.+\(up,crop\)/', $geometry))
+		{
+//			~r($this, $this->url());
+			$thumb = bors_load_ex(bors_image_thumbnails_byurl::class, NULL, [
+				'origin_url' => $this->url(),
+				'geometry' => $geometry,
+			]);
+
+			if($thumb)
+				return $thumb;
+
+			bors_debug::syslog('image-thumbnail-byurl', "Can't load thumbnail for '{$this->url()}' with geo '$geometry'");
+		}
+
 		$class = $this->thumbnail_class();
+
 		//FIXME: хардкод
 		if(preg_match('/^b2_/', $class))
 		{
-			return bors_load_ex($class, NULL, array(
+			return bors_load_ex($class, NULL, [
 				'image_class_name' => $this->class_name(),
 				'image_id' => $this->id(),
 				'geometry' => $geometry,
-			));
+				'original_image' => $this,
+			]);
 		}
 
-		return bors_load_ex($class, $this->id().','.$geometry, array(
+		return bors_load_ex($class, $this->id().','.$geometry, [
 			'image_class_name' => $this->class_name(),
-		));
+			'original_image' => $this,
+		]);
 	}
 
 	function data_load()
@@ -193,16 +215,16 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		if(!$this->file_name())
 		{
 			//TODO: логи забиваются страшно. Непонятно…
-//			debug_hidden_log("image-data-error", "empty file_name() on recalculate image url='{$this->url()}', this={$this}, data=".print_r($this->data, true));
+//			bors_debug::syslog("image-data-error", "empty file_name() on recalculate image url='{$this->url()}', this={$this}, data=".print_r($this->data, true));
 			return;
 		}
 
-		debug_timing_start('image_recalculate');
+		bors_debug::timing_start('image_recalculate');
 		$start = microtime(true);
 
 		// Иначе, если попадается не картинка, случаются, порой, странные ошибки.
 		// Может, из-за экранирования getimagesize ниже.
-		if(!preg_match('/image/', $mime = mime_content_type($this->file_name_with_path())))
+		if(!preg_match('/image/', $mime = @mime_content_type($this->file_name_with_path())))
 			return $this->set_is_loaded(false);
 
 		// Почему-то стояла сперва проверка не через файл, а через URL.
@@ -230,35 +252,35 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 			}
 			catch(Exception $e) { }
 		}
-		debug_timing_stop('image_recalculate');
+		bors_debug::timing_stop('image_recalculate');
 		if(($dura = (microtime(true) - $start)) > 0.5)
-			debug_hidden_log("recalculate", "time = $dura, url = {$this->url()}, this={$this->debug_title()}, data=".print_r($this->data, true));
+			bors_debug::syslog("recalculate", "time = $dura, url = {$this->url()}, this={$this->debug_title()}, data=".print_r($this->data, true));
 	}
 
 	function upload($data, $dir = NULL)
 	{
 		if(!file_exists($file = $data['tmp_name']))
 		{
-			debug_hidden_log('image-error', 'Upload not existens file '.$file);
+			bors_debug::syslog('image-error', 'Upload not existens file '.$file);
 			debug_exit("Can't load image {$data['name']}: Uploaded tmp file not exists<br/>");
 		}
 
 		bors_debug::syslog('000-image-debug', "Get image size [4] for ".$file);
 		if(!($x = @getimagesize($file)))
 		{
-			debug_hidden_log('image-error', 'Can not get image sizes for '.$file);
+			bors_debug::syslog('image-error', 'Can not get image sizes for '.$file);
 			debug_exit("Can't load image {$data['name']}: Incorrect image<br/>");
 		}
 
 		if(!$x[0] || !$x[1] || !preg_match('/^image/', $x['mime']))
 		{
-			debug_hidden_log('image-error', 'Got wrong image sizes for '.$file);
+			bors_debug::syslog('image-error', 'Got wrong image sizes for '.$file);
 			debug_exit("Can't load image {$data['name']}: Wrong file format<br/>");
 		}
 
 		if(!$this->id())
 		{
-//			debug_hidden_log('new-instance-errors', 'empty image id, try to create new by store');
+//			bors_debug::syslog('new-instance-errors', 'empty image id, try to create new by store');
 			$this->new_instance();
 		}
 
@@ -289,7 +311,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 				$ext = 'gif';
 				break;
 			default:
-				debug_hidden_log('image-upload-error', "Unknown mime: {$data['mime']}");
+				bors_debug::syslog('image-upload-error', "Unknown mime: {$data['mime']}");
 				return NULL;
 		}
 
@@ -334,7 +356,11 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 		$data = url_parse($file);
 
-		if($exists_check && $img2 = bors_find_first($class_name, array('full_file_name' => $data['local_path'])))
+		if($exists_check && $img2 = bors_find_first($class_name, [
+//				'CONVERT(`full_file_name` USING utf8mb4)=' => $data['local_path']
+//				'CONVERT(`full_file_name` USING utf8mb4)=' => $data['local_path']
+				'full_file_name' => iconv('utf-8', 'utf-8//ignore', $data['local_path']),
+			]))
 			return $ch->set($img2, rand(3600, 86400));
 
 		$img->set_original_filename(basename($file), $new_instance);
@@ -483,8 +509,36 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		));
 
 		if($thumbnails)
+		{
 			foreach($thumbnails as $t)
+			{
+				if(class_exists('cloudflare_api') && ($api_key=config('cloudflare.api_key') && ($email=config('cloudflare.email'))))
+				{
+					$url = $t->url();
+//					echo "$url<br/>\n";
+					$ud = parse_url($url);
+					$cf = new cloudflare_api($email, $api_key);
+					$response = $cf->zone_file_purge($ud['host'], $url);
+				}
+
 				$t->delete();
+			}
+		}
+		else
+		{
+			// Хардкодная очистка предполагаемого превью 640x640.
+			if(class_exists('cloudflare_api') && ($api_key=config('cloudflare.api_key')) && ($email=config('cloudflare.email')))
+			{
+				$t = $this->thumbnail('640x640');
+				$url = $t->url();
+//				echo "hadcoded: $url<br/>\n";
+				$ud = parse_url($url);
+				$cf = new cloudflare_api($email, $api_key);
+				$response = $cf->zone_file_purge($z=preg_replace('/^.*?(\w+\.\w+)$/', '$1', $ud['host']), $url);
+				$response = $cf->zone_file_purge('sites.wrk.ru', str_replace($ud['host'], 'sites.wrk.ru', $url));
+//				var_dump($api_key, $email, $z, $response);
+			}
+		}
 	}
 
 	function hash_grayscale()

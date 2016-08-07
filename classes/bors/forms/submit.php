@@ -4,9 +4,6 @@ class bors_forms_submit extends bors_forms_element
 {
 	function html()
 	{
-		if(empty($this))
-			echo 0/0;
-
 		$params = $this->params();
 
 		$form = $this->form();
@@ -42,6 +39,10 @@ class bors_forms_submit extends bors_forms_element
 					if(!empty($$p))
 						$attrs[] = "$p=\"{$$p}\"";
 
+				foreach(array('dom_id' => 'id') as $var => $hn)
+					if(!empty($$var))
+						$attrs[] = "$hn=\"{$$var}\"";
+
 				if($image_src = defval($params, 'image'))
 					$html .= "<input type=\"image\" src=\"".htmlspecialchars($image_src)."\" value=\"".htmlspecialchars($value)."\"";
 				else
@@ -54,7 +55,7 @@ class bors_forms_submit extends bors_forms_element
 				break;
 		}
 
-		if($label || $form->attr('has_form_table'))
+		if(($label || $form->attr('has_form_table')) && empty($no_tab))
 			$html = "<tr><th>&nbsp;</th><th style=\"text-align: left\">{$html}</th></tr>\n";
 
 		return $html;

@@ -17,7 +17,7 @@ function smarty_function_http_load($params, &$smarty)
 	if(defval($params, 'fail_proof'))
 	{
 		$var = 'http_load:on-fail:'.$url;
-		if($html)
+		if($html && !preg_match('/<title>5\d\d \w+/', $html))
 			bors_set_server_var($var, $html);
 		else
 			$html = bors_server_var($var);

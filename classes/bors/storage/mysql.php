@@ -307,7 +307,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 		$object->data = $data;
 
 		if($must_be_configured)
-			$object->_configure();
+			$object->b2_configure();
 
 		if(!empty($post_functions))
 			self::post_functions_do($object, $post_functions);
@@ -357,6 +357,9 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			list($select, $where, $post_functions) = self::__query_data_prepare($object, $where);
 		}
 
+		if(empty($db_name))
+			throw new Exception("Not defined database to load $class_name");
+
 		$dbh = new driver_mysql($db_name);
 
 		// формат: array(..., '*set' => 'MAX(create_time) AS max_create_time, ...')
@@ -404,7 +407,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			}
 
 			if($must_be_configured)
-				$object->_configure();
+				$object->b2_configure();
 
 			$object->set_is_loaded(true);
 
@@ -683,7 +686,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					$fields[$id_field] = $new_id;
 				}
 
-//				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
+//				bors_debug::syslog("inserts", "insert $table_name, ".print_r($fields, true));
 
 				$object->storage()->storage_create();
 
@@ -712,7 +715,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 					if(!$new_id && ($idf = $object->id_field()) && preg_match('/^\w+$/', $idf))
 						$new_id = $object->get($idf);
 					if(!$new_id && !$object->ignore_on_new_instance() && preg_match('/^\w+$/', $idf))
-						debug_hidden_log('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
+						bors_debug::syslog('_orm_error', "Can't get new id on new instance for ".$object->debug_title()."; data=".print_r($object->data, true));
 				}
 			}
 		}
@@ -886,7 +889,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 			return $exists[$table];
 
 		$db = $this->db();
-		return $exists[$table] = count($db->get_array("SHOW TABLES LIKE '".$db->escape($table)."'")) > 0;
+		return $exists[$table] = count($db->get_array("SHOW TABLES LIKE '".addslashes($table)."'")) > 0;
 	}
 
 	function storage_create()

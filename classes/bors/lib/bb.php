@@ -59,7 +59,7 @@ class bors_lib_bb
 	{
 		if(!$element)
 		{
-			debug_hidden_log('dom2bb', 'Empty element to from_dom()');
+			bors_debug::syslog('dom2bb', 'Empty element to from_dom()');
 			return '';
 		}
 /*
@@ -86,7 +86,7 @@ class bors_lib_bb
 
 		if($tag_name && empty($bb))
 		{
-			debug_hidden_log('lcml-need-append-data', "from_dom: unknown tag ".$tag_name.' for '.bors_lib_dom::element_html($element));
+			bors_debug::syslog('lcml-need-append-data', "from_dom: unknown tag ".$tag_name.' for '.bors_lib_dom::element_html($element));
 			echo "unknown tag ".$tag_name."\n";
 		}
 
@@ -104,7 +104,7 @@ class bors_lib_bb
 				$u = $element->getAttribute($uattr);
 				if(!$u)
 				{
-					debug_hidden_log('_bb-parse-need-attention', 'Empty uattr for '.$urls);
+					bors_debug::syslog('_bb-parse-need-attention', 'Empty uattr for '.$urls);
 					continue;
 				}
 

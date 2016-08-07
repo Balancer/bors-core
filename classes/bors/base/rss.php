@@ -124,7 +124,7 @@ class base_rss extends base_page
 	function item_rss_enclosure($item) { return NULL; }
 	function item_enclosure($item) { return NULL; }
 
-	function rss_body($object, $strip = 0)
+	function rss_body($object=NULL, $strip = 0)
 	{
 		if(($tpl = $this->body_template()) && !preg_match('!/classes/bors/base/page.html$!', $tpl))
 		{
@@ -134,7 +134,7 @@ class base_rss extends base_page
 		}
 
 		$html = $object->rss_body();
-		if(!$strip || strlen($html) <= $strip)
+		if(!$strip || bors_strlen($html) <= $strip)
 			return $html;
 
 		include_once("inc/texts.php");

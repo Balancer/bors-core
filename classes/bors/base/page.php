@@ -90,10 +90,10 @@ class base_page extends bors_object
 		if($this->total_pages() < 2)
 			return '';
 
-		if($text === NULL)
-			$text = ec('Страницы:');
+//		if($text === NULL)
+//			$text = ec('Страницы:');
 
-		include_once('inc/design/page_split.php');
+		require_once BORS_CORE.'/inc/design/page_split.php';
 
 		if(!$around_page)
 			$around_page = $this->items_around_page();
@@ -231,7 +231,13 @@ class base_page extends bors_object
 		return $result;
 	}
 
-	function compiled_source() { return bors_lcml::lcml($this->source(), array('container' => $this)); }
+	function compiled_source()
+	{
+		return bors_lcml::lcml($this->source(), array_merge(
+			['container' => $this],
+			$this->get('body_lcml_params', [])
+		));
+	}
 
 	function _queries() { return array(); }
 
@@ -264,7 +270,7 @@ class base_page extends bors_object
 					return true;
 			}
 			else
-				debug_hidden_log('obsolete_warning', "Config class '{$config->get('class_name')}' defined at '{$config->get('class_file')}' have not pre_show() method. Wrong extends?");
+				bors_debug::syslog('obsolete_warning', "Config class '{$config->get('class_name')}' defined at '{$config->get('class_file')}' have not pre_show() method. Wrong extends?");
 		}
 
 		return parent::pre_show();
@@ -285,12 +291,13 @@ class base_page extends bors_object
 
 		$save_lcml_tags_enabled = config('lcml_tags_enabled');
 		config_set('lcml_tags_enabled', $this->lcml_tags_enabled());
-		$text = bors_lcml::lcml($text,
-			array(
+
+		$text = bors_lcml::lcml($text, array_merge([
 				'cr_type' => $this->cr_type(),
 				'sharp_not_comment' => $this->sharp_not_comment(),
 				'html_disable' => $this->html_disable(),
-		));
+		], $this->get('body_lcml_params', [])));
+
 		config_set('lcml_tags_enabled', $save_lcml_tags_enabled);
 
 		if($ch)

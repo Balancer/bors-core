@@ -19,6 +19,8 @@ class bors_user_favorite extends base_object_db
 		);
 	}
 
+	function ignore_on_new_instance() { return true; }
+
 	function auto_targets()
 	{
 		return array_merge(parent::auto_targets(), array(
@@ -76,7 +78,7 @@ class bors_user_favorite extends base_object_db
 		if(!$user || !$target)
 			return NULL;
 
-		if(($f = self::find($user, $target)))
+		if(($f = self::check($user, $target)))
 			$f->delete();
 
 		return $f;

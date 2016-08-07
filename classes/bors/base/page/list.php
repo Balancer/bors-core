@@ -1,6 +1,6 @@
 <?php
 
-class base_page_list extends base_page
+class base_page_list extends bors_page
 {
 	function where() { return array(); }
 	function order() { return '-create_time'; }

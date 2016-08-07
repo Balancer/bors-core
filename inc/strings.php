@@ -40,7 +40,7 @@ function sklonn($n, $s1, $s2=NULL, $s5=NULL)
     return $n.' '.$s5;
 }
 
-bors_function_include('text/truncate');
+bors_transitional::function_include('text/truncate');
 
 function stripq($text) { return str_replace('\\"', '"', $text); }
 
@@ -62,13 +62,13 @@ function bors_hypher($string)
 	}
 
 	$mb_enc = ini_get('mbstring.internal_encoding');
-	ini_set('mbstring.internal_encoding', 'windows-1251');
+	@ini_set('mbstring.internal_encoding', 'windows-1251');
 	$result = iconv('windows-1251', 'utf-8', hypher($bors_3rd_glob_hypher, iconv('utf-8', 'windows-1251//IGNORE', $string)));
-	ini_set('mbstring.internal_encoding', $mb_enc);
+	@ini_set('mbstring.internal_encoding', $mb_enc);
 	return set_global_key('hypher-cache', $string, $result);
 }
 
-bors_function_include('natural/bors_plural');
+bors_transitional::function_include('natural/bors_plural');
 
 function bors_str_cat($string1, $string2, $explode_delimiter = ',', $join_delimiter = ', ')
 {
@@ -79,9 +79,9 @@ function bors_str_cat($string1, $string2, $explode_delimiter = ',', $join_delimi
 	return join($join_delimiter, $a);
 }
 
-bors_function_include('string/bors_starts_with');
-bors_function_include('string/bors_ends_with');
-bors_function_include('html/bors_entity_decode');
+bors_transitional::function_include('string/bors_starts_with');
+bors_transitional::function_include('string/bors_ends_with');
+bors_transitional::function_include('html/bors_entity_decode');
 
 function bors_comma_join($s1, $s2 = NULL)
 {

@@ -10,6 +10,8 @@
 
 class bors_page extends base_page
 {
+	use \B2\Traits\Page;
+
 	var $_uses_css		= array();
 	var $_uses_js		= array();
 	var $_uses_script	= array();
@@ -62,14 +64,27 @@ class bors_page extends base_page
 		return parent::_body_template_def();
 	}
 
-	function _layout_class_def() { return 'bors_layouts_bors'; }
-
-	function _layout_def()
+	function response()
 	{
-		$class_name = $this->layout_class();
-		$layout = new $class_name($this);
-		$this->set_attr('layout', $layout);
-		return $layout;
+//		$response = new \Slim\Http\Response();
+		$response = new \Zend\Diactoros\Response();
+
+		$content = $this->content();
+
+		\bors_debug::append_info($content, $this);
+
+		if(!$content)
+			return NULL;
+
+		if($content === true)
+			return NULL;
+
+		foreach($this->headers() as $name => $value)
+			$response = $response->withHeader($name, $value);
+
+		$response->getBody()->write($content);
+
+		return $response;
 	}
 
 	function _side_menu_def() { return array(); }
@@ -134,6 +149,12 @@ class bors_page extends base_page
 						$this->attr['body_template_class'] = 'bors_templaters_php';
 						return;
 					}
+					if(file_exists($bt = $base.'md'))
+					{
+						$this->attr['body_template'] = $bt;
+						$this->attr['body_template_class'] = 'bors_templaters_markdown';
+						return;
+					}
 					if(file_exists($bt = $base.'tpl'))
 					{
 						$this->attr['body_template'] = $bt;
@@ -165,6 +186,14 @@ class bors_page extends base_page
 							case 'lcml.tpl':
 								$this->attr['body_template'] = $base.$test_ext;
 								$this->attr['body_template_class'] = 'bors_templates_lcmltpl';
+								continue;
+							default:
+								$class_name = 'bors_templates_'.str_replace('.', '', $test_ext);
+								if(!class_exists($class_name))
+									continue;
+
+								$this->attr['body_template'] = $base.$test_ext;
+								$this->attr['body_template_class'] = $class_name;
 								continue;
 						}
 					}

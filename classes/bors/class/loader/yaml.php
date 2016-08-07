@@ -133,7 +133,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 		mkpath(dirname($cached_class_file), 0750);
 		if(is_writable(dirname($cached_class_file)))
 		{
-			bors_function_include('fs/file_put_contents_lock');
+			require_once BORS_CORE.'/inc/functions/fs/file_put_contents_lock.php';
 			file_put_contents_lock($cached_class_file, "<?php\n\n".$class);
 			chmod($cached_class_file, 0640);
 		}
@@ -148,6 +148,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 	static function tr_array(&$data, $tabs)
 	{
 		$res = array();
+		$idx = 0;
 		foreach($data as $key => $val)
 		{
 			$s = str_repeat("\t", $tabs);
@@ -157,7 +158,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 			}
 			else
 			{
-				if(is_numeric($key))
+				if(($idx++ == $key) && is_numeric($key))
 					$s .= "'".addslashes($val)."',";
 				else
 					$s .= "'".addslashes($key)."' => '".addslashes($val)."',";

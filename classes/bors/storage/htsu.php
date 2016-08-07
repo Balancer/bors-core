@@ -3,7 +3,7 @@
 // Для тестов.
 // Пример .hts — http://www.aviaport.ru/pages/2012/save-il-14/
 
-bors_function_include('debug/log_var');
+require_once BORS_CORE.'/inc/functions/debug/log_var.php';
 
 class bors_storage_htsu extends bors_storage
 {
@@ -274,7 +274,7 @@ class bors_storage_htsu extends bors_storage
 
 	function save($object)
 	{
-		bors_debug::syslog('storage-error', "Try to save index.hts:<br/>\n".print_dd($object->data, true));
+		bors_debug::syslog('error-hts-storage', "Try to save index.hts:\nObject data=".print_r($object->data, true)."\nchanged_fields=".print_r($object->changed_objects, true));
 	}
 
 	static function each($class_name, $where)

@@ -29,9 +29,6 @@ function lt_img($params)
 //	require_once('inc/airbase/images.php');
 //	$data = airbase_image_data($params['url'], $url);
 
-//	if(!$data['local'])
-//		return "<a href=\"{$params['url']}\">{$params['url']}</a>"; // Временно отрубаем утягивание картинок.
-
 	if(empty($params['size']))
 	{
 		$size = config('box_sizes', 640);
@@ -86,7 +83,7 @@ function lt_img($params)
 		if(preg_match('/\w{5,}$/', $data['path']))
 			$data['path'] .= '.jpg';
 
-//		if(config('is_debug') && preg_match('/kaban.*png/', $uri)) { echo '<xmp>', $uri,' '; var_dump($params); var_dump($data); exit(); }
+//		if(preg_match('/ogonok40.jpg/', $uri)) { echo '<xmp>', $uri,' '; var_dump($params); var_dump($data); exit(); }
 
 		$store_path = config('sites_store_path');
 		$store_url  = config('sites_store_url');
@@ -107,7 +104,7 @@ function lt_img($params)
 			$file = $data['local_path'];;
 			$store_url  = 'http://www.balancer.ru';
 			$store_path = str_replace($path, '', $data['local_path']);
-//			if(config('is_developer')) r($path, $file, $data, $store_path);
+//			if(config('is_developer')) ~r($path, $file, $data, $store_path);
 		}
 		else
 		{
@@ -123,7 +120,7 @@ function lt_img($params)
 
 		if(!$data['local'] || !file_exists($file))
 		{
-			$path = "{$data['host']}{$data['path']}";
+//			$path = "{$data['host']}{$data['path']}";
 
 			if(preg_match("!/$!",$path))
 				$path .= "index";
@@ -131,8 +128,11 @@ function lt_img($params)
 			if(!empty($data['query']))
 				$path .= '/='.str_replace('&','/', $data['query']);
 
-			$file = "$store_path/$path";
-			if(!file_exists($file) || filesize($file)==0)
+			$file = "$store_path$path";
+
+//			if(1||config('is_developer')) ~r($store_path, $path, $file);
+
+			if((!file_exists($file) || filesize($file)==0) && !preg_match('!/_cg/!', $file))
 			{
 				$c1 = bors_substr($data['host'],0,1);
 				$c2 = bors_substr($data['host'],1,1);
@@ -148,8 +148,25 @@ function lt_img($params)
 				$file = "$store_path/$path";
 			}
 
-			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
-			if(!file_exists($file) || filesize($file)==0 || !($image_size = @getimagesize($file)))
+			if((!file_exists($file) || filesize($file)==0) && !preg_match('!/_cg/!', $file))
+			{
+				$h = preg_replace('/^www\./', '', $data['host']);
+				$c1 = bors_substr($h,0,1);
+				$c2 = bors_substr($h,1,1);
+				require_once('inc/urls.php');
+				$path = "$c1/$c2/$h".translite_path($data['path']);
+
+				if(preg_match("!/$!",$path))
+					$path .= "index";
+
+				if(!empty($data['query']))
+					$path .= '/='.str_replace('&','/', $data['query']);
+
+				$file = "$store_path/$path";
+			}
+
+//			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
+			if((!file_exists($file) || filesize($file)==0 || !($image_size = @getimagesize($file))) && !preg_match('!/_cg/!', $file))
 			{
 				$path = web_import_image::storage_place_rel($params['url']);
 				// Тестировать http://www.balancer.ru/g/p3576581
@@ -158,15 +175,16 @@ function lt_img($params)
 
 				if(!$path)
 					return "<a href=\"{$uri}\">{$uri}</a> <small style=\"color: #ccc\">[incorrect image]</small>";
+
 				$file = "$store_path/$path";
 			}
 
-			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
+//			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
 			$image_size = @getimagesize($file);
 
-//			if(config('is_developer')) { echo '<xmp>'; var_dump($params['url'], $file, $image_size); }
+//			if(config('is_developer')) { ~r($params['url'], $file, $image_size); }
 
-			if($path && file_exists($file) && !$image_size)
+			if($path && file_exists($file))
 			{
 				//TODO: Придумать, что сделать с этим хардкодом.
 				$thumbnails = bors_find_all('bors_image_thumb', array(
@@ -177,10 +195,11 @@ function lt_img($params)
 					foreach($thumbnails as $t)
 						$t->delete();
 
-				unlink($file);
+//				if(file_exists($file))
+//					rename($file, "$file.bak");
 			}
 
-			if(!file_exists($file) || filesize($file)==0 || !$image_size)
+			if((!file_exists($file) || filesize($file)==0 || !$image_size) && !preg_match('!/_cg/!', $file))
 			{
 				$path = web_import_image::storage_place_rel($params['url']);
 				if(!$path)
@@ -223,7 +242,7 @@ function lt_img($params)
 						&& !preg_match('!img-fotki\.yandex\.ru/get/\d+!', $params['url'])
 					)
 				{
-//					debug_hidden_log('images-error', $params['url'].ec(': is not image. ').$content_type."\n".$content); // Это не картинка
+//					bors_debug::syslog('images-error', $params['url'].ec(': is not image. ').$content_type."\n".$content); // Это не картинка
 					return sprintf($err_box, lcml_urls_title($params['url']).'<small> [not image]</small>');
 				}
 
@@ -238,7 +257,7 @@ function lt_img($params)
 
 			if(!$image_size)
 			{
-				bors_debug::syslog('000-image-debug', "Get image size for ".$file);
+//				bors_debug::syslog('000-image-debug', "Get image size for ".$file);
 				$image_size = @getimagesize($file);
 			}
 
@@ -287,8 +306,8 @@ function lt_img($params)
 			if(!file_exists($file))
 			{
 //				if(config('is_developer')) { var_dump($file, $data); exit(); }
-				debug_hidden_log('error_lcml_tag_img', "Incorrect image {$params['url']}");
-				return lcml_urls_title($params['url']).'<small> [image link error]</small>';
+				bors_debug::syslog('error_lcml_tag_img', "Incorrect image {$params['url']}");
+				return sprintf($err_box, lcml_urls_title($params['url']).'<small> [image link error]</small>');
 			}
 
 			if(preg_match('/\.gif$/i', $params['url']))
@@ -354,25 +373,29 @@ function lt_img($params)
 				// Для совместимости старый код. Вдруг где-то не сработает?
 				// Дёргаем превьюшку, чтобы могла сгенерироваться.
 				// Кстати, ошибка может быть и от перегрузки.
+
 				blib_http::get($img_ico_uri, true, 200000); // До 200кб
 
 				bors_debug::syslog('000-image-debug', "Get image size for ".$img_ico_uri);
-				list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
+				if(blib_http::exists($img_ico_uri))
+					list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
 
-				if(!intval($width) || !intval($height))
+				if(!intval(@$width) || !intval(@$height))
 				{
 					// Если с одного раза не сработало, пробуем ещё раз
 					sleep(5);
 					blib_http::get($img_ico_uri, true, 1000000); // До 1Мб
 
 					bors_debug::syslog('000-image-debug', "Get image size for ".$img_ico_uri);
-					list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
+					if(blib_http::exists($img_ico_uri))
+						list($width, $height, $type, $attr) = getimagesize($img_ico_uri);
 				}
 			}
 
-			if(!intval($width) || !intval($height))
+			if(!intval(@$width) || !intval(@$height))
 			{
 //				if(config('is_developer')) { echo '<xmp>'; var_dump($file, $uri, $img_ico_uri, $data, $params); exit(); }
+				bors_debug::syslog('warning-image-error', "Can't get image icon size.\n\timg={$params['url']}\n\turl={$params['url']}\n\ticon={$img_ico_uri}");
 				return sprintf($err_box, "<a href=\"{$params['url']}\">{$params['url']}</a> [can't get <a href=\"{$img_ico_uri}\">icon's</a> size]");
 			}
 

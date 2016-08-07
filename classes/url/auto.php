@@ -18,7 +18,7 @@ class url_auto extends url_base
 				{
 					$class_base = $base_class.'_';
 					$class_name = str_replace($base_class, '', $class_name);
-					$path = $base_url . str_replace('_', '/', bors_plural($class_name)) . '/';
+					$path = $base_url . str_replace('_', '/', \blib_grammar::plural($class_name)) . '/';
 //					var_dump($base_class, $base_url, $class_name, $path);
 				}
 			}
@@ -40,7 +40,7 @@ class url_auto extends url_base
 			// aviaport_directory_airline -> directory_airline
 			$rel_class_name = str_replace(config('classes_auto_base'), '', $class_name);
 			// directory_airline -> /directory/airlines/
-//			$path = str_replace('_', '/', bors_plural($rel_class_name)).'/';
+//			$path = str_replace('_', '/', \blib_grammar::plural($rel_class_name)).'/';
 			$rel_class_name = ltrim($rel_class_name, '_');
 
 			$project_name = NULL;

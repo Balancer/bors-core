@@ -51,8 +51,14 @@ class auto_object_php extends bors_object
 
 		if(!$class_base)
 		{
-			if($class_base = config('classes_auto_base', config('project.name', 'auto_php')))
+			if($class_base = config('classes_auto_base', config('project.name')))
 				$class_base .= '_';
+		}
+
+		if(!$class_base)
+		{
+			if(!empty(bors::$composer_autoroute_prefixes))
+				$class_base = bors::$composer_autoroute_prefixes[0].'_'; //TODO: сделать мультизагрузку. Пока только одиночный класс.
 		}
 
 		$is_auto = false;
@@ -184,7 +190,7 @@ class auto_object_php extends bors_object
 			if(!$object->parents(true))
 				$object->set_parents(array(secure_path(dirname($path).'/')), false);
 
-			bors_function_include('debug/log_var');
+			require_once BORS_CORE.'/inc/functions/debug/log_var.php';
 			debug_log_var('target_class_file', $object->class_file());
 			debug_log_var('loader_class_file', $this->class_file());
 		}

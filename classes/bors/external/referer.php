@@ -22,7 +22,7 @@ class bors_external_referer
 			$ref_domain = $m[1];
 		else
 		{
-			debug_hidden_log('log-parser-error', "Unknown referer {$referer}", false);
+			bors_debug::syslog('log-parser-error', "Unknown referer {$referer}", false);
 			return;
 		}
 
@@ -84,7 +84,7 @@ class bors_external_referer
 			if(preg_match('/(google|yandex|yahoo|mail\.ru|rambler)/', $host))
 			{
 				// Это неучтённый переход с поисковика
-				debug_hidden_log('referers-need-append-data', "Unknown referer {$referer}", false);
+				bors_debug::syslog('referers-need-append-data', "Unknown referer {$referer}", false);
 				echo '_';
 				return;
 			}
@@ -92,7 +92,7 @@ class bors_external_referer
 			if(preg_match('/(google|yandex|rambler)/', $referer))
 			{
 				// Это глюк
-				debug_hidden_log('referers-error', "Unknown {$host} referer: {$referer}", false);
+				bors_debug::syslog('referers-error', "Unknown {$host} referer: {$referer}", false);
 				echo 'E';
 				return;
 			}

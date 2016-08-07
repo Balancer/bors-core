@@ -178,6 +178,19 @@ class blib_urls
 		return $url;
 	}
 
+	static function ext_enabled($url, $enabled_list = [], $default = NULL)
+	{
+		if(preg_match('/\.(\w+)$/', $url, $m))
+			$ext = bors_lower($m[1]);
+		else
+			$ext = $default;
+
+		if($enabled_list && !in_array($ext, $enabled_list))
+			$ext = $default;
+
+		return $ext;
+	}
+
 	static function __unit_test($suite)
 	{
 		$url1 = "http://balancer.ru/blog/";
@@ -188,6 +201,8 @@ class blib_urls
 
 		$suite->assertTrue(self::in_array($url1, array('/blog/', '/blogs/')));
 		$suite->assertFalse(self::in_array($url1, array('/blogs1/', '/blogs2/')));
+
+		$suite->assertEquals('jpg', self::ext_enabled('http://domain.tld/test/1.jpg'));
 	}
 
 	function __dev()
@@ -195,7 +210,10 @@ class blib_urls
 		var_dump(
 			self::decode('http://ru.wikipedia.org/wiki/%C8%ED%E4%E5%E9%F1%EA%E8%E5_%E2%EE%E9%ED%FB'),
 			self::decode('http://ru.wikipedia.org/wiki/%D0%98%D0%BD%D0%B4%D0%B5%D0%B9%D1%81%D0%BA%D0%B8%D0%B5_%D0%B2%D0%BE%D0%B9%D0%BD%D1%8B'),
-			self::decode('http://ru.wikipedia.org/wiki/Индейские_войны')
+			self::decode('http://ru.wikipedia.org/wiki/Индейские_войны'),
+			self::ext_enabled('http://domain.tld/test/1.jpg'),
+			self::ext_enabled('http://domain.tld/test/1.png', ['jpg', 'png']),
+			self::ext_enabled('http://domain.tld/test/1.xxx', ['jpg', 'png'], 'jpg')
 		);
 	}
 }
@@ -303,4 +321,5 @@ if(!function_exists('http_build_url'))
             .((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '')
         ;
     }
+
 }

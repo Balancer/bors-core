@@ -4,7 +4,7 @@ class bors_tools_action_public extends bors_page
 {
 	function pre_show()
 	{
-		$params = explode('/', $this->id());
+		$params = explode('/', trim($this->id(), '/'));
 
 		$class = array_shift($params);
 		if(count($params) == 0)

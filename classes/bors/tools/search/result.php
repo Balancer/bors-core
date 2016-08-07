@@ -79,8 +79,8 @@ class bors_tools_search_result extends bors_tools_search
 		if(!$this->q())
 			return false;
 
-		$host = "localhost";
-		$port = 3312;
+		$host = config('search.sphinx.host', 'localhost');
+		$port = config('search.sphinx.port', 3312);
 //echo $this->w();
 
 		$weights = NULL;
@@ -101,10 +101,12 @@ class bors_tools_search_result extends bors_tools_search
 			case 'a':
 			case '1':
 			case 'na':
-				$index = "blog_titles,topic_descriptions,blog_keywords,blog_sources,blog_sources_delta,posts,posts_delta,livestreet_topics";
+				$index = "blog_titles,topic_descriptions,"
+					."blog_keywords,blog_sources,blog_sources_delta,"
+					."posts,posts_delta,livestreet_topics,posts_rt";
 				break;
 			case 'p': // В теле сообщений
-				$index = "posts,posts_delta";
+				$index = "posts,posts_delta,posts_rt";
 				break;
 			case 'b':
 				$index = "blog_titles,blog_keywords,blog_sources,blog_sources_delta,livestreet_topics";
@@ -172,9 +174,9 @@ class bors_tools_search_result extends bors_tools_search
 			$cl->SetFilter('forum_id', $f);
 
 		if($disabled = airbase_forum_forum::disabled_ids_list())
-			$cl->SetFilter('forum_id', array_merge($disabled, array(191)), true);
+			$cl->SetFilter('forum_id', array_merge($disabled, array(37,191)), true);
 		else
-			$cl->SetFilter('forum_id', array(191), true);
+			$cl->SetFilter('forum_id', array(37,191), true);
 
 		if($this->u())
 		{
@@ -185,8 +187,26 @@ class bors_tools_search_result extends bors_tools_search
 		if($this->t())
 			$cl->SetFilter('topic_id', array(intval($this->t())));
 
-		$date1 = strtotime($this->y1().'-'.$this->m1().'-'.$this->d1().' 00:00:00');
-		$date2 = strtotime($this->y2().'-'.$this->m2().'-'.$this->d2().' 23:59:59');
+		if(!($d1 = $this->d1()))
+			$d1 = 1;
+
+		if(!($m1 = $this->m1()))
+			$m1 = 1;
+
+		if(!($y1 = $this->y1()))
+			$y1 = 1970;
+
+		if(!($d2 = $this->d2()))
+			$d2 = 31;
+
+		if(!($m2 = $this->m2()))
+			$m2 = 12;
+
+		if(!($y2 = $this->y2()))
+			$y2 = date('Y');
+
+		$date1 = strtotime($y1.'-'.$m1.'-'.$d1.' 00:00:00');
+		$date2 = strtotime($y2.'-'.$m2.'-'.$d2.' 23:59:59');
 
 		if($date1 || $date2)
 		{
@@ -207,6 +227,7 @@ class bors_tools_search_result extends bors_tools_search
 				$time_begin = strtotime("$y-01-01 00:00:00");
 				$time_end   = strtotime("$y-12-31 23:59:59");
 			}*/
+
 			$cl->SetFilterRange('create_time', $date1, $date2);
 		}
 
@@ -238,7 +259,7 @@ class bors_tools_search_result extends bors_tools_search
 
 		$cl->SetArrayResult ( true );
 		$res = $cl->Query ( $this->q(), $index );
-//if(config('is_developer'))		print_dd($res);
+//		print_r($res);
 
 		if($res === false)
 			$data['error'] = $cl->GetLastError();
@@ -287,8 +308,8 @@ class bors_tools_search_result extends bors_tools_search
 					$cid = @$x['attrs']['class_id'];
 					if($cid == 1)
 						$cid = 87;
-					if($cid == 2)
-						$cid = 89;
+					if($cid == 89)
+						$cid = 2;
 					if($cid == 15)
 						$cid = 179;
 				}

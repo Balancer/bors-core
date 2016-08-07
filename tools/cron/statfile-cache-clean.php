@@ -2,11 +2,12 @@
 <?php
 $start = time();
 
-require_once('../config.php');
-require_once(BORS_CORE.'/init.php');
+require_once __DIR__.'/../config.php';
 
-require_once('obsolete/DataBase.php');
-require_once('inc/processes.php');
+if(!config('debug_hidden_log_dir') || !file_exists(config('debug_hidden_log_dir')))
+	exit("Empty hidden log dir: '".config('debug_hidden_log_dir')."'");
+
+require_once BORS_CORE.'/inc/processes.php';
 
 bors_function_include('debug/execute_trace');
 
@@ -25,18 +26,25 @@ if(!config('cache_database'))
 
 config_set('do_not_exit', true);
 
+
 try
 {
 	echo date("r\n");
 
 	// BETWEEN 0 AND NOW — чтобы не стирать -1.
 
-	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time(), 'order' => 'expire_time')) as $x)
+	foreach(bors_each('cache_static', array("expire_time BETWEEN 0 AND ".time(), 'order' => 'RAND()', 'limit' => 10000)) as $x)
 	{
 //		echo "{$x->original_uri()}, {$x->id()} [rcr={$x->recreate()}]: ";
 		echo "{$x->original_uri()} [rcr={$x->recreate()}]: ";
 
 		$obj = $x->target();
+
+		$_SERVER['DEBUG_STATCACHE_CLEAN'] = $x->debug_title();
+		unset($_SERVER['DEBUG_STATCACHE_CLEAN_TARGET']);
+
+		if($obj)
+			$_SERVER['DEBUG_STATCACHE_CLEAN_TARGET'] = $obj->debug_title();
 
 		if($x->recreate() && config('cache_static'))
 		{
@@ -58,18 +66,18 @@ try
 //				echo "\t\tok\n";
 			}
 			else
-//				debug_hidden_log('static-cache', "Can't load recreateable object {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
+//				bors_debug::syslog('static-cache', "Can't load recreateable object {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
 			echo "Recreated";
 
 		}
 		else
 		{
-//			debug_hidden_log('static-clean-unlink3', "{$x->id()}", false);
+//			bors_debug::syslog('static-clean-unlink3', "{$x->id()}", false);
 			@unlink($x->id());
 
 			if(file_exists($x->id()))
 			{
-				debug_hidden_log('static-cache-error', "Can't delete file {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
+				bors_debug::syslog('static-cache-error', "Can't delete file {$x->target_class_id()}({$x->target_id()}), url={$x->original_uri()}, file={$x->id()}");
 				echo "Can't delete";
 			}
 			else
@@ -88,7 +96,7 @@ try
 }
 catch(Exception $e)
 {
-	debug_hidden_log('static-clean-exception', "Exception: ".bors_lib_exception::catch_trace($e));
+	bors_debug::syslog('static-clean-exception', "Exception: ".bors_lib_exception::catch_trace($e));
 }
 
 bors_thread_unlock('statfile-cache-clean');

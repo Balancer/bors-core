@@ -1,6 +1,6 @@
 <?php
 
-require_once('inc/strings.php');
+require_once BORS_CORE.'/inc/strings.php';
 
 function lcml_save_tags_format($txt)
 {

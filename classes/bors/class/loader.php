@@ -137,6 +137,19 @@ class bors_class_loader
 			$class_file = $m[2];
 		}
 
+		foreach(bors::$composer_class_dirs as $dir)
+		{
+			if(file_exists($file_name = "{$dir}/{$class_path}{$class_file}.php"))
+				return self::load_and_cache($class_name, $file_name);
+
+			if(file_exists($file_name = "{$dir}/{$class_path}{$class_file}.yaml"))
+			{
+				bors_class_loader_yaml::load_from_file($class_name, $file_name);
+				$GLOBALS['bors_data']['classes_included'][$class_name] = $file_name;
+				return $file_name;
+			}
+		}
+
 		foreach(bors_dirs() as $dir)
 		{
 			if(file_exists($file_name = "{$dir}/classes/{$class_path}{$class_file}.php"))
@@ -153,7 +166,7 @@ class bors_class_loader
 			}
 		}
 
-		if(file_exists($file_name = BORS_CORE."/classes/inc/$class_name.php"))
+		if(file_exists($file_name = realpath(__DIR__.'/../../../classes/inc/$class_name.php')))
 			return self::load_and_cache($class_name, $file_name);
 
 
@@ -164,14 +177,15 @@ class bors_class_loader
 			return false;
 
 		$data = bors_vhost_data($args['host']);
-		if(file_exists($file_name = "{$data['bors_site']}/classes/{$class_path}{$class_file}.php"))
+//		echo '<xmp>'; var_dump($data); echo '</xmp>';
+		if($data && !empty($data['bors_site']) && file_exists($file_name = "{$data['bors_site']}/classes/{$class_path}{$class_file}.php"))
 		{
 			self::load_and_cache($class_name, $file_name);
 			$args['need_check_to_public_load'] = true;
 			return $file_name;
 		}
 
-		if(file_exists($file_name = "{$data['bors_site']}/classes/bors/{$class_path}{$class_file}.php"))
+		if($data && !empty($data['bors_site']) && file_exists($file_name = "{$data['bors_site']}/classes/bors/{$class_path}{$class_file}.php"))
 		{
 			self::load_and_cache($class_name, $file_name);
 			$args['need_check_to_public_load'] = true;

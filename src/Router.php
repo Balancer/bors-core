@@ -2,9 +2,36 @@
 
 namespace B2;
 
-class Router extends Object
+class Router extends Obj
 {
 	private $dispatcher;
+	private $app;
+
+	function __construct($app)
+	{
+		$this->app = $app;
+	}
+
+	function init()
+	{
+		$namespace = preg_replace('/\\\\\w+$/', '', get_class($this->app));
+		$routes = $namespace . '\\Routes';
+		if(class_exists($routes))
+		{
+			global $bors_data;
+
+			$routes = call_user_func([$routes, 'routes']);
+			if(empty($bors_data['vhosts'][$this->base_url()]['bors_map']))
+				$bors_data['vhosts'][$this->base_url()]['bors_map'] = [];
+
+			$bors_data['vhosts'][$this->base_url()]['bors_map'] = array_merge($bors_data['vhosts'][$this->base_url()]['bors_map'], $routes);
+		}
+	}
+
+	function base_url()
+	{
+		return $GLOBALS['b2.route.base'][get_class($this->app)];
+	}
 
 	function routes_init($base_url, $domain = NULL)
 	{
@@ -44,7 +71,7 @@ class Router extends Object
 		return NULL;
 	}
 
-	static function factory()
+	static function factory($foo=NULL)
 	{
 		$class_name = get_called_class();
 		$router = new $class_name(NULL);

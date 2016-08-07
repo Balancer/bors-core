@@ -5,9 +5,9 @@
 		$InsertPostMess = "";
 
 		$author = str_replace('_', ' ', $author);
-		$author = preg_replace('!^\[(.+?)\]$!','$1',$author);
-		$author = preg_replace('!^<(.+?)>$!','$1',$author);
-		$author = preg_replace('!^&lt;(.+?)&gt;$!','$1',$author);
+		$author = preg_replace('!^\[(.+?)\]$!','$1', $author);
+		$author = preg_replace('!^<(.+?)>$!','$1', $author);
+		$author = preg_replace('!^&lt;(.+?)&gt;$!','$1', $author);
 
 		if($skip_quotes)
 			foreach(explode(' ', 'code quote pre') as $tag)

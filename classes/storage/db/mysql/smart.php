@@ -287,7 +287,7 @@ class storage_db_mysql_smart extends base_null
 //					$object->set($name, "$value", false, true);
 
 					if($must_be_configured)
-						$object->_configure();
+						$object->b2_configure();
 
 					$was_loaded = true;
 				}
@@ -322,7 +322,7 @@ class storage_db_mysql_smart extends base_null
 		if(function_exists($func))
 			return $func($str);
 
-		debug_hidden_log('func-str', "f='$func', s='$str'");
+		bors_debug::syslog('func-str', "f='$func', s='$str'");
 		$func = str_replace('$$$', '$str', $func);
 		eval("\$value = $func;");
 		return $value;

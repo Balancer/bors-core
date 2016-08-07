@@ -3,13 +3,13 @@ function smarty_modifier_get($object, $field, $param1 = false, $param2 = false)
 {
 	if(!$object)
 	{
-		debug_hidden_log('__data_error', "get $field for NULL object");
+		bors_debug::syslog('__data_error', "get $field for NULL object");
 		return '';
 	}
 
 	if(!is_object($object))
 	{
-		debug_hidden_log('__data_error', "get $field error: '{$object}' is not object");
+		bors_debug::syslog('__data_error', "get $field error: '{$object}' is not object");
 		return '';
 	}
 

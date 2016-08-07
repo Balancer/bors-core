@@ -153,5 +153,5 @@ class bors_xref_c2c extends bors_object_db
 	function target() { return bors_load($this->target_class_name(), $this->get($this->target_field_name())); }
 	function target_field_name() { return blib_grammar::singular($this->target_name()).'_id'; }
 
-	function admin_parent_url() { return $this->object()->admin()->urls(bors_plural($this->target_name())); }
+	function admin_parent_url() { return $this->object()->admin()->urls(\blib_grammar::plural($this->target_name())); }
 }

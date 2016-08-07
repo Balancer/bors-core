@@ -2,6 +2,8 @@
 
 class base_page_db extends bors_page
 {
+	use \B2\Traits\MySql;
+
 	function can_be_empty() { return false; }
 	function can_cached() { return true; } //TODO: пока не разберусь, откуда глюки сохранения memcache
 
@@ -75,7 +77,7 @@ class base_page_db extends bors_page
 	}
 
 	function _db_name_def() { return config('main_bors_db'); }
-	function _table_name_def() { return bors_plural($this->class_name()); }
+	function _table_name_def() { return \blib_grammar::plural($this->class_name()); }
 
 	function main_id_field()
 	{

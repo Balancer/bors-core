@@ -17,16 +17,16 @@ function smarty_function_bors_multiselect($params, &$smarty)
 		if(preg_match("!^(\w+)\->(\w+)$!", $list, $m))
 		{
 			if($m[1] == 'this')
-				$list = $obj->$m[2]();
+				$list = call_user_func([$obj, $m[2]]);
 			else
-				$list = object_load($m[1])->$m[2]();
+				$list = call_user_func([bors_foo($m[1]), $m[2]]);
 		}
 		elseif(preg_match("!^(\w+)\->(\w+)\('(.+)'\)!", $list, $m))
 		{
 			if($m[1] == 'this')
-				$list = $obj->$m[2]($m[3]);
+				$list = call_user_func([$obj, $m[2]], $m[3]);
 			else
-				$list = object_load($m[1])->$m[2]($m[3]);
+				$list = call_user_func([bors_foo($m[1]), $m[2]], $m[3]);
 		}
 		elseif(preg_match("!^\w+$!", $list))
 		{

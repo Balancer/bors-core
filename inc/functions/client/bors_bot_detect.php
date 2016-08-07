@@ -189,7 +189,7 @@ function bors_bot_detect($user_agent, &$data = array())
 	if(preg_match("/(bot|crawler|spider)/i", $user_agent, $m))
 	{
 //		bors_function_include('debug/hidden_log');
-//		debug_hidden_log('_need_append_data', 'unknown '.$m[1].' detected');
+//		bors_debug::syslog('_need_append_data', 'unknown '.$m[1].' detected');
 
 		bors::log()->notice('unknown '.$m[1].' detected: '.$user_agent, 'append data');
 
@@ -204,7 +204,7 @@ function bors_bot_detect($user_agent, &$data = array())
 	if(preg_match("/(monitor|feed|rss)/i", $user_agent, $m))
 	{
 //		bors_function_include('debug/hidden_log');
-//		debug_hidden_log('_need_append_data', 'unknown '.$m[1].' bot detectd');
+//		bors_debug::syslog('_need_append_data', 'unknown '.$m[1].' bot detectd');
 
 		bors::log()->notice('unknown '.$m[1].' detected: '.$user_agent, 'append data');
 

@@ -49,13 +49,13 @@ class bors_attach extends base_object_db
 //		var_dump($data);
 		if(!file_exists($file = $data['tmp_name']))
 		{
-			debug_hidden_log('attach-error', 'Upload not existens file '.$file);
+			bors_debug::syslog('attach-error', 'Upload not existens file '.$file);
 			debug_exit("Can't load file {$data['name']}: File not exists<br/>");
 		}
 
 		if(!$this->id())
 		{
-			debug_hidden_log('new-instance-errors', 'empty attach id, try to create new by store');
+			bors_debug::syslog('new-instance-errors', 'empty attach id, try to create new by store');
 			$this->new_instance();
 		}
 

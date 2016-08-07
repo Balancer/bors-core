@@ -1,7 +1,10 @@
 <?php
+
 function smarty_outputfilter_php_include($output, &$smarty)
 {
-    return preg_replace('!\[php_include\](.+?)\[/php_include\]!e',"smarty_outputfilter_php_include_out('$1')", $output);
+    return preg_replace_callback('!\[php_include\](.+?)\[/php_include\]!', function($m) {
+    	smarty_outputfilter_php_include_out($m[1]);
+    }, $output);
 }
 
 function smarty_outputfilter_php_include_out($file)
@@ -12,5 +15,3 @@ function smarty_outputfilter_php_include_out($file)
     ob_clean();
     return $out;
 }
-
-?>

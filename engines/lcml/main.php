@@ -2,36 +2,10 @@
 
 // Обновлённая версия старой LCML разметки.
 
-require_once(BORS_CORE.'/engines/lcml/tags.php');
-require_once(BORS_CORE.'/engines/lcml/funcs.php');
+require_once __DIR__.'/../../engines/lcml/tags.php';
+require_once __DIR__.'/../../engines/lcml/funcs.php';
 
-function lcml($text, $params = array())
-{
-	$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
-
-	global $lcs;
-	if(!$lcs)
-		$lcs = array();
-
-	if(empty($lcs[$class_name]))
-		$lcs[$class_name] = new $class_name($params);
-
-	$lc = $lcs[$class_name];
-
-	$lc->set_p('prepare', popval($params, 'prepare'));
-	$save_tags = $lc->p('only_tags');
-
-	if(!empty($params['only_tags']))
-		$lc->set_p('only_tags', $params['only_tags']);
-
-	if($lc->p('level') == 0)
-		$lc->set_params($params);
-
-	$res = $lc->parse($text);
-	$lc->set_p('only_tags', $save_tags);
-
-	return $res;
-}
+function lcml($text, $params = []) { return bors_lcml::lcml($text, $params); }
 
 function lcml_h($string)
 {
@@ -169,8 +143,13 @@ function html2bb($text, $args = array())
 	$text = preg_replace("!</noindex>!i", "", $text);
 	$text = preg_replace("!<br\s*/?>!", "\n", $text);
 
-	$text = preg_replace("!(<a [^>]*href=\")(/.+?)(\"[^>]*?>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
-	$text = preg_replace("!(<a [^>]*href=)([^\"']\S+)( [^>]+>)!ie", '"$1" . url_relative_join("$url", "$2") . "$3";', $text);
+	$text = preg_replace_callback("!(<a [^>]*href=\")(/.+?)(\"[^>]*?>)!i", function($m) use($url) {
+		return $m[1] . url_relative_join($url, $m[2]) . $m[3];
+	}, $text);
+
+	$text = preg_replace_callback("!(<a [^>]*href=)([^\"']\S+)( [^>]+>)!i", function($m) use($url) {
+		return $m[1] . url_relative_join($url, $m[2]) . $m[3];
+	}, $text);
 
 	$text = preg_replace('!<div style="text-align: center">(.+?)</div>!is', '[center]$1[/center]', $text);
 
@@ -180,14 +159,22 @@ function html2bb($text, $args = array())
 	$text = preg_replace('!<span style="font-size: x-small;">(.+?)</span>!', '[small]$1[/small]', $text);
 
 	// blogger.com, исправление картинок вида src="http://%D0%BD%D1%8E%D1%81%D0%B0%D0%B9%D1%82
-	$text = preg_replace('!="(http://%D0[^"]+)"!e', "'=\"'.urldecode(\"$1\").'\"'", $text);
+	$text = preg_replace_callback('!="(http://%D0[^"]+)"!', function($m) {
+		return '="'.urldecode($m[1]).'"';
+	}, $text);
 
 	$text = preg_replace("!<a [^>]*href=\"([^\"]+)\"[^>]*>(.*?)</a>!is", '[url=$1]$2[/url]', $text);
-	$text = preg_replace('!(<img ([^>]+)>)!ise', 'lcmlbb_parse_img(stripslashes("$1"));', $text);
+
+	$text = preg_replace_callback('!(<img ([^>]+)>)!is', function($m) {
+		return lcmlbb_parse_img($m[1]);
+	}, $text);
 
 	$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
-	$text = preg_replace('!<lj\-embed id="(\d+)" />!ise', "lcmlbb_lj_embed(\"$1\", '$url');", $text);
+	$text = preg_replace_callback('!<lj\-embed id="(\d+)" />!is', function($m) use($url) {
+		return lcmlbb_lj_embed($m[1], $url);
+	}, $text);
+
 	$text = str_replace('embed', 'xx', $text);
 
 	require_once('pre/03-external_code.php');

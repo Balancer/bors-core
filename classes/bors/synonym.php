@@ -23,6 +23,8 @@ class bors_synonym extends bors_object_db
 		);
 	}
 
+	function title() { return $this->data['title']; }
+
 	function post_set(&$data)
 	{
 		$this->set_norm_title(bors_text_clear($data['title'], true));
@@ -41,6 +43,8 @@ class bors_synonym extends bors_object_db
 
 	static function add_object($x1, $x2 = array(), $params = array())
 	{
+		require_once BORS_CORE.'/inc/texts.php';
+
 		if(is_object($x1))
 		{
 			$object = $x1;
@@ -66,15 +70,16 @@ class bors_synonym extends bors_object_db
 		}
 
 		$is_exactly = defval($params, 'is_exactly');
+		$synonyms = defval($params, 'synonyms', []);
 
 		if($is_exactly)
 			$norm_title = trim(bors_lower($title));
 		else
 			$norm_title = bors_text_clear($title, true);
 
-		if($title && $norm_title)
+		if($title && $norm_title && empty($synonyms[$title]))
 		{
-			object_new_instance('bors_synonym', array(
+			$x = object_new_instance('bors_synonym', [
 				'title' => $title,
 				'norm_title' => $norm_title,
 				'target_class_name' => $object->extends_class_name(),
@@ -82,8 +87,12 @@ class bors_synonym extends bors_object_db
 				'is_exactly' => $is_exactly,
 				'is_auto' => defval($params, 'is_auto'),
 				'is_disabled' => defval($params, 'is_disabled'),
-			));
+			]);
+
+			$synonyms[$title] = $x;
 		}
+
+		return $synonyms;
 	}
 
 	static function synonyms($object, $params = array())
@@ -96,7 +105,7 @@ class bors_synonym extends bors_object_db
 		$where = array(
 			'target_class_name' => $object->extends_class_name(),
 			'target_object_id' => $object->id(),
-			'order' => 'title',
+//			'order' => 'title',
 		);
 
 		if(array_key_exists('is_disabled', $params))

@@ -15,8 +15,23 @@ class base_list extends bors_object_simple
 		return $list[$id];
 	}
 
-	function title() { return $this->id_to_name($this->id()); }
-	function title_s() { return $this->id_to_name_s($this->id()); }
+	function title()
+	{
+		$names = [];
+		foreach(is_array($this->id()) ? $this->id() : [$this->id()] as $id)
+			$names[] = $this->id_to_name($id);
+
+		return join($names, ', ');
+	}
+
+	function title_s()
+	{
+		$names = [];
+		foreach(is_array($this->id()) ? $this->id() : [$this->id()] as $id)
+			$names[] = $this->id_to_name_s($id);
+
+		return join($names, ', ');
+	}
 
 	function named_list()
 	{

@@ -338,7 +338,7 @@ class bors_storage_dbal extends bors_storage implements Iterator
 					$fields[$id_field] = $new_id;
 				}
 
-				debug_hidden_log("inserts", "insert $table_name, ".print_r($fields, true));
+				bors_debug::syslog("inserts", "insert $table_name, ".print_r($fields, true));
 				$dbh->insert($table_name, $fields);
 				if($main_table)
 				{

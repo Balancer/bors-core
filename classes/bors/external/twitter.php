@@ -19,7 +19,7 @@ class bors_external_twitter extends bors_object
 
 		if(!is_object($user))
 		{
-			debug_hidden_log('__objects_error', 'Not object user '.$user);
+			bors_debug::syslog('__objects_error', 'Not object user '.$user);
 			return;
 		}
 
@@ -54,7 +54,7 @@ class bors_external_twitter extends bors_object
 			catch (Services_Twitter_Exception $e)
 			{
 //				echo $e->getMessage();
-				debug_hidden_log('twitter', 'Exception :'.$e);
+				bors_debug::syslog('twitter', 'Exception :'.$e);
 			}
 		}
 	}
@@ -71,11 +71,15 @@ class bors_external_twitter extends bors_object
 		$text = preg_replace('!amazon: http://\S+$!', '', $text);
 
 		// http://bit.ly/gNE1ZE
-		$text = preg_replace('!(http://(amzn\.to|lnk\.ms|bit\.ly|is\.gd|t\.co)/\w+)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
+		$text = preg_replace_callback('!(http://(amzn\.to|lnk\.ms|bit\.ly|is\.gd|t\.co)/\w+)!', function($m) {
+			return bors_lib_http::url_unshort($m[1], $m[2]);
+		}, $text);
 
 		// http://youtu.be/sdUUx5FdySs?a
 		// http://youtu.be/1SBkx-sn9i8?a
-		$text = preg_replace('!(http://(youtu.be)/[^\?]+\?a)!e', 'bors_lib_http::url_unshort("$1", "$2");', $text);
+		$text = preg_replace_callback('!(http://(youtu.be)/[^\?]+\?a)!', function($m) {
+			return bors_lib_http::url_unshort($m[1], $m[2]);
+		}, $text);
 
 		$tags = array();
 		if(preg_match_all('/( |^|"|«)#([\wа-яА-ЯёЁ\-]+)/um', $text, $matches))

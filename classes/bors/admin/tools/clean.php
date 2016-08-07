@@ -17,7 +17,10 @@ class bors_admin_tools_clean extends bors_page
 		if(!$obj)
 			return bors_message(ec('Не найден объект ').$this->id());
 
-		$obj->cache_clean_self();
+		if($this->page() == 1)
+			$obj->cache_clean_self();
+		else
+			echo $obj->recalculate_full();
 
 		return go($this->object()->url_ex($this->object()->page()));
 	}

@@ -1,7 +1,7 @@
 <?php
 
-bors_function_include('client/bors_bot_detect');
-bors_function_include('client/bors_client_analyze');
+require_once BORS_CORE.'/inc/functions/client/bors_bot_detect.php';
+require_once BORS_CORE.'/inc/functions/client/bors_client_analyze.php';
 
 function bors_client_info_short($ip, $ua = '')
 {
@@ -58,7 +58,7 @@ function im_client_image($client_name)
 			return 'http://s.wrk.ru/i16/im/gtalk.gif';
 	}
 
-	debug_hidden_log('append_data', "Unknown IM type $name for $client_id (of $type)");
+	bors_debug::syslog('append_data', "Unknown IM type $name for $client_id (of $type)");
 	return NULL;
 }
 

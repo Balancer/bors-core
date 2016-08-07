@@ -3,6 +3,11 @@
 	// Возвращает false при ошибке показа объекта
 	// true - если была какая-то отработка и требуется прекратить дальнейшую работу.
 	// Иначе - строку с результатом для вывода.
+/**
+ * @param $obj bors_object
+ * @return bool|string
+ * @throws Exception
+ */
 	function bors_object_show($obj)
 	{
 		if(!$obj)
@@ -10,9 +15,12 @@
 
 		if(!is_object($obj))
 		{
-			debug_hidden_log('__error_non_object', "Non object ".$obj);
+			bors_debug::syslog('__error_non_object', "Non object ".$obj);
 			return false;
 		}
+
+		// Чтобы при повторных вызовах вне одноразового HTTP-запроса данные не накапливались.
+//		unset($GLOBALS['cms']['templates']);
 
 		$page = $obj->set_page($obj->arg('page'));
 
@@ -31,6 +39,7 @@
 		{
 			if(config('debug_header_trace'))
 				@header('X-Bors-show-has-preparsed: Yes');
+
 			return true;
 		}
 
@@ -40,15 +49,15 @@
 			if((!empty($_GET['act']) || !empty($_GET['subaction'])))
 			{
 				// Если запрос картинки, то это вызов subaction через img src, т.е. грубый XSS
-				if(bors()->request()->is_accept_image())
+				if(bors()->request()->is_accept_image() && !$obj->get('can_post_accept_image'))
 				{
 					bors_debug::syslog('hack-attempt', "Try to hack by img src for ".$obj->debug_title());
 					header("Content-type: " . image_type_to_mime_type(IMAGETYPE_GIF));
-					return file_get_contents(BORS_CORE.'/htdocs/_bors/images/hacker.gif');
+					return file_get_contents(__DIR__.'/../../htdocs/_bors/images/hacker.gif');
 				}
 
 				// Если запрашивается не страница, а не пойми чего, то тоже считаем за хак.
-				if(!bors()->request()->is_accept_text())
+				if(!bors()->request()->is_accept_text() && !$obj->get('can_post_accept_image'))
 				{
 					bors_debug::syslog('hack-attempt', "Try to hack by call as not page for ".$obj->debug_title());
 					return get_class($obj) . ": request error: act not page";
@@ -59,11 +68,11 @@
 				if(!bors()->request()->is_post() && !$obj->get('can_action_method_get'))
 				{
 					bors_debug::syslog('hack-attempt', "Try to hack by call get method for ".$obj->debug_title());
-					return get_class($obj) . ": request error: act get";
+					return get_class($obj) . ": request error: act get (need can_action_method_get=true)";
 				}
 			}
 
-			require_once('inc/bors/form_save.php');
+			require_once BORS_CORE.'/inc/bors/form_save.php';
 			$processed = bors_form_save($obj);
 			if($processed === true)
 			{
@@ -75,7 +84,7 @@
 
 		$access_object = $obj->access();
 		if(!$access_object)
-			bors_throw("Can't load access_engine ({$obj->access_engine()}?) for class {$obj->debug_title()}");
+			throw new Exception("Can't load access_engine (".($obj->access_engine()?$obj->access_engine():"empty access_engine").") for class {$obj->debug_title()}");
 
 		if(!$access_object->can_read())
 		{
@@ -83,18 +92,29 @@
 
 			if(bors()->user())
 			{
-				$msg = ec("Извините, ").bors()->user()->title()
-					.ec(", у Вас нет доступа к ресурсу «")
-					.$obj->title()
-					."» [<a href=\"/users/do-logout\">выйти</a>]";
+				$msg  = _('Извините, %s, у Вас нет доступа к ресурсу «%s»');
+
+				$msg = sprintf($msg, bors()->user()->title(), $obj->title())
+					.' [<a href=\"/users/do-logout\">'._('выйти').'</a>]';
 			}
 			else
-				$msg = ec("Извините, гость, у Вас нет доступа к этому ресурсу");
+				$msg = _("Извините, гость, у Вас нет доступа к этому ресурсу");
 
-			if($access_object->get('login_redirect') && !bors()->user())
-				return go('/_bors/login?ref='.$obj->url());
+			if(($url = $access_object->get('login_redirect')) && !bors()->user())
+			{
+				if($url === true)
+					$url = '/_bors/login/';
 
-			return empty($GLOBALS['cms']['error_show']) ? bors_message($msg . "
+				return go($url.'?ref='.$obj->url());
+			}
+
+			if(!empty($GLOBALS['cms']['error_show']))
+				return true;
+
+			if(!empty($obj->attr('access_error_message')))
+				$msg = $obj->attr('access_error_message');
+
+			return $obj->b2_message($msg . "
 				<!--
 				object to read = '{$obj->debug_title()}'
 				object to read file = '{$obj->get('class_file')}'
@@ -104,8 +124,11 @@
 				class_file = ".(method_exists($access_object, 'class_file') ? $access_object->class_file() : 'none')."
 				object.config = ".object_property($obj->config(), 'debug_title')."
 
-".debug_trace(0, false, 0)."
-			-->", array('template' => object_property($obj, 'template'))) : true;
+".bors_debug::trace(0, false, 0)."
+			-->", [
+				'template' => object_property($obj, 'template'),
+				'title'   => $obj->attr('access_error_title', _('Ошибка доступа')),
+			]);
 		}
 
 		if(config('debug.execute_trace'))
@@ -119,7 +142,17 @@
 		{
 			if(config('debug_header_trace'))
 				@header('X-Bors-show-pre-show: Yes');
+
 			return true;
+		}
+
+		if(is_object($processed)
+				&& method_exists($processed, 'sendHeaders')
+				&& method_exists($processed, 'getContent')
+			)
+		{
+			$processed->sendHeaders();
+			return bors_message($processed->getContent());
 		}
 
 		$modify_time = max($obj->modify_time(), $obj->get('compile_time'));
@@ -156,7 +189,7 @@
 			if(empty($GLOBALS['main_uri']))
 				$GLOBALS['main_uri'] = preg_replace('!:\d+/!', '/', $obj->url());
 			else
-				debug_hidden_log('___222', "main uri already set to '{$GLOBALS['main_uri']}' while try set to '{$obj->url()}'");
+				bors_debug::syslog('___222', "main uri already set to '{$GLOBALS['main_uri']}' while try set to '{$obj->url()}'");
 
 			if(config('debug.execute_trace'))
 				debug_execute_trace("{$obj->debug_title_short()}->content()");
@@ -202,6 +235,9 @@ function bors_object_create($obj, $page = NULL)
 {
 	if(!$obj)
 		return NULL;
+
+	// Чтобы при повторных вызовах вне одноразового HTTP-запроса данные не накапливались.
+	unset($GLOBALS['cms']['templates']);
 
 	$page = $obj->set_page($page ?: $obj->args('page'));
 

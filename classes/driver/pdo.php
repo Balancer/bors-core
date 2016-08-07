@@ -1,21 +1,18 @@
 <?php
 
-bors_function_include('debug/timing_start');
-bors_function_include('debug/timing_stop');
-
 class driver_pdo implements Iterator
 {
 	protected $connection = NULL;
 	protected $database = NULL;
 	private $statement = NULL;
 
-	static function factory($db) { return new driver_pdo($db); }
+	static function factory($db) { $class = get_called_class(); return new $class($db); }
 
 	function __construct($database = NULL)
 	{
 		$this->database = $database;
 
-		$this->_reconnect();
+		$this->reconnect();
 	}
 
 	static function dsn($db_name)
@@ -32,39 +29,68 @@ class driver_pdo implements Iterator
 			';host='.configh('pdo_access', $db_name, 'host', '127.0.0.1').';';
 	}
 
-	protected function _reconnect()
+	protected function reconnect()
 	{
-		debug_timing_start('pdo_connect');
+		bors_debug::timing_start('pdo_connect');
 
-		$this->connection = new PDO(
-			self::dsn($this->database),
-			configh('pdo_access', $this->database, 'user'),
-			configh('pdo_access', $this->database, 'password')
-		);
+		$dsn = self::dsn($this->database);
 
-		debug_timing_stop('pdo_connect');
+		try
+		{
+			$this->connection = new PDO($dsn, configh('pdo_access', $this->database, 'user'), configh('pdo_access', $this->database, 'password'));
+		}
+		catch(Exception $e)
+		{
+			$msg = "PDO exception with $dsn: ".$e->getMessage();
+
+			if(preg_match('/^(\w+):.+/', $dsn, $m) && preg_match('/could not find driver/', $e->getMessage()))
+				$msg .= ". You need to install php-{$m[1]} driver?";
+
+			throw new Exception($msg);
+		}
+
+		bors_debug::timing_stop('pdo_connect');
 	}
 
 	function connection() { return $this->connection; }
 
-	function query($query)
+	function query($query, $ignore_error = false)
 	{
-		debug_timing_start('pdo_query');
-		$result = $this->connection->query($query);
-		debug_timing_stop('pdo_query');
+		$start = time();
+		bors_debug::timing_start('pdo_query');
+		try
+		{
+			$result = $this->connection->query($query);
+		}
+		catch(Exception $e)
+		{
+			if($ignore_error)
+				return $this->result = NULL;
+
+			throw new Exception("PDO query exception for [".$query."]:".$e->getException());
+		}
+
+		bors_debug::timing_stop('pdo_query');
+		$time = time() - $start;
+
+		if($time > 3)
+			bors_debug::syslog('warning-mysql-slow-query', "DB={$this->database}; time=$time; query=".$query);
 
 		$err = $this->connection->errorInfo();
-		if($err[0] != "00000")
-			return bors_throw("PDO error on query «{$query}»: ".print_r($err, true));
+		if($err[0] == "00000")
+			return $this->result = $result;
 
-		return $this->result = $result;
+		if($ignore_error)
+				return $this->result = NULL;
+
+		throw new Exception("PDO error on query [{$query}]: ".print_r($err, true));
 	}
 
 	function exec($query)
 	{
-		debug_timing_start('pdo_exec');
+		bors_debug::timing_start('pdo_exec');
 		$result = $this->connection->exec($query);
-		debug_timing_stop('pdo_exec');
+		bors_debug::timing_stop('pdo_exec');
 
 		$err = $this->connection->errorInfo();
 		if($err[0] != "00000")
@@ -85,7 +111,7 @@ class driver_pdo implements Iterator
 
 	function fetch()
 	{
-		debug_timing_start('pdo_fetch');
+		bors_debug::timing_start('pdo_fetch');
 		$assoc = $this->result->fetch(PDO::FETCH_ASSOC);
 		$ics = config('internal_charset');
 		$dcs = configh('pdo_access', $this->database, 'charset');
@@ -97,7 +123,7 @@ class driver_pdo implements Iterator
 				$assoc[$k] = iconv($dcs, $ics, $v);
 		}
 
-		debug_timing_stop('pdo_fetch');
+		bors_debug::timing_stop('pdo_fetch');
 		return $assoc;
 	}
 
@@ -117,15 +143,8 @@ class driver_pdo implements Iterator
 			// Can't use bors_throw() because need silently catch in callers.
 			throw new Exception("PDO error on query «{$query}»: ".print_r($err, true));
 
-		$ics = config('internal_charset');
-		$dcs = configh('pdo_access', $this->database, 'charset');
-
-		if($row && $ics != $dcs)
-		{
-			$ics .= '//IGNORE';
-			foreach($row as $k => $v)
-				$row[$k] = iconv($dcs, $ics, $v);
-		}
+		if($row && count(array_keys($row)) == 2)
+			$row = array_pop($row);
 
 		return $row;
 	}
@@ -141,20 +160,21 @@ class driver_pdo implements Iterator
 
 		$err = $this->connection->errorInfo();
 		if($err[0] != "00000")
-			throw new Exception("PDO error on query «{$query}»: ".print_r($err, true));
+		{
+			$msg = "PDO error\n".print_r($err, true)."\non query [{$query}]";
+			bors_debug::syslog('error-pdo', $msg);
+			throw new Exception($msg);
+		}
 
 		while($assoc = $res->fetch(PDO::FETCH_ASSOC))
-		{
-			if($ics == $dcs)
-				$result[] = $assoc;
-			else
-			{
-				$row = array();
-				foreach($assoc as $key => $value)
-					$row[$key] = iconv($dcs, $icsi, $value);
-				$result[] = $row;
-			}
+			$result[] = $assoc;
 
+		if(!empty($result[0]) && count(array_keys($result[0])) == 1)
+		{
+			$result_extracted = [];
+			foreach($result as $r)
+				$result_extracted[] = array_pop($r);
+			return $result_extracted;
 		}
 
 		return $result;

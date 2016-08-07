@@ -20,11 +20,11 @@ function smarty_modifier_imaged_link($object, $title, $link, $icon = NULL)
 	if(!$icon)
 		$icon = $link;
 
-	if(file_exists(BORS_CORE."/shared/i/$icon-16.png"))
+	if(file_exists(__DIR__.'/../../../shared/i/$icon-16.png'))
 	{
 		$icon = "/_bors/i/$icon-16.png";
 	}
-	elseif(file_exists(BORS_CORE."/shared/i/$icon-16.gif"))
+	elseif(file_exists(__DIR__.'/../../../shared/i/$icon-16.gif'))
 	{
 		$icon = "/_bors/i/$icon-16.gif";
 	}

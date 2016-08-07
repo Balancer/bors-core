@@ -12,7 +12,7 @@ function lp_rutube($id, &$params)
 			$id = $m[1];
 		else
 		{
-			debug_hidden_log('lcml-unknown-format', "Unknown rutube id {$id}");
+			bors_debug::syslog('lcml-unknown-format', "Unknown rutube id {$id}");
 			return defval($params, 'original_url', ec('Неизвестный формат видео на Rutube.ru'));
 		}
 	}

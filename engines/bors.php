@@ -5,8 +5,8 @@ require_once('bors/names.php');
 require_once('bors/messages.php');
 require_once('bors/objects_array.php');
 require_once('bors/object_loader.php');
-require_once('inc/bors/cross.php');
-require_once('engines/smarty/global.php');
+require_once __DIR__.'/../inc/bors/cross.php';
+require_once __DIR__.'/../engines/smarty/global.php';
 
 /**
  * @param string|bors_object $class_name
@@ -50,7 +50,7 @@ function object_load($class_name, $object_id=NULL, $args=array())
 	{
 		debug_count_inc("bors_load($class_name)");
 //		if(preg_match('!matf.aviaport.ru/companies/\d+/edit!', $class))
-//			echo debug_trace();
+//			echo bors_debug::trace();
 	}
 
 	if($object = class_load($class_name, $object_id, $args))
@@ -78,7 +78,7 @@ function &object_new($class_name, $id = NULL)
 		$obj->set_id($id);
 	}
 
-	$obj->_configure();
+	$obj->b2_configure();
 
 	return $obj;
 }
@@ -121,7 +121,7 @@ function &object_new_instance($class, $id = NULL, $db_update = true, $need_check
 	$object->set_attr('__replace_on_new_instance', $replace);
 
 	$object->new_instance();
-	$object->_configure();
+	$object->b2_configure();
 	$object->set_is_loaded(true);
 	return $object;
 }
@@ -198,7 +198,7 @@ function bors_exit_handler($message = '')
 
 	if(!empty($GLOBALS['bors_data']['classes_cache_content_updated']))
 	{
-		debug_hidden_log('test', "write cache", false);
+		bors_debug::syslog('test', "write cache", false);
 		file_put_contents_lock(config('cache_dir') . '/classes.php', $GLOBALS['bors_data']['classes_cache_content']);
 	}
 
@@ -238,7 +238,7 @@ function bors_exit_handler($message = '')
 		errno={$error['type']}
 		errstr={$error['message']}
 		errfile={$error['file']}
-		errline={$error['line']}", -1, array('append' => "stack\n=====\n".debug_trace(0, false)));
+		errline={$error['line']}", -1, ['append' => "stack\n=====\n".debug_trace(0, false)."\n\n_SERVER=".print_r($_SERVER, true)]);
 			}
 
 		}
@@ -257,28 +257,13 @@ function bors_exit_handler($message = '')
 		}
 	}
 
-	if(config('debug.show_variables'))
-	{
-		bors_use('debug_count_info_all');
-		bors_use('debug_timing_info_all');
-		bors_use('debug_vars_info');
-		$deb = '';
-		if($s = debug_vars_info())
-			$deb = "\n=== debug vars info: ===\n$s";
-		if($s = debug_count_info_all())
-			$deb .= "\n=== debug counting: ===\n$s";
-		if($s = debug_timing_info_all())
-			$deb .= "\n=== debug timing: ===\n$s";
-		echo $deb."\n";
-	}
-
 	if(config('debug_mysql_trace'))
 	{
 		$dir = config('debug_hidden_log_dir').'/mysql-trace';
 		@mkdir($dir);
 		@chmod($dir, 0777);
 		if(file_exists($dir))
-			debug_hidden_log('mysql-trace/'.date('c').'-'.rand(0,999999), "URL={$_SERVER['REQUEST_URI']}\n".print_r(@$GLOBALS['debug_mysql_trace'], true));
+			bors_debug::syslog('mysql-trace/'.date('c').'-'.rand(0,999999), "URL={$_SERVER['REQUEST_URI']}\n".print_r(@$GLOBALS['debug_mysql_trace'], true));
 	}
 
 	if(!empty($GLOBALS['debugbar_renderer']))
@@ -366,18 +351,33 @@ function bors_throw($message)
  */
 function object_property($object, $property, $def = NULL)
 {
+	if(!$object)
+		return $def;
+
 	if(is_object($object))
 	{
 		try
 		{
+			// Direct call like object_property($topic, 'title');
 			if(preg_match('/^\w+$/', $property))
 				return $object->get($property, $def);
+			// Chain call like object_property($topic, 'time()->dmy()');
 			else
 			{
-//				echo debug_trace();
-//				echo "\$x = \$object->{$property};";
-				eval("\$x = \$object->{$property};");
-                /** @var mixed $x */
+				$x = $object;
+				foreach(explode('->', $property) as $p)
+				{
+					if(preg_match('/^(\w+)\(\)$/', $p, $m))
+					{
+						if(!is_object($x))
+							return $def;
+
+						$x = $x->get($m[1], $def);
+					}
+					else
+						throw new \Exception("Unknown property format: '$property'");
+				}
+
                 return $x;
 			}
 		}
@@ -492,6 +492,9 @@ function bors_each($class_name, $where)
 
 function bors_new($class_name, $data = array())
 {
+	if(!class_exists($class_name))
+		throw new Exception("Неизвестный класс ".$class_name);
+
 	if(is_null($data))
 		return object_new($class_name); // Пустой объект
 
@@ -524,8 +527,8 @@ function bors_find($class_name)
  */
 function bors_foo($class_name)
 {
-	require_once('inc/functions/cache/global_key.php');
-	require_once('inc/functions/cache/set_global_key.php');
+	require_once BORS_CORE.'/inc/functions/cache/global_key.php';
+	require_once BORS_CORE.'/inc/functions/cache/set_global_key.php';
 
 	if($cached_foo = global_key('___foos', $class_name))
 		return $cached_foo;
@@ -534,7 +537,7 @@ function bors_foo($class_name)
 		bors_throw("Unknown class $class_name in bors_foo");
 
 	$object = new $class_name(NULL);
-	if(method_exists($object, '_configure'))
-		$object->_configure();
+	if(method_exists($object, 'b2_configure'))
+		$object->b2_configure();
 	return set_global_key('___foos', $class_name, $object);
 }

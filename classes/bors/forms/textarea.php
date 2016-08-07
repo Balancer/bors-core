@@ -41,12 +41,25 @@ class bors_forms_textarea extends bors_forms_element
 		// Если нужно, добавляем заголовок поля
 		$html .= $this->label_html();
 
-		if($this->label() && empty($style))
-			$style = "width: 99%";
+		static $tmp_id = 0;
+
+		if(!empty($limit))
+		{
+			if(!$id)
+				$id = 'tmp_id_'.($tmp_id++);
+
+			jquery::on_ready("
+				$('#$id').keyup(function() {
+					t=\$(this);
+					l=t.val().length;
+				    if(l > $limit)
+			            t.val(t.val().substr(0, $limit));
+					t.css('background-color', l >= $limit ? '#f99' : 'inherit');
+				});");
+		}
 
 		if(@$type == 'bbcode')
 		{
-			static $tmp_id = 0;
 			if(!$id)
 				$id = 'tmp_id_'.($tmp_id++);
 
@@ -73,8 +86,8 @@ class bors_forms_textarea extends bors_forms_element
 		if($append)
 			$html .= "<br/>".$append;
 
-		if($form->get('has_form_table'))
-			$html .= "</td></tr>\n";
+//		if($form->get('has_form_table'))
+//			$html .= "</td></tr>\n";
 
 		return $html;
 	}

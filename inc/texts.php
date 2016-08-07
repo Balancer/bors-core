@@ -38,9 +38,12 @@ require_once('strings.php');
 			if(bors_strlen($text) > $len)
 			{
 				$text = bors_substr($text, 0, $len-bors_strlen($more_text));
-				$space_pos = strrpos($text, ' ');
+				$space_pos = bors_strrpos($text, ' ');
 				if($space_pos !== false)
-					$text = substr($text, 0, $space_pos);
+					$text = bors_substr($text, 0, $space_pos);
+
+				$text = bors_close_tags($text);
+
 				$text .= $more_text;
 			}
 
@@ -65,13 +68,14 @@ require_once('strings.php');
 				if(!$in_tag &&  bors_strlen($res)>=$len)
 					$do_flag=0;
 			}
+
+			$res = bors_close_tags($res);
+
 			$text = $res . $more_text;
 		}
 
 		if(config('is_test'))
 			echo $text, PHP_EOL, PHP_EOL;
-
-		$text = bors_close_tags($text);
 
 		return $text;
 	}
@@ -123,18 +127,27 @@ function quote_fix($text)
 	return $text;
 }
 
-function bors_text_clear($text, $morfology = true, $spacer = ' ')
+function bors_text_clear($text, $morfology = true, $spacer = ' ', $lowercase = true)
 {
-	require_once('classes/inc/text/Stem_ru.php');
+	if($morfology)
+		require_once('classes/inc/text/Stem_ru.php');
 
-	$text = preg_replace('/&\w+;/', ' ', $text);
-	$text = preg_replace('/&#\d+;/', ' ', $text);
 	$text = str_replace(
-		array('«','»','№'), 
-		array(' ',' ',' '),
+		['«','»','№', '>'],
+		[' ',' ',' ', '> '],
 		$text);
-	$text = preg_replace("![\x01-/ :-@ [-` {-~]!x", ' ', $text);
-	$result = trim(bors_lower(preg_replace('/\s{2,}/', ' ', $text)));
+
+	$text = strip_tags($text);
+
+	$text = preg_replace(
+		['/&\w+;/', '/&#\d+;/', "![\x01-, :-@ [-` {-~]!x", '/[^\w\.\-]/u'],
+		[' ', ' ', ' ', ' '],
+		$text);
+
+	$result = trim(preg_replace('/\s\s+/', ' ', $text));
+	if($lowercase)
+		$result = bors_lower($result);
+
 	if($morfology)
 	{
 		static $Stemmer = false;

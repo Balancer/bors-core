@@ -28,15 +28,17 @@ class bors_core_find
 	function page($page, $items_per_page)
 	{
 		$this->_where['*limit'] = array(($page-1)*$items_per_page, $items_per_page);
+		return $this;
 	}
 
 	// Найти все объекты, соответствующие заданным критериям
 	function all($limit1=NULL, $limit2=NULL)
 	{
-		bors_function_include('debug/timing_start');
-		debug_timing_start('bors_find::all()');
-
 		$args = func_get_args();
+
+		require_once BORS_CORE.'/inc/functions/debug/timing_start.php';
+		bors_debug::timing_start('bors_find::all()');
+
 		if(count($args) == 1)
 			// Формат all($limit)
 			$this->_where['*limit'] = $limit1;
@@ -56,7 +58,7 @@ class bors_core_find
 
 		config_set('debug.trace_queries', NULL);
 
-		debug_timing_stop('bors_find::all()');
+		bors_debug::timing_stop('bors_find::all()');
 
 		if(config('debug_objects_create_counting_details'))
 		{
@@ -66,11 +68,36 @@ class bors_core_find
 
 		if($this->_preload)
 		{
-			debug_timing_start('bors_find::all()_preload');
+			bors_debug::timing_start('bors_find::all()_preload');
 			foreach($preload as $x)
 				if(preg_match('/^(\w+)\((\w+)\)$/', $x, $m))
 					bors_objects_preload($objects, $m[2], $m[1]);
-			debug_timing_stop('bors_find::all()_preload');
+			bors_debug::timing_stop('bors_find::all()_preload');
+		}
+
+		return $objects;
+	}
+
+	function each()
+	{
+		bors_function_include('debug/timing_start');
+		debug_timing_start('bors_find::each()');
+
+		$class_name = $this->_class_name;
+		$s = bors_foo($class_name)->storage();
+
+		$this->_where['*by_id'] = true;
+
+		$objects = $s->each($class_name, $this->_where);
+
+		config_set('debug.trace_queries', NULL);
+
+		bors_debug::timing_stop('bors_find::each()');
+
+		if(config('debug_objects_create_counting_details'))
+		{
+			debug_count_inc($this->_class_name.': bors_find::each()_calls');
+			debug_count_inc($this->_class_name.': bors_find::each()_total', count($objects));
 		}
 
 		return $objects;
@@ -256,6 +283,8 @@ class bors_core_find
 
 	function where_parse_set($param, $value, $value2 = NULL)
 	{
+		$num_args = count(func_get_args());
+
 		$param = $this->first_parse($param);
 		$param = $this->stack_parse($param);
 		$param = $this->class_parse($param);
@@ -288,7 +317,7 @@ class bors_core_find
 		{
 			$param = "$param '%".addslashes($value)."%'";
 		}
-		elseif(count(func_get_args()) == 2)
+		elseif($num_args == 2)
 		{
 			if(preg_match('/[\w`]$/', $param))
 				$param .= " = ";

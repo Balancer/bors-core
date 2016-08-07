@@ -1,5 +1,7 @@
 <?php
 
+require_once BORS_CORE.'/inc/texts.php';
+
 class bors_templates_smarty3 extends bors_template
 {
 	function render_body($object)
@@ -23,13 +25,12 @@ class bors_templates_smarty3 extends bors_template
 	static function factory()
 	{
 		if(!class_exists('Smarty'))
-			bors_throw("Can't find Smarty. Please do \"composer require 'smarty/smarty=!=3.1.17'\"");
+			throw new Exception(_("Can't find Smarty. Please do \"composer require 'smarty/smarty=@stable'\""));
 
 		$smarty = new Smarty();
-//		require(__DIR__.'/smarty3-register.php');
 		$smarty->registerResource('xfile', new bors_templates_smarty_resources_file($smarty));
 
-		$smarty->compile_dir = config('cache_dir').'/smarty3-templates_c/';
+		$smarty->setCompileDir(config('cache_dir').'/smarty3-templates_c/');
 		//TODO: придумать, как сделать разрешение для отдельных шаблонов.
 		//		Хотя ниже есть вариант через данные шаблона.
 		$smarty->auto_literal = true;
@@ -38,24 +39,22 @@ class bors_templates_smarty3 extends bors_template
 //		$smarty->escape_html = true;
 //		$smarty->escape_html = true; // config('smarty3.autoescape', true);
 
-		$smarty->cache_dir = config('cache_dir').'/smarty3-cache/';
+		$smarty->setCacheDir(config('cache_dir').'/smarty3-cache/');
 
-		if(!file_exists($smarty->compile_dir))
-			mkpath($smarty->compile_dir, 0777);
-		if(!file_exists($smarty->compile_dir))
-			bors_throw(ec('Не могу создать каталог для компиляции шаблонов: ').$smarty->compile_dir);
-		if(!file_exists($smarty->cache_dir))
-			mkpath($smarty->cache_dir, 0777);
+		if(!file_exists($smarty->getCompileDir()))
+			mkpath($smarty->getCompileDir(), 0777);
+		if(!file_exists($smarty->getCompileDir()))
+			throw new Exception("Can't create templates cache dir: ".$smarty->getCompileDir().' in config("cache_dir")='.config('cache_dir'));
+		if(!file_exists($smarty->getCacheDir()))
+			mkpath($smarty->getCacheDir(), 0777);
 
-//		$plugins_dir = array(BORS_3RD_PARTY.'/'.dirname(config('smarty.include')).'/plugins');
-		$plugins_dir = array(COMPOSER_ROOT.'/vendor/smarty/smarty/libs/plugins');
-		foreach(bors_dirs(true) as $dir)
-			if(file_exists($d = $dir.'/engines/smarty/plugins'))
-				$plugins_dir[] = $d;
-//echo '.';
-//echo '<xmp>'; var_dump($plugins_dir); echo '</xmp>';
-		$smarty->setPluginsDir($plugins_dir);
-//echo '<xmp>'; var_dump($smarty->getPluginsDir()); echo '</xmp>';
+		$plugin_dirs = bors::$composer_smarty_plugin_dirs;
+		array_unshift($plugin_dirs, COMPOSER_ROOT.'/vendor/smarty/smarty/libs/plugins');
+		$smarty->setPluginsDir($plugin_dirs);
+
+		$template_dirs = bors::$composer_template_dirs;
+		array_unshift($plugin_dirs, COMPOSER_ROOT.'/vendor/smarty/smarty/libs/plugins');
+		$smarty->setTemplateDir($template_dirs);
 
 		$smarty->compile_check = true;
 
@@ -111,6 +110,7 @@ class bors_templates_smarty3 extends bors_template
 			$dir_names = array();
 		array_unshift($dir_names, $dirname);
 		array_unshift($dir_names, $caller_path);
+
 		$smarty->assign("template_dirnames", $dir_names);
 
 		$smarty->assign('me', bors()->user());
@@ -120,8 +120,6 @@ class bors_templates_smarty3 extends bors_template
 		if(!$smarty->templateExists($template))
 			$template = self::find_template($template, @$data['this']);
 
-//		$smarty->debugging = true;
-
 		if(config('debug.execute_trace'))
 			debug_execute_trace("smarty3->fetch()");
 
@@ -130,6 +128,7 @@ class bors_templates_smarty3 extends bors_template
 		$dir_names = $smarty->getTemplateVars('template_dirnames');
 		array_shift($dir_names);
 		array_shift($dir_names);
+
 		$smarty->assign("template_dirnames", $dir_names);
 		return $result;
 	}

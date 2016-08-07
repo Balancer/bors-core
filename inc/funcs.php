@@ -22,6 +22,63 @@ function mkpath($strPath, $mode=0777)
 	return $err;
 }
 
+
+function register_vhost($host, $documents_root=NULL, $bors_host=NULL)
+{
+	$host = preg_replace('/^www\./', '', $host);
+
+	global $bors_data;
+
+	if(empty($documents_root))
+		$documents_root = '/var/www/'.$host.'/htdocs';
+
+	if(empty($bors_host))
+	{
+		$bors_host = dirname($documents_root).'/bors-host';
+		$bors_site = dirname($documents_root).'/bors-site';
+	}
+	else
+		$bors_site = $bors_host;
+
+	$map = array();
+
+	if(defined('BORS_LOCAL') && file_exists($file = BORS_LOCAL.'/vhosts/'.$host.'/handlers/bors_map.php'))
+		require_once($file);
+	elseif(file_exists($file = BORS_CORE.'/vhosts/'.$host.'/handlers/bors_map.php'))
+		require_once($file);
+
+	$map2 = $map;
+
+	if(file_exists($file = $bors_site.'/handlers/bors_map.php'))
+		require_once($file);
+
+	if(file_exists($file = $bors_site.'/bors_map.php'))
+		require_once($file);
+
+	if(file_exists($file = $bors_site.'/url_map.php'))
+		require_once($file);
+
+	if(file_exists($file = $bors_host.'/handlers/bors_map.php'))
+		require_once($file);
+
+	if(empty($bors_data['vhosts'][$host]['bors_map']))
+		$prev = array();
+	else
+		$prev = $bors_data['vhosts'][$host]['bors_map'];
+
+	$bors_map = array_merge($prev, $map2, $map);
+
+	if(!empty($bors_data['vhosts'][$host]['bors_map']))
+		$bors_map = array_merge($bors_data['vhosts'][$host]['bors_map'], $bors_map);
+
+	$bors_data['vhosts'][$host] = array(
+		'bors_map' => $bors_map,
+		'bors_local' => $bors_host,
+		'bors_site' => $bors_site,
+		'document_root' => $documents_root,
+	);
+}
+
 /**
  * Извлекает поле $name из массива $data, если оно есть.
  * В противном случае возвращает $default.
@@ -129,10 +186,10 @@ function bors_dirs($skip_config = false, $host = NULL)
 			$data[] = BORS_LOCAL;
 	}
 
-	if(is_dir(BORS_EXT))
+	if(defined('BORS_EXT') && is_dir(BORS_EXT))
 		$data[] = BORS_EXT;
 
-	$data[] = BORS_CORE;
+	$data[] = dirname(__DIR__); // BORS_CORE
 
 	if(defined('BORS_3RD_PARTY') && is_dir(BORS_3RD_PARTY))
 		$data[] = BORS_3RD_PARTY;
@@ -140,20 +197,6 @@ function bors_dirs($skip_config = false, $host = NULL)
 	if(!empty($GLOBALS['bors_data']['projects']))
 		foreach($GLOBALS['bors_data']['projects'] as $project_name => $x)
 			$data[] = $x['project_path'];
-
-	if(defined('COMPOSER_ROOT'))
-	{
-		$lock = json_decode(file_get_contents(COMPOSER_ROOT . '/composer.lock'), true);
-
-		foreach($lock['packages'] as $package)
-		{
-			$extra = empty($package['extra']) ? NULL : $package['extra'];
-				$path = COMPOSER_ROOT . '/vendor/' . $package['name'];
-
-			if(!empty($extra['bors-classes']) || !empty($extra['bors-templates']))
-				$data[] = $path;
-		}
-	}
 
 	return $dirs[$skip_config][$host] = array_unique(array_filter($data));
 }
@@ -189,6 +232,34 @@ function configh($section, $hash, $key, $def = NULL)
 		? $GLOBALS['cms']['config'][$section][$hash][$key]
 		: $def;
 }
+
+function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
+{
+	if(preg_match('/^(\w+)=>([\w\-]+)$/', nospace($db), $m))
+	{
+		$db = $m[1];
+		$db_real = $m[2];
+	}
+	else
+		$db_real = $db;
+
+	$conn = config('__database_connections', array());
+	$conn[$db] = array(
+		'host'	  => $host,
+		'database'  => $db_real,
+		'username'  => $login,
+		'password'  => $password,
+	);
+
+	config_set('__database_connections', $conn);
+
+	$GLOBALS["_bors_conf_mysql_{$db}_db_real"] = $db_real;
+	$GLOBALS["_bors_conf_mysql_{$db}_login"]   = $login;
+	$GLOBALS["_bors_conf_mysql_{$db}_password"]= $password;
+	$GLOBALS["_bors_conf_mysql_{$db}_server"]  = $host;
+}
+
+function nospace($str) { return str_replace(' ', '', $str); }
 
 if(function_exists('mb_strtolower') && strtolower(ini_get('default_charset')) == 'utf-8')
 {

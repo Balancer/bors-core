@@ -22,21 +22,25 @@
 	"minimum-stability": "dev",
 
 	"require": {
-		"php": ">=5.3",
+		"php": ">=5.5",
+		"ext-mbstring": "*",
+		"anahkiasen/html-object": "*",
 		"balancer/blib-morfology-ru": "dev-master",
+		"easybook/geshi": "*",
 		"intervention/image": "*",
+		"nikic/fast-route": "*",
+		"michelf/php-markdown": "*",
 		"monolog/monolog": "*",
 		"rediska/rediska": "*",
-		"smarty/smarty": "!=3.1.24",
-		"easybook/geshi": "*",
-		"anahkiasen/html-object": "*",
-		"michelf/php-markdown": "*",
-		"nikic/fast-route": "*"
+		"slim/slim": ">3",
+		"smarty/smarty": "*",
+		"symfony/http-kernel": "*",
+		"zendframework/zend-diactoros": "*"
 	},
 
 	"suggest": {
 		"smarty/smarty": "Needed if you plan to use Smarty based templates (composer require smarty/smarty=*)",
-		"tedivm/stash": "Used to cache (composer require tedivm/stash=*)",
+		"tedivm/stash": "Used to cache (composer require 'tedivm/stash=*')",
 		"ext-redis": "The php redis extension https://github.com/nicolasff/phpredis/ is required for connecting to redis server (sudo apt-get install php5-redis)"
 	},
 
@@ -47,8 +51,23 @@
 		}
 	},
 
-    "extra": {
-        "bors-classes": "classes",
-        "bors-templates": "templates"
-    }
+	"extra": {
+		"bors-classes": "classes",
+		"bors-templates": "templates",
+		"bors-smarty-plugins": "engines/smarty/plugins",
+
+		"component": {
+			"name": "_bors",
+			"scripts-disabled": [
+				"htdocs/js/bootstrap.js"
+			],
+			"styles": [
+				"htdocs/_bors/css/bors/*.css"
+			],
+			"files": [
+				"htdocs/_bors/images/*.*",
+				"htdocs/_bors/images/*/*.*"
+			]
+		}
+	}
 }

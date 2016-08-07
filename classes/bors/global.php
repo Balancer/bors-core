@@ -7,6 +7,9 @@ class bors_global extends bors_object_simple
 	var $__user = false; // Именно false, т.к. NULL - вполне допустимое значение.
 	var $__main_object = NULL;
 
+	/**
+	 * @return bors_user|null
+     */
 	function user()
 	{
 		if($this->__user === false)
@@ -21,10 +24,7 @@ class bors_global extends bors_object_simple
 			if(!$uc)
 			{
 				if(!config('user_class_skip'))
-				{
-					bors_function_include('debug/hidden_log');
-					debug_hidden_log('__critical', 'Not defined user_class', true, array('dont_show_user' => true));
-    			}
+					bors_debug::syslog('warning-users', 'Not defined user_class', true, ['dont_show_user' => true]);
 
 				return NULL;
 			}
@@ -65,11 +65,11 @@ class bors_global extends bors_object_simple
 
 		if($this->__main_object && $object)
 		{
-			debug_hidden_log('__arch_error', "Set new main object '{$object->debug_title()}' with extsts '{$this->__main_object->debug_title()}'");
+			bors_debug::syslog('__arch_error', "Set new main object '{$object->debug_title()}' with extsts '{$this->__main_object->debug_title()}'");
 			if(config('is_developer'))
 			{
 				echo "Set main object {$object}";
-				echo debug_trace();
+				echo bors_debug::trace();
 			}
 			return $this->__main_object;
 		}
@@ -89,7 +89,7 @@ class bors_global extends bors_object_simple
      */
     function add_changed_object($object)
 	{
-//		echo "Add {$obj->debug_title()}<Br/>"; echo debug_trace();
+//		echo "Add {$obj->debug_title()}<Br/>"; echo bors_debug::trace();
 		$this->changed_objects[$object->internal_uri_ascii()] = $object;
 	}
 
@@ -132,7 +132,7 @@ class bors_global extends bors_object_simple
 
 				if($obj != $x)
 				{
-					debug_hidden_log('__workaround', "strange object cache clean error: {$x} -> {$obj}");
+					bors_debug::syslog('__workaround', "strange object cache clean error: {$x} -> {$obj}");
 					$obj = $x;
 				}
 
@@ -203,7 +203,7 @@ class bors_global extends bors_object_simple
 	{
 		if(!class_exists('GearmanClient'))
 		{
-			debug_hidden_log('setup-error', "Can't use hardcoded GearmanClient");
+			bors_debug::syslog('setup-error', "Can't use hardcoded GearmanClient");
 			return;
 		}
 
@@ -213,7 +213,7 @@ class bors_global extends bors_object_simple
 		$data['worker_class_name'] = $task_class;
 
 		$client->doBackground('balabot.work', serialize($data));
-		debug_hidden_log('balabot_work', "$task_class: ".substr(serialize($data), 0, 50), false);
+		bors_debug::syslog('balabot_work', "$task_class: ".substr(serialize($data), 0, 50), false);
 	}
 
 	static function ping($loops, $message = NULL, $rest = 0)

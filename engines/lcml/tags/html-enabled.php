@@ -19,7 +19,15 @@ function lp_html_iframe($inner, $params)
 
 	$params['src'] = html_entity_decode(@$params['src']);
 
-	return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling style marginheight marginwidth src webkitAllowFullScreen mozallowfullscreen allowfullscreen')." sandbox>$inner</iframe>";
+	$iframes_whitelist = preg_split('/[^\w\.\-]+/', config('security.irames.whitelist', 'coub.com,vk.com,player.vgtrk.com,lentaru.media.eagleplatform.com'));
+
+	$url_info = parse_url($params['src']);
+	if(!in_array($url_info['host'], $iframes_whitelist))
+		$sandbox = " sandbox";
+	else
+		$sandbox = "";
+
+	return "<iframe ".make_enabled_params($params, 'width height frameborder scrolling style marginheight marginwidth src webkitAllowFullScreen mozallowfullscreen allowfullscreen')."{$sandbox}>$inner</iframe>";
 }
 
 /*
@@ -62,7 +70,7 @@ function lp_form($inner, $params)
 {
 	if(!preg_match('!^http://(aeterna\.ru)!', @$params['action']))
 	{
-		debug_hidden_log('lcml-need-attention', "Need check form action {$params['action']}");
+		bors_debug::syslog('lcml-need-attention', "Need check form action {$params['action']}");
 		return ec('Публикация форм неизвестных ресурсов запрещена. Администратору отправлена заявка на проверку этого ресурса.');
 	}
 

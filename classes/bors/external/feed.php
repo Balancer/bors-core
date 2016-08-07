@@ -152,7 +152,7 @@ class bors_external_feed extends base_object_db
 				continue;
 /*
 			if($entry)
-				debug_hidden_log('__rss_update', "check 1: why not skipped? entry={$entry->id()}; entry=".((bool)$entry)
+				bors_debug::syslog('__rss_update', "check 1: why not skipped? entry={$entry->id()}; entry=".((bool)$entry)
 					." && pubdate <= :".($pub_date <= $entry->pub_date())
 					." && title==:".($title == $entry->title())
 					." && desc==:".($description == $entry->text())
@@ -231,7 +231,7 @@ class bors_external_feed extends base_object_db
 			{
 /*
 				if($entry)
-					debug_hidden_log('__rss-update2', "why not skipped? entry={$entry->debug_title()}; was=$was; entry=".((bool)$entry)
+					bors_debug::syslog('__rss-update2', "why not skipped? entry={$entry->debug_title()}; was=$was; entry=".((bool)$entry)
 						." && pubdate <= :".($pub_date <= $entry->pub_date())
 						." && title==:".($title == $entry->title())
 						." && desc==:".($description == $entry->text())

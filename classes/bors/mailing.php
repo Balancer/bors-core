@@ -19,7 +19,7 @@ class bors_mailing extends bors_object_db
 
 	static function add($object, $user_id)
 	{
-//		debug_hidden_log('test-mailing', "$object -> $user_id");
+//		bors_debug::syslog('test-mailing', "$object -> $user_id");
 
 		object_new_instance('bors_mailing', array(
 			'target_class_name' => $object->class_name(),

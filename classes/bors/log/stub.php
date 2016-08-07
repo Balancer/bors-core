@@ -1,7 +1,7 @@
 <?php
 
 //bors_function_include('debug/trace');
-//echo debug_trace();
+//echo bors_debug::trace();
 
 // «Пустой» логгер-заглушка, ничего не делает.
 
@@ -17,6 +17,6 @@ class bors_log_stub extends bors_object_simple
 
 	function hidden($type, $message)
 	{
-		debug_hidden_log($type, $this->object()->debug_title().": " . $message);
+		bors_debug::syslog($type, $this->object()->debug_title().": " . $message);
 	}
 }

@@ -24,12 +24,12 @@ function bors_get_cross_ids($object, $to_class = '', $dbh = NULL)
 	$result = array();
 	$dbh->query("SELECT to_class, to_id FROM bors_cross WHERE from_class={$object->class_id()} AND from_id=".intval($object->id())." {$to_class_where} ORDER BY `sort_order`, to_id");
 
-	while($row = $dbh->fetch_row())
+	while($row = $dbh->fetch())
 		$result[] = $to_class ? $row['to_id'] : array($row['to_class'], $row['to_id']);
 
 	$dbh->query("SELECT from_class, from_id FROM bors_cross WHERE to_class={$object->class_id()} AND to_id=".intval($object->id())." {$from_class_where} ORDER BY `sort_order`, from_id");
 
-	while($row = $dbh->fetch_row())
+	while($row = $dbh->fetch())
 		$result[] = $to_class ? $row['from_id'] : array($row['from_class'], $row['from_id']);
 
 	return $result;
@@ -81,7 +81,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 
 	if(!$object)
 	{
-		debug_hidden_log('cross-errors', 'Try to get cross for empty object. [' . ($to_class ? "to_class={$to_class}" : ''). ']');
+		bors_debug::syslog('cross-errors', 'Try to get cross for empty object. [' . ($to_class ? "to_class={$to_class}" : ''). ']');
 		return array();
 	}
 
@@ -149,7 +149,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 		{
 			if(config('bors_link.lost_auto_delete'))
 			{
-				debug_hidden_log('cross-errors', "Cross {$object->internal_uri()} to unknown object ".print_r($r, true));
+				bors_debug::syslog('cross-errors', "Cross {$object->internal_uri()} to unknown object ".print_r($r, true));
 				bors_remove_cross_pair($r['class_id'], $r['object_id'], $object->class_id(), $object->id(), $dbh);
 			}
 			continue;
@@ -181,7 +181,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 
 function bors_cross_type_id($x1, $x2)
 {
-	debug_hidden_log('__obsolete_need_rewrite', 'Call bors_cross_type_id!');
+	bors_debug::syslog('__obsolete_need_rewrite', 'Call bors_cross_type_id!');
 	return 0;
 
 	global $bors_cross_types_map;

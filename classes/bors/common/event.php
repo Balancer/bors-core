@@ -50,7 +50,7 @@ class bors_common_event extends base_object_db
 	//	bal_event::add('balancer_board_actor_reputation', NULL, $t);
 	//	bal_event::add('balancer_board_actor_topic', NULL, $topic);
 
-	function add($action, $user = NULL, $object = NULL, $target = NULL, $attrs = array())
+	static function add($action, $user = NULL, $object = NULL, $target = NULL, $attrs = array())
 	{
 //		print_dd(compact('object', 'user', 'target'));
 		if(!$target)

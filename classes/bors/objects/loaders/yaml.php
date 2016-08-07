@@ -20,7 +20,7 @@ class bors_objects_loaders_yaml extends bors_objects_loaders_meta
 		$object->class_file = @$data['attrs']['file'];
 		$object->class_filemtime = @$data['attrs']['filemtime'];
 
-		$object->_configure();
+		$object->b2_configure();
 		$loaded = $object->is_loaded();
 		if(is_object($loaded))
 			$object = $loaded;

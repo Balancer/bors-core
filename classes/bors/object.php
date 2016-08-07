@@ -1,7 +1,16 @@
 <?php
 
+bors::init_new();
+
+require_once BORS_CORE.'/inc/functions/url/parse.php';
+require_once BORS_CORE.'/inc/funcs.php';
+require_once BORS_CORE.'/engines/bors.php';
+
 class bors_object extends bors_object_simple
 {
+	use B2\StorageMethods;
+	use B2\Traits\Singleton;
+
 	// Общая структура имён
 	// show() - показывает объект, с кешированием и прочим.
 	// action() - обрабатывает результаты работы форм.
@@ -18,7 +27,7 @@ class bors_object extends bors_object_simple
 	//	bors_user - класс пользователя по умолчанию.
 
 	var $data = array();
-	protected static $__auto_objects = array();
+	protected static $__auto_objects = [];
 
 //	При настройке проверить:
 //	— http://www.aviaport.ru/services/events/arrangement/
@@ -42,6 +51,10 @@ class bors_object extends bors_object_simple
 
 	private $__match;
 	function set_match($match) { return $this->__match = $match; }
+
+	function is_null() { return false; }
+	function is_not_null() { return true; }
+	function exists() { return $this->can_be_empty() || $this->is_loaded(); }
 
 	function parents()
 	{
@@ -112,7 +125,8 @@ class bors_object extends bors_object_simple
 		return $this->__setc($child_objects);
 	}
 
-	function rss_body()
+	// параметры реально не используются, нужны для избегания E_STRICT
+	function rss_body($foo_object=NULL, $foo_strip=0)
 	{
 		//TODO: Этот config пока используется только на лентах топиков:
 		//TODO: http://www.wrk.ru/society/2014/08/topic-89787-rss.xml
@@ -166,9 +180,12 @@ class bors_object extends bors_object_simple
 	function reconfigure()
 	{
 		$this->___was_configured = false;
-		return $this->_configure();
+		return $this->b2_configure();
 	}
 
+	function b2_configure() { return $this->_configure(); }
+
+	//FIXME: legacy
 	function _configure()
 	{
 		if($this->___was_configured)
@@ -346,7 +363,21 @@ class bors_object extends bors_object_simple
 
 		if(!empty($auto_objs[$method]))
 		{
-			if(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$method], $m))
+			if(preg_match('/^(\w+)$/', $auto_objs[$method], $m))
+			{
+				$cn = $auto_objs[$method];
+				$property = $method.'_id';
+				if(config('orm.auto.cache_attr_skip'))
+					return bors_load($cn, $this->get($property));
+				else
+				{
+					$property_value = $this->get($property);
+					$value = bors_load($cn, $property_value);
+					self::$__auto_objects[$method] = compact('property', 'property_value', 'value');
+					return $value;
+				}
+			}
+			elseif(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$method], $m))
 			{
 				$property = $m[2];
 				if(config('orm.auto.cache_attr_skip'))
@@ -364,11 +395,16 @@ class bors_object extends bors_object_simple
 		// Автоматические целевые объекты (имя класса задаётся)
 		$auto_targs = $this->auto_targets();
 		if(!empty($auto_targs[$method]))
+		{
 			if(preg_match('/^(\w+)\((\w+)\)$/', $auto_targs[$method], $m))
+			{
+				$target = object_load(call_user_func([$this, $m[1]]), call_user_func([$this, $m[2]]));
 				if(config('orm.auto.cache_attr_skip'))
-					return object_load($this->$m[1](), $this->$m[2]());
-				else
-					return $this->attr[$method] = object_load($this->$m[1](), $this->$m[2]());
+					return $target;
+
+				return $this->attr[$method] = $target;
+			}
+		}
 
 		$name = $method;
 
@@ -401,7 +437,7 @@ class bors_object extends bors_object_simple
 		{
 			$trace = debug_backtrace();
 			$trace = array_shift($trace);
-			bors_throw("__call[".__LINE__."]:
+			throw new Exception("__call[".__LINE__."]:
 undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>
 defined at {$this->class_file()}<br/>
 class_filemtime=".date('r', $this->class_filemtime())."<br/>
@@ -440,6 +476,27 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		}
 	}
 
+	function set_data($prop, $value)
+	{
+		// Установка данных для бэкенда.
+		if(!is_array($value)
+			&& !is_object($value)
+			&& strcmp(empty($this->data[$prop]) ? NULL : $this->data[$prop], $value))
+		{
+			if(config('mutex_lock_enable'))
+				$this->__mutex_lock();
+
+			// Запоминаем первоначальное значение переменной.
+			if(empty($this->changed_fields) || !array_key_exists($prop, $this->changed_fields))
+				$this->changed_fields[$prop] = empty($this->data[$prop]) ? NULL : $this->data[$prop];
+
+			bors()->add_changed_object($this);
+		}
+
+		return $this->data[$prop] = $value;
+	}
+
+	//TODO: переписать на использование set_data; в будущем реализовать вызов set_XXX() методов, если они есть. Предварительно проверив по проектам. И/или реализовать альтернативный метод, а этот — отслеживать как устаревший до полной замены.
 	function set($prop, $value, $db_update=true)
 	{
 		// Строго проверяем, наш ли это метод. Или присоединённого объекта. Или — ошибка
@@ -463,12 +520,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			if(config('mutex_lock_enable'))
 				$this->__mutex_lock();
 
-//			if(config('is_developer')) echo debug_trace();
+//			if(config('is_developer')) echo bors_debug::trace();
 
 			//TODO: продумать систему контроля типов.
 			//FIXME: чёрт, тут нельзя вызывать всяких user, пока в них лезут ошибки типов. Исправить и проверить все основные проекты.
 //			if(@$this->data[$prop] == $value && @$this->data[$prop] !== NULL && $value !== NULL)
-//				debug_hidden_log('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$prop]).'; new type: '.gettype($value));
+//				bors_debug::syslog('types', 'type_mismatch: value='.$value.'; original type: '.gettype(@$this->data[$prop]).'; new type: '.gettype($value));
 
 			// Запоминаем первоначальное значение переменной.
 			if(empty($this->changed_fields) || !array_key_exists($prop, $this->changed_fields))
@@ -523,6 +580,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			return $this->data['modify_time'];
 
 		return NULL;
+	}
+
+	function b2_message($text, $params = [])
+	{
+		$params['theme_class'] = $this->get('theme_class');
+		return bors_message($text, $params);
 	}
 
 	function set_modify_time($unix_time, $db_update = true) { return $this->set('modify_time', $unix_time, $db_update); }
@@ -630,7 +693,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if(($data = $this->body_data()))
 		{
 			if(!is_array($data)) //TODO: снести после отлавливания
-				debug_hidden_log('__data_error', 'Not array local_data: '.print_r($data, true).' for '.$this->debug_title_dc());
+				bors_debug::syslog('__data_error', 'Not array local_data: '.print_r($data, true).' for '.$this->debug_title_dc());
 			else
 				foreach($data as $key => $value)
 					$this->add_local_template_data($key, $value);
@@ -853,7 +916,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return false;
 	}
 
-	function set_fields($array, $db_update_flag=true, $fields_list = NULL, $check_values = false)
+	function set_fields(&$array, $db_update_flag=true, $fields_list = NULL, $check_values = false)
 	{
 		if(!empty($array['time_vars']))
 			bors_lib_time::parse_form($array);
@@ -952,7 +1015,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$was_modified = array_key_exists('modify_time', $this->changed_fields);
 
 //		if($was_modified)
-//			debug_hidden_log('00-modified', $this->debug_title().print_r($this->changed_fields, true));
+//			bors_debug::syslog('00-modified', $this->debug_title().print_r($this->changed_fields, true));
 
 		if($this->get('is_changes_logging'))
 			bors_objects_changelog::add($this);
@@ -982,7 +1045,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$this->set_attr('__store_entered', false);
 	}
 
-	private function __update_relations()
+	function __update_relations()
 	{
 		if(($rels = $this->_relations()))
 		{
@@ -1078,7 +1141,8 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		$this->set_was_cleaned(true);
 
-		if($this->cache_static() > 0 && $this->cache_static_can_be_dropped())
+//		echo '-'.$this->cache_static().'/'.$this->cache_static_can_be_dropped();
+		if(/*$this->cache_static() > 0 && */ $this->cache_static_can_be_dropped())
 			cache_static::drop($this);
 
 		// Чистка memcache и Cache.
@@ -1149,8 +1213,11 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function access()
 	{
 		$access = $this->access_engine();
+
 		if(!$access)
 			$access = config('access_default');
+
+//		if(!$access)
 //			bors_throw(ec('Не задан режим доступа к ').$this->object_titled_dp_link());
 
 		return bors_load($access, $this);
@@ -1241,7 +1308,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($limit && strlen($uri) > $limit)
 		{
 			if(!$ignore_oversize)
-				debug_hidden_log('need-attention', 'too long ascii uri for '.$this->internal_uri());
+				bors_debug::syslog('need-attention', 'too long ascii uri for '.$this->internal_uri());
 			$uri = substr($uri, 0, $limit);
 		}
 
@@ -1253,22 +1320,19 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if(@preg_match("!^http://!", $this->id()))
 			return $this->id();
 
-		return  $this->class_name().'://'.$this->id().'/';
-	}
+		$id = $this->id();
+		if(is_array($id))
+			$id = serialize($id);
+		elseif(is_object($id))
+			$id = $id->internal_uri();
 
-	protected $_dbh = NULL;
-	function db($database_name = NULL)
-	{
-		if($this->_dbh === NULL)
-			$this->_dbh = new driver_mysql($database_name ? $database_name : $this->get('db_name', config('main_bors_db')));
-
-		return $this->_dbh;
+		return  $this->class_name().'://'.$id.'/';
 	}
 
 	//TODO: разобраться с сериализацией приватных данных
 	public function __sleep()
 	{
-		if($this->_dbh)
+		if(!empty($this->_dbh))
 		{
 			$this->_dbh->close();
 			$this->_dbh = NULL;
@@ -1387,7 +1451,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		$this->set_visits(intval($this->visits()) + intval($inc), true);
 //		echo "set visit";
-//		echo debug_trace();
+//		echo bors_debug::trace();
 		$this->set_last_visit_time($time, true);
 	}
 
@@ -1412,7 +1476,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	{
 		$data = $this->___path_data();
 
-		if($data['local_path'] == $data['root'].'/')
+		if($data['local_path'] == @$data['root'].'/')
 			return rtrim($data['local_path'], '/');
 
 		return dirname(rtrim($data['local_path'], '/'));
@@ -1423,7 +1487,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function _basename()
 	{
 		$data = $this->___path_data();
-		if($data['local_path'] == $data['root'].'/')
+		if($data['local_path'] == @$data['root'].'/')
 			return '';
 
 		return basename(rtrim($data['local_path'], '/'));
@@ -1514,6 +1578,16 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$this->__update_relations();
 	}
 
+	function b2_post_new(&$data)
+	{
+		$this->__update_relations();
+	}
+
+	function b2_post_update(&$data)
+	{
+		$this->__update_relations();
+	}
+
 	function static_get_cache() { return false; }
 
 	function change_time($exactly = false)
@@ -1577,6 +1651,11 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$data = url_parse($path);
 
 		$file = @$data['local_path'];
+
+
+		if(!$file) // Hardcode
+			$file = $_SERVER['DOCUMENT_ROOT'].$data['path'];
+
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
 
@@ -1587,7 +1666,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($r = $this->get('cache_static_root'))
 			$file = $r.$rel_file;
 		elseif($r = config('cache_static.root'))
-			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $r, $file);
+			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $_SERVER['DOCUMENT_ROOT'].'/cache-static', $file);
 
 		return $file;
 	}
@@ -1649,8 +1728,16 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 //			echo "<!-- $msg -->\n";
 	}
 
+	function _headers_def()
+	{
+		return [];
+	}
+
 	function content()
 	{
+		if(!empty($this->attr['content']))
+			return $this->attr['content'];
+
 		$recreate = $this->get('recreate_on_content') || $this->get('cache_static_recreate');
 
 		$use_static = config('cache_static')
@@ -1678,7 +1765,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$stash_item = NULL;
 		if($this->id() && !is_object($this->id()) && $this->modify_time() && ($pool = config('cache.stash.pool')))
 		{
-			$stash_item = $pool->getItem('dog-pill-protect/'.$this->internal_uri_ascii().'/'.$this->page().'/'.$this->modify_time());
+			$stash_item = $pool->getItem('dog-pill-protect:'.$this->internal_uri_ascii().':'.$this->page().':'.$this->modify_time());
 
 			$content = $stash_item->get(Stash\Invalidation::SLEEP, 300, 100);
 
@@ -1688,7 +1775,6 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			$stash_item->lock();
 			$this->hcom("stash locked");
 		}
-
 
 		if(0 && $use_static
 			&& !$fs
@@ -1816,12 +1902,14 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		{
 			if($tt = $this->title_true())
 				return $this->class_title().ec(' «').$tt.ec('»').(is_numeric($this->id()) ? "({$this->id()})" : '');
+
+			return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : '');
 		}
 		catch(Exception $e)
 		{
 		}
 
-		return $this->class_name().'://'.$this->id().($this->page() > 1 ? ','.$this->page() : '');
+		return '__toString exception in '.get_class($this);
 	}
 
 	function _relations() { return array(); }
@@ -1957,9 +2045,17 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return $object;
 	}
 
+    static function create($data)
+	{
+		return bors_new(get_called_class(), $data);
+	}
+
 	function renderer()
 	{
 		$renderer_class = $this->get('theme_class');
+
+//		if(!$renderer_class)
+//			$renderer_class = object_property($this->project(), 'default_theme_class');
 
 		if(!$renderer_class)
 			$renderer_class = $this->get('renderer_class');
@@ -1969,6 +2065,9 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		if($renderer_class == 'self')
 			return $this;
+
+		if(!$renderer_class || $renderer_class == 'bors_renderers_page')
+			$renderer_class = config('default_theme_class', 'bors_renderers_page');
 
 		if(!$renderer_class)
 			return NULL;
@@ -2068,7 +2167,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	{
 		$class_name = $this->class_name();
 		$class_name = preg_replace('/_(main|edit|view)$/', '', $class_name);
-		$module_class = bors_plural($class_name).'_modules_'.$module_name;
+		$module_class = \blib_grammar::plural($class_name).'_modules_'.$module_name;
 		set_def($attrs, 'model', $this);
 		$mod = bors_load_ex($module_class, $this, $attrs);
 		if(!$mod)
@@ -2147,67 +2246,6 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		return $finder;
 	}
-
-	// Возвращает список ID файлов sitemap со списком объектов классов.
-	// Например, список номеров страниц или список дат.
-	static function sitemap_ids()
-	{
-		$first = bors_find_first(get_called_class(), array('order' => 'modify_time'));
-		$last = bors_find_first(get_called_class(), array('order' => '-modify_time'));
-
-		if(!$first)
-			return array();
-
-		$first = $first->modify_time();
-		if(!$last)
-			$last = time();
-		else
-			$last = $last->modify_time();
-
-
-		$ids = array();
-		for($year = date('Y', $first); $year <= date('Y', $last); $year++)
-			for($month = 1; $month<=12; $month++)
-				$ids[] = sprintf('%04d-%02d', $year, $month);
-
-		return $ids;
-
-	}
-
-	// Возвращает список объектов по ID sitemap-класса. Например, по номеру страницы или по дате
-	static function sitemap_index($sitemap_id)
-	{
-		$start = strtotime($sitemap_id . '-01 00:00:00');
-
-		if(!$start)
-			return array();
-
-		$days = date('t', $start);
-		$stop  = strtotime($sitemap_id . sprintf('-%02d', $days).' 23:59:59') + 1;
-
-		return bors_each(get_called_class(), array(
-			"modify_time BETWEEN $start AND $stop",
-			'order' => '-modify_time',
-		));
-	}
-
-	// Возвращает последний изменённый объект среди объектов соответствующих
-	// определённому sitemap-файлу по его ID.
-	static function sitemap_last_modified($sitemap_id)
-	{
-		// В данном случае у нас гвоздями прибито ID = новостной день
-
-		$start = strtotime($sitemap_id . '-01 00:00:00');
-		$days = date('t', $start);
-		$stop  = strtotime($sitemap_id . sprintf('-%02d', $days).' 23:59:59') + 1;
-
-		$last_news = bors_find_first(get_called_class(), array(
-			'order' => '-modify_time',
-			"modify_time BETWEEN $start AND $stop",
-		));
-
-		return $last_news;
-	 }
 
 	function uuid_hash() { return md5($this->class_name().':'.$this->id()); }
 

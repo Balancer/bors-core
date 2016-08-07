@@ -6,6 +6,8 @@
 
 class bors_forms_templates_default extends bors_object
 {
+	function layout_type() { return 'html'; }
+
 	// Если w100p, то распирает формы, типа http://www.balancer.ru/admin/forum/post/3033292/move-tree
 	function _input_css_def() { return 'wa'; }
 	function _input_css_error_def() { return 'error'; }

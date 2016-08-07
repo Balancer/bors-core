@@ -1,6 +1,6 @@
 <?php
 
-require_once('classes/inc/BorsXml.php'); 
+require_once(BORS_CORE.'/classes/inc/BorsXml.php'); 
 
 class storage_fs_xml extends base_null
 {

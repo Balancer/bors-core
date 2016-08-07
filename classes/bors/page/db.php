@@ -2,6 +2,8 @@
 
 class bors_page_db extends base_page_db
 {
+	use \B2\Traits\Page;
+
 	function _renderer_class_def() { return 'bors_renderers_page'; }
 	function _body_def() { return bors_lib_page::body($this); }
 	function _body_class_def() { return 'bors_bodies_page'; }
@@ -38,7 +40,7 @@ class bors_page_db extends base_page_db
 		$tpl = bors_lib_page::body_template($this);
 
 		if(!$tpl)
-			$tpl = 'xfile:'.BORS_CORE.'/classes/bors/base/page.html';
+			$tpl = 'xfile:'.realpath(__DIR__.'/../../../classes/bors/base/page.html');
 
 		return $tpl;
 	}
@@ -117,16 +119,6 @@ class bors_page_db extends base_page_db
 	}
 
 	function compiled_source() { return bors_lcml::lcml($this->source(), array('container' => $this)); }
-
-	function _layout_class_def() { return 'bors_layouts_bors'; }
-
-	function _layout_def()
-	{
-		$class_name = $this->layout_class();
-		$layout = new $class_name($this);
-		$this->set_attr('layout', $layout);
-		return $layout;
-	}
 
 	function template_metas($indent = '')
 	{

@@ -2,7 +2,7 @@
 
 require_once(config('sphinx-search.include'));
 
-function bors_search_sphinx($query, $params = array())
+function bors_search_sphinx($query, $params = [])
 {
 	$query = trim($query);
 
@@ -53,6 +53,12 @@ function bors_search_sphinx($query, $params = array())
 			else
 				$cl->SetFilter($name, $val);
 		}
+	}
+
+	if($range = defval($params, 'range'))
+	{
+		foreach($range as $name => $val)
+			$cl->SetFilterRange($name, $val[0], $val[1]);
 	}
 
 //	if($this->u())
@@ -126,7 +132,7 @@ function bors_search_sphinx($query, $params = array())
 				}
 			}
 			else
-				debug_hidden_log('search_warning', "Unknown object {$x['attrs']['class_id']}({$x['attrs']['object_id']}) in query {$query}($indexes)");
+				bors_debug::syslog('search_warning', "Unknown object {$x['attrs']['class_id']}({$x['attrs']['object_id']}) in query {$query}($indexes)");
 		}
 
 		if(defval($params, 'only_objects'))
@@ -182,6 +188,13 @@ function bors_search_sphinx($query, $params = array())
 
 function bors_search_sphinx_find_links($object, $delete_old = false, $is_auto = true)
 {
+	if(is_array($delete_old))
+	{
+		$params = $delete_old;
+		$delete_old	= popval($params, 'delete_old', false);
+		$is_auto	= popval($params, 'is_auto', true);
+	}
+
 	bors_synonym::add_object($object, array('is_auto' => true));
 	bors()->changed_save();
 
@@ -195,46 +208,69 @@ function bors_search_sphinx_find_links($object, $delete_old = false, $is_auto = 
 	$verbose = 0;
 
 	$names = array();
-	foreach($object->get('all_names') as $name)
-		$names[$name] = false;
+	foreach($object->get('all_names', []) as $name)
+		$names['@'.trim($name)] = ['name' => $name, 'is_exactly' => 0, 'src' => 'all_names'];
 
 	if(empty($names))
-		$names[$object->title()] = true;
+		$names['@'.trim($object->title())] = ['name' => $object->title(), 'is_exactly' => 1, 'src' => 'title'];
 
-	foreach(bors_synonym::synonyms($object, array('is_disabled' => 0)) as $syn)
-		if($syn && $syn->title())
-			$names[$syn->is_exactly() ? bors_lower($syn->title()) : bors_text_clear($syn->title(), false)] = $syn->is_exactly();
-
-	$log = "Names = [".join(', ', $names)."]";
-
-	foreach($names as $name => $is_exactly)
+	foreach(bors_synonym::synonyms($object, []) as $syn)
 	{
+		echo "synonym={$syn->title()}, disabled={$syn->is_disabled()}\n";
+		if($syn && $syn->title())
+		{
+			$k = '@'.trim($syn->title());
+			if($syn->is_disabled())
+			{
+				echo "Unset $k\n";
+				unset($names[$k]);
+			}
+			else
+				$names[$k] = ['name' => $syn->is_exactly() ? $syn->title() : bors_text_clear($syn->title(), false), 'is_exactly' => intval($syn->is_exactly()), 'src' => 'syn'];
+		}
+	}
+
+	echo "\n\n------------------------------------------------\nNames = ".print_r($names, true);
+
+	foreach($names as $name_data)
+	{
+		extract($name_data);
 		$ch = new bors_cache();
 
-		$objects = bors_search_sphinx($name, array(
+		$data = [
 			'indexes' => 'news,news_delta,digest,digest_delta',
 			'only_objects' => true,
 			'page' => 1,
 			'per_page' => $verbose ? 10 : 5000,
 			'persistent_instance' => true,
 			'exactly' => true,
-		));
+		];
+
+		if($time = popval($params, 'modify_time>'))
+		{
+			$data['sort_order'] = 'u';
+			$data['range'] = ['modify_time' => [$time, time()]];
+		}
+
+		$objects = bors_search_sphinx($name, $data);
 
 		if(!$objects)
 		{
-			$log .= "<br/>\nTotal found for ".("{$name}").": NULL";
+			echo "\nTotal found for ".("{$name}").": NULL";
 			continue;
 		}
 
-		$log .= "<br/>\nTotal found for ".("'{$name}'").": ".count($objects).": ";
+		echo "\nTotal found for ".("'{$name}'").": ".count($objects).": ";
 
 		foreach($objects as $x)
 		{
-			echo ".";
+			echo "x";
 //			echo $x->title();
 //			if($x->id() == 28880)
 //				exit("!");
 			$found = false;
+			$updated = false;
+
 			foreach($x->all_text_fields() as $k => $type_id)
 			{
 				$text = $x->$k();
@@ -272,8 +308,8 @@ function bors_search_sphinx_find_links($object, $delete_old = false, $is_auto = 
 //						: "+";
 
 					@$total[$type_id][$x->internal_uri_ascii()] = 1;
-					bors_link::link_objects($x, $object, array(
-						'owner_id' => '-1002151031', 
+					$updated |= bors_link::link_objects($x, $object, array(
+						'owner_id' => '-1002151031',
 						'comment' => "autolink {$object->internal_uri_ascii()}/{$name}",
 						'type_id' => $type_id,
 						'is_auto' => $is_auto,
@@ -286,18 +322,23 @@ function bors_search_sphinx_find_links($object, $delete_old = false, $is_auto = 
 			}
 
 			if(!$found)
-				$log .= $verbose ? "--- Not found ".($x->title())." [{$x->url()}]<br/>\n"
+				echo $verbose ? "--- Not found ".($x->title())." [{$x->url()}]\n"
 				: "-";
+
+			if($updated)
+			{
+				$x->cache_clean_self();
+				echo "\n$name - D: ".$x->debug_title()."\n";
+			}
 
 			bors()->changed_save();
 			bors_object_caches_drop();
 		}
 	}
 
-	$log .=  "<br/>\nmention: ".@count(@$total[2]).", about: ".@count(@$total[3])."<br/>\n";
+	echo "\nmention: ".@count(@$total[2]).", about: ".@count(@$total[3])."\n\n";
 //	if(++$loop_count >= 5)
 //		bors_exit();
 
 //	echo $log;
-	return $log;
 }

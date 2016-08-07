@@ -18,14 +18,21 @@ else
 
 config_set('default_template', 'default/index.html');
 
-config_set('main_bors_db', 'BORS');
-config_set('bors_core_db', 'BORS');
-config_set('bors_local_db', 'BORS');
-config_set('bors_logs_db', 'BORS_LOGS');
+if(!config('main_bors_db'))
+	config_set('main_bors_db', 'BORS');
+
+if(!config('main_bors_db'))
+	config_set('main_bors_db', 'BORS');
+
+if(!config('bors_local_db'))
+	config_set('bors_local_db', 'BORS');
+
+if(!config('bors_logs_db'))
+	config_set('bors_logs_db', 'BORS_LOGS');
 
 config_set('bors.version_show', false);
 
-config_set('storage_db_sqlite_main', BORS_SITE.'/data/main.sqlite');
+config_set('storage_db_sqlite_main', COMPOSER_ROOT.'/data/main.sqlite');
 
 config_set('lcml_sharp_markup', false);
 // config_set('temporary_file_contents', @file_get_contents(__DIR__.'/resources/temporary.html'));
@@ -56,34 +63,17 @@ if(!config('locale'))
 
 config_set('3rdp_xmlrpc_path', 'xmlrpc-2.2.2');
 
-if(!config('project.name'))
+if(!config('project.name') && defined('BORS_SITE'))
 	config_set('project.name', strtolower(basename(dirname(BORS_SITE))));
 
 // После установки кодировок -- использует internal_charset
 if(!config('cache_dir'))
-{
-	$cache_dirs_parts = array();
-	if(empty($_SERVER['HTTP_HOST']))
-		$cache_dirs_parts[] = 'cli';
-	else
-		$cache_dirs_parts[] = str_replace(':', '=', strtolower($_SERVER['HTTP_HOST']));
-
-	$cache_dirs_parts[] = config('project.name');
-
-	if(!empty($_SERVER['USER']))
-		$cache_dirs_parts[] = strtolower($_SERVER['USER']);
-	$cache_dirs_parts[] = config('internal_charset');
-	$cache_dirs_parts[] = config('output_charset');
-
-//	var_dump($cache_dirs_parts);
-
-	config_set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', array_filter($cache_dirs_parts)));
-}
+	config_set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', bors::cache_namespace()));
 
 config_set('cache.webroot_dir', $_SERVER['DOCUMENT_ROOT'].'/cache');
 config_set('cache.webroot_url', "/cache");
 config_set('sites_store_path', $_SERVER['DOCUMENT_ROOT'].'/sites');
 config_set('sites_store_url', 'http://'.@$_SERVER['HTTP_HOST'].'/sites');
 
-if(file_exists($c = BORS_3RD_PARTY.'/config.php'))
-	require_once($c);
+if(defined('BORS_3RD_PARTY') && file_exists(BORS_3RD_PARTY.'/config.php'))
+	require_once(BORS_3RD_PARTY.'/config.php');

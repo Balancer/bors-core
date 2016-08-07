@@ -28,6 +28,8 @@ function http_get($url)
 	return $data;
 }
 
+// curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+
 function http_get_content($url, $raw = false, $max_length = false)
 {
 	$original_url = $url;
@@ -77,20 +79,42 @@ function http_get_content($url, $raw = false, $max_length = false)
 	if(preg_match('/(livejournal.com|imageshack.us|upload.wikimedia.org|www.defencetalk.com|radikal.ru|66\.ru|ria\.ru)/', $url))
 		$timeout = 20;
 
-	curl_setopt_array($ch, array(
-		CURLOPT_TIMEOUT => $timeout,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_MAXREDIRS => 5,
-		CURLOPT_ENCODING => 'gzip,deflate',
-		CURLOPT_REFERER => $original_url,
+	curl_setopt_array($ch, [
 		CURLOPT_AUTOREFERER => true,
+		CURLOPT_BUFFERSIZE	=> 8192,
+		CURLOPT_ENCODING => 'gzip,deflate',
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_HEADER => true,
 		CURLOPT_HTTPHEADER => $header,
-		CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
+		CURLOPT_MAXREDIRS => 5,
+		CURLOPT_PROGRESSFUNCTION => function($resource, $download_size = 0, $downloaded = 0, $upload_size = 0, $uploaded = 0) use ($url) {
+			//	CURLOPT_WRITEFUNCTION is good for this but CURLOPT_PROGRESSFUNCTION is the best.
+			// If $downloaded exceeds size, returning non-0 breaks the connection!
+			if($downloaded > config('curl.maxlen', ini_get('memory_limit')/8))
+			{
+				bors_debug::syslog('warning', "Break curl '$url' download with size=".$downloaded);
+				return 1;
+			}
+
+			return 0;
+		},
+		CURLOPT_REFERER => $original_url,
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_SSL_VERIFYPEER => false,
-		CURLOPT_HEADER => true,
-	));
-
+		CURLOPT_TIMEOUT => $timeout,
+		CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.94 Safari/534.13',
+		CURLOPT_WRITEFUNCTION => function($handle, $data) use ($url) {
+			static $data_string;
+			$data_string .= $data;
+			if(strlen($data_string) > config('curl.maxlen', ini_get('memory_limit')/4))
+			{
+				bors_debug::syslog('warning', "Break curl '$url' download with size=".strlen($data_string));
+				return 0;
+			}
+			else
+				return strlen($data);
+		},
+	]);
 
 //TODO: сделать перебор разных UA при ошибке
 //		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
@@ -107,7 +131,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 	if($data === false)
 	{
 //		echo '<small><i>[1] Curl '.$url.' error: ' . curl_error($ch) . '</i></small><br/>';
-//		echo debug_trace();
+//		echo bors_debug::trace();
 //		if(config('is_developer')) { var_dump($data); exit(); }
 		return NULL;
 	}
@@ -138,36 +162,36 @@ function http_get_content($url, $raw = false, $max_length = false)
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
 	curl_close($ch);
-	debug_timing_stop('http-get-total');
-	debug_timing_stop('http-get: '.$url);
+	bors_debug::timing_stop('http-get-total');
+	bors_debug::timing_stop('http-get: '.$url);
 
 	if($raw)
 		return $data;
 
-    if(preg_match("!charset\s*=\s*([\w\-]+)!i", $content_type, $m))
-        $charset = $m[1];
-    elseif(preg_match("!<\?xml\s+version=\S+\s+encoding\s*=\s*\"(.+?)\"!i", $data, $m))
-        $charset = $m[1];
-    elseif(preg_match("!(Microsoft\-IIS|X\-Powered\-By: ASP\.NET)!", $header))
-        $charset = 'windows-1251';
+	if(preg_match("!charset\s*=\s*([\w\-]+)!i", $content_type, $m))
+		$charset = $m[1];
+	elseif(preg_match("!<\?xml\s+version=\S+\s+encoding\s*=\s*\"(.+?)\"!i", $data, $m))
+		$charset = $m[1];
+	elseif(preg_match("!(Microsoft\-IIS|X\-Powered\-By: ASP\.NET)!", $header))
+		$charset = 'windows-1251';
 	// <meta http-equiv="Content-Type" content="text/html;UTF-8">
 	elseif(preg_match("!<meta [^>]+Content-Type[^>]+content=\"text/html;\s*([\w\-]+)\">!i", $data, $m))
-        $charset = $m[1];
+		$charset = $m[1];
 	else
-        $charset = '';
+		$charset = '';
 
 	if(preg_match('/JFIF/', $data))
-		debug_hidden_log('jpeg-not-raw', $url);
+		bors_debug::syslog('jpeg-not-raw', $url);
 
 	if(empty($charset))
 	{
-        if(preg_match("!<meta\s+http\-equiv\s*=\s*(\"|')Content\-Type(\"|')[^>]+charset\s*=\s*([\w\-]+)(\"|')!i", $data, $m))
-	        $charset = $m[3];
+		if(preg_match("!<meta\s+http\-equiv\s*=\s*(\"|')Content\-Type(\"|')[^>]+charset\s*=\s*([\w\-]+)(\"|')!i", $data, $m))
+			$charset = $m[3];
 		elseif(preg_match("!<meta[^>]+charset\s*=\s*([\w\-]+)(\"|')!i", $data, $m))
 			$charset = $m[1];
 	}
 
-    if(!$charset)
+	if(!$charset)
 		$charset = config('lcml_request_charset_default', 'WINDOWS-1251');
 /*
 	if(config('is_developer'))
@@ -187,7 +211,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 
 //	if(config('is_developer')) { var_dump($raw, $charset, $header, $data); }
 
-    return $data;
+	return $data;
 }
 
 function http_get_ex($url, $raw = true)
@@ -228,7 +252,7 @@ function http_get_ex($url, $raw = true)
 	if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация
 		$timeout = 90;
 
-//	if(config('is_debug')) { echo "url='$url'\n\n"; echo debug_trace(); }
+//	if(config('is_debug')) { echo "url='$url'\n\n"; echo bors_debug::trace(); }
 
 	if(preg_match('!^(https?://)([^/]*[^\w\-][^/]*)/!', $url))
 		$url = blib_idna::encode_uri($url);
@@ -264,7 +288,7 @@ function http_get_ex($url, $raw = true)
 		$err_str = curl_error($ch);
 //		if(config('is_developer')) { var_dump($url, $pure_url, $raw, $data, $err_str); exit(); }
 //		echo '[2] Curl error: ' . $err_str;
-		debug_hidden_log('curl-error', "Curl error: ".$err_str);
+		bors_debug::syslog('curl-error', "Curl error: ".$err_str);
 		return '';
 	}
 
@@ -274,10 +298,10 @@ function http_get_ex($url, $raw = true)
 	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 //	echo "<xmp>"; print_r($data); echo "</xmp>";
 
-    if(!$raw && preg_match("!charset=(\S+)!i", $content_type, $m))
-        $charset = $m[1];
-    else
-        $charset = '';
+	if(!$raw && preg_match("!charset=(\S+)!i", $content_type, $m))
+		$charset = $m[1];
+	else
+		$charset = '';
 
 	curl_close($ch);
 
@@ -285,20 +309,20 @@ function http_get_ex($url, $raw = true)
 	{
 		if(empty($charset))
 		{
-        	if(preg_match("!<meta http\-equiv=\"Content\-Type\"[^>]+charset=(.+?)\"!i", $data, $m))
-	        	$charset = $m[1];
+			if(preg_match("!<meta http\-equiv=\"Content\-Type\"[^>]+charset=(.+?)\"!i", $data, $m))
+				$charset = $m[1];
 			elseif(preg_match("!<meta[^>]+charset=(.+?)\"!i", $data, $m))
-		        $charset = $m[1];
+				$charset = $m[1];
 		}
 
-    	if(!$charset)
+		if(!$charset)
 			$charset = config('lcml_request_charset_default');
 
 		if($charset)
 			$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
 	}
 
-    return array('content' => $data, 'content_type' => $content_type);
+	return array('content' => $data, 'content_type' => $content_type);
 }
 
 function query_explode($query_string)
@@ -324,10 +348,10 @@ if(!function_exists('curl_setopt_array'))
 {
    function curl_setopt_array(&$ch, $curl_options)
    {
-       foreach($curl_options as $option => $value)
-           if(!curl_setopt($ch, $option, $value))
-               return false;
+	   foreach($curl_options as $option => $value)
+		   if(!curl_setopt($ch, $option, $value))
+			   return false;
 
-       return true;
+	   return true;
    }
 }

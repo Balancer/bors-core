@@ -2,7 +2,7 @@
 
 function bors_image_message($message, $params = array())
 {
-	debug_hidden_log('image-messages', $message);
+	bors_debug::syslog('image-messages', $message);
 
 	$ww = intval(defval($params, 'width', 640));
 	$hh = intval(defval($params, 'height', 400));

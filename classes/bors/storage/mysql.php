@@ -982,6 +982,8 @@ array(2) {
 
 	static function condition_optimize($condition)
 	{
+		require_once(BORS_CORE.'/inc/functions/time/date_format_mysqltime.php');
+
 		static $_php_back_functions = array(
 			'UNIX_TIMESTAMP' => 'date_format_mysqltime',
 		);

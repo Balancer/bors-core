@@ -370,7 +370,7 @@ class bors_link extends bors_object_db
 		$dbh = new driver_mysql(config('main_bors_db'));
 		$tc = $object->extends_class_id();
 		$ti = $object->id();
-		$dbh->delete(self::table_name(), array("owner_id < 0 AND ((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
+		$dbh->delete(self::table_name(), array("(owner_id < 0 OR `is_auto` = 1) AND ((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
 	}
 
 	static function drop_all($object)

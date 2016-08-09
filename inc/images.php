@@ -4,6 +4,11 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 {
+	// Option: remove spaces and sort.
+	$opts = array_map("trim", preg_split("\W", $opts));
+	sort($opts);
+	$opts = join(',', $opts);
+
 	if(file_exists($file_out))
 		return false;
 
@@ -108,7 +113,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 			$constraint->aspectRatio();
 			$constraint->upsize();
 		});
-	elseif($opts == 'up,crop')
+	elseif($opts == 'crop,up')
 		$img->fit($width, $height); // Пропорции + обрезка + увеличение, если надо
 	elseif($opts == 'crop')
 	{
@@ -126,7 +131,7 @@ function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 		});
 //		var_dump($img->height(), $img->width()); exit();
 	}
-	elseif($opts == 'up,fillpad')
+	elseif($opts == 'fillpad,up')
 	{
 		// Большие уменьшаем, мелкие увеличиваем, пропорции сохраняем
 		$img->resize($width, $height, function ($constraint) {

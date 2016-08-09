@@ -59,6 +59,14 @@ class bors_image_thumb extends bors_image
 			$this->geo_height = $m[4];
 			$this->geo_opts   = $m[5];
 		}
+		elseif(preg_match('!^(\d+),((\d*)x(\d*)([^/]+))$!', $this->id(), $m))
+		{
+			$id = $m[1];
+			$this->geometry   = $m[2];
+			$this->geo_width  = $m[3];
+			$this->geo_height = $m[4];
+			$this->geo_opts   = $m[5];
+		}
 		else
 			return $this->set_is_loaded(false);
 

@@ -2,7 +2,7 @@
 
 namespace B2\Task;
 
-class Task
+class Json
 {
 	function task_dir() { return COMPOSER_ROOT.'/data/b2-tasks'; }
 
@@ -56,6 +56,13 @@ class Task
 					$id = $data;
 
 				$worker = bors_load($worker_class, $id);
+
+				if(!$worker)
+				{
+					\bors_debug::syslog('tasks-airbase-error', "Can't load $worker_class($id) for run ->$worker_method()");
+					continue;
+				}
+
 				$error = $worker->$worker_method($data);
 
 				if($error)

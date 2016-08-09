@@ -331,7 +331,10 @@ class bors_tools_search_result extends bors_tools_search
 					$objects = bors_find_all($class_id, array('id IN' => array_unique($ids), 'by_id' => true));
 
 					foreach($ids as $id)
-						$this->_data['posts'][$id] = $objects[$id];
+					{
+						if(!empty($objects[$id]))
+							$this->_data['posts'][$id] = $objects[$id];
+					}
 				}
 				catch(Exception $e)
 				{

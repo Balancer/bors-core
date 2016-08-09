@@ -34,7 +34,11 @@ class bors_system_go_redirect extends bors_page
 						return self::go($object);
 				}
 
-				$unvisited = $object->topic()->find_first_unvisited_post(bors()->user());
+				$topic = $object->topic();
+				if($topic)
+					$unvisited = $topic->find_first_unvisited_post(bors()->user());
+				else
+					$unvisited = NULL;
 
 				if($unvisited && $unvisited->create_time() < $object->create_time() && $unvisited->topic_page() != $object->topic_page())
 				{
@@ -66,7 +70,7 @@ class bors_system_go_redirect extends bors_page
 
 	function parents()
 	{
-		return $this->object()->parents();
+		return object_property($this->object(), 'parents');
 	}
 
 	function object()

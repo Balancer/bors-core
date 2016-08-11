@@ -21,6 +21,8 @@ class bors_lcml_tag_pair_h2 extends bors_lcml_tag_pair
 
 	static function __unit_test($suite)
 	{
+		config_set('lcml_cache_disable', true);
+
 		$code = '[h2]Здравствуй, мир![/h2]';
 		$suite->assertEquals("<h2>Здравствуй, мир!</h2>", trim(lcml($code)));
 		$suite->assertEquals("Здравствуй, мир!\n----------------", lcml($code, array('output_type' => 'text')));

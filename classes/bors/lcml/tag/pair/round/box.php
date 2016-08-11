@@ -22,6 +22,8 @@ class bors_lcml_tag_pair_round_box extends bors_lcml_tag_pair
 
 	static function __unit_test($suite)
 	{
+		config_set('lcml_cache_disable', true);
+
 		$code = '[round_box]Обратите внимание[/round_box]';
 		$suite->assertRegexp('!<div class="[^"]+">\s*Обратите внимание\s*<div class="clear">&nbsp;</div></div>!', lcml($code));
 

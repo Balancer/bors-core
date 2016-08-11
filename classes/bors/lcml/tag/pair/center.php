@@ -27,6 +27,8 @@ class bors_lcml_tag_pair_center extends bors_lcml_tag_pair
 
 	static function __unit_test($suite)
 	{
+		config_set('lcml_cache_disable', true);
+
 		$code = '[center]Выводы[/center]';
 		$suite->assertEquals('<div style="text-align: center !important">Выводы</div>', lcml($code));
 

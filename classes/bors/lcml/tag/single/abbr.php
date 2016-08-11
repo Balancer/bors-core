@@ -17,6 +17,8 @@ class bors_lcml_tag_single_abbr extends bors_lcml_tag_single
 
 	static function __unit_test($suite)
 	{
+		config_set('lcml_cache_disable', true);
+
 		require_once('engines/lcml.php');
 		$code = '[abbr РХБЗ|Радиационная, химическая и биологическая защита]';
 		$suite->assertEquals('<abbr title="Радиационная, химическая и биологическая защита">РХБЗ</abbr>', lcml($code));

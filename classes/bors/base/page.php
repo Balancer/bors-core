@@ -14,7 +14,7 @@ class base_page extends bors_object
 
 	function _browser_title_def()
 	{
-		if($t = $this->get('browser_title', NULL, true))
+		if($t = $this->__get_ex('browser_title', NULL, true))
 			return $t;
 
 		return $this->page_title();

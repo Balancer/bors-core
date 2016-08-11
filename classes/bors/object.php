@@ -631,13 +631,13 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function _nav_name_def()
 	{
-		if(($nav_name = $this->get('nav_name', NULL, true)))
+		if(($nav_name = $this->__get_ex('nav_name', NULL, true)))
 			return $nav_name;
 
 		return $this->get('nav_name_lower', config('nav_name_lower')) ? bors_lower($this->title()) : $this->title();
 	}
 
-	function _nav_name_true_def() { return $this->get('nav_name', NULL, true); }
+	function _nav_name_true_def() { return $this->__get_ex('nav_name', NULL, true); }
 
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 

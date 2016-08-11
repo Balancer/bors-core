@@ -33,7 +33,7 @@
 		"monolog/monolog": "*",
 		"rediska/rediska": "*",
 		"slim/slim": ">3",
-		"smarty/smarty": "!=3.1.30",
+		"smarty/smarty": "*",
 		"symfony/http-kernel": "*",
 		"zendframework/zend-diactoros": "*"
 	},

@@ -38,9 +38,6 @@ class bors_forms_textarea extends bors_forms_element
 
 		$html = '';
 
-		// Если нужно, добавляем заголовок поля
-		$html .= $this->label_html();
-
 		static $tmp_id = 0;
 
 		if(!empty($limit))
@@ -86,9 +83,8 @@ class bors_forms_textarea extends bors_forms_element
 		if($append)
 			$html .= "<br/>".$append;
 
-//		if($form->get('has_form_table'))
-//			$html .= "</td></tr>\n";
-
-		return $html;
+		$element_tpl = $form->templater()->get('form_element_html');
+		$row_tpl = $form->templater()->get('form_row_html');
+		return sprintf($row_tpl, $this->label_html2() , sprintf($element_tpl, $html));
 	}
 }

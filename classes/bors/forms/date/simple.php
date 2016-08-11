@@ -18,14 +18,9 @@ class bors_forms_date_simple extends bors_forms_element
 		$object = $form->object();
 		$value = $this->value();
 
+		$class = [$this->css('input')];
+
 		$html = '';
-
-		// Если нужно, добавляем заголовок поля
-		$html .= $this->label_html();
-
-		// Если отдельный блок, то на всю ширину.
-		if($this->label() && empty($style))
-			$style = "width: 99%";
 
 		$date = $value;
 
@@ -33,7 +28,14 @@ class bors_forms_date_simple extends bors_forms_element
 			$date = @$can_drop ? 0 : $GLOBALS['now'];
 
 		$date_string = $date || !$can_drop ? date('d.m.Y', $date) : '';
-		$html .= "<input type=\"text\" name=\"$name\" value=\"".$date_string;
+
+		if($class)
+			$class = "class=\"".addslashes(join(" ", $class))."\"";
+		else
+			$class = "";
+
+
+		$html .= "<input type=\"text\" name=\"$name\" $class value=\"".$date_string;
 
 		if(!empty($time))
 		{
@@ -50,10 +52,10 @@ class bors_forms_date_simple extends bors_forms_element
 		$html .= "/>";
 
 		if(@$params['is_integer'])
-			$html .= "<input type=\"hidden\" name=\"{$name}_is_integer\" value=\"{$params['is_integer']}\" />";
+			$html .= "<input type=\"hidden\" name=\"{$name}_is_integer\" $class value=\"{$params['is_integer']}\" />";
 
 		if($can_drop)
-			$html .= "<input type=\"hidden\" name=\"{$name}_can_drop\" value=\"1\" />";
+			$html .= "<input type=\"hidden\" name=\"{$name}_can_drop\" $class value=\"1\" />";
 
 		if(@$params['time_on_post'])
 		{
@@ -72,6 +74,8 @@ class bors_forms_date_simple extends bors_forms_element
 
 		$form->append_attr('time_vars', $name);
 
-		return $html;
+		$element_tpl = $form->templater()->get('form_element_html');
+		$row_tpl = $form->templater()->get('form_row_html');
+		return sprintf($row_tpl, $this->label_html2() , sprintf($element_tpl, $html));
 	}
 }

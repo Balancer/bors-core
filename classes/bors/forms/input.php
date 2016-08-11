@@ -59,23 +59,6 @@ class bors_forms_input extends bors_forms_element
 		else
 			$has_versioning = false;
 
-		$html = "";
-
-		if(@$td_colspan)
-			$td_colspan = " colspan=\"{$td_colspan}\"";
-		else
-			$td_colspan = "";
-
-		// Если указано, то это заголовок строки таблицы: <tr><th>{$label}</th><td>...code...</td></tr>
-		if($label = $this->label())
-		{
-			$label = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $label);
-
-			$html .= "<tr><th class=\"{$this->form()->templater()->form_table_left_th_css()}\">{$label}</th><td{$td_colspan}>";
-			if(empty($style) && empty($css))
-				$style = "width: 99%";
-		}
-
 		if(empty($input_name))
 			$input_name = $name;
 
@@ -90,11 +73,11 @@ class bors_forms_input extends bors_forms_element
 
 		$class = join(' ', $class);
 
-		$html .= "<input type=\"{$type}\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
+		$element_html = "<input type=\"{$type}\" name=\"$input_name\" value=\"".htmlspecialchars($value)."\"";
 
 		foreach(['class', 'id', 'size', 'style', 'placeholder'] as $p)
 			if(!empty($$p))
-				$html .=  " $p=\"{$$p}\"";
+				$element_html .=  " $p=\"{$$p}\"";
 
 		foreach(['maxlength'] as $p)
 		{
@@ -103,24 +86,23 @@ class bors_forms_input extends bors_forms_element
 
 			$v = $params[$p];
 			if($v != '-')
-				$html .=  " $p=\"".htmlspecialchars($v)."\"";
+				$element_html .=  " $p=\"".htmlspecialchars($v)."\"";
 		}
 
 		foreach($html5_data as $key => $val)
-			$html .= " data-$key=\"".htmlspecialchars($val)."\"";
+			$element_html .= " data-$key=\"".htmlspecialchars($val)."\"";
 
-		$html .=  " />\n";
+		$element_html .=  " />\n";
 
 		// mbfi/admin/settings
 		if(@$previous_value)
 			$previous = $previous_value;
 
 		if($has_versioning || $previous)
-			$html .=  "<br/><small>".ec("Предыдущее значение: ").$previous."</small>\n";
+			$element_html .=  "<br/><small>".ec("Предыдущее значение: ").$previous."</small>\n";
 
-		if($label)
-			$html .=  "</td></tr>\n";
-
-		return $html;
+		$element_tpl = $form->templater()->get('form_element_html');
+		$row_tpl = $form->templater()->get('form_row_html');
+		return sprintf($row_tpl, $this->label_html2(), sprintf($element_tpl, $element_html));
 	}
 }

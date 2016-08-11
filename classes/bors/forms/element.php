@@ -110,7 +110,23 @@ class bors_forms_element
 		return '';
 	}
 
-	function css()
+	// Возвращаем заголовок поля в виде табличного блока, если нужно
+	function label_html2()
+	{
+		$label = $this->label();
+
+		$comment = defval($this->params, 'comment');
+
+		$label = preg_replace('!^(.+?) // (.+)$!', "$1<br/><small>$2</small>", $label);
+
+		if($comment)
+			$label .= "<br/><small>$comment</small>";
+
+		$label_tpl = $this->form()->templater()->get('form_element_label_html');
+		return sprintf($label_tpl, $label);
+	}
+
+	function css($element_name = NULL)
 	{
 		if($css = defval($this->params, 'css'))
 			return $css;
@@ -120,7 +136,9 @@ class bors_forms_element
 		if($css = defval($this->params, 'class'))
 			return $css;
 
-		$element_name = $this->element_name();
+		if(!$element_name)
+			$element_name = $this->element_name();
+
 		$method = $element_name . '_css';
 		return $this->form()->templater()->get($method);
 	}

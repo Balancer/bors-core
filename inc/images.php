@@ -5,7 +5,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 function image_file_scale($file_in, $file_out, $width, $height, $opts = NULL)
 {
 	// Option: remove spaces and sort.
-	$opts = array_map("trim", preg_split("\W", $opts));
+	$opts = array_map("trim", preg_split("/\W/", $opts));
 	sort($opts);
 	$opts = join(',', $opts);
 

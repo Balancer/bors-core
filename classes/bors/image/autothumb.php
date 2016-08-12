@@ -26,17 +26,26 @@ class bors_image_autothumb extends bors_object
 			unlink($f);
 
 		$origin_path = $m[1].$m[3];
-//		if(config('is_debug')) { echo '<xmp>', $_SERVER['DOCUMENT_ROOT'] . $origin_path, print_r($m, true), PHP_EOL; var_dump($thumb_path, $origin_path); var_dump($_SERVER); exit(); }
+//		if(1||config('is_debug')) { echo '<xmp>', $_SERVER['DOCUMENT_ROOT'] . $origin_path, print_r($m, true), PHP_EOL; var_dump($thumb_path, $origin_path); var_dump($_SERVER); exit(); }
+		if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $origin_path))
+		{
+			$img = balancer_board_sites_reload::load('http://'.$_SERVER['HTTP_HOST'].$origin_path);
+			$img->reload();
+		}
+
 		if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $origin_path))
 		{
 //			exit('n:'.$_SERVER['DOCUMENT_ROOT'] . $origin_path."; BC=".BORS_CORE);
 			// http://www.balancer.ru/sites/u/p/upload.wikimedia.org/wikipedia/commons/b/b0/_quote_Facing_the_Flag_quote__by_L%C3%A9on_Benett_34.jpg
 			if(!preg_match('/%/', $origin_path))
 				return;
+
 			$origin_path = urldecode($origin_path);
 
 			if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $origin_path))
+			{
 				return;
+			}
 		}
 
 		$this->geo = $m[2];

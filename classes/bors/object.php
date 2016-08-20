@@ -1617,7 +1617,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	{
         $renderer = $this->renderer();
         if(config('debug.execute_trace'))
-            debug_execute_trace("{$this->debug_title_short()} renderer = {$renderer}");
+            bors_debug::execute_trace("{$this->debug_title_short()} renderer = {$renderer}");
 
         if($renderer)
             return $renderer->render($this);
@@ -1799,7 +1799,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		}
 
 		if(config('debug.execute_trace'))
-			debug_execute_trace("{$this->debug_title_short()}->direct_content()");
+			bors_debug::execute_trace("{$this->debug_title_short()}->direct_content()");
 
 		$this->hcom("get direct content");
 		$content = $this->direct_content();

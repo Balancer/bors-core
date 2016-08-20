@@ -18,6 +18,7 @@ class bors_transitional
 
 		require_once BORS_CORE.'/inc/functions/locale/ec.php';
 		require_once BORS_CORE.'/engines/bors.php';
+		require_once BORS_CORE.'/inc/navigation.php';
 	}
 
 	static function function_include($req_name)

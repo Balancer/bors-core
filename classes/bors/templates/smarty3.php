@@ -121,7 +121,7 @@ class bors_templates_smarty3 extends bors_template
 			$template = self::find_template($template, @$data['this']);
 
 		if(config('debug.execute_trace'))
-			debug_execute_trace("smarty3->fetch()");
+			bors_debug::execute_trace("smarty3->fetch()");
 
 		$smarty->error_reporting = E_ALL & ~E_NOTICE;
 		$result = $smarty->fetch($template);

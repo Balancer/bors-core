@@ -122,8 +122,11 @@ class bors_image_thumb extends bors_image
 		else
 			$new_url = preg_replace('!^(http://[^/]+)(/.+?)([^/]+)$!', '$1/cache${2}'.$this->geometry.'/$3', $original_url);
 
-		if(!preg_match('!/cache.*/\d*x\d*!', $new_url))
-			bors_throw('Incorrect new url '.$new_url.' for '.$this->id().'; original url='.$original_url);
+		if(!preg_match('!/cache.*/\d*x\d*!', $new_url) && !preg_match('!pics.aviaport.ru!', $new_url))
+		{
+			bors_debug::syslog('warning-image-job-error', 'Incorrect new url '.$new_url.' for '.$this->id().'; original url='.$original_url);
+			return $this->set_is_loaded(false);
+		}
 
 		$this->set_height(-4); // трассировка
 
@@ -148,8 +151,11 @@ class bors_image_thumb extends bors_image
 
 		$file_thumb = $oud['local_path'];
 
-		if(!preg_match('!/cache.*/\d*x\d*!', $file_thumb))
-			bors_throw('Incorrect thumb file '.$file_thumb.' for '.print_r($oud, true));
+		if(!preg_match('!/cache.*/\d*x\d*!', $file_thumb) && !preg_match('/pics.aviaport.ru/', $file_thumb))
+		{
+			bors_debug::syslog('warning-image-job-error', 'Incorrect thumb file '.$file_thumb.' for '.print_r($oud, true));
+			return $this->set_is_loaded(false);
+		}
 
 		$this->set_height(-6); // трассировка
 

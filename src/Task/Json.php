@@ -66,14 +66,14 @@ class Json
 				$error = $worker->$worker_method($data);
 
 				if($error)
-					\bors_debug::syslog('tasks-airbase-error', "Task error in '$file': $worker_class->$worker_method returned ".$error);
+					\bors_debug::syslog('error-task-json', "Task error in '$file': $worker_class->$worker_method returned " . $error);
 				else
 					unlink($file);
 
 				continue;
 			}
 
-			\bors_debug::syslog('tasks-airbase-error', "Unknown worker format in '$file': ".$worker);
+			\bors_debug::syslog('error-task-json', "Unknown worker format in '$file': ".$worker);
 		}
 	}
 }

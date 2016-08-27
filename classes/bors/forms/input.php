@@ -101,7 +101,7 @@ class bors_forms_input extends bors_forms_element
 		if($has_versioning || $previous)
 			$element_html .=  "<br/><small>".ec("Предыдущее значение: ").$previous."</small>\n";
 
-		if(defval($params, 'raw'))
+		if(defval($params, 'raw') || !$this->label())
 			return $element_html;
 
 		$element_tpl = $form->templater()->get('form_element_html');

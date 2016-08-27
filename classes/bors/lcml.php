@@ -216,7 +216,7 @@ class bors_lcml extends bors_object
 		return true;
 	}
 
-	function parse($text, $params = array())
+	function parse($text, $params = [])
 	{
 		$this->set_p('level', $this->p('level')+1);
 

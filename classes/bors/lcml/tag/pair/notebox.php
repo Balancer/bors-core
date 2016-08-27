@@ -14,6 +14,8 @@ class bors_lcml_tag_pair_notebox extends bors_lcml_tag_pair
 
 	static function __unit_test($suite)
 	{
+		config_set('lcml_cache_disable', true);
+
 		$code = '[notebox]тест тега[/notebox]';
 		$suite->assertEquals('<div class="yellow_box">тест тега</div>', lcml($code));
 	}

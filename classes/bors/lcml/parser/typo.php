@@ -38,6 +38,8 @@ class bors_lcml_parser_typo extends bors_lcml_parser
 
 	static function __unit_test($suite)
 	{
+		config_set('lcml_cache_disable', true);
+
 		$code = 'Оркестр <<Боян>>';
 		$suite->assertRegexp('#Оркестр &laquo;Боян&raquo;#', lcml($code));
 		$suite->assertRegexp('#Оркестр «Боян»#', lcml($code, ['output_type' => 'text']));

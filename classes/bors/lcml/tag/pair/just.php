@@ -14,6 +14,8 @@ class bors_lcml_tag_pair_just extends bors_lcml_tag_pair
 
 	static function __unit_test($suite)
 	{
+		config_set('lcml_cache_disable', true);
+
 		$code = '[just]Выравнивание по ширине[/just]';
 		$suite->assertEquals('<div align="justify">Выравнивание по ширине</div>', lcml($code));
 	}

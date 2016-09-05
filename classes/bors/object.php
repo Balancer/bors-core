@@ -938,6 +938,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			{
 				foreach($array as $key => $val)
 				{
+					if(preg_match('/^\*/', $key))
+						continue;
+
+					if(!preg_match('/^\w+$/', $key))
+						throw new \Exception(_("set: incorrect field name")." '{$key}'");
+
 					$method = "set_$key";
 //					echo "{$this->debug_title()}->{$method}($val, $db_update_flag);<br/>\n";
 					$this->$method($val, $db_update_flag);

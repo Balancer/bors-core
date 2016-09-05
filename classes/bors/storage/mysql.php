@@ -690,16 +690,28 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 				$object->storage()->storage_create();
 
-				if($object->replace_on_new_instance() || $object->attr('__replace_on_new_instance'))
-					$dbh->replace($table_name, $fields);
-				elseif($object->ignore_on_new_instance())
-					$dbh->insert_ignore($table_name, $fields);
-				else
-				{
-					if($object->get('insert_delayed_on_new_instance'))
-						$fields['*DELAYED'] = true;
+				$insert_type = popval($fields, '*insert_type');
 
-					$dbh->insert($table_name, $fields);
+				if(!$insert_type && ($object->replace_on_new_instance() || $object->attr('__replace_on_new_instance')))
+					$insert_type = 'REPLACE';
+
+				if(!$insert_type && $object->ignore_on_new_instance())
+					$insert_type = 'IGNORE';
+
+				switch($insert_type)
+				{
+					case 'REPLACE':
+						$dbh->replace($table_name, $fields);
+						break;
+					case 'IGNORE':
+						$dbh->insert_ignore($table_name, $fields);
+						break;
+					default:
+						if($object->get('insert_delayed_on_new_instance'))
+							$fields['*DELAYED'] = true;
+
+						$dbh->insert($table_name, $fields);
+						break;
 				}
 
 				// Закомментировано, так как не позволяет аплоадить изображения с ignore.

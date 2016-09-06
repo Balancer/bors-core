@@ -64,13 +64,13 @@ class bors_lib_date
 
 	static function part($date, $int = false, $on_empty_text = '', $short=false, $rp=false)
 	{
-		bors_function_include('time/part_date');
+		require_once BORS_CORE.'/inc/functions/time/part_date.php';
 		return part_date($date, $int, $on_empty_text, $short);
 	}
 
 	static function text($timestamp, $show_year = true)
 	{
-		bors_function_include('date/text_date');
+		require_once BORS_CORE.'/inc/functions/date/text_date.php';
 		return text_date($timestamp, $show_year);
 	}
 }

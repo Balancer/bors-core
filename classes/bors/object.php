@@ -437,8 +437,7 @@ class bors_object extends bors_object_simple
 		{
 			$trace = debug_backtrace();
 			$trace = array_shift($trace);
-			throw new Exception("__call[".__LINE__."]:
-undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>
+			throw new \Exception("undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>
 defined at {$this->class_file()}<br/>
 class_filemtime=".date('r', $this->class_filemtime())."<br/>
 ". (!empty($trace['file']) ? "called from {$trace['file']}:{$trace['line']}" : ''));

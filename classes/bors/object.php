@@ -1652,6 +1652,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function static_file()
 	{
+		// Thinks
+		//	1. cache static must be app-related. One code may be used by multiple apps.
+		//	2. default cache static root must be automatic defined for app.
+
 		$path = $this->url_ex($this->args('page'));
 		$data = url_parse($path);
 

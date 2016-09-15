@@ -9,6 +9,8 @@ class blib_null extends blib_object
 	function is_value() { return false; }
 	function is_array() { return false; }
 
+	static function factory($fuu = NULL) { return new blib_null; }
+
 	function __call($name, $args) { return $this; }
 	function __toString() { return  ''; }
 

@@ -1647,9 +1647,19 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		$file = @$data['local_path'];
 
+		//TODO: remove hardcode
+		if(!$file && file_exists($f = '/var/www/'.$data['host'].'/htdocs')) // Hardcode
+		{
+			$root = $f;
+			$file = $root.$data['path'];
+		}
 
+		//TODO: remove hardcode
 		if(!$file) // Hardcode
-			$file = $_SERVER['DOCUMENT_ROOT'].$data['path'];
+		{
+			$root = $_SERVER['DOCUMENT_ROOT'];
+			$file = $root.$data['path'];
+		}
 
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
@@ -1661,7 +1671,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($r = $this->get('cache_static_root'))
 			$file = $r.$rel_file;
 		elseif($r = config('cache_static.root'))
-			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $r, $file);
+			$file = str_replace($root, $r, $file);
 
 		return $file;
 	}

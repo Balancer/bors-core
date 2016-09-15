@@ -1660,6 +1660,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$data = url_parse($path);
 
 		$file = @$data['local_path'];
+		$root = @$data['root'];
 
 		//TODO: remove hardcode
 		if(!$file && file_exists($f = '/var/www/'.$data['host'].'/htdocs')) // Hardcode

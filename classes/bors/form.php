@@ -423,15 +423,16 @@ class bors_form extends bors_object
 				elseif($type == 'bool' || $edit_type == 'hidden' || $edit_type == 'bool')
 					$is_hidden = true;
 
-				if(!$is_hidden)
-					$html .= "\t<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$title}</th><td>\n\t\t";
+//				if(!$is_hidden)
+//					$html .= "\t<tr><th class=\"{$this->templater()->form_table_left_th_css()}\">{$title}</th><td>\n\t\t";
+				set_def($data, 'label', $title);
 
 				$data['form'] = $this;
 				$data['form_params'] = $params;
 				if(empty($data['view']))
 					$data['view'] = $params['view'];
 
-//				echo '<xmp>'; var_dump($edit_type, $data); echo '</xmp>';
+//				dump($edit_type, $data);
 
 				if(!$element)
 				{
@@ -593,7 +594,7 @@ class bors_form extends bors_object
 				}
 
 				$html .= $html_append;
-				$html .= "\t</td></tr>\n";
+//				$html .= "\t</td></tr>\n";
 			}
 
 			if($labels)

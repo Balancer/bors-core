@@ -85,6 +85,7 @@ class bors_forms_textarea extends bors_forms_element
 
 		$element_tpl = $form->templater()->get('form_element_html');
 		$row_tpl = $form->templater()->get('form_row_html');
-		return sprintf($row_tpl, $this->label_html2() , sprintf($element_tpl, $html));
+		$html_result = sprintf($row_tpl, $this->label_html2(), sprintf($element_tpl, $html));
+		return $html_result;
 	}
 }

@@ -328,29 +328,6 @@ function bors_include($file, $warn = false, $once = false)
 	echo $message;
 }
 
-function bors_function_include($req_name)
-{
-	static $defined = array();
-
-	if(preg_match('!^(\w+)/(\w+)$!', $req_name, $m))
-	{
-		$path = $m[1];
-		$name = $m[2];
-	}
-	else
-	{
-		$path = '';
-		$name = $req_name;
-	}
-
-	if(!empty($defined[$req_name]))
-		return;
-
-	$defined[$req_name] = true;
-
-	return require_once(BORS_CORE.'/inc/functions/'.$req_name.'.php');
-}
-
 function bors_use_mysql()
 {
 	bors_function_include('time/date_format_mysqltime');

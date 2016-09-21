@@ -69,7 +69,14 @@ class bors_request extends bors_object
 	//  Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; GTB7.5; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)
 	function is_ie8() { return preg_match('/compatible; MSIE 8.0; Windows/', @$_SERVER['HTTP_USER_AGENT']); }
 
-	function url() { return @$GLOBALS['bors_full_request_url']; }
+	function url()
+	{
+		if(!empty($GLOBALS['bors_full_request_url']))
+			return @$GLOBALS['bors_full_request_url'];
+
+		$request = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
+		return $request->getUri();
+	}
 
 	function url_data($name = NULL, $default = NULL)
 	{

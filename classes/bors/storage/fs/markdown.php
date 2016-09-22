@@ -51,6 +51,8 @@ class bors_storage_fs_markdown extends bors_storage
 		if(!$file)
 			return $object->set_is_loaded(false);
 
+		debug_log_var('markdown-file', $file);
+
 		$object->set_markup('bors_markup_markdown', false);
 
 		return self::load_from_file($object, $file);

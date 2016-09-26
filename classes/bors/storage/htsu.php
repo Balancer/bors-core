@@ -205,7 +205,7 @@ class bors_storage_htsu extends bors_storage
 
 		if($config_class = $this->ext('config', '-'))
 		{
-			$object->set('config_class', $config_class);
+			$object->set_attr('config_class', $config_class);
 			$object->reconfigure();
 		}
 
@@ -274,7 +274,7 @@ class bors_storage_htsu extends bors_storage
 
 	function save($object)
 	{
-		bors_debug::syslog('error-hts-storage', "Try to save index.hts:\nObject data=".print_r($object->data, true)."\nchanged_fields=".print_r($object->changed_objects, true));
+		bors_debug::syslog('error-hts-storage', "Try to save index.hts:\nObject data=[\n".print_r($object->data, true)."\n]\nchanged_fields=[\n".print_r($object->changed_fields, true)."]\n");
 	}
 
 	static function each($class_name, $where)

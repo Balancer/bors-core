@@ -14,7 +14,7 @@ class base_page extends bors_object
 
 	function _browser_title_def()
 	{
-		if($t = $this->get('browser_title', NULL, true))
+		if($t = $this->__get_ex('browser_title', NULL, true))
 			return $t;
 
 		return $this->page_title();
@@ -141,7 +141,7 @@ class base_page extends bors_object
 	function _body_def()
 	{
 		if(config('debug.execute_trace'))
-			debug_execute_trace("{$this->debug_title_short()}->body() begin...");
+			bors_debug::execute_trace("{$this->debug_title_short()}->body() begin...");
 
 		if($this->__havefc())
 			return $this->__lastc();
@@ -153,7 +153,7 @@ class base_page extends bors_object
 				bors_throw("Can't load body engine '{$body_class_name}' for class {$this}");
 
 			if(config('debug.execute_trace'))
-				debug_execute_trace("Go ".get_class($body_engine)."->debug_title_short()->body(object)...");
+				bors_debug::execute_trace("Go ".get_class($body_engine)."->debug_title_short()->body(object)...");
 
 			return $this->__setc($body_engine->body($this));
 		}

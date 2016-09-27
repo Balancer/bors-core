@@ -3,15 +3,16 @@
 /**
 	Всякая типографика. Подмена некоторых сочетаний ASCII-символов на типографские юникодные
 	Примеры:
-		Оркестр <<Боян>>
-		Знание -- сила!
-		Точность +/- километр.
+		Оркестр <<Боян>>		-> Оркестр «Боян»
+		Знание -- сила!			-> Знание — сила!
+		Точность +/- километр.	-> Точность ± километр.
 */
 
 class bors_lcml_parser_typo extends bors_lcml_parser
 {
 	function html($text)
 	{
+		bors_debug::syslog('000-html', 'trace: '.$text);
 		$text = str_replace('<<', '&laquo;', $text);
 		$text = str_replace('>>', '&raquo;', $text);
 		$text = str_replace('&lt;&lt;', '&laquo;', $text);
@@ -24,6 +25,7 @@ class bors_lcml_parser_typo extends bors_lcml_parser
 
 	function text($text)
 	{
+		bors_debug::syslog('000-text', 'trace: '.$text);
 		$text = str_replace('<<', '«', $text);
 		$text = str_replace('>>', '»', $text);
 		$text = str_replace('&lt;&lt;', '«', $text);
@@ -36,6 +38,8 @@ class bors_lcml_parser_typo extends bors_lcml_parser
 
 	static function __unit_test($suite)
 	{
+		config_set('lcml_cache_disable', true);
+
 		$code = 'Оркестр <<Боян>>';
 		$suite->assertRegexp('#Оркестр &laquo;Боян&raquo;#', lcml($code));
 		$suite->assertRegexp('#Оркестр «Боян»#', lcml($code, ['output_type' => 'text']));

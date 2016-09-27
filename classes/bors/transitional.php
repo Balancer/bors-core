@@ -18,6 +18,7 @@ class bors_transitional
 
 		require_once BORS_CORE.'/inc/functions/locale/ec.php';
 		require_once BORS_CORE.'/engines/bors.php';
+		require_once BORS_CORE.'/inc/navigation.php';
 	}
 
 	static function function_include($req_name)
@@ -159,4 +160,69 @@ function bors_config_ini($file)
 			foreach($data as $key => $value)
 				$GLOBALS['cms']['config'][$section_name.'.'.$key] = $value;
 	}
+}
+
+function register_project($project_name, $project_path)
+{
+	$GLOBALS['bors_data']['projects'][$project_name] = array(
+		'project_path' => $project_path,
+	);
+}
+
+function register_router($base_url, $base_class)
+{
+	if(preg_match('/^(\w+?)_(\w+)$/', $base_class, $m))
+		list($project, $sub) = array($m[1], $m[2]);
+
+	$path = @$GLOBALS['bors_data']['projects'][$project]['project_path'];
+
+	if(file_exists($r = "$path/classes/".str_replace('_', '/', $base_class)."/routes.php"))
+	{
+		$GLOBALS['bors_context']['base_url'] = $base_url;
+		$GLOBALS['bors_context']['base_class'] = $base_class;
+		require $r;
+		unset($GLOBALS['bors_context']['base_url']);
+		unset($GLOBALS['bors_context']['base_class']);
+	}
+
+	$GLOBALS['bors_data']['routers'][$base_url] = array(
+		'base_class' => $base_class,
+	);
+}
+
+// http://admin.aviaport.wrk.ru/projects/maks2013/
+function bors_route($map)
+{
+	$base_url = $GLOBALS['bors_context']['base_url'];
+	$base_class = $GLOBALS['bors_context']['base_class'];
+
+	foreach($map as $x)
+	{
+		if(preg_match('!^(\S+)\s*=>\s*(_\S+)$!', trim($x), $m))
+			$GLOBALS['bors_map'][] = $base_url.$m[1].' => '.$base_class.$m[2];
+//		var_dump($GLOBALS['bors_map']);
+	}
+}
+
+function bors_function_include($req_name)
+{
+	static $defined = array();
+
+	if(preg_match('!^(\w+)/(\w+)$!', $req_name, $m))
+	{
+		$path = $m[1];
+		$name = $m[2];
+	}
+	else
+	{
+		$path = '';
+		$name = $req_name;
+	}
+
+	if(!empty($defined[$req_name]))
+		return;
+
+	$defined[$req_name] = true;
+
+	return require_once(BORS_CORE.'/inc/functions/'.$req_name.'.php');
 }

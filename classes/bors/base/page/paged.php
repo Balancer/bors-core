@@ -171,6 +171,7 @@ class base_page_paged extends bors_page
 		return array_merge(parent::body_data(), array(
 			$this->items_name() => $items,
 			'items' => $items,
+			'table_columns' => $this->get('item_fields'),
 		));
 	}
 

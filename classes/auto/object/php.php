@@ -49,6 +49,9 @@ class auto_object_php extends bors_object
 
 		$class_path = str_replace('/', '_', trim($path, '/'));
 
+		if(!preg_match('/^[a-z]\w+/i', $class_path))
+			return $this->_object = NULL;
+
 		if(!$class_base)
 		{
 			if($class_base = config('classes_auto_base', config('project.name')))

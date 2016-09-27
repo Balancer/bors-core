@@ -167,11 +167,6 @@ if(defined('INCLUDES_APPEND'))
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . join(PATH_SEPARATOR, array_unique($includes)));
 
-function bors_function_include($name)
-{
-	require_once(BORS_CORE.'/inc/functions/'.$name.'.php');
-}
-
 require_once('inc/helpers.php');
 require_once('inc/debug.php');
 require_once('classes/inc/BorsMemCache.php');

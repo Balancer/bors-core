@@ -28,19 +28,24 @@
 {if $items}
 <table class="{$this->layout()->table_class()}">
 <thead>
-<tr>
+	<tr>
 {foreach $item_fields as $prop_name => $prop_title}
 	{$this->make_sortable_th($prop_name, $prop_title)}
 {/foreach}
-</tr>
+	</tr>
 </thead>
 <tbody>
 {foreach from=$items item="x"}
-<tr{if $x->get('items_list_table_row_class')} class="{join(' ', $x->get('items_list_table_row_class'))}"{/if}>
+	<tr{if $x->get('items_list_table_row_class')} class="{join(' ', $x->get('items_list_table_row_class'))}"{/if}>
 	{foreach $item_fields as $prop_name => $prop_title}
-		<td>{bors_objects_helper::get_mixed_hash($x, $prop_name, $prop_title)}</td>
+		{$val=bors_objects_helper::get_mixed_hash($x, $prop_name, $prop_title)}
+		{if is_array($val)}
+		<td{if $val.html5_data && $val.html5_data.sort} data-sort="{$val.html5_data.sort}"{/if}>{$val.value}</td>
+		{else}
+		<td>{$val}</td>
+		{/if}
 	{/foreach}
-</tr>
+	</tr>
 {/foreach}
 </tbody>
 </table>

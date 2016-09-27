@@ -27,6 +27,10 @@ function url_parse($url)
 	if(empty($data['root']) && !empty($vhost_data['document_root']))
 		$data['root'] = $vhost_data['document_root'];
 
+	//TODO: remove hardcode for App use.
+	if(empty($data['root']) && !empty($data['host']) && file_exists($r = '/var/www/'.$data['host'].'/htdocs'))
+		$data['root'] = $r;
+
 	$root = empty($data['root']) ? NULL : $data['root'];
 
 	//TODO: а вот это теперь, наверное, можно будет снести благодаря {if(empty($vhost_data) && $host == bors()->server()->host())} ...
@@ -39,8 +43,13 @@ function url_parse($url)
 	$data['local_path'] = NULL;
 	if(strlen($data['path']) > 6 && @file_exists($data['path']))
 		$data['local_path'] = $data['path'];
-	elseif($data['local'] = !empty($data['root']))
-	{
+	elseif(file_exists($data['root']))
+		$data['local_path'] = $data['root'].$data['path'];
+
+	$data['local'] = !empty($data['root']) && file_exists($data['root']);
+
+//	elseif($data['local'] = !empty($data['root']))
+//	{
 //		$relative_path = preg_replace('!^http://'.preg_quote($host, '!').'!', '', $url);
 /*		if($relative_path[0] != '/')
 		{
@@ -54,8 +63,8 @@ function url_parse($url)
 		else
 */
 //			$data['local_path'] = $data['root'].$relative_path;
-			$data['local_path'] = $data['root'].$data['path'];
-	}
+//			$data['local_path'] = $data['root'].$data['path'];
+//	}
 
 	//TODO: грязный хак
 	$data['local_path'] = preg_replace('!^(/var/www/files.balancer.ru/files/)[0-9a-f]{32}/(.*)$!', '$1$2', @$data['local_path']);

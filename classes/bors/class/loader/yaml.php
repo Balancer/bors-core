@@ -11,15 +11,13 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 		$data = $parse['data'];
 
 		if(!$data)
-			bors_throw('Empty YAML class data');
+			throw new \Exception(_('Empty YAML class data'));
 
-		$funcs = array();
+		$funcs = [];
 
 		if($properties = popval($data, 'properties'))
 		{
-			$table_fields = array();
-
-//			print_dd($properties);
+			$table_fields = [];
 
 			foreach($properties as $property => $fields)
 			{
@@ -27,7 +25,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				if(is_array($fields) && is_numeric($property))
 					list($property, $fields) = each($fields);
 
-				$desc = array();
+				$desc = [];
 
 				if(!is_array($fields) && preg_match('!^(.*)// (.+)$!', $fields, $m))
 				{
@@ -40,8 +38,6 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 					$desc['class'] = trim($m[2]);
 					$fields = trim($m[1]);
 				}
-
-//				var_dump($property); print_dd($fields);
 
 				// http://admin.aviaport.ru/directory/dict/groups/1/
 				if(is_array($fields))
@@ -57,8 +53,6 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				$table_fields[$property] = $desc;
 			}
 
-//			print_dd($table_fields);
-
 			$data['table_fields'] = $table_fields;
 		}
 
@@ -67,7 +61,6 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 //		if($table_fields)
 //			$data['storage_engine'] = popval($data, 'storage_engine', 'bors_storage_mysql');
 
-//		if(preg_match('/entity/', $class_name)) var_dump($data);
 		$class = "class ".popval($data, 'class', $class_name)." extends ".popval($data, 'extends', config('project.name').($properties ? '_object_db' : '_page'))
 			."\n{\n";
 
@@ -80,12 +73,12 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 		if(empty($data['class_file']))
 			$data['class_file'] = $class_file;
-// var_dump($data);
+
 		foreach($data as $key => $value)
 		{
 			if(is_array($value))
 			{
-				$value = "array(\n".self::tr_array($value, 3)."\n\t\t)";
+				$value = "[\n".self::tr_array($value, 3)."\n\t\t]";
 				// fields[]: values — это добавляемый к parent массив
 				if(preg_match('/^(\w+)\[\]$/', $key, $m))
 				{
@@ -113,9 +106,9 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 				$args = $m[2];
 			}
 			elseif(preg_match('/^\w+$/', $value))
-				$value = "'".addslashes($value)."'";
+				$value = "'$value'";
 			else
-				$value = "ec('".addslashes($value)."')";
+				$value = "_('".addslashes($value)."')";
 
 			$class .= "\n\tfunction $key($args) { return $value; }\n";
 		}
@@ -124,8 +117,6 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 			$class .= preg_replace('/^<\?php/', '', file_get_contents($inc_php));
 
 		$class .= "}\n";
-
-//		echo "\n====================\n$class\n======================\n";
 
 //		$generated_name = dirname($class_file)."/".array_pop(explode('_', $class_name)).".php";
 		$cached_class_file = config('cache_dir').'/classes/'.str_replace('_', '/', $class_name).'.php';
@@ -147,7 +138,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 
 	static function tr_array(&$data, $tabs)
 	{
-		$res = array();
+		$res = [];
 		$idx = 0;
 		foreach($data as $key => $val)
 		{
@@ -184,12 +175,12 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 			else
 			{
 				if(preg_match('/^\w+$/', $value))
-					$res .= "'".addslashes($value)."'";
+					$res .= "'$value'";
 				else
-					$res .= "ec('".addslashes($value)."')";
+					$res .= "_('".addslashes($value)."')";
 			}
 		}
 
-		return "array($res)";
+		return "[$res]";
 	}
 }

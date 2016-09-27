@@ -22,13 +22,22 @@ class bors_pages_helper
 		{
 			$links = array();
 
-			if($parent == 'http:///')
+			if(is_object($parent))
 			{
-				bors_debug::syslog('internal-errors', "Incorrect parent url for '{$obj}': $parent");
-				continue;
+				$parent_obj = $parent;
+				$parent = $parent_obj->url();
+			}
+			else
+			{
+				if($parent == 'http:///')
+				{
+					bors_debug::syslog('internal-errors', "Incorrect parent url for '{$obj}': $parent");
+					continue;
+				}
+
+				$parent_obj = object_load($parent);
 			}
 
-			$parent_obj = object_load($parent);
 //			echo "p($obj): $parent -> $parent_obj<br/>";
 			if(!$parent_obj || $parent_obj->internal_uri() == $obj->internal_uri())
 				continue;

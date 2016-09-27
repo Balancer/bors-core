@@ -234,7 +234,7 @@ class bors_class_loader
 
 		$data['class_mtime'] = filemtime($class_file);
 
-		bors_function_include('fs/file_put_contents_lock');
+		require_once BORS_CORE.'/inc/functions/fs/file_put_contents_lock.php';
 		mkpath(dirname($cached_class_info_json), 0775);
 
 		$flags = 0;

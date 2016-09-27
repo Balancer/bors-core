@@ -14,6 +14,8 @@ class bors_lcml_tag_pair_left extends bors_lcml_tag_pair
 
 	static function __unit_test($suite)
 	{
+		config_set('lcml_cache_disable', true);
+
 		$code = '[left]Выравнивание по левому краю[/left]';
 		$suite->assertEquals('<div align="left">Выравнивание по левому краю</div>', lcml($code));
 	}

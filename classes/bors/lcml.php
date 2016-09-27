@@ -216,7 +216,7 @@ class bors_lcml extends bors_object
 		return true;
 	}
 
-	function parse($text, $params = array())
+	function parse($text, $params = [])
 	{
 		$this->set_p('level', $this->p('level')+1);
 
@@ -557,15 +557,17 @@ class bors_lcml extends bors_object
 
 	static function lcml($text, $params = [])
 	{
-		$class_name = popval($params, 'lcml_class_name', 'bors_lcml');
+		$class_name = popval($params, 'lcml_class_name', get_called_class());
 
 		static $lcs;
 		if(!$lcs)
 			$lcs = [];
 
 		if(empty($lcs[$class_name]))
+			/** @var bors_lcml $lc */
 			$lc = $lcs[$class_name] = new $class_name($params);
 		else
+			/** @var bors_lcml $lc */
 			$lc = $lcs[$class_name];
 
 		$lc->set_p('prepare', popval($params, 'prepare'));

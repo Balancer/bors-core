@@ -22,7 +22,7 @@ function lt_img($params)
 		if(preg_match('!^(https?://lh\d+\.googleusercontent\.com/\S+)$!i', $params['url']))
 				$params['url'] .= '.jpg';
 
-	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && $m[1] != 'http')
+	if(preg_match('!(\w+)://\d+!', $params['url'], $m) && !preg_match('/https?/', $m[1]))
 		return lt_img_bors($params);
 
 	$url = bors()->main_object() ? bors()->main_object()->url() : NULL;
@@ -514,7 +514,7 @@ function lt_img_bors($params)
 	$uri = $params['url'];
 	$image = object_load($uri);
 	if(!$image)
-		return "Unknown image {$uri}";
+		return "Unknown image [517] {$uri} <!-- ".save_format(bors_debug::trace())." -->";
 
 	if(!($size = defval($params, 'size')))
 		$size = '200x';

@@ -91,7 +91,16 @@ function set_height($h, $dbup=true)
 	return $this->set('height', $h, $dbup);
 }
 
-function size() { return @$this->data['size']; }
+function size()
+{
+	if(!empty($this->data['size']))
+		return $this->data['size'];
+
+	$size = filesize($this->file_name_with_path());
+	$this->set_size($size);
+	return $size;
+}
+
 function set_size($v, $dbup=true) { return $this->set('size', $v, $dbup); }
 function extension() { return @$this->data['extension']; }
 function set_extension($v, $dbup=true) { return $this->set('extension', $v, $dbup); }

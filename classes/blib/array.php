@@ -14,8 +14,10 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 	{
 		if(is_array($init_value))
 			return $this->_value = $init_value;
+		elseif(!is_null($init_value))
+			return $this->_value = [$init_value];
 
-		$this->_value = array();
+		$this->_value = [];
 	}
 
 	static function factory($array = NULL) { return new blib_array($array); }
@@ -40,7 +42,7 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 
 	function first()
 	{
-		return reset($this->_value);
+		return empty($this->_value) ? blib_null::factory() : reset($this->_value);
 	}
 
 	function append_array(blib_array $array)
@@ -191,13 +193,11 @@ class blib_array extends blib_object implements ArrayAccess, Iterator
 	// и вернуть массив результатов
 	function extract($property_name)
 	{
-		$result = array();
+		$result = [];
 		foreach($this->_value as $x)
 			$result[] = $x->get($property_name);
 
-		$this->_value = $result;
-
-		return $this;
+		return self::factory($result);
 	}
 
 	/* Реализация методов интерфейса ArrayAccess */

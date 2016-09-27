@@ -121,7 +121,7 @@ function defvalset(&$data, $name, $default=NULL)
  */
 function popval(&$data, $name, $default=NULL)
 {
-	if(!$data || !array_key_exists($name, $data))
+	if(!$data || !is_array($data) || !array_key_exists($name, $data))
 		return $default;
 
 	$ret = $data[$name];

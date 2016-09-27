@@ -6,6 +6,7 @@ bors_url_map(array(
 
 	'/cache(/.*/\d*x\d*/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
 	'/cache(/.*/\d*x\d*\([^)]+\)/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
+	'/cache(/.*/\d*x\d*-[^/]+/[^/]+\.(jpe?g|png|gif|sjpg)) => bors_image_autothumb(1)',
 	'/cache(/.*/\d+x\d+/[^/]+) => bors_image_autothumb(1)',
 ));
 
@@ -31,10 +32,11 @@ $map = array(
 
 //	'(.*)\?edit => bors_admin_edit_page(1)',
 	'(.*)\?cdrop => bors_admin_tools_clean(1)',
-	'(.*)\?nc   => bors_admin_tools_clean(1)',
-	'(.*)\?new  => bors_admin_append_child(1)',
 	'(.*)\?edit => bors_admin_edit_smart(1)',
+	'(.*)\?new  => bors_admin_append_child(1)',
+	'(.*)\?nc   => bors_admin_tools_clean(1)',
 	'(.*)\?prop => bors_admin_property(1)',
+	'(.*)\?recalc => bors_admin_tools_clean(1,1)',
 
 	'(/_bors/)igo\?o=(.+) => bors_system_go_internal(2)',
 	'(/_bors/)ugo\?u=(.+) => bors_system_go_url(2)',

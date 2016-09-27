@@ -127,18 +127,27 @@ function quote_fix($text)
 	return $text;
 }
 
-function bors_text_clear($text, $morfology = true, $spacer = ' ')
+function bors_text_clear($text, $morfology = true, $spacer = ' ', $lowercase = true)
 {
-	require_once('classes/inc/text/Stem_ru.php');
+	if($morfology)
+		require_once('classes/inc/text/Stem_ru.php');
 
-	$text = preg_replace('/&\w+;/', ' ', $text);
-	$text = preg_replace('/&#\d+;/', ' ', $text);
 	$text = str_replace(
-		array('«','»','№'), 
-		array(' ',' ',' '),
+		['«','»','№', '>'],
+		[' ',' ',' ', '> '],
 		$text);
-	$text = preg_replace("![\x01-/ :-@ [-` {-~]!x", ' ', $text);
-	$result = trim(bors_lower(preg_replace('/\s{2,}/', ' ', $text)));
+
+	$text = strip_tags($text);
+
+	$text = preg_replace(
+		['/&\w+;/', '/&#\d+;/', "![\x01-, :-@ [-` {-~]!x", '/[^\w\.\-]/u'],
+		[' ', ' ', ' ', ' '],
+		$text);
+
+	$result = trim(preg_replace('/\s\s+/', ' ', $text));
+	if($lowercase)
+		$result = bors_lower($result);
+
 	if($morfology)
 	{
 		static $Stemmer = false;

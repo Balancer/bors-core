@@ -437,8 +437,7 @@ class bors_object extends bors_object_simple
 		{
 			$trace = debug_backtrace();
 			$trace = array_shift($trace);
-			throw new Exception("__call[".__LINE__."]:
-undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>
+			throw new \Exception("undefined method '$method' for class '<b>".get_class($this)."({$this->id()})</b>'<br/>
 defined at {$this->class_file()}<br/>
 class_filemtime=".date('r', $this->class_filemtime())."<br/>
 ". (!empty($trace['file']) ? "called from {$trace['file']}:{$trace['line']}" : ''));
@@ -631,13 +630,13 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function _nav_name_def()
 	{
-		if(($nav_name = $this->get('nav_name', NULL, true)))
+		if(($nav_name = $this->__get_ex('nav_name', NULL, true)))
 			return $nav_name;
 
 		return $this->get('nav_name_lower', config('nav_name_lower')) ? bors_lower($this->title()) : $this->title();
 	}
 
-	function _nav_name_true_def() { return $this->get('nav_name', NULL, true); }
+	function _nav_name_true_def() { return $this->__get_ex('nav_name', NULL, true); }
 
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 
@@ -938,6 +937,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			{
 				foreach($array as $key => $val)
 				{
+					if(preg_match('/^\*/', $key))
+						continue;
+
+					if(!preg_match('/^\w+$/', $key))
+						throw new \Exception(_("set: incorrect field name")." '{$key}'");
+
 					$method = "set_$key";
 //					echo "{$this->debug_title()}->{$method}($val, $db_update_flag);<br/>\n";
 					$this->$method($val, $db_update_flag);
@@ -1617,7 +1622,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	{
         $renderer = $this->renderer();
         if(config('debug.execute_trace'))
-            debug_execute_trace("{$this->debug_title_short()} renderer = {$renderer}");
+            bors_debug::execute_trace("{$this->debug_title_short()} renderer = {$renderer}");
 
         if($renderer)
             return $renderer->render($this);
@@ -1647,14 +1652,29 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function static_file()
 	{
+		// Thinks
+		//	1. cache static must be app-related. One code may be used by multiple apps.
+		//	2. default cache static root must be automatic defined for app.
+
 		$path = $this->url_ex($this->args('page'));
 		$data = url_parse($path);
 
 		$file = @$data['local_path'];
+		$root = @$data['root'];
 
+		//TODO: remove hardcode
+		if(!$file && file_exists($f = '/var/www/'.$data['host'].'/htdocs')) // Hardcode
+		{
+			$root = $f;
+			$file = $root.$data['path'];
+		}
 
+		//TODO: remove hardcode
 		if(!$file) // Hardcode
-			$file = $_SERVER['DOCUMENT_ROOT'].$data['path'];
+		{
+			$root = $_SERVER['DOCUMENT_ROOT'];
+			$file = $root.$data['path'];
+		}
 
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
@@ -1662,11 +1682,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$rel_file = @$data['path'];
 		if(preg_match('!/$!', $rel_file))
 			$rel_file .= $this->index_file();
-
+//var_dump($root, config('cache_static.root'), $file);
 		if($r = $this->get('cache_static_root'))
 			$file = $r.$rel_file;
 		elseif($r = config('cache_static.root'))
-			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $_SERVER['DOCUMENT_ROOT'].'/cache-static', $file);
+			// No "cache-static" concat. Because that already in cache_static.root.
+			$file = str_replace($root, $r, $file);
 
 		return $file;
 	}
@@ -1799,7 +1820,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		}
 
 		if(config('debug.execute_trace'))
-			debug_execute_trace("{$this->debug_title_short()}->direct_content()");
+			bors_debug::execute_trace("{$this->debug_title_short()}->direct_content()");
 
 		$this->hcom("get direct content");
 		$content = $this->direct_content();

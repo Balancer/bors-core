@@ -29,7 +29,12 @@ class bors_object_simple extends bors_object_empty
 		return bors_foo(get_called_class(), $id);
 	}
 
-	function get($name, $default = NULL, $skip_methods = false, $skip_properties = false)
+	function get($name, $default = NULL)
+	{
+		return $this->__get_ex($name, $default);
+	}
+
+	function __get_ex($name, $default = NULL, $skip_methods = false, $skip_properties = false)
 	{
 		static $get_lock = array();
 		$lock_name = $this->internal_uri().'.'.$name;

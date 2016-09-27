@@ -63,4 +63,13 @@ class bors_votes_thumb extends base_object_db
 
 		return join('', $result);
 	}
+
+	function item_list_fields()
+	{
+		return array(
+			'target_user' => 'Кому',
+			'ctime' => 'Когда',
+			'score_html' => 'Оценка',
+		);
+	}
 }

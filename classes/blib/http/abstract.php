@@ -388,7 +388,7 @@ array (size=22)
 			if($save_file)
 				@unlink($save_file);
 
-			bors_debug::syslog('error-curl-', "Curl ($url) error: ".$err_str);
+			bors_debug::syslog('warning-curl', "Curl ($url) error: ".$err_str);
 			return array('content' => NULL, 'content_type' => NULL, 'error' => $err_str);
 		}
 

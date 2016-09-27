@@ -18,7 +18,7 @@ class bors_global extends bors_object_simple
 			$this->__user = NULL;
 
 			if(config('debug.execute_trace'))
-				debug_execute_trace("bors()->user(): first load");
+				bors_debug::execute_trace("bors()->user(): first load");
 
 			$uc = config('user_class');
 			if(!$uc)
@@ -30,7 +30,7 @@ class bors_global extends bors_object_simple
 			}
 
 			if(config('debug.execute_trace'))
-				debug_execute_trace("bors()->user(): load $uc(-1)");
+				bors_debug::execute_trace("bors()->user(): load $uc(-1)");
 
 			$this->__user = bors_load($uc, -1);
 
@@ -38,7 +38,7 @@ class bors_global extends bors_object_simple
 				$this->__user->set_last_visit_time(time()); // global $now тут не прокатит, т.к. может вызываться до инициализации конфигов.
 
 			if(config('debug.execute_trace'))
-				debug_execute_trace("bors()->user(): done");
+				bors_debug::execute_trace("bors()->user(): done");
 		}
 
 		return $this->__user;
@@ -58,12 +58,12 @@ class bors_global extends bors_object_simple
      * @param bors_object $object
      * @return bors_object
      */
-    function set_main_object($object)
+    function set_main_object($object, $force = false)
 	{
 		if($object && $object->get('object_type') == 'project')
 			return $object;
 
-		if($this->__main_object && $object)
+		if($this->__main_object && $object && !$force)
 		{
 			bors_debug::syslog('__arch_error', "Set new main object '{$object->debug_title()}' with extsts '{$this->__main_object->debug_title()}'");
 			if(config('is_developer'))

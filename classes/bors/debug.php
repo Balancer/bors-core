@@ -280,7 +280,6 @@ class bors_debug
 		static $mem;
 		$now = microtime(true);
 
-		bors_function_include('debug/hidden_log');
 		$time = sprintf("%2.3f",  $now - $GLOBALS['stat']['start_microtime']);
 		if($timestamp)
 		{
@@ -397,5 +396,16 @@ class bors_debug
 	static function exec_time()
 	{
 		return microtime(true) - $GLOBALS['stat']['start_microtime'];
+	}
+
+	static function count_inc($category, $inc = 1)
+	{
+		if(empty($GLOBALS['bors_debug_counts']))
+			$GLOBALS['bors_debug_counts'] = [];
+
+		if(empty($GLOBALS['bors_debug_counts'][$category]))
+			$GLOBALS['bors_debug_counts'][$category] = 0;
+
+		$GLOBALS['bors_debug_counts'][$category] += $inc;
 	}
 }

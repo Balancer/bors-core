@@ -6,6 +6,7 @@
 
 class bors_lcml_parser
 {
+	/** @var bors_lcml $lcml */
 	protected $lcml	= NULL;
 
 	function __construct($lcml)
@@ -19,7 +20,7 @@ class bors_lcml_parser
 	function html($text) { return $text; }
 	function html_compact($text) { return $this->html($text); }
 	function html_simple($text) { return $this->html($text); }
-	function text($text) { return strip_tags($this->html($text)); }
+	function text($text) { return strip_tags(str_replace('>', '> ', $this->html($text))); }
 
 	function parse($text)
 	{

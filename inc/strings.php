@@ -44,30 +44,6 @@ bors_transitional::function_include('text/truncate');
 
 function stripq($text) { return str_replace('\\"', '"', $text); }
 
-function bors_hypher($string)
-{
-	require_once('inc/global-data.php');
-
-	if(is_global_key('hypher-cache', $string))
-		return global_key('hypher-cache', $string);
-
-	if(preg_match('/^[a-zA-Z0-9\-\/ ]*$/', $string))
-		return set_global_key('hypher-cache', $string, $string);
-
-	global $bors_3rd_glob_hypher;
-	if(empty($bors_3rd_glob_hypher))
-	{
-		require_once 'phphypher/hypher.php';
-		$bors_3rd_glob_hypher = hypher_load(BORS_3RD_PARTY.'/phphypher/hyph_ru_RU.conf');
-	}
-
-	$mb_enc = ini_get('mbstring.internal_encoding');
-	@ini_set('mbstring.internal_encoding', 'windows-1251');
-	$result = iconv('windows-1251', 'utf-8', hypher($bors_3rd_glob_hypher, iconv('utf-8', 'windows-1251//IGNORE', $string)));
-	@ini_set('mbstring.internal_encoding', $mb_enc);
-	return set_global_key('hypher-cache', $string, $result);
-}
-
 bors_transitional::function_include('natural/bors_plural');
 
 function bors_str_cat($string1, $string2, $explode_delimiter = ',', $join_delimiter = ', ')

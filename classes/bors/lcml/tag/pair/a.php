@@ -25,6 +25,7 @@ class bors_lcml_tag_pair_a extends bors_lcml_tag_pair
 	static function __unit_test($suite)
 	{
 		config_set('seo_domains_whitelist_regexp', 'balancer.ru');
+		config_set('lcml_cache_disable', true);
 
 		$code = '[a href="http://balancer.ru"]Сайт расходящихся тропок[/a]';
 		$html = lcml($code);

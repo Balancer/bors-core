@@ -5,7 +5,7 @@ use \Suin\RSSWriter\Channel;
 use \Suin\RSSWriter\Item;
 
 if(!class_exists('\\Suin\\RSSWriter\\Feed'))
-	bors_throw("Not installed \Suin\RSSWriter. Try to use: <br/>\ncomposer require suin/php-rss-writer");
+	throw new Exception("Not installed \Suin\RSSWriter. Try to use: <br/>\ncomposer require suin/php-rss-writer");
 
 class bors_rss2 extends bors_rss
 {
@@ -44,6 +44,9 @@ class bors_rss2 extends bors_rss
 			$channel->yandex_logo($feed_image);
 		}
 
+		if($feed_image_square = $rss->get('image_square'))
+			$channel->yandex_logo_square($feed_image_square);
+
 /*
 		foreach(explode(' ', 'copyright docs language') as $n)
 			if($x = $rss->get($n))
@@ -54,7 +57,7 @@ class bors_rss2 extends bors_rss
 			$item = new bal_suin_rsswriter_item();
 			$item->title($rss->item_title($o))
 				->url($rss->item_url($o))
-				->guid($rss->item_guid($o));
+				->guid($rss->item_guid($o), true);
 
 //			$item->description = $rss->rss_body($o, $rss->rss_strip());
 			if(($desc = $rss->item_body($o, $rss)))
@@ -63,12 +66,13 @@ class bors_rss2 extends bors_rss
 //			$item->descriptionHtmlSyndicated = true;
 			$item->pubDate(intval($o->create_time()));//$rss->item_rss_gmtime($o);
 //			$item->source = $rss->rss_source_url();
-//			$owner = $o->get('owner');
-//			if($owner)
-//				$item->author = $owner->title();
 
-			if($kws = $rss->item_keywords_string($o))
-				$item->category($kws);
+			$author = $rss->item_author($o);
+			if($author)
+				$item->author($author);
+
+			foreach($rss->item_categories($o) as $cat)
+				$item->category($cat);
 
 //			if($add = $rss->item_additional($o, $rss))
 //				$item->additionalElements = $add;
@@ -85,21 +89,45 @@ class bors_rss2 extends bors_rss
 			if($rss->get('is_yandex'))
 				$item->yandex_full($o->html());
 
+			if($g = $o->get('rss_yandex_genre'))
+				$item->yandex_genre($g);
+
 			$item->appendTo($channel);
 		}
 
 		$result = (string)$feed;
-		@header("Content-Type: ".$feed->contentType."; charset=".$feed->encoding);
+		@header("Content-Type: text/xml; charset=utf-8");
 		return $result;
 	}
 
 	function item_image($object) { return $object->get('image'); }
+
+	function item_author($object)
+	{
+		$a = $object->get('rss_author');
+		if($a)
+		{
+			if(is_object($a))
+				return $a->title();
+
+			return $a;
+		}
+
+		return NULL;
+	}
+
+	function item_categories($item)
+	{
+		$cats = $item->get('rss_categories', []);
+		return array_merge($cats, array_map('trim', explode(",", $this->item_keywords_string($item))));
+	}
 }
 
 class bal_suin_rsswriter_channel extends Channel
 {
 	private $image = NULL;
 	private $yandex_logo = NULL;
+	private $yandex_logo_square = NULL;
 
 	function image($image)
 	{
@@ -110,6 +138,12 @@ class bal_suin_rsswriter_channel extends Channel
 	function yandex_logo($image)
 	{
 		$this->yandex_logo = $image;
+		return $this;
+	}
+
+	function yandex_logo_square($image)
+	{
+		$this->yandex_logo_square = $image;
 		return $this;
 	}
 
@@ -154,8 +188,15 @@ class bal_suin_rsswriter_channel extends Channel
 		$NS = (object) $NS;
 
 		if($this->yandex_logo)
+			$xml->addChild('yandex:logo', $this->yandex_logo->url(), $NS->y);
+
+		if($this->yandex_logo_square)
 		{
-			$xml->addChild('yandex:logo', $this->yandex_logo->thumbnail('300x300(up)')->url(), $NS->y);
+			$xml->addChild('yandex:logo', $this->yandex_logo_square->url(), $NS->y)
+				->addAttribute('type', 'square');
+		}
+		elseif($this->yandex_logo)
+		{
 			$xml->addChild('yandex:logo', $this->yandex_logo->thumbnail('300x300(up,fillpad)')->url(), $NS->y)
 				->addAttribute('type', 'square');
 		}
@@ -167,10 +208,17 @@ class bal_suin_rsswriter_channel extends Channel
 class bal_suin_rsswriter_item extends Item
 {
 	private $yandex_full = NULL;
+	private $yandex_genre = NULL;
 
 	function yandex_full($text)
 	{
 		$this->yandex_full = $text;
+		return $this;
+	}
+
+	function yandex_genre($g)
+	{
+		$this->yandex_genre = $g;
 		return $this;
 	}
 
@@ -180,13 +228,24 @@ class bal_suin_rsswriter_item extends Item
 
 		if($this->yandex_full)
 		{
-			$NS = array(
+			$NS = [
 			   'y' => 'http://news.yandex.ru',
-			);
+			];
 
 			$NS = (object) $NS;
 
 			$xml->addChild('yandex:full-text', $this->yandex_full, $NS->y);
+		}
+
+		if($this->yandex_genre)
+		{
+			$NS = [
+			   'y' => 'http://news.yandex.ru',
+			];
+
+			$NS = (object) $NS;
+
+			$xml->addChild('yandex:genre', $this->yandex_genre, $NS->y);
 		}
 
 		return $xml;

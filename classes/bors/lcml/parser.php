@@ -6,6 +6,7 @@
 
 class bors_lcml_parser
 {
+	/** @var bors_lcml $lcml */
 	protected $lcml	= NULL;
 
 	function __construct($lcml)

@@ -1682,7 +1682,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$rel_file = @$data['path'];
 		if(preg_match('!/$!', $rel_file))
 			$rel_file .= $this->index_file();
-
+//var_dump($root, config('cache_static.root'), $file);
 		if($r = $this->get('cache_static_root'))
 			$file = $r.$rel_file;
 		elseif($r = config('cache_static.root'))

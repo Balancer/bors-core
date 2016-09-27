@@ -38,6 +38,10 @@ class bors_storage_htsu extends bors_storage
 
 		$dir = $object->dir();
 		$root = $object->document_root();
+
+		if(!$root)
+			$root = bors()->server()->root();
+
 		$base = $object->_basename();
 		$rel = secure_path(str_replace($root, '/', $dir));
 

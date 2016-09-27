@@ -1647,14 +1647,29 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function static_file()
 	{
+		// Thinks
+		//	1. cache static must be app-related. One code may be used by multiple apps.
+		//	2. default cache static root must be automatic defined for app.
+
 		$path = $this->url_ex($this->args('page'));
 		$data = url_parse($path);
 
 		$file = @$data['local_path'];
+		$root = @$data['root'];
 
+		//TODO: remove hardcode
+		if(!$file && file_exists($f = '/var/www/'.$data['host'].'/htdocs')) // Hardcode
+		{
+			$root = $f;
+			$file = $root.$data['path'];
+		}
 
+		//TODO: remove hardcode
 		if(!$file) // Hardcode
-			$file = $_SERVER['DOCUMENT_ROOT'].$data['path'];
+		{
+			$root = $_SERVER['DOCUMENT_ROOT'];
+			$file = $root.$data['path'];
+		}
 
 		if(preg_match('!/$!', $file))
 			$file .= $this->index_file();
@@ -1662,12 +1677,13 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$rel_file = @$data['path'];
 		if(preg_match('!/$!', $rel_file))
 			$rel_file .= $this->index_file();
-
+//var_dump($root, config('cache_static.root'), $file);
 		if($r = $this->get('cache_static_root'))
 			$file = $r.$rel_file;
 		elseif($r = config('cache_static.root'))
-			$file = str_replace($_SERVER['DOCUMENT_ROOT'], $_SERVER['DOCUMENT_ROOT'].'/cache-static', $file);
-
+			// No "cache-static" concat. Because that already in cache_static.root.
+			$file = str_replace($root, $r, $file);
+//var_dump($file);
 		return $file;
 	}
 

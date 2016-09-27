@@ -279,7 +279,12 @@ class App extends Obj
 		return $x;
 	}
 
-	function register_app($app_class, $base_url)
+	function reg($app_class, $base_url='')
+	{
+		return $this->register_app($app_class, $base_url);
+	}
+
+	function register_app($app_class, $base_url='')
 	{
 		$this->apps[] = $app_class::instance($base_url);
 		return $this;

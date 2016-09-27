@@ -11,7 +11,8 @@ class bors_image_png extends bors_object
 	function render($object)
 	{
 		$image = $object->image(); // Высчитываем картинку до передачи типа, чтобы видеть ошибки
-		header("Content-type: " . image_type_to_mime_type(IMAGETYPE_PNG));
+		if($image)
+			header("Content-type: " . image_type_to_mime_type(IMAGETYPE_PNG));
 		return $image;
 	}
 

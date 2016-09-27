@@ -86,6 +86,7 @@ class bors_storage_fs_markdown extends bors_storage
 					),
 					'Config' => 'config_class',
 					'Theme' => 'theme_class',
+					'Breadcrumb' => 'nav_name',
 			) as $md => $field)
 			{
 				if(!empty($data[$md]))
@@ -98,6 +99,18 @@ class bors_storage_fs_markdown extends bors_storage
 					unset($data[$md]);
 				}
 			}
+
+			$parents = popval($data, 'Parents', []);
+			if(empty($parents[0]))
+			{
+				$ud = url_parse($object->url());
+				if(($pd = dirname($ud['path'])) != '/')
+					$parents = [$pd.'/'];
+				else
+					$parents = ['/'];
+			}
+
+			$object->set_attr('parents', $parents);
 
 			foreach($data as $key => $value)
 			{

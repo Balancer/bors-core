@@ -79,6 +79,7 @@ class AutoMarkdown
 		$view->b2_configure();
 		bors()->set_main_object($view);
 		$view->set_request($this->request);
+		$view->set_attr('called_url', (string)$this->request->getUri());
 		$view->storage()->load($view);
 		return $view;
 	}

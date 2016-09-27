@@ -8,6 +8,8 @@ class bors_page_fs_markdown extends \B2\Page
 
 	function storage_engine() { return 'bors_storage_fs_markdown'; }
 
+	function _access_engine_def() { return \bors_access_public::class; }
+
 	function pre_show()
 	{
 		// Если путь не оканчивается на слеш, редиректим. Иначе могут быть проблемы с относительными путями.

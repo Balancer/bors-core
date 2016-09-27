@@ -268,6 +268,10 @@ class App extends Obj
 		if($view = $router->dispatch($request))
 			return $view;
 
+		$router = $this->router_instance('B2\\Router\\RegApps');
+		if($view = $router->dispatch($request))
+			return $view;
+
 //		r($namespace, $GLOBALS['B2_COMPOSER']->getPrefixesPsr4(), $view);
 
 		return $view;

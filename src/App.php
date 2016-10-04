@@ -8,6 +8,7 @@ class App extends Obj
 	var $is_initialized = false;
 	var $router = NULL;
 	var $apps = [];
+	var $packages = [];
 
 	/**
 	 * @param string $host
@@ -292,6 +293,15 @@ class App extends Obj
 	function register_app($app_class, $base_url='')
 	{
 		$this->apps[] = $app_class::instance($base_url);
+		return $this;
+	}
+
+	function register_package($package_name, $base_url='')
+	{
+		$app_class = \bors::$package_apps[$package_name];
+		$app = $app_class::instance($base_url);
+		$app->set_attr('package_name', $package_name);
+		$this->apps[] = $app;
 		return $this;
 	}
 

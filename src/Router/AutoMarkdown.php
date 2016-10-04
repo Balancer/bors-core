@@ -2,15 +2,9 @@
 
 namespace B2\Router;
 
-class AutoMarkdown
+class AutoMarkdown extends \B2\Router
 {
 	private $request;
-	private $app;
-
-	function __construct($app)
-	{
-		$this->app = $app;
-	}
 
 	static function instance($app)
 	{
@@ -29,7 +23,7 @@ class AutoMarkdown
 	{
 	}
 
-	function dispatch($request)
+	function dispatch($request, $method = 'GET')
 	{
 		$this->request = $request;
 
@@ -42,13 +36,20 @@ class AutoMarkdown
 		$reflection = new \ReflectionClass($this->app);
 		$namespace = $reflection->getNamespaceName() . "\\";
 
+		foreach($this->app->apps as $reg_app)
+		{
+			r($reg_app);
+		}
+
+		$path = $request->getUri()->getPath();
+
+
 		$prefixes = empty($GLOBALS['B2_COMPOSER']) ? NULL : $GLOBALS['B2_COMPOSER']->getPrefixesPsr4();
 		if(!empty($prefixes[$namespace]))
 		{
 			foreach($prefixes[$namespace] as $class_path)
 			{
-				$test_path = $class_path.str_replace("\\", '/', $camel_path);
-
+				$test_path = $class_path . str_replace("\\", '/', $camel_path);
 				foreach(glob($test_path.'.*') as $file)
 				{
 					if(preg_match('!^.+/(\w+\.md.tpl)$!', $file))

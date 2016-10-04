@@ -16,12 +16,13 @@ class App extends Obj
 	 */
 	static function instance($path = '/', $host = '')
 	{
-		static $instance = NULL;
+		static $instances = [];
 
-		if(!$instance)
+		$app_class = get_called_class();
+
+		if(empty($instance[$app_class]))
 		{
-			$caller = get_called_class();
-			$instance = new $caller(NULL);
+			$instance = new $app_class(NULL);
 			$instance->router = new \B2\Router($instance);
 			$instance->set_base_proto($host ? 'http://' : '');
 			$instance->set_base_host($host);

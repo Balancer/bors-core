@@ -28,13 +28,13 @@ class bors_storage_fs_markdown extends bors_storage
 
 		foreach(bors::$composer_webroots as $d)
 		{
-			if(is_file($file = secure_path("{$d}/webroot/{$rel}/{$base}/main.md")))
+			if(is_file($file = secure_path("{$d}/{$rel}/{$base}/main.md")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/webroot/{$rel}/{$base}/index.md")))
+			if(is_file($file = secure_path("{$d}/{$rel}/{$base}/index.md")))
 				return $file;
 
-			if(is_file($file = secure_path("{$d}/webroot/{$rel}/{$base}.md")))
+			if(is_file($file = secure_path("{$d}/{$rel}/{$base}.md")))
 				return $file;
 		}
 

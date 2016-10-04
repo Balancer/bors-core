@@ -5,12 +5,14 @@ namespace B2;
 class Router extends Obj
 {
 	private $dispatcher;
-	private $app;
+	protected $app;
 
 	function __construct($app)
 	{
 		$this->app = $app;
 	}
+
+	function app() { return $this->app; }
 
 	function init()
 	{

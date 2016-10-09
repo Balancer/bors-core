@@ -141,7 +141,7 @@ class driver_pdo implements Iterator
 		$err = $this->connection->errorInfo();
 		if($err[0] != "00000")
 			// Can't use bors_throw() because need silently catch in callers.
-			throw new Exception("PDO error on query «{$query}»: ".print_r($err, true));
+			throw new Exception("PDO error ".print_r($err, true)." on query «{$query}»");
 
 		if($row && count(array_keys($row)) == 2)
 			$row = array_pop($row);

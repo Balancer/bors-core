@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 class driver_pdo implements Iterator
 {
 	protected $connection = NULL;
@@ -113,7 +115,7 @@ class driver_pdo implements Iterator
 	{
 		bors_debug::timing_start('pdo_fetch');
 		$assoc = $this->result->fetch(PDO::FETCH_ASSOC);
-		$ics = config('internal_charset');
+		$ics = Cfg::get('internal_charset');
 		$dcs = configh('pdo_access', $this->database, 'charset');
 
 		if($assoc && $ics != $dcs)
@@ -151,7 +153,7 @@ class driver_pdo implements Iterator
 
 	function get_array($query)
 	{
-		$ics = config('internal_charset');
+		$ics = Cfg::get('internal_charset');
 		$icsi = $ics . '//IGNORE';
 		$dcs = configh('pdo_access', $this->database, 'charset');
 

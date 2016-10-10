@@ -25,7 +25,7 @@ class bors_page_db extends base_page_db
 
 	function body_template_class()
 	{
-		return config('body_template_class', $this->page_template_class());
+		return \B2\Cfg::get('body_template_class', $this->page_template_class());
 	}
 
 	function _body_template_def()
@@ -53,14 +53,14 @@ class bors_page_db extends base_page_db
 
 	function _page_template_class_def()
 	{
-		if($class_name = config('templates_page_engine'))
+		if($class_name = \B2\Cfg::get('templates_page_engine'))
 		{
 			if(strpos($class_name, '_'))
 				return $class_name;
 			return 'bors_templates_'.$class_name;
 		}
 
-		return config('page_template_class', 'bors_templates_smarty');
+		return \B2\Cfg::get('page_template_class', 'bors_templates_smarty');
 	}
 
 

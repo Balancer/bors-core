@@ -13,7 +13,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 	$title	= $object->title();
 
 	if(!$db)
-		$db = new driver_mysql(config('search_db'));
+		$db = new driver_mysql(\B2\Cfg::get('search_db'));
 
 	$object_id	= $object->id();
 	$class_name	= intval($object->class_id());
@@ -111,7 +111,7 @@ function bors_search_object_index($object, $append = 'ignore', $db = NULL)
 function index_split($text)
 {
 //	return str_word_count($text, 1);
-	if(config('charset', 'utf-8') == 'utf-8')
+	if(\B2\Cfg::get('charset', 'utf-8') == 'utf-8')
 		return preg_split('![ -,\./:-@\[-`\{-~\s¡-¿]+!u', trim($text));
 
 	return preg_split(ec('![^\wа-яА-Я\-]+!'), trim($text));
@@ -141,7 +141,7 @@ function bors_search_in_titles($query, $params = array())
 
 	include_once('classes/inc/text/Stem_ru.php');
 
-	$db = new driver_mysql(config('search_db'));
+	$db = new driver_mysql(\B2\Cfg::get('search_db'));
 
 	$Stemmer = new Lingua_Stem_Ru();
 
@@ -218,7 +218,7 @@ function bors_search_get_word_id($word, $db = NULL)
 		return $GLOBALS['bors_search_get_word_id_cache'][$word];
 
 	if(!$db)
-		$db = new driver_mysql(config('search_db'));
+		$db = new driver_mysql(\B2\Cfg::get('search_db'));
 
 	$word_id = $db->get("SELECT id FROM bors_search_words WHERE word = '".addslashes($word)."'");
 
@@ -262,7 +262,7 @@ function bors_search_get_word_id_array($words, $db = NULL)
 	$buffer = array();
 
 	if(!$db)
-		$db = new driver_mysql(config('search_db'));
+		$db = new driver_mysql(\B2\Cfg::get('search_db'));
 
 	$stemmed_map = bors_search_stem_array($words);
 	$list = array_map('addslashes', array_unique(array_values($stemmed_map)));
@@ -299,7 +299,7 @@ function search_titles_like($title, $limit=20, $forum=0)
 
 	include_once('classes/inc/text/Stem_ru.php');
 
-	$db = new driver_mysql(config('search_db'));
+	$db = new driver_mysql(\B2\Cfg::get('search_db'));
 
 	$Stemmer = new Lingua_Stem_Ru();
 
@@ -407,7 +407,7 @@ function bors_search_in_bodies($query, $where = array())
 	if(!$words)
 		return array();
 
-	$db = new driver_mysql(config('search_db'));
+	$db = new driver_mysql(\B2\Cfg::get('search_db'));
 
 	$Stemmer = new Lingua_Stem_Ru();
 

@@ -18,16 +18,16 @@ else
 
 config_set('default_template', 'default/index.html');
 
-if(!config('main_bors_db'))
+if(!\B2\Cfg::get('main_bors_db'))
 	config_set('main_bors_db', 'BORS');
 
-if(!config('main_bors_db'))
+if(!\B2\Cfg::get('main_bors_db'))
 	config_set('main_bors_db', 'BORS');
 
-if(!config('bors_local_db'))
+if(!\B2\Cfg::get('bors_local_db'))
 	config_set('bors_local_db', 'BORS');
 
-if(!config('bors_logs_db'))
+if(!\B2\Cfg::get('bors_logs_db'))
 	config_set('bors_logs_db', 'BORS_LOGS');
 
 config_set('bors.version_show', false);
@@ -50,24 +50,24 @@ config_set('url_truncate', false);
 config_set('upload_dir', 'uploads');
 
 // Кодировки
-if(!config('internal_charset'))
+if(!\B2\Cfg::get('internal_charset'))
 	config_set('internal_charset', strtolower(ini_get('default_charset')));		// Внутренняя кодировка фреймворка, обычно равна системной
-if(!config('internal_charset'))
+if(!\B2\Cfg::get('internal_charset'))
 	config_set('internal_charset', 'utf-8');		//	Если системная не указана, то считаем utf-8. Исправить на учёт наличия mb_* функций
-if(!config('output_charset'))
+if(!\B2\Cfg::get('output_charset'))
 	config_set('output_charset', 'utf-8');			// Кодировка, в которой данные отдаются браузеру и сохраняются в статический кеш
-if(!config('db_charset'))
+if(!\B2\Cfg::get('db_charset'))
 	config_set('db_charset', 'utf-8');				// Кодировка БД
-if(!config('locale'))
+if(!\B2\Cfg::get('locale'))
 	config_set('locale', 'ru_RU.UTF-8');
 
 config_set('3rdp_xmlrpc_path', 'xmlrpc-2.2.2');
 
-if(!config('project.name') && defined('BORS_SITE'))
+if(!\B2\Cfg::get('project.name') && defined('BORS_SITE'))
 	config_set('project.name', strtolower(basename(dirname(BORS_SITE))));
 
 // После установки кодировок -- использует internal_charset
-if(!config('cache_dir'))
+if(!\B2\Cfg::get('cache_dir'))
 	config_set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', bors::cache_namespace()));
 
 config_set('cache.webroot_dir', $_SERVER['DOCUMENT_ROOT'].'/cache');

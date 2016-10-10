@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 require_once('strings.php');
 
 	function strip_text($text, $len=192, $more_text = NULL, $microstyle = false, $wrap = 0)
@@ -74,7 +76,7 @@ require_once('strings.php');
 			$text = $res . $more_text;
 		}
 
-		if(config('is_test'))
+		if(Cfg::get('is_test'))
 			echo $text, PHP_EOL, PHP_EOL;
 
 		return $text;

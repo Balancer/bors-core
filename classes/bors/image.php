@@ -6,8 +6,8 @@ class bors_image extends bors_object_db
 
 	function object_type() { return 'image'; }
 
-	function db_name() { return config('bors_core_db'); }
-	function table_name() { return config('images_table', 'bors_images'); }
+	function db_name() { return \B2\Cfg::get('bors_core_db'); }
+	function table_name() { return \B2\Cfg::get('images_table', 'bors_images'); }
 
 	function ignore_on_new_instance() { return true; }
 
@@ -133,10 +133,10 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 //		if($rel_path[0] == '/')
 //			return $_SERVER['DOCUMENT_ROOT'].$rel_path;
 
-		return secure_path(config('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$rel_path);
+		return secure_path(\B2\Cfg::get('pics_base_dir', $_SERVER['DOCUMENT_ROOT']).'/'.$rel_path);
 	}
 
-	function _image_site_base_url_def() { return config('pics_base_url'); }
+	function _image_site_base_url_def() { return \B2\Cfg::get('pics_base_url'); }
 
 	function url_ex($page) { return $this->url(); }
 	function url()
@@ -154,7 +154,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 	function wxh($use_alt_title = true)
 	{
 		if($this->width() == 0 || $this->height() == 0)
-			$this->recalculate(config('cache_database') ? true : false);
+			$this->recalculate(\B2\Cfg::get('cache_database') ? true : false);
 
 		$w = $this->width() ? "width=\"{$this->width()}\"" : "";
 		$h = $this->height() ? "height=\"{$this->height()}\"" : "";
@@ -301,7 +301,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		if(is_null($dir))
 			$dir = popval($data, 'upload_dir');
 
-		if(config('image_upload_skip_subdirs') || !empty($data['no_subdirs']))
+		if(\B2\Cfg::get('image_upload_skip_subdirs') || !empty($data['no_subdirs']))
 			$this->set_relative_path(secure_path($dir));
 		else
 			$this->set_relative_path(secure_path($dir.'/'.sprintf("%03d", intval($this->id()/1000))));
@@ -445,7 +445,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 
 		if(!file_exists($file))
 		{
-			if(!config('bors-image-lasterror'))
+			if(!\B2\Cfg::get('bors-image-lasterror'))
 				config_set('bors-image-lasterror', "[365] Image not exists:\n$file");
 
 			return false;
@@ -494,7 +494,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		);
 	}
 
-	function _access_engine_def() { return config('access_public_class', 'access_base'); }
+	function _access_engine_def() { return \B2\Cfg::get('access_public_class', 'access_base'); }
 
 	function bb_code($append = '')
 	{
@@ -521,7 +521,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		{
 			foreach($thumbnails as $t)
 			{
-				if(class_exists('cloudflare_api') && ($api_key=config('cloudflare.api_key') && ($email=config('cloudflare.email'))))
+				if(class_exists('cloudflare_api') && ($api_key=\B2\Cfg::get('cloudflare.api_key') && ($email=\B2\Cfg::get('cloudflare.email'))))
 				{
 					$url = $t->url();
 //					echo "$url<br/>\n";
@@ -536,7 +536,7 @@ function set_moderated($v, $dbup=true) { return $this->set('moderated', $v, $dbu
 		else
 		{
 			// Хардкодная очистка предполагаемого превью 640x640.
-			if(class_exists('cloudflare_api') && ($api_key=config('cloudflare.api_key')) && ($email=config('cloudflare.email')))
+			if(class_exists('cloudflare_api') && ($api_key=\B2\Cfg::get('cloudflare.api_key')) && ($email=\B2\Cfg::get('cloudflare.email')))
 			{
 				$t = $this->thumbnail('640x640');
 				$url = $t->url();

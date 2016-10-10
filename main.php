@@ -52,14 +52,14 @@ if(
 }
 
 // Скажем, кто мы такие. Какой версии.
-if(config('bors.version_show'))
-	header('X-Bors-version: ' .config('bors.version_show').':'.str_replace('/var/www/', '', COMPOSER_ROOT).':'.str_replace('/var/www/', '', BORS_CORE));
+if(\B2\Cfg::get('bors.version_show'))
+	header('X-Bors-version: ' .\B2\Cfg::get('bors.version_show').':'.str_replace('/var/www/', '', COMPOSER_ROOT).':'.str_replace('/var/www/', '', BORS_CORE));
 
 // А такого не должно быть. Если лоадер вызывается непосредственно, нужно
 // разбираться, что это за фигня. Соответственно - в лог.
 if($_SERVER['REQUEST_URI'] == '/bors-loader.php')
 {
-	@file_put_contents($file = config('debug_hidden_log_dir')."/main-php-referers.log",
+	@file_put_contents($file = \B2\Cfg::get('debug_hidden_log_dir')."/main-php-referers.log",
 		@$_SERVER['HTTP_REFERER'] . "; IP=".@$_SERVER['REMOTE_ADDR']
 		."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
@@ -72,12 +72,12 @@ bors_client_analyze();
 $is_bot = bors()->client()->is_bot();
 $is_crawler = bors()->client()->is_crawler();
 
-// var_dump($is_bot, $is_crawler, config('bot_lavg_limit'));
+// var_dump($is_bot, $is_crawler, \B2\Cfg::get('bot_lavg_limit'));
 
 // Если это бот и включён лимит максимальной загрузки сервера
 // то проверяем. И если загрузка превышает допустимую - просим подождать
-//if($bot && config('bot_lavg_limit') && !in_array($bot, config('bot_whitelist', array())))
-if($is_crawler && config('bot_lavg_limit'))
+//if($bot && \B2\Cfg::get('bot_lavg_limit') && !in_array($bot, \B2\Cfg::get('bot_whitelist', array())))
+if($is_crawler && \B2\Cfg::get('bot_lavg_limit'))
 {
 	$cache = new BorsMemCache();
 	if(!($load_avg = $cache->get('system-load-average')))
@@ -87,7 +87,7 @@ if($is_crawler && config('bot_lavg_limit'))
 		$cache->set($load_avg, 30);
 	}
 
-	if($load_avg > config('bot_lavg_limit'))
+	if($load_avg > \B2\Cfg::get('bot_lavg_limit'))
 		bors_main_error_503('system_overload_crawlers', "$is_bot: LA=$load_avg");
 }
 
@@ -103,9 +103,9 @@ if(@$_SERVER['REQUEST_METHOD'] == 'POST')
 // Проверка на загрузку системы данным пользователем или ботом
 // Если делает много тяжёлых запросов - просим подождать.
 
-if(config('access_log')
-		&& !in_array($_SERVER['REMOTE_ADDR'], preg_split('/[,\s]+/', config('overload.skip_ips', '127.0.0.1')))
-		&& !config('locked_db_time')
+if(\B2\Cfg::get('access_log')
+		&& !in_array($_SERVER['REMOTE_ADDR'], preg_split('/[,\s]+/', \B2\Cfg::get('overload.skip_ips', '127.0.0.1')))
+		&& !\B2\Cfg::get('locked_db_time')
 	)
 {
 	$ip = $_SERVER['REMOTE_ADDR'];
@@ -117,20 +117,20 @@ if(config('access_log')
 	if($session_user_load_summary_pack[1] < time() - 60)
 		$session_user_load_summary = 0;
 
-	$common_overload = config('overload_time', 0);
-	$user_overload = config('user_overload_time', $common_overload);
-	$bot_overload = config('bot_overload_time', $common_overload);
+	$common_overload = \B2\Cfg::get('overload_time', 0);
+	$user_overload = \B2\Cfg::get('user_overload_time', $common_overload);
+	$bot_overload = \B2\Cfg::get('bot_overload_time', $common_overload);
 
-	if($is_bot && ($bl = config('limit.bot.'.$is_bot)))
+	if($is_bot && ($bl = \B2\Cfg::get('limit.bot.'.$is_bot)))
 		$bot_overload = $bl;
 
-//	$admin_overload = config('admin_overload_time', $common_overload);
+//	$admin_overload = \B2\Cfg::get('admin_overload_time', $common_overload);
 
 	if($user_overload || $bot_overload)
 	{
 		if(empty($session_user_load_summary))
 		{
-			$dbh = new driver_mysql(config('bors_local_db'));
+			$dbh = new driver_mysql(\B2\Cfg::get('bors_local_db'));
 			if($is_bot)
 				$session_user_load_summary = $dbh->select('bors_access_log', 'SUM(operation_time)', array(
 					'is_bot' => $is_bot,
@@ -158,7 +158,7 @@ if(config('access_log')
 
 // Если кодировка вывода в браузер не та же, что внутренняя - то перекодируем
 // все входные данные во внутреннюю кодировку
-if(($ics = config('internal_charset')) != ($ocs = config('output_charset')))
+if(($ics = \B2\Cfg::get('internal_charset')) != ($ocs = \B2\Cfg::get('output_charset')))
 	$_GET = array_iconv($ocs, $ics, $_GET);
 
 require_once('engines/bors/object_show.php');
@@ -166,7 +166,7 @@ require_once('engines/bors/vhosts_loader.php');
 
 $uri = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 
-if(config('bors.version_show'))
+if(\B2\Cfg::get('bors.version_show'))
 	@header("X-request-url: $uri");
 
 if($_SERVER['QUERY_STRING'] == 'del')
@@ -186,15 +186,15 @@ if($uri == 'http:///')
 /**********************************************************************************************************/
 // Собственно, самое главное. Грузим объект и показываем его.
 
-if(config('mode.debug'))
+if(\B2\Cfg::get('mode.debug'))
 	$res = bors::show_uri($uri);
 else
 	$res = bors::try_show_uri($uri);
 
 /** @var bors_object $object */
-$object = config('__main_object');
+$object = \B2\Cfg::get('__main_object');
 
-if(config('debug.execute_trace'))
+if(\B2\Cfg::get('debug.execute_trace'))
 	debug_execute_trace("process done. Return type is ".gettype($res)."; Next — changed save");
 
 try
@@ -206,7 +206,7 @@ catch(Exception $e)
 	$error = bors_lib_exception::catch_html_code($e, ec("<div class=\"red_box\">Ошибка сохранения</div>"));
 }
 
-if(config('debug.execute_trace'))
+if(\B2\Cfg::get('debug.execute_trace'))
 	debug_execute_trace("Changes saved");
 
 /**********************************************************************************************************/
@@ -215,9 +215,9 @@ if(config('debug.execute_trace'))
 
 $operation_time = microtime(true) - $GLOBALS['stat']['start_microtime'];
 
-if(config('access_log') && $operation_time > config('access_log.min_time', 0))
+if(\B2\Cfg::get('access_log') && $operation_time > \B2\Cfg::get('access_log.min_time', 0))
 {
-	if(config('debug.execute_trace'))
+	if(\B2\Cfg::get('debug.execute_trace'))
 		debug_execute_trace("Access log begin");
 
 	$data = array(
@@ -255,7 +255,7 @@ if(config('access_log') && $operation_time > config('access_log.min_time', 0))
 	if(!empty($access_log_mem_name))
 	{
 		bors_var::fast_set($access_log_mem_name, [$session_user_load_summary + $operation_time, time()], 600);
-//		if(config('is_debug'))
+//		if(\B2\Cfg::get('is_debug'))
 //			bors_debug::syslog('00-system_overload_set', $session_user_load_summary + $operation_time, 0);
 	}
 }
@@ -263,16 +263,16 @@ if(config('access_log') && $operation_time > config('access_log.min_time', 0))
 //echo count(session_var('test'));
 //set_session_var('test', print_r($_SERVER, true));
 
-if(config('debug.execute_trace'))
+if(\B2\Cfg::get('debug.execute_trace'))
 	debug_execute_trace("process done. Check work time...");
 
 // Общее время работы
 $time = microtime(true) - $GLOBALS['stat']['start_microtime'];
 
 // Если время работы превышает заданный лимит, то логгируем
-if($time > config('timing_limit'))
+if($time > \B2\Cfg::get('timing_limit'))
 {
-	@file_put_contents($file = config('timing_log'), $time . " [".$uri . "]: " . defval($_SERVER, 'HTTP_REFERER') . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
+	@file_put_contents($file = \B2\Cfg::get('timing_log'), $time . " [".$uri . "]: " . defval($_SERVER, 'HTTP_REFERER') . "; IP=".@$_SERVER['REMOTE_ADDR']."; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
 }
 
@@ -281,7 +281,7 @@ bors_debug::append_info($res);
 if(!empty($GLOBALS['bors_profiling']['mysql-queries']) && count($GLOBALS['bors_profiling']['mysql-queries']) > 30)
 	bors_debug::syslog('profiling-mysql', "Too many queries: ".print_r($GLOBALS['bors_profiling']['mysql-queries'], true));
 
-if($time >= config('debug.profile_min', 3.0))
+if($time >= \B2\Cfg::get('debug.profile_min', 3.0))
 {
 	if(function_exists('xhprof_enable'))
 	{
@@ -317,7 +317,7 @@ if($res)
 
 // Если дошли до сюда, то мы ничего не нашли. Дальше - обработка 404-й ошибки.
 
-if(config('404_logging'))
+if(\B2\Cfg::get('404_logging'))
 {
 	if(!empty($_SERVER['HTTP_REFERER']) && strpos($uri, 'files/') === false)
 	{
@@ -337,7 +337,7 @@ if(config('404_logging'))
 	$info[] = "user place = ".bors()->client()->place();
 	bors_log::info(join("\n", $info), $filename_404);
 
-	@file_put_contents($file = config('debug_hidden_log_dir')."/{$filename_404}.log", "[".date('r')."] $uri <= ".@$_SERVER['HTTP_REFERER']
+	@file_put_contents($file = \B2\Cfg::get('debug_hidden_log_dir')."/{$filename_404}.log", "[".date('r')."] $uri <= ".@$_SERVER['HTTP_REFERER']
 		. " ; IP=".@$_SERVER['REMOTE_ADDR']
 		. "; UA=".@$_SERVER['HTTP_USER_AGENT']."\n", FILE_APPEND);
 	@chmod($file, 0666);
@@ -345,7 +345,7 @@ if(config('404_logging'))
 
 @header("HTTP/1.0 404 Not Found");
 
-if($cn = config('404.class_name'))
+if($cn = \B2\Cfg::get('404.class_name'))
 {
 	if($object404 = bors_load($cn, $uri))
 	{
@@ -363,15 +363,15 @@ if($cn = config('404.class_name'))
 	}
 }
 
-if($url = config('404.url'))
+if($url = \B2\Cfg::get('404.url'))
 	return readfile($url);
 
-if(config('404_page_url'))
+if(\B2\Cfg::get('404_page_url'))
 {
-	return go(config('404_page_url'), true);
+	return go(\B2\Cfg::get('404_page_url'), true);
 }
 
-if(config('404_show', true))
+if(\B2\Cfg::get('404_show', true))
 	echo ec("Page '$uri' not found at ".gethostname()."\n<!--\nBORS_SITE=".BORS_SITE."\nBORS_CORE=".BORS_CORE."\n-->");
 
 return false;
@@ -386,7 +386,7 @@ function bors_main_error_503($logfile = NULL, $message = 'error 503', $trace = f
 	if($logfile)
 		bors_debug::syslog($logfile, $message, $trace);
 
-	if($url = config('503.url'))
+	if($url = \B2\Cfg::get('503.url'))
 		readfile($url);
 	else
 		echo "Service Temporarily Unavailable";

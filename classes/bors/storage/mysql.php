@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 class bors_storage_mysql extends bors_storage implements Iterator
 {
 	function __construct($object = NULL)
@@ -264,7 +266,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$table_prefix = '`'.$object->table_name().'`.';
 
-//		if(config('is_developer')) { bors_use('debug/print_dd'); echo "<b>Load: {$object->class_name()}</b><br/>"; print_dd($where); print_dd(bors_lib_orm::main_fields($object)); }
+//		if(Cfg::get('is_developer')) { bors_use('debug/print_dd'); echo "<b>Load: {$object->class_name()}</b><br/>"; print_dd($where); print_dd(bors_lib_orm::main_fields($object)); }
 		foreach(bors_lib_orm::main_fields($object) as $f)
 		{
 			if(preg_match('/^\w+$/', $sql_name = $f['sql_name']))
@@ -373,7 +375,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 		$num_objects = count($datas);
 
-		if($num_objects > 200 && config('debug.profiling'))
+		if($num_objects > 200 && Cfg::get('debug.profiling'))
 			bors_debug::syslog('profiling', "Load {$num_objects} of $class_name");
 
 		foreach($datas as $data)
@@ -857,7 +859,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	static function drop_table($class_name)
 	{
-		if(!config('can-drop-tables'))
+		if(!Cfg::get('can-drop-tables'))
 			return bors_throw(ec('Удаление таблиц запрещено'));
 
 		$class = bors_foo($class_name);
@@ -906,7 +908,7 @@ class bors_storage_mysql extends bors_storage implements Iterator
 
 	function storage_create()
 	{
-		if(config('mysql_tables_autocreate') && !$this->storage_exists())
+		if(Cfg::get('mysql_tables_autocreate') && !$this->storage_exists())
 			$this->create_table();
 	}
 
@@ -1012,7 +1014,7 @@ array(2) {
 				$condition = "{$m[2]} {$m[3]} ".$bf($m[4]);
 		}
 
-//		if(config('is_developer') && preg_match('/Date/', $condition)) { var_dump($condition); exit(); }
+//		if(Cfg::get('is_developer') && preg_match('/Date/', $condition)) { var_dump($condition); exit(); }
 
 		return $condition;
 	}

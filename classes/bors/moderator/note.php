@@ -2,7 +2,7 @@
 
 class bors_moderator_note extends bors_page_db
 {
-	function db_name() { return config('main_bors_db'); }
+	function db_name() { return \B2\Cfg::get('main_bors_db'); }
 	function table_name() { return 'moderator_notes'; }
 	function table_fields()
 	{

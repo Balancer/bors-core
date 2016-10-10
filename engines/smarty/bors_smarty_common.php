@@ -34,5 +34,5 @@ function smarty_template($template_name, $callers_dir = NULL)
 			return 'xfile:'.$file;
 	}
 
-	return false; // config('default_template', BORS_CORE.'/templates/default/index.html');
+	return false; // \B2\Cfg::get('default_template', BORS_CORE.'/templates/default/index.html');
 }

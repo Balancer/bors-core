@@ -97,8 +97,8 @@ class bors_object_db2 extends bors_object
 		return $fields;
 	}
 
-	function url() { return config('main_site_url').'/'.$this->_item_name_m().'/'.$this->id().'/'; }
-	function admin_url() { return config('admin_site_url').'/'.$this->_item_name_m().'/'.$this->id().'/'; }
+	function url() { return \B2\Cfg::get('main_site_url').'/'.$this->_item_name_m().'/'.$this->id().'/'; }
+	function admin_url() { return \B2\Cfg::get('admin_site_url').'/'.$this->_item_name_m().'/'.$this->id().'/'; }
 
 	function auto_objects()
 	{

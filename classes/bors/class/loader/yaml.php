@@ -61,7 +61,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 //		if($table_fields)
 //			$data['storage_engine'] = popval($data, 'storage_engine', 'bors_storage_mysql');
 
-		$class = "class ".popval($data, 'class', $class_name)." extends ".popval($data, 'extends', config('project.name').($properties ? '_object_db' : '_page'))
+		$class = "class ".popval($data, 'class', $class_name)." extends ".popval($data, 'extends', \B2\Cfg::get('project.name').($properties ? '_object_db' : '_page'))
 			."\n{\n";
 
 		if($table_fields)
@@ -119,7 +119,7 @@ class bors_class_loader_yaml extends bors_class_loader_meta
 		$class .= "}\n";
 
 //		$generated_name = dirname($class_file)."/".array_pop(explode('_', $class_name)).".php";
-		$cached_class_file = config('cache_dir').'/classes/'.str_replace('_', '/', $class_name).'.php';
+		$cached_class_file = \B2\Cfg::get('cache_dir').'/classes/'.str_replace('_', '/', $class_name).'.php';
 
 		mkpath(dirname($cached_class_file), 0750);
 		if(is_writable(dirname($cached_class_file)))

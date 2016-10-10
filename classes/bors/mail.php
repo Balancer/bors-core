@@ -28,7 +28,7 @@ class bors_mail extends bors_page
 		$mail_class = get_called_class();
 		$mail = new $mail_class(NULL);
 
-		$mail->from(config('mail_sender_default', 'noreplay@localhost'));
+		$mail->from(\B2\Cfg::get('mail_sender_default', 'noreplay@localhost'));
 
 		foreach($params as $name => $value)
 			call_user_func(array($mail, $name), $value);
@@ -248,7 +248,7 @@ class bors_mail extends bors_page
 
 //		print_r($body); print_r($headers); exit();
 
-		$mail = @Mail::factory(config('mail_transport', 'mail'), config('mail_transport_parameters', NULL));
+		$mail = @Mail::factory(\B2\Cfg::get('mail_transport', 'mail'), \B2\Cfg::get('mail_transport_parameters', NULL));
 		$mail->send($this->to, $headers, $body);
 //		echo "to=$to, body=$body"; var_dump($hdrs); exit();
 

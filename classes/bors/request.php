@@ -4,7 +4,7 @@ class bors_request extends bors_object
 {
 	function can_cached() { return true; }
 
-	static function is_utf8() { return config('internal_charset') == 'utf-8'; }
+	static function is_utf8() { return \B2\Cfg::get('internal_charset') == 'utf-8'; }
 
 	static function data($key = NULL, $default = NULL) { return $key ? defval($_GET, $key, $default) : $_GET; }
 

@@ -59,12 +59,12 @@ class App extends Obj
 
 	function _title_def()
 	{
-		return config('project.title');
+		return \B2\Cfg::get('project.title');
 	}
 
 	function _nav_name_def()
 	{
-		return config('project.nav_name');
+		return \B2\Cfg::get('project.nav_name');
 	}
 
 	/**

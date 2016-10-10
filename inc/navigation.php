@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 function goq($uri, $permanent = false, $time = 0, $exit = false)
 {
 	if(strpos($uri, '?') === false && !empty($_SERVER['QUERY_STRING']))
@@ -18,9 +20,9 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 	if(!empty($_GET['inframe']))
 		$uri = url_append_param($uri, 'inframe', 'yes');
 
-	config_set('_debug_go_uri', $uri);
+	Cfg::set('_debug_go_uri', $uri);
 
-	if(config('debug_redirect_trace'))
+	if(Cfg::get('debug_redirect_trace'))
 	{
 		$body = ec("<p>Это режим отладки переходов. При его
 			отключении Вы автоматически будете перемещены по ссылке
@@ -48,13 +50,13 @@ function go($uri, $permanent = false, $time = 0, $exit = false)
 		return true;
 	}
 
-	if(config('do_not_exit'))
+	if(Cfg::get('do_not_exit'))
 		return true;
 
-	if(config('bors.version_show'))
+	if(Cfg::get('bors.version_show'))
 		@header("X-bors-go: {$uri}");
 
-    if(!headers_sent($filename, $linenum) && $time==0 && !config('redirect_by_html'))
+    if(!headers_sent($filename, $linenum) && $time==0 && !Cfg::get('redirect_by_html'))
     {
 		if($permanent)
             header("Status: 301 Moved Permanently");

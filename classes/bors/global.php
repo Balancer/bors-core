@@ -17,19 +17,19 @@ class bors_global extends bors_object_simple
 			// Блокируем реентерабельность, иначе на ошибках легко словить бесконечный цикл.
 			$this->__user = NULL;
 
-			if(config('debug.execute_trace'))
+			if(\B2\Cfg::get('debug.execute_trace'))
 				bors_debug::execute_trace("bors()->user(): first load");
 
-			$uc = config('user_class');
+			$uc = \B2\Cfg::get('user_class');
 			if(!$uc)
 			{
-				if(!config('user_class_skip'))
+				if(!\B2\Cfg::get('user_class_skip'))
 					bors_debug::syslog('warning-users', 'Not defined user_class', true, ['dont_show_user' => true]);
 
 				return NULL;
 			}
 
-			if(config('debug.execute_trace'))
+			if(\B2\Cfg::get('debug.execute_trace'))
 				bors_debug::execute_trace("bors()->user(): load $uc(-1)");
 
 			$this->__user = bors_load($uc, -1);
@@ -37,7 +37,7 @@ class bors_global extends bors_object_simple
 			if($this->__user && $this->__user->get('last_visit_time') < time()-300) // не стоит обновляться чаще раза в 5 минут
 				$this->__user->set_last_visit_time(time()); // global $now тут не прокатит, т.к. может вызываться до инициализации конфигов.
 
-			if(config('debug.execute_trace'))
+			if(\B2\Cfg::get('debug.execute_trace'))
 				bors_debug::execute_trace("bors()->user(): done");
 		}
 
@@ -66,7 +66,7 @@ class bors_global extends bors_object_simple
 		if($this->__main_object && $object && !$force)
 		{
 			bors_debug::syslog('__arch_error', "Set new main object '{$object->debug_title()}' with extsts '{$this->__main_object->debug_title()}'");
-			if(config('is_developer'))
+			if(\B2\Cfg::get('is_developer'))
 			{
 				echo "Set main object {$object}";
 				echo bors_debug::trace();

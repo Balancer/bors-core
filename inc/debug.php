@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 //if(!function_exists('bors_function_include')) var_dump(debug_backtrace());
 
 require_once('inc/texts.php');
@@ -38,7 +40,7 @@ function debug_exit($message)
 	if(bors()->main_object())
 		$message .= "<br/>\nmain_object->class_file=".bors()->main_object()->class_file();
 
-	if(config('debug.timing'))
+	if(Cfg::get('debug.timing'))
 	{
 		// Общее время работы
 		$time = microtime(true) - $GLOBALS['stat']['start_microtime'];
@@ -60,7 +62,7 @@ function debug_exit($message)
 		$deb .= "Total time: $time sec.\n";
 		$deb .= "-->\n";
 
-		if(config('is_developer'))
+		if(Cfg::get('is_developer'))
 			bors_debug::syslog('debug_timing', $deb, false);
 
 		echo str_replace("\n", "<br/>\n", $deb);
@@ -72,14 +74,14 @@ function debug_exit($message)
 
 function set_loglevel($n, $file=false)
 {
-	config_set('log_level', /*$_GET['log_level'] = */ $n);
+	Cfg::set('log_level', /*$_GET['log_level'] = */ $n);
 	if($file === false)
 	return;
 
 	$GLOBALS['echofile'] = $file;
 }
 
-function loglevel($check) { return $check <= max(config('log_level'), @$_GET['log_level']); }
+function loglevel($check) { return $check <= max(Cfg::get('log_level'), @$_GET['log_level']); }
 
 function debug_only_one_time($mark, $trace=true, $times = 1)
 {
@@ -94,7 +96,7 @@ function debug_only_one_time($mark, $trace=true, $times = 1)
 
 function echolog($message, $level=3)
 {
-	$log_level = max(config('log_level'), @$_GET['log_level']);
+	$log_level = max(Cfg::get('log_level'), @$_GET['log_level']);
 	if(!$log_level)
 		$log_level = 2;
 
@@ -177,10 +179,10 @@ function bors_system_error_handler($errno, $errstr, $errfile, $errline, $errcont
 		return false;
 
 	// Примеры также в http://www.homefilm.info/php42/error-handling.html
-	if(!($out_dir = config('debug_hidden_log_dir')))
+	if(!($out_dir = Cfg::get('debug_hidden_log_dir')))
 		return false;
 
-	$dir = config('debug_hidden_log_dir').'/errors';
+	$dir = Cfg::get('debug_hidden_log_dir').'/errors';
 	if(!is_dir($dir))
 	{
 		@mkdir($dir);

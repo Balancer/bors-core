@@ -432,7 +432,7 @@ class bors_storage_dbal extends bors_storage implements Iterator
 
 	static function drop_table($class_name)
 	{
-		if(!config('can-drop-tables'))
+		if(!\B2\Cfg::get('can-drop-tables'))
 			return bors_throw(ec('Удаление таблиц запрещено'));
 
 		$class = new $class_name(NULL);

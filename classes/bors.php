@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 if(empty($GLOBALS['stat']['start_microtime']))
 	$GLOBALS['stat']['start_microtime'] = microtime(true);
 
@@ -58,8 +60,8 @@ class bors
 
 		$GLOBALS['now'] = time();
 
-		if(!config('cache_dir'))
-			config_set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', bors::cache_namespace()));
+		if(!Cfg::get('cache_dir'))
+			Cfg::set('cache_dir', sys_get_temp_dir().DIRECTORY_SEPARATOR.'bors-cache'.DIRECTORY_SEPARATOR.join('-', bors::cache_namespace()));
 
 		// Грузим вначале, т.к. там прописаны рабочие каталоги и т.п.
 		if(file_exists($f = COMPOSER_ROOT.'/bors/autoload.php'))
@@ -122,10 +124,10 @@ class bors
 
 		$res = false;
 
-		if(config('debug.execute_trace'))
+		if(Cfg::get('debug.execute_trace'))
 			debug_execute_trace("bors_load_uri('$uri');");
 
-		config_set('__main_object_load', true); // костыли, ну и фиг с ними. Боком нигде не должно вылезти.
+		Cfg::set('__main_object_load', true); // костыли, ну и фиг с ними. Боком нигде не должно вылезти.
 
 		$uri_info = parse_url($uri);
 
@@ -154,13 +156,13 @@ class bors
 
 		if($object)
 		{
-			config_set('__main_object_load', false);
-			config_set('__main_object', $object);
+			Cfg::set('__main_object_load', false);
+			Cfg::set('__main_object', $object);
 
 			// Если это редирект
 			if(!is_object($object))
 			{
-				if(config('bors.version_show'))
+				if(Cfg::get('bors.version_show'))
 					header('X-bors-object: redirect to '.$object);
 
 				return go($object);
@@ -172,13 +174,13 @@ class bors
 //				\Tracy\Debugger::fireLog($object->class_file());
 			}
 
-			if(config('bors.version_show'))
+			if(Cfg::get('bors.version_show'))
 				@header('X-bors-object: '.$object->internal_uri());
 
 			// Новый метод вывода, полностью на самом объекте
 			if(method_exists($object, 'show'))
 			{
-				if(config('debug.execute_trace'))
+				if(Cfg::get('debug.execute_trace'))
 					debug_execute_trace("{$object}->show()");
 
 				$res = $object->show();
@@ -186,7 +188,7 @@ class bors
 
 			if(!$res)	// Если новый метод не обработан, то выводим как раньше.
 			{
-				if(config('debug.execute_trace'))
+				if(Cfg::get('debug.execute_trace'))
 					debug_execute_trace("bors_object_show($object)");
 
 				$res = bors_object_show($object);
@@ -216,7 +218,7 @@ class bors
 				bors_message(ec("При попытке просмотра этой страницы возникла ошибка:\n")
 					."<div class=\"red_box alert alert-danger\">$message</div>\n"
 					.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n<span style=\"color: #ccc\">~~~1</span>")
-					.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
+					.(Cfg::get('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
 //					'template' => 'xfile:default/popup.html',
 				));
 			}
@@ -226,7 +228,7 @@ class bors
 				bors_message(ec("При попытке просмотра этой страницы возникли ошибки:\n")
 					."<div class=\"red_box\">$message</div>\n"
 					.ec("Администраторы будут извещены об этой проблеме и постараются её устранить. Извините за неудобство.\n~~~2")
-					.(config('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
+					.(Cfg::get('site.is_dev') ? "<pre>$trace</pre>" : "<!--\n\n$trace\n\n-->"), array(
 					'template' => 'xfile:default/popup.html',
 				));
 			}
@@ -264,15 +266,15 @@ class bors
 		elseif($_SERVER['HTTP_HOST'] != gethostbyname(gethostname()))
 			$ns_parts[] = 'unknown';
 
-		$ns_parts[] = config('project.name');
+		$ns_parts[] = Cfg::get('project.name');
 
 		if($user_perms && !empty($_SERVER['USER']))
 			$ns_parts[] = strtolower($_SERVER['USER']);
 
-		if(($cs = config('internal_charset')) && $cs != 'utf-8')
+		if(($cs = Cfg::get('internal_charset')) && $cs != 'utf-8')
 			$ns_parts[] = 'i'.$cs;
 
-		if(($cs = config('output_charset')) && $cs != 'utf-8')
+		if(($cs = Cfg::get('output_charset')) && $cs != 'utf-8')
 			$ns_parts[] = 'o'.$cs;
 
 		if(!empty($_SERVER['BORS_INSTANCE']))

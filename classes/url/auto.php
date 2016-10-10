@@ -24,13 +24,13 @@ class url_auto extends url_base
 			}
 		}
 
-		$site_url = config('main_site_url');
+		$site_url = \B2\Cfg::get('main_site_url');
 		$class_name = $obj->class_name();
 //		$admin_class_name = $obj->class_name();
 
 		if(preg_match('/_admin_/', $class_name))
 		{
-			$site_url = config('admin_site_url');
+			$site_url = \B2\Cfg::get('admin_site_url');
 //			$admin_class_name = $class_name;
 //			$class_name = str_replace('_admin_', '_', $class_name);
 		}
@@ -38,7 +38,7 @@ class url_auto extends url_base
 		if(!$path)
 		{
 			// aviaport_directory_airline -> directory_airline
-			$rel_class_name = str_replace(config('classes_auto_base'), '', $class_name);
+			$rel_class_name = str_replace(\B2\Cfg::get('classes_auto_base'), '', $class_name);
 			// directory_airline -> /directory/airlines/
 //			$path = str_replace('_', '/', \blib_grammar::plural($rel_class_name)).'/';
 			$rel_class_name = ltrim($rel_class_name, '_');

@@ -56,7 +56,7 @@ class blib_urls
 	{
 		$url_data = url_parse($url);
 		$external = empty($url_data['local']);
-		$blacklist = $external && !preg_match('!'.config('seo_domains_whitelist_regexp', @$_SERVER['HTTP_HOST']).'!', $url_data['host']);
+		$blacklist = $external && !preg_match('!'.\B2\Cfg::get('seo_domains_whitelist_regexp', @$_SERVER['HTTP_HOST']).'!', $url_data['host']);
 		return $blacklist ? ' rel="nofollow"' : '';
 	}
 

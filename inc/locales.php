@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 require_once BORS_CORE.'/inc/functions/locale/ec.php';
 
 function dc($txt, $charset_to = NULL) // внутренняя кодировка в UTF-8 или в указанную.
@@ -7,7 +9,7 @@ function dc($txt, $charset_to = NULL) // внутренняя кодировка
 	if(!$charset_to)
 		$charset_to = 'utf-8';
 
-	$charset_from = config('internal_charset', 'utf-8');
+	$charset_from = Cfg::get('internal_charset', 'utf-8');
 
 	if(strcasecmp($charset_from, $charset_to) == 0)
 		return $txt;
@@ -43,7 +45,7 @@ function array_iconv($from_charset, $to_charset, $array)
 
 function u_lower($text)
 {
-	if(($ics = config('internal_charset')) != ($scs = config('system_charset')))
+	if(($ics = Cfg::get('internal_charset')) != ($scs = Cfg::get('system_charset')))
 		return iconv($scs, $ics.'//IGNORE', strtolower(iconv($ics, $scs.'//IGNORE', $text)));
 
 	else return strtolower($text);

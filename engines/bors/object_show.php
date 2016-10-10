@@ -25,7 +25,7 @@
 		$page = $obj->set_page($obj->arg('page'));
 
 		@header("Status: 200 OK");
-		if(config('bors.version_show'))
+		if(\B2\Cfg::get('bors.version_show'))
 		{
 			@header("X-Bors-object-class: {$obj->class_name()}");
 			@header("X-Bors-object-id: {$obj->id()}");
@@ -37,7 +37,7 @@
 		$processed = $obj->pre_parse();
 		if($processed === true)
 		{
-			if(config('debug_header_trace'))
+			if(\B2\Cfg::get('debug_header_trace'))
 				@header('X-Bors-show-has-preparsed: Yes');
 
 			return true;
@@ -76,7 +76,7 @@
 			$processed = bors_form_save($obj);
 			if($processed === true)
 			{
-				if(config('debug_header_trace'))
+				if(\B2\Cfg::get('debug_header_trace'))
 					@header('X-Bors-show-form-saved: Yes');
 				return true;
 			}
@@ -131,7 +131,7 @@
 			]);
 		}
 
-		if(config('debug.execute_trace'))
+		if(\B2\Cfg::get('debug.execute_trace'))
 			debug_execute_trace("{$obj->debug_title_short()}->pre_show()");
 
 		if(!(bors()->main_object()))
@@ -140,7 +140,7 @@
 		$processed = $obj->pre_show();
 		if($processed === true)
 		{
-			if(config('debug_header_trace'))
+			if(\B2\Cfg::get('debug_header_trace'))
 				@header('X-Bors-show-pre-show: Yes');
 
 			return true;
@@ -161,7 +161,7 @@
 
 		// [HTTP_IF_MODIFIED_SINCE] => Mon, 27 Jul 2009 19:03:37 GMT
 		// [If-Modified-Since] => Mon, 27 Jul 2009 19:03:37 GMT
-		if(!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && config('ims_enabled'))
+		if(!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && \B2\Cfg::get('ims_enabled'))
 		{
 			$check_date = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 			if($check_date && $modify_time && ($check_date >= $modify_time))
@@ -173,7 +173,7 @@
 
 		$called_url = urldecode(preg_replace('/\?.*$/', '', $obj->called_url()));
 		$target_url = urldecode(preg_replace('/\?.*$/', '', $obj->url_ex($page)));
-//		if(config('is_developer')) echo "{$obj->debug_title()}:<br/>.called={$obj->called_url()},<br/>target={$target_url} && called={$called_url} && {$obj->_auto_redirect()}<br/>";
+//		if(\B2\Cfg::get('is_developer')) echo "{$obj->debug_title()}:<br/>.called={$obj->called_url()},<br/>target={$target_url} && called={$called_url} && {$obj->_auto_redirect()}<br/>";
 		if($obj->called_url()
 				&& !preg_match('!'.preg_quote($target_url).'$!', $called_url)
 				&& $obj->_auto_redirect()
@@ -191,7 +191,7 @@
 			else
 				bors_debug::syslog('___222', "main uri already set to '{$GLOBALS['main_uri']}' while try set to '{$obj->url()}'");
 
-			if(config('debug.execute_trace'))
+			if(\B2\Cfg::get('debug.execute_trace'))
 				debug_execute_trace("{$obj->debug_title_short()}->content()");
 
 			$content = $obj->content();

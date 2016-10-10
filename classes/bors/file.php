@@ -119,7 +119,7 @@ class bors_file extends base_object_db
 		$original_filename = $file_data['name'];
 		$mime_type = $file_data['type'];
 
-		$base_dir   = config('file_upload.base_dir', bors()->server()->document_root());
+		$base_dir   = \B2\Cfg::get('file_upload.base_dir', bors()->server()->document_root());
 		$upload_dir = popval($file_data, 'upload_dir', 'uploads/common');
 
 		$ext = preg_replace('!^.+\.([^\.]+)$!', '$1', $original_filename);
@@ -133,7 +133,7 @@ class bors_file extends base_object_db
 			'extension' => $ext,
 		));
 
-		if(config('file_upload.skip_subdirs') || !empty($file_data['no_subdirs']))
+		if(\B2\Cfg::get('file_upload.skip_subdirs') || !empty($file_data['no_subdirs']))
 			$relative_path = secure_path($upload_dir);
 		else
 			$relative_path = secure_path($upload_dir.'/'.date('Ym').sprintf("_%03d", intval($file->id()/1000)));

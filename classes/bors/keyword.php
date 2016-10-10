@@ -50,7 +50,7 @@ class bors_keyword extends base_object_db
 		return $x;
 	}
 
-	function url() { return config('tags_root_url', 'http://forums.balancer.ru/tags').'/'.trim($this->title()).'/'; }
+	function url() { return \B2\Cfg::get('tags_root_url', 'http://forums.balancer.ru/tags').'/'.trim($this->title()).'/'; }
 
 	static function keyword_search_reindex($kw)
 	{
@@ -167,7 +167,7 @@ class bors_keyword extends base_object_db
 		foreach($keywords as $key)
 		{
 			$k = self::loader($key);
-			$result[] = "<a style=\"font-size:".intval(10+sqrt($k->targets_count())/3)."px;\" href=\"".config('tags_root_url', 'http://forums.balancer.ru/tags')."/".
+			$result[] = "<a style=\"font-size:".intval(10+sqrt($k->targets_count())/3)."px;\" href=\"".\B2\Cfg::get('tags_root_url', 'http://forums.balancer.ru/tags')."/".
 				join("/", array_map('urlencode', explode(',', $key.','.$base_keywords)))
 			."/\">".trim($key)."</a>";
 		}

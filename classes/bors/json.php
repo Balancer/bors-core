@@ -6,7 +6,7 @@ class bors_json extends bors_page
 	{
 		$return = parent::pre_show();;
 
-		header("Content-type: application/json; charset=".config('output_charset'));
+		header("Content-type: application/json; charset=".\B2\Cfg::get('output_charset'));
 		config_set('debug.timing', false); // Чтобы не мусорить комментарием в конце JSON.
 
 		return $return;

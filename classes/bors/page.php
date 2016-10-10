@@ -26,14 +26,14 @@ class bors_page extends base_page
 
 	function page_template_class()
 	{
-		if($class_name = config('templates_page_engine'))
+		if($class_name = \B2\Cfg::get('templates_page_engine'))
 		{
 			if(strpos($class_name, '_'))
 				return $class_name;
 			return 'bors_templates_'.$class_name;
 		}
 
-		return config('page_template_class', 'bors_templates_smarty');
+		return \B2\Cfg::get('page_template_class', 'bors_templates_smarty');
 	}
 
 	// Можно не указывать, если оно равно page_template_class
@@ -46,7 +46,7 @@ class bors_page extends base_page
 				return $this->attr['body_template_class'];
 		}
 
-		return config('body_template_class', $this->page_template_class());
+		return \B2\Cfg::get('body_template_class', $this->page_template_class());
 	}
 
 	function _body_template_file_def() { return $this->body_template(); }
@@ -217,7 +217,7 @@ class bors_page extends base_page
 	function page_template()
 	{
 		return $this->template(); // Пока, для совместимости, используем старый API.
-//		return defval($this->data, 'template', defval($this->attr, 'template', config('default_template')));
+//		return defval($this->data, 'template', defval($this->attr, 'template', \B2\Cfg::get('default_template')));
 	}
 
 	function renderer_class() { return 'bors_renderers_page'; }
@@ -230,7 +230,7 @@ class bors_page extends base_page
 /*
 	function body_template_ext()
 	{
-		if(config('is_developer')) echo preg_replace("!\.php$!", "$1.bbh", $this->class_file());
+		if(\B2\Cfg::get('is_developer')) echo preg_replace("!\.php$!", "$1.bbh", $this->class_file());
 		if($this->is_smart() && file_exists(preg_replace("!\.php$!", "$1.bbh", $this->class_file()))
 			return 'bbh';
 
@@ -283,7 +283,7 @@ class bors_page extends base_page
 		if($value = $this->get($name))
 			return $value;
 
-		if($value = config($name))
+		if($value = \B2\Cfg::get($name))
 			return $value;
 
 		return $default;

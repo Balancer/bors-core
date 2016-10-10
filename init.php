@@ -141,11 +141,11 @@ if(!empty($GLOBALS['bors']['config']['config_hosts']))
 if(file_exists($f = COMPOSER_ROOT.'/config-host.php'))
 	require_once($f);
 
-if(!file_exists($d = config('cache_dir')));
+if(!file_exists($d = \B2\Cfg::get('cache_dir')));
 	mkpath($d, 0750);
 
 //	Инициализация Stash-кеша с автоопределением типа движка, если в локальном конфиге не было задано заранее
-if(!config('cache.stash.pool') && class_exists('Stash\Pool'))
+if(!\B2\Cfg::get('cache.stash.pool') && class_exists('Stash\Pool'))
 {
 	$pool = NULL;
 
@@ -153,10 +153,10 @@ if(!config('cache.stash.pool') && class_exists('Stash\Pool'))
 	{
 		try
 		{
-			if(config('redis.servers'))
+			if(\B2\Cfg::get('redis.servers'))
 			{
 				$servers = [];
-				foreach(config('redis.servers') as $s)
+				foreach(\B2\Cfg::get('redis.servers') as $s)
 					$servers[] = [$s['host'], $s['port']];
 			}
 			else
@@ -185,7 +185,7 @@ if(!config('cache.stash.pool') && class_exists('Stash\Pool'))
 		config_set('cache.stash.pool', $pool);
 }
 
-if(config('debug_can_change_now'))
+if(\B2\Cfg::get('debug_can_change_now'))
 {
 	$GLOBALS['now'] = empty($_GET['now']) ? time() : intval(strtotime($_GET['now']));
 	unset($_GET['now']);
@@ -196,7 +196,7 @@ else
 bors_function_include('time/date_format_mysqltime');
 $GLOBALS['mysql_now'] = date_format_mysqltime($GLOBALS['now']);
 
-// After configs. In url_map may be used config() data.
+// After configs. In url_map may be used \B2\Cfg::get() data.
 bors::init_new();
 
 
@@ -205,26 +205,26 @@ bors::init_new();
 */
 function bors_init()
 {
-	if(config('debug.execute_trace'))
+	if(\B2\Cfg::get('debug.execute_trace'))
 	{
 		bors_function_include('debug/execute_trace');
 		debug_execute_trace("bors_init() begin: ".@$GLOBALS['bors_full_request_url']);
 		debug_execute_trace("\tBORS_CORE=".BORS_CORE."; BORS_SITE=".BORS_SITE);
 	}
 
-	if(config('internal_charset'))
-		ini_set('default_charset', config('internal_charset'));
+	if(\B2\Cfg::get('internal_charset'))
+		ini_set('default_charset', \B2\Cfg::get('internal_charset'));
 	else
 		config_set('internal_charset', ini_get('default_charset'));
 
-	if(config('locale'))
-		setlocale(LC_ALL, config('locale'));
+	if(\B2\Cfg::get('locale'))
+		setlocale(LC_ALL, \B2\Cfg::get('locale'));
 
-	if(config('memcached'))
+	if(\B2\Cfg::get('memcached'))
 	{
 		$memcache = new Memcache;
 
-		if(!@$memcache->connect(config('memcached')))
+		if(!@$memcache->connect(\B2\Cfg::get('memcached')))
 			bors_debug::syslog("memcache-error", "Can't connect");
 
 		config_set('memcached_instance', $memcache);
@@ -241,7 +241,7 @@ function bors_init()
 
 	require_once('classes/Cache.php');
 
-	if(config('debug.execute_trace'))
+	if(\B2\Cfg::get('debug.execute_trace'))
 		debug_execute_trace('bors_init() done.');
 }
 

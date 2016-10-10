@@ -6,9 +6,9 @@
 */
 
 require_once('config.php');
-mkpath(config('cache_dir'));
+mkpath(\B2\Cfg::get('cache_dir'));
 
-require_once(config('php_gnuplot.include'));
+require_once(\B2\Cfg::get('php_gnuplot.include'));
 
 $p = new GNUPlot();
 

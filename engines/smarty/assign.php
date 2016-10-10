@@ -13,15 +13,15 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 
 	unset($GLOBALS['module_data']);
 
-	if(config('page_template_class') == 'bors_templates_smarty3')
+	if(\B2\Cfg::get('page_template_class') == 'bors_templates_smarty3')
 		bors_throw(ec('[assign fetch] Попытка использования Smarty2 при активном Smarty3'));
 
-	require_once(config('smarty_include'));
+	require_once(\B2\Cfg::get('smarty_include'));
 
 	$smarty = new Smarty;
 	require('smarty-register.php');
 
-	$smarty->compile_dir = config('cache_dir').'/smarty-e-templates_c';
+	$smarty->compile_dir = \B2\Cfg::get('cache_dir').'/smarty-e-templates_c';
 	$smarty->compile_id = defval($data, 'compile_id');
 	if(strlen($smarty->compile_id) > 128)
 	{
@@ -35,7 +35,7 @@ function template_assign_data($assign_template, $data=array(), $uri=NULL, $calle
 
 		$smarty->plugins_dir[] = 'plugins';
 
-		$smarty->cache_dir   = config('cache_dir').'/smarty-e-cache/';
+		$smarty->cache_dir   = \B2\Cfg::get('cache_dir').'/smarty-e-cache/';
 
 		if(!file_exists($smarty->compile_dir))
 			@mkpath($smarty->compile_dir, 0777);
@@ -211,16 +211,16 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 	if($module_relative_path)
 	{
 			$assign_template_pure = str_replace('xfile:', '', $assign_template);
-//			echo 'xfile:'.BORS_SITE.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template_pure;
-			if($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template_pure))
+//			echo 'xfile:'.BORS_SITE.'/templates/'.\B2\Cfg::get('default_template').$module_relative_path.'/'.$assign_template_pure;
+			if($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.'/templates/'.\B2\Cfg::get('default_template').$module_relative_path.'/'.$assign_template_pure))
 				$template_uri = $tpl;
 			elseif($smarty->template_exists($tpl = 'xfile:'.BORS_SITE.$module_relative_path.'/'.$assign_template_pure))
 				$template_uri = $tpl;
 			else
 				foreach(bors_dirs(true) as $dir)
 				{
-//					echo "Check ".'xfile:'.secure_path($dir.' --- /templates/ --- '.config('default_template').$module_relative_path.'/'.$assign_template)."<br/>";
-					if($smarty->template_exists($tpl = 'xfile:'.secure_path($dir.'/templates/'.config('default_template').$module_relative_path.'/'.$assign_template_pure)))
+//					echo "Check ".'xfile:'.secure_path($dir.' --- /templates/ --- '.\B2\Cfg::get('default_template').$module_relative_path.'/'.$assign_template)."<br/>";
+					if($smarty->template_exists($tpl = 'xfile:'.secure_path($dir.'/templates/'.\B2\Cfg::get('default_template').$module_relative_path.'/'.$assign_template_pure)))
 						$template_uri = $tpl;
 					elseif($smarty->template_exists($tpl = 'xfile:'.$dir.$module_relative_path.'/'.$assign_template_pure))
 						$template_uri = $tpl;
@@ -244,7 +244,7 @@ function __template_assign_data_get_template($assign_template, $smarty, $data)
 		$template_uri = $assign_template;
 
 	if(!$smarty->template_exists($template_uri))
-		$template_uri = config('default_template');
+		$template_uri = \B2\Cfg::get('default_template');
 
 	if(!$smarty->template_exists($template_uri))
 		$template_uri = smarty_template($template_uri);

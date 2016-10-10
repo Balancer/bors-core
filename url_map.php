@@ -77,7 +77,7 @@ $map = array(
 	'/admin/image/append => bors_admin_image_append',
 );
 
-if(config('obsolete.use_mysql_smart'))
+if(\B2\Cfg::get('obsolete.use_mysql_smart'))
 	$map[] = '.* => base_page_hts(url)';
 
 bors_objects_loaders_yaml::register();

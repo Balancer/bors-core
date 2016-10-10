@@ -20,7 +20,7 @@ class BorsXml
 
 	function parse($data)
 	{
-		if(config('internal_charset') != 'utf-8')
+		if(\B2\Cfg::get('internal_charset') != 'utf-8')
 			$data = dc($data, 'UTF-8');
 
 		xml_parse($this->parser, $data);

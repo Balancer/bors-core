@@ -1,11 +1,13 @@
 <?php
 
+use B2\Cfg;
+
 //TODO: Сделать автоочистку привязок к несуществующим объектам. В первую очередь - aviaport_images
 
 function bors_get_cross_ids($object, $to_class = '', $dbh = NULL)
 {
 	if(!$dbh)
-		$dbh = new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(Cfg::get('bors_core_db'));
 
 	if($to_class)
 	{
@@ -37,7 +39,7 @@ function bors_get_cross_ids($object, $to_class = '', $dbh = NULL)
 
 function bors_get_all_linked($class_name, $to_class = '')
 {
-	$dbh = new driver_mysql(config('bors_core_db'));
+	$dbh = new driver_mysql(Cfg::get('bors_core_db'));
 
 	if($to_class)
 	{
@@ -86,7 +88,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 	}
 
 	if(!$dbh)
-		$dbh = new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(Cfg::get('bors_core_db'));
 
 	if(empty($args['order']))
 		$order = 'ORDER BY sort_order, class_id, object_id';
@@ -147,7 +149,7 @@ function bors_get_cross_objs($object, $to_class = '', $dbh = NULL, $args = array
 		$x = @$objs[$r['class_id']][$r['object_id']];
 		if(empty($x))
 		{
-			if(config('bors_link.lost_auto_delete'))
+			if(Cfg::get('bors_link.lost_auto_delete'))
 			{
 				bors_debug::syslog('cross-errors', "Cross {$object->internal_uri()} to unknown object ".print_r($r, true));
 				bors_remove_cross_pair($r['class_id'], $r['object_id'], $object->class_id(), $object->id(), $dbh);
@@ -245,7 +247,7 @@ function bors_cross_where_cond($field, $cond, &$where)
 function bors_add_cross_obj($from, $to, $order=0, $dbh = NULL)
 {
 	if(!$dbh)
-		$dbh = new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(Cfg::get('bors_core_db'));
 
 	if($from->class_id() > $to->class_id())
 		list($from, $to) = array($to, $from);
@@ -269,7 +271,7 @@ function bors_add_cross_obj($from, $to, $order=0, $dbh = NULL)
 function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $type_id = 0, $dbh = NULL, $ins_type = 'replace', $owner_id = NULL)
 {
 	if(!$dbh)
-		$dbh = new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(Cfg::get('bors_core_db'));
 
 	if(!is_numeric($from_class))
 		$from_class = class_name_to_id($from_class);
@@ -312,7 +314,7 @@ function bors_add_cross($from_class, $from_id, $to_class, $to_id, $order=0, $typ
 function bors_remove_cross_pair($from_class, $from_id, $to_class, $to_id, $dbh = NULL)
 {
 	if(!$dbh)
-		$dbh = new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(Cfg::get('bors_core_db'));
 
 	if(!is_numeric($from_class))
 		$from_class = class_name_to_id($from_class);
@@ -338,7 +340,7 @@ function bors_remove_cross_pair($from_class, $from_id, $to_class, $to_id, $dbh =
 function bors_remove_cross_to($to_class, $to_id, $dbh = NULL)
 {
 	if(!$dbh)
-		$dbh = new driver_mysql(config('bors_core_db'));
+		$dbh = new driver_mysql(Cfg::get('bors_core_db'));
 
 	if(!is_numeric($to_class))
 		$to_class = class_name_to_id($to_class);

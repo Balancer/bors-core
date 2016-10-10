@@ -4,7 +4,7 @@ class bors_synonym extends bors_object_db
 {
 	function _class_title_rp_def() { return ec('синонима'); }
 	function class_title_vp() { return ec('синоним'); }
-	function table_name() { return config('synonyms_table', 'bors_synonyms'); }
+	function table_name() { return \B2\Cfg::get('synonyms_table', 'bors_synonyms'); }
 
 	function table_fields()
 	{

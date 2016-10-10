@@ -56,14 +56,14 @@ function bors_find_all($class_name, $args = array())
 		else
 			$objects = $s->load($init, mysql_args_compile($args, $class_name), false, $cargs);
 
-		if(config('debug_objects_create_counting_details'))
+		if(\B2\Cfg::get('debug_objects_create_counting_details'))
 		{
 			debug_count_inc("bors_find_all($class_name) calls");
 			debug_count_inc("bors_find_all($class_name) count", count($objects));
 		}
 
-		if(config('debug.trace_object_load'))
-			bors_debug::syslog('objects_load', "all $class_name(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
+		if(\B2\Cfg::get('debug.trace_object_load'))
+			bors_debug::syslog('objects_load', "all $class_name(".str_replace("\n", " ", print_r($args, true)).")", \B2\Cfg::get('debug_trace_object_load_trace'));
 
 		if(!empty($preload))
 		{
@@ -92,11 +92,11 @@ function bors_find_first($class_name, $args = array())
 
     $objs = bors_find_all($class_name, $args);
 
-    if(config('debug_objects_create_counting_details'))
+    if(\B2\Cfg::get('debug_objects_create_counting_details'))
 		debug_count_inc("bors_find_first($class_name)");
 
-	if(config('debug.trace_object_load'))
-		bors_debug::syslog('objects_load', "first $class_name(".str_replace("\n", " ", print_r($args, true)).")", config('debug_trace_object_load_trace'));
+	if(\B2\Cfg::get('debug.trace_object_load'))
+		bors_debug::syslog('objects_load', "first $class_name(".str_replace("\n", " ", print_r($args, true)).")", \B2\Cfg::get('debug_trace_object_load_trace'));
 
 	return $objs ? $objs[0] : NULL;
 }

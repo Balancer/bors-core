@@ -24,8 +24,8 @@ function object_load($class_name, $object_id=NULL, $args=array())
 	if(is_numeric($class_name))
 		$class_name = class_id_to_name($class_name);
 
-	if(config('debug.trace_object_load'))
-		bors_debug::syslog('objects_load', "$class_name(".print_r($object_id, true).")", config('debug_trace_object_load_trace'));
+	if(\B2\Cfg::get('debug.trace_object_load'))
+		bors_debug::syslog('objects_load', "$class_name(".print_r($object_id, true).")", \B2\Cfg::get('debug_trace_object_load_trace'));
 
 	if(!$class_name)
 		return NULL;
@@ -46,7 +46,7 @@ function object_load($class_name, $object_id=NULL, $args=array())
 		}
 	}
 
-	if(config('debug_objects_create_counting_details'))
+	if(\B2\Cfg::get('debug_objects_create_counting_details'))
 	{
 		debug_count_inc("bors_load($class_name)");
 //		if(preg_match('!matf.aviaport.ru/companies/\d+/edit!', $class))
@@ -183,7 +183,7 @@ function bors_exit($message = '')
 {
 	bors_exit_handler($message);
 
-	if(!config('do_not_exit'))
+	if(!\B2\Cfg::get('do_not_exit'))
 		exit();
 }
 
@@ -194,12 +194,12 @@ function bors_exit_handler($message = '')
 	bors_function_include('fs/file_put_contents_lock');
 
 	if(!empty($GLOBALS['bors_data']['php_cache_content']))
-		file_put_contents_lock(config('cache_dir') . '/functions.php', $GLOBALS['bors_data']['php_cache_content']);
+		file_put_contents_lock(\B2\Cfg::get('cache_dir') . '/functions.php', $GLOBALS['bors_data']['php_cache_content']);
 
 	if(!empty($GLOBALS['bors_data']['classes_cache_content_updated']))
 	{
 		bors_debug::syslog('test', "write cache", false);
-		file_put_contents_lock(config('cache_dir') . '/classes.php', $GLOBALS['bors_data']['classes_cache_content']);
+		file_put_contents_lock(\B2\Cfg::get('cache_dir') . '/classes.php', $GLOBALS['bors_data']['classes_cache_content']);
 	}
 
 	static $bors_exit_doing = false;
@@ -211,7 +211,7 @@ function bors_exit_handler($message = '')
 	if($message)
 		echo $message;
 
-	if(config('cache_static') && $message)
+	if(\B2\Cfg::get('cache_static') && $message)
 		cache_static::drop(bors()->main_object());
 
 	try
@@ -229,10 +229,10 @@ function bors_exit_handler($message = '')
     if ($error['type'] == 1)
     {
 		@header('HTTP/1.1 500 Internal Server Error');
-		if($out_dir = config('debug_hidden_log_dir'))
+		if($out_dir = \B2\Cfg::get('debug_hidden_log_dir'))
 		{
-			@mkdir(config('debug_hidden_log_dir').'/errors');
-			if(file_exists(config('debug_hidden_log_dir').'/errors'))
+			@mkdir(\B2\Cfg::get('debug_hidden_log_dir').'/errors');
+			if(file_exists(\B2\Cfg::get('debug_hidden_log_dir').'/errors'))
 			{
 				bors_debug::syslog('errors/'.date('c'), "Handled fatal error:
 		errno={$error['type']}
@@ -257,9 +257,9 @@ function bors_exit_handler($message = '')
 		}
 	}
 
-	if(config('debug_mysql_trace'))
+	if(\B2\Cfg::get('debug_mysql_trace'))
 	{
-		$dir = config('debug_hidden_log_dir').'/mysql-trace';
+		$dir = \B2\Cfg::get('debug_hidden_log_dir').'/mysql-trace';
 		@mkdir($dir);
 		@chmod($dir, 0777);
 		if(file_exists($dir))
@@ -329,7 +329,7 @@ function bors_throw($message)
 
 	@header('HTTP/1.1 500 Internal Server Error');
 
-	if(config('exceptions.kill_on_throw'))
+	if(\B2\Cfg::get('exceptions.kill_on_throw'))
 	{
 		bors_debug::syslog('exception-kill', $message);
 		exit('Error. See in BORS logs');
@@ -420,7 +420,7 @@ function bors_load($class_name, $id = NULL)
 {
 	$object = object_load($class_name, $id);
 
-    if(!$object && config('orm.is_strict') && !class_include($class_name))
+    if(!$object && \B2\Cfg::get('orm.is_strict') && !class_include($class_name))
 		bors_throw("Not found class '{$class_name}' for load with id='{$id}'");
 
     return $object;
@@ -435,12 +435,12 @@ function bors_load_ex($class_name, $id, $attrs)
 
 	if($memcache_time)
 	{
-//if(config('is_developer')) var_dump($memcache_time);
-		if(($memcache_instance = config('memcached_instance')))
+//if(\B2\Cfg::get('is_developer')) var_dump($memcache_time);
+		if(($memcache_instance = \B2\Cfg::get('memcached_instance')))
 		{
 			debug_count_inc('memcached bors objects checks');
 			unset($attrs['memcache']);
-			$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id;
+			$hash = 'bors_v'.\B2\Cfg::get('memcached_tag').'_'.$class_name.'://'.$id;
 			if($attrs)
 				$hash .= '/'.serialize($attrs);
 

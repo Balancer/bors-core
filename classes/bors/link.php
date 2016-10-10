@@ -300,7 +300,7 @@ class bors_link extends bors_object_db
 		{
 			if(!($x = $link->target()))
 			{
-				if(config('bors_link.lost_auto_delete'))
+				if(\B2\Cfg::get('bors_link.lost_auto_delete'))
 					$link->delete();
 
 				continue;
@@ -333,7 +333,7 @@ class bors_link extends bors_object_db
 		{
 			if(!($x = $link->target()))
 			{
-				if(config('bors_link.lost_auto_delete'))
+				if(\B2\Cfg::get('bors_link.lost_auto_delete'))
 					$link->delete();
 
 				continue;
@@ -367,7 +367,7 @@ class bors_link extends bors_object_db
 
 	static function drop_auto($object)
 	{
-		$dbh = new driver_mysql(config('main_bors_db'));
+		$dbh = new driver_mysql(\B2\Cfg::get('main_bors_db'));
 		$tc = $object->extends_class_id();
 		$ti = $object->id();
 		$dbh->delete(self::table_name(), array("(owner_id < 0 OR `is_auto` = 1) AND ((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
@@ -378,7 +378,7 @@ class bors_link extends bors_object_db
 		if(!$object->id())
 			return;
 
-		$dbh = new driver_mysql(config('main_bors_db'));
+		$dbh = new driver_mysql(\B2\Cfg::get('main_bors_db'));
 		$tc = $object->extends_class_id();
 		$ti = $object->id();
 		$dbh->delete(self::table_name(), array("((from_class=$tc AND from_id=$ti) OR (to_class=$tc AND to_id=$ti))"));
@@ -392,7 +392,7 @@ class bors_link extends bors_object_db
 		if(is_object($where))
 			$where = array('target_class' => $where->extends_class_id(), 'target_id' => $where->id());
 
-		$dbh = new driver_mysql(config('main_bors_db'));
+		$dbh = new driver_mysql(\B2\Cfg::get('main_bors_db'));
 		$fc = $object->extends_class_id();
 		$fi = $object->id();
 
@@ -420,7 +420,7 @@ class bors_link extends bors_object_db
 		if(!$from_id)
 			return;
 
-		$dbh = new driver_mysql(config('main_bors_db'));
+		$dbh = new driver_mysql(\B2\Cfg::get('main_bors_db'));
 
 		$from_class = class_name_to_id($from_class);
 		$to_class = class_name_to_id($to_class);

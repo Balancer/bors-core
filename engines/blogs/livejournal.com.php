@@ -1,6 +1,6 @@
 <?php
 
-require_once(config('3rdp_xmlrpc_path').'/lib/xmlrpc.inc');
+require_once(\B2\Cfg::get('3rdp_xmlrpc_path').'/lib/xmlrpc.inc');
 require_once('inc/texts/unicode.php');
 $GLOBALS['xmlrpc_internalencoding'] = 'UTF-8';
 

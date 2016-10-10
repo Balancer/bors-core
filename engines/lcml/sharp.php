@@ -2,7 +2,7 @@
 
 function lcml_sharp($txt, &$mask, $lcml)
 {
-//		if(config('is_developer'))
+//		if(\B2\Cfg::get('is_developer'))
 //			var_dump($txt, restore_format($txt));
 
         $array = explode("\n", $txt);

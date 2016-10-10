@@ -24,7 +24,7 @@ class bors_renderers_page extends base_null
 {
 	static function render($object)
 	{
-		if(config('debug.execute_trace'))
+		if(\B2\Cfg::get('debug.execute_trace'))
 			debug_execute_trace("bors_renderers_page::render({$object->debug_title_short()}) begin");
 
 		$data = array();
@@ -33,10 +33,10 @@ class bors_renderers_page extends base_null
 		$data['body'] = $object->body();
 		$data = array_merge($object->page_data(), $data);
 
-		if(config('debug.execute_trace'))
+		if(\B2\Cfg::get('debug.execute_trace'))
 			debug_execute_trace("bors_renderers_page::render() call object->body() ...");
 
-		if(config('debug.execute_trace'))
+		if(\B2\Cfg::get('debug.execute_trace'))
 			debug_execute_trace("\tbody done");
 
 		$data['self'] = $object;
@@ -56,7 +56,7 @@ class bors_renderers_page extends base_null
 			$data['my_name'] = $me->title();
 		}
 
-		if(config('debug.execute_trace'))
+		if(\B2\Cfg::get('debug.execute_trace'))
 		{
 			debug_execute_trace("bors_renderers_page::render({$object->debug_title_short()}) begin fill vars:");
 
@@ -75,7 +75,7 @@ class bors_renderers_page extends base_null
 
 		$data = bors_template::page_data(array_merge($object->data, $data, $object->local_template_data_array()));
 
-		if(config('debug.execute_trace'))
+		if(\B2\Cfg::get('debug.execute_trace'))
 			debug_execute_trace("bors_renderers_page::render({$object->debug_title_short()}) end fill vars");
 
 //	$smarty->assign("views_average", sprintf("%.1f",86400*$views/($views_last-$views_first+1)));
@@ -85,7 +85,7 @@ class bors_renderers_page extends base_null
 				$object->page_template(), $object
 		);
 
-		if(config('debug.execute_trace'))
+		if(\B2\Cfg::get('debug.execute_trace'))
 		{
 			debug_execute_trace("bors_renderers_page::render(): was found page template '{$page_template}' by '{$object->page_template()}'");
 			debug_execute_trace("bors_renderers_page::render({$object->debug_title_short()}): call {$object->page_template_class()}->fetch()");

@@ -7,7 +7,7 @@ class blib_files
 		if($prefix)
 			$prefix .= '-';
 
-		$file = tempnam(config('cache_dir'), $prefix);
+		$file = tempnam(\B2\Cfg::get('cache_dir'), $prefix);
 
 		$GLOBALS['bors_data']['shutdown_handlers'][] = array(
 			'callback' => array('blib_files', '__shutdown_tmp_unlink'),

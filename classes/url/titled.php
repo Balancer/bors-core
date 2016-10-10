@@ -60,7 +60,7 @@ class url_titled extends url_base
 
 		$url = $uri . $suffix . ($is_last_page ? '.'.($is_last_page > 1 ? $is_last_page : $obj->modify_time())%10000 : '') . ".html";
 
-//		if(config('is_developer') && is_array($args)) { echo '?'; var_dump($args, $is_last_page, $url); exit(); }
+//		if(\B2\Cfg::get('is_developer') && is_array($args)) { echo '?'; var_dump($args, $is_last_page, $url); exit(); }
 
 		return $url;
 //		return $uri . $suffix . ".html";

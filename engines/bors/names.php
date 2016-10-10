@@ -10,7 +10,7 @@ function bors_class_names_load($reload = false)
 	$loaded = array();
 	$loaded[0] = array();
 	$loaded[1] = array();
-	$db = new driver_mysql(config('main_bors_db'));
+	$db = new driver_mysql(\B2\Cfg::get('main_bors_db'));
 	foreach($db->get_array('SELECT * FROM bors_class_names') as $x)
 	{
 		$loaded[0][$x['id']] = $x['name'];
@@ -42,17 +42,17 @@ function class_name_to_id($object)
 	if(!$class_name)
 		return NULL;
 
-	if(in_array($class_name, config('classes_skip', array())))
+	if(in_array($class_name, \B2\Cfg::get('classes_skip', array())))
 		return NULL;
 
-	if(!config('main_bors_db'))
+	if(!\B2\Cfg::get('main_bors_db'))
 		return $class_name;
 
 	$loaded = bors_class_names_load();
 	if($class_id = @$loaded[1][$class_name])
 		return $class_id;
 
-	$db = new driver_mysql(config('main_bors_db'));
+	$db = new driver_mysql(\B2\Cfg::get('main_bors_db'));
 	$db->insert('bors_class_names', array('name' => $class_name));
 	$class_id = $db->last_id();
 	$db->close();

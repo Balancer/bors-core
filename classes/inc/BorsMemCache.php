@@ -9,7 +9,7 @@ class BorsMemCache
 	{
 		$this->last_key = $key;
 
-		if(!($memcache = config('memcached_instance')))
+		if(!($memcache = \B2\Cfg::get('memcached_instance')))
 			return $this->last_value = $default;
 
 		if($x = $memcache->get($key))
@@ -22,7 +22,7 @@ class BorsMemCache
 
 	function set($value, $timeout = 600)
 	{
-		if(!($memcache = config('memcached_instance')))
+		if(!($memcache = \B2\Cfg::get('memcached_instance')))
 			return $this->last_value = $value;
 
 		if($value == NULL || $timeout == 0)

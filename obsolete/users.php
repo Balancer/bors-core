@@ -20,4 +20,4 @@ function get_ip_nick()
         return join('|', $addrs);
 }
 
-// require_once(BORS_CORE.'/obsolete/users/'.config('user_engine_old', 'test').'.php');
+// require_once(BORS_CORE.'/obsolete/users/'.\B2\Cfg::get('user_engine_old', 'test').'.php');

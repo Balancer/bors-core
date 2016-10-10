@@ -45,7 +45,7 @@ class driver_oci implements Iterator
 	function __construct($database = NULL)
 	{
 		if(empty($database))
-			$database = config('oci_db_default');
+			$database = \B2\Cfg::get('oci_db_default');
 
 		$this->database = $database;
 
@@ -83,7 +83,7 @@ class driver_oci implements Iterator
 		$row = oci_fetch_assoc($this->statement);
 		bors_debug::timing_stop('oci_fetch');
 
-		$ics = config('internal_charset');
+		$ics = \B2\Cfg::get('internal_charset');
 		$dcs = configh('oci_access', $this->database, 'charset');
 //		echo "ics=$ics, dcs=$dcs\n";
 

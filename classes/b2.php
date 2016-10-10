@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 class b2
 {
 	private $__config			= array();
@@ -41,7 +43,7 @@ class b2
 
 		if(!($class_file = bors_class_loader::file($class_name, $this->dirs())))
 		{
-			if(config('throw_exception_on_class_not_found'))
+			if(Cfg::get('throw_exception_on_class_not_found'))
 				return bors_throw("Class '$class_name' not found");
 
 			return $object;
@@ -80,7 +82,7 @@ class b2
 
 			$object->set_class_file($class_file);
 
-			if(config('debug_objects_create_counting_details'))
+			if(Cfg::get('debug_objects_create_counting_details'))
 			{
 				bors_function_include('debug/count_inc');
 				debug_count_inc("bors_load($class_name,init)");
@@ -124,16 +126,16 @@ class b2
 		if(is_numeric($class_name))
 			$class_name = class_id_to_name($class_name);
 
-		if(config('debug_trace_object_load'))
+		if(Cfg::get('debug_trace_object_load'))
 		{
 			bors_function_include('debug/hidden_log');
-			bors_debug::syslog('objects_load', "$class_name($id)", config('debug_trace_object_load_trace'));
+			bors_debug::syslog('objects_load', "$class_name($id)", Cfg::get('debug_trace_object_load_trace'));
 		}
 
 		if(!$class_name)
 			return NULL;
 
-		if(config('debug_objects_create_counting_details'))
+		if(Cfg::get('debug_objects_create_counting_details'))
 			debug_count_inc("bors_load($class_name)");
 
 		$object = $this->__load_object($class_name, $id, array());
@@ -143,7 +145,7 @@ class b2
 
 		if(!$object)
 		{
-			if(config('orm.is_strict') && !class_include($class_name))
+			if(Cfg::get('orm.is_strict') && !class_include($class_name))
 				bors_throw("Not found class '{$class_name}' for load with id='{$id}'");
 
 			return NULL;
@@ -243,7 +245,7 @@ class b2
 		return new b2_core_find($class_name);
 	}
 
-	static function tmp_dir() { return config('cache_dir'); }
+	static function tmp_dir() { return Cfg::get('cache_dir'); }
 
 	static function log()
 	{

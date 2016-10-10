@@ -46,11 +46,11 @@ function &load_cached_object($class_name, $id, $args, &$found=0)
 		}
 	}
 
-	if(config('use_memcached_objects') && ($memcache = config('memcached_instance')) && call_user_func(array($class_name, 'can_cached')))
+	if(\B2\Cfg::get('use_memcached_objects') && ($memcache = \B2\Cfg::get('memcached_instance')) && call_user_func(array($class_name, 'can_cached')))
 	{
 
 		debug_count_inc('memcached checks');
-		$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$id;
+		$hash = 'bors_v'.\B2\Cfg::get('memcached_tag').'_'.$class_name.'://'.$id;
 		if($x = unserialize($memcache->get($hash)))
 		{
 			$updated = bors_class_loader_meta::cache_updated($x);
@@ -72,9 +72,9 @@ function delete_cached_object($object) { return save_cached_object($object, true
 
 function delete_cached_object_by_id($class_name, $object_id)
 {
-	if(($memcache = config('memcached_instance')))
+	if(($memcache = \B2\Cfg::get('memcached_instance')))
 	{
-		$hash = 'bors_v'.config('memcached_tag').'_'.$class_name.'://'.$object_id;
+		$hash = 'bors_v'.\B2\Cfg::get('memcached_tag').'_'.$class_name.'://'.$object_id;
 		@$memcache->delete($hash);
 	}
 
@@ -90,7 +90,7 @@ function save_cached_object($object, $delete = false, $use_memcache = true)
 	if(is_object($id) || is_array($id))
 		return;
 
-	if($use_memcache && config('use_memcached_objects') && ($memcache = config('memcached_instance')) && $object->can_cached())
+	if($use_memcache && \B2\Cfg::get('use_memcached_objects') && ($memcache = \B2\Cfg::get('memcached_instance')) && $object->can_cached())
 	{
 		$hash = bors_objects_helper::memcache_hash_key($object);
 
@@ -190,7 +190,7 @@ function class_load_by_url($url, $args)
 
 function try_object_load_by_map($url, $url_data, $check_url, $check_class, $match, $url_pattern, $skip)
 {
-//	if(config('is_debug')) echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
+//	if(\B2\Cfg::get('is_debug')) echo "<hr/><small>$skip: try_object_load_by_map($url, ".print_r($url_data, true).", $check_url, $check_class, ".print_r($match, true).")<br/><Br/></small>\n";
 
 	debug_log_var('try_object_load_by_map.url_pattern', $url_pattern);
 	debug_log_var('try_object_load_by_map.check_class', $check_class);
@@ -242,7 +242,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	{
 		$check_class = $class_match[1];
 /*
-		if(config('debug_mode'))
+		if(\B2\Cfg::get('debug_mode'))
 		{
 			echo "skip=$skip, url_pattern=$url_pattern<br/>\n";
 			print_d($class_match);
@@ -328,7 +328,7 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 	$args['_load_url'] = $url;
 
 	$obj = object_init($check_class, $id, $args);
-//	if(config('is_debug')) echo "object_init($check_class, $id, $args) = ".print_r($obj, true)."<br/>\n";
+//	if(\B2\Cfg::get('is_debug')) echo "object_init($check_class, $id, $args) = ".print_r($obj, true)."<br/>\n";
 	if(!$obj)
 		return NULL;
 
@@ -340,10 +340,10 @@ function try_object_load_by_map($url, $url_data, $check_url, $check_class, $matc
 			// Проверить на http://forums.airbase.ru/2008/06/t61976--ssylki-na-temy-po-proektam-korablej-i-sudov-prezhde-chem-nac.html
 			// баг в том, что редиректит при простой инициализации объектов
 			// Пробуем в роли времянки возвращать URL:
-			if(config('__main_object_load', false))
+			if(\B2\Cfg::get('__main_object_load', false))
 				return $obj->url_ex($page);
 /*
-			if(!config('do_not_exit'))
+			if(!\B2\Cfg::get('do_not_exit'))
 			{
 				echo "Redirect by $url_pattern";
 				go($obj->url_ex($page), true);
@@ -376,7 +376,7 @@ function class_load_by_local_url($url, $args)
 	$is_query = !empty($url_data['query']);
 	$host_helper = "!^http://({$url_data['host']}".(empty($url_data['port'])?'':':'.$url_data['port'])."[^/]*)";
 
-//	if(config('is_debug')) { echo '<xmp>'; var_dump("check_url/data", $check_url, $url_data); echo '</xmp>'; }
+//	if(\B2\Cfg::get('is_debug')) { echo '<xmp>'; var_dump("check_url/data", $check_url, $url_data); echo '</xmp>'; }
 
 	foreach($GLOBALS['bors_map'] as $pair)
 	{
@@ -391,7 +391,7 @@ function class_load_by_local_url($url, $args)
 		else
 			$test_url = $check_url;
 
-//		if(config('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for test_url='.$test_url.'<br/>check_url='.$check_url."<Br/>url_pattern=$url_pattern, class_path=$class_path<br/>";
+//		if(\B2\Cfg::get('is_debug')) echo '<br/>regexp="'.$host_helper.$url_pattern.'$!i" for test_url='.$test_url.'<br/>check_url='.$check_url."<Br/>url_pattern=$url_pattern, class_path=$class_path<br/>";
 
 		if(preg_match('!/composer/vendor/!', $check_url))
 			throw new \Exception("Incorrect check url: ". $check_url);
@@ -429,7 +429,7 @@ function class_load_by_vhosts_url($url)
 
 	$host_data = $bors_data['vhosts'][$data['host']];
 
-//	if(config('is_debug')) r($host_data);
+//	if(\B2\Cfg::get('is_debug')) r($host_data);
 
 	$url_noq = $data['scheme'].'://'.$data['host'].@$data['path'];
 	$query = empty($data['query']) ? NULL : $data['query'];
@@ -447,7 +447,7 @@ function class_load_by_vhosts_url($url)
 		else
 			$check_url = $url_noq;
 
-//		if(config('is_debug')) echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$ (q=$query)!<br />\n";
+//		if(\B2\Cfg::get('is_debug')) echo "Check vhost $url_pattern to $url for $class_path -- !^http://({$data['host']}){$url_pattern}\$ (q=$query)!<br />\n";
 		if(preg_match('!^\s*http://!', $url_pattern))
 			$prefix = '';
 		else
@@ -455,7 +455,7 @@ function class_load_by_vhosts_url($url)
 
 		if(preg_match("!^{$prefix}{$url_pattern}$!i", $check_url, $match))
 		{
-//			if(config('is_debug')) echo "found $class_path as $pair / !^{$prefix}{$url_pattern}$! to $check_url in <pre>".print_r($host_data['bors_site'], true)."</pre><br />\n";
+//			if(\B2\Cfg::get('is_debug')) echo "found $class_path as $pair / !^{$prefix}{$url_pattern}$! to $check_url in <pre>".print_r($host_data['bors_site'], true)."</pre><br />\n";
 
 			if(preg_match("!^redirect:(.+)$!", $class_path, $m))
 			{
@@ -510,7 +510,7 @@ function class_load_by_vhosts_url($url)
 			else
 				$class = $class_path;
 
-//			if(config('is_debug')) r("$class_path($id) - $url");
+//			if(\B2\Cfg::get('is_debug')) r("$class_path($id) - $url");
 
 			$args = array(
 					'local_path' => @$host_data['bors_local'],
@@ -522,18 +522,18 @@ function class_load_by_vhosts_url($url)
 			else
 				$args['page'] = $page;
 
-//			if(config('is_debug')) r("Try to object_init($class_path, $id)", $args);
+//			if(\B2\Cfg::get('is_debug')) r("Try to object_init($class_path, $id)", $args);
 
 			$args['host'] = $data['host'];
 
 			if($obj = object_init($class_path, $id, $args))
 			{
-//				if(config('is_debug')) r("init $obj.<br />Save to bors_data['classes_by_uri'][$url] = $obj");
+//				if(\B2\Cfg::get('is_debug')) r("init $obj.<br />Save to bors_data['classes_by_uri'][$url] = $obj");
 				$bors_data['classes_by_uri'][$url] = $obj;
 
 				if($redirect)
 				{
-//					if(!config('do_not_exit'))
+//					if(!\B2\Cfg::get('do_not_exit'))
 //					{
 //						echo "Redirect by $url_pattern";
 //						go($obj->url_ex($page), true);
@@ -562,7 +562,7 @@ function class_load_by_vhosts_url($url)
 function object_init($class_name, $object_id, $args = array())
 {
 //	echo "object_init($class_name, $object_id, ".print_r($args, true).")<br/>\n";
-//	if(config('is_developer')) bors_debug::syslog('debug', "Try to load $class_name($object_id)");
+//	if(\B2\Cfg::get('is_developer')) bors_debug::syslog('debug', "Try to load $class_name($object_id)");
 	// В этом методе нельзя использовать debug_test()!!!
 
 	$obj = NULL;
@@ -573,7 +573,7 @@ function object_init($class_name, $object_id, $args = array())
 
 	if(!($class_file = bors_class_loader::load_file($class_name, $args)))
 	{
-		if(config('throw_exception_on_class_not_found'))
+		if(\B2\Cfg::get('throw_exception_on_class_not_found'))
 			return bors_throw("Class '$class_name' not found");
 
 		return $obj;
@@ -617,7 +617,7 @@ function object_init($class_name, $object_id, $args = array())
 
 		$obj->set_class_file($class_file);
 
-		if(config('debug_objects_create_counting_details'))
+		if(\B2\Cfg::get('debug_objects_create_counting_details'))
 			bors_debug::count_inc("bors_load($class_name,init)");
 	}
 
@@ -668,7 +668,7 @@ function object_init($class_name, $object_id, $args = array())
 	if($found != 1 && $obj->can_cached())
 		save_cached_object($obj);
 
-	if(($map = config('objects_auto_convert')) 
+	if(($map = \B2\Cfg::get('objects_auto_convert')) 
 			&& ($to_class = @$map[$obj->class_name()])
 			&& ($data = $obj->__loaded_fields())
 	)

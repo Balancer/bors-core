@@ -9,8 +9,8 @@ function lcml($text, $params = []) { return bors_lcml::lcml($text, $params); }
 
 function lcml_h($string)
 {
-	$se = config('lcml_tags_enabled');
-	$sd = config('lcml_tags_disabled');
+	$se = \B2\Cfg::get('lcml_tags_enabled');
+	$sd = \B2\Cfg::get('lcml_tags_disabled');
 	config_set('lcml_tags_enabled', NULL);
 	config_set('lcml_tags_disabled', NULL);
 	$result = lcml($string, array(
@@ -27,8 +27,8 @@ function lcml_h($string)
 // lcml с поддержкой html и пустая строка — параграф
 function lcml_hp($string)
 {
-	$se = config('lcml_tags_enabled');
-	$sd = config('lcml_tags_disabled');
+	$se = \B2\Cfg::get('lcml_tags_enabled');
+	$sd = \B2\Cfg::get('lcml_tags_disabled');
 	config_set('lcml_tags_enabled', NULL);
 	config_set('lcml_tags_disabled', NULL);
 
@@ -58,8 +58,8 @@ function lcml_bb($string, $params = array())
 
 function lcml_bbh($string, $params = array())
 {
-	$se = config('lcml_tags_enabled');
-	$sd = config('lcml_tags_disabled');
+	$se = \B2\Cfg::get('lcml_tags_enabled');
+	$sd = \B2\Cfg::get('lcml_tags_disabled');
 	config_set('lcml_tags_enabled', NULL);
 	config_set('lcml_tags_disabled', NULL);
 
@@ -79,8 +79,8 @@ function lcml_bbh($string, $params = array())
 
 function lcml_smart($string)
 {
-	$se = config('lcml_tags_enabled');
-	$sd = config('lcml_tags_disabled');
+	$se = \B2\Cfg::get('lcml_tags_enabled');
+	$sd = \B2\Cfg::get('lcml_tags_disabled');
 	config_set('lcml_tags_enabled', NULL);
 	config_set('lcml_tags_disabled', NULL);
 	$result = lcml($string, array(
@@ -96,10 +96,10 @@ function lcml_smart($string)
 
 function lcml_tag_disabled($tag)
 {
-	if(@in_array('img', $enabled = config('lcml_tags_enabled')))
+	if(@in_array('img', $enabled = \B2\Cfg::get('lcml_tags_enabled')))
 		return false;
 
-	if(@in_array('img', config('lcml_tags_disabled')))
+	if(@in_array('img', \B2\Cfg::get('lcml_tags_disabled')))
 		return true;
 
 	return !empty($enabled);
@@ -185,7 +185,7 @@ function html2bb($text, $args = array())
 	$text = preg_replace("!\n(&nbsp;| )\n!", "\n\n", $text);
 	$text = preg_replace("!\n{2,}!", "\n\n", $text);
 
-//	if(config('is_debug')) echo "===$text===\n\n";
+//	if(\B2\Cfg::get('is_debug')) echo "===$text===\n\n";
 
 	// Нормализуем картинки, когда они же — ссылки на полноразмер.
 	// [url=http://fap.to/images/full/43/495/495898172.jpg][img]http://fap.to/images/full/43/495/495898172.jpg[/img][/url]
@@ -195,7 +195,7 @@ function html2bb($text, $args = array())
 	// [url=http://2.bp.blogspot.com/--0AOeJRq694/T8koZzdmfzI/AAAAAAAAGDQ/rzvNIj3EkPg/s1600/oMetArt_Preseting-Ashley_Ashley-Doll_by_Emslie_medium_0016.jpg][img]http://2.bp.blogspot.com/--0AOeJRq694/T8koZzdmfzI/AAAAAAAAGDQ/rzvNIj3EkPg/s640/oMetArt_Preseting-Ashley_Ashley-Doll_by_Emslie_medium_0016.jpg[/img][/url]
 	$text = preg_replace('!\[url=([^\]]+\.jpe?g)\]\[img\]([^\[]+?)\[/img\]\[/url\]!is', "[img url=\"$1\" href=\"$1\" use_cache=\"1\" description=\"<a href='$1'>оригинал</a> &#124; <a href='%IMAGE_PAGE_URL%'>кеш</a>\" htmldecode=\"1\" ]", $text);
 
-//	if(config('is_debug')) echo "===$text===\n\n";
+//	if(\B2\Cfg::get('is_debug')) echo "===$text===\n\n";
 	return trim($text);
 }
 

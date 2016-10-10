@@ -27,7 +27,7 @@ class bors_rss2 extends bors_rss
 
 		$xml = $channel->asXML();
 
-//		$feed->useCached($type, '/tmp/bors-rss-'.md5($rss->url()).'.xml', config('rss_static_lifetime'));
+//		$feed->useCached($type, '/tmp/bors-rss-'.md5($rss->url()).'.xml', \B2\Cfg::get('rss_static_lifetime'));
 //		$feed->encoding = 'UTF-8';
 //		$feed->link = $rss->main_url();
 //		$feed->syndicationURL = $rss->url();

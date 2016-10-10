@@ -8,14 +8,14 @@ class bors_objects_helper
 
 	static function memcache_hash_key($object)
 	{
-		// 	   'bors_v'.config('memcached_tag').'_'.get_class($object).'://'.$object->id();
-		return 'bors_v'.config('memcached_tag').'_'.$object->class_name().'://'.$object->id();
+		// 	   'bors_v'.\B2\Cfg::get('memcached_tag').'_'.get_class($object).'://'.$object->id();
+		return 'bors_v'.\B2\Cfg::get('memcached_tag').'_'.$object->class_name().'://'.$object->id();
 	}
 
 	static function update_cached($object)
 	{
 		// Если объект хранится в memcached ...
-		if(($memcache_instance = config('memcached_instance')))
+		if(($memcache_instance = \B2\Cfg::get('memcached_instance')))
 			$memcache_instance->set(self::memcache_hash_key($object), serialize($object), 0, 0);
 	}
 
@@ -26,7 +26,7 @@ class bors_objects_helper
 	static function drop_cached($object)
 	{
 		// Если объект хранится в memcached ...
-		if(($memcache_instance = config('memcached_instance')))
+		if(($memcache_instance = \B2\Cfg::get('memcached_instance')))
 			$memcache_instance->delete(self::memcache_hash_key($object));
 	}
 
@@ -48,7 +48,7 @@ class bors_objects_helper
 	{
 		$html = "object = '{$obj->debug_title()}'<br/>"
 			."object file = '{$obj->get('class_file')}'<br/>"
-			."object.config = ".object_property($obj->config(), 'debug_title');
+			."object.config = ".object_property($obj->\B2\Cfg::get(), 'debug_title');
 
 		return $html;
 	}

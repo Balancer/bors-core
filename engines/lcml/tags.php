@@ -2,8 +2,8 @@
 
 function lcml_tags($txt, &$mask, $lcml = NULL)
 {
-	$taglist = config('lcml_tags_enabled');
-	$taglist_disabled = config('lcml_tags_disabled');
+	$taglist = \B2\Cfg::get('lcml_tags_enabled');
+	$taglist_disabled = \B2\Cfg::get('lcml_tags_disabled');
 	if(!$taglist_disabled)
 		$taglist_disabled = array();
 
@@ -105,7 +105,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 							// Если тэг один на строке, то ставим ему соответствующий флаг.
 							$tag_params['is_alone'] = (preg_match("!(^|\n)\s*$!", $part1) && preg_match("!\s*($|\n)*$!", $part3));
 
-//							if(config('is_developer')) echo "<xmp>tag=$func,p1='$part1'\np2='$part2'\np3='$part3'\n,end=$end,nextpos=$next_pos,params=".print_r($params, true).", tag_params=".print_r($tag_params, true)."</xmp>";
+//							if(\B2\Cfg::get('is_developer')) echo "<xmp>tag=$func,p1='$part1'\np2='$part2'\np3='$part3'\n,end=$end,nextpos=$next_pos,params=".print_r($params, true).", tag_params=".print_r($tag_params, true)."</xmp>";
 
 							if($class_pair_name)
 							{
@@ -210,7 +210,7 @@ function lcml_tags($txt, &$mask, $lcml = NULL)
 
 function find_next_open_tag($txt, $pos)
 {
-//	if(config('is_developer')) echo "<b>find tags in ".bors_substr(str_replace("\n", '\n', $txt), $pos, 80)."</b><br/>\n";
+//	if(\B2\Cfg::get('is_developer')) echo "<b>find tags in ".bors_substr(str_replace("\n", '\n', $txt), $pos, 80)."</b><br/>\n";
 
 	$strlen = bors_strlen($txt);
 //	while($pos < $strlen && ($pos = next_open_brace($txt, $pos)) !== false)
@@ -219,7 +219,7 @@ function find_next_open_tag($txt, $pos)
 		$pos_open  = bors_strpos($txt, '[', $pos+1); // Следующий открывающийся тег
 //		$pos_open  = next_open_brace ($txt, $pos+1); // Следующий открывающийся тег
 		$pos_close = bors_strpos($txt, ']', $pos+1); // Ближайший закрывающий знак
-//		if(config('is_developer')) echo "$pos, $pos_open, $pos_close = ".bors_substr($txt, $pos, $pos_close - $pos + 1)."<Br/>";
+//		if(\B2\Cfg::get('is_developer')) echo "$pos, $pos_open, $pos_close = ".bors_substr($txt, $pos, $pos_close - $pos + 1)."<Br/>";
 //		$pos_close = next_close_brace($txt, $pos+1); // Ближайший закрывающий знак
 		$in = 0;
 		$end = 0;
@@ -285,7 +285,7 @@ function find_next_open_tag($txt, $pos)
 
 		// Вырезаем целиком найденный тег, без квадратных скобок
 		$tag = bors_substr($txt, $pos+1, $end-$pos-1);
-//		if(config('is_developer')) echo "Tag '$tag'<br/>\n";
+//		if(\B2\Cfg::get('is_developer')) echo "Tag '$tag'<br/>\n";
 
 		if(preg_match("!^(\w+)=\"([^\"]+)\"$!s", $tag, $m)) // [url="http://example.com"]text[/url]
 		{
@@ -411,8 +411,8 @@ function next_open_brace($txt, $pos)
 		$params['noresize'] = false;
 		$params['notitle'] = true;
 //		$params['page'] = $GLOBALS['lcml'][''];
-//		if(config('is_developer')) var_dump(preg_split("![\s\n\t]+!",$in));
-//		if(config('is_developer')) echo bors_debug::trace();
+//		if(\B2\Cfg::get('is_developer')) var_dump(preg_split("![\s\n\t]+!",$in));
+//		if(\B2\Cfg::get('is_developer')) echo bors_debug::trace();
 		foreach(preg_split("![\s\n\t]+!",$in) as $param)
 		{
 			if(preg_match("!^\d+x\d+$!",$param)) { $params['size']=$param; continue;}
@@ -444,7 +444,7 @@ function next_open_brace($txt, $pos)
 			}
 		}
 
-//		if(config('is_developer')) { print_dd($in); echo PHP_EOL; }
+//		if(\B2\Cfg::get('is_developer')) { print_dd($in); echo PHP_EOL; }
 
 		if(preg_match_all("!(?<=^|\s)(\w+)=\"([^\"]+)\"(?=\s|$)!ms", $in, $match, PREG_SET_ORDER))
 		{

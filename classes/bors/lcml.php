@@ -23,7 +23,7 @@ class bors_lcml extends bors_object
 		if($enabled_tags = $this->enabled_tags_string())
 			return explode(' ', $enabled_tags);
 
-		return config('lcml_tags_enabled',  array());
+		return \B2\Cfg::get('lcml_tags_enabled',  array());
 	}
 
 	function _disabled_tags_def()
@@ -34,7 +34,7 @@ class bors_lcml extends bors_object
 		if($disabled_tags = $this->disabled_tags_string())
 			return explode(' ', $disabled_tags);
 
-		return config('lcml_tags_disabled',  array());
+		return \B2\Cfg::get('lcml_tags_disabled',  array());
 	}
 
 	function _enabled_functions_string_def() { return ''; }
@@ -47,7 +47,7 @@ class bors_lcml extends bors_object
 		if($enabled_functions = $this->enabled_functions_string())
 			return explode(' ', $enabled_functions);
 
-		return config('lcml_functions_enabled',  array());
+		return \B2\Cfg::get('lcml_functions_enabled',  array());
 	}
 
 	function _disabled_functions_def()
@@ -58,7 +58,7 @@ class bors_lcml extends bors_object
 		if($disabled_functions = $this->disabled_functions_string())
 			return explode(' ', $disabled_functions);
 
-		return config('lcml_functions_disabled',  array());
+		return \B2\Cfg::get('lcml_functions_disabled',  array());
 	}
 
 	function __construct($params = array())
@@ -103,7 +103,7 @@ class bors_lcml extends bors_object
 
 		bors_lcml::actions_load('tags');
 
-		if(config('lcml_sharp_markup'))
+		if(\B2\Cfg::get('lcml_sharp_markup'))
 			bors_lcml::actions_load('sharp');
 	}
 
@@ -187,7 +187,7 @@ class bors_lcml extends bors_object
 	function is_tag_enabled($tag_name, $default_enabled = true)
 	{
 		// Если тег разрешён явно, то всё ок.
-		if(config('lcml.tag.'.$tag_name.'.enable'))
+		if(\B2\Cfg::get('lcml.tag.'.$tag_name.'.enable'))
 			return true;
 
 		// Если указаны разрешённые теги, значит по умолчанию — запрещены.
@@ -240,13 +240,13 @@ class bors_lcml extends bors_object
 		$need_prepare = popval($this->_params, 'prepare');
 
 		if($this->_params['level'] == 1
-			&& !config('lcml_cache_disable')
-			&& config('cache_engine')
+			&& !\B2\Cfg::get('lcml_cache_disable')
+			&& \B2\Cfg::get('cache_engine')
 			&& empty($params['nocache'])
 		)
 		{
 			$cache = new bors_cache();
-			if($cache->get('lcml-cache-v'.config('lcml.cache_tag'), $text))
+			if($cache->get('lcml-cache-v'.\B2\Cfg::get('lcml.cache_tag'), $text))
 			{
 				bors_debug::timing_stop('lcml_parse');
 				$this->set_p('level', $this->p('level')-1);
@@ -293,7 +293,7 @@ class bors_lcml extends bors_object
 			return $cache ? $cache->set($text, 86400) : $text;
 		}
 
-		if(config('lcml_sharp_markup'))
+		if(\B2\Cfg::get('lcml_sharp_markup'))
 		{
 			require_once('engines/lcml/sharp.php');
 			$text = lcml_sharp($text, $mask, $this);
@@ -333,7 +333,7 @@ class bors_lcml extends bors_object
 
 		if($start < bors_strlen($text))
 		{
-//			if(config('is_developer')) var_dump($can_modif, $this->_params['level'], $start, bors_strlen($text), $text);
+//			if(\B2\Cfg::get('is_developer')) var_dump($can_modif, $this->_params['level'], $start, bors_strlen($text), $text);
 			// Внимание! Уровень 1 тут добавлять нельзя. Проблема:
 			// [quote]...lcml-код... [/quote]
 			// Внутри quote level > 1, но после обработки для всего блока quote can_modif в маске == false
@@ -539,7 +539,7 @@ class bors_lcml extends bors_object
 		$suite->assertEquals("Раз, два, три, четыре, пять<br />\nВышел зайчик погулять", trim(lcml_bb($code))); //?WTF? Это же не BB.
 
 		// Проверки, использующие специфичные локальне ресурсы balancer.ru
-		if(config('is_balancer_ru_tests'))
+		if(\B2\Cfg::get('is_balancer_ru_tests'))
 		{
 			$code = '[url=http://balancer.ru/forum/punbb/viewtopic.php?pid=1248520#p1248520][img]http://balancer.ru/cache/img/forums/0708/468x468/1024x768-img_0599.jpg[/img][/url]';
 			$suite->assertEquals("===", lcml($code));
@@ -600,8 +600,8 @@ class bors_lcml extends bors_object
 		// Fatal error: Call to undefined function lcml_tag_disabled() in /var/www/bors/bors-core/engines/lcml/pre/50-auto_images.php on line 5
 		require_once BORS_CORE.'/engines/lcml/main.php';
 
-		$se = config('lcml_tags_enabled');
-		$sd = config('lcml_tags_disabled');
+		$se = \B2\Cfg::get('lcml_tags_enabled');
+		$sd = \B2\Cfg::get('lcml_tags_disabled');
 		config_set('lcml_tags_enabled', NULL);
 		config_set('lcml_tags_disabled', NULL);
 

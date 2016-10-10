@@ -6,7 +6,7 @@ class bors_debug
 	{
 		static $out_idx = 0;
 
-		if(!($out_dir = config('debug_hidden_log_dir')))
+		if(!($out_dir = \B2\Cfg::get('debug_hidden_log_dir')))
 			return;
 
 		bors_debug::timing_start('hidden_log');
@@ -97,7 +97,7 @@ class bors_debug
 
 	static function sepalog($type, $message = NULL, $params = array())
 	{
-		$dir = config('debug_hidden_log_dir').'/errors';
+		$dir = \B2\Cfg::get('debug_hidden_log_dir').'/errors';
 		if(!is_dir($dir))
 		{
 			@mkdir($dir);
@@ -273,7 +273,7 @@ class bors_debug
 
 	static function execute_trace($message)
 	{
-		if(!config('debug.execute_trace'))
+		if(!\B2\Cfg::get('debug.execute_trace'))
 			return;
 
 		static $timestamp;
@@ -336,12 +336,12 @@ class bors_debug
 	// Если показываем отладочную инфу, то описываем её в конец выводимой страницы комментарием.
 	static function append_info(&$res, $app=NULL)
 	{
-		if(!config('debug.timing') || !is_string($res) || !preg_match('!</body>!i', $res))
+		if(!\B2\Cfg::get('debug.timing') || !is_string($res) || !preg_match('!</body>!i', $res))
 			return;
 
 		$deb = "<!--\n=== debug-info ===\n"
 			."BORS_CORE = ".BORS_CORE."\n"
-			."log dir = ".config('debug_hidden_log_dir')."\n"
+			."log dir = ".\B2\Cfg::get('debug_hidden_log_dir')."\n"
 			."log created = ".date('r')."\n";
 
 		if($app)
@@ -359,10 +359,10 @@ class bors_debug
 				$deb .= "cache static expire = ". date('r', time()+$cs)."\n";
 		}
 
-		if(config('is_developer'))
+		if(\B2\Cfg::get('is_developer'))
 		{
 			$deb .= "\n=== config ===\n"
-				. "cache_database = ".config('cache_database')."\n";
+				. "cache_database = ".\B2\Cfg::get('cache_database')."\n";
 		}
 
 		require_once BORS_CORE.'/inc/functions/debug/vars_info.php';
@@ -387,7 +387,7 @@ class bors_debug
 		$deb .= "Total time: $time sec.\n";
 		$deb .= "-->\n";
 
-		if(config('is_developer'))
+		if(\B2\Cfg::get('is_developer'))
 			bors_debug::syslog('debug/timing', $deb, false);
 
 		$res = str_ireplace('</body>', $deb.'</body>', $res);

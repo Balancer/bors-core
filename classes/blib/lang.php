@@ -4,7 +4,7 @@ class blib_lang
 {
 	static function translate($text)
 	{
-		$lang = config('lang.ua');
+		$lang = \B2\Cfg::get('lang.ua');
 		if(empty($lang[$text]))
 		{
 //			if(preg_match('/[а-яА-ЯёЁ]/u', $text) && !in_array($text, explode(' ', 'РД …')))

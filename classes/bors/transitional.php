@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 class bors_transitional
 {
 	static function init()

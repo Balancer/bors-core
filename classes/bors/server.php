@@ -6,7 +6,7 @@ class bors_server extends bors_object
 
 	function can_cached() { return true; }
 
-	static function is_utf8() { return config('internal_charset') == 'utf-8'; }
+	static function is_utf8() { return \B2\Cfg::get('internal_charset') == 'utf-8'; }
 
 	static function post_redirector_url($url)
 	{

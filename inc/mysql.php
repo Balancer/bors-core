@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 function mysql_where_compile($conditions_array, $class='', $was_joined = true)
 {
 	if(isset($conditions_array['where']))
@@ -134,7 +136,7 @@ function array_smart_expand(&$array)
 
 function bors_class_field_to_db($class, $property = NULL, $was_joined = true, $for_order = false)
 {
-//	if(1 || (config('is_debug') && $property=='create_time')) echo "<i>bors_class_field_to_db</i>($class, $property, $was_joined) <br/>\n";
+//	if(1 || (Cfg::get('is_debug') && $property=='create_time')) echo "<i>bors_class_field_to_db</i>($class, $property, $was_joined) <br/>\n";
 	if(!$class)
 		return $property;
 
@@ -178,7 +180,7 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true, $for_o
 	}, $join);
 //	$join = preg_replace_callback('!(ON )(\w+)\.(\w+)(\s+)!', function($m) { return $m[1].bors_class_field_to_db($m[2], $m[3]).$m[4];}, $join);
 	$join = preg_replace_callback('!(=\s*|>|<)(\w+_\w+)\.(\w+)!', function($m) { return $m[1].bors_class_field_to_db($m[2], $m[3]);}, $join);
-//	if(config('is_debug')) echo "    ??? result1: $join <br/>\n";
+//	if(Cfg::get('is_debug')) echo "    ??? result1: $join <br/>\n";
 	$join = preg_replace_callback('!^(\w+)((\s+NOT)?\s+IN)!', function($m) use ($class_name) { return bors_class_field_to_db($class_name, $m[1]).$m[2];}, $join);
 	$join = preg_replace_callback('!([ \(])(\w+)\s*(=|>|<)!', function($m) use ($class_name) { return $m[1].bors_class_field_to_db($class_name, $m[2]).$m[3];}, $join);
 
@@ -193,7 +195,7 @@ function mysql_bors_join_parse($join, $class_name='', $was_joined = true, $for_o
 
 function mysql_args_compile($args, $class=NULL)
 {
-//	if(config('is_debug')) echo "<b>mysql_args_compile</b>(".print_r($args, true).", $class) <br/>\n";
+//	if(Cfg::get('is_debug')) echo "<b>mysql_args_compile</b>(".print_r($args, true).", $class) <br/>\n";
 
 	if(!empty($args['*class_name']))
 	{

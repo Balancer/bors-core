@@ -4,7 +4,7 @@ class bors_class_loader_meta extends bors_object
 {
 	static function cache_updated($object)
 	{
-		if(!config('object_loader_filemtime_check'))
+		if(!\B2\Cfg::get('object_loader_filemtime_check'))
 			return false;
 
 		if(!method_exists($object, 'class_filemtime'))

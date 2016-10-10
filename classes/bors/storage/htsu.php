@@ -47,7 +47,7 @@ class bors_storage_htsu extends bors_storage
 
 //		echo "Find htsu for dir=$dir, root=$root, base=$base, rel=$rel<br/>\n";
 
-		if(($ut = config('url_truncate')))
+		if(($ut = \B2\Cfg::get('url_truncate')))
 		{
 			if(!preg_match("!/$ut(/|$)!", $rel))
 				return false;
@@ -220,7 +220,7 @@ class bors_storage_htsu extends bors_storage
 
 	    $this->hts = preg_replace("!^\n+!",'',$this->hts);
 
-		if(config('storage.htsu.do_php'))
+		if(\B2\Cfg::get('storage.htsu.do_php'))
 		{
 			require_once('inc/php.php');
 			$this->hts = preg_replace_callback("!\[php\](.+?)\[/php\]!s", function($m) {

@@ -19,8 +19,8 @@ class driver_dbal
 			return;
 
 //		use Doctrine\Common\ClassLoader;
-		require config('doctrine.include') . '/Doctrine/Common/ClassLoader.php';
-		$classLoader = new \Doctrine\Common\ClassLoader('Doctrine', config('doctrine.include'));
+		require \B2\Cfg::get('doctrine.include') . '/Doctrine/Common/ClassLoader.php';
+		$classLoader = new \Doctrine\Common\ClassLoader('Doctrine', \B2\Cfg::get('doctrine.include'));
 		$classLoader->register();
 		$registered = true;
 	}
@@ -77,7 +77,7 @@ class driver_dbal
 		debug_timing_start('dbal_fetch');
 		$row = $this->statement->fetch();
 
-		$ics = config('internal_charset');
+		$ics = \B2\Cfg::get('internal_charset');
 		$dcs = configh('dbal', $this->database, 'charset');
 
 		if($row && $ics != $dcs)

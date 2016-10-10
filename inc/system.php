@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 function ungpc_array(&$array)
 {
 	$result = array();
@@ -76,7 +78,7 @@ function __session_init($init = true)
 	if($session_started || empty($_SERVER['HTTP_HOST']))
 		return;
 
-	if(config('system.session.skip'))
+	if(Cfg::get('system.session.skip'))
 		return;
 
 	if(!$init && empty($_COOKIE['bors_session_init']))
@@ -107,7 +109,7 @@ function __session_init($init = true)
 
 function session_var($name, $def = NULL, $set = false)
 {
-	if(config('system.session.skip'))
+	if(Cfg::get('system.session.skip'))
 		return $def;
 
 	__session_init(false);

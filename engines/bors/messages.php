@@ -7,11 +7,11 @@ function bors_message($text, $params=[])
 	template_nocache();
 	template_css('/_bors/css/messages.css');
 
-	$ocs = config('output_charset', config('internal_charset', 'utf-8'));
-	$ics = config('internal_charset', 'utf-8');
+	$ocs = \B2\Cfg::get('output_charset', \B2\Cfg::get('internal_charset', 'utf-8'));
+	$ics = \B2\Cfg::get('internal_charset', 'utf-8');
 
 	@header('Content-Type: text/html; charset='.$ocs);
-	@header('Content-Language: '.config('page_lang', 'ru'));
+	@header('Content-Language: '.\B2\Cfg::get('page_lang', 'ru'));
 
 	if($status = defval($params, 'http_status'))
 	{
@@ -150,7 +150,7 @@ function bors_message($text, $params=[])
 	$template = defval($params, 'template');
 
 	if(!$template)
-		$template = config('default_message_template', config('default_template'));
+		$template = \B2\Cfg::get('default_message_template', \B2\Cfg::get('default_template'));
 
 	if(($theme_class && class_exists($theme_class)) || (!$template && class_exists($theme_class = 'bors_themes_bootstrap3')))
 	{
@@ -215,18 +215,18 @@ function bors_message_tpl($message_template, $obj, $params)
 	@header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
-	$ocs = config('output_charset', config('internal_charset', 'utf-8'));
-	$ics = config('internal_charset', 'utf-8');
+	$ocs = \B2\Cfg::get('output_charset', \B2\Cfg::get('internal_charset', 'utf-8'));
+	$ics = \B2\Cfg::get('internal_charset', 'utf-8');
 
 	@header('Content-Type: text/html; charset='.$ocs);
-	@header('Content-Language: '.config('page_lang', 'ru'));
+	@header('Content-Language: '.\B2\Cfg::get('page_lang', 'ru'));
 
 	require_once('engines/smarty/assign.php');
 
 	$redir = defval($params, 'redirect', false);
 	$title = defval($params, 'title', ec('Ошибка! [3]'));
 	$timeout = defval($params, 'timeout', -1);
-	$page_template = defval($params, 'template', config('default_template'));
+	$page_template = defval($params, 'template', \B2\Cfg::get('default_template'));
 
 	$params['this'] = $obj;
 
@@ -267,9 +267,9 @@ function bors_http_error($errno)
 	{
 		case 404:
 			@header("HTTP/1.0 404 Not Found");
-			if(config('404_page_url'))
-				return go(config('404_page_url'), true);
-			if(config('404_show', true))
+			if(\B2\Cfg::get('404_page_url'))
+				return go(\B2\Cfg::get('404_page_url'), true);
+			if(\B2\Cfg::get('404_show', true))
 				echo ec("404 Not found<br/>Page '{$GLOBALS['bors_full_request_url']}' not found!");
 			break;
 	}

@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 function http_get($url)
 {
 	$ch = curl_init($url);
@@ -50,7 +52,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 		$query = $m[2];
 	}
 
-	if(preg_match(config('urls.skip_load_ext_regexp'), $pure_url))
+	if(preg_match(Cfg::get('urls.skip_load_ext_regexp'), $pure_url))
 		return "";
 
 	$header = array();
@@ -61,7 +63,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 	// http://www.balancer.ru/g/p2981109
 	if(!preg_match('!http://asozd2.duma.gov.ru!', $url))
 	{
-		if(($cs = config('lcml_request_charset_default')))
+		if(($cs = Cfg::get('lcml_request_charset_default')))
 			$header[] = "Accept-Charset: utf-8, ".$cs;
 		else
 			$header[] = "Accept-Charset: utf-8";
@@ -90,7 +92,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 		CURLOPT_PROGRESSFUNCTION => function($resource, $download_size = 0, $downloaded = 0, $upload_size = 0, $uploaded = 0) use ($url) {
 			//	CURLOPT_WRITEFUNCTION is good for this but CURLOPT_PROGRESSFUNCTION is the best.
 			// If $downloaded exceeds size, returning non-0 breaks the connection!
-			if($downloaded > config('curl.maxlen', ini_get('memory_limit')/8))
+			if($downloaded > Cfg::get('curl.maxlen', ini_get('memory_limit')/8))
 			{
 				bors_debug::syslog('warning', "Break curl '$url' download with size=".$downloaded);
 				return 1;
@@ -106,7 +108,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 		CURLOPT_WRITEFUNCTION => function($handle, $data) use ($url) {
 			static $data_string;
 			$data_string .= $data;
-			if(strlen($data_string) > config('curl.maxlen', ini_get('memory_limit')/4))
+			if(strlen($data_string) > Cfg::get('curl.maxlen', ini_get('memory_limit')/4))
 			{
 				bors_debug::syslog('warning', "Break curl '$url' download with size=".strlen($data_string));
 				return 0;
@@ -120,19 +122,19 @@ function http_get_content($url, $raw = false, $max_length = false)
 //		CURLOPT_USERAGENT => 'Googlebot/2.1 (+http://www.google.com/bot.html)',
 //		CURLOPT_RANGE => '0-4095',a
 
-	if(config('proxy.force_regexp') && preg_match(config('proxy.force_regexp'), $url))
-		curl_setopt($ch, CURLOPT_PROXY, config('proxy.forced'));
+	if(Cfg::get('proxy.force_regexp') && preg_match(Cfg::get('proxy.force_regexp'), $url))
+		curl_setopt($ch, CURLOPT_PROXY, Cfg::get('proxy.forced'));
 
 	$data = curl_exec($ch);
 
-//	if(1||config('is_developer')) { var_dump($data); exit(); }
-//	if(config('is_developer')) { exit('stop: "'.$url.'"'); }
+//	if(1||Cfg::get('is_developer')) { var_dump($data); exit(); }
+//	if(Cfg::get('is_developer')) { exit('stop: "'.$url.'"'); }
 
 	if($data === false)
 	{
 //		echo '<small><i>[1] Curl '.$url.' error: ' . curl_error($ch) . '</i></small><br/>';
 //		echo bors_debug::trace();
-//		if(config('is_developer')) { var_dump($data); exit(); }
+//		if(Cfg::get('is_developer')) { var_dump($data); exit(); }
 		return NULL;
 	}
 
@@ -154,7 +156,7 @@ function http_get_content($url, $raw = false, $max_length = false)
 		}
 	}
 
-//	if(config('is_developer')) { print_dd($data); }
+//	if(Cfg::get('is_developer')) { print_dd($data); }
 
 	$data = trim($data);
 //	$data = trim(curl_redir_exec($ch));
@@ -192,24 +194,24 @@ function http_get_content($url, $raw = false, $max_length = false)
 	}
 
 	if(!$charset)
-		$charset = config('lcml_request_charset_default', 'WINDOWS-1251');
+		$charset = Cfg::get('lcml_request_charset_default', 'WINDOWS-1251');
 /*
-	if(config('is_developer'))
+	if(Cfg::get('is_developer'))
 	{
 		echo "url = '$url'";
 		echo "Content-type = '$content_type'<br/>";
 		echo "charset = '$charset'<br/>";
 		echo print_dd(substr($data, 0, 1000));
-		print_dd(iconv($charset, config('internal_charset').'//IGNORE', $data));
+		print_dd(iconv($charset, Cfg::get('internal_charset').'//IGNORE', $data));
 		exit('end');
 	}
 */
 //	var_dump($charset, $data);
 
 	if($charset)
-		$data = @iconv($charset, config('internal_charset').'//IGNORE', $data);
+		$data = @iconv($charset, Cfg::get('internal_charset').'//IGNORE', $data);
 
-//	if(config('is_developer')) { var_dump($raw, $charset, $header, $data); }
+//	if(Cfg::get('is_developer')) { var_dump($raw, $charset, $header, $data); }
 
 	return $data;
 }
@@ -234,11 +236,11 @@ function http_get_ex($url, $raw = true)
 		$query = $m[2];
 	}
 
-	if(preg_match(config('urls.skip_load_ext_regexp'), $pure_url))
+	if(preg_match(Cfg::get('urls.skip_load_ext_regexp'), $pure_url))
 		return "";
 
 	$header = array();
-	if(($cs = config('lcml_request_charset_default')))
+	if(($cs = Cfg::get('lcml_request_charset_default')))
 		$header[] = "Accept-Charset: ".$cs;
 	$header[] = "Accept-Language: ru, en";
 
@@ -252,12 +254,12 @@ function http_get_ex($url, $raw = true)
 	if(preg_match('/\.gif$/i', $url)) // Возможно — большая анимация
 		$timeout = 90;
 
-//	if(config('is_debug')) { echo "url='$url'\n\n"; echo bors_debug::trace(); }
+//	if(Cfg::get('is_debug')) { echo "url='$url'\n\n"; echo bors_debug::trace(); }
 
 	if(preg_match('!^(https?://)([^/]*[^\w\-][^/]*)/!', $url))
 		$url = blib_idna::encode_uri($url);
 
-//	if(config('is_debug')) echo "url post ='$url'\n\n";
+//	if(Cfg::get('is_debug')) echo "url post ='$url'\n\n";
 
 	$ch = curl_init($url);
 	curl_setopt_array($ch, array(
@@ -276,8 +278,8 @@ function http_get_ex($url, $raw = true)
 		CURLOPT_SSL_VERIFYPEER => false,
 	));
 
-	if(config('proxy.force_regexp') && preg_match(config('proxy.force_regexp'), $url))
-		curl_setopt($ch, CURLOPT_PROXY, config('proxy.forced'));
+	if(Cfg::get('proxy.force_regexp') && preg_match(Cfg::get('proxy.force_regexp'), $url))
+		curl_setopt($ch, CURLOPT_PROXY, Cfg::get('proxy.forced'));
 
 	$data = curl_exec($ch);
 
@@ -286,7 +288,7 @@ function http_get_ex($url, $raw = true)
 		//TODO: оформить хорошо. Например, отправить отложенную задачу по пересчёту
 		//И выше есть такой же блок.
 		$err_str = curl_error($ch);
-//		if(config('is_developer')) { var_dump($url, $pure_url, $raw, $data, $err_str); exit(); }
+//		if(Cfg::get('is_developer')) { var_dump($url, $pure_url, $raw, $data, $err_str); exit(); }
 //		echo '[2] Curl error: ' . $err_str;
 		bors_debug::syslog('curl-error', "Curl error: ".$err_str);
 		return '';
@@ -316,10 +318,10 @@ function http_get_ex($url, $raw = true)
 		}
 
 		if(!$charset)
-			$charset = config('lcml_request_charset_default');
+			$charset = Cfg::get('lcml_request_charset_default');
 
 		if($charset)
-			$data = iconv($charset, config('internal_charset').'//IGNORE', $data);
+			$data = iconv($charset, Cfg::get('internal_charset').'//IGNORE', $data);
 	}
 
 	return array('content' => $data, 'content_type' => $content_type);

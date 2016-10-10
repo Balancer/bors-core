@@ -64,14 +64,14 @@ class bors_class_loader
 
 		static $skips = NULL;
 		if(is_null($skips))
-			$skips = config('classes_skip', array());
+			$skips = \B2\Cfg::get('classes_skip', array());
 
 		if(in_array($class_name, $skips))
 			return false;
 
 		static $cachd = NULL;
 		if(is_null($cachd))
-			$cachd = config('cache_dir').'/classes/';
+			$cachd = \B2\Cfg::get('cache_dir').'/classes/';
 
 		// Если у нас уже загружался соответствующий класс, то возвращаем
 		// его реальный(! — например, .yaml) файл, не кешированный.
@@ -125,7 +125,7 @@ class bors_class_loader
 
 	private static function find_and_include($class_name, &$args = array())
 	{
-		if(config('debug.profiling'))
+		if(\B2\Cfg::get('debug.profiling'))
 			bors_debug::syslog('profiling', "Load non cached class $class_name; bors_dirs=".print_r(bors_dirs(), true));
 
 		$class_path = "";
@@ -222,7 +222,7 @@ class bors_class_loader
 		if(empty($data['was_changed']))
 			return;
 
-		$cached_class_info_json = config('cache_dir').'/classes/'
+		$cached_class_info_json = \B2\Cfg::get('cache_dir').'/classes/'
 			.str_replace('_', '/', $class_name)
 			.'.data.json';
 

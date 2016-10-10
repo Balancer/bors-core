@@ -4,6 +4,8 @@
 	Подключать по bors_funcs::noop();
 */
 
+use B2\Cfg;
+
 function class_include($class_name, &$args = array()) { return bors_class_loader::load_file($class_name, $args); }
 
 function mkpath($strPath, $mode=0777)
@@ -208,19 +210,12 @@ function config_set_ref($key, &$value) { $GLOBALS['cms']['config'][$key] = $valu
 
 if(!function_exists('config_set'))
 {
-	function config_set($key, $value) { return $GLOBALS['cms']['config'][$key] = $value; }
+	function config_set($key, $value) { return \B2\Cfg::set($key, $value); }
 }
 
 if(!function_exists('config'))
 {
-	// Не максировать через @!
-	function config($key, $def = NULL)
-	{
-		if(array_key_exists($key, $GLOBALS['cms']['config']))
-			return  $GLOBALS['cms']['config'][$key];
-
-		return $def;
-	}
+	function config($key, $def = NULL) { return \B2\Cfg::get($key, $def); }
 }
 
 function config_seth($section, $hash, $key, $value) { return $GLOBALS['cms']['config'][$section][$hash][$key] = $value; }
@@ -243,7 +238,7 @@ function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 	else
 		$db_real = $db;
 
-	$conn = config('__database_connections', array());
+	$conn = Cfg::get('__database_connections', []);
 	$conn[$db] = array(
 		'host'	  => $host,
 		'database'  => $db_real,
@@ -251,7 +246,7 @@ function mysql_access($db, $login = NULL, $password = NULL, $host='localhost')
 		'password'  => $password,
 	);
 
-	config_set('__database_connections', $conn);
+	Cfg::set('__database_connections', $conn);
 
 	$GLOBALS["_bors_conf_mysql_{$db}_db_real"] = $db_real;
 	$GLOBALS["_bors_conf_mysql_{$db}_login"]   = $login;
@@ -287,4 +282,4 @@ else
 	function bors_ucfirst($str) { return ucfirst($str); }
 }
 
-eval('class bors_log  extends '.config('log.class', 'bors_log_stub').' { } ');
+eval('class bors_log  extends '.Cfg::get('log.class', 'bors_log_stub').' { } ');

@@ -1,5 +1,7 @@
 <?php
 
+use B2\Cfg;
+
 class driver_mysql extends driver_pdo implements Iterator
 {
 	var $charset = NULL;
@@ -35,14 +37,14 @@ class driver_mysql extends driver_pdo implements Iterator
 			throw new Exception($msg);
 		}
 
-		if($c = config('mysql_set_character_set', 'utf8mb4'))
+		if($c = \B2\Cfg::get('mysql_set_character_set', 'utf8mb4'))
 		{
 			bors_debug::timing_start('mysql_set_character_set');
 			$this->query("SET CHARACTER SET '$c'");
 			bors_debug::timing_stop('mysql_set_character_set');
 		}
 
-		if(($c = config('mysql_set_names_charset', 'utf8mb4')) && $this->charset != $c)
+		if(($c = \B2\Cfg::get('mysql_set_names_charset', 'utf8mb4')) && $this->charset != $c)
 		{
 			bors_debug::timing_start('mysql_set_names');
 			$this->query("SET NAMES '$c'");

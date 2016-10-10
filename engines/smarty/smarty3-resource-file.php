@@ -87,7 +87,7 @@
 
 		$find_tpl = '/templates/'.$tpl_name;
 		$find_classes_tpl = '/'.$tpl_name;
-		$default_template_dir = '/templates/'.dirname(config('default_template')).'/'.$tpl_name;
+		$default_template_dir = '/templates/'.dirname(\B2\Cfg::get('default_template')).'/'.$tpl_name;
 
 		if(!$found)
 		{
@@ -119,7 +119,7 @@
 		if(!$found)
 			return false;
 
-		if(config('templates_cache_disabled'))
+		if(\B2\Cfg::get('templates_cache_disabled'))
 			$tpl_timestamp = time();
 
 		$cache[$tpl_name] = $tpl_timestamp;

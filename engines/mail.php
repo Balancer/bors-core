@@ -6,7 +6,7 @@ require_once('Mail/mime.php');
 function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = NULL, $attaches = array())
 {
 	// По умолчанию всю почту шлём в UTF-8. Но можем указать, если что, в параметрах.
-	$charset = defval($headers, 'charset', config('mail_charset', 'utf-8'));
+	$charset = defval($headers, 'charset', \B2\Cfg::get('mail_charset', 'utf-8'));
 	unset($headers['charset']);
 
 	// Перекодируем всё из системной кодировки в целевую.
@@ -39,7 +39,7 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 	}
 
 	if(!$from)
-		$from = config('mail_sender_default', 'noreplay@localhost');
+		$from = \B2\Cfg::get('mail_sender_default', 'noreplay@localhost');
 
 	$body = $mime->get(array(
 		'head_charset' => $charset,
@@ -68,7 +68,7 @@ function send_mail($to, $subject, $text, $html = NULL, $from = NULL, $headers = 
 
 //	print_d($hdrs); exit();
 
-	$mail = @Mail::factory(config('mail_transport', 'mail'), config('mail_transport_parameters', NULL));
+	$mail = @Mail::factory(\B2\Cfg::get('mail_transport', 'mail'), \B2\Cfg::get('mail_transport_parameters', NULL));
 	$mail->send($to, $hdrs, $body);
 //	echo "to=$to, body=$body"; var_dump($hdrs); exit();
 }

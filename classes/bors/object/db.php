@@ -222,12 +222,12 @@ class bors_object_db extends base_object_db
 		if($this->url_engine())
 			return parent::url_ex($page);
 
-		$site_url = config('main_site_url');
+		$site_url = \B2\Cfg::get('main_site_url');
 		$class_name = $this->class_name();
 
 		if(preg_match('/_admin_/', $class_name))
 		{
-			$site_url = config('admin_site_url');
+			$site_url = \B2\Cfg::get('admin_site_url');
 			$class_name = str_replace('_admin_', '_', $class_name);
 		}
 
@@ -239,9 +239,9 @@ class bors_object_db extends base_object_db
 
 	function _admin_url_def()
 	{
-		$admin = config('admin_site_url');
+		$admin = \B2\Cfg::get('admin_site_url');
 		//TODO: Костыль для сайтов без вынесенной админки. Придумать лучше.
-		if($admin != config('main_site_url'))
+		if($admin != \B2\Cfg::get('main_site_url'))
 			return $this->url();
 
 		$url = $admin.'/'.$this->_item_name_m().'/'.$this->id().'/edit/';

@@ -5,7 +5,7 @@
 
 function smarty_resource_file_get_template($tpl_name, &$tpl_source, $smarty)
 {
-//	if(config('is_developer')) { if(preg_match('/stat.html/', $tpl_name)) echo bors_debug::trace(); echo "engines/smarty: load template $tpl_name<br/>\n"; }
+//	if(\B2\Cfg::get('is_developer')) { if(preg_match('/stat.html/', $tpl_name)) echo bors_debug::trace(); echo "engines/smarty: load template $tpl_name<br/>\n"; }
 	// do database call here to fetch your template,
 	// populating $tpl_source
 	if(file_exists($tpl_name))
@@ -49,7 +49,7 @@ function smarty_resource_file_get_template($tpl_name, &$tpl_source, $smarty)
 
 function smarty_resource_file_get_timestamp($tpl_name, &$tpl_timestamp, $smarty)
 {
-//	if(config('is_developer')) echo "engines/smarty: get timestamp template $tpl_name<br/>\n";
+//	if(\B2\Cfg::get('is_developer')) echo "engines/smarty: get timestamp template $tpl_name<br/>\n";
 	static $cache;
 	if(!empty($cache[$tpl_name]))
 		return ($tpl_timestamp = $cache[$tpl_name]) > 0;
@@ -81,7 +81,7 @@ function smarty_resource_file_get_timestamp($tpl_name, &$tpl_timestamp, $smarty)
 
 	$find_tpl = '/templates/'.$tpl_name;
 	$find_classes_tpl = '/'.$tpl_name;
-	$default_template_dir = '/templates/'.dirname(config('default_template')).'/'.$tpl_name;
+	$default_template_dir = '/templates/'.dirname(\B2\Cfg::get('default_template')).'/'.$tpl_name;
 
 	if(!$found)
 	{
@@ -113,7 +113,7 @@ function smarty_resource_file_get_timestamp($tpl_name, &$tpl_timestamp, $smarty)
 	if(!$found)
 		return false;
 
-	if(config('templates_cache_disabled'))
+	if(\B2\Cfg::get('templates_cache_disabled'))
 		$tpl_timestamp = time();
 
 	$cache[$tpl_name] = $tpl_timestamp;

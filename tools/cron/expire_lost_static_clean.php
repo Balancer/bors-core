@@ -10,7 +10,7 @@ bors_exit();
 
 function main()
 {
-	foreach(config('cache_stat_dirs') as $dir)
+	foreach(\B2\Cfg::get('cache_stat_dirs') as $dir)
 	{
 		echo "Do clean $dir\n";
 		find_files_loop($dir, '.*\.html$', 'do_clean');

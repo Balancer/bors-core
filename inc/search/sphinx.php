@@ -1,6 +1,8 @@
 <?php
 
-require_once(config('sphinx-search.include'));
+use B2\Cfg;
+
+require_once(Cfg::get('sphinx-search.include'));
 
 function bors_search_sphinx($query, $params = [])
 {
@@ -9,8 +11,8 @@ function bors_search_sphinx($query, $params = [])
 	if(!$query)
 		return false;
 
-	$host = config('search_sphinx_host', 'localhost');
-	$port = config('search_sphinx_port', 9312);
+	$host = Cfg::get('search_sphinx_host', 'localhost');
+	$port = Cfg::get('search_sphinx_port', 9312);
 
 	$indexes = defval($params, 'indexes', '*');
 
@@ -40,7 +42,7 @@ function bors_search_sphinx($query, $params = [])
 
 	$page = defval($params, 'page', 1)-1;
 	$per_page = defval($params, 'per_page', 50);
-	$cl->SetLimits($page * $per_page, $per_page, config('search_sphinx_max_matches', 5000));
+	$cl->SetLimits($page * $per_page, $per_page, Cfg::get('search_sphinx_max_matches', 5000));
 
 //	$cl->SetMaxQueryTime(bors()->user() ? 10000 : 3000);
 
@@ -156,7 +158,7 @@ function bors_search_sphinx($query, $params = [])
 				'before_match'		=> '<b>',
 				'after_match'		=> '</b>',
 				'chunk_separator'	=> ' ... ',
-				'limit'				=> config('search_snippet_length', 500),
+				'limit'				=> Cfg::get('search_snippet_length', 500),
 				'around'			=> 5,
 			);
 

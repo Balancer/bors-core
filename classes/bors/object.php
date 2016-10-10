@@ -131,7 +131,7 @@ class bors_object extends bors_object_simple
 		//TODO: Этот config пока используется только на лентах топиков:
 		//TODO: http://www.wrk.ru/society/2014/08/topic-89787-rss.xml
 		//TODO: Подумать, как сделать красиво и локально
-		if(!config('rss_skip_images') && ($image = object_property($this, 'image')))
+		if(!\B2\Cfg::get('rss_skip_images') && ($image = object_property($this, 'image')))
  			$image_html = "<p>".$image->thumbnail('300x300')->html_code() . "</p>\n";
 		else
 			$image_html = '';
@@ -305,7 +305,7 @@ class bors_object extends bors_object_simple
 			$GLOBALS['cms']['templates']['data'][$var_name][] = $value;
 	}
 
-	function strict_auto_fields_check() { return config('strict_auto_fields_check', true); }
+	function strict_auto_fields_check() { return \B2\Cfg::get('strict_auto_fields_check', true); }
 
 	function __call($method, $params)
 	{
@@ -367,7 +367,7 @@ class bors_object extends bors_object_simple
 			{
 				$cn = $auto_objs[$method];
 				$property = $method.'_id';
-				if(config('orm.auto.cache_attr_skip'))
+				if(\B2\Cfg::get('orm.auto.cache_attr_skip'))
 					return bors_load($cn, $this->get($property));
 				else
 				{
@@ -380,7 +380,7 @@ class bors_object extends bors_object_simple
 			elseif(preg_match('/^(\w+)\((\w+)\)$/', $auto_objs[$method], $m))
 			{
 				$property = $m[2];
-				if(config('orm.auto.cache_attr_skip'))
+				if(\B2\Cfg::get('orm.auto.cache_attr_skip'))
 					return bors_load($m[1], $this->get($property));
 				else
 				{
@@ -399,7 +399,7 @@ class bors_object extends bors_object_simple
 			if(preg_match('/^(\w+)\((\w+)\)$/', $auto_targs[$method], $m))
 			{
 				$target = object_load(call_user_func([$this, $m[1]]), call_user_func([$this, $m[2]]));
-				if(config('orm.auto.cache_attr_skip'))
+				if(\B2\Cfg::get('orm.auto.cache_attr_skip'))
 					return $target;
 
 				return $this->attr[$method] = $target;
@@ -450,7 +450,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function pre_show()
 	{
-		if(config('objects_visits_counting'))
+		if(\B2\Cfg::get('objects_visits_counting'))
 			bors_objects_visit::inc($this);
 
 		return false;
@@ -482,7 +482,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			&& !is_object($value)
 			&& strcmp(empty($this->data[$prop]) ? NULL : $this->data[$prop], $value))
 		{
-			if(config('mutex_lock_enable'))
+			if(\B2\Cfg::get('mutex_lock_enable'))
 				$this->__mutex_lock();
 
 			// Запоминаем первоначальное значение переменной.
@@ -516,10 +516,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 				&& strcmp(empty($this->data[$prop]) ? NULL : $this->data[$prop], $value)
 			) // TODO: если без контроля типов, то !=, иначе - !==
 		{
-			if(config('mutex_lock_enable'))
+			if(\B2\Cfg::get('mutex_lock_enable'))
 				$this->__mutex_lock();
 
-//			if(config('is_developer')) echo bors_debug::trace();
+//			if(\B2\Cfg::get('is_developer')) echo bors_debug::trace();
 
 			//TODO: продумать систему контроля типов.
 			//FIXME: чёрт, тут нельзя вызывать всяких user, пока в них лезут ошибки типов. Исправить и проверить все основные проекты.
@@ -563,7 +563,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return false;
 	}
 
-	function render_engine() { return config('render_engine', false); }
+	function render_engine() { return \B2\Cfg::get('render_engine', false); }
 
 	function is_cache_disabled() { return true; }
 	function template_vars() { return 'body source me me_id'; }
@@ -633,14 +633,14 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if(($nav_name = $this->__get_ex('nav_name', NULL, true)))
 			return $nav_name;
 
-		return $this->get('nav_name_lower', config('nav_name_lower')) ? bors_lower($this->title()) : $this->title();
+		return $this->get('nav_name_lower', \B2\Cfg::get('nav_name_lower')) ? bors_lower($this->title()) : $this->title();
 	}
 
 	function _nav_name_true_def() { return $this->__get_ex('nav_name', NULL, true); }
 
 	function set_nav_name($nav_name, $db_update) { return $this->set('nav_name', $nav_name, $db_update); }
 
-	function _template_def() { return defval($this->data, 'template', defval($this->attr, 'template', config('default_template'))); }
+	function _template_def() { return defval($this->data, 'template', defval($this->attr, 'template', \B2\Cfg::get('default_template'))); }
 	function set_template($template, $db_update = true) { return $this->set('template', $template, $db_update); }
 
 	function parents_string() { return join("\n", $this->parents());  }
@@ -859,7 +859,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return "<a rel=\"nofollow\" href=\"".$this->_setdefaultfor_url($target_id, $field_for_def)."\"><img src=\"/_bors/i/set-default-16.gif\" width=\"16\" height=\"16\" alt=\"def\" title=\"$title\"/></a>";
 	}
 
-	function admin_engine() { return config('admin_engine', 'bors_admin_engine'); }
+	function admin_engine() { return \B2\Cfg::get('admin_engine', 'bors_admin_engine'); }
 	function admin() { return bors_load($this->admin_engine(), $this); }
 	// Используется только при подключении BORS_EXT
 	function tools() { return bors_load('bors_object_tools', $this); }
@@ -1027,17 +1027,17 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		$this->changed_fields = array();
 
-		if(config('debug_trace_changed_save'))
+		if(\B2\Cfg::get('debug_trace_changed_save'))
 			echo 'Save '.$this->debug_title()."\n";
 
 		$this->__update_relations();
 		save_cached_object($this);
 
-		if(config('search_autoindex') && $this->auto_search_index())
+		if(\B2\Cfg::get('search_autoindex') && $this->auto_search_index())
 		{
 			include_once('engines/search.php');
 
-			if(config('bors_tasks'))
+			if(\B2\Cfg::get('bors_tasks'))
 				bors_tools_tasks::add_task($this, 'bors_task_index', 0, -10);
 			else
 				bors_search_object_index($this, 'replace');
@@ -1106,7 +1106,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		// Сперва чистим группы. Так как cache_clean_self() генерирует статические файлы и обновляет группы
 		// Если группы чистить потом, то они удалятся и не восстановятся.
-		if(config('cache_database'))
+		if(\B2\Cfg::get('cache_database'))
 		{
 			foreach(explode(' ', $this->cache_provides()) as $group_name)
 				if($group_name)
@@ -1209,7 +1209,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
      */
     function storage()
 	{
-		if($storage_class_name = $this->get('storage_engine', config('storage.default.class_name')))
+		if($storage_class_name = $this->get('storage_engine', \B2\Cfg::get('storage.default.class_name')))
 			return new $storage_class_name($this);
 		else
 			return NULL;
@@ -1220,7 +1220,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$access = $this->access_engine();
 
 		if(!$access)
-			$access = config('access_default');
+			$access = \B2\Cfg::get('access_default');
 
 //		if(!$access)
 //			bors_throw(ec('Не задан режим доступа к ').$this->object_titled_dp_link());
@@ -1621,7 +1621,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 	function direct_content()
 	{
         $renderer = $this->renderer();
-        if(config('debug.execute_trace'))
+        if(\B2\Cfg::get('debug.execute_trace'))
             bors_debug::execute_trace("{$this->debug_title_short()} renderer = {$renderer}");
 
         if($renderer)
@@ -1637,7 +1637,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if(!($render_engine = $this->render_engine()))
 			return NULL;
 
-		if(config('debug.execute_trace'))
+		if(\B2\Cfg::get('debug.execute_trace'))
 			debug_execute_trace("{$this->debug_title_short()} render engine = '$render_engine' (old direct_content)");
 
 		if($render_engine == 'self')
@@ -1682,10 +1682,10 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		$rel_file = @$data['path'];
 		if(preg_match('!/$!', $rel_file))
 			$rel_file .= $this->index_file();
-//var_dump($root, config('cache_static.root'), $file);
+//var_dump($root, \B2\Cfg::get('cache_static.root'), $file);
 		if($r = $this->get('cache_static_root'))
 			$file = $r.$rel_file;
-		elseif($r = config('cache_static.root'))
+		elseif($r = \B2\Cfg::get('cache_static.root'))
 			// No "cache-static" concat. Because that already in cache_static.root.
 			$file = str_replace($root, $r, $file);
 
@@ -1694,11 +1694,11 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function use_temporary_static_file() { return true; }
 
-	function internal_charset() { return config('internal_charset', 'utf-8'); }
-	function input_charset() { return config('input_charset', $this->output_charset()); }
-	function output_charset() { return config('output_charset', 'utf-8'); }
-	function files_charset() { return config('files_charset', 'utf-8'); }
-	function db_charset() { return config('db_charset', 'utf-8'); }
+	function internal_charset() { return \B2\Cfg::get('internal_charset', 'utf-8'); }
+	function input_charset() { return \B2\Cfg::get('input_charset', $this->output_charset()); }
+	function output_charset() { return \B2\Cfg::get('output_charset', 'utf-8'); }
+	function files_charset() { return \B2\Cfg::get('files_charset', 'utf-8'); }
+	function db_charset() { return \B2\Cfg::get('db_charset', 'utf-8'); }
 
 	function cs_f2i($str)
 	{
@@ -1741,7 +1741,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		return iconv('utf-8', $ics.'//IGNORE', $str);
 	}
 
-//	function __use_static() { return config('cache_static') && $this->cache_static() > 0; }
+//	function __use_static() { return \B2\Cfg::get('cache_static') && $this->cache_static() > 0; }
 
 	function hcom($msg)
 	{
@@ -1761,8 +1761,8 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 		$recreate = $this->get('recreate_on_content') || $this->get('cache_static_recreate');
 
-		$use_static = config('cache_static')
-			&& !config('skip_cache_static')
+		$use_static = \B2\Cfg::get('cache_static')
+			&& !\B2\Cfg::get('skip_cache_static')
 			&& ($recreate || $this->cache_static() > 0);
 
 		$this->hcom("rcr=$recreate; static=$use_static");
@@ -1784,7 +1784,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 //		$mem = new \Jamm\Memory\RedisObject('dog-pile-cacher', '192.168.1.3');
 
 		$stash_item = NULL;
-		if($this->id() && !is_object($this->id()) && $this->modify_time() && ($pool = config('cache.stash.pool')))
+		if($this->id() && !is_object($this->id()) && $this->modify_time() && ($pool = \B2\Cfg::get('cache.stash.pool')))
 		{
 			$stash_item = $pool->getItem('dog-pill-protect:'.$this->internal_uri_ascii().':'.$this->page().':'.$this->modify_time());
 
@@ -1800,7 +1800,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if(0 && $use_static
 			&& !$fs
 			&& $this->use_temporary_static_file()
-			&& config('temporary_file_contents')
+			&& \B2\Cfg::get('temporary_file_contents')
 			&& !file_exists($this->static_file())
 		)
 		{
@@ -1814,12 +1814,12 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 				$this->url_ex($this->page()),
 				$this->title(),
 				$this->output_charset(),
-			), $this->cs_u2i(config('temporary_file_contents')))), 120);
+			), $this->cs_u2i(\B2\Cfg::get('temporary_file_contents')))), 120);
 
 			$this->hcom("tmp fs= ".filesize($this->static_file()));
 		}
 
-		if(config('debug.execute_trace'))
+		if(\B2\Cfg::get('debug.execute_trace'))
 			bors_debug::execute_trace("{$this->debug_title_short()}->direct_content()");
 
 		$this->hcom("get direct content");
@@ -1844,7 +1844,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($use_static)
 			cache_static::save_object($this, $content);
 
-		if(config('use_memcached_objects') || $recreate)
+		if(\B2\Cfg::get('use_memcached_objects') || $recreate)
 			bors_objects_helper::cache_registers($this);
 
 		return $output_content;
@@ -1999,7 +1999,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 		if($this->__havefc())
 			return $this->__lastc();
 
-		return $this->__setc(object_load(config('logs.default_logger_class', 'bors_log_stub'), $this));
+		return $this->__setc(object_load(\B2\Cfg::get('logs.default_logger_class', 'bors_log_stub'), $this));
 	}
 
 	function delete()
@@ -2088,7 +2088,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 			return $this;
 
 		if(!$renderer_class || $renderer_class == 'bors_renderers_page')
-			$renderer_class = config('default_theme_class', 'bors_renderers_page');
+			$renderer_class = \B2\Cfg::get('default_theme_class', 'bors_renderers_page');
 
 		if(!$renderer_class)
 			return NULL;
@@ -2214,7 +2214,7 @@ class_filemtime=".date('r', $this->class_filemtime())."<br/>
 
 	function __class_cache_base()
 	{
-		return config('cache_dir').'/classes/'.str_replace('_', '/', get_class($this));
+		return \B2\Cfg::get('cache_dir').'/classes/'.str_replace('_', '/', get_class($this));
 	}
 
 	static $__cache_data = array();

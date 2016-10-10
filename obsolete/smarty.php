@@ -3,7 +3,7 @@
 bors_debug::syslog('__obsolete_catch', "Call obsolete code smarty.php");
 return;
 
-require_once(config('smarty_path').'/Smarty.class.php');
+require_once(\B2\Cfg::get('smarty_path').'/Smarty.class.php');
 require_once('engines/smarty/bors_smarty_common.php');
 
 function show_page($uri, $data = true)
@@ -70,7 +70,7 @@ function show_page($uri, $data = true)
         $smarty = new Smarty;
         require('engines/smarty/smarty-register.php');
 		
-		$smarty->compile_dir = config('cache_dir').'/smarty-templates_c/';
+		$smarty->compile_dir = \B2\Cfg::get('cache_dir').'/smarty-templates_c/';
 
 		$smarty->plugins_dir = array();
 		foreach(bors_dirs(true) as $dir)
@@ -78,7 +78,7 @@ function show_page($uri, $data = true)
 	
 		$smarty->plugins_dir[] = 'plugins';
 			
-		$smarty->cache_dir   = config('cache_dir').'/smarty-cache/';
+		$smarty->cache_dir   = \B2\Cfg::get('cache_dir').'/smarty-cache/';
 
 		if(!file_exists($smarty->compile_dir))
 		    @mkpath($smarty->compile_dir, 0777);
@@ -117,7 +117,7 @@ function show_page($uri, $data = true)
 				$tpl = smarty_template($template);
 
 //			if(!$smarty->template_exists("$tpl"))
-				$tpl = config('default_template');
+				$tpl = \B2\Cfg::get('default_template');
 
 			if(!$smarty->template_exists($tpl))
 				$tpl = smarty_template($tpl);
@@ -127,7 +127,7 @@ function show_page($uri, $data = true)
 					|| @$_GET['tpl']=='safe'
 					|| (preg_match("!^hts:!", $tpl) && !$hts->get_data($tpl, 'source'))
 				)*/
-//	            $tpl = config('default_template');
+//	            $tpl = \B2\Cfg::get('default_template');
 
 		}
 		else

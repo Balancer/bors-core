@@ -1,5 +1,7 @@
 <?php
 
+require_once BORS_CORE.'/inc/texts.php';
+
 class bors_external_feeds_entry extends base_object_db
 {
 	function storage_engine() { return 'bors_storage_mysql'; }

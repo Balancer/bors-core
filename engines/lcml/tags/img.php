@@ -180,6 +180,7 @@ function lt_img($params)
 			}
 
 //			bors_debug::syslog('000-image-debug', "Get image size for ".$file);
+
 			$image_size = @getimagesize($file);
 
 //			if(config('is_developer')) { ~r($params['url'], $file, $image_size); }
@@ -320,11 +321,13 @@ function lt_img($params)
 			}
 
 			if(preg_match('/airbase\.ru|balancer\.ru|wrk\.ru/', $data['uri'])
+					&& !preg_match('/ls.balancer\.ru/', $data['uri'])
 					&& preg_match('!^(http://[^/]+/cache/.+/)\d*x\d*(/[^/]+)$!', $data['uri'], $m))
 				$img_ico_uri  = $m[1].$params['size'].$m[2];
 			elseif(!empty($params['noresize']))
 				$img_ico_uri  = $uri;
-			elseif(preg_match('/airbase\.ru|balancer\.ru|wrk\.ru/', $data['uri']))
+			elseif(preg_match('/airbase\.ru|balancer\.ru|wrk\.ru/', $data['uri'])
+					&& !preg_match('/ls.balancer\.ru/', $data['uri']))
 				$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", $data['uri']);
 			else
 				$img_ico_uri  = preg_replace("!^(http://[^/]+)(.*?)(/[^/]+)$!", "$1/cache$2/{$params['size']}$3", "$store_url/$path");

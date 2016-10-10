@@ -137,6 +137,9 @@
 		if(!(bors()->main_object()))
 			bors()->set_main_object($obj);
 
+		if(!is_object($obj))
+			throw new Exception("Try show non-object: ".print_r($obj, true));
+
 		$processed = $obj->pre_show();
 		if($processed === true)
 		{

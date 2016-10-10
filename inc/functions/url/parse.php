@@ -19,6 +19,8 @@ function url_parse($url)
 
 	require_once BORS_CORE.'/engines/bors/vhosts_loader.php';
 	$vhost_data = bors_vhost_data($host);
+
+
 	if(empty($vhost_data) && $host == bors()->server()->host())
 		$vhost_data = array(
 			'document_root' => bors()->server()->root(),

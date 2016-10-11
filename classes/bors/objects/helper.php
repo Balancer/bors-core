@@ -48,7 +48,7 @@ class bors_objects_helper
 	{
 		$html = "object = '{$obj->debug_title()}'<br/>"
 			."object file = '{$obj->get('class_file')}'<br/>"
-			."object.config = ".object_property($obj->\B2\Cfg::get(), 'debug_title');
+			."object.config = ".object_property($obj->config(), 'debug_title');
 
 		return $html;
 	}

@@ -90,6 +90,7 @@ div.header {
 	margin: 0;
 	padding: 0;
 	background-color: #999;
+	border-bottom: 1px solid #333;
 }
 
 div.header a {
@@ -111,10 +112,10 @@ div.top-nav a:hover {
 }
 
 ul.top-tabs {
-	margin: 0;
 	padding: 10px 0 2px 20px;
 	list-style: none;
-	border-bottom: 1px solid #333;
+	max-width: 20cm;
+	margin: 0 auto;
 }
 
 ul.top-tabs li {
@@ -151,8 +152,8 @@ ul.top-tabs li:hover {
 }
 
 div.body {
-	margin-right: 230px;
-	padding-left: 20px;
+	max-width: 20cm;
+	margin: 0 auto;
 }
 
 div.right-menu {

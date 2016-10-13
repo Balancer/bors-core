@@ -30,7 +30,6 @@ class RegApps
 
 	function dispatch($request)
 	{
-		echo '!';
 		$this->request = $request;
 
 		$path = $request->getUri()->getPath();
@@ -43,10 +42,17 @@ class RegApps
 			}
 
 			$map = $reg_app->route_map();
-			var_dump("=$reg_app", $map);
+
 			foreach($map as $map_path => $map_class)
 			{
-				echo "=$path=$map_path=<br/>";
+				$base = $reg_app->base_path();
+				$map_pattern = '/^'.str_replace('/', "\\/", $base.$map_path).'/';
+//				echo "pattern=[$map_pattern]; path=[$path]<br/>";
+				if(preg_match($map_pattern, $path, $m))
+				{
+					$view = \bors::load($map_class, NULL);
+					return $this->init_view($view);
+				}
 			}
 		}
 
@@ -59,7 +65,8 @@ class RegApps
 		bors()->set_main_object($view);
 		$view->set_request($this->request);
 		$view->set_attr('called_url', (string)$this->request->getUri());
-		$view->storage()->load($view);
+		if($storage = $view->storage())
+			$storage->load($view);
 		return $view;
 	}
 }

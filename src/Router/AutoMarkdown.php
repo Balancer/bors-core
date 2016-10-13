@@ -53,7 +53,11 @@ class AutoMarkdown extends \B2\Router
 
 		foreach($this->app->apps as $reg_app)
 		{
-			$dir = \bors::$package_app_path[get_class($reg_app)].'/src';
+			$app_class = get_class($reg_app);
+			if(empty(\bors::$package_app_path[$app_class]))
+				return NULL;
+
+			$dir = \bors::$package_app_path[$app_class].'/src';
 
 			$app_reflection = new \ReflectionClass($reg_app);
 			$app_namespace = $app_reflection->getNamespaceName() . "\\";

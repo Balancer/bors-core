@@ -30,7 +30,10 @@ class RegApps
 
 	function dispatch($request)
 	{
+		echo '!';
 		$this->request = $request;
+
+		$path = $request->getUri()->getPath();
 
 		foreach($this->app->apps as $reg_app)
 		{
@@ -38,9 +41,14 @@ class RegApps
 			{
 				require_once $map;
 			}
-		}
 
-		$path = $request->getUri()->getPath();
+			$map = $reg_app->route_map();
+			var_dump("=$reg_app", $map);
+			foreach($map as $map_path => $map_class)
+			{
+				echo "=$path=$map_path=<br/>";
+			}
+		}
 
 		return NULL;
 	}

@@ -37,6 +37,8 @@ class App extends Obj
 		return $instance;
 	}
 
+	function route_map() { return []; }
+
 	/**
 	 * @return \B2\Router
      */
@@ -262,15 +264,15 @@ class App extends Obj
 			}
 		}
 
-		$router = $this->router_instance('B2\\Router\\AutoPhp');
+		$router = $this->router_instance(\B2\Router\AutoPhp::class);
 		if($view = $router->dispatch($request))
 			return $view;
 
-		$router = $this->router_instance('B2\\Router\\AutoMarkdown');
+		$router = $this->router_instance(\B2\Router\AutoMarkdown::class);
 		if($view = $router->dispatch($request))
 			return $view;
 
-		$router = $this->router_instance('B2\\Router\\RegApps');
+		$router = $this->router_instance(\B2\Router\RegApps::class);
 		if($view = $router->dispatch($request))
 			return $view;
 

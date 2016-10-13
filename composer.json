@@ -45,7 +45,10 @@
 	},
 
 	"autoload": {
-		"classmap": ["classes/"],
+		"classmap": [
+			"classes/",
+			"classes/bors/"
+		],
 		"psr-4": {
 			"B2\\": "src/"
 		}
